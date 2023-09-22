@@ -13,7 +13,7 @@
  *
  * To enable Node.js integration in this file, open up `main.js` and enable the `nodeIntegration`
  * flag:
- *
+ *ss
  * ```
  *  // Create the browser window.
  *  mainWindow = new BrowserWindow({
