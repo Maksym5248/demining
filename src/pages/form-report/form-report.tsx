@@ -2,7 +2,7 @@ import React from 'react';
 
 export function FormReportPage() {
     return (
-      <div>
+      <div style={{ flex: 1}}>
         <h1>FormReportPage</h1>
   
         <p>

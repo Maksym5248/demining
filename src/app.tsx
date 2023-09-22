@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import { ConfigProvider } from 'antd';
 import * as ReactDOM from 'react-dom';
 
 import { createStore } from '~/stores';
@@ -17,7 +18,9 @@ const App = () => {
   }, []);
 
   return (
-    <RootRouter />
+    <ConfigProvider>
+        <RootRouter />
+    </ConfigProvider>
   )
 }
 

@@ -12,21 +12,25 @@ import { Layout } from "./layout"
 const router = createMemoryRouter([
   {
     id: "root",
-    path: "/",
     Component: Layout,
-    errorElement: <ErrorNotFoundPage />,
+    // errorElement: ErrorNotFoundPage,
+    initialIndex: 0,
     children: [
       {
-        index: true,
+        path: "/",
         Component: FormReportPage,
       },
       {
-        path: "template",
+        path: "/template",
         Component: TemplatePage,
       },
       {
-        path: "template1",
+        path: "/template1",
         Component: TemplatePage,
+      },
+      {
+        path: "*",
+        Component: ErrorNotFoundPage,
       },
     ],
   },
@@ -34,6 +38,6 @@ const router = createMemoryRouter([
 
 export function RootRouter() {
   return (
-    <RouterProvider router={router} fallbackElement={<p>Initial Load...</p>} />
+      <RouterProvider router={router} fallbackElement={<p>Initial Load...</p>} />
   );
 }

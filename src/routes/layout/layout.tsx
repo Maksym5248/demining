@@ -1,28 +1,88 @@
-import React from 'react';
+import React, { useState } from "react";
 
-export function Layout() {
-    return (
-      <div>
-        <h1>Auth Example using Layout</h1>
-  
-        <p>
-          This example demonstrates a simple login flow with three pages: a public
-          page, a protected page, and a login page. In order to see the protected
-          page, you must first login. Pretty standard stuff.
-        </p>
-  
-        <p>
-          First, visit the public page. Then, visit the protected page. You're not
-          yet logged in, so you are redirected to the login page. After you login,
-          you are redirected back to the protected page.
-        </p>
-  
-        <p>
-          Notice the URL change each time. If you click the back button at this
-          point, would you expect to go back to the login page? No! You're already
-          logged in. Try it out, and you'll see you go back to the page you
-          visited just *before* logging in, the public page.
-        </p>
-      </div>
-    );
-  }
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+} from '@ant-design/icons';
+import { Layout as Lay, Menu, Button, theme } from 'antd';
+import { useNavigate, Outlet } from 'react-router-dom';
+
+const { Header, Sider, Content } = Lay;
+interface ILayoutPros {
+  children: React.ReactNode
+}
+
+export const Layout: React.FC = ({ children }: ILayoutPros) => {
+  const navigate = useNavigate();
+
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
+  return (
+    <Lay>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="demo-logo-vertical" />
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          items={[
+            {
+              key: '1',
+              icon: <UserOutlined />,
+              label: 'List reports',
+              onClick: () => {
+                navigate("/")
+              }
+            },
+            {
+              key: '2',
+              icon: <VideoCameraOutlined />,
+              label: 'nav 2',
+              onClick: () => {
+                navigate("/template")
+              }
+            },
+            {
+              key: '3',
+              icon: <UploadOutlined />,
+              label: 'nav 3',
+              onClick: () => {
+                navigate("/form-report1")
+              }
+            },
+          ]}
+        />
+      </Sider>
+      <Lay>
+        <Header style={{ padding: 0, background: colorBgContainer }}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+            }}
+          />
+        </Header>
+        <Content
+          style={{
+            margin: '24px 16px',
+            padding: 24,
+            minHeight: 400,
+            background: colorBgContainer,
+          }}
+        >
+          <Outlet />
+        </Content>
+      </Lay>
+    </Lay>
+  );
+};
