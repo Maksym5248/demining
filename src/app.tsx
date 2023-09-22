@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { createStore } from '~/stores';
+import { RootRouter } from '~/routes';
 
 const { store } = createStore();
 
@@ -16,7 +17,7 @@ const App = () => {
   }, []);
 
   return (
-    <h2>Hello from React!</h2>
+    <RootRouter />
   )
 }
 
