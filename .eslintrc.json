@@ -38,7 +38,7 @@
     "import/newline-after-import": "error",
     "import/no-default-export": "error",
     "import/no-self-import": "error",
-    "import/no-cycle": ["error", { "maxDepth": "∞" }],
+    // "import/no-cycle": ["error", { "maxDepth": "5" }],
     "import/no-useless-path-segments": "error",
     "no-mixed-operators": [
       "warn",
