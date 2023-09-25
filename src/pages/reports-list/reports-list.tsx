@@ -1,9 +1,9 @@
 import React from 'react';
 
-export function FormReportPage() {
+export function ReportsListPage() {
     return (
       <div style={{ flex: 1}}>
-        <h1>FormReportPage</h1>
+        <h1>Reports List</h1>
   
         <p>
           This example demonstrates a simple login flow with three pages: a public

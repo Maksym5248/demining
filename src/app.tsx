@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
+import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd';
-import * as ReactDOM from 'react-dom';
 
 import { createStore } from '~/stores';
 import { RootRouter } from '~/routes';
@@ -25,4 +25,5 @@ const App = () => {
 }
 
 
-ReactDOM.render(<App/>, document.body);
+const root = createRoot(document.getElementById("root"));
+root.render(<App/>)

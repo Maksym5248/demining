@@ -5,7 +5,7 @@ import {
   createMemoryRouter,
 } from "react-router-dom";
 
-import { FormReportPage , TemplatePage, ErrorNotFoundPage} from "~/pages"
+import { ReportsListPage, ReportCreatePage , TemplatePage, ErrorNotFoundPage, EmployeesListPage } from "~/pages"
 
 import { Layout } from "./layout"
 
@@ -18,7 +18,15 @@ const router = createMemoryRouter([
     children: [
       {
         path: "/",
-        Component: FormReportPage,
+        Component: ReportsListPage,
+        children: [{
+          path: "/create",
+          Component: ReportCreatePage,
+        }]
+      },
+      {
+        path: "/employees-list",
+        Component: EmployeesListPage,
       },
       {
         path: "/template",

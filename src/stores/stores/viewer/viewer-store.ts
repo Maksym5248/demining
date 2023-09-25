@@ -2,7 +2,7 @@ import { types, Instance } from 'mobx-state-tree';
 
 import { ROLES } from "~/constants";
 
-import { CurrentUser, ICurrentUser, normalizeCurrentUser } from './entities';
+import { CurrentUser, ICurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
 
 const Store = types
@@ -14,7 +14,7 @@ const Store = types
   })
   .actions((self) => ({
     setUser(user: ICurrentUser) {
-      self.user = normalizeCurrentUser(user);
+      self.user = createCurrentUser(user);
     },
     removeUser() {
       self.user = undefined;

@@ -1,21 +1,13 @@
 import React, { useState } from "react";
 
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
 import { Layout as Lay, Menu, Button, theme } from 'antd';
 import { useNavigate, Outlet } from 'react-router-dom';
 
-const { Header, Sider, Content } = Lay;
-interface ILayoutPros {
-  children: React.ReactNode
-}
+import { Icon } from '~/components';
 
-export const Layout: React.FC = ({ children }: ILayoutPros) => {
+const { Header, Sider, Content } = Lay;
+
+export const Layout: React.FC = () => {
   const navigate = useNavigate();
 
   const [collapsed, setCollapsed] = useState(false);
@@ -34,27 +26,27 @@ export const Layout: React.FC = ({ children }: ILayoutPros) => {
           items={[
             {
               key: '1',
-              icon: <UserOutlined />,
+              icon: <Icon.UserOutlined />,
               label: 'List reports',
-              onClick: () => {
-                navigate("/")
-              }
+              onClick: () => navigate("/")
             },
             {
               key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'nav 2',
-              onClick: () => {
-                navigate("/template")
-              }
+              icon: <Icon.UserOutlined />,
+              label: 'Особовий склад',
+              onClick: () => navigate("/employees-list")
             },
             {
               key: '3',
-              icon: <UploadOutlined />,
-              label: 'nav 3',
-              onClick: () => {
-                navigate("/form-report1")
-              }
+              icon: <Icon.UserOutlined style={{ }}/>,
+              label: 'List reports',
+              onClick: () => navigate("/")
+            },
+            {
+              key: '4',
+              icon: <Icon.VideoCameraOutlined />,
+              label: 'nav 2',
+              onClick: () => navigate("/template")
             },
           ]}
         />
@@ -63,7 +55,7 @@ export const Layout: React.FC = ({ children }: ILayoutPros) => {
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <Button
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            icon={collapsed ? <Icon.MenuUnfoldOutlined /> : <Icon.MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
             style={{
               fontSize: '16px',
