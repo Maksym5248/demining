@@ -5,6 +5,9 @@ import { ConfigProvider } from 'antd';
 
 import { createStore } from '~/stores';
 import { RootRouter } from '~/routes';
+import { ThemeProvider } from '~/containers';
+
+import "./index.css";
 
 const { store } = createStore();
 
@@ -19,11 +22,12 @@ const App = () => {
 
   return (
     <ConfigProvider>
+      <ThemeProvider>
         <RootRouter />
+      </ThemeProvider>
     </ConfigProvider>
   )
 }
 
-
-const root = createRoot(document.getElementById("root"));
-root.render(<App/>)
+const reactRootElement = createRoot(document.getElementById("root"));
+reactRootElement.render(<App/>)

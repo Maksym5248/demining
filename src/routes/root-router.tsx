@@ -14,18 +14,19 @@ const router = createMemoryRouter([
     id: "root",
     Component: Layout,
     // errorElement: ErrorNotFoundPage,
-    initialIndex: 0,
+    initialIndex: 1,
     children: [
       {
-        path: "/",
+        path: "/reports-list",
         Component: ReportsListPage,
         children: [{
-          path: "/create",
+          path: "/reports-list/create",
           Component: ReportCreatePage,
         }]
       },
       {
-        path: "/employees-list",
+        path: "/",
+        // path: "/employees-list",
         Component: EmployeesListPage,
       },
       {

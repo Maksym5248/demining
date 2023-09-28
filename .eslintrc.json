@@ -12,6 +12,7 @@
     "plugin:import/electron",
     "plugin:import/typescript"
   ],
+  "plugins": ["@emotion"],
   "parser": "@typescript-eslint/parser",
   "rules": {
     "import/named": 0,

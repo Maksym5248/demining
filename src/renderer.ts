@@ -25,5 +25,5 @@
  *  });
  * ```
  */
-
-import './app';
+ 
+import("./app")

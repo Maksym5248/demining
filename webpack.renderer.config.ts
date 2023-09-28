@@ -1,13 +1,18 @@
 import path from 'path';
 
 import { Configuration } from 'webpack';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin' ;
 
 import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
+import { inDev } from './webpack.helpers';
 
 rules.push({
   test: /\.css$/,
-  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+  use: [
+    { loader: inDev() ? 'style-loader' : MiniCssExtractPlugin.loader },
+    { loader: 'css-loader' },
+  ],
 });
 
 export const rendererConfig: Configuration = {

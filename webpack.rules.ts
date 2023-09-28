@@ -1,4 +1,4 @@
-import type { ModuleOptions } from 'webpack';
+import { ModuleOptions } from 'webpack';
 
 export const rules: Required<ModuleOptions>['rules'] = [
   // Add support for native node modules
@@ -19,13 +19,10 @@ export const rules: Required<ModuleOptions>['rules'] = [
     },
   },
   {
-    test: /\.tsx?$/,
-    exclude: /(node_modules|\.webpack)/,
+    test: /\.(js|jsx|ts|tsx)$/,
+    exclude: /node_modules|\.webpack/,
     use: {
-      loader: 'ts-loader',
-      options: {
-        transpileOnly: true,
-      },
-    },
-  },
+      loader: 'babel-loader',
+    }
+  }
 ];

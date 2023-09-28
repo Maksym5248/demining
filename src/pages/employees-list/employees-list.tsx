@@ -1,28 +1,75 @@
 import React from 'react';
 
-export function EmployeesListPage() {
-    return (
-      <div style={{ flex: 1}}>
-        <h1>EmployeesListPage</h1>
-  
-        <p>
-          This example demonstrates a simple login flow with three pages: a public
-          page, a protected page, and a login page. In order to see the protected
-          page, you must first login. Pretty standard stuff.
-        </p>
-  
-        <p>
-          First, visit the public page. Then, visit the protected page. You're not
-          yet logged in, so you are redirected to the login page. After you login,
-          you are redirected back to the protected page.
-        </p>
-  
-        <p>
-          Notice the URL change each time. If you click the back button at this
-          point, would you expect to go back to the login page? No! You're already
-          logged in. Try it out, and you'll see you go back to the page you
-          visited just *before* logging in, the public page.
-        </p>
-      </div>
-    );
-  }
+import { List, Button, Typography, theme } from 'antd';
+
+import { Icon } from '~/components';
+import { str } from '~/utils';
+
+import { s } from './employees-list.styles';
+import { mockData } from './mock-data';
+
+const { Text } = Typography;
+
+const { useToken } = theme;
+
+export const EmployeesListPage: React.FC = () => {
+  const token = useToken();
+
+  return (
+    <List
+      css={s.listHeader}
+      itemLayout="horizontal"
+      dataSource={mockData}
+      header={
+        <div css={s.test}>
+            <Text span="Список особового складу"/>
+            <Button icon={<Icon.UserAddOutlined />}/>
+        </div>
+      }
+      renderItem={(item) => (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        <List.Item
+          actions={[
+           <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>}/>,
+           <Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
+          ]}
+        >
+            <List.Item.Meta
+              avatar={<Icon.UserOutlined />}
+              title={str.getFullName(item)}
+              description={`${item.position}${item.rank.fullName}`}
+            >
+              </List.Item.Meta>
+        </List.Item>
+      )}
+    />
+  );
+};
+
+
+
+// const { Text, Link } = Typography;
+
+// const App: React.FC = () => (
+//   <Space direction="vertical">
+//     <Text>Ant Design (default)</Text>
+//     <Text type="secondary">Ant Design (secondary)</Text>
+//     <Text type="success">Ant Design (success)</Text>
+//     <Text type="warning">Ant Design (warning)</Text>
+//     <Text type="danger">Ant Design (danger)</Text>
+//     <Text disabled>Ant Design (disabled)</Text>
+//     <Text mark>Ant Design (mark)</Text>
+//     <Text code>Ant Design (code)</Text>
+//     <Text keyboard>Ant Design (keyboard)</Text>
+//     <Text underline>Ant Design (underline)</Text>
+//     <Text delete>Ant Design (delete)</Text>
+//     <Text strong>Ant Design (strong)</Text>
+//     <Text italic>Ant Design (italic)</Text>
+//     <Link href="https://ant.design" target="_blank">
+//       Ant Design (Link)
+//     </Link>
+//   </Space>
+// );
+
+// export default App;
