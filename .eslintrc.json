@@ -55,6 +55,8 @@
     ],
     "no-unused-expressions": 0,
     "no-nested-ternary": 2,
-    "react/no-unescaped-entities": 0
+    "react/no-unescaped-entities": 0,
+    "@typescript-eslint/consistent-type-exports": 0,
+    "@typescript-eslint/consistent-type-imports": 0
   }
 }

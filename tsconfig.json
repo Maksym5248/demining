@@ -13,9 +13,9 @@
     "resolveJsonModule": true,
     "jsx": "react",
     "paths": {
-      "*": ["node_modules/*"],
       "~/*": ["./src/*"]
     }
   },
   "include": ["./src", "./types"],
+  "exclude": ["./node_modules" ],
 }

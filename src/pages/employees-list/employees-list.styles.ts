@@ -1,18 +1,16 @@
-import { css } from '@emotion/react'
+import { Theme } from '~/styles'
 
-const listHeader = css`
+const listHeader = Theme.css(`
     display: flex;
     flex: 1;
     flex-direction: row;
     justify-content: space-between;
-`
+    align-items: center;
+    padding-right: 8px;
 
-const test = (theme:string) => css`
-    background: ${theme};
-`
+`)
 
 export const s = {
     listHeader,
-    test
 }
     

@@ -5,7 +5,10 @@ import { useNavigate, Outlet } from 'react-router-dom';
 
 import { Icon } from '~/components';
 
-const { Header, Sider, Content } = Lay;
+import { s } from './layout.styles';
+
+
+const { Sider, Content } = Lay;
 
 export const Layout: React.FC = () => {
   const navigate = useNavigate();
@@ -17,7 +20,7 @@ export const Layout: React.FC = () => {
 
   return (
     <Lay>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
@@ -52,18 +55,6 @@ export const Layout: React.FC = () => {
         />
       </Sider>
       <Lay>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <Button
-            type="text"
-            icon={collapsed ? <Icon.MenuUnfoldOutlined /> : <Icon.MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-            }}
-          />
-        </Header>
         <Content
           style={{
             margin: '24px 16px',

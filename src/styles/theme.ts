@@ -1,13 +1,26 @@
 import { theme } from 'antd';
+import { SeedToken } from 'antd/es/theme/interface/seeds'
+import { AliasToken } from 'antd/es/theme/interface/alias'
 import { css } from '@emotion/react'
+import _ from 'lodash'
+
+const { getDesignToken } = theme;
+interface Token extends SeedToken, AliasToken {}
+
 
 class ThemeClass {
-    css(str: string) {
-        return css`${str}`;
+    token: Token;
+    constructor(){
+        console.log('getDesignToken()', getDesignToken())
+        this.token = getDesignToken();
     }
-    csss(f: (theme: AliasToken) => string) {
-        return css`${f(theme)}`;
+    css(arg: ((obj: {token: Token }) => string) | string) {
+        return _.isString(arg) ? css`${arg}`: css`${arg({ token: this.token})}`;
     }
+    getToken(){
+        return this.token;
+    }
+    
 }
 
 
