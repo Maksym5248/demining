@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 const getFullName = ({
     lastName,
     firstName,
@@ -10,7 +12,10 @@ const getFullName = ({
     return `${lastName} ${firstName} ${surname}`;
 }
 
+const upperFirst = (str:string) => _.upperFirst(str);
+
 
 export const str = {
-    getFullName
+    getFullName,
+    upperFirst
 }

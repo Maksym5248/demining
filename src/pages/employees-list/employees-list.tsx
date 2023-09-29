@@ -8,7 +8,7 @@ import { str } from '~/utils';
 import { s } from './employees-list.styles';
 import { mockData } from './mock-data';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export const EmployeesListPage: React.FC = () => {
 
@@ -32,7 +32,12 @@ export const EmployeesListPage: React.FC = () => {
             <List.Item.Meta
               avatar={<Icon.UserOutlined />}
               title={str.getFullName(item)}
-              description={`${item.position}${item.rank.fullName}`}
+              description={
+                <Space css={s.listItemDesc}>
+                    <Text type="secondary">{str.upperFirst(item.rank.fullName)}</Text>
+                    <Text type="secondary">{str.upperFirst(item.position)}</Text>
+                </Space>
+              }
             >
               </List.Item.Meta>
         </List.Item>

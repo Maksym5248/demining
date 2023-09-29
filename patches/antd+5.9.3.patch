@@ -25,3 +25,14 @@ index b1e3652..55ea536 100644
  export type ColumnCount = number;
  export type ColumnType = 'gutter' | 'column' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
  export interface ListGridType {
+diff --git a/node_modules/antd/es/typography/Text.d.ts b/node_modules/antd/es/typography/Text.d.ts
+index 6bd3ea1..2c445e7 100644
+--- a/node_modules/antd/es/typography/Text.d.ts
++++ b/node_modules/antd/es/typography/Text.d.ts
+@@ -1,5 +1,5 @@
+ import * as React from 'react';
+-import type { BlockProps, EllipsisConfig } from './Base';
++import { BlockProps, EllipsisConfig } from './Base';
+ export interface TextProps extends BlockProps<'span'>, Omit<React.HTMLAttributes<HTMLSpanElement>, 'type' | keyof BlockProps<'span'>> {
+     ellipsis?: boolean | Omit<EllipsisConfig, 'expandable' | 'rows' | 'onExpand'>;
+ }
