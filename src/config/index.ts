@@ -1,1 +1,3 @@
-export const CONFIG = {};
+export const CONFIG = {
+    IS_DEV: true,
+};

@@ -4,6 +4,7 @@ import { Layout as Lay, Menu } from 'antd';
 import { useNavigate, Outlet } from 'react-router-dom';
 
 import { Icon } from '~/components';
+import { CONFIG } from "~/config";
 
 import { s } from './layout.styles';
 
@@ -15,6 +16,45 @@ export const Layout: React.FC = () => {
 
   const [collapsed, setCollapsed] = useState(false);
 
+
+  const items = [
+    {
+      key: '1',
+      icon: <Icon.FileTextOutlined />,
+      label: 'Cписок актів',
+      onClick: () => navigate("/")
+    },
+    {
+      key: '2',
+      icon: <Icon.UserOutlined />,
+      label: 'Особовий склад',
+      onClick: () => navigate("/employees-list")
+    },
+    {
+      key: '3',
+      icon: <Icon.DatabaseOutlined />,
+      label: 'Статистика',
+      onClick: () => navigate("template")
+    },
+    {
+      key: '4',
+      icon: <Icon.VideoCameraOutlined />,
+      label: 'Налаштування',
+      onClick: () => navigate("template")
+    },
+  ];
+
+  if(CONFIG.IS_DEV){
+    items.push(
+      {
+        key: '999',
+        icon: <Icon.FileTextOutlined />,
+        label: 'DEV',
+        onClick: () => navigate("dev")
+      },
+    )
+  }
+
   return (
     <Lay style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} >
@@ -22,32 +62,7 @@ export const Layout: React.FC = () => {
         <Menu
           theme="dark"
           defaultSelectedKeys={['1']}
-          items={[
-            {
-              key: '1',
-              icon: <Icon.FileTextOutlined />,
-              label: 'Cписок актів',
-              onClick: () => navigate("/")
-            },
-            {
-              key: '2',
-              icon: <Icon.UserOutlined />,
-              label: 'Особовий склад',
-              onClick: () => navigate("/employees-list")
-            },
-            {
-              key: '3',
-              icon: <Icon.DatabaseOutlined />,
-              label: 'Статистика',
-              onClick: () => navigate("template")
-            },
-            {
-              key: '4',
-              icon: <Icon.VideoCameraOutlined />,
-              label: 'Налаштування',
-              onClick: () => navigate("template")
-            },
-          ]}
+          items={items}
         />
       </Sider>
       <Lay>

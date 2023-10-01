@@ -30,7 +30,6 @@ export const RootStore = types
     return {
       init: flow(function* init() {
         self.employee.init();
-        self.createMocks();
 
         try {
           yield self.viewer.fetchUser.run();
