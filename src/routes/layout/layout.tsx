@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Layout as Lay, Menu, Button, theme } from 'antd';
+import { Layout as Lay, Menu } from 'antd';
 import { useNavigate, Outlet } from 'react-router-dom';
 
 import { Icon } from '~/components';
@@ -14,13 +14,10 @@ export const Layout: React.FC = () => {
   const navigate = useNavigate();
 
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
   return (
-    <Lay>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <Lay css={s.layout}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} css={s.slider}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
@@ -29,40 +26,33 @@ export const Layout: React.FC = () => {
           items={[
             {
               key: '1',
-              icon: <Icon.UserOutlined />,
-              label: 'List reports',
+              icon: <Icon.FileTextOutlined />,
+              label: 'Cписок актів',
               onClick: () => navigate("/")
             },
             {
               key: '2',
               icon: <Icon.UserOutlined />,
               label: 'Особовий склад',
-              onClick: () => navigate("/employees-list")
+              onClick: () => navigate("/employees-list/create")
             },
             {
               key: '3',
-              icon: <Icon.UserOutlined style={{ }}/>,
-              label: 'List reports',
-              onClick: () => navigate("/")
+              icon: <Icon.DatabaseOutlined />,
+              label: 'Статистика',
+              onClick: () => navigate("template")
             },
             {
               key: '4',
               icon: <Icon.VideoCameraOutlined />,
-              label: 'nav 2',
-              onClick: () => navigate("/template")
+              label: 'Налаштування',
+              onClick: () => navigate("template")
             },
           ]}
         />
       </Sider>
       <Lay>
-        <Content
-          style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 400,
-            background: colorBgContainer,
-          }}
-        >
+        <Content css={s.content}>
           <Outlet />
         </Content>
       </Lay>

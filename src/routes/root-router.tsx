@@ -5,29 +5,31 @@ import {
   createMemoryRouter,
 } from "react-router-dom";
 
-import { ReportsListPage, ReportCreatePage , TemplatePage, ErrorNotFoundPage, EmployeesListPage } from "~/pages"
+import { ReportsListPage, ReportCreatePage , TemplatePage, ErrorNotFoundPage, EmployeesListPage, EmployeesCreatePage } from "~/pages"
 
 import { Layout } from "./layout"
 
 const router = createMemoryRouter([
   {
     id: "root",
+    path: "/",
     Component: Layout,
-    // errorElement: ErrorNotFoundPage,
-    initialIndex: 1,
     children: [
       {
-        path: "/reports-list",
+        index: true,
         Component: ReportsListPage,
-        children: [{
-          path: "/reports-list/create",
-          Component: ReportCreatePage,
-        }]
       },
       {
-        path: "/",
-        // path: "/employees-list",
+        path: "reports-list/create",
+        Component: ReportCreatePage,
+      },
+      {
+        path: "employees-list",
         Component: EmployeesListPage,
+      },
+      {
+        path: "employees-list/create",
+        Component: EmployeesCreatePage,
       },
       {
         path: "/template",

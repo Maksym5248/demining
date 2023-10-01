@@ -7,7 +7,7 @@ import { createStore } from '~/stores';
 import { RootRouter } from '~/routes';
 import { ThemeProvider } from '~/containers';
 
-// import "./index.css";
+import "./index.css";
 
 const { store } = createStore();
 

@@ -15,7 +15,7 @@ class ThemeClass {
         this.token = getDesignToken();
     }
     css(arg: ((obj: {token: Token }) => string) | string) {
-        return _.isString(arg) ? css`${arg}`: css`${arg({ token: this.token})}`;
+        return _.isString(arg) ? css`${arg}`: css`${arg({ token: this.token })}`;
     }
     getToken(){
         return this.token;

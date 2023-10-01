@@ -1,16 +1,25 @@
 import { Theme } from '~/styles'
 
-const expandButton = Theme.css(({ token }) => `
-    color: ${token.colorTextLightSolid};
-    font-size: 16px;
-    width: 64px;
-    height: 64px;
-    &:hover {
-        color: red;
-    }
-`)
+const layout = Theme.css(`
+    height: 100%;
+`);
+
+
+const slider = Theme.css(({ token }) => `
+    padding: 10px 1px;
+`);
+
+const content = Theme.css(({ token }) => `
+    flex: 1;
+    margin: 24px 16px;
+    padding: 24px;
+    minHeight: 400px;
+    background: ${token.colorBgBase};
+`);
 
 export const s = {
-    expandButton,
+    layout,
+    content,
+    slider,
 }
     

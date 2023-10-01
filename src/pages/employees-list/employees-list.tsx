@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { List, Button, Typography, Space } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import { Icon } from '~/components';
 import { str } from '~/utils';
@@ -11,6 +12,13 @@ import { mockData } from './mock-data';
 const { Title, Text } = Typography;
 
 export const EmployeesListPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
+    console.log('TEST')
+    e.preventDefault();
+    navigate('/employees-list/create')
+  };
 
   return (
     <List
@@ -19,7 +27,7 @@ export const EmployeesListPage: React.FC = () => {
       header={
         <Space css={s.listHeader}>
             <Title level={4}>Список особового складу</Title>
-            <Button icon={<Icon.UserAddOutlined />}/>
+            <Button icon={<Icon.UserAddOutlined />} onClick={onGoToEmployeesCreate}/>
         </Space>
       }
       renderItem={(item) => (
