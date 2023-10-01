@@ -11,7 +11,6 @@ interface Token extends SeedToken, AliasToken {}
 class ThemeClass {
     token: Token;
     constructor(){
-        console.log('getDesignToken()', getDesignToken())
         this.token = getDesignToken();
     }
     css(arg: ((obj: {token: Token }) => string) | string) {

@@ -2,6 +2,7 @@ import { types, flow, getEnv, Instance } from 'mobx-state-tree';
 
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
+import { mockEmployees } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -19,8 +20,17 @@ export const RootStore = types
         SecureStorage.removeAllListeners();
         Storage.removeAllListeners();
       },
+      createMocks(){
+        mockEmployees.forEach(el => {
+          self.employee.addEmployee(el);
+        });
+      }
+    };
+  }).actions((self) => {    
+    return {
       init: flow(function* init() {
         self.employee.init();
+        self.createMocks();
 
         try {
           yield self.viewer.fetchUser.run();

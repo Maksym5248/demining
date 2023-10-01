@@ -2,7 +2,7 @@ import { types, IModelType } from 'mobx-state-tree';
 
 type ID = string;
 
-export function createCollection<T>(name: string, Model: IModelType<any, any>) {
+export function createCollection<T, B>(name: string, Model: IModelType<any, any>) {
   return types.optional(
     types
       .model(name, {
@@ -19,10 +19,10 @@ export function createCollection<T>(name: string, Model: IModelType<any, any>) {
       }))
 
       .actions((self) => ({
-        set(id: ID, value: T) {
+        set(id: ID, value: B) {
           self._collection.set(id, value);
         },
-        delete(id: ID) {
+        remove(id: ID) {
           self._collection.delete(id);
         },
         update(id: ID, value: Partial<T>) {

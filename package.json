@@ -68,6 +68,7 @@
     "@emotion/css": "^11.11.2",
     "@emotion/eslint-plugin": "^11.11.0",
     "@emotion/react": "^11.11.1",
+    "@types/uuid": "^3.3.2",
     "antd": "^5.9.2",
     "date-fns": "^2.30.0",
     "easy-template-x": "^3.2.0",
@@ -84,7 +85,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
-    "uuid": "^9.0.1",
+    "uuid": "^3.3.2",
     "yup": "^1.2.0"
   }
 }

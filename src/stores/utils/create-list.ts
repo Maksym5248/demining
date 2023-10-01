@@ -4,7 +4,7 @@ interface IListOptions {
   pageSize: number;
 }
 
-export function createList(
+export function createList<T>(
   name: string,
   Model: IModelType<any, any> | IReferenceType<IModelType<any, any>>,
   options: IListOptions,
@@ -20,7 +20,7 @@ export function createList(
       })
 
       .views((self) => ({
-        get asArray() {
+        get asArray(): T[] {
           return self._array.slice();
         },
 
@@ -81,6 +81,11 @@ export function createList(
         },
 
         remove(index: number) {
+          self._array.splice(index, 1);
+        },
+
+        removeById(id: string) {
+          const index = self._array.findIndex(item => id === item.id);
           self._array.splice(index, 1);
         },
 

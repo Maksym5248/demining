@@ -1,23 +1,13 @@
 import { Theme } from '~/styles'
 
-const listHeader = Theme.css(`
+const titleContainer = Theme.css(`
     display: flex;
     flex: 1;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 8px;
-`)
-
-const listItemDesc = Theme.css(`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
+    justify-content: center;
+    margin: 0 0 24px 0;
 `)
 
 export const s = {
-    listHeader,
-    listItemDesc
+    titleContainer
 }
     

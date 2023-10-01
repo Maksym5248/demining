@@ -6,6 +6,7 @@ import { ConfigProvider } from 'antd';
 import { createStore } from '~/stores';
 import { RootRouter } from '~/routes';
 import { ThemeProvider } from '~/containers';
+import { RootStoreContext } from '~/context';
 
 import "./index.css";
 
@@ -23,7 +24,9 @@ const App = () => {
   return (
     <ConfigProvider>
       <ThemeProvider>
-        <RootRouter />
+        <RootStoreContext.Provider value={store}>
+          <RootRouter />
+        </RootStoreContext.Provider>
       </ThemeProvider>
     </ConfigProvider>
   )

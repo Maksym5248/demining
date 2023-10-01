@@ -32,6 +32,10 @@ const router = createMemoryRouter([
         Component: EmployeesCreatePage,
       },
       {
+        path: "employees-list/edit/:id",
+        Component: EmployeesCreatePage,
+      },
+      {
         path: "/template",
         Component: TemplatePage,
       },

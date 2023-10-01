@@ -1,81 +1,98 @@
 import React from 'react';
 
-import { Button, Form, Input, Select, Space, Tooltip, Typography } from 'antd';
+import { Button, Form, Input, Select, Typography, Space, message } from 'antd';
+import { observer } from 'mobx-react-lite'
+import { useNavigate, useParams } from 'react-router-dom'
 
+import { useStore } from '~/hooks'
+
+import { IEmployeeForm } from './employees-create.types';
 import { s } from './employees-create.styles';
 
 const { Option } = Select;
+const { Title } = Typography;
 
-export const EmployeesCreatePage: React.FC = () => {
+export const EmployeesCreatePage: React.FC = observer(() => {
+  const store = useStore();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+  const employee = store.employee.employeesCollection.get(id);
+  const isEdit = !!id;
+
+  const onFinishCreate = (values: IEmployeeForm) => {
+    store.employee.addEmployee(values);
+    navigate(-1);
+    message.success({
+      type: 'Успішно',
+      content: 'Додано успішно',
+    });
   };
 
-  return (
+  const onFinishUpdate = (values: IEmployeeForm) => {
+    employee.update(values);
+    navigate(-1);
+    message.success({
+      type: 'Успішно',
+      content: 'Збережено успішно',
+    });
+  };
+
+  return (   
     <Form
-    name="complex-form"
-    onFinish={onFinish}
-    labelCol={{ span: 8 }}
-    wrapperCol={{ span: 16 }}
-    style={{ maxWidth: 600 }}
-  >
-    <Form.Item label="Username">
-      <Space>
+      name="complex-form"
+      onFinish={isEdit ? onFinishUpdate : onFinishCreate}
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      initialValues={employee ? Object.assign({}, employee, { rank: employee.rank.id}) : undefined}
+    >
+        <Space css={s.titleContainer}>
+            <Title level={4}>{isEdit ? "Редагувати дані" : "Додати до особового складу"}</Title>
+        </Space>
         <Form.Item
-          name="username"
-          noStyle
-          rules={[{ required: true, message: 'Username is required' }]}
+          label="Прізвище"
+          name="lastName"
+          rules={[{ required: true, message: 'Прізвище є обов\'язковим полем' }]}
         >
-          <Input style={{ width: 160 }} placeholder="Please input" />
+          <Input placeholder="Введіть дані" />
         </Form.Item>
-        <Tooltip title="Useful information">
-          <Typography.Link href="#API">Need Help?</Typography.Link>
-        </Tooltip>
-      </Space>
-    </Form.Item>
-    <Form.Item label="Address">
-      <Space.Compact>
         <Form.Item
-          name={['address', 'province']}
-          noStyle
-          rules={[{ required: true, message: 'Province is required' }]}
+            label="Ім'я"
+            name="firstName"
+            rules={[{ required: true, message: 'Ім\'я є обов\'язковим полем' }]}
+          >
+            <Input placeholder="Введіть дані" />
+        </Form.Item>
+        <Form.Item
+            label="По-батькові"
+            name="surname"
+            rules={[{ required: true, message: 'По-батькові є обов\'язковим полем' }]}
+          >
+            <Input placeholder="Введіть дані" />
+        </Form.Item>
+        <Form.Item
+          label="Спеціальне звання"
+          name={['rank']}
+          rules={[{ required: true, message: 'Спеціальне звання є обов\'язковим полем' }]}
         >
-          <Select placeholder="Select province">
-            <Option value="Zhejiang">Zhejiang</Option>
-            <Option value="Jiangsu">Jiangsu</Option>
+          <Select placeholder="Виберіть спеціальне звання">
+            {store.employee.ranksList.asArray.map(el => (
+              <Option value={el.id} key={el.id}>{el.fullName}</Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item
-          name={['address', 'street']}
-          noStyle
-          rules={[{ required: true, message: 'Street is required' }]}
-        >
-          <Input style={{ width: '50%' }} placeholder="Input street" />
+            label="Посада"
+            name="position"
+            rules={[{ required: true, message: 'Посада є обов\'язковим полем' }]}
+          >
+            <Input placeholder="Введіть дані" />
         </Form.Item>
-      </Space.Compact>
-    </Form.Item>
-    <Form.Item label="BirthDate" style={{ marginBottom: 0 }}>
-      <Form.Item
-        name="year"
-        rules={[{ required: true }]}
-        style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-      >
-        <Input placeholder="Input birth year" />
+      <Form.Item label=" " colon={false}>
+        <Button type="primary" htmlType="submit">
+          {isEdit ? "Зберегти" : "Додати"} 
+        </Button>
       </Form.Item>
-      <Form.Item
-        name="month"
-        rules={[{ required: true }]}
-        style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
-      >
-        <Input placeholder="Input birth month" />
-      </Form.Item>
-    </Form.Item>
-    <Form.Item label=" " colon={false}>
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
-    </Form.Item>
-  </Form>
+    </Form>
   );
-};
+});

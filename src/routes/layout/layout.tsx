@@ -16,12 +16,11 @@ export const Layout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Lay css={s.layout}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} css={s.slider}>
+    <Lay style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} >
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
-          mode="inline"
           defaultSelectedKeys={['1']}
           items={[
             {
@@ -34,7 +33,7 @@ export const Layout: React.FC = () => {
               key: '2',
               icon: <Icon.UserOutlined />,
               label: 'Особовий склад',
-              onClick: () => navigate("/employees-list/create")
+              onClick: () => navigate("/employees-list")
             },
             {
               key: '3',
