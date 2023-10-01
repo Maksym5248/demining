@@ -1,5 +1,7 @@
 import { types, flow, getEnv, Instance } from 'mobx-state-tree';
 
+import { DB } from '~/db';
+
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
 import { mockEmployees } from './mock-data';
@@ -22,13 +24,14 @@ export const RootStore = types
       },
       createMocks(){
         mockEmployees.forEach(el => {
-          self.employee.addEmployee(el);
+          self.employee.addEmployee.run(el);
         });
       }
     };
   }).actions((self) => {    
     return {
       init: flow(function* init() {
+        yield DB.init();
         self.employee.init();
 
         try {

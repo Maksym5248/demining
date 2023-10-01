@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Form, Input, Select, Typography, Space, message } from 'antd';
+import { Button, Form, Input, Select, Typography, Space } from 'antd';
 import { observer } from 'mobx-react-lite'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -21,21 +21,13 @@ export const EmployeesCreatePage: React.FC = observer(() => {
   const isEdit = !!id;
 
   const onFinishCreate = (values: IEmployeeForm) => {
-    store.employee.addEmployee(values);
+    store.employee.addEmployee.run(values);
     navigate(-1);
-    message.success({
-      type: 'Успішно',
-      content: 'Додано успішно',
-    });
   };
 
   const onFinishUpdate = (values: IEmployeeForm) => {
-    employee.update(values);
+    employee.update.run(values);
     navigate(-1);
-    message.success({
-      type: 'Успішно',
-      content: 'Збережено успішно',
-    });
   };
 
   return (   

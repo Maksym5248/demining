@@ -25,8 +25,9 @@ export const rendererConfig: Configuration = {
     alias: {
       "~/components": path.resolve(__dirname, "./src/components"),
       "~/config": path.resolve(__dirname, "./src/config"),
-      "~/containers": path.resolve(__dirname, "./src/containers"),
       "~/constants": path.resolve(__dirname, "/src/constants"),
+      "~/containers": path.resolve(__dirname, "./src/containers"),
+      "~/db": path.resolve(__dirname, "./src/db"),
       "~/hooks": path.resolve(__dirname, "./src/hooks"),
       "~/stores": path.resolve(__dirname, "./src/stores"),
       "~/routes": path.resolve(__dirname, "./src/routes"),

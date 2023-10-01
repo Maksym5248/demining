@@ -37,7 +37,7 @@ export function asyncAction<T>(
 
           self.success();
         } catch (err) {
-          self.failed(err, throwError);
+          self.error(err, throwError);
         }
       },
     }))

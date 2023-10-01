@@ -3,7 +3,7 @@ import React from "react";
 import { useRouteError } from "react-router-dom";
 
 export function ErrorNotFoundPage() {
-  const error = useRouteError();
+  const error = useRouteError() as {message: string, statusText:string};
 
   return (
     <div id="error-not-found-page">
