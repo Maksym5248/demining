@@ -1,0 +1,32 @@
+import { DATA_TYPE } from 'jsstore';
+
+import { TABLES } from '~/constants';
+
+export const schemaOrder = {
+    name: TABLES.ORDER,
+    columns: {
+        id: {
+            unique: true,
+            primaryKey: true,
+        },
+        signedAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime
+        },
+        /**
+         * EMPLOYEE_TYPE.CHIEF
+         */
+        signedById: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
+        number: {
+            notNull: true,
+            dataType: DATA_TYPE.Number
+        },
+        createdAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        },
+    }
+};

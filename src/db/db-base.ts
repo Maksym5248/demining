@@ -1,5 +1,6 @@
 import { Connection, ISelectQuery } from 'jsstore';
 import uuid from 'uuid/v4';
+import _ from 'lodash';
 
 export class DBBase<T> {
     db: Connection;
@@ -32,13 +33,13 @@ export class DBBase<T> {
 
     }
 
-    getList(args?: Partial<Omit<ISelectQuery, 'from'>> ) {
+    getList<T>(args?: Partial<Omit<ISelectQuery, 'from'>> ) {
         const params:ISelectQuery = {
             from: this.tableName,
             ...args
         };
 
-        return this.db.select(params);
+        return this.db.select<T>(params);
     }
 
     async get(id:string) {
@@ -52,10 +53,10 @@ export class DBBase<T> {
         return res
     }
 
-    async add(value: object): Promise<T>{
+    async add(value: object): Promise<T | null>{
         const id = await this.uuid();
 
-        const [res] = await this.db.insert({
+        const res = await this.db.insert<T>({
             into: this.tableName,
             values: [Object.assign({}, value, {
                 id,
@@ -65,7 +66,7 @@ export class DBBase<T> {
             return: true
         });
 
-        return res;
+        return _.isArray(res) ? res[0]: null;
     }
 
     async update(id:string, value: object) {

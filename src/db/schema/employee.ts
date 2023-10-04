@@ -9,6 +9,13 @@ export const schemaEmployee = {
             primaryKey: true,
             unique: true
         },
+        /**
+         * EMPLOYEE_TYPE
+         */
+        type: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
         firstName: {
             notNull: true,
             dataType: DATA_TYPE.String

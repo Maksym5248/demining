@@ -36,8 +36,8 @@ export function asyncAction<T>(
           await promise();
 
           self.success();
-        } catch (err) {
-          self.error(err, throwError);
+        } catch (e) {
+          self.failed(e, throwError);
         }
       },
     }))

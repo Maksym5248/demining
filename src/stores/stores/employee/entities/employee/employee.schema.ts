@@ -1,6 +1,5 @@
 import {Overwrite } from '~/types';
-
-import {IEmployeeDB } from './employee';
+import {IEmployeeDB } from '~/db';
 
 export const createEmployee = (employee: Overwrite<IEmployeeDB, { id?:string, createdAt?: Date, updatedAt?: Date }>): IEmployeeDB => ({
   id: employee.id,

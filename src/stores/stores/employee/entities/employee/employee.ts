@@ -9,7 +9,7 @@ import { Rank } from '../rank';
 
 
 
-export type IEmployee = Instance<typeof Entity>
+export type IEmployee = Instance<typeof Employee>
 
 const Entity = types.model('Employee', {
   id: types.identifier,

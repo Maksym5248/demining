@@ -10,6 +10,9 @@
  9 - money for every person in act
 
 
+DB
+1 - what if position of person will be changed or rank, should we save original data in report ?
+2 - add validation of data in to DB layor
 
 
 1 - особовй склад підрозділу

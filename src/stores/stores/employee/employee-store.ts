@@ -61,7 +61,7 @@ const fetchEmployees = asyncAction<Instance<typeof Store>>(() => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      const res = await DB.employee.getList();
+      const res = await DB.employee.getList<IEmployeeDB>();
 
       res.forEach((el) => {
         const employee = createEmployee(el);

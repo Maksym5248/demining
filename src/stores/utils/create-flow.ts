@@ -64,23 +64,19 @@ export const AsyncModel = types
       self.inProgress = false;
     },
 
-    failed(err: Error, throwError?: boolean) {
+    failed(e: Error, throwError?: boolean) {
       if (!self.hasEverBeenRan) {
         self.hasEverBeenRan = true;
       }
 
-      integrateDevTools(err);
+      integrateDevTools(e);
 
       self.inProgress = false;
 
-      self.error = {
-        message: error.getMessage(err),
-        status: _.get(err, 'response.status', null),
-        reason: _.get(err, 'response.data.reason', null),
-      };
+      self.error = error.createError(e);
 
       if (throwError) {
-        throw err;
+        throw e;
       }
     },
   }));
