@@ -14,6 +14,11 @@ DB
 1 - what if position of person will be changed or rank, should we save original data in report ?
 2 - add validation of data in to DB layor
 
-
-1 - особовй склад підрозділу
+Фічі
+1 - Наказ на виїзд
+2 - акт виконаних робіт
+3 - акт списання
+4 - виплат за місяць
+5 - звіти по боєприпасам (квартальні та річні)
+6 - пільгова вслуга
 */

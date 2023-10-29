@@ -9,7 +9,7 @@ import { Icon } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
 
-import { s } from './employees-list.styles';
+import { s } from './mission-reports-list.styles';
 
 const { Title, Text } = Typography;
 
@@ -62,14 +62,15 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
   )
 });
 
-export const EmployeesListPage: React.FC = observer(() => {
+export const MissionReportsListPage: React.FC = observer(() => {
   const navigate = useNavigate();
-  const store = useStore();
   const title = useRouteTitle();
 
-  const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
+  const store = useStore();
+
+  const onGoToMissionReportCreate = (e:React.SyntheticEvent) => {
     e.preventDefault();
-    navigate('/employees-list/create')
+    navigate('/mission-reports-list/create')
   };
 
   useEffect(() => {
@@ -85,7 +86,7 @@ export const EmployeesListPage: React.FC = observer(() => {
       header={
         <Space css={s.listHeader}>
             <Title level={4}>{title}</Title>
-            <Button icon={<Icon.UserAddOutlined />} onClick={onGoToEmployeesCreate}/>
+            <Button icon={<Icon.FileAddOutlined />} onClick={onGoToMissionReportCreate}/>
         </Space>
       }
       renderItem={(item) => <ListItem item={item}/>}

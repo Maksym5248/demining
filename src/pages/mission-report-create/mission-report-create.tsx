@@ -6,17 +6,18 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { useStore, useRouteTitle } from '~/hooks'
 
-import { IEmployeeForm } from './employees-create.types';
-import { s } from './employees-create.styles';
+import { IEmployeeForm } from './mission-report-create.types';
+import { s } from './mission-report-create.styles';
 
 const { Option } = Select;
 const { Title } = Typography;
 
-export const EmployeesCreatePage: React.FC = observer(() => {
+export const MissionReportCreatePage: React.FC = observer(() => {
   const store = useStore();
   const navigate = useNavigate();
-  const { id } = useParams();
   const title = useRouteTitle();
+
+  const { id } = useParams();
 
   const employee = store.employee.employeesCollection.get(id);
   const isEdit = !!id;
