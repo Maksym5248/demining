@@ -3,6 +3,7 @@ import { message } from 'antd';
 
 import { DB, IEmployeeDB } from '~/db'
 import { Overwrite } from '~/types'
+import { EMPLOYEE_TYPE } from '~/constants';
 
 import { asyncAction } from '../../../../utils';
 import { Rank } from '../rank';
@@ -13,6 +14,7 @@ export type IEmployee = Instance<typeof Employee>
 
 const Entity = types.model('Employee', {
   id: types.identifier,
+  type: types.enumeration(Object.values(EMPLOYEE_TYPE)),
   firstName: types.string,
   lastName: types.string,
   surname: types.string,
@@ -33,7 +35,7 @@ const update = asyncAction<Instance<typeof Entity>>((data: Overwrite<IEmployeeDB
       flow.start();
 
       const res = await DB.employee.update(self.id, data);    
-      console.log('res', res);
+
       self.updateFields(res);
 
       message.success({

@@ -5,13 +5,15 @@ import { Overwrite } from '~/types'
 import { DB, IEmployeeDB } from '~/db'
 
 import { asyncAction , createCollection, createList, safeReference } from '../../utils';
-import { Rank, IRank, IRankValue, Employee, IEmployee, createEmployee, createRank } from './entities';
+import { EmployeeType, Rank, IRank, IRankValue, Employee, IEmployee, createEmployee, createRank } from './entities';
 import { ranksData } from './ranks-data'
+import { employeeTypesData } from './employee-type-data'
 
 const Store = types
   .model('EmployeeStore', {
     ranksCollection: createCollection<IRank, IRankValue>("Ranks", Rank),
     ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 20 }),
+    types: types.array(EmployeeType),
 
     employeesCollection: createCollection<IEmployee, IEmployeeDB>("Employees", Employee),
     employeesList: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 20 })
@@ -21,6 +23,10 @@ const Store = types
       ranksData.forEach(data => {
         self.ranksCollection.set(data.id, createRank(data))
         self.ranksList.push(data.id);
+      })
+
+      employeeTypesData.forEach(data => {
+        self.types.push(data);
       })
     },
   }));

@@ -31,13 +31,20 @@ export const EmployeesCreatePage: React.FC = observer(() => {
     navigate(-1);
   };
 
+  const ranks = store.employee.ranksList.asArray;
+  const types = store.employee.types.slice();
+console.log('types', types, ranks);
+console.log('employee', employee)
   return (   
     <Form
       name="complex-form"
       onFinish={isEdit ? onFinishUpdate : onFinishCreate}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
-      initialValues={employee ? Object.assign({}, employee, { rank: employee.rank.id}) : undefined}
+      initialValues={employee
+        ? Object.assign({}, employee , { rank: employee.rank.id})
+        : { type: types[0].name, rank: ranks[0].id }
+      }
     >
         <Space css={s.titleContainer}>
             <Title level={4}>{title}</Title>
@@ -68,8 +75,8 @@ export const EmployeesCreatePage: React.FC = observer(() => {
           name={['rank']}
           rules={[{ required: true, message: 'Спеціальне звання є обов\'язковим полем' }]}
         >
-          <Select placeholder="Виберіть спеціальне звання">
-            {store.employee.ranksList.asArray.map(el => (
+          <Select>
+            {ranks.map(el => (
               <Option value={el.id} key={el.id}>{el.fullName}</Option>
             ))}
           </Select>
@@ -81,11 +88,22 @@ export const EmployeesCreatePage: React.FC = observer(() => {
           >
             <Input placeholder="Введіть дані" />
         </Form.Item>
-      <Form.Item label=" " colon={false}>
-        <Button type="primary" htmlType="submit">
-          {isEdit ? "Зберегти" : "Додати"} 
-        </Button>
-      </Form.Item>
+        <Form.Item
+            label="Тип посади"
+            name="type"
+            rules={[{ required: true, message: 'Тип посади є обов\'язковим полем' }]}
+          >
+           <Select>
+            {types.map(el => (
+              <Option value={el.type} key={el.type}>{el.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label=" " colon={false}>
+          <Button type="primary" htmlType="submit">
+            {isEdit ? "Зберегти" : "Додати"} 
+          </Button>
+        </Form.Item>
     </Form>
   );
 });
