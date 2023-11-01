@@ -65,7 +65,7 @@ export const ranksData = [
     }),
     createRank({
         id: RANKS.COLONEL,
-        fullName: 'полковнк',
+        fullName: 'полковник',
         shortName: 'п-к',
         rank: RANKS.COLONEL,
     }),

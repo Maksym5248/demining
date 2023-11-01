@@ -5,12 +5,29 @@ import { observer } from 'mobx-react-lite'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { useStore, useRouteTitle } from '~/hooks'
+import { EMPLOYEE_TYPE } from '~/constants';
 
 import { IEmployeeForm } from './employees-create.types';
 import { s } from './employees-create.styles';
 
 const { Option } = Select;
 const { Title } = Typography;
+
+
+export const employeeTypesData = [
+  {
+      type: EMPLOYEE_TYPE.WORKER,
+      name: 'Підлеглий',
+  },
+  {
+      type: EMPLOYEE_TYPE.SQUAD_LEAD,
+      name: 'Керівник розрахунку на виїзд',
+  },
+  {
+      type: EMPLOYEE_TYPE.CHIEF,
+      name: 'Керівник підрозділу',
+  },
+]
 
 export const EmployeesCreatePage: React.FC = observer(() => {
   const store = useStore();
@@ -21,20 +38,18 @@ export const EmployeesCreatePage: React.FC = observer(() => {
   const employee = store.employee.employeesCollection.get(id);
   const isEdit = !!id;
 
-  const onFinishCreate = (values: IEmployeeForm) => {
-    store.employee.addEmployee.run(values);
+  const onFinishCreate = async (values: IEmployeeForm) => {
+    await store.employee.addEmployee.run(values);
     navigate(-1);
   };
 
-  const onFinishUpdate = (values: IEmployeeForm) => {
-    employee.update.run(values);
+  const onFinishUpdate = async (values: IEmployeeForm) => {
+    await employee.update.run(values);
     navigate(-1);
   };
 
   const ranks = store.employee.ranksList.asArray;
-  const types = store.employee.types.slice();
-console.log('types', types, ranks);
-console.log('employee', employee)
+
   return (   
     <Form
       name="complex-form"
@@ -43,7 +58,7 @@ console.log('employee', employee)
       wrapperCol={{ span: 16 }}
       initialValues={employee
         ? Object.assign({}, employee , { rank: employee.rank.id})
-        : { type: types[0].name, rank: ranks[0].id }
+        : { type: employeeTypesData[0].name, rank: ranks[0].id }
       }
     >
         <Space css={s.titleContainer}>
@@ -94,7 +109,7 @@ console.log('employee', employee)
             rules={[{ required: true, message: 'Тип посади є обов\'язковим полем' }]}
           >
            <Select>
-            {types.map(el => (
+            {employeeTypesData.map(el => (
               <Option value={el.type} key={el.type}>{el.name}</Option>
             ))}
           </Select>
