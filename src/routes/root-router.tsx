@@ -5,7 +5,7 @@ import {
   createMemoryRouter,
 } from "react-router-dom";
 
-import { MissionReportsListPage, MissionReportCreatePage, ErrorNotFoundPage, EmployeesListPage, EmployeesCreatePage, DevPage } from "~/pages"
+import { MissionReportsListPage, ErrorNotFoundPage, EmployeesListPage, DevPage } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
 
@@ -17,21 +17,9 @@ const routes = [
     Component: MissionReportsListPage,
   },
   {
-    path: ROUTES.MISSION_REPORT_CREATE,
-    Component: MissionReportCreatePage,
-  },
-  {
     path: ROUTES.EMPLOYEES_LIST,
     Component: EmployeesListPage,
   },
-  {
-    path: ROUTES.EMPLOYEES_CREATE,
-    Component: EmployeesCreatePage,
-  },
-  {
-    path: ROUTES.EMPLOYEES_EDIT,
-    Component: EmployeesCreatePage,
-  },  
   {
     path: "*",
     Component: ErrorNotFoundPage,
@@ -53,7 +41,7 @@ const router = createMemoryRouter([
     children: routes,
   },
 ], {
-  initialEntries: ["/", ROUTES.MISSION_REPORT_LIST, ROUTES.MISSION_REPORT_CREATE],
+  initialEntries: ["/", ROUTES.MISSION_REPORT_LIST],
 });
 
 export function RootRouter() {

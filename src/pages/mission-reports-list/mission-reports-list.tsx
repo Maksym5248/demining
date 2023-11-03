@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 
 import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import { IEmployee } from '~/stores';
 import { Icon } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
+import { Modal } from '~/services';
+import { MODALS } from '~/constants';
 
 import { s } from './mission-reports-list.styles';
 
@@ -16,11 +17,10 @@ const { Title, Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IEmployee}) => {
   const store = useStore();
-  const navigate = useNavigate();
 
   const onGoToEmployeesEdit = (id:string) => (e:React.SyntheticEvent) => {
     e.preventDefault();
-    navigate(`/employees-list/edit/${id}`)
+    Modal.show(MODALS.MISSION_REPORT_CREATE, { id })
   };
 
   const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
@@ -63,14 +63,13 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 });
 
 export const MissionReportsListPage: React.FC = observer(() => {
-  const navigate = useNavigate();
   const title = useRouteTitle();
 
   const store = useStore();
 
   const onGoToMissionReportCreate = (e:React.SyntheticEvent) => {
     e.preventDefault();
-    navigate('/mission-reports-list/create')
+    Modal.show(MODALS.MISSION_REPORT_CREATE)
   };
 
   useEffect(() => {
@@ -86,7 +85,7 @@ export const MissionReportsListPage: React.FC = observer(() => {
       header={
         <Space css={s.listHeader}>
             <Title level={4}>{title}</Title>
-            <Button icon={<Icon.FileAddOutlined />} onClick={onGoToMissionReportCreate}/>
+            <Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToMissionReportCreate}/>
         </Space>
       }
       renderItem={(item) => <ListItem item={item}/>}

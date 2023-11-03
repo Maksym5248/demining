@@ -4,8 +4,8 @@ import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd';
 
 import { createStore } from '~/stores';
-import { RootRouter } from '~/routes';
-import { ThemeProvider } from '~/containers';
+import { RootRouter, modals } from '~/routes';
+import { ThemeProvider, ModalProvider } from '~/containers';
 import { RootStoreContext } from '~/context';
 
 import "./index.css";
@@ -26,6 +26,7 @@ const App = () => {
       <ThemeProvider>
         <RootStoreContext.Provider value={store}>
           <RootRouter />
+          <ModalProvider modals={modals}/>
         </RootStoreContext.Provider>
       </ThemeProvider>
     </ConfigProvider>

@@ -1,25 +1,17 @@
 export enum ROUTES {
+    // MISSION_REQUEST_LIST ="/mission-request-list",
+    // ORDER_LIST ="/order-list",
     MISSION_REPORT_LIST ="/mission-reports-list",
-    MISSION_REPORT_CREATE ="/mission-reports-list/create",
     EMPLOYEES_LIST ="/employees-list",
-    EMPLOYEES_CREATE ="/employees-list/create",
-    EMPLOYEES_EDIT ="/employees-list/edit/:id",
+    // TRANSPORT_LIST ="/transport-list",
+    // EQUIPMENT_LIST ="/equipment-list",
 }
 
 export const routesInfo = {
     [ROUTES.MISSION_REPORT_LIST]: {
-        title: "Cписок актів",
-    },
-    [ROUTES.MISSION_REPORT_CREATE]: {
-        title: "Створити",
+        title: "Акти виконаних робіт",
     },
     [ROUTES.EMPLOYEES_LIST]: {
         title: "Особовий склад",
-    },
-    [ROUTES.EMPLOYEES_CREATE]: {
-        title: "Додати",
-    },
-    [ROUTES.EMPLOYEES_EDIT]: {
-        title: "Редагувати дані",
     },
 }

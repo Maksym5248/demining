@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 
 import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import { IEmployee } from '~/stores';
 import { Icon } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
+import { Modal } from '~/services';
+import { MODALS } from '~/constants';
 
 import { s } from './employees-list.styles';
 
@@ -16,11 +17,11 @@ const { Title, Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IEmployee}) => {
   const store = useStore();
-  const navigate = useNavigate();
 
   const onGoToEmployeesEdit = (id:string) => (e:React.SyntheticEvent) => {
     e.preventDefault();
-    navigate(`/employees-list/edit/${id}`)
+    console.log('TEST')
+    Modal.show(MODALS.EMPLOYEES_CREATE, { id })
   };
 
   const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
@@ -63,13 +64,12 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 });
 
 export const EmployeesListPage: React.FC = observer(() => {
-  const navigate = useNavigate();
   const store = useStore();
   const title = useRouteTitle();
 
   const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
     e.preventDefault();
-    navigate('/employees-list/create')
+    Modal.show(MODALS.EMPLOYEES_CREATE)
   };
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const EmployeesListPage: React.FC = observer(() => {
       header={
         <Space css={s.listHeader}>
             <Title level={4}>{title}</Title>
-            <Button icon={<Icon.UserAddOutlined />} onClick={onGoToEmployeesCreate}/>
+            <Button type="primary" icon={<Icon.UserAddOutlined />} onClick={onGoToEmployeesCreate}/>
         </Space>
       }
       renderItem={(item) => <ListItem item={item}/>}

@@ -28,6 +28,8 @@ export const rendererConfig: Configuration = {
       "~/constants": path.resolve(__dirname, "/src/constants"),
       "~/containers": path.resolve(__dirname, "./src/containers"),
       "~/db": path.resolve(__dirname, "./src/db"),
+      "~/drawers": path.resolve(__dirname, "./src/drawers"),
+      "~/modals": path.resolve(__dirname, "./src/modals"),
       "~/hooks": path.resolve(__dirname, "./src/hooks"),
       "~/stores": path.resolve(__dirname, "./src/stores"),
       "~/routes": path.resolve(__dirname, "./src/routes"),
