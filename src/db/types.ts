@@ -6,8 +6,17 @@ export interface IEmployeeDB {
     firstName: string;
     lastName: string;
     surname: string;
-    rank: string;
+    rankId: string;
     position: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IOrderDB {
+    id: string;
+    signedAt: Date;
+    signedById: string;
+    number: number;
     createdAt: Date;
     updatedAt: Date;
 }

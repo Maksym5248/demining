@@ -5,3 +5,4 @@ export * from './routes-info';
 export * from './sleep';
 export * from './string';
 export * from './validation';
+export * from './data';

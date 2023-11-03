@@ -11,7 +11,7 @@ import { IEmployeeForm } from './employees-create.types';
 const { Option } = Select;
 
 
-export const employeeTypesData = [
+const employeeTypesData = [
   {
       type: EMPLOYEE_TYPE.WORKER,
       name: 'Підлеглий',
@@ -55,7 +55,7 @@ export const EmployeesCreateModal: React.FC = observer(({ id, isVisible, hide }:
       <Drawer
         open={isVisible}
         destroyOnClose
-        title="Створити"
+        title={`${isEdit ? "Редагувати": "Створити"} особовий склад`}
         placement="right"
         width={500}
         onClose={hide}

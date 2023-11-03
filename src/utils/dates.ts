@@ -1,9 +1,19 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
-// type Formats = 'MMM dd, HH:mm' | 'HH:mm' | 'MMM dd' | 'HH : mm' | 'HH:mm:ss';
+const today = ():Dayjs => dayjs(new Date());
 
-const today = () => dayjs(new Date());
+const create = (value:Date):Dayjs => dayjs(value);
+
+const toDate = (value: Date | Dayjs):Date => {
+  if(dayjs.isDayjs(value)){
+    return value.toDate();
+  }
+
+  return value;
+};
 
 export const dates = {
   today,
+  create,
+  toDate
 };

@@ -1,14 +1,17 @@
-import { types, Instance } from 'mobx-state-tree';
+import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
+import { upperCase, upperFirst } from 'lodash';
 
-import { DB, IEmployeeDB } from '~/db'
-import { Overwrite } from '~/types'
+
+
+import { DB } from '~/db'
+import { UpdateValue } from '~/types'
 import { EMPLOYEE_TYPE } from '~/constants';
 
+import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
 import { Rank } from '../rank';
-
-
+import { createEmployee, updateEmployeeDB, IEmployeeValue } from './employee.schema';
 
 export type IEmployee = Instance<typeof Employee>
 
@@ -20,23 +23,27 @@ const Entity = types.model('Employee', {
   surname: types.string,
   rank: types.reference(Rank),
   position: types.string,
-  createdAt: types.Date,
-  updatedAt: types.Date,
+  createdAt: types.dayjs,
+  updatedAt: types.dayjs,
 }).actions((self) => ({
-  updateFields(data: Partial<IEmployeeDB>) {
+  updateFields(data: Partial<IEmployeeValue>) {
       Object.assign(self, data);
+  }
+})).views((self) => ({
+  get fullName(){
+    return `${self.rank.shortName} ${upperFirst(self.lastName)} ${upperCase(self.firstName[0])}. ${upperCase(self.surname[0])}.`
   }
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: Overwrite<IEmployeeDB, { id?:string, createdAt?: Date, updatedAt?: Date}>) => {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEmployeeValue>) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
 
-      const res = await DB.employee.update(self.id, data);    
+      const res = await DB.employee.update(self.id, updateEmployeeDB(data));    
 
-      self.updateFields(res);
+      self.updateFields(createEmployee(res));
 
       message.success({
         type: 'success',

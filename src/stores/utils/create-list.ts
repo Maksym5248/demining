@@ -35,6 +35,10 @@ export function createList<T>(
         get length() {
           return self._array.length;
         },
+        
+        get isEmpty() {
+          return !!self._array.length;
+        },
       }))
       .views((self) => ({
         get currentPage() {
@@ -74,6 +78,10 @@ export function createList<T>(
 
         push(...ids: string[]) {
           self._array.push(...ids);
+        },
+
+        unshift(...ids: string[]) {
+          self._array.unshift(...ids);
         },
 
         replace(index: number, id: string) {

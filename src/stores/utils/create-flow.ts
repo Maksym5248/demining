@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 import { error } from '~/utils';
 
-const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+
 const integrateDevTools = (err: Error) => {
   if (IS_DEV && process.env.JEST_WORKER_ID === undefined) {
 

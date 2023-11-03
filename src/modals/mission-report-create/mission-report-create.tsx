@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Form, Input, Typography, Space, InputNumber, DatePicker, Drawer } from 'antd';
+import { Button, Form, Input, Space, InputNumber, DatePicker, Drawer } from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
@@ -8,8 +8,6 @@ import { dates } from '~/utils'
 
 import { IEmployeeForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
-
-const { Title } = Typography;
 
 // номер акту маю бути за порядком + 1;
 
@@ -39,7 +37,7 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
     <Drawer
       open={isVisible}
       destroyOnClose
-      title="Створити"
+      title={`${isEdit ? "Редагувати": "Створити"} акт виконаних робіт`}
       placement="right"
       width={500}
       onClose={hide}
@@ -55,7 +53,7 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
             name="approvedAt"
             rules={[{ required: true, message: 'Дата затвердження є обов\'язковим полем' }]}
           >
-                <DatePicker defaultValue={dates.today()} />
+                <DatePicker />
           </Form.Item>
           <Form.Item label="Номер" style={{ marginBottom: 0 }}>
                 <Form.Item
@@ -63,7 +61,7 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
                   rules={[{ required: true }]}
                   css={s.number}
                 >
-                    <InputNumber size="middle" min={1} max={100000} defaultValue={3} />
+                    <InputNumber size="middle" min={1} max={100000} />
                 </Form.Item>
                 <Form.Item
                   name="subNumber"
@@ -78,7 +76,7 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
             name="executedAt"
             rules={[{ required: true, message: 'Дата виконання є обов\'язковим полем' }]}
           >
-                <DatePicker defaultValue={dates.today()}/>
+                <DatePicker />
           </Form.Item>
           <Form.Item
               label="Ім'я"

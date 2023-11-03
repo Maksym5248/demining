@@ -3,28 +3,28 @@ import React, { useEffect } from 'react';
 import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
-import { IEmployee } from '~/stores';
 import { Icon } from '~/components';
-import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS } from '~/constants';
+import { IOrder } from '~/stores';
 
-import { s } from './mission-reports-list.styles';
+import { s } from './orders-list.styles';
 
 const { Title, Text } = Typography;
 
 
-const ListItem = observer(({ item }: { item: IEmployee}) => {
+const ListItem = observer(({ item }: { item: IOrder}) => {
   const store = useStore();
 
-  const onGoToEmployeesEdit = (id:string) => (e:React.SyntheticEvent) => {
+  const onGoToOrderEdit = (id:string) => (e:React.SyntheticEvent) => {
     e.preventDefault();
-    Modal.show(MODALS.MISSION_REPORT_CREATE, { id })
+    console.log('TEST')
+    Modal.show(MODALS.ORDER_CREATE, { id })
   };
 
   const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
-    store.employee.removeEmployee.run(id);
+    store.order.removeOrder.run(id);
   };
   
   const onCancel = (e: React.MouseEvent<HTMLElement>) => {
@@ -34,7 +34,7 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
   return (
     <List.Item
       actions={[
-       <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToEmployeesEdit(item.id)}/>,
+       <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToOrderEdit(item.id)}/>,
        <Popconfirm
           title="Видалити"
           description="Ви впевнені, після цього дані не можливо відновити ?"
@@ -49,11 +49,10 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
     >
         <List.Item.Meta
           avatar={<Icon.FileTextOutlined />}
-          title={str.getFullName(item)}
+          title={`№${item.number}`}
           description={
             <Space css={s.listItemDesc}>
-                <Text type="secondary">{str.upperFirst(item.rank.fullName)}</Text>
-                <Text type="secondary">{str.upperFirst(item.position)}</Text>
+                <Text type="secondary">{item.signedAt.format('DD/MM/YYYY')}</Text>
             </Space>
           }
         >
@@ -62,30 +61,29 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
   )
 });
 
-export const MissionReportsListPage: React.FC = observer(() => {
+export const OrdersListPage: React.FC = observer(() => {
+  const store = useStore();
   const title = useRouteTitle();
 
-  const store = useStore();
-
-  const onGoToMissionReportCreate = (e:React.SyntheticEvent) => {
+  const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
     e.preventDefault();
-    Modal.show(MODALS.MISSION_REPORT_CREATE)
+    Modal.show(MODALS.ORDER_CREATE)
   };
 
   useEffect(() => {
-    store.employee.fetchEmployees.run();
+    store.order.fetchOrders.run();
   }, []);
 
   return (
     <List
       rowKey="id"
       itemLayout="horizontal"
-      loading={store.employee.fetchEmployees.inProgress}
-      dataSource={store.employee.employeesList.asArray}
+      loading={store.order.fetchOrders.inProgress}
+      dataSource={store.order.orderList.asArray}
       header={
         <Space css={s.listHeader}>
             <Title level={4}>{title}</Title>
-            <Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToMissionReportCreate}/>
+            <Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToEmployeesCreate}/>
         </Space>
       }
       renderItem={(item) => <ListItem item={item}/>}

@@ -4,6 +4,7 @@ import { DB } from '~/db';
 
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
+import { OrderStore } from './order';
 import { mockEmployees } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
@@ -11,6 +12,7 @@ export type IRootStore = Instance<typeof RootStore>
 export const RootStore = types
   .model('RootStore', {
     employee: types.optional(EmployeeStore, {}),
+    order: types.optional(OrderStore, {}),
     viewer: types.optional(ViewerStore, {}),
     isInitialized: false,
   })

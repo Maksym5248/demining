@@ -28,8 +28,9 @@ export const schemaEmployee = {
             notNull: true,
             dataType: DATA_TYPE.String
         },
-        rank: {
+        rankId: {
             notNull: true,
+            require: true,
             dataType: DATA_TYPE.String,
         },
         position: {

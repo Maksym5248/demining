@@ -1,11 +1,13 @@
-import { types, Instance } from 'mobx-state-tree';
+import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
-import { Overwrite } from '~/types'
-import { DB, IEmployeeDB } from '~/db'
+import { DB } from '~/db'
+import { EMPLOYEE_TYPE } from '~/constants'
+import { CreateValue } from '~/types'
 
+import { types } from '../../types'
 import { asyncAction , createCollection, createList, safeReference } from '../../utils';
-import { Rank, IRank, IRankValue, Employee, IEmployee, createEmployee, createRank } from './entities';
+import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmployee, createEmployeeDB,  createRank } from './entities';
 import { ranksData } from './ranks-data'
 
 const Store = types
@@ -13,7 +15,7 @@ const Store = types
     ranksCollection: createCollection<IRank, IRankValue>("Ranks", Rank),
     ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 20 }),
 
-    employeesCollection: createCollection<IEmployee, IEmployeeDB>("Employees", Employee),
+    employeesCollection: createCollection<IEmployee, IEmployeeValue>("Employees", Employee),
     employeesList: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 20 })
   })
   .actions((self) => ({
@@ -23,17 +25,21 @@ const Store = types
         self.ranksList.push(data.id);
       })
     },
+  })).views((self) => ({
+    get employeesListChief(){
+      return self.employeesList.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF)
+    }
   }));
 
-const addEmployee = asyncAction<Instance<typeof Store>>((data: Overwrite<IEmployeeDB, { id?:string, createdAt?: Date, updatedAt?: Date}>) => {
+const addEmployee = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      const res = await DB.employee.add(data);
+      const res = await DB.employee.add(createEmployeeDB(data));
       const employee = createEmployee(res);
 
-      self.employeesCollection.set(res.id, employee);
-      self.employeesList.push(res.id);
+      self.employeesCollection.set(employee.id, employee);
+      self.employeesList.push(employee.id);
       flow.success();
       message.success('Додано успішно');
     } catch (err) {
@@ -61,7 +67,8 @@ const fetchEmployees = asyncAction<Instance<typeof Store>>(() => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      const res = await DB.employee.getList<IEmployeeDB>();
+
+      const res = await DB.employee.getList();
 
       res.forEach((el) => {
         const employee = createEmployee(el);

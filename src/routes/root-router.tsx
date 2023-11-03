@@ -5,7 +5,7 @@ import {
   createMemoryRouter,
 } from "react-router-dom";
 
-import { MissionReportsListPage, ErrorNotFoundPage, EmployeesListPage, DevPage } from "~/pages"
+import { MissionReportsListPage, OrdersListPage, ErrorNotFoundPage, EmployeesListPage, DevPage } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
 
@@ -15,6 +15,10 @@ const routes = [
   {
     path: ROUTES.MISSION_REPORT_LIST,
     Component: MissionReportsListPage,
+  },
+  {
+    path: ROUTES.ORDER_LIST,
+    Component: OrdersListPage,
   },
   {
     path: ROUTES.EMPLOYEES_LIST,

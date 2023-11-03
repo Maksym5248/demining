@@ -14,17 +14,22 @@ export const schemaOrder = {
             dataType: DATA_TYPE.DateTime
         },
         /**
-         * EMPLOYEE_TYPE.CHIEF
+         * id of EMPLOYEE_TYPE.CHIEF
          */
         signedById: {
             notNull: true,
             dataType: DATA_TYPE.String
         },
         number: {
+            unique: true,
             notNull: true,
             dataType: DATA_TYPE.Number
         },
         createdAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        },
+        updatedAt: {
             notNull: true,
             dataType: DATA_TYPE.DateTime,
         },

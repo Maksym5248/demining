@@ -2,6 +2,8 @@ import { Connection, ISelectQuery } from 'jsstore';
 import uuid from 'uuid/v4';
 import _ from 'lodash';
 
+import { Overwrite } from '~/types'
+
 export class DBBase<T> {
     db: Connection;
     tableName: string;
@@ -33,7 +35,7 @@ export class DBBase<T> {
 
     }
 
-    getList<T>(args?: Partial<Omit<ISelectQuery, 'from'>> ) {
+    getList(args?: Partial<Omit<ISelectQuery, 'from'>> ): Promise<T[]> {
         const params:ISelectQuery = {
             from: this.tableName,
             ...args
@@ -42,18 +44,34 @@ export class DBBase<T> {
         return this.db.select<T>(params);
     }
 
-    async get(id:string) {
-        const [res] = await this.db.select({
+    async get(id:string):Promise<T> {
+        const [res] = await this.db.select<T>({
             from: this.tableName,
             where: {
                 id: id
             }
         });
 
+        if(!res){
+            throw new Error("there is no element by id")
+        }
+
         return res
     }
 
-    async add(value: object): Promise<T | null>{
+    async exist(field:string, value: any):Promise<boolean> {
+        const [res] = await this.db.select({
+            from: this.tableName,
+            where: {
+                [field]: value
+            },
+            limit: 1
+        });
+
+        return !!res
+    }
+
+    async add(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T | null>{
         const id = await this.uuid();
 
         const res = await this.db.insert<T>({
@@ -69,7 +87,7 @@ export class DBBase<T> {
         return _.isArray(res) ? res[0]: null;
     }
 
-    async update(id:string, value: object) {
+    async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {
         const newValue = Object.assign({}, value, {
             updatedAt: new Date(),
         });

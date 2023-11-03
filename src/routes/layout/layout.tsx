@@ -30,25 +30,31 @@ export const Layout: React.FC = () => {
   
   const items = [
     {
-      key: '1',
+      key: ROUTES.MISSION_REPORT_LIST,
       icon: <Icon.FileTextOutlined />,
       label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
-      onClick: () => navigate("/mission-reports-list")
+      onClick: () => navigate(ROUTES.MISSION_REPORT_LIST)
     },
     {
-      key: '2',
+      key: ROUTES.ORDER_LIST,
+      icon: <Icon.FileTextOutlined />,
+      label: nav.getRouteTitle(ROUTES.ORDER_LIST),
+      onClick: () => navigate(ROUTES.ORDER_LIST)
+    },
+    {
+      key: ROUTES.EMPLOYEES_LIST,
       icon: <Icon.UserOutlined />,
       label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
-      onClick: () => navigate("/employees-list")
+      onClick: () => navigate(ROUTES.EMPLOYEES_LIST)
     },
     {
-      key: '3',
+      key: '4',
       icon: <Icon.DatabaseOutlined />,
       label: 'Статистика',
       onClick: () => navigate("template")
     },
     {
-      key: '4',
+      key: '5',
       icon: <Icon.VideoCameraOutlined />,
       label: 'Налаштування',
       onClick: () => navigate("template")
@@ -72,7 +78,7 @@ export const Layout: React.FC = () => {
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={[ROUTES.MISSION_REPORT_LIST]}
           items={items}
         />
       </Sider>

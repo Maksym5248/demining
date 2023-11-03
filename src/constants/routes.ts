@@ -1,6 +1,6 @@
 export enum ROUTES {
     // MISSION_REQUEST_LIST ="/mission-request-list",
-    // ORDER_LIST ="/order-list",
+    ORDER_LIST ="/order-list",
     MISSION_REPORT_LIST ="/mission-reports-list",
     EMPLOYEES_LIST ="/employees-list",
     // TRANSPORT_LIST ="/transport-list",
@@ -13,5 +13,8 @@ export const routesInfo = {
     },
     [ROUTES.EMPLOYEES_LIST]: {
         title: "Особовий склад",
+    },
+    [ROUTES.ORDER_LIST]: {
+        title: "Накази",
     },
 }
