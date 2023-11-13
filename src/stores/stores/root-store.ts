@@ -5,14 +5,18 @@ import { DB } from '~/db';
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
 import { OrderStore } from './order';
+import { MissionRequestStore } from './mission-request';
 import { mockEmployees } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
+
+
 
 export const RootStore = types
   .model('RootStore', {
     employee: types.optional(EmployeeStore, {}),
     order: types.optional(OrderStore, {}),
+    missionRequest: types.optional(MissionRequestStore, {}),
     viewer: types.optional(ViewerStore, {}),
     isInitialized: false,
   })
@@ -26,7 +30,7 @@ export const RootStore = types
       },
       createMocks(){
         mockEmployees.forEach(el => {
-          self.employee.addEmployee.run(el);
+          self.employee.add.run(el);
         });
       }
     };

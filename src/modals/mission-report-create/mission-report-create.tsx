@@ -20,11 +20,11 @@ interface Props {
 export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
   const store = useStore();
 
-  const employee = store.employee.employeesCollection.get(id);
+  const employee = store.employee.collection.get(id);
   const isEdit = !!id;
 
   const onFinishCreate = async (values: IEmployeeForm) => {
-    await store.employee.addEmployee.run(values);
+    await store.employee.add.run(values);
     hide();
   };
 

@@ -19,7 +19,7 @@ export const createOrderDB = (order: Partial<IOrderValue>): CreateValue<IOrderDB
   number: order.number
 });
 
-export const updateOrderDB = data.createUpdateOrderDB<IOrderValue, IOrderDB>(createOrderDB);
+export const updateOrderDB = data.createUpdateDB<IOrderValue, IOrderDB>(createOrderDB);
 
 export const createOrder = (order: IOrderDB): IOrderValue => ({
   id: order.id,

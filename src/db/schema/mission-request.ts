@@ -9,7 +9,7 @@ export const schemaMissionRequest = {
             unique: true,
             primaryKey: true,
         },
-        approvedAt: {
+        signedAt: {
             notNull: true,
             dataType: DATA_TYPE.DateTime
         },
@@ -18,6 +18,10 @@ export const schemaMissionRequest = {
             dataType: DATA_TYPE.Number
         },
         createdAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        },
+        updatedAt: {
             notNull: true,
             dataType: DATA_TYPE.DateTime,
         },

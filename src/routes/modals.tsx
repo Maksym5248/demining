@@ -4,6 +4,7 @@ import { MODALS } from '~/constants';
 import {
   EmployeesCreateModal,
   MissionReportCreateModal,
+  MissionRequestCreateModal,
   OrderCreateModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
@@ -11,6 +12,9 @@ import { IModalsMap } from '~/services';
 export const modals: IModalsMap = {
   [MODALS.MISSION_REPORT_CREATE]: {
     renderComponent: (props: any) => <MissionReportCreateModal {...props} />,
+  },
+  [MODALS.MISSION_REQUEST_CREATE]: {
+    renderComponent: (props: any) => <MissionRequestCreateModal {...props} />,
   },
   [MODALS.EMPLOYEES_CREATE]: {
     renderComponent: (props: any) => <EmployeesCreateModal {...props} />,

@@ -27,7 +27,7 @@ export const createEmployeeDB = (employee: Partial<IEmployeeValue>): CreateValue
   position: employee.position || null,
 });
 
-export const updateEmployeeDB = data.createUpdateOrderDB<IEmployeeValue, IEmployeeDB>(createEmployeeDB);
+export const updateEmployeeDB = data.createUpdateDB<IEmployeeValue, IEmployeeDB>(createEmployeeDB);
 
 
 export const createEmployee = (employee: IEmployeeDB): IEmployeeValue => ({

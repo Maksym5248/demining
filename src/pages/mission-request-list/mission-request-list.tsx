@@ -7,24 +7,23 @@ import { Icon } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS } from '~/constants';
-import { IOrder } from '~/stores';
+import { IMissionRequest } from '~/stores';
 
-import { s } from './orders-list.styles';
+import { s } from './mission-request-list.styles';
 
 const { Title, Text } = Typography;
 
 
-const ListItem = observer(({ item }: { item: IOrder}) => {
+const ListItem = observer(({ item }: { item: IMissionRequest}) => {
   const store = useStore();
 
-  const onGoToOrderEdit = (id:string) => (e:React.SyntheticEvent) => {
+  const onGoEdit = (id:string) => (e:React.SyntheticEvent) => {
     e.preventDefault();
-    console.log('TEST')
-    Modal.show(MODALS.ORDER_CREATE, { id })
+    Modal.show(MODALS.MISSION_REQUEST_CREATE, { id })
   };
 
   const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
-    store.order.remove.run(id);
+    store.missionRequest.remove.run(id);
   };
   
   const onCancel = (e: React.MouseEvent<HTMLElement>) => {
@@ -34,7 +33,7 @@ const ListItem = observer(({ item }: { item: IOrder}) => {
   return (
     <List.Item
       actions={[
-       <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToOrderEdit(item.id)}/>,
+       <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoEdit(item.id)}/>,
        <Popconfirm
           title="Видалити"
           description="Ви впевнені, після цього дані не можливо відновити ?"
@@ -61,25 +60,25 @@ const ListItem = observer(({ item }: { item: IOrder}) => {
   )
 });
 
-export const OrdersListPage: React.FC = observer(() => {
+export const MissionRequestListPage: React.FC = observer(() => {
   const store = useStore();
   const title = useRouteTitle();
 
   const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
     e.preventDefault();
-    Modal.show(MODALS.ORDER_CREATE)
+    Modal.show(MODALS.MISSION_REQUEST_CREATE)
   };
 
   useEffect(() => {
-    store.order.fetchList.run();
+    store.missionRequest.fetchList.run();
   }, []);
 
   return (
     <List
       rowKey="id"
       itemLayout="horizontal"
-      loading={store.order.fetchList.inProgress}
-      dataSource={store.order.list.asArray}
+      loading={store.missionRequest.fetchList.inProgress}
+      dataSource={store.missionRequest.list.asArray}
       header={
         <Space css={s.listHeader}>
             <Title level={4}>{title}</Title>

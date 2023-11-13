@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 
-import { Button, Form, DatePicker, Select, Space, Drawer, InputNumber, Spin} from 'antd';
+import { Button, Form, DatePicker, Space, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils'
 
-import { s } from './order-create.style'
-import { IOrderForm } from './order-create.types';
-
-const { Option } = Select;
+import { s } from './mission-request-create.style'
+import { IMissionRequestForm } from './mission-request-create.types';
 
 interface Props {
   id?: string;
@@ -21,12 +19,10 @@ interface Props {
 // list
 // store
 
-export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const MissionRequestCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
   const store = useStore();
 
-  const order = store.order.collection.get(id);
-  const employeesListChief = store.employee.employeesListChief;
-  const employeeChiefFirst = employeesListChief[0];
+  const missionRequest = store.missionRequest.collection.get(id);
 
   useEffect(() => {
     store.order.fetchList.run();
@@ -35,13 +31,13 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
   const isEdit = !!id;
   const isLoading = !store.order.fetchList.isLoaded && store.order.fetchList.inProgress;
 
-  const onFinishCreate = async (values: IOrderForm) => {
-    await store.order.add.run(values);
+  const onFinishCreate = async (values: IMissionRequestForm) => {
+    await store.missionRequest.add.run(values);
     hide();
   };
 
-  const onFinishUpdate = async (values: IOrderForm) => {
-    await order.update.run(values);
+  const onFinishUpdate = async (values: IMissionRequestForm) => {
+    await missionRequest.update.run(values);
     hide();
   };
 
@@ -49,7 +45,7 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
       <Drawer
         open={isVisible}
         destroyOnClose
-        title={`${isEdit ? "Редагувати": "Створити"} наказ`}
+        title={`${isEdit ? "Редагувати": "Створити"} заявку`}
         placement="right"
         width={500}
         onClose={hide}
@@ -62,13 +58,10 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
             onFinish={isEdit ? onFinishUpdate : onFinishCreate}
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
-            initialValues={order
-              ? Object.assign({}, order, {
-                signedBy: order.signedBy?.id 
-              })
+            initialValues={missionRequest
+              ? Object.assign({}, missionRequest)
               : {
                 number: store.order.list.first?.number + 1,
-                signedBy: store.order.list.first?.signedBy?.id || employeeChiefFirst?.id,
                 signedAt: dates.today(),
                 }
             }
@@ -86,17 +79,6 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
               rules={[{ required: true, message: 'Обов\'язкове поле' }]}
             >
                 <DatePicker/>
-            </Form.Item>
-            <Form.Item
-                label="Підписав"
-                name="signedBy"
-                rules={[{ required: true, message: 'Обов\'язкове поле' }]}
-              >
-              <Select>
-                {employeesListChief.map(el => (
-                  <Option value={el.id} key={el.type}>{el.fullName}</Option>
-                ))}
-              </Select>
             </Form.Item>
             <Form.Item label=" " colon={false}>
                 <Space>

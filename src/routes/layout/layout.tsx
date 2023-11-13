@@ -35,6 +35,12 @@ export const Layout: React.FC = () => {
       label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
       onClick: () => navigate(ROUTES.MISSION_REPORT_LIST)
     },
+        {
+      key: ROUTES.MISSION_REQUEST_LIST,
+      icon: <Icon.FileTextOutlined />,
+      label: nav.getRouteTitle(ROUTES.MISSION_REQUEST_LIST),
+      onClick: () => navigate(ROUTES.MISSION_REQUEST_LIST)
+    },
     {
       key: ROUTES.ORDER_LIST,
       icon: <Icon.FileTextOutlined />,

@@ -5,7 +5,14 @@ import {
   createMemoryRouter,
 } from "react-router-dom";
 
-import { MissionReportsListPage, OrdersListPage, ErrorNotFoundPage, EmployeesListPage, DevPage } from "~/pages"
+import {
+  MissionReportsListPage,
+  OrdersListPage,
+  MissionRequestListPage, 
+  ErrorNotFoundPage,
+  EmployeesListPage,
+  DevPage 
+} from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
 
@@ -15,6 +22,10 @@ const routes = [
   {
     path: ROUTES.MISSION_REPORT_LIST,
     Component: MissionReportsListPage,
+  },
+  {
+    path: ROUTES.MISSION_REQUEST_LIST,
+    Component: MissionRequestListPage,
   },
   {
     path: ROUTES.ORDER_LIST,
@@ -45,7 +56,7 @@ const router = createMemoryRouter([
     children: routes,
   },
 ], {
-  initialEntries: ["/", ROUTES.MISSION_REPORT_LIST],
+  initialEntries: ["/", ROUTES.MISSION_REQUEST_LIST],
 });
 
 export function RootRouter() {

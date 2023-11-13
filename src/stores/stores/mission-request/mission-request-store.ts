@@ -1,0 +1,78 @@
+import { types, Instance } from 'mobx-state-tree';
+import { message } from 'antd';
+
+import { CreateValue } from '~/types'
+import { DB } from '~/db'
+
+import { asyncAction, createCollection, createList, safeReference } from '../../utils';
+import { IMissionRequest, IMissionRequestValue, MissionRequest, createMissionRequest, createMissionRequestDB } from './entities';
+
+const Store = types
+  .model('MissionRequestStore', {
+    collection: createCollection<IMissionRequest, IMissionRequestValue>("MissionRequests", MissionRequest),
+    list: createList<IMissionRequest>("MissionRequestsList", safeReference(MissionRequest), { pageSize: 20 }),
+  });
+
+const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRequestValue>) => {
+  return async function addEmployeeFlow({ flow, self }) {
+    try {
+      flow.start();
+
+      const res = await DB.missionRequest.add(createMissionRequestDB(data));
+      const missionRequest = createMissionRequest(res);
+
+      self.collection.set(res.id, missionRequest);
+      self.list.unshift(res.id);
+      flow.success();
+      message.success('Додано успішно');
+    } catch (err) {
+      message.error('Не вдалось додати');
+    }
+  };
+});
+
+const remove = asyncAction<Instance<typeof Store>>((id:string) => {
+  return async function addEmployeeFlow({ flow, self }) {
+    try {
+      flow.start();
+      await DB.missionRequest.remove(id);
+      self.list.removeById(id);
+      self.collection.remove(id);
+      flow.success();
+      message.success('Видалено успішно');
+    } catch (err) {
+      message.error('Не вдалось видалити');
+    }
+  };
+});
+
+const fetchList = asyncAction<Instance<typeof Store>>(() => {
+  return async function addEmployeeFlow({ flow, self }) {
+    try {
+      flow.start();
+
+      const res = await DB.missionRequest.getList({
+        order: {
+          by: "number",
+          type: "desc",
+        }
+      });
+
+      res.forEach((el) => {
+        const missionRequest = createMissionRequest(el);
+
+        if(!self.collection.has(missionRequest.id)){
+          self.collection.set(missionRequest.id, missionRequest);
+          self.list.push(missionRequest.id);
+        }
+      })
+
+      flow.success();
+    } catch (err) {
+      console.log("3");
+      flow.failed(err);
+    }
+  };
+});
+
+export const MissionRequestStore = Store.props({ add, remove, fetchList })

@@ -25,7 +25,7 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
   };
 
   const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
-    store.employee.removeEmployee.run(id);
+    store.employee.remove.run(id);
   };
   
   const onCancel = (e: React.MouseEvent<HTMLElement>) => {
@@ -73,15 +73,15 @@ export const EmployeesListPage: React.FC = observer(() => {
   };
 
   useEffect(() => {
-    store.employee.fetchEmployees.run();
+    store.employee.fetchList.run();
   }, []);
 
   return (
     <List
       rowKey="id"
       itemLayout="horizontal"
-      loading={store.employee.fetchEmployees.inProgress}
-      dataSource={store.employee.employeesList.asArray}
+      loading={store.employee.fetchList.inProgress}
+      dataSource={store.employee.list.asArray}
       header={
         <Space css={s.listHeader}>
             <Title level={4}>{title}</Title>

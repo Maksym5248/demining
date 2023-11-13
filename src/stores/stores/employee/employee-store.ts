@@ -1,7 +1,7 @@
 import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
-import { DB } from '~/db'
+import { DB, IEmployeeDB } from '~/db'
 import { EMPLOYEE_TYPE } from '~/constants'
 import { CreateValue } from '~/types'
 
@@ -15,8 +15,8 @@ const Store = types
     ranksCollection: createCollection<IRank, IRankValue>("Ranks", Rank),
     ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 20 }),
 
-    employeesCollection: createCollection<IEmployee, IEmployeeValue>("Employees", Employee),
-    employeesList: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 20 })
+    collection: createCollection<IEmployee, IEmployeeValue>("Employees", Employee),
+    list: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 20 })
   })
   .actions((self) => ({
     init() {
@@ -25,21 +25,31 @@ const Store = types
         self.ranksList.push(data.id);
       })
     },
+    push: (values: IEmployeeDB[]) => {
+      values.forEach((el) => {
+        const employee = createEmployee(el);
+
+        if(!self.collection.has(employee.id)){
+          self.collection.set(employee.id, employee);
+          self.list.push(employee.id);
+        }
+      })
+    }
   })).views((self) => ({
     get employeesListChief(){
-      return self.employeesList.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF)
+      return self.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF)
     }
   }));
 
-const addEmployee = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => {
+const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
       const res = await DB.employee.add(createEmployeeDB(data));
       const employee = createEmployee(res);
 
-      self.employeesCollection.set(employee.id, employee);
-      self.employeesList.push(employee.id);
+      self.collection.set(employee.id, employee);
+      self.list.push(employee.id);
       flow.success();
       message.success('Додано успішно');
     } catch (err) {
@@ -48,13 +58,13 @@ const addEmployee = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmpl
   };
 });
 
-const removeEmployee = asyncAction<Instance<typeof Store>>((id:string) => {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
       await DB.employee.remove(id);
-      self.employeesList.removeById(id);
-      self.employeesCollection.remove(id);
+      self.list.removeById(id);
+      self.collection.remove(id);
       flow.success();
       message.success('Видалено успішно');
     } catch (err) {
@@ -63,21 +73,16 @@ const removeEmployee = asyncAction<Instance<typeof Store>>((id:string) => {
   };
 });
 
-const fetchEmployees = asyncAction<Instance<typeof Store>>(() => {
+const fetchByIds = asyncAction<Instance<typeof Store>>((ids:[]) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
+      const res = await Promise.all(ids.filter(id => !self.collection.get(id)).map(async (id:string) => {
+        const res = await DB.employee.get(id);
 
-      const res = await DB.employee.getList();
-
-      res.forEach((el) => {
-        const employee = createEmployee(el);
-
-        if(!self.employeesCollection.has(employee.id)){
-          self.employeesCollection.set(employee.id, employee);
-          self.employeesList.push(employee.id);
-        }
-      })
+        return res
+      }))
+      self.push(res);
 
       flow.success();
     } catch (err) {
@@ -86,4 +91,20 @@ const fetchEmployees = asyncAction<Instance<typeof Store>>(() => {
   };
 });
 
-export const EmployeeStore = Store.props({ addEmployee, removeEmployee, fetchEmployees })
+const fetchList = asyncAction<Instance<typeof Store>>(() => {
+  return async function addEmployeeFlow({ flow, self }) {
+    try {
+      flow.start();
+
+      const res = await DB.employee.getList();
+
+      self.push(res);
+
+      flow.success();
+    } catch (err) {
+      flow.failed(err);
+    }
+  };
+});
+
+export const EmployeeStore = Store.props({ add, remove, fetchList, fetchByIds})

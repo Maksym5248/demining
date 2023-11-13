@@ -20,3 +20,11 @@ export interface IOrderDB {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface IMissionRequestDB {
+    id: string;
+    signedAt: Date;
+    number: number;
+    createdAt: Date;
+    updatedAt: Date;
+}

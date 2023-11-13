@@ -6,33 +6,31 @@ import { DB } from '~/db'
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
-import { Employee } from '../../../employee';
-import { IOrderValue, createOrder, updateOrderDB } from './order.schema';
+import { IMissionRequestValue, updateMissionRequestDB, createMissionRequest } from './mission-request.schema';
 
-export type IOrder = Instance<typeof Order>
+export type IMissionRequest = Instance<typeof MissionRequest>
 
-const Entity = types.model('Order', {
+const Entity = types.model('MissionRequest', {
   id: types.identifier,
   signedAt: types.dayjs,
-  signedBy: types.reference(Employee),
   number: types.number,
   createdAt: types.dayjs,
   updatedAt: types.dayjs,
 }).actions((self) => ({
-  updateFields(data: Partial<IOrderValue>) {
+  updateFields(data: Partial<IMissionRequestValue>) {
       Object.assign(self, data);
   }
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValue>) => {
-  return async function addFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IMissionRequestValue>) => {
+  return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
 
-      const res = await DB.order.update(self.id, updateOrderDB(data));    
+      const res = await DB.missionRequest.update(self.id, updateMissionRequestDB(data));    
 
-      self.updateFields(createOrder(res));
+      self.updateFields(createMissionRequest(res));
 
       message.success({
         type: 'success',
@@ -46,4 +44,4 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderVal
   };
 });
 
-export const Order = Entity.props({ update });
+export const MissionRequest = Entity.props({ update });
