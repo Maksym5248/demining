@@ -3,6 +3,8 @@ import {
     IAnyComplexType,
 } from 'mobx-state-tree';
 
+import { IEmployeeValue } from '..';
+
 
 export interface IError {
   message: string;
@@ -29,7 +31,7 @@ export interface IAsyncAction {
 }
 
 export interface IEmployeeStore {
-  fetchByIds: IAsyncAction;
+  getById: (id:string) => IEmployeeValue;
 }
 
 export interface IRootStore {

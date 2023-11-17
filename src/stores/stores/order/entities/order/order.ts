@@ -14,7 +14,8 @@ export type IOrder = Instance<typeof Order>
 const Entity = types.model('Order', {
   id: types.identifier,
   signedAt: types.dayjs,
-  signedBy: types.reference(Employee),
+  signedById: types.string,
+  signedBy: Employee.named("EmployeeOrder"),
   number: types.number,
   createdAt: types.dayjs,
   updatedAt: types.dayjs,

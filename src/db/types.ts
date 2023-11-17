@@ -16,6 +16,7 @@ export interface IOrderDB {
     id: string;
     signedAt: Date;
     signedById: string;
+    signedBy: string;
     number: number;
     createdAt: Date;
     updatedAt: Date;

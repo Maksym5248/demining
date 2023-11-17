@@ -10,8 +10,6 @@ import { mockEmployees } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
 
-
-
 export const RootStore = types
   .model('RootStore', {
     employee: types.optional(EmployeeStore, {}),

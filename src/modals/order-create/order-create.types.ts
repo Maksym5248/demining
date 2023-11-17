@@ -2,6 +2,6 @@ import { Dayjs} from 'dayjs';
 
 export interface IOrderForm {
     number: number;
-    signedBy: string;
+    signedById: string;
     executedAt: Dayjs;
 }

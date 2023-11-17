@@ -38,6 +38,10 @@ const Store = types
   })).views((self) => ({
     get employeesListChief(){
       return self.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF)
+    },
+
+    getById(id:string){
+      return self.collection.get(id);
     }
   }));
 
@@ -73,24 +77,6 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
   };
 });
 
-const fetchByIds = asyncAction<Instance<typeof Store>>((ids:[]) => {
-  return async function addEmployeeFlow({ flow, self }) {
-    try {
-      flow.start();
-      const res = await Promise.all(ids.filter(id => !self.collection.get(id)).map(async (id:string) => {
-        const res = await DB.employee.get(id);
-
-        return res
-      }))
-      self.push(res);
-
-      flow.success();
-    } catch (err) {
-      flow.failed(err);
-    }
-  };
-});
-
 const fetchList = asyncAction<Instance<typeof Store>>(() => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
@@ -107,4 +93,4 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
   };
 });
 
-export const EmployeeStore = Store.props({ add, remove, fetchList, fetchByIds})
+export const EmployeeStore = Store.props({ add, remove, fetchList })

@@ -17,31 +17,34 @@ interface Props {
   hide: () => void
 }
 
-// initial values
-// list
-// store
-
 export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
-  const store = useStore();
+  const { order, employee } = useStore();
 
-  const order = store.order.collection.get(id);
-  const employeesListChief = store.employee.employeesListChief;
+  const currentOrder = order.collection.get(id);
+  const employeesListChief = employee.employeesListChief;
   const employeeChiefFirst = employeesListChief[0];
 
   useEffect(() => {
-    store.order.fetchList.run();
+    order.fetchList.run();
+    employee.fetchList.run();
   }, []);
 
   const isEdit = !!id;
-  const isLoading = !store.order.fetchList.isLoaded && store.order.fetchList.inProgress;
+  const isLoading = (!order.fetchList.isLoaded && order.fetchList.inProgress) || (!order.fetchList.isLoaded && order.fetchList.inProgress);
 
   const onFinishCreate = async (values: IOrderForm) => {
-    await store.order.add.run(values);
+    await order.add.run({
+      ...values,
+      signedBy: employeesListChief.find((el) => el.id === values.signedById)
+    });
     hide();
   };
 
   const onFinishUpdate = async (values: IOrderForm) => {
-    await order.update.run(values);
+    await currentOrder.update.run({
+      ...values,
+      signedBy: employeesListChief.find((el) => el.id === values.signedById)
+    });
     hide();
   };
 
@@ -62,15 +65,15 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
             onFinish={isEdit ? onFinishUpdate : onFinishCreate}
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
-            initialValues={order
-              ? Object.assign({}, order, {
-                signedBy: order.signedBy?.id 
+            initialValues={currentOrder
+              ? Object.assign({}, currentOrder, {
+                signedById: currentOrder.signedById 
               })
               : {
-                number: store.order.list.first?.number + 1,
-                signedBy: store.order.list.first?.signedBy?.id || employeeChiefFirst?.id,
+                number: (order.list.first?.number ?? 0) + 1,
+                signedById: order.list.first?.signedById || employeeChiefFirst?.id,
                 signedAt: dates.today(),
-                }
+              }
             }
           >
             <Form.Item
@@ -89,7 +92,7 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
             </Form.Item>
             <Form.Item
                 label="Підписав"
-                name="signedBy"
+                name="signedById"
                 rules={[{ required: true, message: 'Обов\'язкове поле' }]}
               >
               <Select>

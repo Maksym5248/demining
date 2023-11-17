@@ -15,21 +15,17 @@ interface Props {
   hide: () => void
 }
 
-// initial values
-// list
-// store
-
 export const MissionRequestCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
   const store = useStore();
 
   const missionRequest = store.missionRequest.collection.get(id);
 
   useEffect(() => {
-    store.order.fetchList.run();
+    store.missionRequest.fetchList.run();
   }, []);
 
   const isEdit = !!id;
-  const isLoading = !store.order.fetchList.isLoaded && store.order.fetchList.inProgress;
+  const isLoading = !store.missionRequest.fetchList.isLoaded && store.missionRequest.fetchList.inProgress;
 
   const onFinishCreate = async (values: IMissionRequestForm) => {
     await store.missionRequest.add.run(values);
@@ -61,7 +57,7 @@ export const MissionRequestCreateModal: React.FC = observer(({ id, isVisible, hi
             initialValues={missionRequest
               ? Object.assign({}, missionRequest)
               : {
-                number: store.order.list.first?.number + 1,
+                number: (store.missionRequest.list.first?.number ?? 0) + 1,
                 signedAt: dates.today(),
                 }
             }

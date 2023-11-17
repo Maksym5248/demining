@@ -58,7 +58,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
 });
 
 const fetchList = asyncAction<Instance<typeof Store>>(() => {
-  return async function addEmployeeFlow({ flow, self, root }) {
+  return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
       const res = await DB.order.getList({
@@ -67,8 +67,6 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
           type: "desc",
         }
       });
-
-      await root.employee.fetchByIds.run(res.map(el => el.signedById))
 
       self.push(res);
 
