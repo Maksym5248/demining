@@ -51,7 +51,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     try {
       flow.start();
 
-      const res = await DB.missionRequest.getList({
+      const res = await DB.missionRequest.select({
         order: {
           by: "number",
           type: "desc",
@@ -69,7 +69,6 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
 
       flow.success();
     } catch (err) {
-      console.log("3");
       flow.failed(err);
     }
   };

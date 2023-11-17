@@ -30,10 +30,12 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValue>)
       flow.start();
 
       const res = await DB.order.add(createOrderDB(data));
+
       const order = createOrder(res);
 
       self.collection.set(res.id, order);
       self.list.unshift(res.id);
+
       flow.success();
       message.success('Додано успішно');
     } catch (err) {
@@ -61,11 +63,11 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      const res = await DB.order.getList({
+      const res = await DB.order.select({
         order: {
           by: "number",
           type: "desc",
-        }
+        },
       });
 
       self.push(res);

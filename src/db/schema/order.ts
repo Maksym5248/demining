@@ -22,7 +22,7 @@ export const schemaOrder = {
         },
         signedBy: {
             notNull: true,
-            dataType: DATA_TYPE.String
+            dataType: DATA_TYPE.Object
         },
         number: {
             unique: true,

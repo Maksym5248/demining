@@ -1,14 +1,16 @@
 import { Dayjs } from 'dayjs';
+import { getSnapshot, IStateTreeNode } from 'mobx-state-tree';
 
 import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
-import { IOrderDB } from '~/db';
+import { IOrderDB, IEmployeeDB } from '~/db';
+
+
 
 export interface IOrderValue {
   id: string,
   signedAt: Dayjs,
-  signedById: string,
-  signedBy: string,
+  signedBy: IEmployeeDB,
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
@@ -16,8 +18,8 @@ export interface IOrderValue {
 
 export const createOrderDB = (order: Partial<IOrderValue>): CreateValue<IOrderDB>  => ({
   signedAt: dates.toDate(order.signedAt),
-  signedById: order.signedById,
-  signedBy: order.signedBy ? JSON.stringify(order.signedBy) : undefined,
+  signedById: order.signedBy.id,
+  signedBy: getSnapshot(order.signedBy as IStateTreeNode),
   number: order.number
 });
 
@@ -26,8 +28,7 @@ export const updateOrderDB = data.createUpdateDB<IOrderValue, IOrderDB>(createOr
 export const createOrder = (order: IOrderDB): IOrderValue => ({
   id: order.id,
   signedAt: dates.create(order.signedAt),
-  signedById: order.signedById,
-  signedBy: order.signedBy ? JSON.parse(order.signedBy): undefined,
+  signedBy: order.signedBy,
   number: order.number,
   createdAt: dates.create(order.createdAt),
   updatedAt: dates.create(order.updatedAt),

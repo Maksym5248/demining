@@ -82,7 +82,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     try {
       flow.start();
 
-      const res = await DB.employee.getList();
+      const res = await DB.employee.select();
 
       self.push(res);
 

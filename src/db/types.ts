@@ -16,7 +16,7 @@ export interface IOrderDB {
     id: string;
     signedAt: Date;
     signedById: string;
-    signedBy: string;
+    signedBy: IEmployeeDB;
     number: number;
     createdAt: Date;
     updatedAt: Date;

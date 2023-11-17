@@ -53,12 +53,12 @@ export const Layout: React.FC = () => {
       label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
       onClick: () => navigate(ROUTES.EMPLOYEES_LIST)
     },
-    {
-      key: '4',
-      icon: <Icon.DatabaseOutlined />,
-      label: 'Статистика',
-      onClick: () => navigate("template")
-    },
+    // {
+    //   key: '4',
+    //   icon: <Icon.DatabaseOutlined />,
+    //   label: 'Статистика',
+    //   onClick: () => navigate("template")
+    // },
     {
       key: '5',
       icon: <Icon.VideoCameraOutlined />,

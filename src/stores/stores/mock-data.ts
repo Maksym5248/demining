@@ -43,3 +43,21 @@ export const mockEmployees = [{
     type: EMPLOYEE_TYPE.WORKER,
     position: "Водій",
 }]
+
+
+export const mockMissionRequest = [{
+    number: 1,
+    signedAt: new Date()
+},{
+    number: 2,
+    signedAt: new Date()
+},{
+    number: 3,
+    signedAt: new Date()
+},{
+    number: 4,
+    signedAt: new Date()
+},{
+    number: 5,
+    signedAt: new Date()
+}]

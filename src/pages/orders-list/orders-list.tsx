@@ -19,7 +19,6 @@ const ListItem = observer(({ item }: { item: IOrder}) => {
 
   const onGoToOrderEdit = (id:string) => (e:React.SyntheticEvent) => {
     e.preventDefault();
-    console.log('TEST')
     Modal.show(MODALS.ORDER_CREATE, { id })
   };
 

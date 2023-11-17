@@ -20,7 +20,6 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 
   const onGoToEmployeesEdit = (id:string) => (e:React.SyntheticEvent) => {
     e.preventDefault();
-    console.log('TEST')
     Modal.show(MODALS.EMPLOYEES_CREATE, { id })
   };
 

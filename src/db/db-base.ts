@@ -35,7 +35,7 @@ export class DBBase<T> {
 
     }
 
-    getList(args?: Partial<Omit<ISelectQuery, 'from'>> ): Promise<T[]> {
+    select(args?: Partial<Omit<ISelectQuery, 'from'>> ): Promise<T[]> {
         const params:ISelectQuery = {
             from: this.tableName,
             ...args

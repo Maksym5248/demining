@@ -6,7 +6,7 @@ import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
 import { OrderStore } from './order';
 import { MissionRequestStore } from './mission-request';
-import { mockEmployees } from './mock-data';
+import { mockEmployees, mockMissionRequest } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -29,6 +29,10 @@ export const RootStore = types
       createMocks(){
         mockEmployees.forEach(el => {
           self.employee.add.run(el);
+        });
+
+        mockMissionRequest.forEach(el => {
+          self.missionRequest.add.run(el);
         });
       }
     };

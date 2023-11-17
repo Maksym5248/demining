@@ -13,6 +13,11 @@ export const schemaTransport = {
             notNull: true,
             dataType: DATA_TYPE.String
         },
+        
+        number: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
         /**
          * TRANSPORT_TYPE
          */
