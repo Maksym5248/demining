@@ -1,7 +1,7 @@
 import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
-import {IEmployeeDB } from '~/db';
+import { IEmployeeDTO } from '~/api';
 import { EMPLOYEE_TYPE } from '~/constants';
 import { dates, data } from '~/utils';
 
@@ -18,7 +18,7 @@ export interface IEmployeeValue {
   updatedAt: Dayjs;
 }
 
-export const createEmployeeDB = (employee: Partial<IEmployeeValue>): CreateValue<IEmployeeDB>  => ({
+export const createEmployeeDTO = (employee: CreateValue<IEmployeeValue>): CreateValue<IEmployeeDTO>  => ({
   type: employee.type || null,
   firstName: String(employee.firstName) || null,
   lastName: String(employee.lastName) || null,
@@ -27,10 +27,10 @@ export const createEmployeeDB = (employee: Partial<IEmployeeValue>): CreateValue
   position: employee.position || null,
 });
 
-export const updateEmployeeDB = data.createUpdateDB<IEmployeeValue, IEmployeeDB>(createEmployeeDB);
+export const updateEmployeeDTO = data.createUpdateDTO<IEmployeeValue, IEmployeeDTO>(createEmployeeDTO);
 
 
-export const createEmployee = (employee: IEmployeeDB): IEmployeeValue => ({
+export const createEmployee = (employee: IEmployeeDTO): IEmployeeValue => ({
   id: employee.id,
   type: employee.type || EMPLOYEE_TYPE.WORKER,
   firstName: String(employee.firstName) || '',

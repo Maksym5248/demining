@@ -20,10 +20,6 @@ export const schemaOrder = {
             notNull: true,
             dataType: DATA_TYPE.String
         },
-        signedBy: {
-            notNull: true,
-            dataType: DATA_TYPE.Object
-        },
         number: {
             unique: true,
             notNull: true,

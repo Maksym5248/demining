@@ -20,6 +20,5 @@ export const schemaExplosiveObjectType = {
         caliber: {
             dataType: DATA_TYPE.Number
         },
-
     }
 };

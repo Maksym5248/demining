@@ -1,5 +1,6 @@
 export * from './address';
 export * from './employee';
+export * from './employee-history';
 export * from './equipment';
 export * from './explosive-object-type';
 export * from './explosive-object';

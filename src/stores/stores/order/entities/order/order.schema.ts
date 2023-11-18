@@ -1,34 +1,42 @@
 import { Dayjs } from 'dayjs';
-import { getSnapshot, IStateTreeNode } from 'mobx-state-tree';
 
 import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
-import { IOrderDB, IEmployeeDB } from '~/db';
+import { IOrderDTO, IOrderDTOParams } from '~/api';
 
+import { createEmployeeHistory, IEmployeeHistoryValue } from "../../../employee"
 
 
 export interface IOrderValue {
   id: string,
   signedAt: Dayjs,
-  signedBy: IEmployeeDB,
+  signedBy: IEmployeeHistoryValue,
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
 }
 
-export const createOrderDB = (order: Partial<IOrderValue>): CreateValue<IOrderDB>  => ({
+export interface IOrderValueParams {
+  id: string,
+  signedAt: Dayjs,
+  signedById: string,
+  number: number,
+  createdAt: Dayjs,
+  updatedAt: Dayjs,
+}
+
+export const createOrderDTO = (order: CreateValue<IOrderValueParams>): CreateValue<IOrderDTOParams>  => ({
   signedAt: dates.toDate(order.signedAt),
-  signedById: order.signedBy.id,
-  signedBy: getSnapshot(order.signedBy as IStateTreeNode),
+  signedById: order.signedById,
   number: order.number
 });
 
-export const updateOrderDB = data.createUpdateDB<IOrderValue, IOrderDB>(createOrderDB);
+export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOParams>(createOrderDTO);
 
-export const createOrder = (order: IOrderDB): IOrderValue => ({
+export const createOrder = (order: IOrderDTO): IOrderValue => ({
   id: order.id,
   signedAt: dates.create(order.signedAt),
-  signedBy: order.signedBy,
+  signedBy: createEmployeeHistory(order.signedBy),
   number: order.number,
   createdAt: dates.create(order.createdAt),
   updatedAt: dates.create(order.updatedAt),

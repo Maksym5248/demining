@@ -1,13 +1,13 @@
 import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
-import { DB, IEmployeeDB } from '~/db'
+import { Api, IEmployeeDTO } from '~/api'
 import { EMPLOYEE_TYPE } from '~/constants'
 import { CreateValue } from '~/types'
 
 import { types } from '../../types'
 import { asyncAction , createCollection, createList, safeReference } from '../../utils';
-import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmployee, createEmployeeDB,  createRank } from './entities';
+import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmployee, createEmployeeDTO,  createRank } from './entities';
 import { ranksData } from './ranks-data'
 
 const Store = types
@@ -25,7 +25,7 @@ const Store = types
         self.ranksList.push(data.id);
       })
     },
-    push: (values: IEmployeeDB[]) => {
+    push: (values: IEmployeeDTO[]) => {
       values.forEach((el) => {
         const employee = createEmployee(el);
 
@@ -49,7 +49,7 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValu
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      const res = await DB.employee.add(createEmployeeDB(data));
+      const res = await Api.employee.add(createEmployeeDTO(data));
       const employee = createEmployee(res);
 
       self.collection.set(employee.id, employee);
@@ -66,7 +66,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      await DB.employee.remove(id);
+      await Api.employee.remove(id);
       self.list.removeById(id);
       self.collection.remove(id);
       flow.success();
@@ -82,7 +82,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     try {
       flow.start();
 
-      const res = await DB.employee.select();
+      const res = await Api.employee.getList();
 
       self.push(res);
 

@@ -32,19 +32,14 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
   const isEdit = !!id;
   const isLoading = (!order.fetchList.isLoaded && order.fetchList.inProgress) || (!order.fetchList.isLoaded && order.fetchList.inProgress);
 
-  const onFinishCreate = async ({signedById, ...values}: IOrderForm) => {
-    await order.add.run({
-      ...values,
-      signedBy: employeesListChief.find((el) => el.id === signedById)
-    });
+  const onFinishCreate = async (values: IOrderForm) => {
+    await order.add.run(values);
     hide();
   };
 
-  const onFinishUpdate = async ({signedById, ...values}: IOrderForm) => {
-    await currentOrder.update.run({
-      ...values,
-      signedBy: employeesListChief.find((el) => el.id === signedById)
-    });
+  const onFinishUpdate = async (values: IOrderForm) => {
+    console.log('values', values)
+    await currentOrder.update.run(values);
     hide();
   };
 
@@ -67,11 +62,11 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
             wrapperCol={{ span: 16 }}
             initialValues={currentOrder
               ? Object.assign({}, currentOrder, {
-                signedBy: currentOrder.signedBy 
+                signedById: currentOrder.signedBy?.employeeId
               })
               : {
                 number: (order.list.first?.number ?? 0) + 1,
-                signedById: order.list.first?.signedBy.id || employeeChiefFirst?.id,
+                signedById: order.list.first?.signedBy.employeeId || employeeChiefFirst?.id,
                 signedAt: dates.today(),
               }
             }

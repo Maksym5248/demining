@@ -23,6 +23,7 @@ export const rendererConfig: Configuration = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
     alias: {
+      "~/api": path.resolve(__dirname, "./src/api"),
       "~/components": path.resolve(__dirname, "./src/components"),
       "~/config": path.resolve(__dirname, "./src/config"),
       "~/constants": path.resolve(__dirname, "/src/constants"),

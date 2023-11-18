@@ -2,11 +2,11 @@ import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { UpdateValue } from '~/types'
-import { DB } from '~/db'
+import { Api } from '~/api'
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
-import { IMissionRequestValue, updateMissionRequestDB, createMissionRequest } from './mission-request.schema';
+import { IMissionRequestValue, updateMissionRequestDTO, createMissionRequest } from './mission-request.schema';
 
 export type IMissionRequest = Instance<typeof MissionRequest>
 
@@ -28,7 +28,7 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IMissionR
     try {
       flow.start();
 
-      const res = await DB.missionRequest.update(self.id, updateMissionRequestDB(data));    
+      const res = await Api.missionRequest.update(self.id, updateMissionRequestDTO(data));    
 
       self.updateFields(createMissionRequest(res));
 

@@ -2,19 +2,19 @@ import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { UpdateValue } from '~/types'
-import { DB } from '~/db'
+import { Api } from '~/api'
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
-import { Employee } from '../../../employee';
-import { IOrderValue, createOrder, updateOrderDB } from './order.schema';
+import { EmployeeHistory } from '../../../employee';
+import { IOrderValue, IOrderValueParams, createOrder, updateOrderDTO } from './order.schema';
 
 export type IOrder = Instance<typeof Order>
 
 const Entity = types.model('Order', {
   id: types.identifier,
   signedAt: types.dayjs,
-  signedBy: Employee.named("EmployeeOrder"),
+  signedBy: EmployeeHistory.named("EmployeeOrder"),
   number: types.number,
   createdAt: types.dayjs,
   updatedAt: types.dayjs,
@@ -25,12 +25,12 @@ const Entity = types.model('Order', {
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValue>) => {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValueParams>) => {
   return async function addFlow({ flow, self }) {
     try {
       flow.start();
 
-      const res = await DB.order.update(self.id, updateOrderDB(data));    
+      const res = await Api.order.update(self.id, updateOrderDTO(data));    
 
       self.updateFields(createOrder(res));
 

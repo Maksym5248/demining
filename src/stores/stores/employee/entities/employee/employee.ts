@@ -2,16 +2,14 @@ import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 import { upperCase, upperFirst } from 'lodash';
 
-
-
-import { DB } from '~/db'
+import { Api } from '~/api'
 import { UpdateValue } from '~/types'
 import { EMPLOYEE_TYPE } from '~/constants';
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
 import { Rank } from '../rank';
-import { createEmployee, updateEmployeeDB, IEmployeeValue } from './employee.schema';
+import { createEmployee, updateEmployeeDTO, IEmployeeValue } from './employee.schema';
 
 export type IEmployee = Instance<typeof Employee>
 
@@ -41,7 +39,7 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEmployee
     try {
       flow.start();
 
-      const res = await DB.employee.update(self.id, updateEmployeeDB(data));    
+      const res = await Api.employee.update(self.id, updateEmployeeDTO(data));    
 
       self.updateFields(createEmployee(res));
 

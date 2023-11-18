@@ -1,3 +1,4 @@
+export * from './db/document-type';
 export * from './db/employee-type';
 export * from './db/explosive-object-category';
 export * from './db/explosive-object-status';

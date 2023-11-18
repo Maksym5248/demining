@@ -2,10 +2,10 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { DB } from '~/db'
+import { Api } from '~/api'
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IMissionRequest, IMissionRequestValue, MissionRequest, createMissionRequest, createMissionRequestDB } from './entities';
+import { IMissionRequest, IMissionRequestValue, MissionRequest, createMissionRequest, createMissionRequestDTO } from './entities';
 
 const Store = types
   .model('MissionRequestStore', {
@@ -18,7 +18,7 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReque
     try {
       flow.start();
 
-      const res = await DB.missionRequest.add(createMissionRequestDB(data));
+      const res = await Api.missionRequest.add(createMissionRequestDTO(data));
       const missionRequest = createMissionRequest(res);
 
       self.collection.set(res.id, missionRequest);
@@ -35,7 +35,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
   return async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
-      await DB.missionRequest.remove(id);
+      await Api.missionRequest.remove(id);
       self.list.removeById(id);
       self.collection.remove(id);
       flow.success();
@@ -51,12 +51,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     try {
       flow.start();
 
-      const res = await DB.missionRequest.select({
-        order: {
-          by: "number",
-          type: "desc",
-        }
-      });
+      const res = await Api.missionRequest.getList();
 
       res.forEach((el) => {
         const missionRequest = createMissionRequest(el);

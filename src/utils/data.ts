@@ -3,7 +3,7 @@ import isUndefined from "lodash/isUndefined";
 
 import { UpdateValue, CreateValue } from '~/types'
 
-const createUpdateDB = <T, B>(fn: (v: Partial<T>)=> CreateValue<B>) => (value: Partial<T>): UpdateValue<B>  => {
+const createUpdateDTO = <T, B>(fn: (v: Partial<T>)=> CreateValue<B>) => (value: Partial<T>): UpdateValue<B>  => {
     const createdValues = fn(value);
     const keys = Object.keys(createdValues);
   
@@ -21,5 +21,5 @@ const createUpdateDB = <T, B>(fn: (v: Partial<T>)=> CreateValue<B>) => (value: P
   };
 
   export const data ={
-    createUpdateDB
+    createUpdateDTO
   }

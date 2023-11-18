@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
-import {IMissionRequestDB } from '~/db';
+import { IMissionRequestDTO } from '~/api';
 
 export interface IMissionRequestValue {
   id: string,
@@ -12,14 +12,14 @@ export interface IMissionRequestValue {
   updatedAt: Dayjs,
 }
   
-export const createMissionRequestDB = (value: Partial<IMissionRequestValue>): CreateValue<IMissionRequestDB>  => ({
+export const createMissionRequestDTO = (value: CreateValue<IMissionRequestValue>): CreateValue<IMissionRequestDTO>  => ({
   signedAt: dates.toDate(value.signedAt),
   number: value.number
 });
 
-export const updateMissionRequestDB = data.createUpdateDB<IMissionRequestValue, IMissionRequestDB>(createMissionRequestDB);
+export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue, IMissionRequestDTO>(createMissionRequestDTO);
 
-export const createMissionRequest = (value: IMissionRequestDB): IMissionRequestValue => ({
+export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequestValue => ({
   id: value.id,
   signedAt: dates.create(value.signedAt),
   number: value.number,

@@ -88,12 +88,22 @@ export class DBBase<T> {
     }
 
     async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {
-        const newValue = Object.assign({}, value, {
-            updatedAt: new Date(),
-        });
+        const newValue = {...value};
+
+        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        if(value?.id) delete value.id;
+        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        if(value?.updatedAt) delete value.updatedAt;
+        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        if(value?.createdAt) delete value.createdAt;
 
         await this.db.update({ in: this.tableName,
-            set: newValue,
+            set: Object.assign({}, newValue, {
+                updatedAt: new Date(),
+            }),
             where: {
                 id: id
             },

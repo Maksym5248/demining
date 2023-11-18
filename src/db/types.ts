@@ -1,4 +1,4 @@
-import { EMPLOYEE_TYPE } from "~/constants"
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE } from "~/constants"
 
 export interface IEmployeeDB {
     id: string;
@@ -12,11 +12,17 @@ export interface IEmployeeDB {
     updatedAt: Date;
 }
 
+export interface IEmployeeHistoryDB extends IEmployeeDB {
+    documentType: DOCUMENT_TYPE;
+    documentId: string;
+    employeeId: string;
+}
+
+
 export interface IOrderDB {
     id: string;
     signedAt: Date;
     signedById: string;
-    signedBy: IEmployeeDB;
     number: number;
     createdAt: Date;
     updatedAt: Date;
