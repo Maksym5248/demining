@@ -9,16 +9,21 @@ export const schemaExplosiveObjectType = {
             unique: true,
             primaryKey: true,
         },
-        type: {
-            notNull: true,
-            dataType: DATA_TYPE.String
-        },
         name: {
             notNull: true,
             dataType: DATA_TYPE.String
         },
-        caliber: {
-            dataType: DATA_TYPE.Number
+        fullName: {
+            notNull: true,
+            dataType: DATA_TYPE.String
         },
+        createdAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        },
+        updatedAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        }
     }
 };

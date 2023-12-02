@@ -4105,14 +4105,6 @@ etag@~1.8.1:
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
 
-event@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/event/-/event-1.0.0.tgz"
-  integrity sha512-/q6sbFBp32KzPv3nDAt3eio279pruEGP8JSvDpdHy7dhuQAYW1pvaDMq+vKm8+JS8PO5erorCP71sMpStZErgA==
-  dependencies:
-    method "~1.0.0"
-    reducible "~1.0.1"
-
 eventemitter3@^4.0.0:
   version "4.0.7"
   resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz"
@@ -5952,16 +5944,6 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-method@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/method/-/method-1.0.2.tgz"
-  integrity sha512-0BxVo2fPZK1gOfbQ7V8MWyiNLB+8dv8rREcOeQHnZdPZgUbdzXUUiqPszm8DY8sTk1ewWyloU6QSMUwF5+jc6Q==
-
-method@~2.0.x:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/method/-/method-2.0.0.tgz"
-  integrity sha512-JqK3SsKDlfW1+6HzlDcpsOBPyEA+gzKUN/3OG3yc6mvbcF/OyKd+OVJRht4TFABOpXV6IQVcc2kt1u5fWNjFCg==
-
 methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
@@ -7443,13 +7425,6 @@ rechoir@^0.8.0:
   integrity sha512-/vxpCXddiX8NGfGO/mTafwjq4aFa/71pvamip0++IQk3zG8cbCj0fifNPrjjF1XMXUne91jL9OoxmdykoEtifQ==
   dependencies:
     resolve "^1.20.0"
-
-reducible@~1.0.1:
-  version "1.0.6"
-  resolved "https://registry.npmjs.org/reducible/-/reducible-1.0.6.tgz"
-  integrity sha512-sH74nXS0dz8nQ4qtDpolj9u2nOwoyIg0f8+TQM1bHllTQw95e9hGSBq5Dn0nFTXkJ1VEJ5rTb2UazDhN+KXX9Q==
-  dependencies:
-    method "~2.0.x"
 
 regenerate-unicode-properties@^10.1.0:
   version "10.1.1"

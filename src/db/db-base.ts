@@ -2,9 +2,7 @@ import { Connection, ISelectQuery } from 'jsstore';
 import uuid from 'uuid/v4';
 import _ from 'lodash';
 
-import { Overwrite } from '~/types'
-
-export class DBBase<T> {
+export class DBBase<T extends {id: string}> {
     db: Connection;
     tableName: string;
 
@@ -59,7 +57,7 @@ export class DBBase<T> {
         return res
     }
 
-    async exist(field:string, value: any):Promise<boolean> {
+    async exist(field:keyof T, value: any):Promise<boolean> {
         const [res] = await this.db.select({
             from: this.tableName,
             where: {
@@ -85,6 +83,16 @@ export class DBBase<T> {
         });
 
         return _.isArray(res) ? res[0]: null;
+    }
+
+    async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[] | null>{
+        const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
+
+        const res = await Promise.all(values
+            .filter((value, i) => !filteredValues[i])
+            .map(value => this.add(value)));
+
+        return _.isArray(res) ? res: null;
     }
 
     async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {

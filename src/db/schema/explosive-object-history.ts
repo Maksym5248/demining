@@ -2,23 +2,34 @@ import { DATA_TYPE } from 'jsstore';
 
 import { TABLES } from '~/constants';
 
-export const schemaExplosiveObject = {
-    name: TABLES.EXPLOSIVE_OBJECT,
+export const schemaExplosiveObjectHistory = {
+    name: TABLES.EXPLOSIVE_OBJECT_HISTORY,
     columns: {
         id: {
             unique: true,
             primaryKey: true,
         },
         typeId: {
+            unique: true,
             notNull: true,
             dataType: DATA_TYPE.String
         },
-        name: {
+        /**
+         * EXPLOSIVE_OBJECT_STATUS
+         */
+        status: {
             notNull: true,
             dataType: DATA_TYPE.String
         },
-        caliber: {
-            dataType: DATA_TYPE.Number
+        /**
+         * EXPLOSIVE_OBJECT_CATEGORY
+         */
+        category: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
+        description: {
+            dataType: DATA_TYPE.String
         },
         createdAt: {
             notNull: true,

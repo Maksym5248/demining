@@ -1,6 +1,7 @@
 import { types, flow, getEnv, Instance } from 'mobx-state-tree';
 
 import { DB } from '~/db';
+import { Api } from '~/api';
 
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
@@ -34,13 +35,14 @@ export const RootStore = types
         mockMissionRequest.forEach(el => {
           self.missionRequest.add.run(el);
         });
-      }
+      },
     };
   }).actions((self) => {    
     return {
       init: flow(function* init() {
-        yield DB.init();
         self.employee.init();
+        yield DB.init();
+        yield Api.explosiveObjectType.init();
 
         try {
           yield self.viewer.fetchUser.run();

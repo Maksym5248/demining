@@ -22,6 +22,13 @@ class DBInitClass {
 
     dropDb = () => this.db.dropDb();
 
+    removeAllDbs = () => {
+        window.indexedDB.databases().then((r) => {
+            for (let i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
+        }).then(() => {
+            alert('All data cleared.');
+        });
+    }
     getDB() {
         return this.db;
     }
