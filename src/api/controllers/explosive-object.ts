@@ -2,6 +2,8 @@ import { DB } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'
 
 import { IExplosiveObjectDTO, IExplosiveObjectDTOParams } from '../types'
+import { explosiveObjectType } from "./explosive-object-type";
+import { explosiveObjects } from "../data";
 
 const add = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
  const explosiveObject = await DB.schemaExplosiveObject.add(value);
@@ -36,9 +38,56 @@ const getList = async ():Promise<IExplosiveObjectDTO[]> => {
   return res
 };
 
+const init = async ():Promise<void> => {
+  const types = await explosiveObjectType.getList();
+  const idACType = types.find(el => el.name === "AC");
+  const idММType = types.find(el => el.name === "ММ");
+  const idMLRSType = types.find(el => el.name === "РСЗВ");
+  const idRGType = types.find(el => el.name === "РГ");
+  const idIMType = types.find(el => el.name === "ІМ");
+
+  await Promise.all([ 
+        DB.schemaExplosiveObject.initData(
+          explosiveObjects.AC.map((caliber) => ({
+            typeId: idACType.id,
+            name: "",
+            caliber
+          })
+        ), "caliber"),
+        DB.schemaExplosiveObject.initData(
+          explosiveObjects.MM.map((caliber) => ({
+            typeId: idММType.id,
+            name: "",
+            caliber
+          })
+        ), "caliber"),
+        DB.schemaExplosiveObject.initData(
+          explosiveObjects.MLRS.map((caliber) => ({
+            typeId: idMLRSType.id,
+            name: "",
+            caliber
+          })
+        ), "caliber"),
+        DB.schemaExplosiveObject.initData(
+          explosiveObjects.RG.map((name) => ({
+            typeId: idRGType.id,
+            name
+          })
+        ), "name"),
+        DB.schemaExplosiveObject.initData(
+          explosiveObjects.IM.map((name) => ({
+            typeId: idIMType.id,
+            name
+          })
+        ), "name"),
+  ]);
+};
+
+
 export const explosiveObject = {
   add,
   update,
   remove,
-  getList
+  getList,
+  init
 }

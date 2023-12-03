@@ -39,7 +39,7 @@ export interface IMissionRequestDB {
 export interface IExplosiveObjectDB {
     id: string;
     typeId: string;
-    name: string;
+    name?: string;
     caliber?: number;
     createdAt: Date;
     updatedAt: Date;

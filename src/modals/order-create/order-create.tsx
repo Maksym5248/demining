@@ -38,7 +38,6 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
   };
 
   const onFinishUpdate = async (values: IOrderForm) => {
-    console.log('values', values)
     await currentOrder.update.run(values);
     hide();
   };

@@ -19,13 +19,28 @@ import {
   createExplosiveObjectTypeDTO,
 } from './entities';
 
+const getStr = (v: IExplosiveObject) => v.caliber ? `${v.type.fullName} ${v.caliber}` : `${v.type.fullName} ${v.name}`
+
 const Store = types
   .model('ExplosiveObjectStore', {
     collectionTypes: createCollection<IExplosiveObjectType, IExplosiveObjectTypeValue>("ExplosiveObjectTypes", ExplosiveObjectType),
     listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 20 }),
     collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
     list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 20 }),
-  });
+  }).views(self => ({
+    get sortedList(){
+      return self.list.asArray.sort((a, b) => {
+        const str1 = getStr(a);
+        const str2 = getStr(b);
+        return str1.localeCompare(str2, ["uk"], { numeric: true, sensitivity: 'base' })
+      })
+    },
+    get sortedListTypes(){
+      return self.listTypes.asArray.sort((a, b) => {
+        return a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' })
+      })
+    }
+  }));
 
 const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectTypeValue>) => {
   return async function addFlow({ flow, self }) {
@@ -112,11 +127,12 @@ const fetchListTypes = asyncAction<Instance<typeof Store>>(() => {
       flow.start();
 
       const res = await Api.explosiveObjectType.getList();
-
+      self.listTypes.clear();
+      
       res.forEach((el) => {
         const explosiveObjectType = createExplosiveObjectType(el);
         self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
-        self.list.push(explosiveObjectType.id);
+        self.listTypes.push(explosiveObjectType.id);
       })
 
       flow.success();

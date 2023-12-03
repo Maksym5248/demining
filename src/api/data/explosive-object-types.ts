@@ -10,4 +10,7 @@ export const explosiveObjectTypes = [{
 },{
     name: "РГ",
     fullName: "Ручна Граната"
+},{
+    name: "ІМ",
+    fullName: "Інженерні міни"
 }]

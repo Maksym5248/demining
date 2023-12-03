@@ -48,6 +48,12 @@ export const Layout: React.FC = () => {
       onClick: () => navigate(ROUTES.ORDER_LIST)
     },
     {
+      key: ROUTES.EXPLOSIVE_OBJECT_LIST,
+      icon: <Icon.FireOutlined />,
+      label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
+      onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST)
+    },
+    {
       key: ROUTES.EMPLOYEES_LIST,
       icon: <Icon.UserOutlined />,
       label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),

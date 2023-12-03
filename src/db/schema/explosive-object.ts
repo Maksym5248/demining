@@ -14,7 +14,6 @@ export const schemaExplosiveObject = {
             dataType: DATA_TYPE.String
         },
         name: {
-            notNull: true,
             dataType: DATA_TYPE.String
         },
         caliber: {

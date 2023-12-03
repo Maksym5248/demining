@@ -3,6 +3,7 @@ export enum ROUTES {
     ORDER_LIST ="/order-list",
     MISSION_REPORT_LIST ="/mission-reports-list",
     EMPLOYEES_LIST ="/employees-list",
+    EXPLOSIVE_OBJECT_LIST ="/explosive-object-list",
     // TRANSPORT_LIST ="/transport-list",
     // EQUIPMENT_LIST ="/equipment-list",
 }
@@ -19,5 +20,8 @@ export const routesInfo = {
     },
     [ROUTES.ORDER_LIST]: {
         title: "Накази",
+    },
+    [ROUTES.EXPLOSIVE_OBJECT_LIST]: {
+        title: "ВНП",
     },
 }

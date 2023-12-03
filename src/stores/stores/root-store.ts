@@ -7,6 +7,7 @@ import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
 import { OrderStore } from './order';
 import { MissionRequestStore } from './mission-request';
+import { ExplosiveObjectStore } from './explosive-object';
 import { mockEmployees, mockMissionRequest } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
@@ -16,6 +17,7 @@ export const RootStore = types
     employee: types.optional(EmployeeStore, {}),
     order: types.optional(OrderStore, {}),
     missionRequest: types.optional(MissionRequestStore, {}),
+    explosiveObject: types.optional(ExplosiveObjectStore, {}),
     viewer: types.optional(ViewerStore, {}),
     isInitialized: false,
   })
@@ -43,6 +45,7 @@ export const RootStore = types
         self.employee.init();
         yield DB.init();
         yield Api.explosiveObjectType.init();
+        yield Api.explosiveObject.init();
 
         try {
           yield self.viewer.fetchUser.run();
