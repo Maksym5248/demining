@@ -54,12 +54,6 @@ export const schemaMissionReport = {
         uncheckedReason: {
             dataType: DATA_TYPE.Number
         },
-        /**
-        * explosive-object
-        */
-        explosiveObjectsIds: {
-            dataType: DATA_TYPE.Array
-        },
         exclusionStart: {
             dataType: DATA_TYPE.DateTime
         },
@@ -78,21 +72,26 @@ export const schemaMissionReport = {
         destroyedEnd: {
             dataType: DATA_TYPE.DateTime
         },
-        transportIds: {
-            notNull: true,
-            dataType: DATA_TYPE.Array
-        },
-        equipmentIds: {
-            notNull: true,
-            dataType: DATA_TYPE.Array
-        },
-        squadLeaderId: {
-            notNull: true,
-            dataType: DATA_TYPE.String
-        },
-        squadIds: {
-            notNull: true,
-            dataType: DATA_TYPE.Array
-        },
+        // transportIds: {
+        //     notNull: true,
+        //     dataType: DATA_TYPE.Array
+        // },
+        // equipmentIds: {
+        //     notNull: true,
+        //     dataType: DATA_TYPE.Array
+        // },
+
+        // explosiveObject: { explosive-objects-history
+        //     notNull: true,
+        //     dataType: DATA_TYPE.Array
+        // },
+        // squadLeaderId: { employee-history
+        //     notNull: true,
+        //     dataType: DATA_TYPE.String
+        // },
+        // squadIds: { employee-history
+        //     notNull: true,
+        //     dataType: DATA_TYPE.Array
+        // },
     }
 };

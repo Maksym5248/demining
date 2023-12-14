@@ -8,7 +8,9 @@ import { EmployeeStore } from './employee';
 import { OrderStore } from './order';
 import { MissionRequestStore } from './mission-request';
 import { ExplosiveObjectStore } from './explosive-object';
-import { mockEmployees, mockMissionRequest } from './mock-data';
+import { TransportStore } from './transport';
+import { EquipmentStore } from './equipment';
+import { mockEmployees, mockMissionRequest, mockEquipment, mockTransport } from './mock-data';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -18,6 +20,8 @@ export const RootStore = types
     order: types.optional(OrderStore, {}),
     missionRequest: types.optional(MissionRequestStore, {}),
     explosiveObject: types.optional(ExplosiveObjectStore, {}),
+    transport: types.optional(TransportStore, {}),
+    equipment: types.optional(EquipmentStore, {}),
     viewer: types.optional(ViewerStore, {}),
     isInitialized: false,
   })
@@ -37,6 +41,14 @@ export const RootStore = types
         mockMissionRequest.forEach(el => {
           self.missionRequest.add.run(el);
         });
+
+        mockTransport.forEach(el => {
+          self.transport.add.run(el);
+        });
+
+        mockEquipment.forEach(el => {
+          self.equipment.add.run(el);
+        });
       },
     };
   }).actions((self) => {    
@@ -44,8 +56,7 @@ export const RootStore = types
       init: flow(function* init() {
         self.employee.init();
         yield DB.init();
-        yield Api.explosiveObjectType.init();
-        yield Api.explosiveObject.init();
+        yield Api.init();
 
         try {
           yield self.viewer.fetchUser.run();

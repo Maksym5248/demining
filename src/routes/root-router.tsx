@@ -12,6 +12,8 @@ import {
   ErrorNotFoundPage,
   EmployeesListPage,
   ExplosiveObjectListPage,
+  TransportListPage,
+  EquipmentListPage,
   DevPage 
 } from "~/pages"
 import { CONFIG } from "~/config";
@@ -39,6 +41,14 @@ const routes = [
   {
     path: ROUTES.EXPLOSIVE_OBJECT_LIST,
     Component: ExplosiveObjectListPage,
+  },
+  {
+    path: ROUTES.TRANSPORT_LIST,
+    Component: TransportListPage,
+  },
+  {
+    path: ROUTES.EQUIPMENT_LIST,
+    Component: EquipmentListPage,
   },
   {
     path: "*",

@@ -1,6 +1,6 @@
 import { DATA_TYPE } from 'jsstore';
 
-import { TABLES } from '~/constants';
+import { TABLES, EQUIPMENT_TYPE } from '~/constants';
 
 export const schemaEquipment = {
     name: TABLES.EQUIPMENT,
@@ -12,11 +12,19 @@ export const schemaEquipment = {
         type: {
             notNull: true,
             dataType: DATA_TYPE.String,
-            default: "MINE_DETECTOR",
+            default: EQUIPMENT_TYPE.MINE_DETECTOR,
         },
         name: {
             notNull: true,
             dataType: DATA_TYPE.String
         },
+        createdAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        },
+        updatedAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        }
     }
 };

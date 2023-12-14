@@ -5,19 +5,19 @@ import { ERRORS } from '~/constants'
 import { IExplosiveObjectTypeDTO } from '../types'
 import {explosiveObjectTypes } from '../data'
 
-const add = (value: CreateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.schemaExplosiveObjectType.add(value);
-const update = (id:string, value: UpdateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.schemaExplosiveObjectType.update(id, value);
+const add = (value: CreateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.explosiveObjectType.add(value);
+const update = (id:string, value: UpdateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.explosiveObjectType.update(id, value);
 const remove = async (id:string) => {
-  const isCreateExplosiveObject = await DB.schemaExplosiveObject.exist("typeId", id);
+  const isCreateExplosiveObject = await DB.explosiveObject.exist("typeId", id);
 
   if(isCreateExplosiveObject){
     throw new Error(ERRORS.HAS_RELATIONS);
   }
 
-  return DB.schemaExplosiveObjectType.remove(id)
+  return DB.explosiveObjectType.remove(id)
 };
-const getList = ():Promise<IExplosiveObjectTypeDTO[]> => DB.schemaExplosiveObjectType.select();
-const init = ():Promise<IExplosiveObjectTypeDTO[]> => DB.schemaExplosiveObjectType.initData(explosiveObjectTypes, "fullName");
+const getList = ():Promise<IExplosiveObjectTypeDTO[]> => DB.explosiveObjectType.select();
+const init = ():Promise<IExplosiveObjectTypeDTO[]> => DB.explosiveObjectType.initData(explosiveObjectTypes, "fullName");
 
 export const explosiveObjectType = {
   init,

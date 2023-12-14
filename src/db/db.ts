@@ -11,7 +11,10 @@ import {
     schemaMissionRequest,
     schemaEmployeeHistory,
     schemaExplosiveObject,
-    schemaExplosiveObjectType
+    schemaExplosiveObjectType,
+    schemaExplosiveObjectHistory,
+    schemaEquipment,
+    schemaTransport,
 } from './schema';
 import {
     IEmployeeDB, 
@@ -19,7 +22,10 @@ import {
     IOrderDB,
     IMissionRequestDB,
     IExplosiveObjectDB,
-    IExplosiveObjectTypeDB
+    IExplosiveObjectTypeDB,
+    IExplosiveObjectHistoryDB,
+    ITransportDB,
+    IEquipmentDB
 } from './types';
 
 const getSchema = ():IDataBase => ({
@@ -31,7 +37,10 @@ const getSchema = ():IDataBase => ({
         schemaOrder,
         schemaMissionRequest,
         schemaExplosiveObject,
-        schemaExplosiveObjectType
+        schemaExplosiveObjectType,
+        schemaExplosiveObjectHistory,
+        schemaEquipment,
+        schemaTransport,
     ]
 } as IDataBase)
 
@@ -42,6 +51,9 @@ export const DB = {
     employeeHistory: new DBBase<IEmployeeHistoryDB>(DBInit.getDB(), TABLES.EMPLOYEE_HISTORY),
     missionRequest: new DBBase<IMissionRequestDB>(DBInit.getDB(), TABLES.MISSION_REQUEST),
     order: new DBBase<IOrderDB>(DBInit.getDB(), TABLES.ORDER),
-    schemaExplosiveObject: new DBBase<IExplosiveObjectDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT),
-    schemaExplosiveObjectType: new DBBase<IExplosiveObjectTypeDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_TYPE),
+    explosiveObject: new DBBase<IExplosiveObjectDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT),
+    explosiveObjectType: new DBBase<IExplosiveObjectTypeDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_TYPE),
+    explosiveObjectHistory: new DBBase<IExplosiveObjectHistoryDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_HISTORY),
+    transport: new DBBase<ITransportDB>(DBInit.getDB(), TABLES.TRANSPORT),
+    equipment: new DBBase<IEquipmentDB>(DBInit.getDB(), TABLES.EQUIPMENT),
 }

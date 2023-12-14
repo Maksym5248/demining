@@ -1,4 +1,4 @@
-import { RANKS, EMPLOYEE_TYPE } from "~/constants"
+import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE } from "~/constants"
 
 export const mockEmployees = [{
     firstName: "Андрій",
@@ -60,4 +60,27 @@ export const mockMissionRequest = [{
 },{
     number: 5,
     signedAt: new Date()
-}]
+}];
+
+export const mockTransport = [{
+    name: "Toyota Hilux",
+    number: "КА 706 Е",
+    type: TRANSPORT_TYPE.FOR_HUMANS,
+},{
+    name: "Toyota Land Cruiser",
+    number: "КА 645 Е",
+    type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS,
+}, {
+    name: "Toyota Hilux 2",
+    number: "КА 7062 Е",
+    type: TRANSPORT_TYPE.FOR_HUMANS,
+},{
+    name: "Toyota Land Cruiser 2",
+    number: "КА 6452 Е",
+    type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS,
+}];
+
+export const mockEquipment = [{
+    name: "Minelab F3",
+    type: EQUIPMENT_TYPE.MINE_DETECTOR,
+},]

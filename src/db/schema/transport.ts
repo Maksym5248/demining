@@ -25,5 +25,13 @@ export const schemaTransport = {
             notNull: true,
             dataType: DATA_TYPE.String
         },
+        createdAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        },
+        updatedAt: {
+            notNull: true,
+            dataType: DATA_TYPE.DateTime,
+        }
     }
 };

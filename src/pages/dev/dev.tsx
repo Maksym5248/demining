@@ -32,6 +32,8 @@ const { Title } = Typography;
         <Space css={s.titleContainer}>
             <Title level={4}>Development</Title>
         </Space>
+
+        <div css={s.content}>
         <Space>
           <Button onClick={onClickGenerateEmployee}>
             Згенеруват дані о/c
@@ -42,6 +44,7 @@ const { Title } = Typography;
             Вдалити базу даних
           </Button>
         </Space>
+        </div>
       </div>
     );
   });

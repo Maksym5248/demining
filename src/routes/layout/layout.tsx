@@ -37,7 +37,7 @@ export const Layout: React.FC = () => {
     },
         {
       key: ROUTES.MISSION_REQUEST_LIST,
-      icon: <Icon.FileTextOutlined />,
+      icon: <Icon.FileExclamationOutlined />,
       label: nav.getRouteTitle(ROUTES.MISSION_REQUEST_LIST),
       onClick: () => navigate(ROUTES.MISSION_REQUEST_LIST)
     },
@@ -55,19 +55,25 @@ export const Layout: React.FC = () => {
     },
     {
       key: ROUTES.EMPLOYEES_LIST,
-      icon: <Icon.UserOutlined />,
+      icon: <Icon.TeamOutlined />,
       label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
       onClick: () => navigate(ROUTES.EMPLOYEES_LIST)
     },
-    // {
-    //   key: '4',
-    //   icon: <Icon.DatabaseOutlined />,
-    //   label: 'Статистика',
-    //   onClick: () => navigate("template")
-    // },
+    {
+      key: ROUTES.TRANSPORT_LIST,
+      icon: <Icon.CarOutlined />,
+      label: nav.getRouteTitle(ROUTES.TRANSPORT_LIST),
+      onClick: () => navigate(ROUTES.TRANSPORT_LIST)
+    },
+    {
+      key: ROUTES.EQUIPMENT_LIST,
+      icon: <Icon.ToolOutlined />,
+      label: nav.getRouteTitle(ROUTES.EQUIPMENT_LIST),
+      onClick: () => navigate(ROUTES.EQUIPMENT_LIST)
+    },
     {
       key: '5',
-      icon: <Icon.VideoCameraOutlined />,
+      icon: <Icon.SettingOutlined />,
       label: 'Налаштування',
       onClick: () => navigate("template")
     },
@@ -77,7 +83,7 @@ export const Layout: React.FC = () => {
     items.push(
       {
         key: '999',
-        icon: <Icon.FileTextOutlined />,
+        icon: <Icon.DeploymentUnitOutlined />,
         label: 'DEV',
         onClick: () => navigate("dev")
       },

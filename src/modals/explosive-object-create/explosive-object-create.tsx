@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { Button, Form, Input, Space, Drawer, InputNumber, Spin, Select, Divider} from 'antd';
+import { Button, Form, Input, Space, Drawer, InputNumber, Spin, Select} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
-import { Icon } from '~/components'
 
 import { s } from './explosive-object-create.style'
 import { IExplosiveObjectForm } from './explosive-object-create.types';
@@ -68,15 +67,6 @@ export const ExplosiveObjectCreateModal: React.FC = observer(({ id, isVisible, h
                 rules={[{ required: true, message: 'Обов\'язкове поле' }]}
               >
               <Select
-                dropdownRender={(menu) => (
-                  <>
-                    {menu}
-                    <Divider style={{ margin: '8px 0' }} />
-                    <Space style={{ padding: '0 8px 4px' }}>
-                        <Button type="text" icon={<Icon.PlusOutlined />}>Додати</Button>
-                    </Space>
-                  </>
-                )}
                 options={explosiveObject.sortedListTypes.map((el) => ({ label: el.fullName, value: el.id }))}
               />
             </Form.Item>

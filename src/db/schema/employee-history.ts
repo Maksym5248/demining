@@ -16,6 +16,10 @@ export const schemaEmployeeHistory = {
             notNull: true,
             dataType: DATA_TYPE.String
         },
+        isLeader: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
         employeeId: {
             notNull: true,
             dataType: DATA_TYPE.String

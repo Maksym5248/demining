@@ -4,7 +4,9 @@ import {
     IOrderDB,
     IMissionRequestDB,
     IExplosiveObjectDB,
-    IExplosiveObjectTypeDB
+    IExplosiveObjectTypeDB,
+    ITransportDB,
+    IEquipmentDB
 } from "~/db"
 
 export type IEmployeeDTO = IEmployeeDB
@@ -24,4 +26,7 @@ export interface IExplosiveObjectDTO extends Omit<IExplosiveObjectDB, "typeId">{
     type: IExplosiveObjectTypeDTO;
 }
 
-export type IExplosiveObjectDTOParams = IExplosiveObjectDB
+export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
+export type ITransportDTO = ITransportDB
+export type IEquipmentDTO = IEquipmentDB
+

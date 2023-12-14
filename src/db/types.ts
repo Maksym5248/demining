@@ -1,4 +1,4 @@
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE } from "~/constants"
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE } from "~/constants"
 
 export interface IEmployeeDB {
     id: string;
@@ -49,6 +49,35 @@ export interface IExplosiveObjectTypeDB {
     id: string;
     name: string;
     fullName: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExplosiveObjectHistoryDB extends IExplosiveObjectDB {
+    explosiveObjectId: string;
+    missionReportId: string;
+    quantity: number;
+    category: EXPLOSIVE_OBJECT_CATEGORY;
+    isDiscovered: boolean;
+    isTransported: boolean;
+    isDestroyed: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface ITransportDB {
+    id: string;
+    name: string;
+    number: string;
+    type: TRANSPORT_TYPE;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IEquipmentDB {
+    id: string;
+    name: string;
+    type: EQUIPMENT_TYPE;
     createdAt: Date;
     updatedAt: Date;
 }
