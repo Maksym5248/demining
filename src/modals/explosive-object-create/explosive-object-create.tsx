@@ -55,7 +55,7 @@ export const ExplosiveObjectCreateModal: React.FC = observer(({ id, isVisible, h
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={currentExplosiveObject
-              ? Object.assign({}, currentExplosiveObject)
+              ? Object.assign({ typeId: currentExplosiveObject?.type?.id}, currentExplosiveObject)
               : {
                 typeId: firstType?.id
               }

@@ -1,15 +1,12 @@
 /*
- 1 - create item;
- 2 - list of items
- 3 - integrate local database
- 4 - generate docx file (акт виконаних робіт)
- 5 - add coordinates of 
- 6 - generate docx file (акт списання робіт)
- 7 - create statistic for different items
- 8 - generate report for season or year
- 9 - money for every person in act
- 10. локалізація укр, календар, винести строки json
+Feature:
 
+1 - create item;
+2 - list of items
+3 + integrate local database
+4 - generate docx file (акт виконаних робіт)
+5. локалізація укр, календар, винести строки json
+6. витрати палива
 
 DB
 1 - what if position of person will be changed or rank, should we save original data in report ?
@@ -22,4 +19,5 @@ DB
 4 - виплат за місяць
 5 - звіти по боєприпасам (квартальні та річні)
 6 - пільгова вслуга
+6 - Підрахунок витрат палива
 */
