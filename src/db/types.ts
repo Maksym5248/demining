@@ -74,6 +74,9 @@ export interface ITransportDB {
     updatedAt: Date;
 }
 
+export type ITransportHistoryDB = ITransportDB;
+
+
 export interface IEquipmentDB {
     id: string;
     name: string;
@@ -81,3 +84,5 @@ export interface IEquipmentDB {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export type IEquipmentHistoryDB = IEquipmentDB

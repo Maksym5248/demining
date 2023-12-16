@@ -72,6 +72,10 @@ export const schemaMissionReport = {
         destroyedEnd: {
             dataType: DATA_TYPE.DateTime
         },
+        squadLeaderId: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
         // transportIds: {
         //     notNull: true,
         //     dataType: DATA_TYPE.Array

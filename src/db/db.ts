@@ -14,7 +14,9 @@ import {
     schemaExplosiveObjectType,
     schemaExplosiveObjectHistory,
     schemaEquipment,
+    schemaEquipmentHistory,
     schemaTransport,
+    schemaTransportHistory
 } from './schema';
 import {
     IEmployeeDB, 
@@ -25,7 +27,9 @@ import {
     IExplosiveObjectTypeDB,
     IExplosiveObjectHistoryDB,
     ITransportDB,
-    IEquipmentDB
+    ITransportHistoryDB,
+    IEquipmentDB,
+    IEquipmentHistoryDB
 } from './types';
 
 const getSchema = ():IDataBase => ({
@@ -40,7 +44,9 @@ const getSchema = ():IDataBase => ({
         schemaExplosiveObjectType,
         schemaExplosiveObjectHistory,
         schemaEquipment,
+        schemaEquipmentHistory,
         schemaTransport,
+        schemaTransportHistory
     ]
 } as IDataBase)
 
@@ -55,5 +61,7 @@ export const DB = {
     explosiveObjectType: new DBBase<IExplosiveObjectTypeDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_TYPE),
     explosiveObjectHistory: new DBBase<IExplosiveObjectHistoryDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_HISTORY),
     transport: new DBBase<ITransportDB>(DBInit.getDB(), TABLES.TRANSPORT),
+    transportHistory: new DBBase<ITransportHistoryDB>(DBInit.getDB(), TABLES.TRANSPORT_HISTORY),
     equipment: new DBBase<IEquipmentDB>(DBInit.getDB(), TABLES.EQUIPMENT),
+    equipmentHistory: new DBBase<IEquipmentHistoryDB>(DBInit.getDB(), TABLES.EQUIPMENT_HISTORY),
 }
