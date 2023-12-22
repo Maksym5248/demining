@@ -22,6 +22,13 @@ const Entity = types.model('ExplosiveObject', {
   updateFields(data: Partial<IExplosiveObjectValueParams>) {
       Object.assign(self, data);
   }
+})).views((self) => ({
+  get displayName(){
+    return self.caliber ? `Калібр: ${self.caliber}`: self.name
+  },
+  get fullDisplayName(){
+    return `${self.type.name} - ` + (self.caliber ? `Калібр: ${self.caliber}`: self.name)
+  }
 }));
 
 const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IExplosiveObjectValueParams>) => {

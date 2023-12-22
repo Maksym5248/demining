@@ -7,19 +7,33 @@ const titleContainer = Theme.css(`
     margin: 0 0 24px 0;
 `)
 
-const number = Theme.css(`
+const first = Theme.css(`
     display: inline-block;
     margin: 9;
 `)
 
-const subNumber = Theme.css(`
+const last = Theme.css(`
     display: inline-block;
     margin: 0 0 0 8px;
+`);
+
+const spin = Theme.css(`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+`)
+
+const item = Theme.css(`
+    margin-bottom: 0px
 `)
 
 export const s = {
     titleContainer,
-    number,
-    subNumber
+    first,
+    last,
+    spin,
+    item
 }
     

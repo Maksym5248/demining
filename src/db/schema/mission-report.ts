@@ -26,12 +26,14 @@ export const schemaMissionReport = {
             dataType: DATA_TYPE.DateTime
         },
         orderId: {
-            unique: true,
             notNull: true,
             dataType: DATA_TYPE.String
         },
-        addressId: {
-            unique: true,
+        missionRequestId: {
+            notNull: true,
+            dataType: DATA_TYPE.String
+        },
+        addressId: { // --------
             notNull: true,
             dataType: DATA_TYPE.String
         },
@@ -52,7 +54,7 @@ export const schemaMissionReport = {
             dataType: DATA_TYPE.Number
         },
         uncheckedReason: {
-            dataType: DATA_TYPE.Number
+            dataType: DATA_TYPE.String
         },
         exclusionStart: {
             dataType: DATA_TYPE.DateTime

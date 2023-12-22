@@ -79,6 +79,10 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
 
 const fetchList = asyncAction<Instance<typeof Store>>(() => {
   return async function addEmployeeFlow({ flow, self }) {
+    if(flow.isLoaded){
+      return
+    }
+    
     try {
       flow.start();
 

@@ -1,5 +1,5 @@
 
-export interface IEmployeeForm {
+export interface IMissionReportForm {
     firstName: string;
     lastName: string;
     position: string;

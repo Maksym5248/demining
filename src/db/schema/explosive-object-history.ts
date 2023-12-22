@@ -30,15 +30,18 @@ export const schemaExplosiveObjectHistory = {
         },
         isDiscovered: {
             notNull: true,
-            dataType: DATA_TYPE.Boolean
+            dataType: DATA_TYPE.Boolean,
+            default: false,
         },
         isTransported: {
             notNull: true,
-            dataType: DATA_TYPE.Boolean
+            dataType: DATA_TYPE.Boolean,
+            default: false,
         },
         isDestroyed: {
             notNull: true,
-            dataType: DATA_TYPE.Boolean
+            dataType: DATA_TYPE.Boolean,
+            default: false,
         },
     }
 };

@@ -1,4 +1,8 @@
 /*
+Improvments
+1 -  обмежити видалення
+2 -  Performance, не завантажувати всі списки одночасно
+
 Feature:
 
 1 - create item;

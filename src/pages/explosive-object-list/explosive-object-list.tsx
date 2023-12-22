@@ -50,7 +50,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
           title={item.type.fullName}
           description={
             <Space css={s.listItemDesc}>
-                <Text type="secondary">{item.caliber ? `Калібр: ${item.caliber}`: item.name}</Text>
+                <Text type="secondary">{item.displayName}</Text>
             </Space>
           }
         >

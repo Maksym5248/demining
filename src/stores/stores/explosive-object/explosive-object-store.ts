@@ -95,6 +95,10 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
 
 const fetchList = asyncAction<Instance<typeof Store>>(() => {
   return async function addFlow({ flow, self }) {
+    if(flow.isLoaded){
+      return
+    }
+    
     try {
       flow.start();
 
@@ -123,6 +127,10 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
 
 const fetchListTypes = asyncAction<Instance<typeof Store>>(() => {
   return async function addFlow({ flow, self }) {
+    if(flow.isLoaded){
+      return
+    }
+
     try {
       flow.start();
 
