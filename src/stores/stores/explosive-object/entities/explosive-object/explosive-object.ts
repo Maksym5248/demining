@@ -24,10 +24,11 @@ const Entity = types.model('ExplosiveObject', {
   }
 })).views((self) => ({
   get displayName(){
-    return self.caliber ? `Калібр: ${self.caliber}`: self.name
+    return `${self.name ?? ""}${self.name && self.caliber ? "  -  ": ""}${self.caliber ? self.caliber : ""}`
   },
+})).views((self) => ({
   get fullDisplayName(){
-    return `${self.type.name} - ` + (self.caliber ? `Калібр: ${self.caliber}`: self.name)
+    return `${self.type.name}${self.displayName ? " -  ": ""}${self.displayName}`
   }
 }));
 

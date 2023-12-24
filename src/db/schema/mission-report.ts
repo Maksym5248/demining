@@ -56,22 +56,19 @@ export const schemaMissionReport = {
         uncheckedReason: {
             dataType: DATA_TYPE.String
         },
-        exclusionStart: {
+        workStart: {
             dataType: DATA_TYPE.DateTime
         },
-        exclusionEnd: {
+        exclusionStart: {
             dataType: DATA_TYPE.DateTime
         },
         transportingStart: {
             dataType: DATA_TYPE.DateTime
         },
-        transportingEnd: {
-            dataType: DATA_TYPE.DateTime
-        },
         destroyedStart: {
             dataType: DATA_TYPE.DateTime
         },
-        destroyedEnd: {
+        workEnd: {
             dataType: DATA_TYPE.DateTime
         },
         squadLeaderId: {

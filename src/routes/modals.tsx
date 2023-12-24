@@ -7,6 +7,7 @@ import {
   MissionRequestCreateModal,
   OrderCreateModal,
   ExplosiveObjectCreateModal,
+  ExplosiveObjectHistoryCreateModal,
   TransportCreateModal,
   EquipmentCreateModal
 } from '~/modals';
@@ -27,6 +28,9 @@ export const modals: IModalsMap = {
   },
   [MODALS.EXPLOSIVE_OBJECT_CREATE]: {
     renderComponent: (props: any) => <ExplosiveObjectCreateModal {...props} />,
+  },
+  [MODALS.EXPLOSIVE_OBJECT_HISTORY_CREATE]: {
+    renderComponent: (props: any) => <ExplosiveObjectHistoryCreateModal {...props} />,
   },
   [MODALS.TRANSPORT_CREATE]: {
     renderComponent: (props: any) => <TransportCreateModal {...props} />,

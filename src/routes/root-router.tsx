@@ -71,7 +71,7 @@ const router = createMemoryRouter([
     children: routes,
   },
 ], {
-  initialEntries: ["/", ROUTES.MISSION_REQUEST_LIST],
+  initialEntries: ["/", ROUTES.MISSION_REPORT_LIST],
 });
 
 export function RootRouter() {

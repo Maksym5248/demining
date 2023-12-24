@@ -36,19 +36,19 @@ export interface IMissionRequestDB {
     updatedAt: Date;
 }
 
+export interface IExplosiveObjectTypeDB {
+    id: string;
+    name: string;
+    fullName: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface IExplosiveObjectDB {
     id: string;
     typeId: string;
     name?: string;
     caliber?: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface IExplosiveObjectTypeDB {
-    id: string;
-    name: string;
-    fullName: string;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Button, Form, Space, InputNumber, DatePicker, TimePicker, Drawer, Select, Divider, Input, Spin} from 'antd';
+import { Button, Form, Space, InputNumber, DatePicker, TimePicker, Drawer, Select, Divider, Input, Spin, List} from 'antd';
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -10,10 +10,7 @@ import { MODALS } from '~/constants'
 
 import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
-
-const { Option } = Select;
-
-// номер акту маю бути за порядком + 1;
+import  { ExplosiveObjectHistoryList, IExplosiveObjectHistoryListItem } from "./components";
 
 interface Props {
   id?: string;
@@ -21,8 +18,15 @@ interface Props {
   hide: () => void
 }
 
+/**
+ * 1 - для вибухових речовин, значення при ініціалізації повинно показати список всіх внп які не бул знищені
+ * 2 - номер акту маю бути за порядком + 1;
+ * 3 - 
+ */
+
 export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
   const { explosiveObject, order, missionRequest} = useStore();
+  const [explosiveObjectHistory, setExplosiveObjectHistory] = useState<IExplosiveObjectHistoryListItem[]>([]);
 
   const isEdit = !!id;
 
@@ -92,7 +96,6 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
                       <InputNumber size="middle" min={1} max={100000}/>
                 </Form.Item>
             </Form.Item>
-            
             <Form.Item
               label="Дата виконання"
               name="executedAt"
@@ -155,16 +158,16 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
                 </Form.Item>
             </Form.Item>
             <Form.Item label="Не можливо обстежити, м2" css={s.item}>
-                  <Form.Item
-                    name="uncheckedTerritory"
-                    rules={[{ required: true }]}
-                    css={s.first}
-                  >
-                      <InputNumber size="middle" min={1} max={100000} />
-                  </Form.Item>
+              <Form.Item
+                name="uncheckedTerritory"
+                rules={[{ required: true }]}
+                css={s.first}
+              >
+                  <InputNumber size="middle" min={1} max={100000} />
+              </Form.Item>
             </Form.Item>
             <Form.Item
-             label="Причина"
+              label="Причина"
               name="uncheckedReason"
               css={s.item}
             >
@@ -172,84 +175,40 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
             </Form.Item>
             <Divider/>
             <Form.Item
-              label="Вилучення з:"
-              css={s.item}
+              label="Початок:"
+              name="workStart"
             >
-                <Form.Item
-                  name="exclusionStart"
-                  css={s.first}
-                >
-                  <TimePicker format="HH:mm"/>
-                </Form.Item>
-                <Form.Item
-                 label="по"
-                  name="exclusionEnd"
-                  css={s.last}
-                >
-                  <TimePicker format="HH:mm"/>
-                </Form.Item>
+              <TimePicker format="HH:mm"/>
+            </Form.Item>
+            <Form.Item
+              label="Виявлення з:"
+              name="exclusionStart"
+            >
+                <TimePicker format="HH:mm"/>
             </Form.Item>
             <Form.Item
               label="Транспортування з:"
-              css={s.item}
+              name="transportingStart"
             >
-                <Form.Item
-                  name="transportingStart"
-                  css={s.first}
-                >
-                  <TimePicker format="HH:mm"/>
-                </Form.Item>
-                <Form.Item
-                 label="по"
-                  name="transportingEnd"
-                  css={s.last}
-                >
-                  <TimePicker format="HH:mm"/>
-                </Form.Item>
+                <TimePicker format="HH:mm"/>
             </Form.Item>
             <Form.Item
               label="Знищення з:"
-              css={s.item}
+              name="destroyedStart"
             >
-                <Form.Item
-                  name="destroyedStart"
-                  css={s.first}
-                >
-                  <TimePicker format="HH:mm"/>
-                </Form.Item>
-                <Form.Item
-                  label="по"
-                  name="destroyedEnd"
-                  css={s.last}
-                >
-                  <TimePicker format="HH:mm"/>
-                </Form.Item>
+                <TimePicker format="HH:mm"/>
+            </Form.Item>
+            <Form.Item
+              label="Завершення робіт"
+              name="workEnd"
+            >
+                <TimePicker format="HH:mm"/>
             </Form.Item>
             <Divider/>
             <Form.Item label="Виявлено ВНП" css={s.item}>
-                <Form.Item
-                    name="explosiveObjectId"
-                    rules={[{ required: true, message: 'Обов\'язкове поле' }]}
-                >
-                  <Select
-                    options={explosiveObject.sortedList.map((el) => ({ label: el.fullDisplayName, value: el.id }))}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="number"
-                  rules={[{ required: true }]}
-                  css={s.first}
-                >
-                  <InputNumber size="middle" min={1} max={100000} />
-                </Form.Item>
-                <Form.Item
-                  name="subNumber"
-                  label="на глибину, м"
-                  css={s.last}
-                >
-                  <InputNumber size="middle" min={1} max={100000}/>
-                </Form.Item>
+              <ExplosiveObjectHistoryList data={explosiveObjectHistory} onUpdate={setExplosiveObjectHistory} />
             </Form.Item>
+            <Divider/>
             <Form.Item label=" " colon={false}>
                 <Space>
                   <Button onClick={hide}>Скасувати</Button>
