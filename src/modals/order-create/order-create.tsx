@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, DatePicker, Select, Space, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -17,10 +17,10 @@ interface Props {
   hide: () => void
 }
 
-export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const OrderCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 	const { order, employee } = useStore();
 
-	const currentOrder = order.collection.get(id);
+	const currentOrder = order.collection.get(id as string);
 	const {employeesListChief} = employee;
 	const employeeChiefFirst = employeesListChief[0];
 

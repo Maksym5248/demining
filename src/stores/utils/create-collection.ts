@@ -11,7 +11,7 @@ export function createCollection<T, B>(name: string, Model: IModelType<any, any>
 
 			.views((self) => ({
 				get(id: ID): T {
-					return self._collection.get(id);
+					return self._collection.get(id as string);
 				},
 				has(id: ID): boolean {
 					return !!self._collection.has(id);
@@ -26,7 +26,7 @@ export function createCollection<T, B>(name: string, Model: IModelType<any, any>
 					self._collection.delete(id);
 				},
 				update(id: ID, value: Partial<T>) {
-					const item = self._collection.get(id);
+					const item = self._collection.get(id as string);
 
 					if (!item) {
 						throw Error('Element is not created');

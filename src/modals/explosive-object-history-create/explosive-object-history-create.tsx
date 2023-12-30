@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, Space, InputNumber, Drawer, Select, Spin, Switch, Divider} from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -28,7 +28,7 @@ interface Props {
   onSubmit: (value: IExplosiveObjectHistoryForm) => void;
 }
 
-export const ExplosiveObjectHistoryCreateModal: React.FC = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
+export const ExplosiveObjectHistoryCreateModal  = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
 	const { explosiveObject } = useStore();
 
 	const onFinish = async (values: IExplosiveObjectHistoryForm) => {

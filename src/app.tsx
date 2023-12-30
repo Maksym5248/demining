@@ -33,5 +33,5 @@ function App() {
 	)
 }
 
-const reactRootElement = createRoot(document.getElementById("root"));
+const reactRootElement = createRoot(document.getElementById("root") as Element);
 reactRootElement.render(<App/>)

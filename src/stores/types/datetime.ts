@@ -13,7 +13,7 @@ export const DateTimeType = types.custom<string | dayjs.Dayjs, dayjs.Dayjs>({
 	},
 	fromSnapshot(value) {
 		if (!value) {
-			return null;
+			throw Error("there is no value");
 		}
 
 		if (dayjs.isDayjs(value)) {

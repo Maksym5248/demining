@@ -63,7 +63,7 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 	)
 });
 
-export const EmployeesListPage: React.FC = observer(() => {
+export const EmployeesListPage  = observer(() => {
 	const store = useStore();
 	const title = useRouteTitle();
 

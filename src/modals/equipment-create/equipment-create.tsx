@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, Select, Space, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -20,10 +20,10 @@ const typeOptions = [{
 	value: EQUIPMENT_TYPE.MINE_DETECTOR
 }]
 
-export const EquipmentCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const EquipmentCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 	const store = useStore();
 
-	const equipment = store.equipment.collection.get(id);
+	const equipment = store.equipment.collection.get(id as string);
 
 	useEffect(() => {
 		store.equipment.fetchList.run();

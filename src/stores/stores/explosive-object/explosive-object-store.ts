@@ -111,7 +111,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 
 		flow.success();
 	} catch (err) {
-		flow.failed(err);
+		flow.failed(err as Error);
 	}
 });
 
@@ -134,7 +134,7 @@ const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function 
 
 		flow.success();
 	} catch (err) {
-		flow.failed(err);
+		flow.failed(err as Error);
 	}
 });
 

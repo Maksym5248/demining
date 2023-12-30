@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, Input, Space, Drawer, InputNumber, Spin, Select} from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -14,10 +14,10 @@ interface Props {
   hide: () => void
 }
 
-export const ExplosiveObjectCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const ExplosiveObjectCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 	const { explosiveObject } = useStore();
 
-	const currentExplosiveObject = explosiveObject.collection.get(id);
+	const currentExplosiveObject = explosiveObject.collection.get(id as string);
 
 	useEffect(() => {
 		explosiveObject.fetchListTypes.run();

@@ -18,9 +18,7 @@ const add = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 		employeeId: id,
 	});
 
-	const res = await DB.order.update(order.id, { signedById: employeeHistory.id });
-
-	delete res.signedById
+	const {signedById, ...res} = await DB.order.update(order.id, { signedById: employeeHistory.id });
 
 	return {
 		...res,
@@ -32,7 +30,7 @@ const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOPa
 	const order = await DB.order.get(id);
 	const signedBy = await DB.employeeHistory.get(order?.signedById);
 
-	if(signedById !== signedBy.employeeId){
+	if(signedById && signedById !== signedBy.employeeId){
 		const employee = await DB.employee.get(signedById);
 		await DB.employeeHistory.update(order.signedById, employee);
 	}
@@ -42,10 +40,10 @@ const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOPa
 	const resOrder = await DB.order.get(id);
 	const resSignedBy = await DB.employeeHistory.get(resOrder?.signedById)
 
-	delete resOrder.signedById
+	const { signedById: signedByIdRes, ...res} = resOrder;
 
 	return {
-		...resOrder,
+		...res,
 		signedBy: resSignedBy
 	}
 };

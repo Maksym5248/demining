@@ -10,7 +10,7 @@ export enum ROUTES {
 
 export const routesInfo = {
 	[ROUTES.MISSION_REPORT_LIST]: {
-		title: "Акти виконаних робіт",
+		title: "Виїзд",
 	},
 	[ROUTES.MISSION_REQUEST_LIST]: {
 		title: "Заявки",

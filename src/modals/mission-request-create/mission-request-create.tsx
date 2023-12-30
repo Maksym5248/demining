@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, DatePicker, Space, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -15,10 +15,10 @@ interface Props {
   hide: () => void
 }
 
-export const MissionRequestCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const MissionRequestCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 	const store = useStore();
 
-	const missionRequest = store.missionRequest.collection.get(id);
+	const missionRequest = store.missionRequest.collection.get(id as string);
 
 	useEffect(() => {
 		store.missionRequest.fetchList.run();

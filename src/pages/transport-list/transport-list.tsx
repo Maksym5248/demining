@@ -65,7 +65,7 @@ const ListItem = observer(({ item }: { item: ITransport}) => {
 	)
 });
 
-export const TransportListPage: React.FC = observer(() => {
+export const TransportListPage  = observer(() => {
 	const store = useStore();
 	const title = useRouteTitle();
 

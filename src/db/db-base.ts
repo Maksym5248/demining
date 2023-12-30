@@ -71,7 +71,7 @@ export class DBBase<T extends {id: string}> {
 		return !!res
 	}
 
-	async add(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T | null>{
+	async add(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T>{
 		const id = await this.uuid();
 
 		const res = await this.db.insert<T>({
@@ -80,12 +80,12 @@ export class DBBase<T extends {id: string}> {
 				createdAt: new Date(),
 				updatedAt: new Date(),}],
 			return: true
-		});
+		}) as T[]
 
-		return _.isArray(res) ? res[0]: null;
+		return res[0] as T;
 	}
 
-	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[] | null>{
+	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
 		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
 
 		const res = await Promise.all(values

@@ -33,7 +33,7 @@ const fetchUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self 
 
 		flow.success();
 	} catch (e) {
-		flow.failed(e);
+		flow.failed(e as Error);
 	}
 });
 

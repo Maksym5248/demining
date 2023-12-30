@@ -17,7 +17,7 @@ const add = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IExplo
 
 const update = async (id:string, value: UpdateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
 	const explosiveObject = await DB.explosiveObject.update(id, value);
-	const type = await DB.explosiveObjectType.get(value.typeId);
+	const type = await DB.explosiveObjectType.get(explosiveObject.typeId);
  
 	return {
 		...explosiveObject,
@@ -43,11 +43,11 @@ const getList = async ():Promise<IExplosiveObjectDTO[]> => {
 
 const init = async ():Promise<void> => {
 	const types = await explosiveObjectType.getList();
-	const idACType = types.find(el => el.name === "AC");
-	const idММType = types.find(el => el.name === "ММ");
-	const idMLRSType = types.find(el => el.name === "РСЗВ");
-	const idRGType = types.find(el => el.name === "РГ");
-	const idIMType = types.find(el => el.name === "ІМ");
+	const idACType = types.find(el => el.name === "AC") as { id:string};
+	const idММType = types.find(el => el.name === "ММ") as { id:string};
+	const idMLRSType = types.find(el => el.name === "РСЗВ") as { id:string};
+	const idRGType = types.find(el => el.name === "РГ") as { id:string};
+	const idIMType = types.find(el => el.name === "ІМ") as { id:string};
 
 	await Promise.all([ 
 		DB.explosiveObject.initData(

@@ -24,7 +24,7 @@ export function asyncAction<T>(
 
 					self.success();
 				} catch (e) {
-					self.failed(e, throwError);
+					self.failed(e as Error, throwError);
 				}
 			},
 		}))
@@ -32,6 +32,7 @@ export function asyncAction<T>(
 			run: (...args: any[]): Promise<any> => {
 				const promise = () =>
 					action(...args)({
+						// @ts-ignore
 						flow: self,
 						self: getParent(self) as T,
 						parent: getParent(getParent(self)),

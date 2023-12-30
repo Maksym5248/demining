@@ -59,7 +59,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
 	)
 });
 
-export const ExplosiveObjectListPage: React.FC = observer(() => {
+export const ExplosiveObjectListPage  = observer(() => {
 	const { explosiveObject } = useStore();
 	const title = useRouteTitle();
 

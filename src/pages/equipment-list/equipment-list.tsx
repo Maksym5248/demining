@@ -63,7 +63,7 @@ const ListItem = observer(({ item }: { item: IEquipment}) => {
 	)
 });
 
-export const EquipmentListPage: React.FC = observer(() => {
+export const EquipmentListPage  = observer(() => {
 	const store = useStore();
 	const title = useRouteTitle();
 

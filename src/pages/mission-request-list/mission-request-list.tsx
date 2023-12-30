@@ -60,7 +60,7 @@ const ListItem = observer(({ item }: { item: IMissionRequest}) => {
 	)
 });
 
-export const MissionRequestListPage: React.FC = observer(() => {
+export const MissionRequestListPage  = observer(() => {
 	const store = useStore();
 	const title = useRouteTitle();
 

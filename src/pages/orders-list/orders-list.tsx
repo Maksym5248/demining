@@ -60,7 +60,7 @@ const ListItem = observer(({ item }: { item: IOrder}) => {
 	)
 });
 
-export const OrdersListPage: React.FC = observer(() => {
+export const OrdersListPage  = observer(() => {
 	const store = useStore();
 	const title = useRouteTitle();
 

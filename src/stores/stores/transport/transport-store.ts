@@ -64,7 +64,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 
 		flow.success();
 	} catch (err) {
-		flow.failed(err);
+		flow.failed(err as Error);
 	}
 });
 

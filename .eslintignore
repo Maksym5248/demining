@@ -1,4 +1,2 @@
-build
-coverage
-playwright-report
 **/*.js
+node_modules/*

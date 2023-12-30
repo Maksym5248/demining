@@ -38,7 +38,7 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEquipmen
 		});
 		flow.success();
 	} catch (err) {
-		flow.failed(err)
+		flow.failed(err as Error)
 		message.error('Не вдалось додати');
 	}
 });
