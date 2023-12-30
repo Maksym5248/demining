@@ -23,8 +23,7 @@ const Entity = types.model('MissionRequest', {
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IMissionRequestValue>) => {
-  return async function addEmployeeFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IMissionRequestValue>) => async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
 
@@ -41,7 +40,6 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IMissionR
       flow.failed(err)
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
 export const MissionRequest = Entity.props({ update });

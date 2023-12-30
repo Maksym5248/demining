@@ -21,8 +21,7 @@ const Store = types
     },
   }));
 
-const fetchUser = asyncAction<Instance<typeof Store>>(() => {
-  return async ({ flow, self }) => {
+const fetchUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
 
     try {
       flow.start();
@@ -36,8 +35,7 @@ const fetchUser = asyncAction<Instance<typeof Store>>(() => {
     } catch (e) {
       flow.failed(e);
     }
-  };
-});
+  });
 
 export const ViewerStore = Store.props({
   fetchUser,

@@ -45,8 +45,7 @@ const Store = types
     }
   }));
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => {
-  return async function addEmployeeFlow({ flow, self }) {
+const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
       const res = await Api.employee.add(createEmployeeDTO(data));
@@ -59,11 +58,9 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValu
     } catch (err) {
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => {
-  return async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
       await Api.employee.remove(id);
@@ -74,11 +71,9 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
     } catch (err) {
       message.error('Не вдалось видалити');
     }
-  };
-});
+  });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => {
-  return async function addEmployeeFlow({ flow, self }) {
+const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
     if(flow.isLoaded){
       return
     }
@@ -94,7 +89,6 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     } catch (err) {
       flow.failed(err);
     }
-  };
-});
+  });
 
 export const EmployeeStore = Store.props({ add, remove, fetchList })

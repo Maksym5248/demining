@@ -8,9 +8,7 @@ const getFullName = ({
     lastName: string,
     firstName: string,
     surname: string
-}) => {
-    return `${lastName} ${firstName} ${surname}`;
-}
+}) => `${lastName} ${firstName} ${surname}`
 
 const upperFirst = (str:string) => _.upperFirst(str);
 

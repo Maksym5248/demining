@@ -60,7 +60,7 @@ export const EquipmentCreateModal: React.FC = observer(({ id, isVisible, hide }:
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={equipment
-              ? Object.assign({}, equipment)
+              ? ({ ...equipment})
               : {  type: EQUIPMENT_TYPE.MINE_DETECTOR }
             }
           >

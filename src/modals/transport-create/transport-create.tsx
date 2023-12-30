@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, Select, Space, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { TRANSPORT_TYPE } from "~/constants"
 import { useStore } from '~/hooks'
-import { dates } from '~/utils'
 
 import { s } from './transport-create.style'
 import { ITransportForm } from './transport-create.types';
@@ -24,10 +23,10 @@ const typeOptions = [{
   value: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS
 }]
 
-export const TransportCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const TransportCreateModal = observer(({ id, isVisible, hide }: Props) => {
   const store = useStore();
 
-  const transport = store.transport.collection.get(id);
+  const transport = store.transport.collection.get(id ?? "");
 
   useEffect(() => {
     store.transport.fetchList.run();
@@ -64,7 +63,7 @@ export const TransportCreateModal: React.FC = observer(({ id, isVisible, hide }:
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={transport
-              ? Object.assign({}, transport)
+              ? ({ ...transport})
               : {  type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS }
             }
           >

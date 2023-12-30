@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button, Form, Space, InputNumber, DatePicker, TimePicker, Drawer, Select, Divider, Input, Spin, List} from 'antd';
+import { Button, Form, Space, InputNumber, DatePicker, TimePicker, Drawer, Select, Divider, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -24,7 +24,7 @@ interface Props {
  * 3 - 
  */
 
-export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props) => {
   const { explosiveObject, order, missionRequest} = useStore();
   const [explosiveObjectHistory, setExplosiveObjectHistory] = useState<IExplosiveObjectHistoryListItem[]>([]);
 
@@ -37,12 +37,12 @@ export const MissionReportCreateModal: React.FC = observer(({ id, isVisible, hid
   const onAddMissionRequest = () => {
     Modal.show(MODALS.MISSION_REQUEST_CREATE)
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onFinishCreate = async (values: IMissionReportForm) => {
     // await employee.add.run(values);
     hide();
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onFinishUpdate = async (values: IMissionReportForm) => {
     // await employee.update.run(values);
     hide();

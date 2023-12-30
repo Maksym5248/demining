@@ -18,7 +18,10 @@ export const createEquipmentDTO = (value: CreateValue<IEquipmentValue>): CreateV
   type: value.type
 });
 
-export const updateEquipmentDTO = data.createUpdateDTO<IEquipmentValue, IEquipmentDTO>(createEquipmentDTO);
+export const updateEquipmentDTO = data.createUpdateDTO<IEquipmentValue, IEquipmentDTO>(value => ({
+  name: value?.name ?? "",
+  type: value.type ?? EQUIPMENT_TYPE.MINE_DETECTOR
+}));
 
 export const createEquipment = (value: IEquipmentDTO): IEquipmentValue => ({
   id: value.id,

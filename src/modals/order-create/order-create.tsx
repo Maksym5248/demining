@@ -21,7 +21,7 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
   const { order, employee } = useStore();
 
   const currentOrder = order.collection.get(id);
-  const employeesListChief = employee.employeesListChief;
+  const {employeesListChief} = employee;
   const employeeChiefFirst = employeesListChief[0];
 
   useEffect(() => {
@@ -60,9 +60,7 @@ export const OrderCreateModal: React.FC = observer(({ id, isVisible, hide }: Pro
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={currentOrder
-              ? Object.assign({}, currentOrder, {
-                signedById: currentOrder.signedBy?.employeeId
-              })
+              ? ({ ...currentOrder, signedById: currentOrder.signedBy?.employeeId})
               : {
                 number: (order.list.first?.number ?? 0) + 1,
                 signedById: order.list.first?.signedBy.employeeId || employeeChiefFirst?.id,

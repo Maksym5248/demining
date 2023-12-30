@@ -25,11 +25,11 @@ const ListItem = observer(({ item }: { item: IEquipment}) => {
     Modal.show(MODALS.EQUIPMENT_CREATE, { id })
   };
 
-  const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
+  const onRemove = (id:string) => () => {
     store.equipment.remove.run(id);
   };
   
-  const onCancel = (e: React.MouseEvent<HTMLElement>) => {
+  const onCancel = () => {
     message.error('Скасовано');
   };
 
@@ -38,6 +38,7 @@ const ListItem = observer(({ item }: { item: IEquipment}) => {
       actions={[
        <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoEdit(item.id)}/>,
        <Popconfirm
+          key="list-remove"
           title="Видалити"
           description="Ви впевнені, після цього дані не можливо відновити ?"
           onConfirm={onRemove(item.id)}
@@ -45,7 +46,7 @@ const ListItem = observer(({ item }: { item: IEquipment}) => {
           okText="Так"
           cancelText="Ні"
         >
-          <Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
+          <Button icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
         </Popconfirm>
       ]}
     >
@@ -57,8 +58,7 @@ const ListItem = observer(({ item }: { item: IEquipment}) => {
                 <Text type="secondary">{types[item.type]}</Text>
             </Space>
           }
-        >
-          </List.Item.Meta>
+         />
     </List.Item>
   )
 });

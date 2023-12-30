@@ -14,6 +14,7 @@ const add = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IExplo
   type
  }
 };
+
 const update = async (id:string, value: UpdateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
   const explosiveObject = await DB.explosiveObject.update(id, value);
   const type = await DB.explosiveObjectType.get(value.typeId);

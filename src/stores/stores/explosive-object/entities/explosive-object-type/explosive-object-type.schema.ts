@@ -17,7 +17,10 @@ export const createExplosiveObjectTypeDTO = (value: CreateValue<IExplosiveObject
   fullName: value.fullName
 });
 
-export const updateExplosiveObjectTypeDTO = data.createUpdateDTO<IExplosiveObjectTypeValue, IExplosiveObjectTypeDTO>(createExplosiveObjectTypeDTO);
+export const updateExplosiveObjectTypeDTO = data.createUpdateDTO<IExplosiveObjectTypeValue, IExplosiveObjectTypeDTO>(value => ({
+  name: value?.name ?? "",
+  fullName: value?.fullName ?? ""
+}));
 
 export const createExplosiveObjectType = (value: IExplosiveObjectTypeDTO): IExplosiveObjectTypeValue => ({
   id: value.id,

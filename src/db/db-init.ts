@@ -24,11 +24,12 @@ class DBInitClass {
 
     removeAllDbs = () => {
         window.indexedDB.databases().then((r) => {
-            for (let i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
+            for (let i = 0; i < r.length; i+=1) window.indexedDB.deleteDatabase(r[i].name as string);
         }).then(() => {
             alert('All data cleared.');
         });
     }
+
     getDB() {
         return this.db;
     }
@@ -36,11 +37,12 @@ class DBInitClass {
 
 const getWorkerPath = () => {
     if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line
         return require("file-loader?name=scripts/[name].[hash].js!jsstore/dist/jsstore.worker.js");
     }
-    else {
+        // eslint-disable-next-line
         return require("file-loader?name=scripts/[name].[hash].js!jsstore/dist/jsstore.worker.min.js");
-    }
+    
 }
 
 export const DBInit = new DBInitClass(getWorkerPath().default);

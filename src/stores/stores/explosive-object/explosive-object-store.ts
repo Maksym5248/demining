@@ -36,14 +36,11 @@ const Store = types
       })
     },
     get sortedListTypes(){
-      return self.listTypes.asArray.sort((a, b) => {
-        return a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' })
-      })
+      return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
     }
   }));
 
-const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectTypeValue>) => {
-  return async function addFlow({ flow, self }) {
+const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectTypeValue>) => async function addFlow({ flow, self }) {
     try {
       flow.start();
 
@@ -57,11 +54,9 @@ const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiv
     } catch (err) {
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => {
-  return async function addFlow({ flow, self }) {
+const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
     try {
       flow.start();
 
@@ -75,11 +70,9 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObj
     } catch (err) {
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => {
-  return async function addFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addFlow({ flow, self }) {
     try {
       flow.start();
       await Api.explosiveObject.remove(id);
@@ -90,11 +83,9 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
     } catch (err) {
       message.error('Не вдалось видалити');
     }
-  };
-});
+  });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => {
-  return async function addFlow({ flow, self }) {
+const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
     if(flow.isLoaded){
       return
     }
@@ -122,11 +113,9 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     } catch (err) {
       flow.failed(err);
     }
-  };
-});
+  });
 
-const fetchListTypes = asyncAction<Instance<typeof Store>>(() => {
-  return async function addFlow({ flow, self }) {
+const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
     if(flow.isLoaded){
       return
     }
@@ -147,7 +136,6 @@ const fetchListTypes = asyncAction<Instance<typeof Store>>(() => {
     } catch (err) {
       flow.failed(err);
     }
-  };
-});
+  });
 
 export const ExplosiveObjectStore = Store.props({ add, addType, remove, fetchList, fetchListTypes })

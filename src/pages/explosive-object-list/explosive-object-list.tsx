@@ -22,11 +22,11 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
     Modal.show(MODALS.EXPLOSIVE_OBJECT_CREATE, { id })
   };
 
-  const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
+  const onRemove = (id:string) => () => {
     explosiveObject.remove.run(id);
   };
   
-  const onCancel = (e: React.MouseEvent<HTMLElement>) => {
+  const onCancel = () => {
     message.error('Скасовано');
   };
 
@@ -35,6 +35,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
       actions={[
        <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoEdit(item.id)}/>,
        <Popconfirm
+          key="list-remove"
           title="Видалити"
           description="Ви впевнені, після цього дані не можливо відновити ?"
           onConfirm={onRemove(item.id)}
@@ -53,8 +54,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
                 <Text type="secondary">{item.displayName}</Text>
             </Space>
           }
-        >
-          </List.Item.Meta>
+         />
     </List.Item>
   )
 });

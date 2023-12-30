@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd';
@@ -12,7 +12,7 @@ import "./index.css";
 
 const { store } = createStore();
 
-const App = () => {
+function App() {
   useEffect(() => {
     store.init();
 
@@ -25,8 +25,8 @@ const App = () => {
     <ConfigProvider>
       <ThemeProvider>
         <RootStoreContext.Provider value={store}>
-          <RootRouter />
-          <ModalProvider modals={modals}/>
+        <RootRouter />
+        <ModalProvider modals={modals}/>
         </RootStoreContext.Provider>
       </ThemeProvider>
     </ConfigProvider>

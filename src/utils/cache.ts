@@ -1,5 +1,6 @@
 export class Cache {
   _data: { [key: string]: any };
+
   constructor() {
     this._data = {};
   }
@@ -23,6 +24,7 @@ export class Cache {
   get(name: string) {
     return this._data[name];
   }
+
   getAll() {
     return this._data;
   }

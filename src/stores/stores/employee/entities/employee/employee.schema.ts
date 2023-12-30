@@ -18,16 +18,23 @@ export interface IEmployeeValue {
   updatedAt: Dayjs;
 }
 
-export const createEmployeeDTO = (employee: CreateValue<IEmployeeValue>): CreateValue<IEmployeeDTO>  => ({
-  type: employee.type || null,
-  firstName: String(employee.firstName) || null,
-  lastName: String(employee.lastName) || null,
-  surname: String(employee.surname) || null,
-  rankId: employee.rank || null,
-  position: employee.position || null,
+export const createEmployeeDTO = (value: CreateValue<IEmployeeValue>): CreateValue<IEmployeeDTO>  => ({
+  type: value?.type ?? null,
+  firstName: String(value?.firstName) ?? "",
+  lastName: String(value?.lastName) ?? "",
+  surname: String(value?.surname) ?? "",
+  rankId: value?.rank ?? "",
+  position: value?.position ?? "",
 });
 
-export const updateEmployeeDTO = data.createUpdateDTO<IEmployeeValue, IEmployeeDTO>(createEmployeeDTO);
+export const updateEmployeeDTO = data.createUpdateDTO<IEmployeeValue, IEmployeeDTO>(value => ({
+  type: value?.type ?? EMPLOYEE_TYPE.WORKER,
+  firstName: String(value?.firstName) ?? "",
+  lastName: String(value?.lastName) ?? "",
+  surname: String(value?.surname) ?? "",
+  rankId: value?.rank ?? "",
+  position: value?.position ?? "",
+}));
 
 
 export const createEmployee = (employee: IEmployeeDTO): IEmployeeValue => ({

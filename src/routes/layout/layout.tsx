@@ -1,4 +1,4 @@
-import React, { useState, } from "react";
+import { useState } from "react";
 
 import { Layout as Lay, Menu, Breadcrumb } from 'antd';
 import { useNavigate, Outlet, useLocation, useParams } from 'react-router-dom';
@@ -12,21 +12,18 @@ import { s } from './layout.styles';
 
 const { Sider, Content } = Lay;
 
-export const Layout: React.FC = () => {
+export function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
 
   const [collapsed, setCollapsed] = useState(false);
 
-  const routes = nav.getRoutes(location.pathname, params);
-  const itemsBreadcrumb = routes.map(el => {
-
-    return {
+  const routes = nav.getRoutes(location.pathname, params as {[key:string]: string});
+  const itemsBreadcrumb = routes.map(el => ({
       ...el,
       onClick: () => navigate(el.route, params)
-    }
-  });
+    }));
   
   const items = [
     {
@@ -111,4 +108,4 @@ export const Layout: React.FC = () => {
       </Lay>
     </Lay>
   );
-};
+}

@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 export class DBBase<T extends {id: string}> {
     db: Connection;
+
     tableName: string;
 
     constructor(db: Connection, tableName: string){
@@ -17,6 +18,7 @@ export class DBBase<T extends {id: string}> {
         while(!id) {
             const testId = `${this.tableName}-${uuid()}`;
             
+            // eslint-disable-next-line no-await-in-loop
             const res = await this.db.select({
                 from: this.tableName,
                 where: {
@@ -46,7 +48,7 @@ export class DBBase<T extends {id: string}> {
         const [res] = await this.db.select<T>({
             from: this.tableName,
             where: {
-                id: id
+                id
             }
         });
 
@@ -74,11 +76,9 @@ export class DBBase<T extends {id: string}> {
 
         const res = await this.db.insert<T>({
             into: this.tableName,
-            values: [Object.assign({}, value, {
-                id,
+            values: [{ ...value, id,
                 createdAt: new Date(),
-                updatedAt: new Date(),
-            })],
+                updatedAt: new Date(),}],
             return: true
         });
 
@@ -92,28 +92,27 @@ export class DBBase<T extends {id: string}> {
             .filter((value, i) => !filteredValues[i])
             .map(value => this.add(value)));
 
+        // @ts-ignore
         return _.isArray(res) ? res: null;
     }
 
     async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {
         const newValue = {...value};
 
-        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         if(value?.id) delete value.id;
-        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         if(value?.updatedAt) delete value.updatedAt;
-        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         if(value?.createdAt) delete value.createdAt;
 
         await this.db.update({ in: this.tableName,
-            set: Object.assign({}, newValue, {
-                updatedAt: new Date(),
-            }),
+            set: { ...newValue, updatedAt: new Date(),},
             where: {
-                id: id
+                id
             },
         });
 
@@ -126,7 +125,7 @@ export class DBBase<T extends {id: string}> {
         return this.db.remove({
             from: this.tableName,
             where: {
-                id: id
+                id
             }
         })
     }

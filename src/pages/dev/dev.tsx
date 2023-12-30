@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Button, Space, Typography, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 

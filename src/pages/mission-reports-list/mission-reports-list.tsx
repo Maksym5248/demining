@@ -23,11 +23,11 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
     Modal.show(MODALS.MISSION_REPORT_CREATE, { id })
   };
 
-  const onRemove = (id:string) => (e: React.MouseEvent<HTMLElement>) => {
+  const onRemove = (id:string) => () => {
     store.employee.remove.run(id);
   };
   
-  const onCancel = (e: React.MouseEvent<HTMLElement>) => {
+  const onCancel = () => {
     message.error('Скасовано');
   };
 
@@ -36,6 +36,7 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
       actions={[
        <Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToEmployeesEdit(item.id)}/>,
        <Popconfirm
+          key="list-remove"
           title="Видалити"
           description="Ви впевнені, після цього дані не можливо відновити ?"
           onConfirm={onRemove(item.id)}
@@ -56,8 +57,7 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
                 <Text type="secondary">{str.upperFirst(item.position)}</Text>
             </Space>
           }
-        >
-          </List.Item.Meta>
+         />
     </List.Item>
   )
 });

@@ -66,7 +66,7 @@ export const EmployeesCreateModal: React.FC = observer(({ id, isVisible, hide }:
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={employee
-              ? Object.assign({}, employee , { rank: employee.rank?.id})
+              ? ({ ...employee , rank: employee.rank?.id})
               : { type: employeeTypesData[0]?.type, rank: store.employee.ranksList.first?.id }
             }
           >

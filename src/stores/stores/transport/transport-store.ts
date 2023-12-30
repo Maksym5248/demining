@@ -13,8 +13,7 @@ const Store = types
     list: createList<ITransport>("TransportsList", safeReference(Transport), { pageSize: 20 }),
   });
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportValue>) => {
-  return async function addEmployeeFlow({ flow, self }) {
+const add = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportValue>) => async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
 
@@ -29,11 +28,9 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportVal
       console.log("e", err);
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => {
-  return async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
       await Api.transport.remove(id);
@@ -44,11 +41,9 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => {
     } catch (err) {
       message.error('Не вдалось видалити');
     }
-  };
-});
+  });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => {
-  return async function addEmployeeFlow({ flow, self }) {
+const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
     if(flow.isLoaded){
       return
     }
@@ -71,7 +66,6 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => {
     } catch (err) {
       flow.failed(err);
     }
-  };
-});
+  });
 
 export const TransportStore = Store.props({ add, remove, fetchList })

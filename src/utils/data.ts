@@ -3,8 +3,8 @@ import isUndefined from "lodash/isUndefined";
 
 import { UpdateValue, CreateValue } from '~/types'
 
-const createUpdateDTO = <T, B>(fn: (v: Partial<T>)=> CreateValue<B>) => (value: Partial<T>): UpdateValue<B>  => {
-    const createdValues = fn(value);
+const createUpdateDTO = <T, B>(createFunction: (v: Partial<T>)=> CreateValue<B>) => (value: Partial<T>): UpdateValue<B>  => {
+    const createdValues = createFunction(value);
     const keys = Object.keys(createdValues);
   
     return keys.reduce((acc, key) => {

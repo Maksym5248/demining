@@ -31,7 +31,11 @@ export const createOrderDTO = (order: CreateValue<IOrderValueParams>): CreateVal
   number: order.number
 });
 
-export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOParams>(createOrderDTO);
+export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOParams>(value => ({
+  signedAt: dates.toDate(value?.signedAt ?? new Date()),
+  signedById: value?.signedById ?? "",
+  number: value?.number ?? 0
+}));
 
 export const createOrder = (order: IOrderDTO): IOrderValue => ({
   id: order.id,

@@ -25,8 +25,7 @@ const Entity = types.model('Order', {
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValueParams>) => {
-  return async function addFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValueParams>) => async function addFlow({ flow, self }) {
     try {
       flow.start();
 
@@ -43,7 +42,6 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderVal
       flow.failed(err)
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
 export const Order = Entity.props({ update });

@@ -2,8 +2,6 @@ import { ReactNode } from 'react';
 
 import EventEmitter from 'events';
 
-import { DrawerProps } from 'antd';
-
 const eventEmitter = new EventEmitter();
 
 interface IPropsForComponent {
@@ -32,7 +30,7 @@ enum Events {
   Change = 'change',
 }
 
-class ModalClass<T> {
+class ModalClass {
   private _modals: IModalTypeInternal[];
 
   visibleModals: IModalsMapInternal;
@@ -49,7 +47,9 @@ class ModalClass<T> {
       const [key, value] = current;
 
       return {
+        // @ts-ignore
         name: key,
+        // @ts-ignore
         isVisible: false,
         propsForComponent: {
           hide: () => this.hide(key),
@@ -99,6 +99,7 @@ class ModalClass<T> {
 
     return () => eventEmitter.removeListener(Events.Change, callBack);
   };
+
   removeAllListeners() {
     eventEmitter.removeAllListeners();
   }

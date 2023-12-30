@@ -17,7 +17,10 @@ export const createMissionRequestDTO = (value: CreateValue<IMissionRequestValue>
   number: value.number
 });
 
-export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue, IMissionRequestDTO>(createMissionRequestDTO);
+export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue, IMissionRequestDTO>(value => ({
+  signedAt: dates.toDate(value?.signedAt ?? new Date()),
+  number: value?.number ?? 0
+}));
 
 export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequestValue => ({
   id: value.id,

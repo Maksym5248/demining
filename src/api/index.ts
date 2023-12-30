@@ -4,8 +4,8 @@ export * from "./types"
 
 
 const init = async () => {
-    await Api.explosiveObjectType.init();
-    await Api.explosiveObject.init();
+    await Controllers.explosiveObjectType.init();
+    await Controllers.explosiveObject.init();
 }
 
 export const Api = {

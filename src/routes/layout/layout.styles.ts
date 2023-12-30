@@ -8,7 +8,7 @@ const content = Theme.css(({ token }) => `
     background: ${token.colorBgBase};
 `);
 
-const breadcrumb = Theme.css(({ token }) => `
+const breadcrumb = Theme.css(() => `
     margin: 12px 16px;
     padding: 8px;
 `);

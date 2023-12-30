@@ -10,12 +10,15 @@ interface Token extends SeedToken, AliasToken {}
 
 class ThemeClass {
     token: Token;
+
     constructor(){
         this.token = getDesignToken();
     }
+
     css(arg: ((obj: {token: Token }) => string) | string) {
         return _.isString(arg) ? css`${arg}`: css`${arg({ token: this.token })}`;
     }
+
     getToken(){
         return this.token;
     }

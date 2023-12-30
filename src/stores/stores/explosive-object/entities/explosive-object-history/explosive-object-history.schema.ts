@@ -1,9 +1,9 @@
 import { CreateValue } from '~/types'
-import { dates, data } from '~/utils';
+import { data } from '~/utils';
 import { IExplosiveObjectHistoryDTO, IExplosiveObjectHistoryDTOParams } from '~/api';
 import { EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 
-import { IExplosiveObjectValue, createExplosiveObjectDTO, createExplosiveObject, IExplosiveObjectValueParams } from '../explosive-object';
+import { IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';
 
 export interface IExplosiveObjectHistoryValue extends IExplosiveObjectValue {
   explosiveObjectId: string;
@@ -27,7 +27,7 @@ export interface IExplosiveObjectHistoryValueParams {
 
   
 export const createExplosiveObjectHistoryDTO = (value: CreateValue<IExplosiveObjectHistoryValueParams>): CreateValue<IExplosiveObjectHistoryDTOParams>  => ({
-  explosiveObjectId: value.explosiveObjectId,
+  explosiveObjectId: value?.explosiveObjectId,
   missionReportId: value.missionReportId,
   quantity: value.quantity,
   category: value.category,
@@ -36,7 +36,15 @@ export const createExplosiveObjectHistoryDTO = (value: CreateValue<IExplosiveObj
   isDestroyed: value.isDestroyed,
 });
 
-export const updateExplosiveObjectHistoryDTO = data.createUpdateDTO<IExplosiveObjectHistoryValue, IExplosiveObjectHistoryDTOParams>(createExplosiveObjectHistoryDTO);
+export const updateExplosiveObjectHistoryDTO = data.createUpdateDTO<IExplosiveObjectHistoryValueParams, IExplosiveObjectHistoryDTOParams>(value => ({
+  explosiveObjectId: value?.explosiveObjectId ?? "",
+  missionReportId: value.missionReportId ?? "",
+  quantity: value?.quantity ?? 0,
+  category: value?.category ?? EXPLOSIVE_OBJECT_CATEGORY.I,
+  isDiscovered: value?.isDiscovered ?? false,
+  isTransported: value?.isTransported ?? false,
+  isDestroyed: value?.isDestroyed ?? false,
+}));
 
 export const createExplosiveObjectHistory = (value: IExplosiveObjectHistoryDTO): IExplosiveObjectHistoryValue => ({
   ...createExplosiveObject(value),

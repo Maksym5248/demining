@@ -26,10 +26,10 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
 
   componentDidMount() {
     this._removeListener = Modal.onChange(async (nextState) => {
-      this.setState({
-        ...this.state,
+      this.setState(prev => ({
+        ...prev,
         visibleModals: nextState,
-      });
+      }));
     });
   }
 

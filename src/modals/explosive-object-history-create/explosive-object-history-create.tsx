@@ -50,7 +50,7 @@ export const ExplosiveObjectHistoryCreateModal: React.FC = observer(({ isVisible
     <Drawer
       open={isVisible}
       destroyOnClose
-      title={"Створити виявлений ВНП"}
+      title="Створити виявлений ВНП"
       placement="right"
       width={500}
       onClose={hide}
@@ -130,7 +130,7 @@ export const ExplosiveObjectHistoryCreateModal: React.FC = observer(({ isVisible
                 <Space>
                   <Button onClick={hide}>Скасувати</Button>
                   <Button htmlType="submit" type="primary">
-                    {"Додати"}
+                    Додати
                   </Button>
                 </Space>
               </Form.Item>

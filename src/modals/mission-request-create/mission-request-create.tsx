@@ -55,7 +55,7 @@ export const MissionRequestCreateModal: React.FC = observer(({ id, isVisible, hi
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={missionRequest
-              ? Object.assign({}, missionRequest)
+              ? ({ ...missionRequest})
               : {
                 number: (store.missionRequest.list.first?.number ?? 0) + 1,
                 signedAt: dates.today(),

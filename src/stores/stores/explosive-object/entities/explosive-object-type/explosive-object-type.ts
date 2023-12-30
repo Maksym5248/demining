@@ -23,8 +23,7 @@ const Entity = types.model('ExplosiveObjectType', {
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IExplosiveObjectTypeValue>) => {
-  return async function addEmployeeFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IExplosiveObjectTypeValue>) => async function addEmployeeFlow({ flow, self }) {
     try {
       flow.start();
 
@@ -41,7 +40,6 @@ const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IExplosiv
       flow.failed(err)
       message.error('Не вдалось додати');
     }
-  };
-});
+  });
 
 export const ExplosiveObjectType = Entity.props({ update });

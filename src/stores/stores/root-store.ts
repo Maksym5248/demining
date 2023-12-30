@@ -51,8 +51,7 @@ export const RootStore = types
         });
       },
     };
-  }).actions((self) => {    
-    return {
+  }).actions((self) => ({
       init: flow(function* init() {
         self.employee.init();
         yield DB.init();
@@ -64,5 +63,4 @@ export const RootStore = types
           self.isInitialized = true;
         }
       }),
-    };
-  });
+    }));

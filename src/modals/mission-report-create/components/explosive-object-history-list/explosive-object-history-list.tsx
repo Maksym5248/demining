@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { Button, List} from 'antd';
 
@@ -11,7 +11,7 @@ import { ListItemProps, IExplosiveObjectHistoryListProps, IExplosiveObjectHistor
 
 const getIcon = (isDone: boolean) => isDone ? "+": "-";
 
-const ListItem = ({ item, index, onRemove }: ListItemProps) => {
+function ListItem({ item, index, onRemove }: ListItemProps) {
   const store = useStore();
   const _onRemove = () => onRemove?.(index);
 
@@ -34,10 +34,10 @@ const ListItem = ({ item, index, onRemove }: ListItemProps) => {
         />   
     </List.Item>
   )
-};
+}
 
 
-export const ExplosiveObjectHistoryList = memo(({onUpdate, data}: IExplosiveObjectHistoryListProps) => {
+function Component({onUpdate, data}: IExplosiveObjectHistoryListProps) {
   const onAddExplosiveObjectHistory = () => {
     Modal.show(MODALS.EXPLOSIVE_OBJECT_HISTORY_CREATE, {
       onSubmit: (value: IExplosiveObjectHistoryListItem) => onUpdate([...data, value]),
@@ -59,4 +59,6 @@ export const ExplosiveObjectHistoryList = memo(({onUpdate, data}: IExplosiveObje
       footer={Footer}
     />
   );
-});
+}
+
+export const ExplosiveObjectHistoryList = memo(Component);
