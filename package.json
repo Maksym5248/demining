@@ -9,14 +9,12 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx . --fix",
+    "lint": "eslint --fix",
     "check-types": "tsc --noEmit --project ./tsconfig.json",
-    "postinstall": "patch-package"
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,jsx}": [
-      "yarn lint"
-    ]
+    "postinstall": "patch-package",
+    "check:tsc": "tsc --noEmit",
+    "check:prettier": "prettier --write",
+    "check:eslint": "eslint --fix"
   },
   "keywords": [],
   "author": {
@@ -61,7 +59,7 @@
     "eslint-plugin-testing-library": "5.11.0",
     "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^7.2.13",
-    "husky": "^4.3.0",
+    "husky": "8.0.3",
     "lint-staged": "^14.0.1",
     "mini-css-extract-plugin": "^2.7.6",
     "node-loader": "^2.0.0",

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Button, Form, Input, Select, Space , Drawer} from 'antd';
 import { observer } from 'mobx-react-lite'
 
@@ -33,10 +31,10 @@ interface Props {
   hide: () => void
 }
 
-export const EmployeesCreateModal: React.FC = observer(({ id, isVisible, hide }: Props) => {
+export const EmployeesCreateModal = observer(({ id, isVisible, hide }: Props) => {
 	const store = useStore();
 
-	const employee = store.employee.collection.get(id);
+	const employee = store.employee.collection.get(id as string);
 	const isEdit = !!id;
 
 	const onFinishCreate = async (values: IEmployeeForm) => {
