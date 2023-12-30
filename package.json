@@ -12,6 +12,7 @@
     "lint": "eslint --fix",
     "check-types": "tsc --noEmit --project ./tsconfig.json",
     "postinstall": "patch-package",
+    "husky": "husky",
     "check:tsc": "tsc --noEmit",
     "check:prettier": "prettier --write",
     "check:eslint": "eslint --fix"
