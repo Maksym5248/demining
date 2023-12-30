@@ -4,6 +4,6 @@ import { DateTimeType } from "./datetime";
 
 export * from './store';
 export const types ={
-    ...t,
-    dayjs: DateTimeType
+	...t,
+	dayjs: DateTimeType
 }

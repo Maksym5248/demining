@@ -8,6 +8,6 @@ const titleContainer = Theme.css(`
 `)
 
 export const s = {
-    titleContainer
+	titleContainer
 }
     

@@ -9,25 +9,25 @@ export enum ROUTES {
 }
 
 export const routesInfo = {
-    [ROUTES.MISSION_REPORT_LIST]: {
-        title: "Акти виконаних робіт",
-    },
-    [ROUTES.MISSION_REQUEST_LIST]: {
-        title: "Заявки",
-    },
-    [ROUTES.EMPLOYEES_LIST]: {
-        title: "Особовий склад",
-    },
-    [ROUTES.ORDER_LIST]: {
-        title: "Накази",
-    },
-    [ROUTES.EXPLOSIVE_OBJECT_LIST]: {
-        title: "ВНП",
-    },
-    [ROUTES.TRANSPORT_LIST]: {
-        title: "Транспорт",
-    },
-    [ROUTES.EQUIPMENT_LIST]: {
-        title: "Обладнання",
-    },
+	[ROUTES.MISSION_REPORT_LIST]: {
+		title: "Акти виконаних робіт",
+	},
+	[ROUTES.MISSION_REQUEST_LIST]: {
+		title: "Заявки",
+	},
+	[ROUTES.EMPLOYEES_LIST]: {
+		title: "Особовий склад",
+	},
+	[ROUTES.ORDER_LIST]: {
+		title: "Накази",
+	},
+	[ROUTES.EXPLOSIVE_OBJECT_LIST]: {
+		title: "ВНП",
+	},
+	[ROUTES.TRANSPORT_LIST]: {
+		title: "Транспорт",
+	},
+	[ROUTES.EQUIPMENT_LIST]: {
+		title: "Обладнання",
+	},
 }

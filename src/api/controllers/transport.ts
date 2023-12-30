@@ -10,8 +10,8 @@ const remove = (id:string) => DB.transport.remove(id);
 const getList = ():Promise<ITransportDTO[]> => DB.transport.select();
 
 export const transport = {
-    add,
-    update,
-    remove,
-    getList
+	add,
+	update,
+	remove,
+	getList
 }

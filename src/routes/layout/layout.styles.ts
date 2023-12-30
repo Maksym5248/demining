@@ -14,7 +14,7 @@ const breadcrumb = Theme.css(() => `
 `);
 
 export const s = {
-    content,
-    breadcrumb
+	content,
+	breadcrumb
 }
     

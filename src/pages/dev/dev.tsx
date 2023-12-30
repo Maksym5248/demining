@@ -9,40 +9,40 @@ import { s } from './dev.styles';
 const { Title } = Typography;
 
 
- export const DevPage = observer(() => {
-    const store = useStore();
+export const DevPage = observer(() => {
+	const store = useStore();
     
-    const onClickGenerateEmployee = () => {
-      store.createMocks();
-    }
+	const onClickGenerateEmployee = () => {
+		store.createMocks();
+	}
 
-    const onDropDb = async () => {
-      try {
-        await DB.dropDb();    
-        message.success("Базу даних вдалено")
-      } catch(e){
-        message.error("Базу даних не вдалось видалити")
-      }
-    }
+	const onDropDb = async () => {
+		try {
+			await DB.dropDb();    
+			message.success("Базу даних вдалено")
+		} catch(e){
+			message.error("Базу даних не вдалось видалити")
+		}
+	}
 
-    return (
-      <div>
-        <Space css={s.titleContainer}>
-            <Title level={4}>Development</Title>
-        </Space>
+	return (
+		<div>
+			<Space css={s.titleContainer}>
+				<Title level={4}>Development</Title>
+			</Space>
 
-        <div css={s.content}>
-        <Space>
-          <Button onClick={onClickGenerateEmployee}>
+			<div css={s.content}>
+				<Space>
+					<Button onClick={onClickGenerateEmployee}>
             Згенеруват дані о/c
-          </Button>
-        </Space>
-        <Space>
-          <Button onClick={onDropDb}>
+					</Button>
+				</Space>
+				<Space>
+					<Button onClick={onDropDb}>
             Вдалити базу даних
-          </Button>
-        </Space>
-        </div>
-      </div>
-    );
-  });
+					</Button>
+				</Space>
+			</div>
+		</div>
+	);
+});

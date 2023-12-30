@@ -11,8 +11,8 @@ export interface IRankValue {
 }
 
 export const createRank = (rank: IRank): IRankValue => ({
-  id: rank.id,
-  fullName: String(rank.fullName) || '',
-  shortName: String(rank.shortName) || '',
-  rank: rank.rank || RANKS.PRIVATE,
+	id: rank.id,
+	fullName: String(rank.fullName) || '',
+	shortName: String(rank.shortName) || '',
+	rank: rank.rank || RANKS.PRIVATE,
 });

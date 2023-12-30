@@ -17,7 +17,7 @@ const listItemDesc = Theme.css(`
 `)
 
 export const s = {
-    listHeader,
-    listItemDesc
+	listHeader,
+	listItemDesc
 }
     

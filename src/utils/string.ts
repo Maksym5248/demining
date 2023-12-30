@@ -1,10 +1,10 @@
 import _ from "lodash"
 
 const getFullName = ({
-    lastName,
-    firstName,
-    surname
-    } : {
+	lastName,
+	firstName,
+	surname
+} : {
     lastName: string,
     firstName: string,
     surname: string
@@ -14,6 +14,6 @@ const upperFirst = (str:string) => _.upperFirst(str);
 
 
 export const str = {
-    getFullName,
-    upperFirst
+	getFullName,
+	upperFirst
 }

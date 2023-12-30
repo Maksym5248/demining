@@ -10,8 +10,8 @@ const remove = (id:string) => DB.employee.remove(id);
 const getList = ():Promise<IEmployeeDTO[]> => DB.employee.select();
 
 export const employee = {
-    add,
-    update,
-    remove,
-    getList
+	add,
+	update,
+	remove,
+	getList
 }

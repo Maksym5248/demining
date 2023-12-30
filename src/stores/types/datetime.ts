@@ -2,31 +2,31 @@ import dayjs from 'dayjs';
 import { types } from 'mobx-state-tree';
 
 export const DateTimeType = types.custom<string | dayjs.Dayjs, dayjs.Dayjs>({
-    name: 'DateTime',
-    isTargetType(value) {
-        return dayjs.isDayjs(value);
-    },
-    getValidationMessage(value) {
-        if (dayjs(value).isValid()) return '';
+	name: 'DateTime',
+	isTargetType(value) {
+		return dayjs.isDayjs(value);
+	},
+	getValidationMessage(value) {
+		if (dayjs(value).isValid()) return '';
 
-        return `${value} + ' is not a Date`;
-    },
-    fromSnapshot(value) {
-        if (!value) {
-            return null;
-        }
+		return `${value} + ' is not a Date`;
+	},
+	fromSnapshot(value) {
+		if (!value) {
+			return null;
+		}
 
-        if (dayjs.isDayjs(value)) {
-            return value;
-        }
+		if (dayjs.isDayjs(value)) {
+			return value;
+		}
 
-        return dayjs(value);
-    },
-    toSnapshot(value) {
-        if (dayjs.isDayjs(value)) {
-            return value.toISOString();
-        }
+		return dayjs(value);
+	},
+	toSnapshot(value) {
+		if (dayjs.isDayjs(value)) {
+			return value.toISOString();
+		}
 
-        return value;
-    }
+		return value;
+	}
 });

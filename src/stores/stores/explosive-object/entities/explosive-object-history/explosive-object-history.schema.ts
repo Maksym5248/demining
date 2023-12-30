@@ -27,32 +27,32 @@ export interface IExplosiveObjectHistoryValueParams {
 
   
 export const createExplosiveObjectHistoryDTO = (value: CreateValue<IExplosiveObjectHistoryValueParams>): CreateValue<IExplosiveObjectHistoryDTOParams>  => ({
-  explosiveObjectId: value?.explosiveObjectId,
-  missionReportId: value.missionReportId,
-  quantity: value.quantity,
-  category: value.category,
-  isDiscovered: value.isDiscovered,
-  isTransported: value.isTransported,
-  isDestroyed: value.isDestroyed,
+	explosiveObjectId: value?.explosiveObjectId,
+	missionReportId: value.missionReportId,
+	quantity: value.quantity,
+	category: value.category,
+	isDiscovered: value.isDiscovered,
+	isTransported: value.isTransported,
+	isDestroyed: value.isDestroyed,
 });
 
 export const updateExplosiveObjectHistoryDTO = data.createUpdateDTO<IExplosiveObjectHistoryValueParams, IExplosiveObjectHistoryDTOParams>(value => ({
-  explosiveObjectId: value?.explosiveObjectId ?? "",
-  missionReportId: value.missionReportId ?? "",
-  quantity: value?.quantity ?? 0,
-  category: value?.category ?? EXPLOSIVE_OBJECT_CATEGORY.I,
-  isDiscovered: value?.isDiscovered ?? false,
-  isTransported: value?.isTransported ?? false,
-  isDestroyed: value?.isDestroyed ?? false,
+	explosiveObjectId: value?.explosiveObjectId ?? "",
+	missionReportId: value.missionReportId ?? "",
+	quantity: value?.quantity ?? 0,
+	category: value?.category ?? EXPLOSIVE_OBJECT_CATEGORY.I,
+	isDiscovered: value?.isDiscovered ?? false,
+	isTransported: value?.isTransported ?? false,
+	isDestroyed: value?.isDestroyed ?? false,
 }));
 
 export const createExplosiveObjectHistory = (value: IExplosiveObjectHistoryDTO): IExplosiveObjectHistoryValue => ({
-  ...createExplosiveObject(value),
-  explosiveObjectId: value.explosiveObjectId,
-  missionReportId: value.missionReportId,
-  quantity: value.quantity,
-  category: value.category,
-  isDiscovered: value.isDiscovered,
-  isTransported: value.isTransported,
-  isDestroyed: value.isDestroyed,
+	...createExplosiveObject(value),
+	explosiveObjectId: value.explosiveObjectId,
+	missionReportId: value.missionReportId,
+	quantity: value.quantity,
+	category: value.category,
+	isDiscovered: value.isDiscovered,
+	isTransported: value.isTransported,
+	isDestroyed: value.isDestroyed,
 });

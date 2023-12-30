@@ -90,6 +90,7 @@ module.exports = {
     "@typescript-eslint/consistent-type-imports": 0,
     "react-hooks/exhaustive-deps": 1,
     "no-promise-executor-return": 0,
-    "react/no-unknown-property": 0
+    "react/no-unknown-property": 0,
+    "indent": ["error", "tab"]
   }
 }

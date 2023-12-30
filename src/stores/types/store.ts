@@ -1,6 +1,6 @@
 import {
-    IAnyStateTreeNode,
-    IAnyComplexType,
+	IAnyStateTreeNode,
+	IAnyComplexType,
 } from 'mobx-state-tree';
 
 import { IEmployeeValue } from '..';

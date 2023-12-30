@@ -12,53 +12,53 @@ import { ListItemProps, IExplosiveObjectHistoryListProps, IExplosiveObjectHistor
 const getIcon = (isDone: boolean) => isDone ? "+": "-";
 
 function ListItem({ item, index, onRemove }: ListItemProps) {
-  const store = useStore();
-  const _onRemove = () => onRemove?.(index);
+	const store = useStore();
+	const _onRemove = () => onRemove?.(index);
 
-  const explosiveObject = store.explosiveObject.collection.get(item.explosiveObjectId)
+	const explosiveObject = store.explosiveObject.collection.get(item.explosiveObjectId)
   
-  return (
-    <List.Item
-      actions={[
-       <Button
-        key="list-remove" 
-        icon={<Icon.DeleteOutlined style={{ color: "red"}}/>} 
-        onClick={_onRemove}/>
-      ]}
-    >
-        <List.Item.Meta
-          title={`${explosiveObject.fullDisplayName}; Категорія: ${item.category}; ${item.quantity} од.`}
-          description={
-            `Виявлено ${getIcon(item.isDiscovered)}; Транспортовано ${getIcon(item.isTransported)}; Знищено ${getIcon(item.isDestroyed)}: `
-          }
-        />   
-    </List.Item>
-  )
+	return (
+		<List.Item
+			actions={[
+				<Button
+					key="list-remove" 
+					icon={<Icon.DeleteOutlined style={{ color: "red"}}/>} 
+					onClick={_onRemove}/>
+			]}
+		>
+			<List.Item.Meta
+				title={`${explosiveObject.fullDisplayName}; Категорія: ${item.category}; ${item.quantity} од.`}
+				description={
+					`Виявлено ${getIcon(item.isDiscovered)}; Транспортовано ${getIcon(item.isTransported)}; Знищено ${getIcon(item.isDestroyed)}: `
+				}
+			/>   
+		</List.Item>
+	)
 }
 
 
 function Component({onUpdate, data}: IExplosiveObjectHistoryListProps) {
-  const onAddExplosiveObjectHistory = () => {
-    Modal.show(MODALS.EXPLOSIVE_OBJECT_HISTORY_CREATE, {
-      onSubmit: (value: IExplosiveObjectHistoryListItem) => onUpdate([...data, value]),
-    })
-  };
+	const onAddExplosiveObjectHistory = () => {
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_HISTORY_CREATE, {
+			onSubmit: (value: IExplosiveObjectHistoryListItem) => onUpdate([...data, value]),
+		})
+	};
 
-  const onRemove = (index:number) => {
-    onUpdate(data.filter((item, i) => i !== index));
-  };
+	const onRemove = (index:number) => {
+		onUpdate(data.filter((item, i) => i !== index));
+	};
 
-  const renderItem = (item:IExplosiveObjectHistoryListItem, i:number) => <ListItem item={item} index={i} onRemove={onRemove} />;
-  const Footer = <Button type="text" onClick={onAddExplosiveObjectHistory}>Додати</Button>;
+	const renderItem = (item:IExplosiveObjectHistoryListItem, i:number) => <ListItem item={item} index={i} onRemove={onRemove} />;
+	const Footer = <Button type="text" onClick={onAddExplosiveObjectHistory}>Додати</Button>;
 
-  return (
-    <List
-      size="small"
-      dataSource={data}
-      renderItem={renderItem}
-      footer={Footer}
-    />
-  );
+	return (
+		<List
+			size="small"
+			dataSource={data}
+			renderItem={renderItem}
+			footer={Footer}
+		/>
+	);
 }
 
 export const ExplosiveObjectHistoryList = memo(Component);

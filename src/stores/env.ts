@@ -6,6 +6,6 @@ export interface IEnv {
 }
 
 export const env = {
-  Storage,
-  SecureStorage,
+	Storage,
+	SecureStorage,
 };

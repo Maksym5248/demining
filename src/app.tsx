@@ -13,24 +13,24 @@ import "./index.css";
 const { store } = createStore();
 
 function App() {
-  useEffect(() => {
-    store.init();
+	useEffect(() => {
+		store.init();
 
-    return () => {
-      store.removeAllListeners();
-    }
-  }, []);
+		return () => {
+			store.removeAllListeners();
+		}
+	}, []);
 
-  return (
-    <ConfigProvider>
-      <ThemeProvider>
-        <RootStoreContext.Provider value={store}>
-        <RootRouter />
-        <ModalProvider modals={modals}/>
-        </RootStoreContext.Provider>
-      </ThemeProvider>
-    </ConfigProvider>
-  )
+	return (
+		<ConfigProvider>
+			<ThemeProvider>
+				<RootStoreContext.Provider value={store}>
+					<RootRouter />
+					<ModalProvider modals={modals}/>
+				</RootStoreContext.Provider>
+			</ThemeProvider>
+		</ConfigProvider>
+	)
 }
 
 const reactRootElement = createRoot(document.getElementById("root"));

@@ -7,15 +7,15 @@ const add = (value: CreateValue<IMissionRequestDTO>):Promise<IMissionRequestDTO>
 const update = (id:string, value: UpdateValue<IMissionRequestDTO>):Promise<IMissionRequestDTO> => DB.missionRequest.update(id, value);
 const remove = (id:string) => DB.missionRequest.remove(id);
 const getList = ():Promise<IMissionRequestDTO[]> => DB.missionRequest.select({
-    order: {
-      by: "number",
-      type: "desc",
-    }
-  });
+	order: {
+		by: "number",
+		type: "desc",
+	}
+});
 
 export const missionRequest = {
-    add,
-    update,
-    remove,
-    getList
+	add,
+	update,
+	remove,
+	getList
 }

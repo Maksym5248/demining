@@ -11,10 +11,10 @@ export interface IEmployeeHistoryValue extends IEmployeeValue {
 }
 
 export const createEmployeeHistory = (employee: IEmployeeHistoryDTO): IEmployeeHistoryValue => ({
-  ...createEmployee(employee),
-  documentType: employee.documentType,
-  documentId: employee.documentId,
-  employeeId: employee.employeeId,
+	...createEmployee(employee),
+	documentType: employee.documentType,
+	documentId: employee.documentId,
+	employeeId: employee.employeeId,
 });
 
 

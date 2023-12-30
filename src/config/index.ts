@@ -1,4 +1,4 @@
 export const CONFIG = {
-    IS_DEV: true,
-    DB_NAME: "KBrR65dyZ6"
+	IS_DEV: true,
+	DB_NAME: "KBrR65dyZ6"
 };

@@ -3,130 +3,130 @@ import uuid from 'uuid/v4';
 import _ from 'lodash';
 
 export class DBBase<T extends {id: string}> {
-    db: Connection;
+	db: Connection;
 
-    tableName: string;
+	tableName: string;
 
-    constructor(db: Connection, tableName: string){
-        this.db = db;
-        this.tableName = tableName;
-    }
+	constructor(db: Connection, tableName: string){
+		this.db = db;
+		this.tableName = tableName;
+	}
 
-    async uuid(){
-        let id = null;
+	async uuid(){
+		let id = null;
 
-        while(!id) {
-            const testId = `${this.tableName}-${uuid()}`;
+		while(!id) {
+			const testId = `${this.tableName}-${uuid()}`;
             
-            // eslint-disable-next-line no-await-in-loop
-            const res = await this.db.select({
-                from: this.tableName,
-                where: {
-                    id: testId
-                }
-            });
+			// eslint-disable-next-line no-await-in-loop
+			const res = await this.db.select({
+				from: this.tableName,
+				where: {
+					id: testId
+				}
+			});
 
-            if(!res.length){
-                id = testId
-            }
-        }
+			if(!res.length){
+				id = testId
+			}
+		}
 
-        return id;
+		return id;
 
-    }
+	}
 
-    select(args?: Partial<Omit<ISelectQuery, 'from'>> ): Promise<T[]> {
-        const params:ISelectQuery = {
-            from: this.tableName,
-            ...args
-        };
+	select(args?: Partial<Omit<ISelectQuery, 'from'>> ): Promise<T[]> {
+		const params:ISelectQuery = {
+			from: this.tableName,
+			...args
+		};
 
-        return this.db.select<T>(params);
-    }
+		return this.db.select<T>(params);
+	}
 
-    async get(id:string):Promise<T> {
-        const [res] = await this.db.select<T>({
-            from: this.tableName,
-            where: {
-                id
-            }
-        });
+	async get(id:string):Promise<T> {
+		const [res] = await this.db.select<T>({
+			from: this.tableName,
+			where: {
+				id
+			}
+		});
 
-        if(!res){
-            throw new Error("there is no element by id")
-        }
+		if(!res){
+			throw new Error("there is no element by id")
+		}
 
-        return res
-    }
+		return res
+	}
 
-    async exist(field:keyof T, value: any):Promise<boolean> {
-        const [res] = await this.db.select({
-            from: this.tableName,
-            where: {
-                [field]: value
-            },
-            limit: 1
-        });
+	async exist(field:keyof T, value: any):Promise<boolean> {
+		const [res] = await this.db.select({
+			from: this.tableName,
+			where: {
+				[field]: value
+			},
+			limit: 1
+		});
 
-        return !!res
-    }
+		return !!res
+	}
 
-    async add(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T | null>{
-        const id = await this.uuid();
+	async add(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T | null>{
+		const id = await this.uuid();
 
-        const res = await this.db.insert<T>({
-            into: this.tableName,
-            values: [{ ...value, id,
-                createdAt: new Date(),
-                updatedAt: new Date(),}],
-            return: true
-        });
+		const res = await this.db.insert<T>({
+			into: this.tableName,
+			values: [{ ...value, id,
+				createdAt: new Date(),
+				updatedAt: new Date(),}],
+			return: true
+		});
 
-        return _.isArray(res) ? res[0]: null;
-    }
+		return _.isArray(res) ? res[0]: null;
+	}
 
-    async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[] | null>{
-        const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
+	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[] | null>{
+		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
 
-        const res = await Promise.all(values
-            .filter((value, i) => !filteredValues[i])
-            .map(value => this.add(value)));
+		const res = await Promise.all(values
+			.filter((value, i) => !filteredValues[i])
+			.map(value => this.add(value)));
 
-        // @ts-ignore
-        return _.isArray(res) ? res: null;
-    }
+		// @ts-ignore
+		return _.isArray(res) ? res: null;
+	}
 
-    async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {
-        const newValue = {...value};
+	async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {
+		const newValue = {...value};
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if(value?.id) delete value.id;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if(value?.updatedAt) delete value.updatedAt;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if(value?.createdAt) delete value.createdAt;
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		if(value?.id) delete value.id;
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		if(value?.updatedAt) delete value.updatedAt;
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		if(value?.createdAt) delete value.createdAt;
 
-        await this.db.update({ in: this.tableName,
-            set: { ...newValue, updatedAt: new Date(),},
-            where: {
-                id
-            },
-        });
+		await this.db.update({ in: this.tableName,
+			set: { ...newValue, updatedAt: new Date(),},
+			where: {
+				id
+			},
+		});
 
-        const res = await this.get(id);
+		const res = await this.get(id);
 
-        return res;
-    }
+		return res;
+	}
 
-    remove(id:string) {
-        return this.db.remove({
-            from: this.tableName,
-            where: {
-                id
-            }
-        })
-    }
+	remove(id:string) {
+		return this.db.remove({
+			from: this.tableName,
+			where: {
+				id
+			}
+		})
+	}
 }

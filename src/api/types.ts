@@ -1,13 +1,13 @@
 import { 
-    IEmployeeDB,
-    IEmployeeHistoryDB,
-    IOrderDB,
-    IMissionRequestDB,
-    IExplosiveObjectDB,
-    IExplosiveObjectTypeDB,
-    IExplosiveObjectHistoryDB,
-    ITransportDB,
-    IEquipmentDB
+	IEmployeeDB,
+	IEmployeeHistoryDB,
+	IOrderDB,
+	IMissionRequestDB,
+	IExplosiveObjectDB,
+	IExplosiveObjectTypeDB,
+	IExplosiveObjectHistoryDB,
+	ITransportDB,
+	IEquipmentDB
 } from "~/db"
 
 export type IEmployeeDTO = IEmployeeDB

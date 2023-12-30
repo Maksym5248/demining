@@ -10,34 +10,34 @@ import { mainConfig } from './webpack.main.config';
 import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
-  packagerConfig: {
-    asar: true,
-  },
-  rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
-  plugins: [
-    new AutoUnpackNativesPlugin({}),
-    new WebpackPlugin({
-      devServer: {
-        liveReload: false,
-        hot: true,
-      },
-      mainConfig,
-      renderer: {
-        config: rendererConfig,
-        entryPoints: [
-          {
-            html: './src/index.html',
-            js: './src/renderer.ts',
-            name: 'main_window',
-            preload: {
-              js: './src/preload.ts',
-            },
-          },
-        ],
-      },
-    }),
-  ],
+	packagerConfig: {
+		asar: true,
+	},
+	rebuildConfig: {},
+	makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+	plugins: [
+		new AutoUnpackNativesPlugin({}),
+		new WebpackPlugin({
+			devServer: {
+				liveReload: false,
+				hot: true,
+			},
+			mainConfig,
+			renderer: {
+				config: rendererConfig,
+				entryPoints: [
+					{
+						html: './src/index.html',
+						js: './src/renderer.ts',
+						name: 'main_window',
+						preload: {
+							js: './src/preload.ts',
+						},
+					},
+				],
+			},
+		}),
+	],
 };
 
 // eslint-disable-next-line import/no-default-export

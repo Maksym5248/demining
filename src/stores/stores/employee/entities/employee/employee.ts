@@ -14,43 +14,43 @@ import { createEmployee, updateEmployeeDTO, IEmployeeValue } from './employee.sc
 export type IEmployee = Instance<typeof Employee>
 
 const Entity = types.model('Employee', {
-  id: types.identifier,
-  type: types.enumeration(Object.values(EMPLOYEE_TYPE)),
-  firstName: types.string,
-  lastName: types.string,
-  surname: types.string,
-  rank: types.reference(Rank),
-  position: types.string,
-  createdAt: types.dayjs,
-  updatedAt: types.dayjs,
+	id: types.identifier,
+	type: types.enumeration(Object.values(EMPLOYEE_TYPE)),
+	firstName: types.string,
+	lastName: types.string,
+	surname: types.string,
+	rank: types.reference(Rank),
+	position: types.string,
+	createdAt: types.dayjs,
+	updatedAt: types.dayjs,
 }).actions((self) => ({
-  updateFields(data: Partial<IEmployeeValue>) {
-      Object.assign(self, data);
-  }
+	updateFields(data: Partial<IEmployeeValue>) {
+		Object.assign(self, data);
+	}
 })).views((self) => ({
-  get fullName(){
-    return `${self.rank.shortName} ${upperFirst(self.lastName)} ${upperCase(self.firstName[0])}. ${upperCase(self.surname[0])}.`
-  }
+	get fullName(){
+		return `${self.rank.shortName} ${upperFirst(self.lastName)} ${upperCase(self.firstName[0])}. ${upperCase(self.surname[0])}.`
+	}
 }));
 
 
 const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEmployeeValue>) => async function addEmployeeFlow({ flow, self }) {
-    try {
-      flow.start();
+	try {
+		flow.start();
 
-      const res = await Api.employee.update(self.id, updateEmployeeDTO(data));    
+		const res = await Api.employee.update(self.id, updateEmployeeDTO(data));    
 
-      self.updateFields(createEmployee(res));
+		self.updateFields(createEmployee(res));
 
-      message.success({
-        type: 'success',
-        content: 'Збережено успішно',
-      });
-      flow.success();
-    } catch (err) {
-      flow.failed(err)
-      message.error('Не вдалось додати');
-    }
-  });
+		message.success({
+			type: 'success',
+			content: 'Збережено успішно',
+		});
+		flow.success();
+	} catch (err) {
+		flow.failed(err)
+		message.error('Не вдалось додати');
+	}
+});
 
 export const Employee = Entity.props({ update });

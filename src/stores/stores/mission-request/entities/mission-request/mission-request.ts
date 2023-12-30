@@ -11,35 +11,35 @@ import { IMissionRequestValue, updateMissionRequestDTO, createMissionRequest } f
 export type IMissionRequest = Instance<typeof MissionRequest>
 
 const Entity = types.model('MissionRequest', {
-  id: types.identifier,
-  signedAt: types.dayjs,
-  number: types.number,
-  createdAt: types.dayjs,
-  updatedAt: types.dayjs,
+	id: types.identifier,
+	signedAt: types.dayjs,
+	number: types.number,
+	createdAt: types.dayjs,
+	updatedAt: types.dayjs,
 }).actions((self) => ({
-  updateFields(data: Partial<IMissionRequestValue>) {
-      Object.assign(self, data);
-  }
+	updateFields(data: Partial<IMissionRequestValue>) {
+		Object.assign(self, data);
+	}
 }));
 
 
 const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IMissionRequestValue>) => async function addEmployeeFlow({ flow, self }) {
-    try {
-      flow.start();
+	try {
+		flow.start();
 
-      const res = await Api.missionRequest.update(self.id, updateMissionRequestDTO(data));    
+		const res = await Api.missionRequest.update(self.id, updateMissionRequestDTO(data));    
 
-      self.updateFields(createMissionRequest(res));
+		self.updateFields(createMissionRequest(res));
 
-      message.success({
-        type: 'success',
-        content: 'Збережено успішно',
-      });
-      flow.success();
-    } catch (err) {
-      flow.failed(err)
-      message.error('Не вдалось додати');
-    }
-  });
+		message.success({
+			type: 'success',
+			content: 'Збережено успішно',
+		});
+		flow.success();
+	} catch (err) {
+		flow.failed(err)
+		message.error('Не вдалось додати');
+	}
+});
 
 export const MissionRequest = Entity.props({ update });

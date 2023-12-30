@@ -12,36 +12,36 @@ import { IOrderValue, IOrderValueParams, createOrder, updateOrderDTO } from './o
 export type IOrder = Instance<typeof Order>
 
 const Entity = types.model('Order', {
-  id: types.identifier,
-  signedAt: types.dayjs,
-  signedBy: EmployeeHistory.named("EmployeeOrder"),
-  number: types.number,
-  createdAt: types.dayjs,
-  updatedAt: types.dayjs,
+	id: types.identifier,
+	signedAt: types.dayjs,
+	signedBy: EmployeeHistory.named("EmployeeOrder"),
+	number: types.number,
+	createdAt: types.dayjs,
+	updatedAt: types.dayjs,
 }).actions((self) => ({
-  updateFields(data: Partial<IOrderValue>) {
-      Object.assign(self, data);
-  }
+	updateFields(data: Partial<IOrderValue>) {
+		Object.assign(self, data);
+	}
 }));
 
 
 const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValueParams>) => async function addFlow({ flow, self }) {
-    try {
-      flow.start();
+	try {
+		flow.start();
 
-      const res = await Api.order.update(self.id, updateOrderDTO(data));    
+		const res = await Api.order.update(self.id, updateOrderDTO(data));    
 
-      self.updateFields(createOrder(res));
+		self.updateFields(createOrder(res));
 
-      message.success({
-        type: 'success',
-        content: 'Збережено успішно',
-      });
-      flow.success();
-    } catch (err) {
-      flow.failed(err)
-      message.error('Не вдалось додати');
-    }
-  });
+		message.success({
+			type: 'success',
+			content: 'Збережено успішно',
+		});
+		flow.success();
+	} catch (err) {
+		flow.failed(err)
+		message.error('Не вдалось додати');
+	}
+});
 
 export const Order = Entity.props({ update });

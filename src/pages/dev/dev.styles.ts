@@ -14,7 +14,7 @@ const content = Theme.css(`
 `)
 
 export const s = {
-    titleContainer,
-    content
+	titleContainer,
+	content
 }
     

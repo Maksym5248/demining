@@ -14,19 +14,19 @@ export interface IEquipmentValue {
 }
   
 export const createEquipmentDTO = (value: CreateValue<IEquipmentValue>): CreateValue<IEquipmentDTO>  => ({
-  name: value.name,
-  type: value.type
+	name: value.name,
+	type: value.type
 });
 
 export const updateEquipmentDTO = data.createUpdateDTO<IEquipmentValue, IEquipmentDTO>(value => ({
-  name: value?.name ?? "",
-  type: value.type ?? EQUIPMENT_TYPE.MINE_DETECTOR
+	name: value?.name ?? "",
+	type: value.type ?? EQUIPMENT_TYPE.MINE_DETECTOR
 }));
 
 export const createEquipment = (value: IEquipmentDTO): IEquipmentValue => ({
-  id: value.id,
-  name: value.name,
-  type: value.type,
-  createdAt: dates.create(value.createdAt),
-  updatedAt: dates.create(value.updatedAt),
+	id: value.id,
+	name: value.name,
+	type: value.type,
+	createdAt: dates.create(value.createdAt),
+	updatedAt: dates.create(value.updatedAt),
 });

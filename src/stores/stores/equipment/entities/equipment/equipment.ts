@@ -12,35 +12,35 @@ import { IEquipmentValue, updateEquipmentDTO, createEquipment } from './equipmen
 export type IEquipment = Instance<typeof Equipment>
 
 const Entity = types.model('Equipment', {
-  id: types.identifier,
-  name: types.string,
-  type: types.enumeration(Object.values(EQUIPMENT_TYPE)),
-  createdAt: types.dayjs,
-  updatedAt: types.dayjs,
+	id: types.identifier,
+	name: types.string,
+	type: types.enumeration(Object.values(EQUIPMENT_TYPE)),
+	createdAt: types.dayjs,
+	updatedAt: types.dayjs,
 }).actions((self) => ({
-  updateFields(data: Partial<IEquipmentValue>) {
-      Object.assign(self, data);
-  }
+	updateFields(data: Partial<IEquipmentValue>) {
+		Object.assign(self, data);
+	}
 }));
 
 
 const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
-    try {
-      flow.start();
+	try {
+		flow.start();
 
-      const res = await Api.equipment.update(self.id, updateEquipmentDTO(data));    
+		const res = await Api.equipment.update(self.id, updateEquipmentDTO(data));    
 
-      self.updateFields(createEquipment(res));
+		self.updateFields(createEquipment(res));
 
-      message.success({
-        type: 'success',
-        content: 'Збережено успішно',
-      });
-      flow.success();
-    } catch (err) {
-      flow.failed(err)
-      message.error('Не вдалось додати');
-    }
-  });
+		message.success({
+			type: 'success',
+			content: 'Збережено успішно',
+		});
+		flow.success();
+	} catch (err) {
+		flow.failed(err)
+		message.error('Не вдалось додати');
+	}
+});
 
 export const Equipment = Entity.props({ update });

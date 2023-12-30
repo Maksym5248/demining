@@ -19,34 +19,34 @@ export interface IEmployeeValue {
 }
 
 export const createEmployeeDTO = (value: CreateValue<IEmployeeValue>): CreateValue<IEmployeeDTO>  => ({
-  type: value?.type ?? null,
-  firstName: String(value?.firstName) ?? "",
-  lastName: String(value?.lastName) ?? "",
-  surname: String(value?.surname) ?? "",
-  rankId: value?.rank ?? "",
-  position: value?.position ?? "",
+	type: value?.type ?? null,
+	firstName: String(value?.firstName) ?? "",
+	lastName: String(value?.lastName) ?? "",
+	surname: String(value?.surname) ?? "",
+	rankId: value?.rank ?? "",
+	position: value?.position ?? "",
 });
 
 export const updateEmployeeDTO = data.createUpdateDTO<IEmployeeValue, IEmployeeDTO>(value => ({
-  type: value?.type ?? EMPLOYEE_TYPE.WORKER,
-  firstName: String(value?.firstName) ?? "",
-  lastName: String(value?.lastName) ?? "",
-  surname: String(value?.surname) ?? "",
-  rankId: value?.rank ?? "",
-  position: value?.position ?? "",
+	type: value?.type ?? EMPLOYEE_TYPE.WORKER,
+	firstName: String(value?.firstName) ?? "",
+	lastName: String(value?.lastName) ?? "",
+	surname: String(value?.surname) ?? "",
+	rankId: value?.rank ?? "",
+	position: value?.position ?? "",
 }));
 
 
 export const createEmployee = (employee: IEmployeeDTO): IEmployeeValue => ({
-  id: employee.id,
-  type: employee.type || EMPLOYEE_TYPE.WORKER,
-  firstName: String(employee.firstName) || '',
-  lastName: String(employee.lastName) || '',
-  surname: String(employee.lastName) || '',
-  rank: employee.rankId,
-  position: employee.position || '',
-  createdAt: dates.create(employee.createdAt),
-  updatedAt: dates.create(employee.updatedAt),
+	id: employee.id,
+	type: employee.type || EMPLOYEE_TYPE.WORKER,
+	firstName: String(employee.firstName) || '',
+	lastName: String(employee.lastName) || '',
+	surname: String(employee.lastName) || '',
+	rank: employee.rankId,
+	position: employee.position || '',
+	createdAt: dates.create(employee.createdAt),
+	updatedAt: dates.create(employee.updatedAt),
 });
 
 

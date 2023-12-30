@@ -15,22 +15,22 @@ export interface ITransportValue {
 }
   
 export const createTransportDTO = (value: CreateValue<ITransportValue>): CreateValue<ITransportDTO>  => ({
-  name: value.name,
-  number: value.number,
-  type: value.type
+	name: value.name,
+	number: value.number,
+	type: value.type
 });
 
 export const updateTransportDTO = data.createUpdateDTO<ITransportValue, ITransportDTO>(value => ({
-  name: value?.name ?? "",
-  number: value?.number ?? "",
-  type: value?.type ?? TRANSPORT_TYPE.FOR_HUMANS,
+	name: value?.name ?? "",
+	number: value?.number ?? "",
+	type: value?.type ?? TRANSPORT_TYPE.FOR_HUMANS,
 }));
 
 export const createTransport = (value: ITransportDTO): ITransportValue => ({
-  id: value.id,
-  name: value.name,
-  number: value.number,
-  type: value.type,
-  createdAt: dates.create(value.createdAt),
-  updatedAt: dates.create(value.updatedAt),
+	id: value.id,
+	name: value.name,
+	number: value.number,
+	type: value.type,
+	createdAt: dates.create(value.createdAt),
+	updatedAt: dates.create(value.updatedAt),
 });

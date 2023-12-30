@@ -39,12 +39,12 @@ const row = Theme.css(`
 `);
 
 export const s = {
-    titleContainer,
-    first,
-    last,
-    spin,
-    item,
-    firstNoMargin,
-    row
+	titleContainer,
+	first,
+	last,
+	spin,
+	item,
+	firstNoMargin,
+	row
 }
     

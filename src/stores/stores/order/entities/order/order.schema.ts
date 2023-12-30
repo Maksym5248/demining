@@ -26,22 +26,22 @@ export interface IOrderValueParams {
 }
 
 export const createOrderDTO = (order: CreateValue<IOrderValueParams>): CreateValue<IOrderDTOParams>  => ({
-  signedAt: dates.toDate(order.signedAt),
-  signedById: order.signedById,
-  number: order.number
+	signedAt: dates.toDate(order.signedAt),
+	signedById: order.signedById,
+	number: order.number
 });
 
 export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOParams>(value => ({
-  signedAt: dates.toDate(value?.signedAt ?? new Date()),
-  signedById: value?.signedById ?? "",
-  number: value?.number ?? 0
+	signedAt: dates.toDate(value?.signedAt ?? new Date()),
+	signedById: value?.signedById ?? "",
+	number: value?.number ?? 0
 }));
 
 export const createOrder = (order: IOrderDTO): IOrderValue => ({
-  id: order.id,
-  signedAt: dates.create(order.signedAt),
-  signedBy: createEmployeeHistory(order.signedBy),
-  number: order.number,
-  createdAt: dates.create(order.createdAt),
-  updatedAt: dates.create(order.updatedAt),
+	id: order.id,
+	signedAt: dates.create(order.signedAt),
+	signedBy: createEmployeeHistory(order.signedBy),
+	number: order.number,
+	createdAt: dates.create(order.createdAt),
+	updatedAt: dates.create(order.updatedAt),
 });

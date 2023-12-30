@@ -9,8 +9,8 @@ const remove = (id:string) => DB.equipment.remove(id);
 const getList = ():Promise<IEquipmentDTO[]> => DB.equipment.select();
 
 export const equipment = {
-    add,
-    update,
-    remove,
-    getList
+	add,
+	update,
+	remove,
+	getList
 }

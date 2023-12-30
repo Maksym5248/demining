@@ -15,52 +15,52 @@ import { mockEmployees, mockMissionRequest, mockEquipment, mockTransport } from 
 export type IRootStore = Instance<typeof RootStore>
 
 export const RootStore = types
-  .model('RootStore', {
-    employee: types.optional(EmployeeStore, {}),
-    order: types.optional(OrderStore, {}),
-    missionRequest: types.optional(MissionRequestStore, {}),
-    explosiveObject: types.optional(ExplosiveObjectStore, {}),
-    transport: types.optional(TransportStore, {}),
-    equipment: types.optional(EquipmentStore, {}),
-    viewer: types.optional(ViewerStore, {}),
-    isInitialized: false,
-  })
-  .actions((self) => {
-    const { SecureStorage, Storage } = getEnv(self);
+	.model('RootStore', {
+		employee: types.optional(EmployeeStore, {}),
+		order: types.optional(OrderStore, {}),
+		missionRequest: types.optional(MissionRequestStore, {}),
+		explosiveObject: types.optional(ExplosiveObjectStore, {}),
+		transport: types.optional(TransportStore, {}),
+		equipment: types.optional(EquipmentStore, {}),
+		viewer: types.optional(ViewerStore, {}),
+		isInitialized: false,
+	})
+	.actions((self) => {
+		const { SecureStorage, Storage } = getEnv(self);
     
-    return {
-      removeAllListeners() {
-        SecureStorage.removeAllListeners();
-        Storage.removeAllListeners();
-      },
-      createMocks(){
-        mockEmployees.forEach(el => {
-          self.employee.add.run(el);
-        });
+		return {
+			removeAllListeners() {
+				SecureStorage.removeAllListeners();
+				Storage.removeAllListeners();
+			},
+			createMocks(){
+				mockEmployees.forEach(el => {
+					self.employee.add.run(el);
+				});
 
-        mockMissionRequest.forEach(el => {
-          self.missionRequest.add.run(el);
-        });
+				mockMissionRequest.forEach(el => {
+					self.missionRequest.add.run(el);
+				});
 
-        mockTransport.forEach(el => {
-          self.transport.add.run(el);
-        });
+				mockTransport.forEach(el => {
+					self.transport.add.run(el);
+				});
 
-        mockEquipment.forEach(el => {
-          self.equipment.add.run(el);
-        });
-      },
-    };
-  }).actions((self) => ({
-      init: flow(function* init() {
-        self.employee.init();
-        yield DB.init();
-        yield Api.init();
+				mockEquipment.forEach(el => {
+					self.equipment.add.run(el);
+				});
+			},
+		};
+	}).actions((self) => ({
+		init: flow(function* init() {
+			self.employee.init();
+			yield DB.init();
+			yield Api.init();
 
-        try {
-          yield self.viewer.fetchUser.run();
-        } finally {
-          self.isInitialized = true;
-        }
-      }),
-    }));
+			try {
+				yield self.viewer.fetchUser.run();
+			} finally {
+				self.isInitialized = true;
+			}
+		}),
+	}));

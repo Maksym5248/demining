@@ -8,64 +8,64 @@ import { asyncAction, createCollection, createList, safeReference } from '../../
 import { ITransport, ITransportValue, Transport, createTransport, createTransportDTO } from './entities';
 
 const Store = types
-  .model('TransportStore', {
-    collection: createCollection<ITransport, ITransportValue>("Transports", Transport),
-    list: createList<ITransport>("TransportsList", safeReference(Transport), { pageSize: 20 }),
-  });
+	.model('TransportStore', {
+		collection: createCollection<ITransport, ITransportValue>("Transports", Transport),
+		list: createList<ITransport>("TransportsList", safeReference(Transport), { pageSize: 20 }),
+	});
 
 const add = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportValue>) => async function addEmployeeFlow({ flow, self }) {
-    try {
-      flow.start();
+	try {
+		flow.start();
 
-      const res = await Api.transport.add(createTransportDTO(data));
-      const value = createTransport(res);
+		const res = await Api.transport.add(createTransportDTO(data));
+		const value = createTransport(res);
 
-      self.collection.set(res.id, value);
-      self.list.unshift(res.id);
-      flow.success();
-      message.success('Додано успішно');
-    } catch (err) {
-      console.log("e", err);
-      message.error('Не вдалось додати');
-    }
-  });
+		self.collection.set(res.id, value);
+		self.list.unshift(res.id);
+		flow.success();
+		message.success('Додано успішно');
+	} catch (err) {
+		console.log("e", err);
+		message.error('Не вдалось додати');
+	}
+});
 
 const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
-    try {
-      flow.start();
-      await Api.transport.remove(id);
-      self.list.removeById(id);
-      self.collection.remove(id);
-      flow.success();
-      message.success('Видалено успішно');
-    } catch (err) {
-      message.error('Не вдалось видалити');
-    }
-  });
+	try {
+		flow.start();
+		await Api.transport.remove(id);
+		self.list.removeById(id);
+		self.collection.remove(id);
+		flow.success();
+		message.success('Видалено успішно');
+	} catch (err) {
+		message.error('Не вдалось видалити');
+	}
+});
 
 const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-    if(flow.isLoaded){
-      return
-    }
+	if(flow.isLoaded){
+		return
+	}
     
-    try {
-      flow.start();
+	try {
+		flow.start();
 
-      const list = await Api.transport.getList();
+		const list = await Api.transport.getList();
 
-      list.forEach((el) => {
-        const item = createTransport(el);
+		list.forEach((el) => {
+			const item = createTransport(el);
 
-        if(!self.collection.has(item.id)){
-          self.collection.set(item.id, item);
-          self.list.push(item.id);
-        }
-      })
+			if(!self.collection.has(item.id)){
+				self.collection.set(item.id, item);
+				self.list.push(item.id);
+			}
+		})
 
-      flow.success();
-    } catch (err) {
-      flow.failed(err);
-    }
-  });
+		flow.success();
+	} catch (err) {
+		flow.failed(err);
+	}
+});
 
 export const TransportStore = Store.props({ add, remove, fetchList })
