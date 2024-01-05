@@ -71,30 +71,25 @@ export const schemaMissionReport = {
 		workEnd: {
 			dataType: DATA_TYPE.DateTime
 		},
-		squadLeaderId: {
+		transportHistoryIds: {
+		    notNull: true,
+		    dataType: DATA_TYPE.Array
+		},
+		equipmentHistoryIds: {
+		    notNull: true,
+		    dataType: DATA_TYPE.Array
+		},
+		explosiveObjectHistoryIds: {
+		    notNull: true,
+		    dataType: DATA_TYPE.Array
+		},
+		squadLeaderHistoryId: {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},
-		// transportIds: {
-		//     notNull: true,
-		//     dataType: DATA_TYPE.Array
-		// },
-		// equipmentIds: {
-		//     notNull: true,
-		//     dataType: DATA_TYPE.Array
-		// },
-
-		// explosiveObject: { explosive-objects-history
-		//     notNull: true,
-		//     dataType: DATA_TYPE.Array
-		// },
-		// squadLeaderId: { employee-history
-		//     notNull: true,
-		//     dataType: DATA_TYPE.String
-		// },
-		// squadIds: { employee-history
-		//     notNull: true,
-		//     dataType: DATA_TYPE.Array
-		// },
+		squadHistoryIds: {
+		    notNull: true,
+		    dataType: DATA_TYPE.Array
+		},
 	}
 };

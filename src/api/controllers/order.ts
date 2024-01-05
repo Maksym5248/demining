@@ -7,7 +7,7 @@ import { IOrderDTO, IOrderDTOParams } from '../types';
 const add = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 	const order = await DB.order.add({
 		...value,
-		signedById: "NONE"
+		signedByHistoryId: "NONE"
 	});
 
 	const { id, ...employee} = await DB.employee.get(value.signedById);
@@ -18,40 +18,43 @@ const add = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 		employeeId: id,
 	});
 
-	const {signedById, ...res} = await DB.order.update(order.id, { signedById: employeeHistory.id });
+	const {signedByHistoryId, ...res} = await DB.order.update(order.id, { signedByHistoryId: employeeHistory.id });
 
 	return {
 		...res,
-		signedBy: employeeHistory,
+		signedByHistory: employeeHistory,
 	};
 };
 
 const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOParams>):Promise<IOrderDTO> => {
 	const order = await DB.order.get(id);
-	const signedBy = await DB.employeeHistory.get(order?.signedById);
+	const signedBy = await DB.employeeHistory.get(order?.signedByHistoryId);
 
 	if(signedById && signedById !== signedBy.employeeId){
 		const employee = await DB.employee.get(signedById);
-		await DB.employeeHistory.update(order.signedById, employee);
+		await DB.employeeHistory.update(order.signedByHistoryId, {
+			...employee,
+			employeeId: employee.id,
+		});
 	}
 
 	await DB.order.update(id, value);
 
 	const resOrder = await DB.order.get(id);
-	const resSignedBy = await DB.employeeHistory.get(resOrder?.signedById)
+	const resSignedBy = await DB.employeeHistory.get(resOrder?.signedByHistoryId)
 
-	const { signedById: signedByIdRes, ...res} = resOrder;
+	const { signedByHistoryId: signedByIdRes, ...res} = resOrder;
 
 	return {
 		...res,
-		signedBy: resSignedBy
+		signedByHistory: resSignedBy
 	}
 };
 
 const remove = async (id:string) => {
 	const order = await DB.order.get(id);
 	await Promise.all([
-		DB.employeeHistory.remove(order.signedById),
+		DB.employeeHistory.remove(order.signedByHistoryId),
 		DB.order.remove(id)
 	])
 };
@@ -64,12 +67,12 @@ const getList = async ():Promise<IOrderDTO[]> => {
 		},
 	});
 
-	const newList = await Promise.all(list.map(async ({ signedById, ...order }) => {
-		const employeeHistory = await DB.employeeHistory.get(signedById)
+	const newList = await Promise.all(list.map(async ({ signedByHistoryId, ...order }) => {
+		const employeeHistory = await DB.employeeHistory.get(signedByHistoryId)
 
 		return {
 			...order,
-			signedBy: employeeHistory
+			signedByHistory: employeeHistory
 		}
 	}));
 

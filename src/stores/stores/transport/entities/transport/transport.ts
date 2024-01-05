@@ -22,6 +22,10 @@ const Entity = types.model('Transport', {
 	updateFields(data: Partial<ITransportValue>) {
 		Object.assign(self, data);
 	}
+})).views((self) => ({
+	get fullName(){
+		return `${self.name} ${self.number}`
+	}
 }));
 
 

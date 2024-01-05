@@ -22,7 +22,7 @@ export interface IEmployeeHistoryDB extends IEmployeeDB {
 export interface IOrderDB {
     id: string;
     signedAt: Date;
-    signedById: string;
+    signedByHistoryId: string;
     number: number;
     createdAt: Date;
     updatedAt: Date;
@@ -74,8 +74,10 @@ export interface ITransportDB {
     updatedAt: Date;
 }
 
-export type ITransportHistoryDB = ITransportDB;
-
+export interface ITransportHistoryDB extends ITransportDB {
+    transportId: string;
+    missionReportId: string;
+}
 
 export interface IEquipmentDB {
     id: string;
@@ -85,4 +87,7 @@ export interface IEquipmentDB {
     updatedAt: Date;
 }
 
-export type IEquipmentHistoryDB = IEquipmentDB
+export interface IEquipmentHistoryDB extends IEquipmentDB {
+    equipmentId: string;
+    missionReportId: string;
+}

@@ -60,10 +60,10 @@ export const OrderCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
 						initialValues={currentOrder
-							? ({ ...currentOrder, signedById: currentOrder.signedBy?.employeeId})
+							? ({ ...currentOrder, signedById: currentOrder.signedByHistory?.employeeId})
 							: {
 								number: (order.list.first?.number ?? 0) + 1,
-								signedById: order.list.first?.signedBy.employeeId || employeeChiefFirst?.id,
+								signedById: order.list.first?.signedByHistory.employeeId || employeeChiefFirst?.id,
 								signedAt: dates.today(),
 							}
 						}

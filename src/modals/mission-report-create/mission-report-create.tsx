@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Form, Space, InputNumber, DatePicker, TimePicker, Drawer, Select, Divider, Input, Spin} from 'antd';
+import { Button, Form, Space, InputNumber, DatePicker, Drawer, Select, Divider, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -10,7 +10,7 @@ import { MODALS } from '~/constants'
 
 import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
-import  { ExplosiveObjectHistoryList, IExplosiveObjectHistoryListItem } from "./components";
+import  { ExplosiveObjectHistoryList, IExplosiveObjectHistoryListItem, Timer, Transport, Equipment } from "./components";
 
 interface Props {
   id?: string;
@@ -22,10 +22,13 @@ interface Props {
  * 1 - для вибухових речовин, значення при ініціалізації повинно показати список всіх внп які не бул знищені
  * 2 - номер акту маю бути за порядком + 1;
  * 3 - 
+ * 
+ * 
+ *  1 - транспорт
  */
 
 export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props) => {
-	const { explosiveObject, order, missionRequest} = useStore();
+	const { explosiveObject, order, missionRequest, transport, equipment } = useStore();
 	const [explosiveObjectHistory, setExplosiveObjectHistory] = useState<IExplosiveObjectHistoryListItem[]>([]);
 
 	const isEdit = !!id;
@@ -52,9 +55,15 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		explosiveObject.fetchList.run();
 		order.fetchList.run();
 		missionRequest.fetchList.run();
+		transport.fetchList.run();
+		equipment.fetchList.run();
 	}, [])
 
-	const isLoading = explosiveObject.fetchList.inProgress || order.fetchList.inProgress || missionRequest.fetchList.inProgress;
+	const isLoading = explosiveObject.fetchList.inProgress
+	 || order.fetchList.inProgress
+	 || missionRequest.fetchList.inProgress
+	 || transport.fetchList.inProgress
+	 || equipment.fetchList.inProgress;
 
 	return (
 		<Drawer
@@ -174,40 +183,15 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							<Input size="middle" />
 						</Form.Item>
 						<Divider/>
-						<Form.Item
-							label="Початок:"
-							name="workStart"
-						>
-							<TimePicker format="HH:mm"/>
-						</Form.Item>
-						<Form.Item
-							label="Виявлення з:"
-							name="exclusionStart"
-						>
-							<TimePicker format="HH:mm"/>
-						</Form.Item>
-						<Form.Item
-							label="Транспортування з:"
-							name="transportingStart"
-						>
-							<TimePicker format="HH:mm"/>
-						</Form.Item>
-						<Form.Item
-							label="Знищення з:"
-							name="destroyedStart"
-						>
-							<TimePicker format="HH:mm"/>
-						</Form.Item>
-						<Form.Item
-							label="Завершення робіт"
-							name="workEnd"
-						>
-							<TimePicker format="HH:mm"/>
-						</Form.Item>
+						<Timer/>
 						<Divider/>
 						<Form.Item label="Виявлено ВНП" css={s.item}>
 							<ExplosiveObjectHistoryList data={explosiveObjectHistory} onUpdate={setExplosiveObjectHistory} />
 						</Form.Item>
+						<Divider/>
+						<Transport data={transport.list.asArray} />
+						<Divider/>
+						<Equipment data={equipment.list.asArray} />
 						<Divider/>
 						<Form.Item label=" " colon={false}>
 							<Space>

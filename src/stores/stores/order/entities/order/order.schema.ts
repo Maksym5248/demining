@@ -10,7 +10,7 @@ import { createEmployeeHistory, IEmployeeHistoryValue } from "../../../employee"
 export interface IOrderValue {
   id: string,
   signedAt: Dayjs,
-  signedBy: IEmployeeHistoryValue,
+  signedByHistory: IEmployeeHistoryValue,
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
@@ -40,7 +40,7 @@ export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOP
 export const createOrder = (order: IOrderDTO): IOrderValue => ({
 	id: order.id,
 	signedAt: dates.create(order.signedAt),
-	signedBy: createEmployeeHistory(order.signedBy),
+	signedByHistory: createEmployeeHistory(order.signedByHistory),
 	number: order.number,
 	createdAt: dates.create(order.createdAt),
 	updatedAt: dates.create(order.updatedAt),
