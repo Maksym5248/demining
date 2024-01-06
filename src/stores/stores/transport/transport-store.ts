@@ -3,6 +3,7 @@ import { message } from 'antd';
 
 import { CreateValue } from '~/types'
 import { Api } from '~/api'
+import { TRANSPORT_TYPE } from '~/constants';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { ITransport, ITransportValue, Transport, createTransport, createTransportDTO } from './entities';
@@ -11,7 +12,21 @@ const Store = types
 	.model('TransportStore', {
 		collection: createCollection<ITransport, ITransportValue>("Transports", Transport),
 		list: createList<ITransport>("TransportsList", safeReference(Transport), { pageSize: 20 }),
-	});
+	}).views((self) => ({
+		get transportExplosiveObjectList(){
+			return self.list.asArray.filter(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
+		},
+		get transportHumansList(){
+			return self.list.asArray.filter(el => el.type === TRANSPORT_TYPE.FOR_HUMANS);
+		},
+	})).views((self) => ({
+		get transportExplosiveObjectFirst(){
+			return self.transportExplosiveObjectList[0];
+		},
+		get transportHumansFirst(){
+			return self.transportHumansList[0];
+		},
+	}));
 
 const add = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportValue>) => async function addEmployeeFlow({ flow, self }) {
 	try {

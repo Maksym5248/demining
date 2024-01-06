@@ -1,13 +1,14 @@
 import { memo } from 'react';
 
-import { Button, List} from 'antd';
+import { Button, List, Form } from 'antd';
 
 import { Icon } from '~/components';
 import { Modal } from '~/services'
 import { MODALS } from '~/constants'
 import { useStore } from '~/hooks'
 
-import { ListItemProps, IExplosiveObjectHistoryListProps, IExplosiveObjectHistoryListItem } from "./explosive-object-history-list.types";
+import { ListItemProps, IExplosiveObjectHistoryListProps, IExplosiveObjectHistoryListItem } from "./explosive-object-history.types";
+import { s } from "./explosive-object-history.styles";
 
 const getIcon = (isDone: boolean) => isDone ? "+": "-";
 
@@ -52,13 +53,15 @@ function Component({onUpdate, data}: IExplosiveObjectHistoryListProps) {
 	const Footer = <Button type="text" onClick={onAddExplosiveObjectHistory}>Додати</Button>;
 
 	return (
-		<List
-			size="small"
-			dataSource={data}
-			renderItem={renderItem}
-			footer={Footer}
-		/>
+		<Form.Item label="ВНП" css={s.item}>
+			<List
+				size="small"
+				dataSource={data}
+				renderItem={renderItem}
+				footer={Footer}
+			/>
+		</Form.Item>
 	);
 }
 
-export const ExplosiveObjectHistoryList = memo(Component);
+export const ExplosiveObjectHistory = memo(Component);

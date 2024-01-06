@@ -15,5 +15,5 @@ const toDate = (value: Date | Dayjs):Date => {
 export const dates = {
 	today,
 	create,
-	toDate
+	toDate,
 };

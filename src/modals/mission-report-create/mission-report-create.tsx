@@ -1,16 +1,24 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Form, Space, InputNumber, DatePicker, Drawer, Select, Divider, Input, Spin} from 'antd';
+import { Button, Form, Space, Drawer, Divider, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
-import { PlusOutlined } from '@ant-design/icons';
 
 import { useStore } from '~/hooks'
-import { Modal } from '~/services'
-import { MODALS } from '~/constants'
+import { dates } from '~/utils';
 
 import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
-import  { ExplosiveObjectHistoryList, IExplosiveObjectHistoryListItem, Timer, Transport, Equipment } from "./components";
+import  { 
+	ExplosiveObjectHistory,
+	IExplosiveObjectHistoryListItem, 
+	Timer,
+	Transport, 
+	Equipment,
+	Approved, 
+	Documents ,
+	Act,
+	Territory
+} from "./components";
 
 interface Props {
   id?: string;
@@ -28,18 +36,11 @@ interface Props {
  */
 
 export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props) => {
-	const { explosiveObject, order, missionRequest, transport, equipment } = useStore();
+	const { explosiveObject, order, missionRequest, transport, equipment, employee } = useStore();
 	const [explosiveObjectHistory, setExplosiveObjectHistory] = useState<IExplosiveObjectHistoryListItem[]>([]);
 
 	const isEdit = !!id;
 
-	const onAddOrder = () => {
-		Modal.show(MODALS.ORDER_CREATE)
-	};
-
-	const onAddMissionRequest = () => {
-		Modal.show(MODALS.MISSION_REQUEST_CREATE)
-	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinishCreate = async (values: IMissionReportForm) => {
 		// await employee.add.run(values);
@@ -57,13 +58,26 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		missionRequest.fetchList.run();
 		transport.fetchList.run();
 		equipment.fetchList.run();
+		employee.fetchList.run();
 	}, [])
 
 	const isLoading = explosiveObject.fetchList.inProgress
 	 || order.fetchList.inProgress
 	 || missionRequest.fetchList.inProgress
 	 || transport.fetchList.inProgress
-	 || equipment.fetchList.inProgress;
+	 || equipment.fetchList.inProgress
+	 || employee.fetchList.inProgress;
+
+	 const initialValues = {
+		approvedAt: dates.today(),
+		approvedById: employee.employeesChiefFirst?.id,
+		number: 1,
+		executedAt: dates.today(),
+		orderId: order.list.first?.id,
+		missionRequestId: missionRequest.list.first?.id,
+		transportExplosiveObjectId: transport.transportExplosiveObjectFirst?.id,
+		transportHumansId: transport.transportHumansFirst?.id,
+	}
 
 	return (
 		<Drawer
@@ -78,121 +92,31 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="mission-report-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
+						initialValues={initialValues}
 					>
-						<Form.Item
-							label="Дата затвердження"
-							name="approvedAt"
-							rules={[{ required: true, message: 'Дата затвердження є обов\'язковим полем' }]}
-						>
-							<DatePicker />
-						</Form.Item>
-						<Form.Item label="Номер" css={s.item}>
-							<Form.Item
-								name="number"
-								rules={[{ required: true }]}
-								css={s.first}
-							>
-								<InputNumber size="middle" min={1} max={100000} />
-							</Form.Item>
-							<Form.Item
-								name="subNumber"
-								css={s.last}
-							>
-								<InputNumber size="middle" min={1} max={100000}/>
-							</Form.Item>
-						</Form.Item>
-						<Form.Item
-							label="Дата виконання"
-							name="executedAt"
-							rules={[{ required: true, message: 'Дата виконання є обов\'язковим полем' }]}
-						>
-							<DatePicker />
-						</Form.Item>
-						<Divider/>
-						<Form.Item
-							label="Наказ"
-							name="orderId"
-							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
-						>
-							<Select
-								dropdownRender={(menu) => (
-									<>
-										{menu}
-										<Divider style={{ margin: '8px 0' }} />
-										<Space style={{ padding: '0 8px 4px' }}>
-											<Button type="text" icon={<PlusOutlined />} onClick={onAddOrder}>Додати наказ</Button>
-										</Space>
-									</>
-								)}
-								options={order.list.asArray.map((el) => ({ label: `№${el.number} ${el.signedAt.format('DD/MM/YYYY')}`, value: el.id }))}
-							/>
-						</Form.Item>
-						<Form.Item
-							label="Заявка"
-							name="missionRequestId"
-							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
-						>
-							<Select
-								dropdownRender={(menu) => (
-									<>
-										{menu}
-										<Divider style={{ margin: '8px 0' }} />
-										<Space style={{ padding: '0 8px 4px' }}>
-											<Button type="text" icon={<PlusOutlined />} onClick={onAddMissionRequest}>Додати заявку</Button>
-										</Space>
-									</>
-								)}
-								options={missionRequest.list.asArray.map((el) => ({ label: `№${el.number} ${el.signedAt.format('DD/MM/YYYY')}`, value: el.id }))}
-							/>
-						</Form.Item>
-						<Divider/>
-						<Form.Item label="Обстежено, м2" css={s.item}>
-							<Form.Item
-								name="checkedTerritory"
-								rules={[{ required: true }]}
-								css={s.first}
-							>
-								<InputNumber size="middle" min={1} max={100000} />
-							</Form.Item>
-							<Form.Item
-								name="depthExamination"
-								label="на глибину, м"
-								css={s.last}
-							>
-								<InputNumber size="middle" min={1} max={100000}/>
-							</Form.Item>
-						</Form.Item>
-						<Form.Item label="Не можливо обстежити, м2" css={s.item}>
-							<Form.Item
-								name="uncheckedTerritory"
-								rules={[{ required: true }]}
-								css={s.first}
-							>
-								<InputNumber size="middle" min={1} max={100000} />
-							</Form.Item>
-						</Form.Item>
-						<Form.Item
-							label="Причина"
-							name="uncheckedReason"
-							css={s.item}
-						>
-							<Input size="middle" />
-						</Form.Item>
-						<Divider/>
-						<Timer/>
-						<Divider/>
-						<Form.Item label="Виявлено ВНП" css={s.item}>
-							<ExplosiveObjectHistoryList data={explosiveObjectHistory} onUpdate={setExplosiveObjectHistory} />
-						</Form.Item>
-						<Divider/>
-						<Transport data={transport.list.asArray} />
-						<Divider/>
-						<Equipment data={equipment.list.asArray} />
-						<Divider/>
+						{ [
+							<Approved key="1" data={employee.employeesListChief}/>,
+							<Act key="2"/>,
+							<Documents
+								key="3"
+								missionRequestData={missionRequest.list.asArray}
+								orderData={order.list.asArray}
+							/>,
+							<Territory key="4"/>,
+							<Timer key="5" />,
+							<ExplosiveObjectHistory key="6" data={explosiveObjectHistory} onUpdate={setExplosiveObjectHistory} />,
+							<Transport key="7" dataHumans={transport.transportHumansList} dataExplosiveObject={transport.transportExplosiveObjectList}/>,
+							<Equipment key="8" data={equipment.list.asArray} />,
+						].map(el => (
+							<>
+								{el}
+								<Divider/>
+							</>
+						))}
 						<Form.Item label=" " colon={false}>
 							<Space>
 								<Button onClick={hide}>Скасувати</Button>

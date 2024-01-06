@@ -43,7 +43,7 @@ module.exports = {
             "position": "before"
           },
           {
-            "pattern": "@/**",
+            "pattern": "~/**",
             "group": "internal"
           }
         ],

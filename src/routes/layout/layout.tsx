@@ -27,22 +27,29 @@ export function Layout() {
   
 	const items = [
 		{
-			key: ROUTES.MISSION_REPORT_LIST,
+			key: "Documents",
 			icon: <Icon.FileTextOutlined />,
-			label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
-			onClick: () => navigate(ROUTES.MISSION_REPORT_LIST)
-		},
-		{
-			key: ROUTES.MISSION_REQUEST_LIST,
-			icon: <Icon.FileExclamationOutlined />,
-			label: nav.getRouteTitle(ROUTES.MISSION_REQUEST_LIST),
-			onClick: () => navigate(ROUTES.MISSION_REQUEST_LIST)
-		},
-		{
-			key: ROUTES.ORDER_LIST,
-			icon: <Icon.FileTextOutlined />,
-			label: nav.getRouteTitle(ROUTES.ORDER_LIST),
-			onClick: () => navigate(ROUTES.ORDER_LIST)
+			label: "Документи",
+			children: [
+				{
+					key: ROUTES.MISSION_REPORT_LIST,
+					icon: <Icon.FileTextOutlined />,
+					label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
+					onClick: () => navigate(ROUTES.MISSION_REPORT_LIST),
+				},
+				{
+					key: ROUTES.MISSION_REQUEST_LIST,
+					icon: <Icon.FileExclamationOutlined />,
+					label: nav.getRouteTitle(ROUTES.MISSION_REQUEST_LIST),
+					onClick: () => navigate(ROUTES.MISSION_REQUEST_LIST)
+				},
+				{
+					key: ROUTES.ORDER_LIST,
+					icon: <Icon.FileTextOutlined />,
+					label: nav.getRouteTitle(ROUTES.ORDER_LIST),
+					onClick: () => navigate(ROUTES.ORDER_LIST)
+				},
+			]
 		},
 		{
 			key: ROUTES.EXPLOSIVE_OBJECT_LIST,
@@ -94,6 +101,8 @@ export function Layout() {
 				<Menu
 					theme="dark"
 					defaultSelectedKeys={[ROUTES.MISSION_REPORT_LIST]}
+					defaultOpenKeys={["Documents"]}
+					mode="inline"
 					items={items}
 				/>
 			</Sider>

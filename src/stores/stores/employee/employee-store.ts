@@ -39,10 +39,16 @@ const Store = types
 		get employeesListChief(){
 			return self.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF)
 		},
-
+		get squadLeads(){
+			return self.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.SQUAD_LEAD)
+		},
 		getById(id:string){
 			return self.collection.get(id as string);
 		}
+	})).views((self) => ({
+		get employeesChiefFirst(){
+			return self.employeesListChief[0];
+		},
 	}));
 
 const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => async function addEmployeeFlow({ flow, self }) {

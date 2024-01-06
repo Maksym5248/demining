@@ -1,13 +1,9 @@
 import { Form, Select} from 'antd';
 
+import { TRANSPORT_TYPE } from '~/constants';
 import { ITransport } from '~/stores';
 
-interface TransportProps {
-	dataHumans:ITransport[];
-	dataExplosiveObject:ITransport[]
-}
-
-export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) {
+export function Transport({ data }: { data:ITransport[]} ) {
 	return <>
 		<Form.Item
 			label="Авто для ВР"
@@ -15,7 +11,10 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
 			<Select
-				options={dataExplosiveObject.map((el) => ({ label: el.fullName, value: el.id }))}
+				options={data
+					.filter(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)
+					.map((el) => ({ label: el.fullName, value: el.id }))
+				}
 			/>
 		</Form.Item>
 		<Form.Item
@@ -24,7 +23,10 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
 			<Select
-				options={dataHumans.map((el) => ({ label: el.fullName, value: el.id }))}
+				options={data
+					.filter(el => el.type === TRANSPORT_TYPE.FOR_HUMANS)
+					.map((el) => ({ label: el.fullName, value: el.id }))
+				}
 			/>
 		</Form.Item>
 	</>

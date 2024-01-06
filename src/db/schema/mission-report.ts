@@ -9,6 +9,10 @@ export const schemaMissionReport = {
 			unique: true,
 			primaryKey: true,
 		},
+		approvedByHistoryId: {
+			notNull: true,
+			dataType: DATA_TYPE.String
+		},
 		approvedAt: {
 			notNull: true,
 			dataType: DATA_TYPE.DateTime
