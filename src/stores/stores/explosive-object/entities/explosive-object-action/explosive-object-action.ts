@@ -1,12 +1,12 @@
 import { Instance } from 'mobx-state-tree';
 
 import { types } from '../../../../types'
-import { IExplosiveObjectHistoryValueParams } from './explosive-object-history.schema';
+import { IExplosiveObjectActionValueParams } from './explosive-object-action.schema';
 import { ExplosiveObjectType } from '../explosive-object-type';
 
-export type IExplosiveObjectHistory = Instance<typeof ExplosiveObjectHistory>
+export type IExplosiveObjectAction = Instance<typeof ExplosiveObjectAction>
 
-const Entity = types.model('ExplosiveObjectHistory', {
+const Entity = types.model('ExplosiveObjectAction', {
 	id: types.identifier,
 	type: types.reference(ExplosiveObjectType),
 	name: types.string,
@@ -14,10 +14,10 @@ const Entity = types.model('ExplosiveObjectHistory', {
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).actions((self) => ({
-	updateFields(data: Partial<IExplosiveObjectHistoryValueParams>) {
+	updateFields(data: Partial<IExplosiveObjectActionValueParams>) {
 		Object.assign(self, data);
 	}
 }));
 
 
-export const ExplosiveObjectHistory = Entity;
+export const ExplosiveObjectAction = Entity;

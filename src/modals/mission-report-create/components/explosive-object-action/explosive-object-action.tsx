@@ -7,8 +7,8 @@ import { Modal } from '~/services'
 import { MODALS } from '~/constants'
 import { useStore } from '~/hooks'
 
-import { ListItemProps, IExplosiveObjectHistoryListProps, IExplosiveObjectHistoryListItem } from "./explosive-object-history.types";
-import { s } from "./explosive-object-history.styles";
+import { ListItemProps, IExplosiveObjectActionListProps, IExplosiveObjectActionListItem } from "./explosive-object-action.types";
+import { s } from "./explosive-object-action.styles";
 
 const getIcon = (isDone: boolean) => isDone ? "+": "-";
 
@@ -38,10 +38,10 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 }
 
 
-function Component({onUpdate, data}: IExplosiveObjectHistoryListProps) {
-	const onAddExplosiveObjectHistory = () => {
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_HISTORY_CREATE, {
-			onSubmit: (value: IExplosiveObjectHistoryListItem) => onUpdate([...data, value]),
+function Component({onUpdate, data}: IExplosiveObjectActionListProps) {
+	const onAddExplosiveObjectAction = () => {
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_CREATE, {
+			onSubmit: (value: IExplosiveObjectActionListItem) => onUpdate([...data, value]),
 		})
 	};
 
@@ -49,8 +49,8 @@ function Component({onUpdate, data}: IExplosiveObjectHistoryListProps) {
 		onUpdate(data.filter((item, i) => i !== index));
 	};
 
-	const renderItem = (item:IExplosiveObjectHistoryListItem, i:number) => <ListItem item={item} index={i} onRemove={onRemove} />;
-	const Footer = <Button type="text" onClick={onAddExplosiveObjectHistory}>Додати</Button>;
+	const renderItem = (item:IExplosiveObjectActionListItem, i:number) => <ListItem item={item} index={i} onRemove={onRemove} />;
+	const Footer = <Button type="text" onClick={onAddExplosiveObjectAction}>Додати</Button>;
 
 	return (
 		<Form.Item label="ВНП" css={s.item}>
@@ -64,4 +64,4 @@ function Component({onUpdate, data}: IExplosiveObjectHistoryListProps) {
 	);
 }
 
-export const ExplosiveObjectHistory = memo(Component);
+export const ExplosiveObjectAction = memo(Component);

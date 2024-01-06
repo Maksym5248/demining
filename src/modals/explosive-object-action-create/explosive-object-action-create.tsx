@@ -9,8 +9,8 @@ import { IExplosiveObjectTypeValue } from '~/stores'
 import { EXPLOSIVE_OBJECT_CATEGORY, MODALS } from '~/constants'
 import { Modal } from '~/services'
 
-import { IExplosiveObjectHistoryForm } from './explosive-object-history-create.types';
-import { s } from './explosive-object-history-create.styles';
+import { IExplosiveObjectActionForm } from './explosive-object-action-create.types';
+import { s } from './explosive-object-action-create.styles';
 
 const optionsExplosiveObjectCategory = [{
 	value: EXPLOSIVE_OBJECT_CATEGORY.I,
@@ -25,13 +25,13 @@ interface Props {
   isVisible: boolean;
   hide: () => void;
   initialValue: IExplosiveObjectTypeValue;
-  onSubmit: (value: IExplosiveObjectHistoryForm) => void;
+  onSubmit: (value: IExplosiveObjectActionForm) => void;
 }
 
-export const ExplosiveObjectHistoryCreateModal  = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
+export const ExplosiveObjectActionCreateModal  = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
 	const { explosiveObject } = useStore();
 
-	const onFinish = async (values: IExplosiveObjectHistoryForm) => {
+	const onFinish = async (values: IExplosiveObjectActionForm) => {
 		onSubmit?.(values);
 		hide();
 	};

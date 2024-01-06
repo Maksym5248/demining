@@ -9,7 +9,7 @@ export const schemaMissionReport = {
 			unique: true,
 			primaryKey: true,
 		},
-		approvedByHistoryId: {
+		approvedByActionId: {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},
@@ -75,23 +75,23 @@ export const schemaMissionReport = {
 		workEnd: {
 			dataType: DATA_TYPE.DateTime
 		},
-		transportHistoryIds: {
+		transportActionIds: {
 		    notNull: true,
 		    dataType: DATA_TYPE.Array
 		},
-		equipmentHistoryIds: {
+		equipmentActionIds: {
 		    notNull: true,
 		    dataType: DATA_TYPE.Array
 		},
-		explosiveObjectHistoryIds: {
+		explosiveObjectActionIds: {
 		    notNull: true,
 		    dataType: DATA_TYPE.Array
 		},
-		squadLeaderHistoryId: {
+		squadLeaderActionId: {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},
-		squadHistoryIds: {
+		squadActionIds: {
 		    notNull: true,
 		    dataType: DATA_TYPE.Array
 		},

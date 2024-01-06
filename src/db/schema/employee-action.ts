@@ -4,8 +4,8 @@ import { TABLES } from '~/constants';
 
 import { schemaEmployee } from './employee';
 
-export const schemaEmployeeHistory = {
-	name: TABLES.EMPLOYEE_HISTORY,
+export const schemaEmployeeAction = {
+	name: TABLES.EMPLOYEE_ACTION,
 	columns: {
 		...schemaEmployee.columns,
 		documentType: {

@@ -1,16 +1,16 @@
 import { DOCUMENT_TYPE } from "~/constants"
-import { IEmployeeHistoryDTO } from '~/api';
+import { IEmployeeActionDTO } from '~/api';
 
 import { IEmployeeValue, createEmployee } from '../employee';
 
 
-export interface IEmployeeHistoryValue extends IEmployeeValue {
+export interface IEmployeeActionValue extends IEmployeeValue {
   documentType: DOCUMENT_TYPE;
   documentId: string;
   employeeId: string;
 }
 
-export const createEmployeeHistory = (employee: IEmployeeHistoryDTO): IEmployeeHistoryValue => ({
+export const createEmployeeAction = (employee: IEmployeeActionDTO): IEmployeeActionValue => ({
 	...createEmployee(employee),
 	documentType: employee.documentType,
 	documentId: employee.documentId,

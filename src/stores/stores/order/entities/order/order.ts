@@ -6,7 +6,7 @@ import { Api } from '~/api'
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
-import { EmployeeHistory } from '../../../employee';
+import { EmployeeAction } from '../../../employee';
 import { IOrderValue, IOrderValueParams, createOrder, updateOrderDTO } from './order.schema';
 
 export type IOrder = Instance<typeof Order>
@@ -14,7 +14,7 @@ export type IOrder = Instance<typeof Order>
 const Entity = types.model('Order', {
 	id: types.identifier,
 	signedAt: types.dayjs,
-	signedByHistory: EmployeeHistory.named("EmployeeOrder"),
+	signedByAction: EmployeeAction.named("EmployeeOrder"),
 	number: types.number,
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,

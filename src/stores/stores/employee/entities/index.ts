@@ -1,3 +1,3 @@
 export * from './employee';
-export * from './employee-history';
+export * from './employee-action';
 export * from './rank';

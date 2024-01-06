@@ -1,5 +1,7 @@
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE } from "~/constants"
 
+
+
 export interface IEmployeeDB {
     id: string;
     type: EMPLOYEE_TYPE;
@@ -12,7 +14,7 @@ export interface IEmployeeDB {
     updatedAt: Date;
 }
 
-export interface IEmployeeHistoryDB extends IEmployeeDB {
+export interface IEmployeeActionDB extends IEmployeeDB {
     documentType: DOCUMENT_TYPE;
     documentId: string;
     employeeId: string;
@@ -22,7 +24,7 @@ export interface IEmployeeHistoryDB extends IEmployeeDB {
 export interface IOrderDB {
     id: string;
     signedAt: Date;
-    signedByHistoryId: string;
+    signedByActionId: string;
     number: number;
     createdAt: Date;
     updatedAt: Date;
@@ -53,9 +55,10 @@ export interface IExplosiveObjectDB {
     updatedAt: Date;
 }
 
-export interface IExplosiveObjectHistoryDB extends IExplosiveObjectDB {
+export interface IExplosiveObjectActionDB extends IExplosiveObjectDB {
     explosiveObjectId: string;
-    missionReportId: string;
+    documentType: DOCUMENT_TYPE;
+    documentId: string;
     quantity: number;
     category: EXPLOSIVE_OBJECT_CATEGORY;
     isDiscovered: boolean;
@@ -74,9 +77,10 @@ export interface ITransportDB {
     updatedAt: Date;
 }
 
-export interface ITransportHistoryDB extends ITransportDB {
+export interface ITransportActionDB extends ITransportDB {
     transportId: string;
-    missionReportId: string;
+    documentType: DOCUMENT_TYPE;
+    documentId: string;
 }
 
 export interface IEquipmentDB {
@@ -87,7 +91,8 @@ export interface IEquipmentDB {
     updatedAt: Date;
 }
 
-export interface IEquipmentHistoryDB extends IEquipmentDB {
+export interface IEquipmentActionDB extends IEquipmentDB {
     equipmentId: string;
-    missionReportId: string;
+    documentType: DOCUMENT_TYPE;
+    documentId: string;
 }

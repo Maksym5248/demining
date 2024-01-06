@@ -4,13 +4,13 @@ import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
 import { IOrderDTO, IOrderDTOParams } from '~/api';
 
-import { createEmployeeHistory, IEmployeeHistoryValue } from "../../../employee"
+import { createEmployeeAction, IEmployeeActionValue } from "../../../employee"
 
 
 export interface IOrderValue {
   id: string,
   signedAt: Dayjs,
-  signedByHistory: IEmployeeHistoryValue,
+  signedByAction: IEmployeeActionValue,
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
@@ -40,7 +40,7 @@ export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOP
 export const createOrder = (order: IOrderDTO): IOrderValue => ({
 	id: order.id,
 	signedAt: dates.create(order.signedAt),
-	signedByHistory: createEmployeeHistory(order.signedByHistory),
+	signedByAction: createEmployeeAction(order.signedByAction),
 	number: order.number,
 	createdAt: dates.create(order.createdAt),
 	updatedAt: dates.create(order.updatedAt),

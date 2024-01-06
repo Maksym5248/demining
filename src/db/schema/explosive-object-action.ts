@@ -4,15 +4,19 @@ import { TABLES } from '~/constants';
 
 import { schemaExplosiveObject } from './explosive-object';
 
-export const schemaExplosiveObjectHistory = {
-	name: TABLES.EXPLOSIVE_OBJECT_HISTORY,
+export const schemaExplosiveObjectAction = {
+	name: TABLES.EXPLOSIVE_OBJECT_ACTION,
 	columns: {
 		...schemaExplosiveObject.columns,
 		explosiveObjectId: {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},
-		missionReportId: {
+		documentType: {
+			notNull: true,
+			dataType: DATA_TYPE.String
+		},
+		documentId: {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},

@@ -5,12 +5,12 @@ import { DOCUMENT_TYPE } from "~/constants";
 import { types } from '../../../../types'
 import { Employee } from "../employee";
 
-export type IEmployeeHistory = Instance<typeof EmployeeHistory>
+export type IEmployeeAction = Instance<typeof EmployeeAction>
 
-const Entity = Employee.named("EmployeeHistory").props({
+const Entity = Employee.named("EmployeeAction").props({
 	documentType: types.enumeration(Object.values(DOCUMENT_TYPE)),
 	documentId: types.string,
 	employeeId: types.string,
 });
 
-export const EmployeeHistory = Entity;
+export const EmployeeAction = Entity;

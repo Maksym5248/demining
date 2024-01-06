@@ -9,27 +9,27 @@ import {
 	schemaEmployee,
 	schemaOrder, 
 	schemaMissionRequest,
-	schemaEmployeeHistory,
+	schemaEmployeeAction,
 	schemaExplosiveObject,
 	schemaExplosiveObjectType,
-	schemaExplosiveObjectHistory,
+	schemaExplosiveObjectAction,
 	schemaEquipment,
-	schemaEquipmentHistory,
+	schemaEquipmentAction,
 	schemaTransport,
-	schemaTransportHistory
+	schemaTransportAction
 } from './schema';
 import {
 	IEmployeeDB, 
-	IEmployeeHistoryDB, 
+	IEmployeeActionDB, 
 	IOrderDB,
 	IMissionRequestDB,
 	IExplosiveObjectDB,
 	IExplosiveObjectTypeDB,
-	IExplosiveObjectHistoryDB,
+	IExplosiveObjectActionDB,
 	ITransportDB,
-	ITransportHistoryDB,
+	ITransportActionDB,
 	IEquipmentDB,
-	IEquipmentHistoryDB
+	IEquipmentActionDB
 } from './types';
 
 const getSchema = ():IDataBase => ({
@@ -37,16 +37,16 @@ const getSchema = ():IDataBase => ({
 	version: 1,
 	tables: [
 		schemaEmployee,
-		schemaEmployeeHistory,
+		schemaEmployeeAction,
 		schemaOrder,
 		schemaMissionRequest,
 		schemaExplosiveObject,
 		schemaExplosiveObjectType,
-		schemaExplosiveObjectHistory,
+		schemaExplosiveObjectAction,
 		schemaEquipment,
-		schemaEquipmentHistory,
+		schemaEquipmentAction,
 		schemaTransport,
-		schemaTransportHistory
+		schemaTransportAction
 	]
 } as IDataBase)
 
@@ -54,14 +54,14 @@ export const DB = {
 	init: () => DBInit.init(getSchema()),
 	dropDb: () => DBInit.dropDb(),
 	employee: new DBBase<IEmployeeDB>(DBInit.getDB(), TABLES.EMPLOYEE),
-	employeeHistory: new DBBase<IEmployeeHistoryDB>(DBInit.getDB(), TABLES.EMPLOYEE_HISTORY),
+	employeeAction: new DBBase<IEmployeeActionDB>(DBInit.getDB(), TABLES.EMPLOYEE_ACTION),
 	missionRequest: new DBBase<IMissionRequestDB>(DBInit.getDB(), TABLES.MISSION_REQUEST),
 	order: new DBBase<IOrderDB>(DBInit.getDB(), TABLES.ORDER),
 	explosiveObject: new DBBase<IExplosiveObjectDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT),
 	explosiveObjectType: new DBBase<IExplosiveObjectTypeDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_TYPE),
-	explosiveObjectHistory: new DBBase<IExplosiveObjectHistoryDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_HISTORY),
+	explosiveObjectAction: new DBBase<IExplosiveObjectActionDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_ACTION),
 	transport: new DBBase<ITransportDB>(DBInit.getDB(), TABLES.TRANSPORT),
-	transportHistory: new DBBase<ITransportHistoryDB>(DBInit.getDB(), TABLES.TRANSPORT_HISTORY),
+	transportAction: new DBBase<ITransportActionDB>(DBInit.getDB(), TABLES.TRANSPORT_ACTION),
 	equipment: new DBBase<IEquipmentDB>(DBInit.getDB(), TABLES.EQUIPMENT),
-	equipmentHistory: new DBBase<IEquipmentHistoryDB>(DBInit.getDB(), TABLES.EQUIPMENT_HISTORY),
+	equipmentAction: new DBBase<IEquipmentActionDB>(DBInit.getDB(), TABLES.EQUIPMENT_ACTION),
 }

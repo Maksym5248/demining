@@ -16,7 +16,7 @@ export const schemaOrder = {
 		/**
          * id of EMPLOYEE_TYPE.CHIEF
          */
-		signedByHistoryId: {
+		signedByActionId: {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},

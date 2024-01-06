@@ -7,32 +7,32 @@ import { IOrderDTO, IOrderDTOParams } from '../types';
 const add = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 	const order = await DB.order.add({
 		...value,
-		signedByHistoryId: "NONE"
+		signedByActionId: "NONE"
 	});
 
 	const { id, ...employee} = await DB.employee.get(value.signedById);
-	const employeeHistory = await DB.employeeHistory.add({
+	const employeeAction = await DB.employeeAction.add({
 		...employee,
 		documentType: DOCUMENT_TYPE.ORDER,
 		documentId: order.id,
 		employeeId: id,
 	});
 
-	const {signedByHistoryId, ...res} = await DB.order.update(order.id, { signedByHistoryId: employeeHistory.id });
+	const {signedByActionId, ...res} = await DB.order.update(order.id, { signedByActionId: employeeAction.id });
 
 	return {
 		...res,
-		signedByHistory: employeeHistory,
+		signedByAction: employeeAction,
 	};
 };
 
 const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOParams>):Promise<IOrderDTO> => {
 	const order = await DB.order.get(id);
-	const signedBy = await DB.employeeHistory.get(order?.signedByHistoryId);
+	const signedBy = await DB.employeeAction.get(order?.signedByActionId);
 
 	if(signedById && signedById !== signedBy.employeeId){
 		const employee = await DB.employee.get(signedById);
-		await DB.employeeHistory.update(order.signedByHistoryId, {
+		await DB.employeeAction.update(order.signedByActionId, {
 			...employee,
 			employeeId: employee.id,
 		});
@@ -41,20 +41,20 @@ const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOPa
 	await DB.order.update(id, value);
 
 	const resOrder = await DB.order.get(id);
-	const resSignedBy = await DB.employeeHistory.get(resOrder?.signedByHistoryId)
+	const resSignedBy = await DB.employeeAction.get(resOrder?.signedByActionId)
 
-	const { signedByHistoryId: signedByIdRes, ...res} = resOrder;
+	const { signedByActionId: signedByIdRes, ...res} = resOrder;
 
 	return {
 		...res,
-		signedByHistory: resSignedBy
+		signedByAction: resSignedBy
 	}
 };
 
 const remove = async (id:string) => {
 	const order = await DB.order.get(id);
 	await Promise.all([
-		DB.employeeHistory.remove(order.signedByHistoryId),
+		DB.employeeAction.remove(order.signedByActionId),
 		DB.order.remove(id)
 	])
 };
@@ -67,12 +67,12 @@ const getList = async ():Promise<IOrderDTO[]> => {
 		},
 	});
 
-	const newList = await Promise.all(list.map(async ({ signedByHistoryId, ...order }) => {
-		const employeeHistory = await DB.employeeHistory.get(signedByHistoryId)
+	const newList = await Promise.all(list.map(async ({ signedByActionId, ...order }) => {
+		const employeeAction = await DB.employeeAction.get(signedByActionId)
 
 		return {
 			...order,
-			signedByHistory: employeeHistory
+			signedByAction: employeeAction
 		}
 	}));
 

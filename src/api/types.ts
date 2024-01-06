@@ -1,25 +1,25 @@
 import { 
 	IEmployeeDB,
-	IEmployeeHistoryDB,
+	IEmployeeActionDB,
 	IOrderDB,
 	IMissionRequestDB,
 	IExplosiveObjectDB,
 	IExplosiveObjectTypeDB,
-	IExplosiveObjectHistoryDB,
+	IExplosiveObjectActionDB,
 	ITransportDB,
-	ITransportHistoryDB,
+	ITransportActionDB,
 	IEquipmentDB,
-	IEquipmentHistoryDB
+	IEquipmentActionDB
 } from "~/db"
 
 export type IEmployeeDTO = IEmployeeDB
-export type IEmployeeHistoryDTO = IEmployeeHistoryDB
+export type IEmployeeActionDTO = IEmployeeActionDB
 
-export interface IOrderDTO extends Omit<IOrderDB, "signedByHistoryId">{
-    signedByHistory: IEmployeeHistoryDTO;
+export interface IOrderDTO extends Omit<IOrderDB, "signedByActionId">{
+    signedByAction: IEmployeeActionDTO;
 }
 
-export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | "signedByHistoryId"> & {
+export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | "signedByActionId"> & {
 	signedById: string
 }
 
@@ -31,17 +31,17 @@ export interface IExplosiveObjectDTO extends Omit<IExplosiveObjectDB, "typeId">{
     type: IExplosiveObjectTypeDTO;
 }
 
-export interface IExplosiveObjectHistoryDTO extends Omit<IExplosiveObjectHistoryDB, "typeId">{
+export interface IExplosiveObjectActionDTO extends Omit<IExplosiveObjectActionDB, "typeId">{
     type: IExplosiveObjectTypeDTO;
 }
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
-export type IExplosiveObjectHistoryDTOParams = Omit<IExplosiveObjectHistoryDB, keyof IExplosiveObjectDB>;
+export type IExplosiveObjectActionDTOParams = Omit<IExplosiveObjectActionDB, keyof IExplosiveObjectDB>;
 
 export type ITransportDTO = ITransportDB
-export type ITransportHistoryDTO = ITransportHistoryDB
+export type ITransportActionDTO = ITransportActionDB
 
 export type IEquipmentDTO = IEquipmentDB
-export type IEquipmentHistoryDTO = IEquipmentHistoryDB
+export type IEquipmentActionDTO = IEquipmentActionDB
 
 

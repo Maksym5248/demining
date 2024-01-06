@@ -1,4 +1,4 @@
-export * from "./explosive-object-history";
+export * from "./explosive-object-action";
 export * from "./timer";
 export * from "./transport";
 export * from "./equipment";

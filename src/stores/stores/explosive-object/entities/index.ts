@@ -1,3 +1,3 @@
 export * from './explosive-object';
-export * from './explosive-object-history';
+export * from './explosive-object-action';
 export * from './explosive-object-type';

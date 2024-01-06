@@ -1,13 +1,14 @@
 import { CreateValue } from '~/types'
 import { data } from '~/utils';
-import { IExplosiveObjectHistoryDTO, IExplosiveObjectHistoryDTOParams } from '~/api';
-import { EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
+import { IExplosiveObjectActionDTO, IExplosiveObjectActionDTOParams } from '~/api';
+import { DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 
 import { IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';
 
-export interface IExplosiveObjectHistoryValue extends IExplosiveObjectValue {
+export interface IExplosiveObjectActionValue extends IExplosiveObjectValue {
   explosiveObjectId: string;
-  missionReportId: string;
+  documentType: DOCUMENT_TYPE;
+  documentId: string;
   quantity: number;
   category: EXPLOSIVE_OBJECT_CATEGORY;
   isDiscovered: boolean;
@@ -15,9 +16,10 @@ export interface IExplosiveObjectHistoryValue extends IExplosiveObjectValue {
   isDestroyed: boolean;
 }
 
-export interface IExplosiveObjectHistoryValueParams {
+export interface IExplosiveObjectActionValueParams {
   explosiveObjectId: string;
-  missionReportId: string;
+  documentType: DOCUMENT_TYPE;
+  documentId: string;
   quantity: number;
   category: EXPLOSIVE_OBJECT_CATEGORY;
   isDiscovered: boolean;
@@ -26,9 +28,10 @@ export interface IExplosiveObjectHistoryValueParams {
 }
 
   
-export const createExplosiveObjectHistoryDTO = (value: CreateValue<IExplosiveObjectHistoryValueParams>): CreateValue<IExplosiveObjectHistoryDTOParams>  => ({
+export const createExplosiveObjectActionDTO = (value: CreateValue<IExplosiveObjectActionValueParams>): CreateValue<IExplosiveObjectActionDTOParams>  => ({
 	explosiveObjectId: value?.explosiveObjectId,
-	missionReportId: value.missionReportId,
+	documentType: value.documentType,
+	documentId: value.documentId,
 	quantity: value.quantity,
 	category: value.category,
 	isDiscovered: value.isDiscovered,
@@ -36,9 +39,10 @@ export const createExplosiveObjectHistoryDTO = (value: CreateValue<IExplosiveObj
 	isDestroyed: value.isDestroyed,
 });
 
-export const updateExplosiveObjectHistoryDTO = data.createUpdateDTO<IExplosiveObjectHistoryValueParams, IExplosiveObjectHistoryDTOParams>(value => ({
+export const updateExplosiveObjectActionDTO = data.createUpdateDTO<IExplosiveObjectActionValueParams, IExplosiveObjectActionDTOParams>(value => ({
 	explosiveObjectId: value?.explosiveObjectId ?? "",
-	missionReportId: value.missionReportId ?? "",
+	documentType: value.documentType ?? DOCUMENT_TYPE.ORDER,
+	documentId: value.documentId ?? "",
 	quantity: value?.quantity ?? 0,
 	category: value?.category ?? EXPLOSIVE_OBJECT_CATEGORY.I,
 	isDiscovered: value?.isDiscovered ?? false,
@@ -46,10 +50,11 @@ export const updateExplosiveObjectHistoryDTO = data.createUpdateDTO<IExplosiveOb
 	isDestroyed: value?.isDestroyed ?? false,
 }));
 
-export const createExplosiveObjectHistory = (value: IExplosiveObjectHistoryDTO): IExplosiveObjectHistoryValue => ({
+export const createExplosiveObjectAction = (value: IExplosiveObjectActionDTO): IExplosiveObjectActionValue => ({
 	...createExplosiveObject(value),
 	explosiveObjectId: value.explosiveObjectId,
-	missionReportId: value.missionReportId,
+	documentType: value.documentType,
+	documentId: value.documentId,
 	quantity: value.quantity,
 	category: value.category,
 	isDiscovered: value.isDiscovered,
