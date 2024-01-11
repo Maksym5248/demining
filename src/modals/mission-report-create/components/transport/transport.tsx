@@ -1,5 +1,10 @@
-import { Form, Select} from 'antd';
+import { JSXElementConstructor, ReactElement, useCallback } from 'react';
 
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Divider, Form, Select, Space} from 'antd';
+
+import { MODALS } from '~/constants';
+import { Modal } from '~/services';
 import { ITransport } from '~/stores';
 
 interface TransportProps {
@@ -8,6 +13,22 @@ interface TransportProps {
 }
 
 export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) {
+	const onAdd = useCallback( () => {
+		Modal.show(MODALS.TRANSPORT_CREATE)
+	}, []);
+	
+	const dropdownRender = useCallback(
+		(menu:ReactElement<any, string | JSXElementConstructor<any>>) => (
+			<>
+				{menu}
+				<Divider style={{ margin: '8px 0' }} />
+				<Space style={{ padding: '0 8px 4px' }}>
+					<Button type="text" icon={<PlusOutlined />} onClick={onAdd}>Додати</Button>
+				</Space>
+			</>
+		),[onAdd]
+	);
+	
 	return <>
 		<Form.Item
 			label="Авто для ВР"
@@ -16,6 +37,7 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 		>
 			<Select
 				options={dataExplosiveObject.map((el) => ({ label: el.fullName, value: el.id }))}
+				dropdownRender={dropdownRender}
 			/>
 		</Form.Item>
 		<Form.Item
@@ -25,6 +47,7 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 		>
 			<Select
 				options={dataHumans.map((el) => ({ label: el.fullName, value: el.id }))}
+				dropdownRender={dropdownRender}
 			/>
 		</Form.Item>
 	</>

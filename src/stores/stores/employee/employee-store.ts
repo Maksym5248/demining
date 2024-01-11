@@ -42,12 +42,18 @@ const Store = types
 		get squadLeads(){
 			return self.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.SQUAD_LEAD)
 		},
+		get workers(){
+			return self.list.asArray.filter((el) => el.type !== EMPLOYEE_TYPE.CHIEF)
+		},
 		getById(id:string){
 			return self.collection.get(id as string);
 		}
 	})).views((self) => ({
 		get employeesChiefFirst(){
 			return self.employeesListChief[0];
+		},
+		get employeesSquadLeadFirst(){
+			return self.squadLeads[0];
 		},
 	}));
 
