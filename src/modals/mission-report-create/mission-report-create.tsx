@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Form, Space, Drawer, Divider, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -10,7 +10,6 @@ import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
 import  { 
 	ExplosiveObjectAction,
-	IExplosiveObjectActionListItem, 
 	Timer,
 	Transport, 
 	Equipment,
@@ -37,7 +36,6 @@ interface Props {
 
 export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props) => {
 	const { explosiveObject, order, missionRequest, transport, equipment, employee } = useStore();
-	const [explosiveObjectAction, setExplosiveObjectAction] = useState<IExplosiveObjectActionListItem[]>([]);
 
 	const isEdit = !!id;
 
@@ -77,6 +75,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		missionRequestId: missionRequest.list.first?.id,
 		transportExplosiveObjectId: transport.transportExplosiveObjectFirst?.id,
 		transportHumansId: transport.transportHumansFirst?.id,
+		explosiveObjectActions: []
 	}
 
 	return (
@@ -108,7 +107,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							/>,
 							<Territory key="4"/>,
 							<Timer key="5" />,
-							<ExplosiveObjectAction key="6" data={explosiveObjectAction} onUpdate={setExplosiveObjectAction} />,
+							<ExplosiveObjectAction key="6" />,
 							<Transport key="7" dataHumans={transport.transportHumansList} dataExplosiveObject={transport.transportExplosiveObjectList}/>,
 							<Equipment key="8" data={equipment.list.asArray} />,
 						].map(el => (

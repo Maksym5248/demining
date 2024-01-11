@@ -1,3 +1,4 @@
+import { IExplosiveObjectActionListItem } from "./components";
 
 export interface IMissionReportForm {
     firstName: string;
@@ -5,4 +6,5 @@ export interface IMissionReportForm {
     position: string;
     rank: string;
     surname: string;
+    explosiveObjectActions: IExplosiveObjectActionListItem[];
 }

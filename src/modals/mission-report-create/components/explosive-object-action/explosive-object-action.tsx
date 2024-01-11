@@ -1,13 +1,14 @@
 import { memo } from 'react';
 
 import { Button, List, Form } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 import { Icon } from '~/components';
 import { Modal } from '~/services'
 import { MODALS } from '~/constants'
 import { useStore } from '~/hooks'
 
-import { ListItemProps, IExplosiveObjectActionListProps, IExplosiveObjectActionListItem } from "./explosive-object-action.types";
+import { ListItemProps, IExplosiveObjectActionListItem } from "./explosive-object-action.types";
 import { s } from "./explosive-object-action.styles";
 
 const getIcon = (isDone: boolean) => isDone ? "+": "-";
@@ -38,28 +39,47 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 }
 
 
-function Component({onUpdate, data}: IExplosiveObjectActionListProps) {
-	const onAddExplosiveObjectAction = () => {
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_CREATE, {
-			onSubmit: (value: IExplosiveObjectActionListItem) => onUpdate([...data, value]),
-		})
-	};
-
-	const onRemove = (index:number) => {
-		onUpdate(data.filter((item, i) => i !== index));
-	};
-
-	const renderItem = (item:IExplosiveObjectActionListItem, i:number) => <ListItem item={item} index={i} onRemove={onRemove} />;
-	const Footer = <Button type="text" onClick={onAddExplosiveObjectAction}>Додати</Button>;
+function Component() {
 
 	return (
-		<Form.Item label="ВНП" css={s.item}>
-			<List
-				size="small"
-				dataSource={data}
-				renderItem={renderItem}
-				footer={Footer}
-			/>
+		<Form.Item label="ВНП" name="explosiveObjectActions" css={s.item} >
+			<Form.Item noStyle shouldUpdate={() => true} >
+				{({ getFieldValue, setFieldValue }) => {
+					const data = getFieldValue("explosiveObjectActions");
+
+					return (
+						<List
+							size="small"
+							dataSource={data}
+							renderItem={(item:IExplosiveObjectActionListItem, i:number) => (
+								<ListItem
+								    item={item}
+								    index={i} 
+								    onRemove={(index:number) => {
+										setFieldValue("explosiveObjectActions", data.filter((el:IExplosiveObjectActionListItem, c:number) =>c !== index));
+									}}
+								/>
+							)
+							}
+							footer={
+								<Button
+							 		type="dashed"
+							  		block 
+							  		icon={<PlusOutlined />}
+							   		onClick={() => {
+										Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_CREATE, {
+											onSubmit: (value: IExplosiveObjectActionListItem) => setFieldValue("explosiveObjectActions", [...data, value])
+										})
+									}}
+							   >
+								Додати
+								</Button>
+							}
+						/>
+					)
+				}}
+		
+			</Form.Item>
 		</Form.Item>
 	);
 }
