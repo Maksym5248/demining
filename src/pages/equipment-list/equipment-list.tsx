@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space, message, Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon } from '~/components';
+import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, EQUIPMENT_TYPE } from '~/constants';

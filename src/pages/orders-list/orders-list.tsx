@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space, message, Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon } from '~/components';
+import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS } from '~/constants';
@@ -12,7 +12,6 @@ import { IOrder } from '~/stores';
 import { s } from './orders-list.styles';
 
 const { Title, Text } = Typography;
-
 
 const ListItem = observer(({ item }: { item: IOrder}) => {
 	const store = useStore();
@@ -75,8 +74,6 @@ export const OrdersListPage  = observer(() => {
 
 	return (
 		<List
-			rowKey="id"
-			itemLayout="horizontal"
 			loading={store.order.fetchList.inProgress}
 			dataSource={store.order.list.asArray}
 			header={

@@ -1,12 +1,12 @@
 import { memo } from 'react';
 
-import { Button, List, Form } from 'antd';
+import { Button, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-import { Icon } from '~/components';
 import { Modal } from '~/services'
 import { MODALS } from '~/constants'
 import { useStore } from '~/hooks'
+import { Icon, List } from '~/components';
 
 import { ListItemProps, IExplosiveObjectActionListItem } from "./explosive-object-action.types";
 import { s } from "./explosive-object-action.styles";
@@ -38,7 +38,6 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 	)
 }
 
-
 function Component() {
 
 	return (
@@ -50,8 +49,8 @@ function Component() {
 					return (
 						<List
 							size="small"
-							dataSource={data}
-							renderItem={(item:IExplosiveObjectActionListItem, i:number) => (
+							dataSource={data.map((el:IExplosiveObjectActionListItem, i:number) => ({...el, id: `${i}`}))}
+							renderItem={(item:IExplosiveObjectActionListItem & { id: string}, i:number) => (
 								<ListItem
 								    item={item}
 								    index={i} 
@@ -59,8 +58,7 @@ function Component() {
 										setFieldValue("explosiveObjectActions", data.filter((el:IExplosiveObjectActionListItem, c:number) =>c !== index));
 									}}
 								/>
-							)
-							}
+							)}
 							footer={
 								<Button
 							 		type="dashed"

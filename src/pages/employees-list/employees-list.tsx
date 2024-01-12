@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space, message, Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
 import { IEmployee } from '~/stores';
-import { Icon } from '~/components';
+import { Icon, List } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
@@ -78,8 +78,6 @@ export const EmployeesListPage  = observer(() => {
 
 	return (
 		<List
-			rowKey="id"
-			itemLayout="horizontal"
 			loading={store.employee.fetchList.inProgress}
 			dataSource={store.employee.list.asArray}
 			header={

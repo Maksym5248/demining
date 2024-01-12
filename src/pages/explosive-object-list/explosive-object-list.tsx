@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { List, Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space, message, Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon } from '~/components';
+import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS } from '~/constants';
@@ -74,8 +74,6 @@ export const ExplosiveObjectListPage  = observer(() => {
 
 	return (
 		<List
-			rowKey="id"
-			itemLayout="horizontal"
 			loading={explosiveObject.fetchList.inProgress}
 			dataSource={explosiveObject.sortedList}
 			header={
