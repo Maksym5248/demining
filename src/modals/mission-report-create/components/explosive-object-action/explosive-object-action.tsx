@@ -49,6 +49,7 @@ function Component() {
 					return (
 						<List
 							size="small"
+							pagination={false}
 							dataSource={data.map((el:IExplosiveObjectActionListItem, i:number) => ({...el, id: `${i}`}))}
 							renderItem={(item:IExplosiveObjectActionListItem & { id: string}, i:number) => (
 								<ListItem
