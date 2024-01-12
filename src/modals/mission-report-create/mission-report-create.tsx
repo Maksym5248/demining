@@ -18,7 +18,7 @@ import  {
 	Act,
 	Territory,
 	Employees,
-	Map
+	// Map
 } from "./components";
 
 interface Props {
@@ -68,18 +68,30 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 	 || equipment.fetchList.inProgress
 	 || employee.fetchList.inProgress;
 
-	 const initialValues = {
+	 const initialValues:IMissionReportForm = {
 		approvedAt: dates.today(),
 		approvedById: employee.employeesChiefFirst?.id,
 		number: 1,
+		subNumber: undefined,
 		executedAt: dates.today(),
 		orderId: order.list.first?.id,
 		missionRequestId: missionRequest.list.first?.id,
+		checkedTerritory: undefined,
+		depthExamination: undefined,
+		uncheckedTerritory: undefined,
+		uncheckedReason: undefined,
+		workStart: undefined,
+		exclusionStart: undefined,
+		transportingStart: undefined,
+		destroyedStart: undefined,
+		workEnd: undefined,
 		transportExplosiveObjectId: transport.transportExplosiveObjectFirst?.id,
 		transportHumansId: transport.transportHumansFirst?.id,
+		mineDetectorId: equipment.firstMineDetector?.id,
 		explosiveObjectActions: [],
 		squadLeadId: employee.employeesSquadLeadFirst?.id,
-		workersIds: []
+		workersIds: [],
+		// address: {},
 	}
 
 	return (
@@ -118,8 +130,8 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							 key="8" 
 							 squadLeads={employee.squadLeads} 
 							 workers={employee.workers}
-							 />,
-							 <Map  key="9"/>
+							 />
+							//  <Map  key="9"/>
 						].map(el => (
 							<>
 								{el}

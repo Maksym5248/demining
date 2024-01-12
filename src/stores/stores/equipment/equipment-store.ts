@@ -3,6 +3,7 @@ import { message } from 'antd';
 
 import { CreateValue } from '~/types'
 import { Api } from '~/api'
+import { EQUIPMENT_TYPE } from '~/constants';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IEquipment, IEquipmentValue, Equipment, createEquipment, createEquipmentDTO } from './entities';
@@ -11,7 +12,15 @@ const Store = types
 	.model('EquipmentStore', {
 		collection: createCollection<IEquipment, IEquipmentValue>("Equipments", Equipment),
 		list: createList<IEquipment>("EquipmentsList", safeReference(Equipment), { pageSize: 20 }),
-	});
+	}).views(self => ({
+		get listMineDetectors(){
+			return self.list.asArray.filter(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)
+		},
+	})).views(self => ({
+		get firstMineDetector(){
+			return self.listMineDetectors[0]
+		},
+	}));
 
 const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
 	try {
