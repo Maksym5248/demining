@@ -7,3 +7,4 @@ export * from "./approved";
 export * from "./documents";
 export * from "./act";
 export * from "./territory";
+export * from "./map";

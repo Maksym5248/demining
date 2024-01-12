@@ -17,7 +17,8 @@ import  {
 	Documents ,
 	Act,
 	Territory,
-	Employees
+	Employees,
+	Map
 } from "./components";
 
 interface Props {
@@ -118,6 +119,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							 squadLeads={employee.squadLeads} 
 							 workers={employee.workers}
 							 />,
+							 <Map  key="9"/>
 						].map(el => (
 							<>
 								{el}
