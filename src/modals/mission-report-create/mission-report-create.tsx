@@ -18,7 +18,7 @@ import  {
 	Act,
 	Territory,
 	Employees,
-	// Map
+	Map
 } from "./components";
 
 interface Props {
@@ -118,7 +118,6 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 								missionRequestData={missionRequest.list.asArray}
 								orderData={order.list.asArray}
 							/>,
-							<Territory key="4"/>,
 							<Timer key="5" />,
 							<ExplosiveObjectAction key="6" />,
 							<Transport key="7" dataHumans={transport.transportHumansList} dataExplosiveObject={transport.transportExplosiveObjectList}/>,
@@ -127,8 +126,9 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							 key="8" 
 							 squadLeads={employee.squadLeads} 
 							 workers={employee.workers}
-							 />
-							//  <Map  key="9"/>
+							 />,
+							 <Territory key="4"/>,
+							<Map  key="9"/>
 						].map(el => (
 							<>
 								{el}
