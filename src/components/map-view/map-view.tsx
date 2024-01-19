@@ -10,11 +10,9 @@ import { s } from "./map-view.style";
 
 const libraries:Libraries = ["places", "drawing"];
 
-// 1 - initial location
-// 2 - drawing
-// 3 - create image based on map  
-
-
+// 1 - initial location based on api address in ukraine
+// 2 - callout for marker, to show 
+// 3 - show m2 in circle
 
 const defaultCenter = {
 	lat: 50.30921013386864, 
@@ -41,12 +39,12 @@ function Component(props: GoogleMapProps) {
 		draggable: true,
 		editable: true
 	}
+
+	const markerOptions = {};
 	
 	const drawingManagerOptions  = {
 		circleOptions,
-		markerOptions: {
-			title: "text",
-		},
+		markerOptions,
 		drawingControl: true,
 		drawingControlOptions: {
 			position: window.google?.maps?.ControlPosition?.TOP_LEFT,
