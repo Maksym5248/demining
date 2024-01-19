@@ -3,4 +3,7 @@
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "jest.shell": "/bin/zsh",
     "jest.jestCommandLine": "source ~/.zshrc && nvm use 18.17.1 && npm test --",
+    "editor.quickSuggestions": {
+        "strings": true
+    }
 }
