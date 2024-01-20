@@ -88,6 +88,7 @@
         "electron-squirrel-startup": "^1.0.0",
         "events": "^3.3.0",
         "formik": "^2.4.5",
+        "html2canvas": "^1.4.1",
         "i18next": "^23.6.0",
         "jsstore": "^4.6.4",
         "lodash": "^4.17.21",
