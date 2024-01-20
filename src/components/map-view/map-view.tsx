@@ -1,7 +1,7 @@
 import { memo, useRef, useState } from "react";
 
-import { Input, Spin } from "antd";
-import { GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle } from '@react-google-maps/api';
+import { Divider, Input, Spin, Typography } from "antd";
+import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle, Polyline, OverlayViewF } from '@react-google-maps/api';
 
 import { CONFIG } from "~/config";
 import { Icon } from "~/components";
@@ -9,17 +9,39 @@ import { useCurrentLocation } from "~/hooks";
 
 import { s } from "./map-view.style";
 
-const libraries:Libraries = ["places", "drawing"];
+const libraries:Libraries = ["places", "drawing", "geometry"];
 
-// 1 - initial location based on api address in ukraine
-// 2 - callout for marker, to show 
+// 1 + initial location based on api address in ukraine
+// 2 + callout for marker, to show 
 // 3 - show m2 in circle
-// 4 - вирівняти DrawingManager
-
+// 4 - clear items on map
+// 5 - вирівняти DrawingManager
+  
 const defaultCenter = {
 	lat: 50.30921013386864, 
 	lng: 30.56128765735266,
 }
+
+function adjustLatLngByPixelOffset(
+	latLng: google.maps.LatLng | undefined | null,
+	xOffset:number,
+	yOffset:number,
+	map:google.maps.Map | undefined,
+	zoom:number
+):google.maps.LatLng | null {
+	if(!map || !latLng){
+		return null;
+	}
+
+	const scale = 2**(zoom ?? 1);
+	const projection = map.getProjection() as google.maps.Projection;
+	const point = projection?.fromLatLngToPoint(latLng) as google.maps.Point;
+
+	point.x += xOffset / scale;
+	point.y += yOffset / scale;
+
+	return projection.fromPointToLatLng(point);
+};
 
 function Component(props: GoogleMapProps) {
 	const mapOptions = {
@@ -42,6 +64,13 @@ function Component(props: GoogleMapProps) {
 		editable: true
 	}
 
+	const polylineOptions = {
+		fillOpacity: 0.3,
+		fillColor: '#fff',
+		strokeColor: '#fff',
+		strokeWeight: 2,
+	}
+
 	const markerOptions = {};
 	
 	const drawingManagerOptions  = {
@@ -57,6 +86,8 @@ function Component(props: GoogleMapProps) {
 		}
 	}
 
+
+
 	const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: CONFIG.GOOGLE_MAPS_API_KEY,
 		libraries,
@@ -70,6 +101,7 @@ function Component(props: GoogleMapProps) {
 
 	const [marker, setMarker] = useState<google.maps.LatLng>();
 	const [circle, setCircle] = useState<{ center: google.maps.LatLng, radius: number}>();
+	const [zoom, setZoom] = useState<number>(15);
 
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
@@ -105,10 +137,11 @@ function Component(props: GoogleMapProps) {
 			const newMarker = (event.overlay as google.maps.Marker)?.getPosition() as  google.maps.LatLng;
 			event.overlay?.setMap(null);
 			setMarker(newMarker);
+			mapRef?.current?.setCenter(newMarker);
 		}
 
 		if (event.type === window?.google?.maps?.drawing?.OverlayType.CIRCLE) {
-			const circleCenter = (event.overlay as google.maps.Circle)?.getCenter() as  google.maps.LatLng;
+			const circleCenter = (event.overlay as google.maps.Circle)?.getCenter() as google.maps.LatLng;
 			const circleRadius = (event.overlay as google.maps.Circle)?.getRadius();
 			event.overlay?.setMap(null);
 			setCircle({
@@ -117,6 +150,14 @@ function Component(props: GoogleMapProps) {
 			});
 		}
 	}
+
+	const onZoomChanged = () => {
+		if(!mapRef?.current){
+			return
+		}
+		
+		setZoom(mapRef.current.getZoom() as number);
+	};
 
 	const onClickMarker = () => {
 		setMarker(undefined)
@@ -130,6 +171,8 @@ function Component(props: GoogleMapProps) {
 		return <Spin/>;
 	}
 
+	const callout = adjustLatLngByPixelOffset(marker, 150, -150, mapRef.current, zoom);
+	
 	return (
 		<div css={s.container}>
 			<div css={s.drawingPanel}>
@@ -141,9 +184,10 @@ function Component(props: GoogleMapProps) {
 			</div>
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
-				zoom={15}
+				zoom={zoom}
 				center={position.coords}
 				options={mapOptions}
+				onZoomChanged={onZoomChanged}
 				onLoad={onLoadMap}
 				{...props}
 			>
@@ -153,8 +197,35 @@ function Component(props: GoogleMapProps) {
 					onOverlayComplete={onOverlayComplete}
 					options={drawingManagerOptions}
 				/>
-				{circle && <Circle options={circleOptions} {...(circle ?? {})} /> }
-				{marker && <Marker position={marker} clickable onClick={onClickMarker}/>}
+				{!!circle && <Circle options={circleOptions} {...(circle ?? {})} /> }
+				{!!marker && <Marker position={marker} clickable onClick={onClickMarker}/>}
+				{!!marker && !!callout && (
+					<OverlayViewF
+						position={callout}
+						mapPaneName={OVERLAY_MOUSE_TARGET}
+					>
+						<div css={s.callout}>
+							<div css={s.calloutHeader} >
+								<Typography.Text css={s.calloutText}>AC-76 2од.</Typography.Text>
+								<Typography.Text css={s.calloutText}>AC-125 113од.</Typography.Text>
+							</div>
+							<Divider css={s.calloutDivider} />
+							<Typography.Text css={s.calloutText}>25.09.23</Typography.Text>
+						</div>
+					</OverlayViewF>
+				)}
+				{!!marker && !!callout && (
+					<Polyline
+						options={polylineOptions}
+						path={[{
+							lat: marker.lat(),
+							lng: marker.lng(),
+						}, {
+							lat: callout.lat(),
+							lng: callout.lng(),
+						}]}
+					/>
+				)}
 				<Autocomplete
 					onLoad={onLoadAutocomplete}
 					onPlaceChanged={onPlaceChanged}

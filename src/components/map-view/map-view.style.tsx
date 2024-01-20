@@ -26,8 +26,36 @@ const drawingPanel = Theme.css(`
 	height: 24px;
 	width: 24px;
 	top: 100px;
-	backgroundColor: #fff;
+	background-color: #fff;
 	zIndex: 99999;
+`);
+
+const callout = Theme.css(`
+	position: relative;
+	min-height: 50px;
+	max-width: 250px;
+	zIndex: 99999;
+`);
+
+const calloutHeader = Theme.css(`
+	position: absolute;
+	top: 0;
+	width: 100%;
+	transform: translateY(-100%);
+`);
+
+const calloutText = Theme.css(`
+	color: #fff;
+	clear: both;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+`);
+
+const calloutDivider = Theme.css(`
+	background-color: #fff;
+	margin: 0;
+	height: 2px;
 `);
 
 
@@ -41,6 +69,10 @@ export const s = {
 	autocomplete,
 	deleteIcon,
 	mapContainerStyle,
-	drawingPanel
+	drawingPanel,
+	callout,
+	calloutHeader,
+	calloutText,
+	calloutDivider
 }
     
