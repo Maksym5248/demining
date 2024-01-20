@@ -1,11 +1,15 @@
-import { memo, useRef, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 
 import { Divider, Input, Spin, Typography } from "antd";
 import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle, Polyline, OverlayViewF } from '@react-google-maps/api';
+import { Dayjs } from "dayjs";
 
 import { CONFIG } from "~/config";
 import { Icon } from "~/components";
 import { useCurrentLocation } from "~/hooks";
+import { mapUtils} from "~/utils";
+import { ICircle, ILatLng } from "~/types/map";
+import { MAP_ZOOM } from "~/constants";
 
 import { s } from "./map-view.style";
 
@@ -22,34 +26,45 @@ const defaultCenter = {
 	lng: 30.56128765735266,
 }
 
-function adjustLatLngByPixelOffset(
-	latLng: google.maps.LatLng | undefined | null,
-	xOffset:number,
-	yOffset:number,
-	map:google.maps.Map | undefined,
-	zoom:number
-):google.maps.LatLng | null {
-	if(!map || !latLng){
-		return null;
-	}
+interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
+	initialMarker?: ILatLng | undefined;
+	initialCircle?: ICircle | undefined;
+	initialZoom?: number;
+	onChange: (value: {
+		marker?: ILatLng,
+		circle?: ICircle,
+		zoom: number,
+	}) => void;
+	type?: "picture" | "edit";
+	date?: Dayjs;
+	explosiveObjects?: string[];
+}
 
-	const scale = 2**(zoom ?? 1);
-	const projection = map.getProjection() as google.maps.Projection;
-	const point = projection?.fromLatLngToPoint(latLng) as google.maps.Point;
+type IMarkerState = google.maps.LatLng | undefined;
+type ICircleState = { center: google.maps.LatLng, radius: number } | undefined;
 
-	point.x += xOffset / scale;
-	point.y += yOffset / scale;
+function Component({
+	initialMarker,
+	initialCircle,
+	initialZoom,
+	onChange,
+	type = "edit",
+	date,
+	explosiveObjects,
+	...rest
+}: IMapViewProps) {
+	const isPictureType = type === "picture";
 
-	return projection.fromPointToLatLng(point);
-};
-
-function Component(props: GoogleMapProps) {
 	const mapOptions = {
 		streetViewControl: false,
-		scaleControl: true,
+		scaleControl: !isPictureType,
+		zoomControl: !isPictureType,
 		fullscreenControl: false,
 		mapTypeId: "satellite",
-		mapTypeControl: true,
+		mapTypeControl: !isPictureType,
+		disableDoubleClickZoom: !isPictureType,
+		draggable: !isPictureType,
+		isFractionalZoomEnabled: !isPictureType,
 		mapTypeControlOptions: {
 			style: window?.google?.maps?.MapTypeControlStyle?.DROPDOWN_MENU,
 		},
@@ -60,8 +75,8 @@ function Component(props: GoogleMapProps) {
 		fillColor: '#ff0000',
 		strokeColor: '#ff0000',
 		strokeWeight: 2,
-		draggable: true,
-		editable: true
+		draggable: !isPictureType,
+		editable: !isPictureType
 	}
 
 	const polylineOptions = {
@@ -71,12 +86,15 @@ function Component(props: GoogleMapProps) {
 		strokeWeight: 2,
 	}
 
-	const markerOptions = {};
+	const markerOptions = {
+		draggable: !isPictureType,
+		editable: !isPictureType
+	};
 	
 	const drawingManagerOptions  = {
 		circleOptions,
 		markerOptions,
-		drawingControl: true,
+		drawingControl: !isPictureType,
 		drawingControlOptions: {
 			position: window.google?.maps?.ControlPosition?.TOP_LEFT,
 			drawingModes: [
@@ -85,8 +103,6 @@ function Component(props: GoogleMapProps) {
 			]
 		}
 	}
-
-
 
 	const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: CONFIG.GOOGLE_MAPS_API_KEY,
@@ -99,9 +115,9 @@ function Component(props: GoogleMapProps) {
 	const autocompleteRef = useRef<google.maps.places.Autocomplete>();
 	const drawingManagerRef = useRef<google.maps.drawing.DrawingManager>();
 
-	const [marker, setMarker] = useState<google.maps.LatLng>();
-	const [circle, setCircle] = useState<{ center: google.maps.LatLng, radius: number}>();
-	const [zoom, setZoom] = useState<number>(15);
+	const [marker, setMarker] = useState<IMarkerState>(initialMarker ? mapUtils.getMapLatLng(initialMarker): undefined);
+	const [circle, setCircle] = useState<ICircleState>(initialCircle ? mapUtils.getMapCircle(initialCircle): undefined);
+	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
@@ -138,16 +154,24 @@ function Component(props: GoogleMapProps) {
 			event.overlay?.setMap(null);
 			setMarker(newMarker);
 			mapRef?.current?.setCenter(newMarker);
+			onChange?.({
+				marker: mapUtils.getLatLng(newMarker),
+				circle: circle ? mapUtils.getCircle(circle) : undefined,
+				zoom 
+			})
 		}
 
 		if (event.type === window?.google?.maps?.drawing?.OverlayType.CIRCLE) {
 			const circleCenter = (event.overlay as google.maps.Circle)?.getCenter() as google.maps.LatLng;
 			const circleRadius = (event.overlay as google.maps.Circle)?.getRadius();
 			event.overlay?.setMap(null);
-			setCircle({
-				center: circleCenter,
-				radius: circleRadius
-			});
+			const newValue = { center: circleCenter, radius: circleRadius }
+			setCircle(newValue);
+			onChange?.({
+				marker: marker ? mapUtils.getLatLng(marker) : undefined,
+				circle: mapUtils.getCircle(newValue),
+				zoom 
+			})
 		}
 	}
 
@@ -156,12 +180,23 @@ function Component(props: GoogleMapProps) {
 			return
 		}
 		
+		const newZoom = mapRef.current.getZoom() as number;
+	
 		setZoom(mapRef.current.getZoom() as number);
+		onChange?.({
+			marker: marker ? mapUtils.getLatLng(marker) : undefined,
+			circle: circle ? mapUtils.getCircle(circle) : undefined,
+			zoom: newZoom
+		})
 	};
 
 	const onClickMarker = () => {
 		setMarker(undefined)
 	};
+
+	const callout = useMemo(() =>
+		mapUtils.adjustLatLngByPixelOffset(marker, 150, -150, mapRef.current, zoom),
+	[marker, mapRef.current, zoom]);
 
 	if (loadError) {
 		return <div>Error loading maps</div>;
@@ -171,8 +206,10 @@ function Component(props: GoogleMapProps) {
 		return <Spin/>;
 	}
 
-	const callout = adjustLatLngByPixelOffset(marker, 150, -150, mapRef.current, zoom);
-	
+	const isVisibleCircle = !!circle;
+	const isVisibleMarker = !!marker;
+	const isVisibleCallout = isVisibleMarker && !!callout && explosiveObjects?.length && date;
+
 	return (
 		<div css={s.container}>
 			<div css={s.drawingPanel}>
@@ -189,7 +226,7 @@ function Component(props: GoogleMapProps) {
 				options={mapOptions}
 				onZoomChanged={onZoomChanged}
 				onLoad={onLoadMap}
-				{...props}
+				{...rest}
 			>
 				<DrawingManager
 				// @ts-ignore
@@ -197,24 +234,27 @@ function Component(props: GoogleMapProps) {
 					onOverlayComplete={onOverlayComplete}
 					options={drawingManagerOptions}
 				/>
-				{!!circle && <Circle options={circleOptions} {...(circle ?? {})} /> }
-				{!!marker && <Marker position={marker} clickable onClick={onClickMarker}/>}
-				{!!marker && !!callout && (
+				{isVisibleCircle && <Circle options={circleOptions} {...(circle ?? {})} /> }
+				{isVisibleMarker && <Marker position={marker} clickable onClick={onClickMarker}/>}
+				{isVisibleCallout && (
 					<OverlayViewF
 						position={callout}
 						mapPaneName={OVERLAY_MOUSE_TARGET}
 					>
 						<div css={s.callout}>
 							<div css={s.calloutHeader} >
-								<Typography.Text css={s.calloutText}>AC-76 2од.</Typography.Text>
-								<Typography.Text css={s.calloutText}>AC-125 113од.</Typography.Text>
+								{explosiveObjects.map((el, i) => (
+									<Typography.Text key={i}  css={s.calloutText}>
+										{el}
+									</Typography.Text>
+								))}
 							</div>
 							<Divider css={s.calloutDivider} />
-							<Typography.Text css={s.calloutText}>25.09.23</Typography.Text>
+							<Typography.Text css={s.calloutText}>{date?.format('DD.MM.YYYY')}</Typography.Text>
 						</div>
 					</OverlayViewF>
 				)}
-				{!!marker && !!callout && (
+				{isVisibleCallout && (
 					<Polyline
 						options={polylineOptions}
 						path={[{
@@ -226,16 +266,18 @@ function Component(props: GoogleMapProps) {
 						}]}
 					/>
 				)}
-				<Autocomplete
-					onLoad={onLoadAutocomplete}
-					onPlaceChanged={onPlaceChanged}
-				>
-					<Input
-						type='text'
-						placeholder='Адреса'
-						css={s.autocomplete}
-					/>
-				</Autocomplete>
+				{!isPictureType && (
+					<Autocomplete
+						onLoad={onLoadAutocomplete}
+						onPlaceChanged={onPlaceChanged}
+					>
+						<Input
+							type='text'
+							placeholder='Адреса'
+							css={s.autocomplete}
+						/>
+					</Autocomplete>
+				)}
 			</GoogleMap>
 		</div>
 	);

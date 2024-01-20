@@ -91,6 +91,8 @@ module.exports = {
     "react-hooks/exhaustive-deps": 1,
     "no-promise-executor-return": 0,
     "react/no-unknown-property": 0,
+    "react/require-default-props": 0,
+    "react/no-array-index-key": 0,
     "indent": ["error", "tab"]
   }
 }

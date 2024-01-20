@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils';
+import { MAP_ZOOM } from '~/constants';
 
 import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
@@ -88,7 +89,9 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		explosiveObjectActions: [],
 		squadLeadId: employee.employeesSquadLeadFirst?.id,
 		workersIds: [],
-		// address: {},
+		mapView: {
+			zoom: MAP_ZOOM.DEFAULT
+		},
 	}
 
 	return (

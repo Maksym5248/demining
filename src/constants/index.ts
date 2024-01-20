@@ -6,6 +6,7 @@ export * from './db/roles';
 export * from './db/transport-type';
 export * from './db/ranks';
 export * from './errors';
+export * from './map';
 export * from './modals';
 export * from './routes';
 export * from './secure-storage';

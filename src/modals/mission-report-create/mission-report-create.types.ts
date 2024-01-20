@@ -1,6 +1,14 @@
 import { Dayjs } from "dayjs";
 
+import { ICircle, ILatLng } from "~/types";
+
 import { IExplosiveObjectActionListItem } from "./components";
+
+export interface IMapView {
+    marker?: ILatLng;
+    circle?: ICircle;
+    zoom: number;
+}
 
 export interface IMissionReportForm {
     approvedAt: Dayjs;
@@ -14,6 +22,7 @@ export interface IMissionReportForm {
     depthExamination: number |undefined;
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
+    mapView: IMapView;
     workStart: Dayjs | undefined;
     exclusionStart: Dayjs | undefined;
     transportingStart: Dayjs | undefined;
