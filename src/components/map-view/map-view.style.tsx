@@ -4,6 +4,15 @@ const container = Theme.css(`
 	position: relative;
 `);
 
+const containerLoading = Theme.css(`
+	display: flex;
+	flex: 1;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+`);
+
 const autocomplete = Theme.css(`
 	width: 340px;
 	height: 38px;
@@ -66,6 +75,7 @@ const mapContainerStyle = {
 
 export const s = {
 	container,
+	containerLoading,
 	autocomplete,
 	deleteIcon,
 	mapContainerStyle,

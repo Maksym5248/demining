@@ -3,6 +3,7 @@ import { Form } from "antd";
 import { MapView } from "~/components"
 import { useStore } from "~/hooks";
 import { MAP_SIZE } from "~/constants";
+import { ExternalApi } from "~/api";
 
 import { IExplosiveObjectActionListItem } from "../explosive-object-action";
 
@@ -32,7 +33,14 @@ export function Map(){
 							const item = explosiveObject.collection.get(el.explosiveObjectId);
 							return `${item.fullDisplayName} ${el.quantity} од.`
 						})}
-						onChange={(value) => setFieldValue("mapView", value)}
+						onChange={async (value) => {
+							setFieldValue("mapView", value);
+
+							if(value?.marker){
+								const address = await ExternalApi.getGeocode(value.marker);
+								setFieldValue("address", address);
+							}
+						}}
 					/>
 				)
 			}}

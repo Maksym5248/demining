@@ -203,7 +203,7 @@ function Component({
 	}
 
 	if (!isLoaded || position.isLoading) {
-		return <Spin/>;
+		return <div css={s.containerLoading}><Spin/></div>;
 	}
 
 	const isVisibleCircle = !!circle;

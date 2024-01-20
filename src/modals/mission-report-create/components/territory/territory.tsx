@@ -1,5 +1,5 @@
 
-import { Form, Input, InputNumber} from 'antd';
+import { Form, Input, InputNumber } from 'antd';
 
 import { s } from "./territory.styles"
 
@@ -34,9 +34,15 @@ export function Territory() {
 			<Form.Item
 				label="Причина"
 				name="uncheckedReason"
-				css={s.item}
 			>
 				<Input size="middle" />
+			</Form.Item>
+			<Form.Item
+				label="Адреса"
+				name="address"
+				css={s.item}
+			>
+				<Input.TextArea size="middle" />
 			</Form.Item>
 		</>
 	)

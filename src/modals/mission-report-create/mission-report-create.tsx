@@ -89,6 +89,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		explosiveObjectActions: [],
 		squadLeadId: employee.employeesSquadLeadFirst?.id,
 		workersIds: [],
+		address: "",
 		mapView: {
 			zoom: MAP_ZOOM.DEFAULT
 		},
@@ -130,8 +131,8 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							 squadLeads={employee.squadLeads} 
 							 workers={employee.workers}
 							 />,
-							 <Territory key="4"/>,
-							<Map  key="9"/>
+							<Map  key="9"/>,
+							<Territory key="4"/>
 						].map(el => (
 							<>
 								{el}

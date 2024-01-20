@@ -34,4 +34,5 @@ export interface IMissionReportForm {
     explosiveObjectActions: IExplosiveObjectActionListItem[];
     squadLeadId: string;
     workersIds: string[];
+    address: string;
 }

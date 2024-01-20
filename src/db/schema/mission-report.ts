@@ -51,7 +51,6 @@ export const schemaMissionReport = {
         * measure in m
         */
 		depthExamination: {
-			notNull: true,
 			dataType: DATA_TYPE.Number
 		},
 		uncheckedTerritory: {
@@ -60,7 +59,11 @@ export const schemaMissionReport = {
 		uncheckedReason: {
 			dataType: DATA_TYPE.String
 		},
+		mapView: {
+			dataType: DATA_TYPE.Object
+		},
 		workStart: {
+			notNull: true,
 			dataType: DATA_TYPE.DateTime
 		},
 		exclusionStart: {
@@ -73,6 +76,7 @@ export const schemaMissionReport = {
 			dataType: DATA_TYPE.DateTime
 		},
 		workEnd: {
+			notNull: true,
 			dataType: DATA_TYPE.DateTime
 		},
 		transportActionIds: {

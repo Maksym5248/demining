@@ -1,4 +1,5 @@
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE } from "~/constants"
+import { ICircle, ILatLng } from "~/types";
 
 
 
@@ -95,4 +96,37 @@ export interface IEquipmentActionDB extends IEquipmentDB {
     equipmentId: string;
     documentType: DOCUMENT_TYPE;
     documentId: string;
+}
+
+export interface IMapView {
+    marker?: ILatLng;
+    circle?: ICircle;
+    zoom: number;
+}
+
+export interface IMissionReportDB {
+    id: string;
+    approvedByActionId: string;
+    approvedAt: Date;
+    number: number;
+    subNumber: number | undefined,
+    executedAt: Date;
+    orderId: string;
+    missionRequestId: string;
+    checkedTerritory: number | undefined;
+    depthExamination: number |undefined;
+    uncheckedTerritory: number |undefined;
+    uncheckedReason: string | undefined;
+    mapView: IMapView;
+    workStart: Date;
+    exclusionStart: Date;
+    transportingStart: Date;
+    destroyedStart: Date;
+    workEnd: Date;
+    transportActionIds: string[];
+    equipmentActionIds: string[];
+    explosiveObjectActionIds: string[];
+    squadLeaderActionId: string;
+    squadActionIds: string[];
+    address: string;
 }
