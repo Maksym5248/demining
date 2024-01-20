@@ -5,6 +5,7 @@ import { GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Au
 
 import { CONFIG } from "~/config";
 import { Icon } from "~/components";
+import { useCurrentLocation } from "~/hooks";
 
 import { s } from "./map-view.style";
 
@@ -13,6 +14,7 @@ const libraries:Libraries = ["places", "drawing"];
 // 1 - initial location based on api address in ukraine
 // 2 - callout for marker, to show 
 // 3 - show m2 in circle
+// 4 - вирівняти DrawingManager
 
 const defaultCenter = {
 	lat: 50.30921013386864, 
@@ -60,14 +62,14 @@ function Component(props: GoogleMapProps) {
 		libraries,
 	});
 
+	const position = useCurrentLocation(defaultCenter);
+
 	const mapRef = useRef<google.maps.Map>();
 	const autocompleteRef = useRef<google.maps.places.Autocomplete>();
 	const drawingManagerRef = useRef<google.maps.drawing.DrawingManager>();
 
 	const [marker, setMarker] = useState<google.maps.LatLng>();
 	const [circle, setCircle] = useState<{ center: google.maps.LatLng, radius: number}>();
-
-	const [center] = useState(defaultCenter);
 
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
@@ -124,7 +126,7 @@ function Component(props: GoogleMapProps) {
 		return <div>Error loading maps</div>;
 	}
 
-	if (!isLoaded) {
+	if (!isLoaded || position.isLoading) {
 		return <Spin/>;
 	}
 
@@ -140,7 +142,7 @@ function Component(props: GoogleMapProps) {
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
 				zoom={15}
-				center={center}
+				center={position.coords}
 				options={mapOptions}
 				onLoad={onLoadMap}
 				{...props}
@@ -151,7 +153,7 @@ function Component(props: GoogleMapProps) {
 					onOverlayComplete={onOverlayComplete}
 					options={drawingManagerOptions}
 				/>
-				{circle && <Circle options={circleOptions} {...(circle ?? {})}/> }
+				{circle && <Circle options={circleOptions} {...(circle ?? {})} /> }
 				{marker && <Marker position={marker} clickable onClick={onClickMarker}/>}
 				<Autocomplete
 					onLoad={onLoadAutocomplete}

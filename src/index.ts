@@ -5,6 +5,8 @@ import { app, BrowserWindow } from 'electron';
 // whether you're running in development or production).
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+process.env.GOOGLE_API_KEY = "AIzaSyCq2AhvjA2Uk1T9BEuMcqaA6-dnz370a2A"
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require

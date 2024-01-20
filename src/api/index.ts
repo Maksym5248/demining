@@ -1,14 +1,16 @@
-import * as Controllers from "./controllers"
+import * as controllers from "./controllers";
+
+export * from "./external";
 
 export * from "./types"
 
 
 const init = async () => {
-	await Controllers.explosiveObjectType.init();
-	await Controllers.explosiveObject.init();
+	await controllers.explosiveObjectType.init();
+	await controllers.explosiveObject.init();
 }
 
 export const Api = {
-	...Controllers,
+	...controllers,
 	init
 }
