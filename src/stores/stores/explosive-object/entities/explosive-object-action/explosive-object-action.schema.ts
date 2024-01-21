@@ -16,22 +16,11 @@ export interface IExplosiveObjectActionValue extends IExplosiveObjectValue {
   isDestroyed: boolean;
 }
 
-export interface IExplosiveObjectActionValueParams {
-  explosiveObjectId: string;
-  documentType: DOCUMENT_TYPE;
-  documentId: string;
-  quantity: number;
-  category: EXPLOSIVE_OBJECT_CATEGORY;
-  isDiscovered: boolean;
-  isTransported: boolean;
-  isDestroyed: boolean;
-}
+export interface IExplosiveObjectActionValueParams extends IExplosiveObjectActionDTOParams {}
 
   
-export const createExplosiveObjectActionDTO = (value: CreateValue<IExplosiveObjectActionValueParams>): CreateValue<IExplosiveObjectActionDTOParams>  => ({
+export const createExplosiveObjectActionDTO = (value: CreateValue<IExplosiveObjectActionValueParams>): IExplosiveObjectActionDTOParams  => ({
 	explosiveObjectId: value?.explosiveObjectId,
-	documentType: value.documentType,
-	documentId: value.documentId,
 	quantity: value.quantity,
 	category: value.category,
 	isDiscovered: value.isDiscovered,
@@ -41,8 +30,6 @@ export const createExplosiveObjectActionDTO = (value: CreateValue<IExplosiveObje
 
 export const updateExplosiveObjectActionDTO = data.createUpdateDTO<IExplosiveObjectActionValueParams, IExplosiveObjectActionDTOParams>(value => ({
 	explosiveObjectId: value?.explosiveObjectId ?? "",
-	documentType: value.documentType ?? DOCUMENT_TYPE.ORDER,
-	documentId: value.documentId ?? "",
 	quantity: value?.quantity ?? 0,
 	category: value?.category ?? EXPLOSIVE_OBJECT_CATEGORY.I,
 	isDiscovered: value?.isDiscovered ?? false,

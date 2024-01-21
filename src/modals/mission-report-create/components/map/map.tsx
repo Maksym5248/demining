@@ -3,9 +3,7 @@ import { Form } from "antd";
 import { MapView } from "~/components"
 import { useStore } from "~/hooks";
 import { MAP_SIZE } from "~/constants";
-import { ExternalApi } from "~/api";
-
-import { IExplosiveObjectActionListItem } from "../explosive-object-action";
+import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
 
 const mapContainerStyle = {
 	width: MAP_SIZE.MEDIUM_WIDTH,
@@ -18,7 +16,7 @@ export function Map(){
 	return (
 		<Form.Item noStyle shouldUpdate={() => true} >
 			{({ getFieldValue, setFieldValue }) => {
-				const explosiveObjectActions = getFieldValue("explosiveObjectActions") as IExplosiveObjectActionListItem[];
+				const explosiveObjectActions = getFieldValue("explosiveObjectActions") as IExplosiveObjectActionDTOParams[];
 				const executedAt = getFieldValue("executedAt");
 				const mapView = getFieldValue("mapView");
 
@@ -34,7 +32,14 @@ export function Map(){
 							return `${item.fullDisplayName} ${el.quantity} од.`
 						})}
 						onChange={async (value) => {
-							setFieldValue("mapView", value);
+							setFieldValue("mapView", {
+								markerLat: value.marker?.lat,
+								markerLng: value.marker?.lng,
+								circleCenterLat: value.circle?.center.lat,
+								circleCenterLng: value.circle?.center.lng,
+								circleRadius: value.circle?.radius,
+								zoom: value.zoom
+							});
 
 							if(value?.marker){
 								const address = await ExternalApi.getGeocode(value.marker);

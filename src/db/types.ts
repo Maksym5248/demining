@@ -104,6 +104,20 @@ export interface IMapView {
     zoom: number;
 }
 
+export interface IMapViewDB {
+    id: string;
+    documentId: string;
+    documentType: string;
+    markerLat: number;
+    markerLng: number;
+    circleCenterLat: number;
+    circleCenterLng: number;
+    circleRadius: number;
+    zoom: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface IMissionReportDB {
     id: string;
     approvedByActionId: string;
@@ -117,7 +131,7 @@ export interface IMissionReportDB {
     depthExamination: number |undefined;
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
-    mapView: IMapView;
+    mapViewId: string;
     workStart: Date;
     exclusionStart: Date;
     transportingStart: Date;

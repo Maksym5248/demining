@@ -91,6 +91,11 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		workersIds: [],
 		address: "",
 		mapView: {
+			markerLat: undefined,
+			markerLng: undefined,
+			circleCenterLat: undefined,
+			circleCenterLng: undefined,
+			circleRadius: undefined,
 			zoom: MAP_ZOOM.DEFAULT
 		},
 	}

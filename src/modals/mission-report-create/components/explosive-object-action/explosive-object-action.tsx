@@ -7,8 +7,9 @@ import { Modal } from '~/services'
 import { MODALS } from '~/constants'
 import { useStore } from '~/hooks'
 import { Icon, List } from '~/components';
+import { IExplosiveObjectActionValueParams } from '~/stores';
 
-import { ListItemProps, IExplosiveObjectActionListItem } from "./explosive-object-action.types";
+import { ListItemProps } from "./explosive-object-action.types";
 import { s } from "./explosive-object-action.styles";
 
 const getIcon = (isDone: boolean) => isDone ? "+": "-";
@@ -50,13 +51,13 @@ function Component() {
 						<List
 							size="small"
 							pagination={false}
-							dataSource={data.map((el:IExplosiveObjectActionListItem, i:number) => ({...el, id: `${i}`}))}
-							renderItem={(item:IExplosiveObjectActionListItem & { id: string}, i:number) => (
+							dataSource={data.map((el:IExplosiveObjectActionValueParams, i:number) => ({...el, id: `${i}`}))}
+							renderItem={(item:IExplosiveObjectActionValueParams & { id: string}, i:number) => (
 								<ListItem
 								    item={item}
 								    index={i} 
 								    onRemove={(index:number) => {
-										setFieldValue("explosiveObjectActions", data.filter((el:IExplosiveObjectActionListItem, c:number) =>c !== index));
+										setFieldValue("explosiveObjectActions", data.filter((el:IExplosiveObjectActionValueParams, c:number) =>c !== index));
 									}}
 								/>
 							)}
@@ -67,7 +68,7 @@ function Component() {
 							  		icon={<PlusOutlined />}
 							   		onClick={() => {
 										Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_CREATE, {
-											onSubmit: (value: IExplosiveObjectActionListItem) => setFieldValue("explosiveObjectActions", [...data, value])
+											onSubmit: (value: IExplosiveObjectActionValueParams) => setFieldValue("explosiveObjectActions", [...data, value])
 										})
 									}}
 							   >

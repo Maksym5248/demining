@@ -1,3 +1,4 @@
+import { EXPLOSIVE_OBJECT_CATEGORY } from "~/constants";
 import { 
 	IEmployeeDB,
 	IEmployeeActionDB,
@@ -9,8 +10,10 @@ import {
 	ITransportDB,
 	ITransportActionDB,
 	IEquipmentDB,
-	IEquipmentActionDB
-} from "~/db"
+	IEquipmentActionDB,
+	IMissionReportDB,
+	IMapViewDB
+} from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
 export type IEmployeeActionDTO = IEmployeeActionDB
@@ -36,12 +39,60 @@ export interface IExplosiveObjectActionDTO extends Omit<IExplosiveObjectActionDB
 }
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
-export type IExplosiveObjectActionDTOParams = Omit<IExplosiveObjectActionDB, keyof IExplosiveObjectDB>;
+export interface IExplosiveObjectActionDTOParams {
+    explosiveObjectId: string;
+    quantity: number;
+    category: EXPLOSIVE_OBJECT_CATEGORY;
+    isDiscovered: boolean;
+    isTransported: boolean;
+    isDestroyed: boolean;
+};
 
-export type ITransportDTO = ITransportDB
-export type ITransportActionDTO = ITransportActionDB
+export type ITransportDTO = ITransportDB;
+export type ITransportActionDTO = ITransportActionDB;
+;
+export type IEquipmentDTO = IEquipmentDB;
+export type IEquipmentActionDTO = IEquipmentActionDB;
+export type IMapViewDTO = IMapViewDB;
 
-export type IEquipmentDTO = IEquipmentDB
-export type IEquipmentActionDTO = IEquipmentActionDB
+export interface IMissionReportDTO extends Omit<IMissionReportDB, "approvedByActionId"  | "missionRequestId" | "mapViewId" | "transportActionIds" | "equipmentActionIds" | "explosiveObjectActionIds" | "squadLeaderActionId" | "squadActionIds">{
+	"approvedByAction": IEmployeeActionDTO;
+	"missionRequest": IMissionRequestDTO;
+	"mapView": IMapViewDTO;
+	"transportActions": ITransportActionDTO[];
+	"equipmentActions": IEquipmentActionDTO[];
+	"explosiveObjectActions": IExplosiveObjectActionDTO[];
+	"squadLeaderAction": IEmployeeActionDTO;
+	"squadActions": IEmployeeActionDTO[]
+}
+
+export interface IMapViewDTOParams  extends Omit<IMapViewDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
+
+export interface IMissionReportDTOParams {
+    approvedAt: Date;
+    approvedById:  string;
+    number: number;
+    subNumber: number | undefined,
+    executedAt: Date;
+    orderId: string;
+    missionRequestId: string;
+    checkedTerritory: number | undefined;
+    depthExamination: number |undefined;
+    uncheckedTerritory: number |undefined;
+    uncheckedReason: string | undefined;
+    mapView: IMapViewDTOParams;
+    workStart: Date;
+    exclusionStart: Date | undefined;
+    transportingStart: Date | undefined;
+    destroyedStart: Date | undefined;
+    workEnd: Date;
+    transportExplosiveObjectId: string;
+    transportHumansId: string;
+    mineDetectorId: string,
+    explosiveObjectActions: IExplosiveObjectActionDTOParams[];
+    squadLeadId: string;
+    workersIds: string[];
+    address: string;
+}
 
 

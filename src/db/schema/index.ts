@@ -5,6 +5,7 @@ export * from './equipment-action';
 export * from './explosive-object';
 export * from './explosive-object-type';
 export * from './explosive-object-action';
+export * from './map-view';
 export * from './mission-report';
 export * from './mission-request';
 export * from './order';

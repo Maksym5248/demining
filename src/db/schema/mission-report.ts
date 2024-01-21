@@ -37,10 +37,6 @@ export const schemaMissionReport = {
 			notNull: true,
 			dataType: DATA_TYPE.String
 		},
-		addressId: { // --------
-			notNull: true,
-			dataType: DATA_TYPE.String
-		},
 		/**
         * measure in m2
         */
@@ -59,8 +55,13 @@ export const schemaMissionReport = {
 		uncheckedReason: {
 			dataType: DATA_TYPE.String
 		},
-		mapView: {
-			dataType: DATA_TYPE.Object
+		mapViewId: {
+			notNull: true,
+			dataType: DATA_TYPE.String
+		},
+		address: {
+			notNull: true,
+			dataType: DATA_TYPE.String
 		},
 		workStart: {
 			notNull: true,

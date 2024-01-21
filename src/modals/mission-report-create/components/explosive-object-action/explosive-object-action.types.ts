@@ -1,14 +1,13 @@
 import { IExplosiveObjectActionValueParams } from '~/stores'
 
-export type IExplosiveObjectActionListItem = Omit<IExplosiveObjectActionValueParams, "documentType" | "documentId">;
 
 export interface ListItemProps {
-    item: IExplosiveObjectActionListItem;
+    item: IExplosiveObjectActionValueParams;
     index: number;
     onRemove: (index: number) => void;
 }
 
 export interface IExplosiveObjectActionListProps {
-    onUpdate: (data: IExplosiveObjectActionListItem[]) => void;
-    data: IExplosiveObjectActionListItem[];
+    onUpdate: (data: IExplosiveObjectActionValueParams[]) => void;
+    data: IExplosiveObjectActionValueParams[];
 }
