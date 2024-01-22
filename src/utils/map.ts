@@ -14,7 +14,7 @@ function adjustLatLngByPixelOffset(
 	const scale = 2**(zoom ?? 1);
 	const projection = map.getProjection() as google.maps.Projection;
 	const point = projection?.fromLatLngToPoint(latLng) as google.maps.Point;
-	console.log("point", map)
+
 	point.x += xOffset / scale;
 	point.y += yOffset / scale;
 
