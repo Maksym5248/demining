@@ -16,6 +16,28 @@ const removeFields = <T extends IItemId>(field: keyof T, item: T) => {
 
 const findById = <T extends IItemId>(id: string, data: T[]) => data.find(el => el.id === id) as T;
 
+
+const remove = async (id:string) => {
+	await Promise.allSettled([
+		DB.missionReport.remove(id),
+		DB.mapViewAction.removeBy({
+			documentId: id
+		}),
+		DB.employeeAction.removeBy({
+			documentId: id
+		}),
+		DB.transportAction.removeBy({
+			documentId: id
+		}),
+		DB.explosiveObjectAction.removeBy({
+			documentId: id
+		}),
+		DB.equipmentAction.removeBy({
+			documentId: id
+		}),
+	]);
+};
+
 const get = async (id:string): Promise<IMissionReportDTO> => {
 	const {
 		missionRequestId,
@@ -250,21 +272,7 @@ const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMission
 		});
 	} catch (e) {
 		if(initialMissionReport){
-			await Promise.allSettled([
-				DB.missionReport.remove(initialMissionReport.id),
-				DB.employee.removeBy({
-					documentId: initialMissionReport.id
-				}),
-				DB.transport.removeBy({
-					documentId: initialMissionReport.id
-				}),
-				DB.explosiveObject.removeBy({
-					documentId: initialMissionReport.id
-				}),
-				DB.equipment.removeBy({
-					documentId: initialMissionReport.id
-				}),
-			]);
+			await remove(initialMissionReport.id);
 		}
 
 		throw e;
@@ -291,5 +299,6 @@ const getList = async ():Promise<IMissionReportDTO[]> => {
 export const missionReport = {
 	add,
 	get,
+	remove,
 	getList,
 }

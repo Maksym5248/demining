@@ -64,4 +64,17 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 	}
 });
 
-export const MissionReportStore = Store.props({ add, fetchList })
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+	try {
+		flow.start();
+		await Api.missionReport.remove(id);
+		self.list.removeById(id);
+		self.collection.remove(id);
+		flow.success();
+		message.success('Видалено успішно');
+	} catch (err) {
+		message.error('Не вдалось видалити');
+	}
+});
+
+export const MissionReportStore = Store.props({ add, remove, fetchList })

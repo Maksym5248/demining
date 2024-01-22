@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Button, Typography, Space, message, Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
-import { IEmployee } from '~/stores';
+import { IMissionReport } from '~/stores';
 import { Icon, List } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
@@ -15,16 +15,16 @@ import { s } from './mission-reports-list.styles';
 const { Title, Text } = Typography;
 
 
-const ListItem = observer(({ item }: { item: IEmployee}) => {
+const ListItem = observer(({ item }: { item: IMissionReport}) => {
 	const store = useStore();
 
-	const onGoToEmployeesEdit = (id:string) => (e:React.SyntheticEvent) => {
+	const onGoToIMissionReportEdit = (id:string) => (e:React.SyntheticEvent) => {
 		e.preventDefault();
 		Modal.show(MODALS.MISSION_REPORT_CREATE, { id })
 	};
 
 	const onRemove = (id:string) => () => {
-		store.employee.remove.run(id);
+		store.missionReport.remove.run(id);
 	};
   
 	const onCancel = () => {
@@ -34,7 +34,7 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 	return (
 		<List.Item
 			actions={[
-				<Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToEmployeesEdit(item.id)}/>,
+				<Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToIMissionReportEdit(item.id)}/>,
 				<Popconfirm
 					key="list-remove"
 					title="Видалити"
@@ -50,11 +50,11 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 		>
 			<List.Item.Meta
 				avatar={<Icon.FileTextOutlined />}
-				title={str.getFullName(item)}
+				title={item.number}
 				description={
 					<Space css={s.listItemDesc}>
-						<Text type="secondary">{str.upperFirst(item.rank.fullName)}</Text>
-						<Text type="secondary">{str.upperFirst(item.position)}</Text>
+						<Text type="secondary">{str.upperFirst(item.address)}</Text>
+						<Text type="secondary">{item.executedAt.format('DD.MM.YYYY')}</Text>
 					</Space>
 				}
 			/>
@@ -73,13 +73,14 @@ export const MissionReportsListPage  = observer(() => {
 	};
 
 	useEffect(() => {
-		store.employee.fetchList.run();
+		store.missionReport.fetchList.run();
 	}, []);
 
 	return (
 		<List
-			loading={store.employee.fetchList.inProgress}
-			dataSource={store.employee.list.asArray}
+			loading={store.missionReport.fetchList.inProgress}
+			dataSource={store.missionReport.list.asArray}
+			style={{ minHeight: 300}}
 			header={
 				<Space css={s.listHeader}>
 					<Title level={4}>{title}</Title>
