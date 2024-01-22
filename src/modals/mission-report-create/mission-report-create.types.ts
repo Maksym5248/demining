@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs";
 
-import { IExplosiveObjectActionDTOParams, IMapViewDTOParams } from "~/api";
+import { IExplosiveObjectActionDTOParams, IMapViewActionDTOParams } from "~/api";
 
 
 export interface IMissionReportForm {
@@ -15,7 +15,7 @@ export interface IMissionReportForm {
     depthExamination: number |undefined;
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
-    mapView: Partial<IMapViewDTOParams>;
+    mapView: Partial<IMapViewActionDTOParams>;
     workStart: Dayjs | undefined;
     exclusionStart: Dayjs | undefined;
     transportingStart: Dayjs | undefined;

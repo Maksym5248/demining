@@ -9,7 +9,6 @@ export function Territory() {
 			<Form.Item label="Обстежено, м2" css={s.item}>
 				<Form.Item
 					name="checkedTerritory"
-					rules={[{ required: true }]}
 					css={s.first}
 				>
 					<InputNumber size="middle" min={1} max={100000} />
@@ -25,7 +24,6 @@ export function Territory() {
 			<Form.Item label="Не можливо обстежити, м2" css={s.item}>
 				<Form.Item
 					name="uncheckedTerritory"
-					rules={[{ required: true }]}
 					css={s.first}
 				>
 					<InputNumber size="middle" min={1} max={100000} />

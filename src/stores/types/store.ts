@@ -12,6 +12,14 @@ export interface IError {
   reason: string | null;
 }
 
+export interface IAsyncActionParams<T> {
+	flow: IFlow;
+	env: any;
+	self: T;
+	root: any;
+	parent: IAnyStateTreeNode | IAnyComplexType;
+}
+
 export interface IFlow {
   inProgress: boolean;
   isLoaded: boolean;
@@ -32,18 +40,6 @@ export interface IAsyncAction {
 
 export interface IEmployeeStore {
   getById: (id:string) => IEmployeeValue;
-}
-
-export interface IRootStore {
-  employee: IEmployeeStore;
-}
-
-export interface IAsyncActionParams<T> {
-  flow: IFlow;
-  env: any;
-  self: T;
-  root: IRootStore;
-  parent: IAnyStateTreeNode | IAnyComplexType;
 }
 
 export interface ICollection<T, B> {

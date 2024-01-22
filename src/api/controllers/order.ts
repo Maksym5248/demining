@@ -1,5 +1,5 @@
 import { DB } from '~/db';
-import { DOCUMENT_TYPE } from "~/constants";
+import { DB_FIELD, DOCUMENT_TYPE } from "~/constants";
 import { UpdateValue } from '~/types';
 
 import { IOrderDTO, IOrderDTOParams } from '../types';
@@ -7,7 +7,7 @@ import { IOrderDTO, IOrderDTOParams } from '../types';
 const add = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 	const order = await DB.order.add({
 		...value,
-		signedByActionId: "NONE"
+		signedByActionId: DB_FIELD.NONE
 	});
 
 	const { id, ...employee} = await DB.employee.get(value.signedById);

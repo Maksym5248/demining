@@ -1,3 +1,4 @@
+export * from './db/common';
 export * from './db/document-type';
 export * from './db/employee-type';
 export * from './db/equipment-type';

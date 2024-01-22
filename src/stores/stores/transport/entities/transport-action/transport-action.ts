@@ -11,7 +11,7 @@ export type ITransportAction = Instance<typeof TransportAction>
 const Entity = Transport.named('TransportAction').props({
 	documentType: types.enumeration(Object.values(DOCUMENT_TYPE)),
 	documentId: types.string,
-	equipmentId: types.string,
+	transportId: types.string,
 }).actions((self) => ({
 	updateFields(data: Partial<ITransportActionValue>) {
 		Object.assign(self, data);

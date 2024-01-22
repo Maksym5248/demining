@@ -12,7 +12,7 @@ import {
 	IEquipmentDB,
 	IEquipmentActionDB,
 	IMissionReportDB,
-	IMapViewDB
+	IMapViewActionActionDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -53,12 +53,13 @@ export type ITransportActionDTO = ITransportActionDB;
 ;
 export type IEquipmentDTO = IEquipmentDB;
 export type IEquipmentActionDTO = IEquipmentActionDB;
-export type IMapViewDTO = IMapViewDB;
+export type IMapViewActionDTO = IMapViewActionActionDB;
 
-export interface IMissionReportDTO extends Omit<IMissionReportDB, "approvedByActionId"  | "missionRequestId" | "mapViewId" | "transportActionIds" | "equipmentActionIds" | "explosiveObjectActionIds" | "squadLeaderActionId" | "squadActionIds">{
-	"approvedByAction": IEmployeeActionDTO;
-	"missionRequest": IMissionRequestDTO;
-	"mapView": IMapViewDTO;
+export interface IMissionReportDTO extends Omit<IMissionReportDB, "orderId" | "approvedByActionId"  | "missionRequestId" | "mapViewId" | "transportActionIds" | "equipmentActionIds" | "explosiveObjectActionIds" | "squadLeaderActionId" | "squadActionIds">{
+    "order": IOrderDTO;
+    "missionRequest": IMissionRequestDTO;
+    "approvedByAction": IEmployeeActionDTO;
+	"mapView": IMapViewActionDTO;
 	"transportActions": ITransportActionDTO[];
 	"equipmentActions": IEquipmentActionDTO[];
 	"explosiveObjectActions": IExplosiveObjectActionDTO[];
@@ -66,7 +67,7 @@ export interface IMissionReportDTO extends Omit<IMissionReportDB, "approvedByAct
 	"squadActions": IEmployeeActionDTO[]
 }
 
-export interface IMapViewDTOParams  extends Omit<IMapViewDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
+export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
 
 export interface IMissionReportDTOParams {
     approvedAt: Date;
@@ -80,7 +81,7 @@ export interface IMissionReportDTOParams {
     depthExamination: number |undefined;
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
-    mapView: IMapViewDTOParams;
+    mapView: IMapViewActionDTOParams;
     workStart: Date;
     exclusionStart: Date | undefined;
     transportingStart: Date | undefined;

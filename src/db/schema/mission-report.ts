@@ -22,7 +22,6 @@ export const schemaMissionReport = {
 			dataType: DATA_TYPE.Number
 		},
 		subNumber: {
-			notNull: true,
 			dataType: DATA_TYPE.Number
 		},
 		executedAt: {

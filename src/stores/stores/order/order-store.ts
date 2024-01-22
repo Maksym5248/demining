@@ -27,11 +27,11 @@ const Store = types
 const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function addEmployeeFlow({ flow, self }) {
 	try {
 		flow.start();
-		console.log("test 1", createOrderDTO(data))
+
 		const res = await Api.order.add(createOrderDTO(data));
-		console.log("test 2", res)
+
 		const order = createOrder(res);
-		console.log("test 3", order)
+
 		self.collection.set(order.id, order);
 		self.list.unshift(order.id);
 

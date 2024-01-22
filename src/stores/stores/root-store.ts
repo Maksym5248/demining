@@ -11,6 +11,7 @@ import { ExplosiveObjectStore } from './explosive-object';
 import { TransportStore } from './transport';
 import { EquipmentStore } from './equipment';
 import { mockEmployees, mockMissionRequest, mockEquipment, mockTransport } from './mock-data';
+import { MissionReportStore } from './mission-report';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -19,6 +20,7 @@ export const RootStore = types
 		employee: types.optional(EmployeeStore, {}),
 		order: types.optional(OrderStore, {}),
 		missionRequest: types.optional(MissionRequestStore, {}),
+		missionReport: types.optional(MissionReportStore, {}),
 		explosiveObject: types.optional(ExplosiveObjectStore, {}),
 		transport: types.optional(TransportStore, {}),
 		equipment: types.optional(EquipmentStore, {}),

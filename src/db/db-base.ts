@@ -1,4 +1,4 @@
-import { Connection, ISelectQuery } from 'jsstore';
+import { Connection, ISelectQuery, IWhereQuery, IWhereQueryOption } from 'jsstore';
 import uuid from 'uuid/v4';
 import _ from 'lodash';
 
@@ -121,12 +121,19 @@ export class DBBase<T extends {id: string}> {
 		return res;
 	}
 
-	remove(id:string) {
+	remove(id:string | IWhereQueryOption) {
 		return this.db.remove({
 			from: this.tableName,
 			where: {
 				id
 			}
+		})
+	}
+
+	removeBy(where: IWhereQuery) {
+		return this.db.remove({
+			from: this.tableName,
+			where
 		})
 	}
 }

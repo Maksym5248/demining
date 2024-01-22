@@ -7,7 +7,7 @@ export const DateTimeType = types.custom<string | dayjs.Dayjs, dayjs.Dayjs>({
 		return dayjs.isDayjs(value);
 	},
 	getValidationMessage(value) {
-		if (dayjs(value).isValid()) return '';
+		if (!!value && dayjs(value).isValid()) return '';
 
 		return `${value} + ' is not a Date`;
 	},

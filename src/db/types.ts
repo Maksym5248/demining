@@ -1,7 +1,10 @@
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE } from "~/constants"
 import { ICircle, ILatLng } from "~/types";
 
-
+export interface ILinkedToDocumentDB {
+    documentType: DOCUMENT_TYPE;
+    documentId: string;
+}
 
 export interface IEmployeeDB {
     id: string;
@@ -15,9 +18,7 @@ export interface IEmployeeDB {
     updatedAt: Date;
 }
 
-export interface IEmployeeActionDB extends IEmployeeDB {
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
+export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     employeeId: string;
 }
 
@@ -56,10 +57,8 @@ export interface IExplosiveObjectDB {
     updatedAt: Date;
 }
 
-export interface IExplosiveObjectActionDB extends IExplosiveObjectDB {
+export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {
     explosiveObjectId: string;
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
     quantity: number;
     category: EXPLOSIVE_OBJECT_CATEGORY;
     isDiscovered: boolean;
@@ -78,10 +77,8 @@ export interface ITransportDB {
     updatedAt: Date;
 }
 
-export interface ITransportActionDB extends ITransportDB {
+export interface ITransportActionDB extends ITransportDB, ILinkedToDocumentDB {
     transportId: string;
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
 }
 
 export interface IEquipmentDB {
@@ -92,22 +89,18 @@ export interface IEquipmentDB {
     updatedAt: Date;
 }
 
-export interface IEquipmentActionDB extends IEquipmentDB {
+export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
     equipmentId: string;
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
 }
 
-export interface IMapView {
+export interface IMapViewAction {
     marker?: ILatLng;
     circle?: ICircle;
     zoom: number;
 }
 
-export interface IMapViewDB {
+export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
-    documentId: string;
-    documentType: string;
     markerLat: number;
     markerLng: number;
     circleCenterLat: number;
@@ -133,9 +126,9 @@ export interface IMissionReportDB {
     uncheckedReason: string | undefined;
     mapViewId: string;
     workStart: Date;
-    exclusionStart: Date;
-    transportingStart: Date;
-    destroyedStart: Date;
+    exclusionStart: Date | undefined;
+    transportingStart: Date | undefined;
+    destroyedStart: Date | undefined;
     workEnd: Date;
     transportActionIds: string[];
     equipmentActionIds: string[];
@@ -143,4 +136,6 @@ export interface IMissionReportDB {
     squadLeaderActionId: string;
     squadActionIds: string[];
     address: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

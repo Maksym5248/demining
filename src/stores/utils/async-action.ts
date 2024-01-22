@@ -8,7 +8,6 @@ import { AsyncModel } from './create-flow';
 import { getRoot } from './get-root';
 import { IAsyncActionParams } from '../types';
 
-
 export function asyncAction<T>(
 	action: (...args: any[]) => (value: IAsyncActionParams<T>) => any,
 	auto?: boolean,
@@ -36,7 +35,8 @@ export function asyncAction<T>(
 						flow: self,
 						self: getParent(self) as T,
 						parent: getParent(getParent(self)),
-						root: getRoot(self),
+						// @ts-ignore
+						root: getRoot(self) as IRootStore,
 						env: getEnv(getRoot(self)),
 					});
 

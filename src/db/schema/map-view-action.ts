@@ -2,8 +2,8 @@ import { DATA_TYPE } from 'jsstore';
 
 import { TABLES } from '~/constants';
 
-export const schemaMapView = {
-	name: TABLES.MAP_VIEW,
+export const schemaMapViewAction = {
+	name: TABLES.MAP_VIEW_ACTION,
 	columns: {
 		id: {
 			unique: true,
@@ -29,12 +29,15 @@ export const schemaMapView = {
 			dataType: DATA_TYPE.Number
 		},
 		circleCenterLng: {
+			default: 0,
 			dataType: DATA_TYPE.Number
 		},
 		circleRadius: {
+			default: 0,
 			dataType: DATA_TYPE.Number
 		},
 		zoom: {
+			notNull: true,
 			dataType: DATA_TYPE.Number
 		},
 		createdAt: {

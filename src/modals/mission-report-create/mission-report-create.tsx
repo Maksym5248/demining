@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils';
-import { MAP_ZOOM } from '~/constants';
+import { EQUIPMENT_TYPE, MAP_ZOOM, TRANSPORT_TYPE } from '~/constants';
 
 import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
@@ -35,13 +35,13 @@ interface Props {
  */
 
 export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props) => {
-	const { explosiveObject, order, missionRequest, transport, equipment, employee } = useStore();
+	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport } = useStore();
 
 	const isEdit = !!id;
+	const currentMissionReport = id ? missionReport.collection.get(id) : null;
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinishCreate = async (values: IMissionReportForm) => {
-		// await employee.add.run(values);
+		await missionReport.add.run(values);
 		hide();
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,36 +67,36 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 	 || employee.fetchList.inProgress;
 
 	 const initialValues:IMissionReportForm = {
-		approvedAt: dates.today(),
-		approvedById: employee.employeesChiefFirst?.id,
-		number: 1,
-		subNumber: undefined,
-		executedAt: dates.today(),
-		orderId: order.list.first?.id,
-		missionRequestId: missionRequest.list.first?.id,
-		checkedTerritory: undefined,
-		depthExamination: undefined,
-		uncheckedTerritory: undefined,
-		uncheckedReason: undefined,
-		workStart: undefined,
-		exclusionStart: undefined,
-		transportingStart: undefined,
-		destroyedStart: undefined,
-		workEnd: undefined,
-		transportExplosiveObjectId: transport.transportExplosiveObjectFirst?.id,
-		transportHumansId: transport.transportHumansFirst?.id,
-		mineDetectorId: equipment.firstMineDetector?.id,
-		explosiveObjectActions: [],
-		squadLeadId: employee.employeesSquadLeadFirst?.id,
-		workersIds: [],
-		address: "",
+		approvedAt: currentMissionReport?.approvedAt ?? dates.today(),
+		approvedById: currentMissionReport?.approvedByAction?.employeeId ??employee.employeesChiefFirst?.id,
+		number: currentMissionReport?.number ?? (missionReport.list.last?.number || 0) + 1,
+		subNumber: currentMissionReport?.subNumber || missionReport.list.last?.subNumber ? (missionReport.list.last?.subNumber || 0) + 1 : undefined,
+		executedAt: currentMissionReport?.executedAt || dates.today(),
+		orderId: currentMissionReport?.order?.id || order.list.first?.id,
+		missionRequestId: currentMissionReport?.missionRequest?.id || missionRequest.list.first?.id,
+		checkedTerritory: currentMissionReport?.checkedTerritory,
+		depthExamination: currentMissionReport?.depthExamination,
+		uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
+		uncheckedReason: currentMissionReport?.uncheckedReason,
+		workStart: currentMissionReport?.workStart || dates.today().hour(9).minute(0),
+		exclusionStart: currentMissionReport?.exclusionStart,
+		transportingStart: currentMissionReport?.transportingStart,
+		destroyedStart: currentMissionReport?.destroyedStart,
+		workEnd: currentMissionReport?.workEnd,
+		transportExplosiveObjectId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS))?.transportId || transport.transportExplosiveObjectFirst?.id,
+		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId || transport.transportHumansFirst?.id,
+		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId || equipment.firstMineDetector?.id,
+		explosiveObjectActions: [], // TODO: add
+		squadLeadId: currentMissionReport?.squadLeaderAction.employeeId || employee.employeesSquadLeadFirst?.id,
+		workersIds: currentMissionReport?.squadActions.map(el => el.employeeId) ||[],
+		address: currentMissionReport?.address || "",
 		mapView: {
-			markerLat: undefined,
-			markerLng: undefined,
-			circleCenterLat: undefined,
-			circleCenterLng: undefined,
-			circleRadius: undefined,
-			zoom: MAP_ZOOM.DEFAULT
+			markerLat: currentMissionReport?.mapView?.markerLat,
+			markerLng: currentMissionReport?.mapView?.markerLng,
+			circleCenterLat: currentMissionReport?.mapView?.circleCenterLat,
+			circleCenterLng: currentMissionReport?.mapView?.circleCenterLng,
+			circleRadius: currentMissionReport?.mapView?.circleRadius,
+			zoom: currentMissionReport?.mapView?.zoom || MAP_ZOOM.DEFAULT
 		},
 	}
 
