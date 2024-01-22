@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs";
 
-import { IExplosiveObjectActionDTOParams, IMapViewActionDTOParams } from "~/api";
+import { IExplosiveObjectActionValue, IExplosiveObjectActionValueParams, IMapViewActionValueParams } from "~/stores";
 
 
 export interface IMissionReportForm {
@@ -15,7 +15,7 @@ export interface IMissionReportForm {
     depthExamination: number |undefined;
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
-    mapView: Partial<IMapViewActionDTOParams>;
+    mapView: Partial<IMapViewActionValueParams>;
     workStart: Dayjs | undefined;
     exclusionStart: Dayjs | undefined;
     transportingStart: Dayjs | undefined;
@@ -24,7 +24,7 @@ export interface IMissionReportForm {
     transportExplosiveObjectId: string;
     transportHumansId: string;
     mineDetectorId: string,
-    explosiveObjectActions: IExplosiveObjectActionDTOParams[];
+    explosiveObjectActions: IExplosiveObjectActionValueParams[] | IExplosiveObjectActionValue[];
     squadLeadId: string;
     workersIds: string[];
     address: string;

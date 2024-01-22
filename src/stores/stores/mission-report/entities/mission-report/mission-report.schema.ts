@@ -9,6 +9,8 @@ import { ITransportActionValue, createTransportAction } from '~/stores/stores/tr
 import { IEquipmentActionValue, createEquipmentAction } from '~/stores/stores/equipment/entities/equipment-action';
 import { IExplosiveObjectActionValue, createExplosiveObjectAction } from '~/stores/stores/explosive-object';
 
+
+export interface IMapViewActionValueParams extends IMapViewActionDTOParams {};
 export interface IMapViewActionValue extends ILinkedToDocumentDB {
     id: string;
     markerLat: number;
@@ -33,7 +35,7 @@ export interface IMissionReportValueParams {
     depthExamination: number |undefined;
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
-    mapView: IMapViewActionDTOParams;
+    mapView: IMapViewActionValueParams;
     workStart: Dayjs;
     exclusionStart: Dayjs | undefined;
     transportingStart: Dayjs | undefined;

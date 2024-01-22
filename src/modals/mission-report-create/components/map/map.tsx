@@ -18,7 +18,6 @@ export function Map(){
 		if (!value.markerLat || !value.markerLng || !value.zoom) {
 			return Promise.reject(new Error('Є обов\'язковим полем'));
 		}
-		// Add any other validation logic here
 
 		return Promise.resolve();
 	};
@@ -32,12 +31,24 @@ export function Map(){
 				{({ getFieldValue, setFieldValue }) => {
 					const explosiveObjectActions = getFieldValue("explosiveObjectActions") as IExplosiveObjectActionDTOParams[];
 					const executedAt = getFieldValue("executedAt");
-					const mapView = getFieldValue("mapView");
+					const mapView = getFieldValue("mapView") as IMapViewActionValue;
+
+					const isCircle = mapView?.circleCenterLat && mapView?.circleCenterLng && mapView?.circleRadius;
+					const isMarker = mapView?.markerLat && mapView?.markerLng;
 
 					return (
 						<MapView
-							initialCircle={mapView?.circle}
-							initialMarker={mapView?.marker}
+							initialCircle={isCircle ? {
+								center: {
+									lat: mapView?.circleCenterLat,
+									lng: mapView?.circleCenterLng,
+								},
+								radius: mapView?.circleRadius
+							}: undefined}
+							initialMarker={isMarker ? {
+								lat: mapView?.markerLat,
+								lng: mapView?.markerLng,
+							}: undefined}
 							initialZoom={mapView?.zoom}
 						 	mapContainerStyle={mapContainerStyle}
 							date={executedAt}
@@ -47,12 +58,12 @@ export function Map(){
 							})}
 							onChange={async (value) => {
 								setFieldValue("mapView", {
-									markerLat: value.marker?.lat,
-									markerLng: value.marker?.lng,
-									circleCenterLat: value.circle?.center.lat,
-									circleCenterLng: value.circle?.center.lng,
-									circleRadius: value.circle?.radius,
-									zoom: value.zoom
+									markerLat: Number(value.marker?.lat?.toFixed(9)),
+									markerLng: Number(value.marker?.lng?.toFixed(9)),
+									circleCenterLat: Number(value.circle?.center.lat?.toFixed(9)),
+									circleCenterLng: Number(value.circle?.center.lng?.toFixed(9)),
+									circleRadius: Number(value.circle?.radius),
+									zoom: Number(value.zoom.toFixed(9))
 								});
 
 								if(value?.marker){

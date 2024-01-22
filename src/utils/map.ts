@@ -14,7 +14,7 @@ function adjustLatLngByPixelOffset(
 	const scale = 2**(zoom ?? 1);
 	const projection = map.getProjection() as google.maps.Projection;
 	const point = projection?.fromLatLngToPoint(latLng) as google.maps.Point;
-
+	console.log("point", map)
 	point.x += xOffset / scale;
 	point.y += yOffset / scale;
 
@@ -30,7 +30,7 @@ function getLatLng(latLang: google.maps.LatLng):ILatLng {
 
 function getMapCircle(circle: ICircle) {
 	return {
-		center: new google.maps.LatLng(circle.center),
+		center: new window.google.maps.LatLng(circle.center),
 		radius: circle.radius
 	}
 };
@@ -43,7 +43,7 @@ function getCircle(circle: { center: google.maps.LatLng, radius: number }):ICirc
 };
 
 function getMapLatLng(latLang: ILatLng) {
-	return new google.maps.LatLng(latLang)
+	return new window.google.maps.LatLng(latLang)
 };
 
 export const mapUtils = {

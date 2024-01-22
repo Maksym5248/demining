@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { Divider, Input, Spin, Typography } from "antd";
 import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle, Polyline, OverlayViewF } from '@react-google-maps/api';
@@ -38,6 +38,7 @@ interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerS
 	type?: "picture" | "edit";
 	date?: Dayjs;
 	explosiveObjects?: string[];
+	position?: ILatLng;
 }
 
 type IMarkerState = google.maps.LatLng | undefined;
@@ -51,6 +52,7 @@ function Component({
 	type = "edit",
 	date,
 	explosiveObjects,
+	position,
 	...rest
 }: IMapViewProps) {
 	const isPictureType = type === "picture";
@@ -96,32 +98,43 @@ function Component({
 		markerOptions,
 		drawingControl: !isPictureType,
 		drawingControlOptions: {
-			position: window.google?.maps?.ControlPosition?.TOP_LEFT,
+			position: window?.google?.maps?.ControlPosition?.TOP_LEFT,
 			drawingModes: [
-				window.google?.maps?.drawing?.OverlayType?.CIRCLE,
-				window.google?.maps?.drawing?.OverlayType?.MARKER,
+				window?.google?.maps?.drawing?.OverlayType?.CIRCLE,
+				window?.google?.maps?.drawing?.OverlayType?.MARKER,
 			]
 		}
 	}
-
-	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: CONFIG.GOOGLE_MAPS_API_KEY,
-		libraries,
-	});
-
-	const position = useCurrentLocation(defaultCenter);
 
 	const mapRef = useRef<google.maps.Map>();
 	const autocompleteRef = useRef<google.maps.places.Autocomplete>();
 	const drawingManagerRef = useRef<google.maps.drawing.DrawingManager>();
 
+	const interval = useRef<NodeJS.Timeout>();
+
 	const [marker, setMarker] = useState<IMarkerState>(initialMarker ? mapUtils.getMapLatLng(initialMarker): undefined);
 	const [circle, setCircle] = useState<ICircleState>(initialCircle ? mapUtils.getMapCircle(initialCircle): undefined);
 	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
+	const [isVisibleMap, setVisibleMap] = useState(false);
 
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
 	}
+
+	useEffect(() => {
+		interval.current = setInterval(() => {
+			if(mapRef.current && mapRef.current.getProjection()){
+				setVisibleMap(true);
+				clearInterval(interval.current);
+			}
+		},  100);
+
+		return () => {
+			if(interval.current){
+				clearInterval(interval.current)
+			}
+		}
+	}, [])
 
 	const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
 		autocompleteRef.current = autocomplete;
@@ -196,15 +209,7 @@ function Component({
 
 	const callout = useMemo(() =>
 		mapUtils.adjustLatLngByPixelOffset(marker, 150, -150, mapRef.current, zoom),
-	[marker, mapRef.current, zoom]);
-
-	if (loadError) {
-		return <div>Error loading maps</div>;
-	}
-
-	if (!isLoaded || position.isLoading) {
-		return <div css={s.containerLoading}><Spin/></div>;
-	}
+	[marker, mapRef.current, zoom, isVisibleMap]);
 
 	const isVisibleCircle = !!circle;
 	const isVisibleMarker = !!marker;
@@ -222,7 +227,7 @@ function Component({
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
 				zoom={zoom}
-				center={position.coords}
+				center={position}
 				options={mapOptions}
 				onZoomChanged={onZoomChanged}
 				onLoad={onLoadMap}
@@ -283,4 +288,26 @@ function Component({
 	);
 }
 
-export const MapView = memo(Component)
+
+function MapLoader(props: IMapViewProps) {
+	const { isLoaded, loadError } = useLoadScript({
+		googleMapsApiKey: CONFIG.GOOGLE_MAPS_API_KEY,
+		language: "uk",
+		libraries,
+	});
+
+	const position = useCurrentLocation(defaultCenter);
+
+
+	if (loadError) {
+		return <div>Error loading maps</div>;
+	}
+
+	if (!isLoaded || position.isLoading) {
+		return <div css={s.containerLoading}><Spin/></div>;
+	}
+
+	return  <Component position={position.coords} {...props}/>
+}
+
+export const MapView = memo(MapLoader)

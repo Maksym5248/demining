@@ -44,6 +44,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		await missionReport.add.run(values);
 		hide();
 	};
+	
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinishUpdate = async (values: IMissionReportForm) => {
 		// await employee.update.run(values);
@@ -69,27 +70,27 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 	 const initialValues:IMissionReportForm = {
 		approvedAt: currentMissionReport?.approvedAt ?? dates.today(),
 		approvedById: currentMissionReport?.approvedByAction?.employeeId ??employee.employeesChiefFirst?.id,
-		number: currentMissionReport?.number ?? (missionReport.list.last?.number || 0) + 1,
-		subNumber: currentMissionReport?.subNumber || missionReport.list.last?.subNumber ? (missionReport.list.last?.subNumber || 0) + 1 : undefined,
-		executedAt: currentMissionReport?.executedAt || dates.today(),
-		orderId: currentMissionReport?.order?.id || order.list.first?.id,
-		missionRequestId: currentMissionReport?.missionRequest?.id || missionRequest.list.first?.id,
+		number: currentMissionReport?.number ?? (missionReport.list.last?.number ?? 0) + 1,
+		subNumber: currentMissionReport?.subNumber ?? missionReport.list.last?.subNumber ? (missionReport.list.last?.subNumber ?? 0) + 1 : undefined,
+		executedAt: currentMissionReport?.executedAt ?? dates.today(),
+		orderId: currentMissionReport?.order?.id ?? order.list.first?.id,
+		missionRequestId: currentMissionReport?.missionRequest?.id ?? missionRequest.list.first?.id,
 		checkedTerritory: currentMissionReport?.checkedTerritory,
 		depthExamination: currentMissionReport?.depthExamination,
 		uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
 		uncheckedReason: currentMissionReport?.uncheckedReason,
-		workStart: currentMissionReport?.workStart || dates.today().hour(9).minute(0),
+		workStart: currentMissionReport?.workStart ?? dates.today().hour(9).minute(0),
 		exclusionStart: currentMissionReport?.exclusionStart,
 		transportingStart: currentMissionReport?.transportingStart,
 		destroyedStart: currentMissionReport?.destroyedStart,
 		workEnd: currentMissionReport?.workEnd,
-		transportExplosiveObjectId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS))?.transportId || transport.transportExplosiveObjectFirst?.id,
-		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId || transport.transportHumansFirst?.id,
-		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId || equipment.firstMineDetector?.id,
-		explosiveObjectActions: [], // TODO: add
-		squadLeadId: currentMissionReport?.squadLeaderAction.employeeId || employee.employeesSquadLeadFirst?.id,
-		workersIds: currentMissionReport?.squadActions.map(el => el.employeeId) ||[],
-		address: currentMissionReport?.address || "",
+		transportExplosiveObjectId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS))?.transportId ?? transport.transportExplosiveObjectFirst?.id,
+		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId ?? transport.transportHumansFirst?.id,
+		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId ?? equipment.firstMineDetector?.id,
+		explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
+		squadLeadId: currentMissionReport?.squadLeaderAction.employeeId ?? employee.employeesSquadLeadFirst?.id,
+		workersIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
+		address: currentMissionReport?.address ?? "",
 		mapView: {
 			markerLat: currentMissionReport?.mapView?.markerLat,
 			markerLng: currentMissionReport?.mapView?.markerLng,

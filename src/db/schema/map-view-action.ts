@@ -26,6 +26,7 @@ export const schemaMapViewAction = {
 			dataType: DATA_TYPE.Number
 		},
 		circleCenterLat: {
+			default: 0,
 			dataType: DATA_TYPE.Number
 		},
 		circleCenterLng: {

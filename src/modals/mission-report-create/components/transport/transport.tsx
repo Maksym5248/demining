@@ -34,7 +34,6 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 		<Form.Item
 			label="Авто для ВР"
 			name="transportExplosiveObjectId"
-			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
 			<Select
 				options={dataExplosiveObject.map((el) => ({ label: el.fullName, value: el.id }))}
@@ -44,7 +43,6 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 		<Form.Item
 			label="Авто для О/С"
 			name="transportHumansId"
-			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
 			<Select
 				options={dataHumans.map((el) => ({ label: el.fullName, value: el.id }))}
