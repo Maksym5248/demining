@@ -57,6 +57,7 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 		</Form.Item>
 		<Form.Item
 			label="Розрахунок"
+			name="workersIds"
 			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
 			<Form.List name="workersIds">

@@ -4,6 +4,7 @@ import { MapView } from "~/components"
 import { useStore } from "~/hooks";
 import { MAP_SIZE } from "~/constants";
 import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
+import { IMapViewActionValue } from "~/stores";
 
 const mapContainerStyle = {
 	width: MAP_SIZE.MEDIUM_WIDTH,
@@ -13,8 +14,20 @@ const mapContainerStyle = {
 export function Map(){
 	const { explosiveObject } = useStore();
 
+	const validateMapView = (_:any, value: IMapViewActionValue) => {
+		if (!value.markerLat || !value.markerLng || !value.zoom) {
+			return Promise.reject(new Error('Є обов\'язковим полем'));
+		}
+		// Add any other validation logic here
+
+		return Promise.resolve();
+	};
+	
 	return (
-		<Form.Item noStyle name="mapView" >
+		<Form.Item
+		    name="mapView"
+			rules={[ { validator: validateMapView }]}
+		>
 			<Form.Item noStyle shouldUpdate={() => true} >
 				{({ getFieldValue, setFieldValue }) => {
 					const explosiveObjectActions = getFieldValue("explosiveObjectActions") as IExplosiveObjectActionDTOParams[];

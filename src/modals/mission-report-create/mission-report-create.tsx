@@ -120,24 +120,24 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 						initialValues={initialValues}
 					>
 						{ [
-							<Approved key="1" data={employee.employeesListChief}/>,
-							<Act key="2"/>,
+							<Approved key="Approved" data={employee.employeesListChief}/>,
+							<Act key="Act"/>,
 							<Documents
-								key="3"
+								key="Documents"
 								missionRequestData={missionRequest.list.asArray}
 								orderData={order.list.asArray}
 							/>,
-							<Timer key="5" />,
-							<ExplosiveObjectAction key="6" />,
-							<Transport key="7" dataHumans={transport.transportHumansList} dataExplosiveObject={transport.transportExplosiveObjectList}/>,
-							<Equipment key="8" data={equipment.list.asArray} />,
+							<Timer key="Timer" />,
+							<ExplosiveObjectAction key="ExplosiveObjectAction" />,
+							<Transport key="Transport" dataHumans={transport.transportHumansList} dataExplosiveObject={transport.transportExplosiveObjectList}/>,
+							<Equipment key="Equipment" data={equipment.list.asArray} />,
 							<Employees
-							 key="8" 
-							 squadLeads={employee.squadLeads} 
-							 workers={employee.workers}
+								key="Employees" 
+								squadLeads={employee.squadLeads} 
+								workers={employee.workers}
 							 />,
-							<Map  key="9"/>,
-							<Territory key="4"/>
+							<Map key="Map"/>,
+							<Territory key="Territory"/>
 						].map(el => (
 							<>
 								{el}

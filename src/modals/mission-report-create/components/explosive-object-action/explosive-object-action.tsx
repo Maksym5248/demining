@@ -42,7 +42,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 function Component() {
 
 	return (
-		<Form.Item label="ВНП" name="explosiveObjectActions" css={s.item} >
+		<Form.Item label="ВНП" name="explosiveObjectActions" rules={[{ required: true, message: 'Є обов\'язковим полем' }]} css={s.item} >
 			<Form.Item noStyle shouldUpdate={() => true} >
 				{({ getFieldValue, setFieldValue }) => {
 					const data = getFieldValue("explosiveObjectActions");

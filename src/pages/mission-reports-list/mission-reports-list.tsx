@@ -80,7 +80,7 @@ export const MissionReportsListPage  = observer(() => {
 		<List
 			loading={store.missionReport.fetchList.inProgress}
 			dataSource={store.missionReport.list.asArray}
-			style={{ minHeight: 300}}
+			style={{ flex: 1}}
 			header={
 				<Space css={s.listHeader}>
 					<Title level={4}>{title}</Title>

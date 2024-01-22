@@ -38,6 +38,7 @@ export function Territory() {
 			<Form.Item
 				label="Адреса"
 				name="address"
+				rules={[{ required: true, message: 'Є обов\'язковим полем' }]}
 				css={s.item}
 			>
 				<Input.TextArea size="middle" />
