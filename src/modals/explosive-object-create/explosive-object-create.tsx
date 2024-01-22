@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Input, Space, Drawer, InputNumber, Spin, Select} from 'antd';
+import { Button, Form, Input, Space, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
+import { Select } from '~/components'
 import { useStore } from '~/hooks'
 
 import { s } from './explosive-object-create.style'

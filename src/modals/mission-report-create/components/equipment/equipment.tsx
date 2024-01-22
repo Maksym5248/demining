@@ -1,5 +1,6 @@
-import { Form, Select} from 'antd';
+import { Form} from 'antd';
 
+import { Select } from '~/components'
 import { EQUIPMENT_TYPE } from '~/constants';
 import { IEquipment } from '~/stores';
 

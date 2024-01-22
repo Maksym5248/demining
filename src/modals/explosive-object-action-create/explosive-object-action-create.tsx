@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Space, InputNumber, Drawer, Select, Spin, Switch, Divider} from 'antd';
+import { Button, Form, Space, InputNumber, Drawer, Spin, Switch, Divider} from 'antd';
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -8,6 +8,7 @@ import { useStore } from '~/hooks'
 import { IExplosiveObjectTypeValue } from '~/stores'
 import { EXPLOSIVE_OBJECT_CATEGORY, MODALS } from '~/constants'
 import { Modal } from '~/services'
+import { Select } from '~/components'
 
 import { IExplosiveObjectActionForm } from './explosive-object-action-create.types';
 import { s } from './explosive-object-action-create.styles';

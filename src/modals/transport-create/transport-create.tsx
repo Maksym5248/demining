@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Select, Space, Drawer, Input, Spin} from 'antd';
+import { Button, Form, Space, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
+import { Select } from '~/components'
 import { TRANSPORT_TYPE } from "~/constants"
 import { useStore } from '~/hooks'
 

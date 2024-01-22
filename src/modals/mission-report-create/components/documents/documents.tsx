@@ -1,8 +1,9 @@
 import { JSXElementConstructor, ReactElement, useCallback} from 'react';
 
-import { Button, Form, Space, Select, Divider} from 'antd';
+import { Button, Form, Space, Divider} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
+import { Select } from '~/components'
 import { Modal } from '~/services'
 import { MODALS } from '~/constants'
 import { IMissionRequest, IOrder } from '~/stores';
