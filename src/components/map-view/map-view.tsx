@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Divider, Input, Spin, Typography } from "antd";
 import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle, Polyline, OverlayViewF } from '@react-google-maps/api';
@@ -10,6 +10,7 @@ import { useCurrentLocation } from "~/hooks";
 import { mapUtils} from "~/utils";
 import { ICircle, ILatLng } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
+import { mathUtils } from "~/utils/math";
 
 import { s } from "./map-view.style";
 
@@ -17,7 +18,7 @@ const libraries:Libraries = ["places", "drawing", "geometry"];
 
 // 1 + initial location based on api address in ukraine
 // 2 + callout for marker, to show 
-// 3 - show m2 in circle
+// 3 + show m2 in circle
 // 4 - clear items on map
 // 5 - вирівняти DrawingManager
   
@@ -41,8 +42,8 @@ interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerS
 	position?: ILatLng;
 }
 
-type IMarkerState = google.maps.LatLng | undefined;
-type ICircleState = { center: google.maps.LatLng, radius: number } | undefined;
+type IMarkerState = google.maps.LatLngLiteral | undefined;
+type ICircleState = { center: google.maps.LatLngLiteral, radius: number } | undefined;
 
 function Component({
 	initialMarker,
@@ -109,6 +110,7 @@ function Component({
 	const mapRef = useRef<google.maps.Map>();
 	const autocompleteRef = useRef<google.maps.places.Autocomplete>();
 	const drawingManagerRef = useRef<google.maps.drawing.DrawingManager>();
+	const circleRef = useRef<google.maps.Circle>();
 
 	const interval = useRef<NodeJS.Timeout>();
 
@@ -151,7 +153,7 @@ function Component({
 		}
 
 		if(geometry?.location){
-			setMarker(geometry.location);
+			setMarker(mapUtils.getLatLngLiteral(geometry.location));
 		}
 
 		mapRef?.current?.fitBounds(bounds);
@@ -161,9 +163,13 @@ function Component({
 		drawingManagerRef.current = drawingManager;
 	}
 
+	const onLoadCircle = (newCircleRef: google.maps.Circle) => {
+		circleRef.current = newCircleRef;
+	}
+
 	const onOverlayComplete = (event: google.maps.drawing.OverlayCompleteEvent) => {
 		if (event.type === window?.google?.maps?.drawing?.OverlayType.MARKER) {
-			const newMarker = (event.overlay as google.maps.Marker)?.getPosition() as  google.maps.LatLng;
+			const newMarker = mapUtils.getLatLngLiteral((event.overlay as google.maps.Marker)?.getPosition()  as google.maps.LatLng);
 			event.overlay?.setMap(null);
 			setMarker(newMarker);
 			mapRef?.current?.setCenter(newMarker);
@@ -173,12 +179,13 @@ function Component({
 				zoom 
 			})
 		}
-
 		if (event.type === window?.google?.maps?.drawing?.OverlayType.CIRCLE) {
-			const circleCenter = (event.overlay as google.maps.Circle)?.getCenter() as google.maps.LatLng;
-			const circleRadius = (event.overlay as google.maps.Circle)?.getRadius();
+			const newValue =  {
+				center: mapUtils.getLatLngLiteral((event.overlay as google.maps.Circle)?.getCenter() as google.maps.LatLng),
+				radius: (event.overlay as google.maps.Circle)?.getRadius()
+			}
+
 			event.overlay?.setMap(null);
-			const newValue = { center: circleCenter, radius: circleRadius }
 			setCircle(newValue);
 			onChange?.({
 				marker: marker ? mapUtils.getLatLng(marker) : undefined,
@@ -207,22 +214,36 @@ function Component({
 		setMarker(undefined)
 	};
 
+	const onRadiusChanged = useCallback(() => {
+		if(circleRef.current){
+			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
+			const circleRadius = circleRef.current?.getRadius();
+
+			setCircle({ center: mapUtils.getLatLngLiteral(circleCenter), radius: circleRadius})
+		}
+	}, []);
+	
+	const onDragEnd = useCallback(() => {
+		if(circleRef.current){
+			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
+			const circleRadius = circleRef.current?.getRadius();
+
+			setCircle({ center: mapUtils.getLatLngLiteral(circleCenter), radius: circleRadius})
+		}
+	}, []);
+
 	const callout = useMemo(() =>
 		mapUtils.adjustLatLngByPixelOffset(marker, 150, -150, mapRef.current, zoom),
 	[marker, mapRef.current, zoom, isVisibleMap]);
 
-	const isVisibleCircle = !!circle;
+	const isVisibleCircle = !!circle?.center && circle?.radius;
 	const isVisibleMarker = !!marker;
 	const isVisibleCallout = isVisibleMarker && !!callout && explosiveObjects?.length && date;
 
 	return (
 		<div css={s.container}>
 			<div css={s.drawingPanel}>
-				{drawingManagerRef.current && (
-					<Icon.DeleteOutlined 
-						css={s.deleteIcon} 
-					/>
-				)}
+				{drawingManagerRef.current && (<Icon.DeleteOutlined css={s.deleteIcon} />)}
 			</div>
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
@@ -234,12 +255,35 @@ function Component({
 				{...rest}
 			>
 				<DrawingManager
-				// @ts-ignore
+					// @ts-ignore
 					onLoad={onLoadDrawingManager}
 					onOverlayComplete={onOverlayComplete}
 					options={drawingManagerOptions}
 				/>
-				{isVisibleCircle && <Circle options={circleOptions} {...(circle ?? {})} /> }
+				{isVisibleCircle && (
+					<Circle
+						onLoad={onLoadCircle}
+					   options={circleOptions} 
+					   {...(circle ?? {})}
+					   onRadiusChanged={onRadiusChanged} 
+					   onDragEnd={onDragEnd}
+					/>
+				) }
+				{isVisibleCircle && (
+					<OverlayViewF
+						position={circle?.center}
+						getPixelPositionOffset={() => ({ x: 20, y: 20 })}
+						mapPaneName={OVERLAY_MOUSE_TARGET}
+					>
+						<Typography.Text css={s.calloutText}>
+							R - {mathUtils.toFixed(circle.radius, 0)} м
+						</Typography.Text>
+						<Divider css={s.calloutDivider} />
+						<Typography.Text css={s.calloutText}>
+							S - {mathUtils.squareCircle(circle.radius)} м2
+						</Typography.Text>
+					</OverlayViewF>
+				)}
 				{isVisibleMarker && <Marker position={marker} clickable onClick={onClickMarker}/>}
 				{isVisibleCallout && (
 					<OverlayViewF
@@ -262,13 +306,7 @@ function Component({
 				{isVisibleCallout && (
 					<Polyline
 						options={polylineOptions}
-						path={[{
-							lat: marker.lat(),
-							lng: marker.lng(),
-						}, {
-							lat: callout.lat(),
-							lng: callout.lng(),
-						}]}
+						path={[marker, callout]}
 					/>
 				)}
 				{!isPictureType && (

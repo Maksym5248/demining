@@ -5,6 +5,7 @@ import { useStore } from "~/hooks";
 import { MAP_SIZE } from "~/constants";
 import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
 import { IMapViewActionValue } from "~/stores";
+import { mathUtils } from "~/utils/math";
 
 const mapContainerStyle = {
 	width: MAP_SIZE.MEDIUM_WIDTH,
@@ -58,12 +59,12 @@ export function Map(){
 							})}
 							onChange={async (value) => {
 								setFieldValue("mapView", {
-									markerLat: Number(value.marker?.lat?.toFixed(9)),
-									markerLng: Number(value.marker?.lng?.toFixed(9)),
-									circleCenterLat: Number(value.circle?.center.lat?.toFixed(9)),
-									circleCenterLng: Number(value.circle?.center.lng?.toFixed(9)),
-									circleRadius: Number(value.circle?.radius),
-									zoom: Number(value.zoom.toFixed(9))
+									markerLat: mathUtils.toFixed(value.marker?.lat, 9),
+									markerLng:  mathUtils.toFixed(value.marker?.lng, 9),
+									circleCenterLat:  mathUtils.toFixed(value.circle?.center.lat, 9),
+									circleCenterLng:  mathUtils.toFixed(value.circle?.center.lng, 9),
+									circleRadius:  mathUtils.toFixed(value.circle?.radius, 9),
+									zoom:  mathUtils.toFixed(value.zoom, 9)
 								});
 
 								if(value?.marker){
