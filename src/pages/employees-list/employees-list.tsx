@@ -18,7 +18,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IEmployee}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_CREATE, { id: item.id })
+		Modal.show(MODALS.EMPLOYEES_WIZARD, { id: item.id })
 	};
 
 	return (
@@ -48,7 +48,7 @@ export const EmployeesListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_CREATE)
+		Modal.show(MODALS.EMPLOYEES_WIZARD)
 	};
 
 	useEffect(() => {

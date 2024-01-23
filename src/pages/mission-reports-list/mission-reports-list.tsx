@@ -8,7 +8,7 @@ import { Icon, List } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MISSION_REPORT_MODE, MODALS } from '~/constants';
+import { WIZARD_MODE, MODALS } from '~/constants';
 
 import { s } from './mission-reports-list.styles';
 
@@ -18,7 +18,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IMissionReport}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REPORT_CREATE, { id: item.id, mode: MISSION_REPORT_MODE.VIEW })
+		Modal.show(MODALS.MISSION_REPORT_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (
@@ -48,7 +48,7 @@ export const MissionReportsListPage  = observer(() => {
 
 	const onGoToMissionReportCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REPORT_CREATE, { mode: MISSION_REPORT_MODE.CREATE })
+		Modal.show(MODALS.MISSION_REPORT_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
 
 	useEffect(() => {

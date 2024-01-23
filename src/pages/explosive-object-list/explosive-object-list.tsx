@@ -17,7 +17,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_CREATE, { id: item.id })
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { id: item.id })
 	};
 
 	return (
@@ -44,7 +44,7 @@ export const ExplosiveObjectListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_CREATE)
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD)
 	};
 
 	useEffect(() => {

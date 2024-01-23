@@ -17,7 +17,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IMissionRequest}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REQUEST_CREATE, { id: item.id })
+		Modal.show(MODALS.MISSION_REQUEST_WIZARD, { id: item.id })
 	};
 
 	return (
@@ -45,7 +45,7 @@ export const MissionRequestListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REQUEST_CREATE)
+		Modal.show(MODALS.MISSION_REQUEST_WIZARD)
 	};
 
 	useEffect(() => {

@@ -20,7 +20,7 @@ const types = {
 const ListItem = observer(({ item }: { item: IEquipment}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EQUIPMENT_CREATE, { id: item.id })
+		Modal.show(MODALS.EQUIPMENT_WIZARD, { id: item.id })
 	};
 
 	return (
@@ -48,7 +48,7 @@ export const EquipmentListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EQUIPMENT_CREATE)
+		Modal.show(MODALS.EQUIPMENT_WIZARD)
 	};
 
 	useEffect(() => {

@@ -249,7 +249,7 @@ function Component({
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
 				zoom={zoom}
-				center={position}
+				center={isPictureType ? marker: position}
 				options={mapOptions}
 				onZoomChanged={onZoomChanged}
 				onLoad={onLoadMap}

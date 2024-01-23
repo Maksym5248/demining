@@ -21,7 +21,7 @@ const types = {
 const ListItem = observer(({ item }: { item: ITransport}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.TRANSPORT_CREATE, { id: item.id })
+		Modal.show(MODALS.TRANSPORT_WIZARD, { id: item.id })
 	};
 
 	return (
@@ -50,7 +50,7 @@ export const TransportListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.TRANSPORT_CREATE)
+		Modal.show(MODALS.TRANSPORT_WIZARD)
 	};
 
 	useEffect(() => {

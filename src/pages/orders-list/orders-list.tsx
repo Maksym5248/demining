@@ -16,7 +16,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IOrder}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.ORDER_CREATE, { id: item.id })
+		Modal.show(MODALS.ORDER_WIZARD, { id: item.id })
 	};
 
 	return (
@@ -44,7 +44,7 @@ export const OrdersListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.ORDER_CREATE)
+		Modal.show(MODALS.ORDER_WIZARD)
 	};
 
 	useEffect(() => {
