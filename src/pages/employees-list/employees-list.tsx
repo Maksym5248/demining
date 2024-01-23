@@ -8,7 +8,7 @@ import { Icon, List } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS } from '~/constants';
+import { MODALS, WIZARD_MODE } from '~/constants';
 
 import { s } from './employees-list.styles';
 
@@ -18,7 +18,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IEmployee}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_WIZARD, { id: item.id })
+		Modal.show(MODALS.EMPLOYEES_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (
@@ -48,7 +48,7 @@ export const EmployeesListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_WIZARD)
+		Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
 	useEffect(() => {

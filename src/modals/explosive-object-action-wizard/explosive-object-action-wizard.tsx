@@ -6,7 +6,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import { useStore } from '~/hooks'
 import { IExplosiveObjectTypeValue } from '~/stores'
-import { EXPLOSIVE_OBJECT_CATEGORY, MODALS } from '~/constants'
+import { EXPLOSIVE_OBJECT_CATEGORY, MODALS, WIZARD_MODE } from '~/constants'
 import { Modal } from '~/services'
 import { Select } from '~/components'
 
@@ -38,7 +38,7 @@ export const ExplosiveObjectActionWizardModal  = observer(({ isVisible, hide, on
 	};
 
 	const onAddExplosiveObject = () => {
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD)
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD,  { mode: WIZARD_MODE.CREATE})
 	};
 
 	useEffect(() => {

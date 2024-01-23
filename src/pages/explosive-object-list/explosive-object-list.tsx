@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS } from '~/constants';
+import { MODALS, WIZARD_MODE } from '~/constants';
 import { IExplosiveObject } from '~/stores';
 
 import { s } from './explosive-object-list.styles';
@@ -17,7 +17,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { id: item.id })
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (
@@ -44,7 +44,7 @@ export const ExplosiveObjectListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD)
+		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
 	useEffect(() => {

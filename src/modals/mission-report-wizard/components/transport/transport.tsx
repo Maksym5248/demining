@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Space} from 'antd';
 
 import { Select } from '~/components'
-import { MODALS } from '~/constants';
+import { MODALS, WIZARD_MODE } from '~/constants';
 import { Modal } from '~/services';
 import { ITransport } from '~/stores';
 
@@ -15,7 +15,7 @@ interface TransportProps {
 
 export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) {
 	const onAdd = useCallback( () => {
-		Modal.show(MODALS.TRANSPORT_WIZARD)
+		Modal.show(MODALS.TRANSPORT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
 	
 	const dropdownRender = useCallback(

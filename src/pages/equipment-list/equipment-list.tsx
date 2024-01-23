@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS, EQUIPMENT_TYPE } from '~/constants';
+import { MODALS, EQUIPMENT_TYPE, WIZARD_MODE } from '~/constants';
 import { IEquipment } from '~/stores';
 
 import { s } from './equipment-list.styles';
@@ -20,7 +20,7 @@ const types = {
 const ListItem = observer(({ item }: { item: IEquipment}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EQUIPMENT_WIZARD, { id: item.id })
+		Modal.show(MODALS.EQUIPMENT_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (
@@ -48,7 +48,7 @@ export const EquipmentListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EQUIPMENT_WIZARD)
+		Modal.show(MODALS.EQUIPMENT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
 	useEffect(() => {

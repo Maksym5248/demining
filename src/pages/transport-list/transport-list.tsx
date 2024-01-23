@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS, TRANSPORT_TYPE } from '~/constants';
+import { MODALS, TRANSPORT_TYPE, WIZARD_MODE } from '~/constants';
 import { ITransport } from '~/stores';
 
 import { s } from './transport-list.styles';
@@ -21,7 +21,7 @@ const types = {
 const ListItem = observer(({ item }: { item: ITransport}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.TRANSPORT_WIZARD, { id: item.id })
+		Modal.show(MODALS.TRANSPORT_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (
@@ -50,7 +50,7 @@ export const TransportListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.TRANSPORT_WIZARD)
+		Modal.show(MODALS.TRANSPORT_WIZARD,  { mode: WIZARD_MODE.CREATE})
 	};
 
 	useEffect(() => {

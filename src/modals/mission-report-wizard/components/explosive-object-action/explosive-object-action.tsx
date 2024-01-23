@@ -3,7 +3,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react';
 
 import { Modal } from '~/services'
-import { MODALS } from '~/constants'
+import { MODALS, WIZARD_MODE } from '~/constants'
 import { useStore } from '~/hooks'
 import { Icon, List } from '~/components';
 import { IExplosiveObjectActionValueParams } from '~/stores';
@@ -69,6 +69,7 @@ function Component() {
 							  		icon={<PlusOutlined />}
 							   		onClick={() => {
 										Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_WIZARD, {
+											mode: WIZARD_MODE.CREATE,
 											onSubmit: (value: IExplosiveObjectActionValueParams) => setFieldValue("explosiveObjectActions", [...data, value])
 										})
 									}}

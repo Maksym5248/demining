@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import { Select } from '~/components'
 import { Modal } from '~/services'
-import { MODALS } from '~/constants'
+import { MODALS, WIZARD_MODE } from '~/constants'
 import { IEmployee } from '~/stores';
 
 
@@ -19,7 +19,7 @@ interface ApprovedProps {
 
 function Menu({ menu }: MenuProps) {
 	const onAddEmployee = () => {
-		Modal.show(MODALS.EMPLOYEES_WIZARD)
+		Modal.show(MODALS.EMPLOYEES_WIZARD,  { mode: WIZARD_MODE.CREATE})
 	};
 
 	return (

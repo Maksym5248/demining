@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { Icon, List } from '~/components';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS } from '~/constants';
+import { MODALS, WIZARD_MODE } from '~/constants';
 import { IMissionRequest } from '~/stores';
 
 import { s } from './mission-request-list.styles';
@@ -17,7 +17,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IMissionRequest}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REQUEST_WIZARD, { id: item.id })
+		Modal.show(MODALS.MISSION_REQUEST_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (
@@ -45,7 +45,7 @@ export const MissionRequestListPage  = observer(() => {
 
 	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REQUEST_WIZARD)
+		Modal.show(MODALS.MISSION_REQUEST_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
 	useEffect(() => {

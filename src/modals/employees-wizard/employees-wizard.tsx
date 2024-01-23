@@ -29,7 +29,7 @@ const employeeTypesData = [
 interface Props {
   id?: string;
   isVisible: boolean;
-  hide: () => void
+  hide: () => void;
 }
 
 export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) => {

@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import { Select } from '~/components'
 import { Modal } from '~/services'
-import { MODALS } from '~/constants'
+import { MODALS, WIZARD_MODE } from '~/constants'
 import { IMissionRequest, IOrder } from '~/stores';
 
 
@@ -16,11 +16,11 @@ interface DocumentsProps {
 
 export function Documents({ missionRequestData, orderData }: DocumentsProps) {
 	const onAddOrder = useCallback( () => {
-		Modal.show(MODALS.ORDER_WIZARD)
+		Modal.show(MODALS.ORDER_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
 
 	const onAddMissionRequest = useCallback( () => {
-		Modal.show(MODALS.MISSION_REQUEST_WIZARD)
+		Modal.show(MODALS.MISSION_REQUEST_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
 
 	const dropdownRenderOrder = useCallback(
