@@ -20,8 +20,13 @@ export const rendererConfig: Configuration = {
 		rules,
 	},
 	plugins,
+	target: 'electron-renderer',
 	resolve: {
-		extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+		fallback: {
+			"path": false,
+			"fs": false,
+		},
+		extensions: ['.cjs','.js', '.ts', '.jsx', '.tsx', '.css'],
 		alias: {
 			"~/api": path.resolve(__dirname, "./src/api"),
 			"~/components": path.resolve(__dirname, "./src/components"),

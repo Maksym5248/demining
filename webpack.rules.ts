@@ -19,7 +19,7 @@ export const rules: Required<ModuleOptions>['rules'] = [
 		},
 	},
 	{
-		test: /\.(js|jsx|ts|tsx)$/,
+		test: /\.(cjs|js|jsx|ts|tsx)$/,
 		exclude: /node_modules|\.webpack/,
 		use: {
 			loader: 'babel-loader',
@@ -30,7 +30,7 @@ export const rules: Required<ModuleOptions>['rules'] = [
 		// its runtime that would otherwise be processed through "file" loader.
 		// Also exclude `html` and `json` extensions so they get processed
 		// by webpacks internal loaders.
-		exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+		exclude: [/\.(cjs|js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
 		loader: require.resolve('file-loader'),
 	},
 ];

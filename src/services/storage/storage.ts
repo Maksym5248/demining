@@ -9,7 +9,19 @@ export class StorageClass {
 		eventEmitter.emit(key, value);
 	};
 
-	get = (key: string) => localStorage.get(JSON.parse(key));
+	get(key: string){
+		try {
+			const value = localStorage.getItem(key);
+			if(value){
+				return JSON.parse(value)
+			}
+		} catch (error) {
+			return null
+		}
+
+		return null
+	};
+
 
 	remove = (key: string) => {
 		localStorage.removeItem(key);

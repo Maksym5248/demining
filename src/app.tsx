@@ -3,17 +3,22 @@ import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd';
 
+import { RootStoreContext } from '~/context';
 import { createStore } from '~/stores';
 import { RootRouter, modals } from '~/routes';
 import { ThemeProvider, ModalProvider } from '~/containers';
-import { RootStoreContext } from '~/context';
+import { LogLevel, Logger } from '~/services';
 
 import "./index.css";
+
+import { CONFIG } from './config';
 
 const { store } = createStore();
 
 function App() {
 	useEffect(() => {
+		Logger.setLevel(CONFIG.IS_DEV ? LogLevel.Debug : LogLevel.None);
+
 		store.init();
 
 		return () => {

@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { useStore } from '~/hooks'
 import { dates } from '~/utils';
 import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE } from '~/constants';
-import { DrawerExtra } from '~/components';
+import { DrawerExtra , SelectTemplate } from '~/components';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -157,7 +157,9 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 			extra={
 				<DrawerExtra
 					onRemove={isCreate ? undefined: onRemove}
-				/>
+				>
+					<SelectTemplate />
+				</DrawerExtra>
 			}
 		>
 			{ isLoading
