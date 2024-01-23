@@ -5,7 +5,7 @@ import { STORAGE } from '~/constants';
 
 import { Storage } from './storage/storage';
 
-const TEMPLATE_FILE_NAME = "doc-template";
+const TEMPLATE_FILE_NAME = "template/doc-template.doc";
 
 interface IMetaData {
 	lastModified: number;
