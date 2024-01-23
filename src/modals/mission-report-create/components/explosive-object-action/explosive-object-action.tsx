@@ -1,7 +1,6 @@
-import { memo } from 'react';
-
 import { Button, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { observer } from 'mobx-react';
 
 import { Modal } from '~/services'
 import { MODALS } from '~/constants'
@@ -39,6 +38,8 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 	)
 }
 
+const ObservedListItem = observer(ListItem);
+
 function Component() {
 
 	return (
@@ -53,7 +54,7 @@ function Component() {
 							pagination={false}
 							dataSource={data.map((el:IExplosiveObjectActionValueParams, i:number) => ({...el, id: `${i}`}))}
 							renderItem={(item:IExplosiveObjectActionValueParams & { id: string}, i:number) => (
-								<ListItem
+								<ObservedListItem
 								    item={item}
 								    index={i} 
 								    onRemove={(index:number) => {
@@ -84,4 +85,4 @@ function Component() {
 	);
 }
 
-export const ExplosiveObjectAction = memo(Component);
+export const ExplosiveObjectAction = Component;

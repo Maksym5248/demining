@@ -53,50 +53,86 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 
 	useEffect(() => {
 		explosiveObject.fetchList.run();
+		explosiveObject.fetchListTypes.run();
 		order.fetchList.run();
 		missionRequest.fetchList.run();
 		transport.fetchList.run();
 		equipment.fetchList.run();
 		employee.fetchList.run();
-	}, [])
+	}, []);
 
 	const isLoading = explosiveObject.fetchList.inProgress
+	 || explosiveObject.fetchListTypes.inProgress
 	 || order.fetchList.inProgress
 	 || missionRequest.fetchList.inProgress
 	 || transport.fetchList.inProgress
 	 || equipment.fetchList.inProgress
-	 || employee.fetchList.inProgress;
+	 || employee.fetchList.inProgress
+	 || !explosiveObject.fetchList.isLoaded
+	 || !explosiveObject.fetchListTypes.isLoaded
+	 || !order.fetchList.isLoaded
+	 || !missionRequest.fetchList.isLoaded
+	 || !transport.fetchList.isLoaded
+	 || !equipment.fetchList.isLoaded
+	 || !employee.fetchList.isLoaded;
 
-	 const initialValues:IMissionReportForm = {
-		approvedAt: currentMissionReport?.approvedAt ?? dates.today(),
-		approvedById: currentMissionReport?.approvedByAction?.employeeId ??employee.employeesChiefFirst?.id,
-		number: currentMissionReport?.number ?? (missionReport.list.last?.number ?? 0) + 1,
-		subNumber: currentMissionReport?.subNumber ?? missionReport.list.last?.subNumber ? (missionReport.list.last?.subNumber ?? 0) + 1 : undefined,
-		executedAt: currentMissionReport?.executedAt ?? dates.today(),
-		orderId: currentMissionReport?.order?.id ?? order.list.first?.id,
-		missionRequestId: currentMissionReport?.missionRequest?.id ?? missionRequest.list.first?.id,
+	 const initialValues: Partial<IMissionReportForm> = isEdit ? {
+		approvedAt: currentMissionReport?.approvedAt,
+		approvedById: currentMissionReport?.approvedByAction?.employeeId,
+		number: currentMissionReport?.number,
+		subNumber: currentMissionReport?.subNumber,
+		executedAt: currentMissionReport?.executedAt,
+		orderId: currentMissionReport?.order?.id,
+		missionRequestId: currentMissionReport?.missionRequest?.id,
 		checkedTerritory: currentMissionReport?.checkedTerritory,
 		depthExamination: currentMissionReport?.depthExamination,
 		uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
 		uncheckedReason: currentMissionReport?.uncheckedReason,
-		workStart: currentMissionReport?.workStart ?? dates.today().hour(9).minute(0),
+		workStart: currentMissionReport?.workStart,
 		exclusionStart: currentMissionReport?.exclusionStart,
 		transportingStart: currentMissionReport?.transportingStart,
 		destroyedStart: currentMissionReport?.destroyedStart,
 		workEnd: currentMissionReport?.workEnd,
-		transportExplosiveObjectId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS))?.transportId ?? transport.transportExplosiveObjectFirst?.id,
-		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId ?? transport.transportHumansFirst?.id,
-		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId ?? equipment.firstMineDetector?.id,
+		transportExplosiveObjectId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS))?.transportId,
+		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId,
+		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId,
 		explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
-		squadLeadId: currentMissionReport?.squadLeaderAction.employeeId ?? employee.employeesSquadLeadFirst?.id,
+		squadLeadId: currentMissionReport?.squadLeaderAction.employeeId,
 		workersIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
-		address: currentMissionReport?.address ?? "",
+		address: currentMissionReport?.address,
 		mapView: {
 			markerLat: currentMissionReport?.mapView?.markerLat,
 			markerLng: currentMissionReport?.mapView?.markerLng,
 			circleCenterLat: currentMissionReport?.mapView?.circleCenterLat,
 			circleCenterLng: currentMissionReport?.mapView?.circleCenterLng,
 			circleRadius: currentMissionReport?.mapView?.circleRadius,
+			zoom: currentMissionReport?.mapView?.zoom
+		},
+	} : {
+		approvedAt: dates.today(),
+		approvedById: employee.employeesChiefFirst?.id,
+		number: (missionReport.list.last?.number ?? 0) + 1,
+		subNumber:  missionReport.list.last?.subNumber ? (missionReport.list.last?.subNumber ?? 0) + 1 : undefined,
+		executedAt: dates.today(),
+		orderId: order.list.first?.id,
+		missionRequestId: missionRequest.list.first?.id,
+		checkedTerritory: undefined,
+		depthExamination: undefined,
+		uncheckedTerritory: undefined,
+		uncheckedReason: undefined,
+		workStart: dates.today().hour(9).minute(0),
+		exclusionStart: undefined,
+		transportingStart: undefined,
+		destroyedStart: undefined,
+		workEnd: undefined,
+		transportExplosiveObjectId:  transport.transportExplosiveObjectFirst?.id,
+		transportHumansId: transport.transportHumansFirst?.id,
+		mineDetectorId: equipment.firstMineDetector?.id,
+		explosiveObjectActions:[],
+		squadLeadId: employee.employeesSquadLeadFirst?.id,
+		workersIds: [],
+		address: "",
+		mapView: {
 			zoom: currentMissionReport?.mapView?.zoom || MAP_ZOOM.DEFAULT
 		},
 	}
@@ -139,11 +175,11 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 							 />,
 							<Map key="Map"/>,
 							<Territory key="Territory"/>
-						].map(el => (
-							<>
+						].map((el, i) => (
+							<div  key={i}>
 								{el}
 								<Divider/>
-							</>
+							</div>
 						))}
 						<Form.Item label=" " colon={false}>
 							<Space>

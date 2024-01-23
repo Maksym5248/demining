@@ -200,13 +200,12 @@ const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMission
 			employeeId: squadLeadId,
 		}
 
-
 		squadActionIds = workersIds.map(workerId => {
 			const employee = removeFields("id", findById(workerId, employees));
 			return {
 				...document,
 				...employee,
-				employeeId: squadLeadId,
+				employeeId: employee.id,
 			}
 		});
 
@@ -221,7 +220,7 @@ const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMission
 		transportExplosiveObjectAction = {
 			...document,
 			...transportExplosiveObject,
-			transportId: transportHumansId
+			transportId: transportExplosiveObjectId
 		}
 
 		const mineDetector = removeFields("id", findById(mineDetectorId, equipments));

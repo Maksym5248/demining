@@ -8,6 +8,7 @@ import { createMissionRequest } from '~/stores/stores/mission-request';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO } from './entities';
+import { createExplosiveObjectType } from '../explosive-object';
 
 const Store = types
 	.model('MissionReportStore', {
@@ -46,8 +47,19 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 		const res = await Api.missionReport.getList();
 
 		res.forEach((el) => {
-			root.order.collection.set(el.order.id, createOrder(el.order));
-			root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
+			el.explosiveObjectActions.forEach((item) => {
+				root.explosiveObject.collectionTypes.set(item.type.id, createExplosiveObjectType(item.type));
+			})
+
+			if(!root.order.collection.has(el.order.id)){
+				root.order.collection.set(el.order.id, createOrder(el.order));
+				root.order.list.push(el.order.id);
+			}
+
+			if(!root.missionRequest.collection.has(el.missionRequest.id)){
+				root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
+				root.missionRequest.list.push(el.missionRequest.id);
+			}
 
 			const missionReport = createMissionReport(el);
 

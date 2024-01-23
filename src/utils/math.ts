@@ -3,6 +3,10 @@ function squareCircle(r: number){
 }
 
 function toFixed(value:number | any, signs:number = 2){
+	if(!value){
+		return undefined
+	}
+
 	if(Number.isNaN(value)){
 		return value
 	}

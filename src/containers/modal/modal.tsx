@@ -61,7 +61,7 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
 
 			return (
 				<div key={modal.name} >
-					{modal.renderComponent({
+					{visibleModal?.isRendered && modal.renderComponent({
 						...propsForComponent,
 						isVisible: visibleModal?.isVisible,
 						hide: () => this.onModalHide(modal.name),

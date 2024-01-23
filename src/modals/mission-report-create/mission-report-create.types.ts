@@ -1,30 +1,30 @@
 import { Dayjs } from "dayjs";
 
-import { IExplosiveObjectActionValue, IExplosiveObjectActionValueParams, IMapViewActionValueParams } from "~/stores";
+import { IExplosiveObjectActionValueParams, IMapViewActionValueParams } from "~/stores";
 
 
 export interface IMissionReportForm {
     approvedAt: Dayjs;
     approvedById:  string;
     number: number;
-    subNumber: number | undefined,
+    subNumber?: number,
     executedAt: Dayjs;
     orderId: string;
     missionRequestId: string;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
+    checkedTerritory?: number;
+    depthExamination?: number;
+    uncheckedTerritory?: number;
+    uncheckedReason?: string;
     mapView: Partial<IMapViewActionValueParams>;
-    workStart: Dayjs | undefined;
-    exclusionStart: Dayjs | undefined;
-    transportingStart: Dayjs | undefined;
-    destroyedStart: Dayjs | undefined;
-    workEnd: Dayjs | undefined;
-    transportExplosiveObjectId: string;
-    transportHumansId: string;
-    mineDetectorId: string,
-    explosiveObjectActions: IExplosiveObjectActionValueParams[] | IExplosiveObjectActionValue[];
+    workStart: Dayjs;
+    exclusionStart?: Dayjs;
+    transportingStart?: Dayjs;
+    destroyedStart?: Dayjs;
+    workEnd: Dayjs;
+    transportExplosiveObjectId?: string;
+    transportHumansId?: string;
+    mineDetectorId?: string,
+    explosiveObjectActions: IExplosiveObjectActionValueParams[];
     squadLeadId: string;
     workersIds: string[];
     address: string;

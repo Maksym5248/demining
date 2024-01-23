@@ -16,6 +16,7 @@ interface IModalType {
 export interface IModalTypeInternal extends IModalType {
   name: string;
   isVisible: boolean;
+  isRendered: boolean;
 }
 
 export interface IModalsMap {
@@ -51,6 +52,8 @@ class ModalClass {
 				name: key,
 				// @ts-ignore
 				isVisible: false,
+				// @ts-ignore
+				isRendered: false,
 				propsForComponent: {
 					hide: () => this.hide(key),
 				},
@@ -69,6 +72,7 @@ class ModalClass {
 				propsForComponent,
 				propsForModal,
 				isVisible: true,
+				isRendered: true,
 			},
 		});
 
@@ -79,9 +83,22 @@ class ModalClass {
 		this.visibleModals[name] = {
 			...this.visibleModals[name],
 			isVisible: false,
+			isRendered: true,
 		};
 
 		eventEmitter.emit(Events.Change, { ...this.visibleModals });
+
+
+		setTimeout(() => {
+			this.visibleModals[name] = {
+				...this.visibleModals[name],
+				isVisible: false,
+				isRendered: false,
+			};
+
+			eventEmitter.emit(Events.Change, { ...this.visibleModals });
+		}, 400)
+
 	}
 
 	removeVisibleModal(name: string) {
