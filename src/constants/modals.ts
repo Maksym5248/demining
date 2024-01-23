@@ -9,3 +9,9 @@ export enum MODALS {
     TRANSPORT_CREATE = 'TRANSPORT_CREATE',
     EQUIPMENT_CREATE = 'EQUIPMENT_CREATE',
 }
+
+export enum MISSION_REPORT_MODE {
+    VIEW = 'VIEW',
+    EDIT = 'EDIT',
+    CREATE = 'CREATE',
+}

@@ -5,7 +5,8 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils';
-import { EQUIPMENT_TYPE, MAP_ZOOM, TRANSPORT_TYPE } from '~/constants';
+import { EQUIPMENT_TYPE, MAP_ZOOM, MISSION_REPORT_MODE, TRANSPORT_TYPE } from '~/constants';
+import { DrawerExtra } from '~/components';
 
 import { IMissionReportForm } from './mission-report-create.types';
 import { s } from './mission-report-create.styles';
@@ -25,7 +26,9 @@ import  {
 interface Props {
   id?: string;
   isVisible: boolean;
-  hide: () => void
+  type:  "edit" |  "view";
+  hide: () => void;
+  mode: MISSION_REPORT_MODE
 }
 
 /**
@@ -34,10 +37,12 @@ interface Props {
  * 3 - транспорт
  */
 
-export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props) => {
+export const MissionReportCreateModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport } = useStore();
 
-	const isEdit = !!id;
+	const isEdit = !!id && mode === MISSION_REPORT_MODE.EDIT;
+	const isView = !!id && mode === MISSION_REPORT_MODE.VIEW;
+	const isCreate = !id && mode === MISSION_REPORT_MODE.CREATE;
 	const currentMissionReport = id ? missionReport.collection.get(id) : null;
 
 	const onFinishCreate = async (values: IMissionReportForm) => {
@@ -76,7 +81,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 	 || !equipment.fetchList.isLoaded
 	 || !employee.fetchList.isLoaded;
 
-	 const initialValues: Partial<IMissionReportForm> = isEdit ? {
+	 const initialValues: Partial<IMissionReportForm> = (isEdit || isView) ? {
 		approvedAt: currentMissionReport?.approvedAt,
 		approvedById: currentMissionReport?.approvedByAction?.employeeId,
 		number: currentMissionReport?.number,
@@ -137,14 +142,23 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 		},
 	}
 
+	const onRemove = () => () => {
+		missionReport.remove.run(id);
+	};
+
 	return (
 		<Drawer
 			open={isVisible}
 			destroyOnClose
-			title={`${isEdit ? "Редагувати": "Створити"} акт виконаних робіт`}
+			title={`${isView ? "Переглянути": "Створити"} акт виконаних робіт`}
 			placement="right"
 			width={700}
 			onClose={hide}
+			extra={
+				<DrawerExtra
+					onRemove={isCreate ? undefined: onRemove}
+				/>
+			}
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)
@@ -155,6 +169,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
 						initialValues={initialValues}
+						disabled={isView}
 					>
 						{ [
 							<Approved key="Approved" data={employee.employeesListChief}/>,
@@ -173,7 +188,7 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 								squadLeads={employee.squadLeads} 
 								workers={employee.workers}
 							 />,
-							<Map key="Map"/>,
+							<Map key="Map" mode={mode} />,
 							<Territory key="Territory"/>
 						].map((el, i) => (
 							<div  key={i}>
@@ -181,14 +196,16 @@ export const MissionReportCreateModal = observer(({ id, isVisible, hide }: Props
 								<Divider/>
 							</div>
 						))}
-						<Form.Item label=" " colon={false}>
-							<Space>
-								<Button onClick={hide}>Скасувати</Button>
-								<Button htmlType="submit" type="primary">
-									{isEdit ? "Зберегти" : "Додати"}
-								</Button>
-							</Space>
-						</Form.Item>
+						{!isView && (
+							<Form.Item label=" " colon={false}>
+								<Space>
+									<Button onClick={hide}>Скасувати</Button>
+									<Button htmlType="submit" type="primary">
+										{isEdit ? "Зберегти" : "Додати"}
+									</Button>
+								</Space>
+							</Form.Item>
+						)}
 					</Form>
 				)}
 		</Drawer>

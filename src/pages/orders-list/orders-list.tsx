@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { Icon, List } from '~/components';
@@ -14,36 +14,15 @@ import { s } from './orders-list.styles';
 const { Title, Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IOrder}) => {
-	const store = useStore();
-
-	const onGoToOrderEdit = (id:string) => (e:React.SyntheticEvent) => {
+	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.ORDER_CREATE, { id })
-	};
-
-	const onRemove = (id:string) => () => {
-		store.order.remove.run(id);
-	};
-  
-	const onCancel = () => {
-		message.error('Скасовано');
+		Modal.show(MODALS.ORDER_CREATE, { id: item.id })
 	};
 
 	return (
 		<List.Item
 			actions={[
-				<Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToOrderEdit(item.id)}/>,
-				<Popconfirm
-					key="list-remove"
-					title="Видалити"
-					description="Ви впевнені, після цього дані не можливо відновити ?"
-					onConfirm={onRemove(item.id)}
-					onCancel={onCancel}
-					okText="Так"
-					cancelText="Ні"
-				>
-					<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
-				</Popconfirm>
+				<Button key="list-edit" icon={<Icon.EyeOutlined type="danger"/>} onClick={onOpen}/>,
 			]}
 		>
 			<List.Item.Meta

@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 import { EQUIPMENT_TYPE } from "~/constants"
 import { useStore } from '~/hooks'
+import { DrawerExtra } from '~/components';
 
 import { s } from './equipment-create.style'
 import { IEquipmentForm } from './equipment-create.types';
@@ -42,6 +43,10 @@ export const EquipmentCreateModal  = observer(({ id, isVisible, hide }: Props) =
 		hide();
 	};
 
+	const onRemove = () => () => {
+		store.equipment.remove.run(id);
+	};
+
 	return (   
 		<Drawer
 			open={isVisible}
@@ -50,6 +55,11 @@ export const EquipmentCreateModal  = observer(({ id, isVisible, hide }: Props) =
 			placement="right"
 			width={500}
 			onClose={hide}
+			extra={
+				<DrawerExtra
+					onRemove={isEdit ? onRemove : undefined}
+				/>
+			}
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { EMPLOYEE_TYPE } from '~/constants';
+import { DrawerExtra } from '~/components';
 
 import { IEmployeeForm } from './employees-create.types';
 
@@ -47,6 +48,10 @@ export const EmployeesCreateModal = observer(({ id, isVisible, hide }: Props) =>
 		hide();
 	};
 
+	const onRemove = () => () => {
+		store.employee.remove.run(id);
+	};
+	
 	const ranks = store.employee.ranksList.asArray;
 
 	return (   
@@ -57,6 +62,11 @@ export const EmployeesCreateModal = observer(({ id, isVisible, hide }: Props) =>
 			placement="right"
 			width={500}
 			onClose={hide}
+			extra={
+				<DrawerExtra
+					onRemove={isEdit ? onRemove : undefined}
+				/>
+			}
 		>
 			<Form
 				name="complex-form"

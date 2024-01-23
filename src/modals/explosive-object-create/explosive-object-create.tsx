@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Button, Form, Input, Space, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { Select } from '~/components'
+import { DrawerExtra, Select } from '~/components'
 import { useStore } from '~/hooks'
 
 import { s } from './explosive-object-create.style'
@@ -38,6 +38,10 @@ export const ExplosiveObjectCreateModal  = observer(({ id, isVisible, hide }: Pr
 		hide();
 	};
 
+	const onRemove = () => () => {
+		explosiveObject.remove.run(id);
+	};
+
 	return (   
 		<Drawer
 			open={isVisible}
@@ -46,6 +50,11 @@ export const ExplosiveObjectCreateModal  = observer(({ id, isVisible, hide }: Pr
 			placement="right"
 			width={500}
 			onClose={hide}
+			extra={
+				<DrawerExtra
+					onRemove={isEdit ? onRemove : undefined}
+				/>
+			}
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)

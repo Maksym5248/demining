@@ -2,7 +2,7 @@ import { Form } from "antd";
 
 import { MapView } from "~/components"
 import { useStore } from "~/hooks";
-import { MAP_SIZE } from "~/constants";
+import { MAP_SIZE, MISSION_REPORT_MODE } from "~/constants";
 import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
 import { IMapViewActionValue } from "~/stores";
 import { mathUtils } from "~/utils/math";
@@ -12,7 +12,12 @@ const mapContainerStyle = {
 	height: MAP_SIZE.MEDIUM_HEIGHT,
 };
 
-export function Map(){
+interface Props {
+	mode: MISSION_REPORT_MODE
+  }
+
+  
+export function Map({ mode }: Props){
 	const { explosiveObject } = useStore();
 
 	const validateMapView = (_:any, value: IMapViewActionValue) => {
@@ -39,6 +44,7 @@ export function Map(){
 
 					return (
 						<MapView
+							type={mode === MISSION_REPORT_MODE.VIEW  ? "picture": "edit"}
 							initialCircle={isCircle ? {
 								center: {
 									lat: mapView?.circleCenterLat,

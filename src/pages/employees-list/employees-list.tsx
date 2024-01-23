@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { IEmployee } from '~/stores';
@@ -16,37 +16,16 @@ const { Title, Text } = Typography;
 
 
 const ListItem = observer(({ item }: { item: IEmployee}) => {
-	const store = useStore();
-
-	const onGoToEmployeesEdit = (id:string) => (e:React.SyntheticEvent) => {
+	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_CREATE, { id })
-	};
-
-	const onRemove = (id:string) => () => {
-		store.employee.remove.run(id);
-	};
-  
-	const onCancel = () => {
-		message.error('Скасовано');
+		Modal.show(MODALS.EMPLOYEES_CREATE, { id: item.id })
 	};
 
 	return (
 		<List.Item
 			key={item.id}
 			actions={[
-				<Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToEmployeesEdit(item.id)}/>,
-				<Popconfirm
-					key="list-remove"
-					title="Видалити"
-					description="Ви впевнені, після цього дані не можливо відновити ?"
-					onConfirm={onRemove(item.id)}
-					onCancel={onCancel}
-					okText="Так"
-					cancelText="Ні"
-				>
-					<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
-				</Popconfirm>
+				<Button key="list-edit" icon={<Icon.EyeOutlined type="danger"/>} onClick={onOpen}/>,
 			]}
 		>
 			<List.Item.Meta

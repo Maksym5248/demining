@@ -237,6 +237,7 @@ function Component({
 	[marker, mapRef.current, zoom, isVisibleMap]);
 
 	const isVisibleCircle = !!circle?.center && circle?.radius;
+	const isVisibleCircleMetaData = isVisibleCircle && !isPictureType;
 	const isVisibleMarker = !!marker;
 	const isVisibleCallout = isVisibleMarker && !!callout && explosiveObjects?.length && date;
 
@@ -269,7 +270,7 @@ function Component({
 					   onDragEnd={onDragEnd}
 					/>
 				) }
-				{isVisibleCircle && (
+				{isVisibleCircleMetaData && (
 					<OverlayViewF
 						position={circle?.center}
 						getPixelPositionOffset={() => ({ x: 20, y: 20 })}

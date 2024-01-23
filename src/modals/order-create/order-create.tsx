@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Button, Form, DatePicker, Space, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { Select } from '~/components'
+import { DrawerExtra, Select } from '~/components'
 import { useStore } from '~/hooks'
 import { dates } from '~/utils'
 
@@ -43,6 +43,10 @@ export const OrderCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 		hide();
 	};
 
+	const onRemove = () => {
+		order.remove.run(id);
+	};
+
 	return (   
 		<Drawer
 			open={isVisible}
@@ -51,6 +55,11 @@ export const OrderCreateModal  = observer(({ id, isVisible, hide }: Props) => {
 			placement="right"
 			width={500}
 			onClose={hide}
+			extra={
+				<DrawerExtra
+					onRemove={isEdit ? onRemove : undefined}
+				/>
+			}
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)

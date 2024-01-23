@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Button, Form, Space, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { Select } from '~/components'
+import { DrawerExtra, Select } from '~/components'
 import { TRANSPORT_TYPE } from "~/constants"
 import { useStore } from '~/hooks'
 
@@ -46,6 +46,11 @@ export const TransportCreateModal = observer(({ id, isVisible, hide }: Props) =>
 		hide();
 	};
 
+	const onRemove = () => {
+		store.transport.remove.run(id);
+	};
+
+
 	return (   
 		<Drawer
 			open={isVisible}
@@ -54,6 +59,11 @@ export const TransportCreateModal = observer(({ id, isVisible, hide }: Props) =>
 			placement="right"
 			width={500}
 			onClose={hide}
+			extra={
+				<DrawerExtra
+					onRemove={isEdit ? onRemove: undefined}
+				/>
+			}
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { IMissionReport } from '~/stores';
@@ -8,7 +8,7 @@ import { Icon, List } from '~/components';
 import { str } from '~/utils';
 import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS } from '~/constants';
+import { MISSION_REPORT_MODE, MODALS } from '~/constants';
 
 import { s } from './mission-reports-list.styles';
 
@@ -16,36 +16,15 @@ const { Title, Text } = Typography;
 
 
 const ListItem = observer(({ item }: { item: IMissionReport}) => {
-	const store = useStore();
-
-	const onGoToIMissionReportEdit = (id:string) => (e:React.SyntheticEvent) => {
+	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REPORT_CREATE, { id })
-	};
-
-	const onRemove = (id:string) => () => {
-		store.missionReport.remove.run(id);
-	};
-  
-	const onCancel = () => {
-		message.error('Скасовано');
+		Modal.show(MODALS.MISSION_REPORT_CREATE, { id: item.id, mode: MISSION_REPORT_MODE.VIEW })
 	};
 
 	return (
 		<List.Item
 			actions={[
-				<Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoToIMissionReportEdit(item.id)}/>,
-				<Popconfirm
-					key="list-remove"
-					title="Видалити"
-					description="Ви впевнені, після цього дані не можливо відновити ?"
-					onConfirm={onRemove(item.id)}
-					onCancel={onCancel}
-					okText="Так"
-					cancelText="Ні"
-				>
-					<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
-				</Popconfirm>
+				<Button key="list-edit" icon={<Icon.EyeOutlined type="danger"/>} onClick={onOpen}/>,
 			]}
 		>
 			<List.Item.Meta
@@ -69,7 +48,7 @@ export const MissionReportsListPage  = observer(() => {
 
 	const onGoToMissionReportCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.MISSION_REPORT_CREATE)
+		Modal.show(MODALS.MISSION_REPORT_CREATE, { mode: MISSION_REPORT_MODE.CREATE })
 	};
 
 	useEffect(() => {

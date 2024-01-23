@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space, message, Popconfirm } from 'antd';
+import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { Icon, List } from '~/components';
@@ -19,36 +19,15 @@ const types = {
 }
 
 const ListItem = observer(({ item }: { item: ITransport}) => {
-	const store = useStore();
-
-	const onGoEdit = (id:string) => (e:React.SyntheticEvent) => {
+	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.TRANSPORT_CREATE, { id })
-	};
-
-	const onRemove = (id:string) => () => {
-		store.transport.remove.run(id);
-	};
-  
-	const onCancel = () => {
-		message.error('Скасовано');
+		Modal.show(MODALS.TRANSPORT_CREATE, { id: item.id })
 	};
 
 	return (
 		<List.Item
 			actions={[
-				<Button key="list-edit" icon={<Icon.EditOutlined type="danger"/>} onClick={onGoEdit(item.id)}/>,
-				<Popconfirm
-					key="list-remove"
-					title="Видалити"
-					description="Ви впевнені, після цього дані не можливо відновити ?"
-					onConfirm={onRemove(item.id)}
-					onCancel={onCancel}
-					okText="Так"
-					cancelText="Ні"
-				>
-					<Button icon={<Icon.DeleteOutlined style={{ color: "red"}}/> }/>
-				</Popconfirm>
+				<Button key="list-edit" icon={<Icon.EyeOutlined type="danger"/>} onClick={onOpen}/>,
 			]}
 		>
 			<List.Item.Meta
