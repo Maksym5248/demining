@@ -1,11 +1,12 @@
 
 import fs from 'fs';
 
-import { STORAGE } from '~/constants';
+import { STORAGE , MIME_TYPE } from '~/constants';
+import { fileUtils } from '~/utils/file';
 
 import { Storage } from './storage/storage';
 
-const TEMPLATE_FILE_NAME = "template/doc-template.doc";
+const TEMPLATE_FILE_NAME = "template/doc-template.docx";
 
 interface IMetaData {
 	lastModified: number;
@@ -20,15 +21,14 @@ const createMetadata = (data:File) => ({
 })
 
 async function saveTemplate(data:File): Promise<void> {
-	const arrayBuffer = await data.arrayBuffer();
-	const buffer = Buffer.from(arrayBuffer);
+	const buffer = await fileUtils.fileToBuffer(data);
 	await fs.promises.writeFile(TEMPLATE_FILE_NAME, buffer);
 	Storage.set(STORAGE.DOC_TEMPLATE, createMetadata(data))
 }
 
 async function readTemplate():Promise<File> {
 	return new Promise((resolve, reject) => {
-		fs.readFile(TEMPLATE_FILE_NAME, 'utf8', (err, data) => {
+		fs.readFile(TEMPLATE_FILE_NAME, (err, data) => {
 			if (err) {
 				reject(err);
 			} else {
@@ -38,9 +38,7 @@ async function readTemplate():Promise<File> {
 					throw Error()
 				}
 
-				const blob = new Blob([data]);
-				const file = new File([blob], metaData.name, metaData);
-				resolve(file);
+				resolve(fileUtils.bufferToFile(data, MIME_TYPE.DOCX, metaData));
 			}
 		});
 	})
@@ -48,12 +46,29 @@ async function readTemplate():Promise<File> {
 
 async function removeTemplate(){
 	await fs.promises.unlink(TEMPLATE_FILE_NAME);
-
 }
 
+async function saveAsUser(blob: Blob){
+	const blobUrl = URL.createObjectURL(blob);
+
+	let link:HTMLAnchorElement = document.createElement("a");
+	link.download = "test.docx";
+	link.href = blobUrl;
+
+	document.body.appendChild(link);
+	link.click();
+
+	setTimeout(() => {
+		link.remove();
+		window.URL.revokeObjectURL(blobUrl);
+		// @ts-expect-error
+		link = null;
+	}, 0);
+}
 
 export const FileSystem = {
 	saveTemplate,
 	readTemplate,
-	removeTemplate
+	removeTemplate,
+	saveAsUser,
 }

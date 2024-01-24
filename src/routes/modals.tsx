@@ -7,7 +7,8 @@ import {
 	ExplosiveObjectWizardModal,
 	ExplosiveObjectActionWizardModal,
 	TransportWizardModal,
-	EquipmentWizardModal
+	EquipmentWizardModal,
+	DocxPreviewModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -35,5 +36,8 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.EQUIPMENT_WIZARD]: {
 		renderComponent: (props: any) => <EquipmentWizardModal {...props} />,
+	},
+	[MODALS.DOCX_PREVIEW]: {
+		renderComponent: (props: any) => <DocxPreviewModal {...props} />,
 	},
 };

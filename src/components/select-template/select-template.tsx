@@ -6,6 +6,7 @@ import { RcFile } from 'antd/es/upload';
 
 import  { FileSystem, Logger } from "~/services"
 import { useAsyncEffect } from '~/hooks';
+import { MIME_TYPE } from '~/constants';
 
 export function SelectTemplate() {
 	const [template, setTemplate] = useState<RcFile | null>(null);
@@ -51,6 +52,7 @@ export function SelectTemplate() {
 			beforeUpload={beforeUpload}
 			maxCount={1}
 			disabled={false}
+			accept={MIME_TYPE.DOCX}
 		 >
 			<Button icon={<UploadOutlined />}>Вибрати шаблон</Button>
 		</Upload>

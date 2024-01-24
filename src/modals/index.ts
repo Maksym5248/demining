@@ -6,3 +6,4 @@ export * from "./mission-request-wizard";
 export * from "./order-wizard";
 export * from "./transport-wizard";
 export * from "./equipment-wizard";
+export * from "./docx-preview";

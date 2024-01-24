@@ -5,8 +5,9 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils';
-import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE } from '~/constants';
-import { DrawerExtra , SelectTemplate } from '~/components';
+import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS } from '~/constants';
+import { DrawerExtra, Icon } from '~/components';
+import { Modal } from '~/services';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -44,6 +45,10 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	const isView = !!id && mode === WIZARD_MODE.VIEW;
 	const isCreate = !id && mode === WIZARD_MODE.CREATE;
 	const currentMissionReport = id ? missionReport.collection.get(id) : null;
+
+	const onOpenDocxPreview = async () => {
+		Modal.show(MODALS.DOCX_PREVIEW)
+	};
 
 	const onFinishCreate = async (values: IMissionReportForm) => {
 		await missionReport.add.run(values);
@@ -158,7 +163,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 				<DrawerExtra
 					onRemove={isCreate ? undefined: onRemove}
 				>
-					<SelectTemplate />
+					<Button icon={<Icon.PrinterOutlined/>} onClick={onOpenDocxPreview}/>
 				</DrawerExtra>
 			}
 		>
