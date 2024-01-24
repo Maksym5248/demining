@@ -47,7 +47,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	const currentMissionReport = id ? missionReport.collection.get(id) : null;
 
 	const onOpenDocxPreview = async () => {
-		Modal.show(MODALS.DOCX_PREVIEW)
+		Modal.show(MODALS.DOCX_PREVIEW, { id })
 	};
 
 	const onFinishCreate = async (values: IMissionReportForm) => {
@@ -163,7 +163,9 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 				<DrawerExtra
 					onRemove={isCreate ? undefined: onRemove}
 				>
-					<Button icon={<Icon.PrinterOutlined/>} onClick={onOpenDocxPreview}/>
+					{!isCreate && (
+						<Button icon={<Icon.PrinterOutlined/>} onClick={onOpenDocxPreview}/>
+					)}
 				</DrawerExtra>
 			}
 		>

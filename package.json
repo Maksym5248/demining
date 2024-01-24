@@ -84,6 +84,7 @@
         "antd": "^5.9.2",
         "axios": "^1.6.5",
         "dayjs": "^1.11.10",
+        "docx-preview": "^0.3.0",
         "easy-template-x": "^3.2.0",
         "electron-squirrel-startup": "^1.0.0",
         "events": "^3.3.0",

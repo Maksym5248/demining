@@ -17,9 +17,14 @@ function bufferToFile(arrayBuffer: Buffer, type: MIME_TYPE, meta: IMetaData ) {
 	return new File([blob], meta.name, meta);
 }
 
+function blobToFile(blob: Blob, meta: IMetaData ) {
+	return new File([blob], meta.name, meta);
+}
+
 
 export const fileUtils = {
 	fileToBlob,
 	fileToBuffer,
-	bufferToFile
+	bufferToFile,
+	blobToFile
 }

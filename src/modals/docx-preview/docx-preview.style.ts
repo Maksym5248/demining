@@ -1,14 +1,14 @@
 import { Theme } from '~/styles'
 
-const spin = Theme.css(`
+const header = Theme.css(`
     display: flex;
     flex: 1;
-    justify-content: center;
-    align-items: center;
-    height: 300px;
+    flex-direction: row;
+    height: 60px;
+    border-bottom: solid 1px grey;
 `)
 
 export const s = {
-	spin
+	header
 }
     

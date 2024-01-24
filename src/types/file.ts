@@ -1,5 +1,5 @@
 export interface IMetaData {
-	lastModified: number;
+	lastModified?: number;
 	name: string;
     type: string;
 }

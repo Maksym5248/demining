@@ -1,3 +1,4 @@
+export * from './docx-preview';
 export * from './drawer-extra';
 export * from './icon';
 export * from "./list";

@@ -1,12 +1,11 @@
 
 import fs from 'fs';
 
-import { STORAGE , MIME_TYPE } from '~/constants';
+import { DOCX_TEMPLATE, MIME_TYPE } from '~/constants';
 import { fileUtils } from '~/utils/file';
 
 import { Storage } from './storage/storage';
 
-const TEMPLATE_FILE_NAME = "template/doc-template.docx";
 
 interface IMetaData {
 	lastModified: number;
@@ -20,19 +19,19 @@ const createMetadata = (data:File) => ({
 	type: data.type,
 })
 
-async function saveTemplate(data:File): Promise<void> {
+async function saveTemplate(name: DOCX_TEMPLATE, data:File): Promise<void> {
 	const buffer = await fileUtils.fileToBuffer(data);
-	await fs.promises.writeFile(TEMPLATE_FILE_NAME, buffer);
-	Storage.set(STORAGE.DOC_TEMPLATE, createMetadata(data))
+	await fs.promises.writeFile(name, buffer);
+	Storage.set(name, createMetadata(data))
 }
 
-async function readTemplate():Promise<File> {
+async function readTemplate(name:DOCX_TEMPLATE):Promise<File> {
 	return new Promise((resolve, reject) => {
-		fs.readFile(TEMPLATE_FILE_NAME, (err, data) => {
+		fs.readFile(name, (err, data) => {
 			if (err) {
 				reject(err);
 			} else {
-				const metaData = Storage.get(STORAGE.DOC_TEMPLATE) as IMetaData | null;
+				const metaData = Storage.get(name) as IMetaData | null;
 
 				if(!metaData){
 					throw Error()
@@ -44,8 +43,8 @@ async function readTemplate():Promise<File> {
 	})
 }
 
-async function removeTemplate(){
-	await fs.promises.unlink(TEMPLATE_FILE_NAME);
+async function removeTemplate(name:DOCX_TEMPLATE){
+	await fs.promises.unlink(name);
 }
 
 async function saveAsUser(blob: Blob){
