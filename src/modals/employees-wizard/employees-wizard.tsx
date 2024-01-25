@@ -115,7 +115,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) =>
 					name="position"
 					rules={[{ required: true, message: 'Посада є обов\'язковим полем' }]}
 				>
-					<Input placeholder="Введіть дані" />
+					<Input.TextArea placeholder="Введіть дані" />
 				</Form.Item>
 				<Form.Item
 					label="Тип посади"

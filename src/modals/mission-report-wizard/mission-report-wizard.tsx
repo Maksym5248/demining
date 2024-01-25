@@ -147,7 +147,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		},
 	}
 
-	const onRemove = () => () => {
+	const onRemove = () => {
+		hide();
 		missionReport.remove.run(id);
 	};
 
@@ -164,7 +165,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 					onRemove={isCreate ? undefined: onRemove}
 				>
 					{!isCreate && (
-						<Button icon={<Icon.PrinterOutlined/>} onClick={onOpenDocxPreview}/>
+						<Button icon={<Icon.SaveOutlined/>} onClick={onOpenDocxPreview}/>
 					)}
 				</DrawerExtra>
 			}

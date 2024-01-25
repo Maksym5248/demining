@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { observer } from 'mobx-react-lite'
+import { toLower } from 'lodash';
+import { Dayjs } from 'dayjs';
 
 import { useAsyncEffect, useStore } from '~/hooks'
 import { Template, FileSystem, Logger } from '~/services';
-import {  Icon, UploadFile, DocxPreview } from '~/components';
+import { UploadFile, DocxPreview } from '~/components';
 import { DOCX_TEMPLATE, MIME_TYPE } from '~/constants';
 import { fileUtils } from '~/utils/file';
+import { dates, str } from '~/utils';
 
 import { DocxPreviewModalProps } from './docx-preview.types';
 import { s } from './docx-preview.style';
@@ -23,6 +26,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 			await FileSystem.removeTemplate(template);
 			setFile(null);
 		} catch (error) {
+			message.error("Не видалити шаблон")
 			Logger.error("SelectTemplate - onRemove: ", error)
 		} finally {
 			setLoading(false);
@@ -36,6 +40,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 			setFile(value.file)
 		} catch (error) {
 			setFile(null);
+			message.error("Не вдалось зберегти шаблон")
 			Logger.error("SelectTemplate - customRequest: ", error)
 		} finally {
 			setLoading(false);
@@ -47,9 +52,10 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 			setLoading(true);
 			const value = await FileSystem.readTemplate(template);
 			if(value){
-				setFile(file as File);
+				setFile(value);
 			}
 		} catch (e) {
+			message.error("Не вдалось завантажити шаблон")
 			Logger.error("SelectTemplate - readTemplate: ", e)
 		} finally {
 			setLoading(false);
@@ -85,6 +91,7 @@ const useGeneratedFile = (template: File | null, data: {[key:string]: string | n
 				type: "docx"
 			}))
 		} catch (e) {
+			message.error("Не вдалось згенеруати файл")
 			Logger.error("useGeneratedFile - load: ", e)
 		} finally {
 			setLoading(false);
@@ -103,27 +110,56 @@ const useGeneratedFile = (template: File | null, data: {[key:string]: string | n
 	}
 }
 
+
+const getDate = (date: Dayjs) => `«${date.format("DD")}» ${toLower(dates.formatGenitiveMonth(date))} ${date.format("YYYY")} року`;
+
 export const DocxPreviewModal  = observer(({ id, isVisible, hide }: DocxPreviewModalProps) => {
 	const store = useStore();
 
-	const missionReport = store.missionReport.collection.get(id as string);
+	const {
+		approvedAt,
+		approvedByAction,
+		number,
+		subNumber,
+		executedAt,
+		order,
+		missionRequest,
+		address,
+		mapView,
+		checkedTerritory,
+		uncheckedTerritory,
+		depthExamination,
+		uncheckedReason,
+	} = store.missionReport.collection.get(id as string);
 
 	const data = {
-		approvedAtDay: missionReport.approvedAt.format("dd")
-	};
+		approvedAt: getDate(approvedAt),
+		approvedByName: `${str.toUpperFirst(approvedByAction.firstName)} ${str.toUpper(approvedByAction.lastName)}`,
+		approvedByRank: approvedByAction.rank.fullName,
+		approvedByPosition: approvedByAction.position,
+		actNumber: `${number}${subNumber ? `/${subNumber}` : ""}`,
+		executedAt: getDate(executedAt),
+		orderSignedAt: getDate(order.signedAt),
+		orderNumber: order.number,
+		missionRequestAt:  getDate(missionRequest.signedAt),
+		missionNumber: missionRequest.number,
+		address,
+		lat: mapView.markerLat,
+		lng: mapView.markerLng,
+		checkedM2: checkedTerritory ?? "---",
+		checkedGA: checkedTerritory ? checkedTerritory / 10000 : "---",
+		uncheckedM2: uncheckedTerritory ?? "---",
+		uncheckedGA: uncheckedTerritory ? uncheckedTerritory / 10000 : "---",
+		depthM2: depthExamination ?? "---",
+		uncheckedReason: uncheckedReason ?? "---",
+	}
 
 	const template = useTemplateFile(DOCX_TEMPLATE.MISSION_REPORT)
 	const generated = useGeneratedFile(template.file, data)
 
-	const onOk = () => {
+	const onOk = async () => {
 		hide();
-	};
 
-	const onCancel = () => () => {
-		hide();
-	};
-
-	const onSave = async () => {
 		try {
 			if(!generated.file){
 				return 
@@ -133,31 +169,34 @@ export const DocxPreviewModal  = observer(({ id, isVisible, hide }: DocxPreviewM
 		} catch (e) {
 			Logger.error("DocxPreviewModal - onSave :", e)
 		}
-	}
+	};
+
+	const onCancel = () => {
+		hide();
+	};
 		
 	return (   
 		<Modal 
 			centered
 			afterClose={hide}
-			width={800} 
 			title="Перегляд"
 			open={isVisible}
+			width={1000}
 			onOk={onOk}
 			onCancel={onCancel}
 		>
-			<div css={s.header}>
-				<UploadFile
-				  file={template.file}
-				  onRemove={() => template.remove()}
-				  customRequest={(value) => { template.save(value) }}
-				/>
-				{!!generated.file && (
-					<Button icon={<Icon.PrinterOutlined/>} onClick={onSave}/>
+			<div css={s.modal}>
+				<div css={s.header}>
+					<UploadFile
+						file={template.file}
+						onRemove={() => template.remove()}
+						customRequest={(value) => { template.save(value) }}
+					/>
+				</div>
+				{!!template.file && (
+					<DocxPreview file={generated.file}/>
 				)}
 			</div>
-			{!!template.file && (
-				<DocxPreview file={generated.file}/>
-			)}
 		</Modal>
 	);
 });

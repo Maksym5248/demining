@@ -33,8 +33,8 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 				title={str.getFullName(item)}
 				description={
 					<Space css={s.listItemDesc}>
-						<Text type="secondary">{str.upperFirst(item.rank.fullName)}</Text>
-						<Text type="secondary">{str.upperFirst(item.position)}</Text>
+						<Text type="secondary">{str.toUpperFirst(item.rank.fullName)}</Text>
+						<Text type="secondary">{str.toUpperFirst(item.position)}</Text>
 					</Space>
 				}
 			/>

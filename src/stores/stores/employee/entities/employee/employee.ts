@@ -1,10 +1,10 @@
 import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
-import { upperCase, upperFirst } from 'lodash';
 
 import { Api } from '~/api'
 import { UpdateValue } from '~/types'
 import { EMPLOYEE_TYPE } from '~/constants';
+import { str } from '~/utils';
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
@@ -29,7 +29,7 @@ const Entity = types.model('Employee', {
 	}
 })).views((self) => ({
 	get fullName(){
-		return `${self.rank.shortName} ${upperFirst(self.lastName)} ${upperCase(self.firstName[0])}. ${upperCase(self.surname[0])}.`
+		return `${self.rank.shortName} ${str.toUpperFirst(self.lastName)} ${str.toUpper(self.firstName[0])}. ${str.toUpper(self.surname[0])}.`
 	}
 }));
 

@@ -7,8 +7,7 @@ const handler = new TemplateHandler();
 
 async function generateFile(template: File, data: {[key:string]: string | number}) {
 	const blob = await fileUtils.fileToBlob(template, MIME_TYPE.DOCX);
-	const doc = await handler.process(blob, data);
-	return doc
+	return handler.process(blob, data)
 }
 
 

@@ -32,7 +32,7 @@ const ListItem = observer(({ item }: { item: IMissionReport}) => {
 				title={item.number}
 				description={
 					<Space css={s.listItemDesc}>
-						<Text type="secondary">{str.upperFirst(item.address)}</Text>
+						<Text type="secondary">{str.toUpperFirst(item.address)}</Text>
 						<Text type="secondary">{item.executedAt.format('DD.MM.YYYY')}</Text>
 					</Space>
 				}
