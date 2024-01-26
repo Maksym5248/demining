@@ -4,4 +4,4 @@ export * from './file-system';
 export * from './logger';
 export * from './modal';
 export * from './image';
-export * from './template';
+export * from './template/template';

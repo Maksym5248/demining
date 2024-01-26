@@ -179,29 +179,24 @@ export const DocxPreviewModal  = observer(({ id, isVisible, hide, image }: DocxP
 		uncheckedGA: uncheckedTerritory ? uncheckedTerritory / 10000 : "---",
 		depthM2: depthExamination ?? "---",
 		uncheckedReason: uncheckedReason ?? "---",
-		explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => (
-			el.quantity + acc
-		), 0),
+		explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => el.quantity + acc, 0),
 		explosiveObjects: explosiveObjectActions.reduce((acc, el, i) => {
 			const lasSign = explosiveObjectActions.length - 1 === i ? ".": ", ";
-
-			return `${acc   
-			}${el.fullDisplayName} – ${el.quantity} од., ${el.category} категорії${lasSign}`;
+			return `${acc}${el.fullDisplayName} – ${el.quantity} од., ${el.category} категорії${lasSign}`;
 		},  ""),
 		exclusionTime: getTime(exclusionStart, transportingStart ?? destroyedStart ?? workEnd),
 		exclusionDate: getDate(exclusionStart, ""),
 		transportingTime: getTime(transportingStart, destroyedStart ?? workEnd),
 		transportingDate: getDate(transportingStart, ""),
-		explosiveObjectsTotalTransport: explosiveObjectActions.reduce((acc, el) => (
-			(el.isTransported ? el.quantity: 0) + acc
-		), 0),
+		explosiveObjectsTotalTransport: explosiveObjectActions.reduce((acc, el) => (el.isTransported ? el.quantity: 0) + acc, 0),
 		squadTotal: squadActions.length + 1,
 		humanHours: (squadActions.length + 1) * (workEnd.hour() - workStart.hour()),
 		transportHuman: transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS)?.fullName ?? "--",
 		transportExplosiveObjects: transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.fullName ?? "--",
 		mineDetector: equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.name ?? "--",
 		squadLead: squadLeaderAction.signName,
-		squad: squadActions.map((el, i) => ({...el, first: i === 0})),
+		squadPosition: squadActions.reduce((prev, el, i) => `${prev}${el.position}${squadActions.length - 1 !== i ? `\n`: ""}`, ""),
+		squadName: squadActions.reduce((prev, el, i) => `${prev}${el.signName}${squadActions.length - 1 !== i ? `\n`: ""}`, ""),
 		image: imageData
 	}
 
