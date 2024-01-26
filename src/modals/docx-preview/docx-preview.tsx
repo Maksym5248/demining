@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Modal, message } from 'antd';
 import { observer } from 'mobx-react-lite'
@@ -8,7 +8,7 @@ import { Dayjs } from 'dayjs';
 import { useAsyncEffect, useStore } from '~/hooks'
 import { Template, FileSystem, Logger } from '~/services';
 import { UploadFile, DocxPreview } from '~/components';
-import { DOCX_TEMPLATE, MIME_TYPE } from '~/constants';
+import { DOCX_TEMPLATE, EQUIPMENT_TYPE, TRANSPORT_TYPE, MIME_TYPE, MAP_SIZE } from '~/constants';
 import { fileUtils } from '~/utils/file';
 import { dates, str } from '~/utils';
 
@@ -70,7 +70,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 	}
 }
 
-const useGeneratedFile = (template: File | null, data: {[key:string]: string | number }) => {
+const useGeneratedFile = (template: File | null, name:string, data: {[key:string]: any }) => {
 	const [isLoading, setLoading] = useState(false);
 	const [file, setFile] = useState<File | null>(null); 
 
@@ -87,7 +87,7 @@ const useGeneratedFile = (template: File | null, data: {[key:string]: string | n
 			setLoading(true);
 			const value = await Template.generateFile(template, data)
 			setFile(fileUtils.blobToFile(value, {
-				name: "generated-file",
+				name,
 				type: "docx"
 			}))
 		} catch (e) {
@@ -111,9 +111,15 @@ const useGeneratedFile = (template: File | null, data: {[key:string]: string | n
 }
 
 
-const getDate = (date: Dayjs) => `«${date.format("DD")}» ${toLower(dates.formatGenitiveMonth(date))} ${date.format("YYYY")} року`;
+const getDate = (date?: Dayjs, empty?:string) => date
+	? `«${date.format("DD")}» ${toLower(dates.formatGenitiveMonth(date))} ${date.format("YYYY")} року`
+	: (empty ?? "`«--» ------ року`");
 
-export const DocxPreviewModal  = observer(({ id, isVisible, hide }: DocxPreviewModalProps) => {
+const getTime = (start?:Dayjs, end?:Dayjs) => start && end
+	? `з ${start?.format("HH")} год. ${start?.format("mm")} хв. по ${end?.format("HH")} год. ${end?.format("mm")} хв.`
+	: "з ---- по ----";
+
+export const DocxPreviewModal  = observer(({ id, isVisible, hide, image }: DocxPreviewModalProps) => {
 	const store = useStore();
 
 	const {
@@ -130,14 +136,35 @@ export const DocxPreviewModal  = observer(({ id, isVisible, hide }: DocxPreviewM
 		uncheckedTerritory,
 		depthExamination,
 		uncheckedReason,
+		explosiveObjectActions,
+		workStart,
+		exclusionStart,
+		transportingStart,
+		destroyedStart,
+		workEnd,
+		squadActions,
+		squadLeaderAction,
+		transportActions,
+		equipmentActions
 	} = store.missionReport.collection.get(id as string);
+
+	const imageData = useMemo(() => ({
+		_type: "image",
+		source: fileUtils.b64toBlob(image),
+		format: 'image/jpeg',
+		altText: "image",
+		width: MAP_SIZE.MEDIUM_WIDTH,
+		height: MAP_SIZE.MEDIUM_HEIGHT,
+	}), [image]);
+
+	const actNumber = `${number}${subNumber ? `/${subNumber}` : ""}`;
 
 	const data = {
 		approvedAt: getDate(approvedAt),
 		approvedByName: `${str.toUpperFirst(approvedByAction.firstName)} ${str.toUpper(approvedByAction.lastName)}`,
 		approvedByRank: approvedByAction.rank.fullName,
 		approvedByPosition: approvedByAction.position,
-		actNumber: `${number}${subNumber ? `/${subNumber}` : ""}`,
+		actNumber,
 		executedAt: getDate(executedAt),
 		orderSignedAt: getDate(order.signedAt),
 		orderNumber: order.number,
@@ -152,10 +179,36 @@ export const DocxPreviewModal  = observer(({ id, isVisible, hide }: DocxPreviewM
 		uncheckedGA: uncheckedTerritory ? uncheckedTerritory / 10000 : "---",
 		depthM2: depthExamination ?? "---",
 		uncheckedReason: uncheckedReason ?? "---",
+		explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => (
+			el.quantity + acc
+		), 0),
+		explosiveObjects: explosiveObjectActions.reduce((acc, el, i) => {
+			const lasSign = explosiveObjectActions.length - 1 === i ? ".": ", ";
+
+			return `${acc   
+			}${el.fullDisplayName} – ${el.quantity} од., ${el.category} категорії${lasSign}`;
+		},  ""),
+		exclusionTime: getTime(exclusionStart, transportingStart ?? destroyedStart ?? workEnd),
+		exclusionDate: getDate(exclusionStart, ""),
+		transportingTime: getTime(transportingStart, destroyedStart ?? workEnd),
+		transportingDate: getDate(transportingStart, ""),
+		explosiveObjectsTotalTransport: explosiveObjectActions.reduce((acc, el) => (
+			(el.isTransported ? el.quantity: 0) + acc
+		), 0),
+		squadTotal: squadActions.length + 1,
+		humanHours: (squadActions.length + 1) * (workEnd.hour() - workStart.hour()),
+		transportHuman: transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS)?.fullName ?? "--",
+		transportExplosiveObjects: transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.fullName ?? "--",
+		mineDetector: equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.name ?? "--",
+		squadLead: squadLeaderAction.signName,
+		squad: squadActions.map((el, i) => ({...el, first: i === 0})),
+		image: imageData
 	}
 
+	const fileName = `${executedAt.format("YYYY.MM.DD")} ${actNumber}`
+	
 	const template = useTemplateFile(DOCX_TEMPLATE.MISSION_REPORT)
-	const generated = useGeneratedFile(template.file, data)
+	const generated = useGeneratedFile(template.file, fileName, data)
 
 	const onOk = async () => {
 		hide();
@@ -165,7 +218,7 @@ export const DocxPreviewModal  = observer(({ id, isVisible, hide }: DocxPreviewM
 				return 
 			}
 			const blob = await fileUtils.fileToBlob(generated.file, MIME_TYPE.DOCX);
-			await FileSystem.saveAsUser(blob)
+			await FileSystem.saveAsUser(blob, fileName)
 		} catch (e) {
 			Logger.error("DocxPreviewModal - onSave :", e)
 		}

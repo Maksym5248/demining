@@ -11,7 +11,7 @@ export function Territory() {
 					name="checkedTerritory"
 					css={s.first}
 				>
-					<InputNumber size="middle" min={1} max={100000} />
+					<InputNumber size="middle" min={0.01} max={100000} />
 				</Form.Item>
 				<Form.Item
 					name="depthExamination"

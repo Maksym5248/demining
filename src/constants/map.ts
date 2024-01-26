@@ -6,3 +6,5 @@ export enum MAP_SIZE {
 export enum MAP_ZOOM {
     DEFAULT = 15,
 }
+
+export const MAP_VIEW_TAKE_PRINT_CONTAINER = "MAP_VIEW_TAKE_PRINT_CONTAINER";

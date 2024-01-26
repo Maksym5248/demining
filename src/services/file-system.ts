@@ -47,11 +47,11 @@ async function removeTemplate(name:DOCX_TEMPLATE){
 	await fs.promises.unlink(name);
 }
 
-async function saveAsUser(blob: Blob){
+async function saveAsUser(blob: Blob, name:string){
 	const blobUrl = URL.createObjectURL(blob);
 
 	let link:HTMLAnchorElement = document.createElement("a");
-	link.download = "test.docx";
+	link.download = `${name}.docx`;
 	link.href = blobUrl;
 
 	document.body.appendChild(link);

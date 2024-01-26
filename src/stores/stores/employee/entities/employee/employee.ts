@@ -30,6 +30,10 @@ const Entity = types.model('Employee', {
 })).views((self) => ({
 	get fullName(){
 		return `${self.rank.shortName} ${str.toUpperFirst(self.lastName)} ${str.toUpper(self.firstName[0])}. ${str.toUpper(self.surname[0])}.`
+	},
+
+	get signName(){
+		return `${str.toUpper(self.firstName[0])}.${str.toUpper(self.surname[0])}. ${str.toUpperFirst(self.lastName)}`
 	}
 }));
 

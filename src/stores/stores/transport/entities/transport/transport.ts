@@ -24,7 +24,7 @@ const Entity = types.model('Transport', {
 	}
 })).views((self) => ({
 	get fullName(){
-		return `${self.name} ${self.number}`
+		return `${self.name} н/з ${self.number}`
 	}
 }));
 

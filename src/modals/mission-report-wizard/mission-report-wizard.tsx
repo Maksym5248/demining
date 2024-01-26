@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Space, Drawer, Divider, Spin} from 'antd';
+import { Button, Form, Space, Drawer, Divider, Spin, message} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils';
-import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS } from '~/constants';
+import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER } from '~/constants';
 import { DrawerExtra, Icon } from '~/components';
-import { Modal } from '~/services';
+import { Modal, Image, Logger } from '~/services';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -47,7 +47,13 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	const currentMissionReport = id ? missionReport.collection.get(id) : null;
 
 	const onOpenDocxPreview = async () => {
-		Modal.show(MODALS.DOCX_PREVIEW, { id })
+		try {
+			const image = await Image.takeMapImage(`#${MAP_VIEW_TAKE_PRINT_CONTAINER}`);
+			Modal.show(MODALS.DOCX_PREVIEW, { id, image })
+		} catch (e) {
+			Logger.error("MissionReportWizardModal - onOpenDocxPreview: ", e)
+			message.error('Bиникла помилка');
+		}
 	};
 
 	const onFinishCreate = async (values: IMissionReportForm) => {
@@ -71,6 +77,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		employee.fetchList.run();
 	}, []);
 
+	console.log("missionReport",  missionReport.list.first?.number, missionReport.list.first?.subNumber)
 	const isLoading = explosiveObject.fetchList.inProgress
 	 || explosiveObject.fetchListTypes.inProgress
 	 || order.fetchList.inProgress
@@ -121,8 +128,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	} : {
 		approvedAt: dates.today(),
 		approvedById: employee.employeesChiefFirst?.id,
-		number: (missionReport.list.last?.number ?? 0) + 1,
-		subNumber:  missionReport.list.last?.subNumber ? (missionReport.list.last?.subNumber ?? 0) + 1 : undefined,
+		number: missionReport.list.first?.subNumber ? missionReport.list.first?.number : ((missionReport.list.first?.number ?? 0) + 1),
+		subNumber:  missionReport.list.first?.subNumber ? (missionReport.list.first?.subNumber ?? 0) + 1 : undefined,
 		executedAt: dates.today(),
 		orderId: order.list.first?.id,
 		missionRequestId: missionRequest.list.first?.id,
@@ -130,7 +137,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		depthExamination: undefined,
 		uncheckedTerritory: undefined,
 		uncheckedReason: undefined,
-		workStart: dates.today().hour(9).minute(0),
+		workStart: undefined,
 		exclusionStart: undefined,
 		transportingStart: undefined,
 		destroyedStart: undefined,
@@ -170,7 +177,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 				</DrawerExtra>
 			}
 		>
-			{ isLoading
+			{isLoading
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
@@ -182,6 +189,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 						disabled={isView}
 					>
 						{ [
+							<Map key="Map" mode={mode} />,
+							<Territory key="Territory"/>,
 							<Approved key="Approved" data={employee.employeesListChief}/>,
 							<Act key="Act"/>,
 							<Documents
@@ -197,9 +206,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 								key="Employees" 
 								squadLeads={employee.squadLeads} 
 								workers={employee.workers}
-							 />,
-							<Map key="Map" mode={mode} />,
-							<Territory key="Territory"/>
+							 />
 						].map((el, i) => (
 							<div  key={i}>
 								{el}
