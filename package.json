@@ -9,6 +9,7 @@
         "package": "electron-forge package",
         "make": "electron-forge make",
         "publish": "electron-forge publish",
+        "upload:source-map": "npx @sentry/wizard@latest -i sourcemaps",
         "lint": "eslint --fix",
         "postinstall": "patch-package",
         "lint-staged": "lint-staged",
