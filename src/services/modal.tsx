@@ -2,6 +2,8 @@ import { ReactNode } from 'react';
 
 import EventEmitter from 'events';
 
+import { Analytics } from './analytics';
+
 const eventEmitter = new EventEmitter();
 
 interface IPropsForComponent {
@@ -66,6 +68,7 @@ class ModalClass {
 	}
 
 	show(name: string, propsForComponent = {}, propsForModal = {}) {
+		Analytics.modal(name);
 		Object.assign(this.visibleModals, {
 			[name]: {
 				name,

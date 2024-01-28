@@ -77,7 +77,6 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		employee.fetchList.run();
 	}, []);
 
-	console.log("missionReport",  missionReport.list.first?.number, missionReport.list.first?.subNumber)
 	const isLoading = explosiveObject.fetchList.inProgress
 	 || explosiveObject.fetchListTypes.inProgress
 	 || order.fetchList.inProgress

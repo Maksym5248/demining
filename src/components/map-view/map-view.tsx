@@ -330,7 +330,7 @@ function Component({
 
 function MapLoader(props: IMapViewProps) {
 	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: CONFIG.GOOGLE_MAPS_API_KEY,
+		googleMapsApiKey: CONFIG.GOOGLE_API_KEY,
 		language: "uk",
 		libraries,
 	});

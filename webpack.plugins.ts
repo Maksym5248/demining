@@ -4,6 +4,8 @@ import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin' ;
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin' ;
 import Dotenv from 'dotenv-webpack' ;
 
+import { inDev } from './webpack.helpers';
+
 require('dotenv').config();
 
 export const plugins = [
@@ -14,9 +16,13 @@ export const plugins = [
 		chunkFilename: '[name].[chunkhash].chunk.css',
 	}),
 	new Dotenv(),
-	sentryWebpackPlugin({
-		authToken: process.env.SENTRY_AUTH_TOKEN,
-		org: "realty-jo",
-		project: "dsns",
-	  }),
+	...(inDev()
+		? []
+		: [
+			sentryWebpackPlugin({
+				authToken: process.env.SENTRY_AUTH_TOKEN,
+				org: "realty-jo",
+				project: "dsns",
+			  })
+		]),
 ].filter(Boolean)

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Modal, IModalsMapInternal, IModalsMap, IModalTypeInternal , Analytics } from '~/services';
+import { Modal, IModalsMapInternal, IModalsMap, IModalTypeInternal } from '~/services';
 
 interface IModalProviderProps {
   modals: IModalsMap;
@@ -43,7 +43,6 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
 
 	onModalShow = (name: string, propsForComponent = {}) => {
 		Modal.show(name, propsForComponent);
-		Analytics.modal(name)
 	};
 
 	render() {

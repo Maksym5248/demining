@@ -1,6 +1,7 @@
 import { types, Instance } from 'mobx-state-tree';
 
 import { ROLES } from "~/constants";
+import { Auth } from "~/services";
 
 import { CurrentUser, ICurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
@@ -25,11 +26,14 @@ const fetchUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self 
 
 	try {
 		flow.start();
+
 		self.setUser({
 			id: "Default-user",
 			name: "Default-user",
 			role: ROLES.USER,
 		});
+
+		Auth.signInAnonymously();
 
 		flow.success();
 	} catch (e) {

@@ -1,5 +1,6 @@
 import { Configuration } from 'webpack';
 
+import { inDev } from './webpack.helpers';
 import { rules } from './webpack.rules';
 
 
@@ -14,6 +15,7 @@ export const mainConfig: Configuration = {
 		rules,
 	},
 	target: 'electron-main',
+	devtool: inDev() ? 'eval-cheap-module-source-map' : 'source-map',
 	resolve: {
 		fallback: {
 			"path": false,

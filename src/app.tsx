@@ -7,17 +7,15 @@ import { RootStoreContext } from '~/context';
 import { createStore } from '~/stores';
 import { RootRouter, modals } from '~/routes';
 import { ThemeProvider, ModalProvider } from '~/containers';
-import { Analytics, Crashlytics, LogLevel, Logger } from '~/services';
+import { LogLevel, Logger } from '~/services';
+
+import { CONFIG } from './config';
 
 import "./index.css";
 
-import { CONFIG } from './config';
-import { FireBase } from './services/firebase';
 
 Logger.setLevel(CONFIG.IS_DEV ? LogLevel.Debug : LogLevel.None);
-FireBase.init();
-Analytics.init()
-Crashlytics.init()
+
 
 const { store } = createStore();
 

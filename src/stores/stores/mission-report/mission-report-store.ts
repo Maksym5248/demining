@@ -30,7 +30,6 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRepor
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
-		console.log("ERROR add", err)
 		flow.failed(err as Error);
 		message.error('Не вдалось додати');
 	}

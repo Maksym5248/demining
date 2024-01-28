@@ -1,7 +1,10 @@
 import { types, flow, getEnv, Instance } from 'mobx-state-tree';
+import { initializeApp } from 'firebase/app';
 
 import { DB } from '~/db';
 import { Api } from '~/api';
+import { Analytics, Crashlytics } from '~/services';
+import { FIREBASE_CONFIG } from '~/config';
 
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
@@ -55,6 +58,9 @@ export const RootStore = types
 		};
 	}).actions((self) => ({
 		init: flow(function* init() {
+			initializeApp(FIREBASE_CONFIG);
+			Analytics.init();
+			Crashlytics.init();
 			self.employee.init();
 			yield DB.init();
 			yield Api.init();
