@@ -1,10 +1,10 @@
-import firebase from "firebase/app";
+import { initializeApp  } from "firebase/app";
 
 import { FIREBASE_CONFIG } from "~/config";
 
 class FireBaseClass {
 	init() {
-		firebase.initializeApp(FIREBASE_CONFIG);
+		initializeApp(FIREBASE_CONFIG);
 	}
 }
 

@@ -2,6 +2,9 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin' ;
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin' ;
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin' ;
+import Dotenv from 'dotenv-webpack' ;
+
+require('dotenv').config();
 
 export const plugins = [
 	new ForkTsCheckerWebpackPlugin(),
@@ -10,9 +13,9 @@ export const plugins = [
 		filename: '[name].[chunkhash].css',
 		chunkFilename: '[name].[chunkhash].chunk.css',
 	}),
+	new Dotenv(),
 	sentryWebpackPlugin({
-		// SENTRY_AUTH_TOKEN
-		authToken: "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",
+		authToken: process.env.SENTRY_AUTH_TOKEN,
 		org: "realty-jo",
 		project: "dsns",
 	  }),

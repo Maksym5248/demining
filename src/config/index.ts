@@ -1,8 +1,8 @@
 export const CONFIG = {
-	IS_DEV: true,
-	DB_NAME: "KBrR65dyZ6",
-	GOOGLE_MAPS_API_KEY: "AIzaSyCq2AhvjA2Uk1T9BEuMcqaA6-dnz370a2A",
-	SENTRY: "https://30ff0104e10c5ee82e321211c7b49f7f@o571190.ingest.sentry.io/4506647927848960"
+	IS_DEV: process.env.ENV === "dev",
+	DB_NAME: process.env.DB_NAME as string,
+	GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY  as string,
+	SENTRY: process.env.SENTRY as string,
 };
 
 export const FIREBASE_CONFIG = {
