@@ -82,6 +82,7 @@
         "@emotion/react": "^11.11.1",
         "@react-google-maps/api": "^2.19.2",
         "@sentry/react": "^7.98.0",
+        "@sentry/webpack-plugin": "^2.10.3",
         "@types/uuid": "^3.3.2",
         "antd": "^5.9.2",
         "axios": "^1.6.5",
