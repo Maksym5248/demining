@@ -3,7 +3,7 @@ import * as docx from 'docx-preview';
 import { fileUtils } from '~/utils/file';
 import { MIME_TYPE } from '~/constants';
 import { useAsyncEffect } from '~/hooks';
-import { Logger } from '~/services';
+import { Crashlytics } from '~/services';
 
 interface DocxPreviewProps {
 	file: File | null;
@@ -22,7 +22,7 @@ export function DocxPreview({ file }: DocxPreviewProps) {
 				document.getElementById("docx-preview-component") as HTMLElement
 			)
 		} catch(e) {
-			Logger.error(e)
+			Crashlytics.error("DocxPreview - renderAsync: ", e)
 		}
 	}, [file])
 

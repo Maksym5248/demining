@@ -7,18 +7,22 @@ import { RootStoreContext } from '~/context';
 import { createStore } from '~/stores';
 import { RootRouter, modals } from '~/routes';
 import { ThemeProvider, ModalProvider } from '~/containers';
-import { LogLevel, Logger } from '~/services';
+import { Analytics, Crashlytics, LogLevel, Logger } from '~/services';
 
 import "./index.css";
 
 import { CONFIG } from './config';
+import { FireBase } from './services/firebase';
+
+Logger.setLevel(CONFIG.IS_DEV ? LogLevel.Debug : LogLevel.None);
+FireBase.init();
+Analytics.init()
+Crashlytics.init()
 
 const { store } = createStore();
 
 function App() {
 	useEffect(() => {
-		Logger.setLevel(CONFIG.IS_DEV ? LogLevel.Debug : LogLevel.None);
-
 		store.init();
 
 		return () => {

@@ -7,7 +7,7 @@ import { useStore } from '~/hooks'
 import { dates } from '~/utils';
 import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER } from '~/constants';
 import { DrawerExtra, Icon } from '~/components';
-import { Modal, Image, Logger } from '~/services';
+import { Modal, Image, Crashlytics } from '~/services';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -51,7 +51,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 			const image = await Image.takeMapImage(`#${MAP_VIEW_TAKE_PRINT_CONTAINER}`);
 			Modal.show(MODALS.DOCX_PREVIEW, { id, image })
 		} catch (e) {
-			Logger.error("MissionReportWizardModal - onOpenDocxPreview: ", e)
+			Crashlytics.error("MissionReportWizardModal - onOpenDocxPreview: ", e)
 			message.error('Bиникла помилка');
 		}
 	};

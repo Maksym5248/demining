@@ -6,7 +6,7 @@ import { toLower } from 'lodash';
 import { Dayjs } from 'dayjs';
 
 import { useAsyncEffect, useStore } from '~/hooks'
-import { Template, FileSystem, Logger } from '~/services';
+import { Template, FileSystem, Crashlytics } from '~/services';
 import { UploadFile, DocxPreview } from '~/components';
 import { DOCX_TEMPLATE, EQUIPMENT_TYPE, TRANSPORT_TYPE, MIME_TYPE, MAP_SIZE } from '~/constants';
 import { fileUtils } from '~/utils/file';
@@ -27,7 +27,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 			setFile(null);
 		} catch (error) {
 			message.error("Не видалити шаблон")
-			Logger.error("SelectTemplate - onRemove: ", error)
+			Crashlytics.error("SelectTemplate - onRemove: ", error)
 		} finally {
 			setLoading(false);
 		}
@@ -41,7 +41,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 		} catch (error) {
 			setFile(null);
 			message.error("Не вдалось зберегти шаблон")
-			Logger.error("SelectTemplate - customRequest: ", error)
+			Crashlytics.error("SelectTemplate - customRequest: ", error)
 		} finally {
 			setLoading(false);
 		}
@@ -56,7 +56,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 			}
 		} catch (e) {
 			message.error("Не вдалось завантажити шаблон")
-			Logger.error("SelectTemplate - readTemplate: ", e)
+			Crashlytics.error("SelectTemplate - readTemplate: ", e)
 		} finally {
 			setLoading(false);
 		}
@@ -92,7 +92,7 @@ const useGeneratedFile = (template: File | null, name:string, data: {[key:string
 			}))
 		} catch (e) {
 			message.error("Не вдалось згенеруати файл")
-			Logger.error("useGeneratedFile - load: ", e)
+			Crashlytics.error("useGeneratedFile - load: ", e)
 		} finally {
 			setLoading(false);
 		}
@@ -215,7 +215,7 @@ export const DocxPreviewModal  = observer(({ id, isVisible, hide, image }: DocxP
 			const blob = await fileUtils.fileToBlob(generated.file, MIME_TYPE.DOCX);
 			await FileSystem.saveAsUser(blob, fileName)
 		} catch (e) {
-			Logger.error("DocxPreviewModal - onSave :", e)
+			Crashlytics.error("DocxPreviewModal - onSave :", e)
 		}
 	};
 

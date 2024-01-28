@@ -1,11 +1,12 @@
 import { useState } from "react";
 
 import { Layout as Lay, Menu, Breadcrumb } from 'antd';
-import { useNavigate, Outlet, useLocation, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
 
 import { Icon } from '~/components';
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
+import { useNavigate } from "~/hooks";
 
 import { nav } from "../../utils/routes-info";
 import { s } from './layout.styles';
