@@ -7,5 +7,6 @@ export type ICurrentUser = Instance<typeof CurrentUser>
 export const CurrentUser = types.model('CurrentUser', {
 	id: types.identifier,
 	name: types.string,
+	isAnonymous: types.boolean,
 	role: types.enumeration([ROLES.USER, ROLES.ADMIN]),
 });

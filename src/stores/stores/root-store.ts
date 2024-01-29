@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 
 import { DB } from '~/db';
 import { Api } from '~/api';
-import { Analytics, Crashlytics } from '~/services';
+import { Analytics, Auth, Crashlytics } from '~/services';
 import { FIREBASE_CONFIG } from '~/config';
 
 import { ViewerStore } from './viewer';
@@ -66,7 +66,8 @@ export const RootStore = types
 			yield Api.init();
 
 			try {
-				yield self.viewer.fetchUser.run();
+				yield Auth.init();
+				yield self.viewer.initUser.run();
 			} finally {
 				self.isInitialized = true;
 			}

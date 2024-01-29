@@ -1,9 +1,10 @@
 import { types, Instance } from 'mobx-state-tree';
+import { User } from 'firebase/auth';
 
-import { ROLES } from "~/constants";
-import { Auth } from "~/services";
+import { STORAGE } from "~/constants";
+import { Analytics, Auth, Storage } from "~/services";
 
-import { CurrentUser, ICurrentUser, createCurrentUser } from './entities';
+import { CurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
 
 const Store = types
@@ -14,7 +15,7 @@ const Store = types
 		user: types.maybe(CurrentUser),
 	})
 	.actions((self) => ({
-		setUser(user: ICurrentUser) {
+		setUser(user: User) {
 			self.user = createCurrentUser(user);
 		},
 		removeUser() {
@@ -22,18 +23,26 @@ const Store = types
 		},
 	}));
 
-const fetchUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
+const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
 
 	try {
 		flow.start();
 
-		self.setUser({
-			id: "Default-user",
-			name: "Default-user",
-			role: ROLES.USER,
-		});
+		// TODO: Fix  it, make avaible all libs in chromium(disable node)
+		// or find way to to set envoirment of firebase on web(currently it node)
+		// also in case if we want to migrate on firebase maybe better to not use electron
+		let user = Storage.get(STORAGE.USER) as User;
 
-		Auth.signInAnonymously();
+		if(!user){
+			const res  = await Auth.signInAnonymously();
+			user = res.user;
+			Storage.set(STORAGE.USER, user);
+		}
+
+		if(user){
+			Analytics.setUserId(user.uid)
+			self.setUser(user);
+		}
 
 		flow.success();
 	} catch (e) {
@@ -42,5 +51,5 @@ const fetchUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self 
 });
 
 export const ViewerStore = Store.props({
-	fetchUser,
+	initUser,
 });

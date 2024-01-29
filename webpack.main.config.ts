@@ -17,10 +17,6 @@ export const mainConfig: Configuration = {
 	target: 'electron-main',
 	devtool: inDev() ? 'eval-cheap-module-source-map' : 'source-map',
 	resolve: {
-		fallback: {
-			"path": false,
-			"fs": false,
-		},
 		extensions: ['.cjs','.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
 	},
 };
