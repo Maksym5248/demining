@@ -14,6 +14,16 @@ const config: ForgeConfig = {
 		asar: true,
 	},
 	rebuildConfig: {},
+	publishers:[{
+		name: '@electron-forge/publisher-github',
+		config: {
+			repository: {
+				  owner: 'Maksym5248',
+				  name: 'dsns'
+			},
+			prerelease: true
+		}
+	}],
 	makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
 	plugins: [
 		new AutoUnpackNativesPlugin({}),
