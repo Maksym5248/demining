@@ -4,5 +4,5 @@ export enum MIME_TYPE {
 }
 
 export enum DOCX_TEMPLATE {
-    MISSION_REPORT = "template/doc-template.docx"
+    MISSION_REPORT = "doc-template.docx"
 };

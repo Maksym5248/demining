@@ -18,7 +18,8 @@
         "lint-staged": "lint-staged",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
-        "check:eslint": "eslint --fix"
+        "check:eslint": "eslint --fix",
+        "icon": "electron-icon-maker --input=./assets/icon-source.png --output=./assets"
     },
     "keywords": [],
     "author": {
@@ -81,7 +82,8 @@
         "typescript": "5.0.4",
         "webpack": "^5.69.1",
         "webpack-dev-server": "^4.0.0",
-        "webpack-merge": "^5.7.3"
+        "webpack-merge": "^5.7.3",
+        "electron-icon-maker": "^0.0.5"
     },
     "dependencies": {
         "@ant-design/icons": "^4.3.0",
