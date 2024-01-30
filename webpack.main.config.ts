@@ -14,6 +14,7 @@ export const mainConfig: Configuration = {
 	module: {
 		rules,
 	},
+	mode: inDev() ? 'development' : 'production',
 	target: 'electron-main',
 	devtool: inDev() ? 'eval-cheap-module-source-map' : 'source-map',
 	resolve: {

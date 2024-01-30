@@ -22,6 +22,7 @@ export const rendererConfig: Configuration = {
 	plugins,
 	devtool: inDev() ? 'eval-cheap-module-source-map' : 'source-map',
 	target: 'electron-renderer',
+	mode: inDev() ? 'development' : 'production',
 	resolve: {
 		fallback: {
 			"path": false,
