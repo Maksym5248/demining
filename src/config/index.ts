@@ -4,6 +4,7 @@ export const CONFIG = {
 	DB_NAME: process.env.DB_NAME as string,
 	GOOGLE_API_KEY: process.env.GOOGLE_API_KEY  as string,
 	SENTRY: process.env.SENTRY as string,
+	APP_NAME: 'dsns',
 };
 
 export const FIREBASE_CONFIG = {

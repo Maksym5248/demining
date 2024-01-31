@@ -1,10 +1,13 @@
 
 import fs from 'fs';
+import path from 'path';
+
 
 import { DOCX_TEMPLATE, MIME_TYPE } from '~/constants';
 import { fileUtils } from '~/utils/file';
 
 import { Storage } from './storage/storage';
+import { Platform } from './platform';
 
 
 interface IMetaData {
@@ -21,16 +24,23 @@ const createMetadata = (data:File) => ({
 
 async function saveTemplate(name: DOCX_TEMPLATE, data:File): Promise<void> {
 	const buffer = await fileUtils.fileToBuffer(data);
-	await fs.promises.writeFile(name, buffer);
+
+	if (!fs.existsSync(Platform.appDataPath)) {
+		fs.mkdirSync(Platform.appDataPath);
+	}
+
+	await fs.promises.writeFile(path.join(Platform.appDataPath, name), buffer);
 	Storage.set(name, createMetadata(data))
 }
 
 async function readTemplate(name:DOCX_TEMPLATE):Promise<File> {
 	return new Promise((resolve, reject) => {
-		fs.readFile(name, (err, data) => {
+		fs.readFile(path.join(Platform.appDataPath, name), (err, data) => {
 			if (err) {
 				reject(err);
 			} else {
+
+
 				const metaData = Storage.get(name) as IMetaData | null;
 
 				if(!metaData){
@@ -44,7 +54,7 @@ async function readTemplate(name:DOCX_TEMPLATE):Promise<File> {
 }
 
 async function removeTemplate(name:DOCX_TEMPLATE){
-	await fs.promises.unlink(name);
+	await fs.promises.unlink(path.join(Platform.appDataPath, name));
 }
 
 async function saveAsUser(blob: Blob, name:string){

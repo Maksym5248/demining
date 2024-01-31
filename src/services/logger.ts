@@ -47,7 +47,7 @@ class LoggerClass {
 	error = (message?: any, ...optionalParams: any[]) => {
 		if (this.logLevel >= LogLevel.Error) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			CONFIG.IS_DEV && console.log(message, ...optionalParams);
+			CONFIG.IS_DEBUG && console.log(message, ...optionalParams);
 			this._save(LogLevel.Error, `${message} ${optionalParams?.join(',')}`);
 		}
 	};
@@ -55,7 +55,7 @@ class LoggerClass {
 	log = (message?: any, ...optionalParams: any[]) => {
 		if (this.logLevel >= LogLevel.Info) {
       			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			CONFIG.IS_DEV && console.log(message, ...optionalParams);
+			CONFIG.IS_DEBUG && console.log(message, ...optionalParams);
 			this._save(LogLevel.Info, `${message} ${optionalParams?.join(',')}`);
 		}
 	};
@@ -63,7 +63,7 @@ class LoggerClass {
 	debug = (message?: any, ...optionalParams: any[]) => {
 		if (this.logLevel >= LogLevel.Debug) {
       			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			CONFIG.IS_DEV && console.log(message, ...optionalParams);
+			CONFIG.IS_DEBUG && console.log(message, ...optionalParams);
 			this._save(LogLevel.Debug, `${message} ${optionalParams?.join(',')}`);
 		}
 	};

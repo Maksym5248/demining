@@ -14,7 +14,7 @@ import { CONFIG } from './config';
 import "./index.css";
 
 
-Logger.setLevel(CONFIG.IS_DEV ? LogLevel.Debug : LogLevel.None);
+Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
 
 
 const { store } = createStore();

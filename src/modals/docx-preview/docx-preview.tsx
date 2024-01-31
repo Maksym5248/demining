@@ -55,7 +55,6 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 				setFile(value);
 			}
 		} catch (e) {
-			message.error("Не вдалось завантажити шаблон")
 			Crashlytics.error("SelectTemplate - readTemplate: ", e)
 		} finally {
 			setLoading(false);

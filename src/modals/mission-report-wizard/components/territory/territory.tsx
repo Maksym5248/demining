@@ -11,14 +11,14 @@ export function Territory() {
 					name="checkedTerritory"
 					css={s.first}
 				>
-					<InputNumber size="middle" min={0.01} max={100000} />
+					<InputNumber size="middle" max={100000} />
 				</Form.Item>
 				<Form.Item
 					name="depthExamination"
 					label="на глибину, м"
 					css={s.last}
 				>
-					<InputNumber size="middle" min={1} max={100000}/>
+					<InputNumber size="middle" step={0.01} min={0.01} max={10}/>
 				</Form.Item>
 			</Form.Item>
 			<Form.Item label="Не можливо обстежити, м2" css={s.item}>
