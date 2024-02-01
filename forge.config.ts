@@ -31,7 +31,7 @@ const config: ForgeConfig = {
 		new MakerRpm({}),
 		new MakerDeb({
 			options: {
-				icon: './assets/icons/icon'
+				icon: './assets/icons/icon.png'
 			}
 		})
 	],
