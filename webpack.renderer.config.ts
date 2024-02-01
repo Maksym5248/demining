@@ -33,7 +33,7 @@ export const rendererConfig: Configuration = {
 			"~/api": path.resolve(__dirname, "./src/api"),
 			"~/components": path.resolve(__dirname, "./src/components"),
 			"~/config": path.resolve(__dirname, "./src/config"),
-			"~/constants": path.resolve(__dirname, "/src/constants"),
+			"~/constants": path.resolve(__dirname, "./src/constants"),
 			"~/containers": path.resolve(__dirname, "./src/containers"),
 			"~/db": path.resolve(__dirname, "./src/db"),
 			"~/drawers": path.resolve(__dirname, "./src/drawers"),
