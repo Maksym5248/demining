@@ -25,4 +25,6 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: build and deploy
+              env:
+                  GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
               run: yarn deploy
