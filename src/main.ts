@@ -27,16 +27,15 @@ const createWindow = async () => {
 			preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
 			contextIsolation: false,
 			nodeIntegration: true, 
-			// nodeIntegrationInWorker: true
 		},
 	});
 
 	// and load the index.html of the app.
 	await mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-	// if(process.env.NODE_ENV === "development"){
-	mainWindow.webContents.openDevTools();
-	// }
+	if(process.env.NODE_ENV === "development"){
+		mainWindow.webContents.openDevTools();
+	}
 };
 
 // This method will be called when Electron has finished
