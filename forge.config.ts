@@ -20,7 +20,7 @@ const config: ForgeConfig = {
 		config: {
 			repository: {
 				  owner: 'Maksym5248',
-				  name: 'dsns'
+				  name: 'dsns-public'
 			},
 			prerelease: true
 		}
