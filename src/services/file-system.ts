@@ -1,14 +1,15 @@
 
-import fs from 'fs';
-import path from 'path';
-
-
 import { DOCX_TEMPLATE, MIME_TYPE } from '~/constants';
 import { fileUtils } from '~/utils/file';
 
 import { Storage } from './storage/storage';
 import { Platform } from './platform';
 
+
+const {
+	path,
+	fs
+} = window.electronAPI;
 
 interface IMetaData {
 	lastModified: number;
@@ -28,33 +29,30 @@ async function saveTemplate(name: DOCX_TEMPLATE, data:File): Promise<void> {
 	if (!fs.existsSync(Platform.appDataPath)) {
 		fs.mkdirSync(Platform.appDataPath);
 	}
+	const str = await path.join(Platform.appDataPath, name);
 
-	await fs.promises.writeFile(path.join(Platform.appDataPath, name), buffer);
+	await fs.writeFile(str, buffer);
 	Storage.set(name, createMetadata(data))
 }
 
 async function readTemplate(name:DOCX_TEMPLATE):Promise<File> {
-	return new Promise((resolve, reject) => {
-		fs.readFile(path.join(Platform.appDataPath, name), (err, data) => {
-			if (err) {
-				reject(err);
-			} else {
+	const str = await path.join(Platform.appDataPath, name);
 
+	const data = await fs.readFile(str);
 
-				const metaData = Storage.get(name) as IMetaData | null;
+	const metaData = Storage.get(name) as IMetaData | null;
 
-				if(!metaData){
-					throw Error()
-				}
+	if(!metaData){
+		throw Error()
+	}
 
-				resolve(fileUtils.bufferToFile(data, MIME_TYPE.DOCX, metaData));
-			}
-		});
-	})
+	return fileUtils.bufferToFile(data, MIME_TYPE.DOCX, metaData);
 }
 
 async function removeTemplate(name:DOCX_TEMPLATE){
-	await fs.promises.unlink(path.join(Platform.appDataPath, name));
+	const str = await path.join(Platform.appDataPath, name);
+
+	await fs.unlink(str);
 }
 
 async function saveAsUser(blob: Blob, name:string){
