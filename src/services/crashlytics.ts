@@ -11,6 +11,7 @@ class CrashlyticsClass {
 		if(!CONFIG.IS_DEBUG){
 			Sentry.init({
 				dsn: CONFIG.SENTRY,
+				environment: process.env.ENV,
 				integrations: [
 				  new Sentry.BrowserTracing(),
 				  new Sentry.Replay({
