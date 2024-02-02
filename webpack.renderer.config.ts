@@ -21,12 +21,11 @@ export const rendererConfig: Configuration = {
 	},
 	plugins,
 	devtool: inDev() ? 'eval-cheap-module-source-map' : 'source-map',
-	target: 'electron-renderer',
+	target: 'web',
 	mode: inDev() ? 'development' : 'production',
 	resolve: {
 		fallback: {
-			"path": false,
-			"fs": false,
+			"stream": false,
 		},
 		extensions: ['.cjs','.js', '.ts', '.jsx', '.tsx', '.css'],
 		alias: {

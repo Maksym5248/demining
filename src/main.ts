@@ -25,8 +25,8 @@ const createWindow = async () => {
 		width: 1600,
 		webPreferences: {
 			preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-			contextIsolation: false,
-			nodeIntegration: true, 
+			contextIsolation: true,
+			nodeIntegration: false, 
 		},
 	});
 
