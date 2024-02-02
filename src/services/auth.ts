@@ -5,16 +5,11 @@ import {
 	onAuthStateChanged,
 	NextOrObserver,
 	User, 
-	browserLocalPersistence,
 } from "firebase/auth";
 
 class AuthClass {
 	private get auth(){
 		return getAuth(getApp())
-	}
-
-	async init(){
-		await this.auth.setPersistence(browserLocalPersistence)
 	}
 
 	async signInAnonymously() {
