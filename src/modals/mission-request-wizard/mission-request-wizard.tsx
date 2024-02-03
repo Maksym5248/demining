@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { useStore } from '~/hooks'
 import { dates } from '~/utils'
 import { DrawerExtra } from '~/components';
+import { WIZARD_MODE } from '~/constants';
 
 import { s } from './mission-request-wizard.style'
 import { IMissionRequestForm } from './mission-request-wizard.types';
@@ -13,6 +14,7 @@ import { IMissionRequestForm } from './mission-request-wizard.types';
 interface Props {
   id?: string;
   isVisible: boolean;
+  mode: WIZARD_MODE
   hide: () => void
 }
 

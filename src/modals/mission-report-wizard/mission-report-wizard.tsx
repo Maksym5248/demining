@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Button, Form, Space, Drawer, Divider, Spin, message} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { useStore } from '~/hooks'
+import { useStore, useWizard } from '~/hooks'
 import { dates } from '~/utils';
 import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER } from '~/constants';
 import { DrawerExtra, Icon } from '~/components';
@@ -27,7 +27,6 @@ import  {
 interface Props {
   id?: string;
   isVisible: boolean;
-  type:  "edit" |  "view";
   hide: () => void;
   mode: WIZARD_MODE
 }
@@ -41,9 +40,8 @@ interface Props {
 export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport } = useStore();
 
-	const isEdit = !!id && mode === WIZARD_MODE.EDIT;
-	const isView = !!id && mode === WIZARD_MODE.VIEW;
-	const isCreate = !id && mode === WIZARD_MODE.CREATE;
+	const wizard = useWizard({id, mode});
+
 	const currentMissionReport = id ? missionReport.collection.get(id) : null;
 
 	const onOpenDocxPreview = async () => {
@@ -92,7 +90,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	 || !equipment.fetchList.isLoaded
 	 || !employee.fetchList.isLoaded;
 
-	 const initialValues: Partial<IMissionReportForm> = (isEdit || isView) ? {
+	 const initialValues: Partial<IMissionReportForm> = (wizard.isEdit || wizard.isView) ? {
 		approvedAt: currentMissionReport?.approvedAt,
 		approvedById: currentMissionReport?.approvedByAction?.employeeId,
 		number: currentMissionReport?.number,
@@ -162,15 +160,17 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		<Drawer
 			open={isVisible}
 			destroyOnClose
-			title={`${isView ? "Переглянути": "Створити"} акт виконаних робіт`}
+			title={`${wizard.isView ? "Переглянути": "Створити"} акт виконаних робіт`}
 			placement="right"
 			width={700}
 			onClose={hide}
 			extra={
 				<DrawerExtra
-					onRemove={isCreate ? undefined: onRemove}
+					onRemove={onRemove}
+					isRemove={!wizard.isCreate}
+					{...wizard}
 				>
-					{!isCreate && (
+					{!wizard.isCreate && (
 						<Button icon={<Icon.SaveOutlined/>} onClick={onOpenDocxPreview}/>
 					)}
 				</DrawerExtra>
@@ -181,11 +181,11 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 				: (
 					<Form
 						name="mission-report-form"
-						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
+						onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
 						initialValues={initialValues}
-						disabled={isView}
+						disabled={wizard.isView}
 					>
 						{ [
 							<Map key="Map" mode={mode} />,
@@ -212,12 +212,12 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 								<Divider/>
 							</div>
 						))}
-						{!isView && (
+						{!wizard.isView && (
 							<Form.Item label=" " colon={false}>
 								<Space>
 									<Button onClick={hide}>Скасувати</Button>
 									<Button htmlType="submit" type="primary">
-										{isEdit ? "Зберегти" : "Додати"}
+										{wizard.isEdit ? "Зберегти" : "Додати"}
 									</Button>
 								</Space>
 							</Form.Item>
