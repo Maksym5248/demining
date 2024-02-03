@@ -1,10 +1,10 @@
 import { Theme } from '~/styles'
 
 const content = Theme.css(({ token }) => `
-    flex: 1;
+    height: 100%;
+    overflow: auto;
     margin: 0 16px 24px 16px;
     padding: 12px 24px;
-    minHeight: 400px;
     background: ${token.colorBgBase};
 `);
 

@@ -96,8 +96,8 @@ export function Layout() {
 	}
 
 	return (
-		<Lay style={{ minHeight: '100vh' }}>
-			<Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} >
+		<Lay hasSider>
+			<Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }}>
 				<div className="demo-logo-vertical" />
 				<Menu
 					theme="dark"
@@ -107,7 +107,7 @@ export function Layout() {
 					items={items}
 				/>
 			</Sider>
-			<Lay>
+			<Lay style={{ marginLeft: collapsed ? 74 : 200, display: "flex", flex: 1, height: "100vh" }}>
 				<Breadcrumb
 					css={s.breadcrumb}
 					items={itemsBreadcrumb}
