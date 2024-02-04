@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Select, Space, Drawer, Input, Spin} from 'antd';
+import { Form, Select, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { EQUIPMENT_TYPE } from "~/constants"
-import { useStore } from '~/hooks'
-import { WizardButtons } from '~/components';
+import { EQUIPMENT_TYPE, WIZARD_MODE } from "~/constants"
+import { useStore, useWizard } from '~/hooks'
+import { WizardButtons, WizardFooter } from '~/components';
 
 import { s } from './equipment-wizard.style'
 import { IEquipmentForm } from './equipment-wizard.types';
@@ -13,6 +13,7 @@ import { IEquipmentForm } from './equipment-wizard.types';
 interface Props {
   id?: string;
   isVisible: boolean;
+  mode: WIZARD_MODE
   hide: () => void
 }
 
@@ -21,8 +22,9 @@ const typeOptions = [{
 	value: EQUIPMENT_TYPE.MINE_DETECTOR
 }]
 
-export const EquipmentWizardModal  = observer(({ id, isVisible, hide }: Props) => {
+export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Props) => {
 	const store = useStore();
+	const wizard = useWizard({id, mode});
 
 	const equipment = store.equipment.collection.get(id as string);
 
@@ -57,7 +59,10 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide }: Props) =
 			onClose={hide}
 			extra={
 				<WizardButtons
-					onRemove={isEdit ? onRemove : undefined}
+					onRemove={onRemove}
+					isRemove={!wizard.isCreate}
+					isSave={!wizard.isCreate}
+					{...wizard}
 				/>
 			}
 		>
@@ -69,6 +74,7 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide }: Props) =
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
+						disabled={wizard.isView}
 						initialValues={equipment
 							? ({ ...equipment})
 							: {  type: EQUIPMENT_TYPE.MINE_DETECTOR }
@@ -90,14 +96,7 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide }: Props) =
 								options={typeOptions}
 							/>
 						</Form.Item>
-						<Form.Item label=" " colon={false}>
-							<Space>
-								<Button onClick={hide}>Скасувати</Button>
-								<Button htmlType="submit" type="primary">
-									{isEdit ? "Зберегти" : "Додати"}
-								</Button>
-							</Space>
-						</Form.Item>
+						<WizardFooter {...wizard} onCancel={hide}/>
 					</Form>
 				)}
 		</Drawer>

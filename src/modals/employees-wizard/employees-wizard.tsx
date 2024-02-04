@@ -1,9 +1,9 @@
-import { Button, Form, Input, Select, Space , Drawer} from 'antd';
+import { Form, Input, Select , Drawer} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { useStore } from '~/hooks'
-import { EMPLOYEE_TYPE } from '~/constants';
-import { WizardButtons } from '~/components';
+import { useStore, useWizard } from '~/hooks'
+import { EMPLOYEE_TYPE, WIZARD_MODE } from '~/constants';
+import { WizardButtons, WizardFooter } from '~/components';
 
 import { IEmployeeForm } from './employees-wizard.types';
 
@@ -29,11 +29,13 @@ const employeeTypesData = [
 interface Props {
   id?: string;
   isVisible: boolean;
+  mode: WIZARD_MODE
   hide: () => void;
 }
 
-export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) => {
+export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const store = useStore();
+	const wizard = useWizard({id, mode});
 
 	const employee = store.employee.collection.get(id as string);
 	const isEdit = !!id;
@@ -64,7 +66,10 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) =>
 			onClose={hide}
 			extra={
 				<WizardButtons
-					onRemove={isEdit ? onRemove : undefined}
+					onRemove={onRemove}
+					isRemove={!wizard.isCreate}
+					isSave={!wizard.isCreate}
+					{...wizard}
 				/>
 			}
 		>
@@ -73,6 +78,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) =>
 				onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 				labelCol={{ span: 8 }}
 				wrapperCol={{ span: 16 }}
+				disabled={wizard.isView}
 				initialValues={employee
 					? ({ ...employee , rank: employee.rank?.id})
 					: { type: employeeTypesData[0]?.type, rank: store.employee.ranksList.first?.id }
@@ -128,14 +134,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) =>
 						))}
 					</Select>
 				</Form.Item>
-				<Form.Item label=" " colon={false}>
-					<Space>
-						<Button onClick={hide}>Скасувати</Button>
-						<Button htmlType="submit" type="primary">
-							{isEdit ? "Зберегти" : "Додати"}
-						</Button>
-					</Space>
-				</Form.Item>
+				<WizardFooter {...wizard} onCancel={hide}/>
 			</Form>
 		</Drawer>
 	);

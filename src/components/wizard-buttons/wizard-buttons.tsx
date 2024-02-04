@@ -29,33 +29,33 @@ export function WizardButtons({
 		<Space>
 			{children}
 			{!!onSave && isSave && (
-				<Tooltip placement="topLeft" title="Зберегти документ" arrow>
+				<Tooltip placement="bottomRight" title="Зберегти документ" arrow>
 					<Button icon={<Icon.SaveOutlined/>} onClick={onSave}/>
 				</Tooltip>
 			)}
 			{!!onEdit && isView && (
-				<Tooltip placement="topLeft" title="Редагувати" arrow>
+				<Tooltip placement="bottomRight" title="Редагувати" arrow>
 					<Button icon={<Icon.EditOutlined /> } onClick={onEdit}/>
 				</Tooltip>
 			)}
 			{!!onView && isEdit && (
-				<Tooltip placement="topLeft" title="Переглянути" arrow>
+				<Tooltip placement="bottomRight" title="Переглянути" arrow>
 					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
 				</Tooltip>
 			)}
 			{!!onRemove && isRemove && (
-				<Popconfirm
-					title="Видалити"
-					description="Ви впевнені, після цього дані не можливо відновити ?"
-					onConfirm={onRemove}
-					okText="Так"
-					cancelText="Ні"
+				<Tooltip placement="bottomRight" title="Видалити" arrow>
+					<Popconfirm
+						title="Видалити"
+						description="Ви впевнені, після цього дані не можливо відновити ?"
+						onConfirm={onRemove}
+						okText="Так"
+						cancelText="Ні"
 					
-				>
-					<Tooltip placement="topLeft" title="Видалити" arrow>
+					>
 						<Button danger style={{ marginLeft: 20}} icon={<Icon.DeleteOutlined /> }/>
-					</Tooltip>
-				</Popconfirm>
+					</Popconfirm>
+				</Tooltip>
 			)}
 		</Space>
 	);

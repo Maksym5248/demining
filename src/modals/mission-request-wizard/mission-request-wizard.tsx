@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
-import { Button, Form, DatePicker, Space, Drawer, InputNumber, Spin} from 'antd';
+import { Form, DatePicker, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { useStore } from '~/hooks'
+import { useStore, useWizard } from '~/hooks'
 import { dates } from '~/utils'
-import { WizardButtons } from '~/components';
+import { WizardButtons, WizardFooter } from '~/components';
 import { WIZARD_MODE } from '~/constants';
 
 import { s } from './mission-request-wizard.style'
@@ -18,8 +18,9 @@ interface Props {
   hide: () => void
 }
 
-export const MissionRequestWizardModal  = observer(({ id, isVisible, hide }: Props) => {
+export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode }: Props) => {
 	const store = useStore();
+	const wizard = useWizard({id, mode});
 
 	const missionRequest = store.missionRequest.collection.get(id as string);
 
@@ -54,7 +55,10 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide }: Pro
 			onClose={hide}
 			extra={
 				<WizardButtons
-					onRemove={isEdit ? onRemove : undefined}
+					onRemove={onRemove}
+					isRemove={!wizard.isCreate}
+					isSave={!wizard.isCreate}
+					{...wizard}
 				/>
 			}
 		>
@@ -66,6 +70,7 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide }: Pro
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
+						disabled={wizard.isView}
 						initialValues={missionRequest
 							? ({ ...missionRequest})
 							: {
@@ -88,14 +93,7 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide }: Pro
 						>
 							<DatePicker/>
 						</Form.Item>
-						<Form.Item label=" " colon={false}>
-							<Space>
-								<Button onClick={hide}>Скасувати</Button>
-								<Button htmlType="submit" type="primary">
-									{isEdit ? "Зберегти" : "Додати"}
-								</Button>
-							</Space>
-						</Form.Item>
+						<WizardFooter {...wizard} onCancel={hide}/>
 					</Form>
 				)}
 		</Drawer>

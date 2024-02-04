@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Space, Drawer, Divider, Spin, message} from 'antd';
+import { Form, Drawer, Divider, Spin, message} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
 import { dates } from '~/utils';
 import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER } from '~/constants';
-import { WizardButtons } from '~/components';
+import { WizardButtons, WizardFooter } from '~/components';
 import { Modal, Image, Crashlytics } from '~/services';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
@@ -30,12 +30,6 @@ interface Props {
   hide: () => void;
   mode: WIZARD_MODE
 }
-
-/**
- * 1 - для вибухових речовин, значення при ініціалізації повинно показати список всіх внп які не бул знищені
- * 2 - номер акту маю бути за порядком + 1;
- * 3 - транспорт
- */
 
 export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport } = useStore();
@@ -210,16 +204,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 								<Divider/>
 							</div>
 						))}
-						{!wizard.isView && (
-							<Form.Item label=" " colon={false}>
-								<Space>
-									<Button onClick={hide}>Скасувати</Button>
-									<Button htmlType="submit" type="primary">
-										{wizard.isEdit ? "Зберегти" : "Додати"}
-									</Button>
-								</Space>
-							</Form.Item>
-						)}
+						<WizardFooter {...wizard} onCancel={hide}/>
 					</Form>
 				)}
 		</Drawer>
