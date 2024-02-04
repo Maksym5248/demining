@@ -36,6 +36,7 @@ const useTemplateFile = (template: DOCX_TEMPLATE) => {
 	const save = async (value: { file: File }) => {
 		try {
 			setLoading(true);
+
 			await FileSystem.saveTemplate(template, value.file);
 			setFile(value.file)
 		} catch (error) {
@@ -85,6 +86,7 @@ const useGeneratedFile = (template: File | null, name:string, data: {[key:string
 		try {
 			setLoading(true);
 			const value = await Template.generateFile(template, data)
+
 			setFile(fileUtils.blobToFile(value, {
 				name,
 				type: "docx"

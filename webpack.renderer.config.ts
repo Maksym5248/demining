@@ -26,6 +26,7 @@ export const rendererConfig: Configuration = {
 	resolve: {
 		fallback: {
 			"stream": false,
+			"buffer": require.resolve("buffer/")
 		},
 		extensions: ['.cjs','.js', '.ts', '.jsx', '.tsx', '.css'],
 		alias: {

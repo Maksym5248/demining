@@ -96,4 +96,32 @@ export interface IMissionReportDTOParams {
     address: string;
 }
 
+export interface IMissionReportDTOParamsUpdate {
+    id: string;
+    approvedAt: Date;
+    approvedById:  string;
+    number: number;
+    subNumber: number | undefined,
+    executedAt: Date;
+    orderId: string;
+    missionRequestId: string;
+    checkedTerritory: number | undefined;
+    depthExamination: number |undefined;
+    uncheckedTerritory: number |undefined;
+    uncheckedReason: string | undefined;
+    mapView: IMapViewActionDTOParams;
+    workStart: Date;
+    exclusionStart: Date | undefined;
+    transportingStart: Date | undefined;
+    destroyedStart: Date | undefined;
+    workEnd: Date;
+    transportExplosiveObjectId: string;
+    transportHumansId: string;
+    mineDetectorId: string,
+    explosiveObjectActions: IExplosiveObjectActionDTOParams[];
+    squadLeadId: string;
+    workersIds: string[];
+    address: string;
+}
+
 

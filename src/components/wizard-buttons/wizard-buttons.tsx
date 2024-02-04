@@ -43,7 +43,7 @@ export function WizardButtons({
 					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
 				</Tooltip>
 			)}
-			{!!onRemove && isRemove && (
+			{!!onRemove && isRemove && false && (
 				<Tooltip placement="bottomRight" title="Видалити" arrow>
 					<Popconfirm
 						title="Видалити"

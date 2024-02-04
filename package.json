@@ -82,7 +82,8 @@
         "typescript": "5.0.4",
         "webpack": "^5.69.1",
         "webpack-dev-server": "^4.0.0",
-        "webpack-merge": "^5.7.3"
+        "webpack-merge": "^5.7.3",
+        "buffer": "^6.0.3"
     },
     "dependencies": {
         "@ant-design/icons": "^4.3.0",
