@@ -1,5 +1,5 @@
 export * from './docx-preview';
-export * from './drawer-extra';
+export * from './wizard-buttons';
 export * from './icon';
 export * from "./list";
 export * from "./map-view";

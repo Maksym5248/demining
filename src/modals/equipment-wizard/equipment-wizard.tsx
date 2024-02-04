@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 import { EQUIPMENT_TYPE } from "~/constants"
 import { useStore } from '~/hooks'
-import { DrawerExtra } from '~/components';
+import { WizardButtons } from '~/components';
 
 import { s } from './equipment-wizard.style'
 import { IEquipmentForm } from './equipment-wizard.types';
@@ -56,7 +56,7 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide }: Props) =
 			width={500}
 			onClose={hide}
 			extra={
-				<DrawerExtra
+				<WizardButtons
 					onRemove={isEdit ? onRemove : undefined}
 				/>
 			}

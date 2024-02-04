@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { dates } from '~/utils'
-import { DrawerExtra } from '~/components';
+import { WizardButtons } from '~/components';
 import { WIZARD_MODE } from '~/constants';
 
 import { s } from './mission-request-wizard.style'
@@ -53,7 +53,7 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide }: Pro
 			width={500}
 			onClose={hide}
 			extra={
-				<DrawerExtra
+				<WizardButtons
 					onRemove={isEdit ? onRemove : undefined}
 				/>
 			}

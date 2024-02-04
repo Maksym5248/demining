@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { useStore, useWizard } from '~/hooks'
 import { dates } from '~/utils';
 import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER } from '~/constants';
-import { DrawerExtra, Icon } from '~/components';
+import { WizardButtons } from '~/components';
 import { Modal, Image, Crashlytics } from '~/services';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
@@ -165,15 +165,13 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 			width={700}
 			onClose={hide}
 			extra={
-				<DrawerExtra
+				<WizardButtons
 					onRemove={onRemove}
 					isRemove={!wizard.isCreate}
+					onSave={onOpenDocxPreview}
+					isSave={!wizard.isCreate}
 					{...wizard}
-				>
-					{!wizard.isCreate && (
-						<Button icon={<Icon.SaveOutlined/>} onClick={onOpenDocxPreview}/>
-					)}
-				</DrawerExtra>
+				/>
 			}
 		>
 			{isLoading

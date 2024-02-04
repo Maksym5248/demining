@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite'
 
 import { useStore } from '~/hooks'
 import { EMPLOYEE_TYPE } from '~/constants';
-import { DrawerExtra } from '~/components';
+import { WizardButtons } from '~/components';
 
 import { IEmployeeForm } from './employees-wizard.types';
 
@@ -63,7 +63,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide }: Props) =>
 			width={500}
 			onClose={hide}
 			extra={
-				<DrawerExtra
+				<WizardButtons
 					onRemove={isEdit ? onRemove : undefined}
 				/>
 			}

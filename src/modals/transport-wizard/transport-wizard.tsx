@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Button, Form, Space, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
-import { DrawerExtra, Select } from '~/components'
+import { WizardButtons, Select } from '~/components'
 import { TRANSPORT_TYPE } from "~/constants"
 import { useStore } from '~/hooks'
 
@@ -60,7 +60,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide }: Props) =>
 			width={500}
 			onClose={hide}
 			extra={
-				<DrawerExtra
+				<WizardButtons
 					onRemove={isEdit ? onRemove: undefined}
 				/>
 			}
