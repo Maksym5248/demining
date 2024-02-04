@@ -165,6 +165,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 					onSave={onOpenDocxPreview}
 					isSave={!wizard.isCreate}
 					{...wizard}
+					isEdit={false}
 				/>
 			}
 		>
