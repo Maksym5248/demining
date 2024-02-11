@@ -35,6 +35,24 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRepor
 	}
 });
 
+const update = asyncAction<Instance<typeof Store>>((id: string, data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self, root }) {
+	try {
+		flow.start();
+
+		const res = await Api.missionReport.update(id, createMissionReportDTO(data));
+
+		root.order.collection.set(res.order.id, createOrder(res.order));
+		root.missionRequest.collection.set(res.missionRequest.id, createMissionRequest(res.missionRequest));
+		self.collection.set(res.id, createMissionReport(res));
+
+		flow.success();
+		message.success('Додано успішно');
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Не вдалось додати');
+	}
+});
+
 const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self, root }) {
 	if(flow.isLoaded){
 		return
@@ -88,4 +106,4 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-export const MissionReportStore = Store.props({ add, remove, fetchList })
+export const MissionReportStore = Store.props({ add, update, remove, fetchList })

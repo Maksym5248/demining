@@ -101,13 +101,13 @@ export class DBBase<T extends {id: string}> {
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		if(value?.id) delete value.id;
+		if(newValue?.id) delete newValue.id;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		if(value?.updatedAt) delete value.updatedAt;
+		if(newValue?.updatedAt) delete newValue.updatedAt;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		if(value?.createdAt) delete value.createdAt;
+		if(newValue?.createdAt) delete newValue.createdAt;
 
 		await this.db.update({ in: this.tableName,
 			set: { ...newValue, updatedAt: new Date(),},
@@ -121,13 +121,15 @@ export class DBBase<T extends {id: string}> {
 		return res;
 	}
 
-	remove(id:string | IWhereQueryOption) {
-		return this.db.remove({
+	async remove(id:string | IWhereQueryOption) {
+		await this.db.remove({
 			from: this.tableName,
 			where: {
 				id
 			}
-		})
+		});
+
+		return id
 	}
 
 	removeBy(where: IWhereQuery) {

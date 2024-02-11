@@ -55,7 +55,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinishUpdate = async (values: IMissionReportForm) => {
-		// await employee.update.run(values);
+		await missionReport.update.run(id, values);
 		hide();
 	};
 
