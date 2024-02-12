@@ -1,4 +1,4 @@
-import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB } from '~/db'
+import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB } from '~/db'
 import { CreateValue } from '~/types'
 import { DB_FIELD, DOCUMENT_TYPE, EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
 
@@ -127,14 +127,32 @@ const remove = async (id:string) => {
 	]);
 };
 
+
+const createAction = <B, T extends IItemId>(
+	key: string,
+	id:string,
+	sourceAction: T[],
+	document:ILinkedToDocumentDB,
+	secondKey?: boolean
+):B => {
+	const source = removeFields("id", findById<T>(id, sourceAction));
+
+	return {
+		...document,
+		...source,
+		[key]: secondKey ? key : source.id
+	} as B
+}
+
+
 const generateActions = async (missionReportId:string, value: CreateValue<IMissionReportDTOParams>):Promise<{
 	mapViewValue: Omit<IMapViewActionActionDB, "id" |  "createdAt" | "updatedAt">;
 	approvedByAction:IEmployeeActionDB;
 	squadLeadAction: IEmployeeActionDB;
 	squadActionIds: IEmployeeActionDB[];
-	transportHumansAction: ITransportActionDB;
-	transportExplosiveObjectAction: ITransportActionDB;
-	mineDetectorAction: IEquipmentActionDB;
+	transportHumansAction?: ITransportActionDB;
+	transportExplosiveObjectAction?: ITransportActionDB;
+	mineDetectorAction?: IEquipmentActionDB;
 	explosiveObjectsActions: IExplosiveObjectActionDB[];
 }> => {
 	const {
@@ -181,49 +199,21 @@ const generateActions = async (missionReportId:string, value: CreateValue<IMissi
 		...mapView,
 	}
 
-	const approvedBy = removeFields("id", findById(approvedById, employees));
-	const approvedByAction = {
-		...document,
-		...approvedBy,
-		employeeId: approvedById,
-	}
+	const approvedByAction = createAction<IEmployeeActionDB, IEmployeeDB>("employeeId", approvedById, employees, document);
+	const squadLeadAction = createAction<IEmployeeActionDB, IEmployeeDB>("employeeId", squadLeadId, employees, document);
+	const squadActionIds = workersIds.map(workerId => createAction<IEmployeeActionDB, IEmployeeDB>("employeeId", workerId, employees, document, true));
 
-	const squadLead = removeFields("id", findById(squadLeadId, employees));
-	const squadLeadAction = {
-		...document,
-		...squadLead,
-		employeeId: squadLeadId,
-	}
+	const transportHumansAction = transportHumansId 
+		? createAction<ITransportActionDB, ITransportDB>("transportId", transportHumansId, transports, document)
+		: undefined;
 
-	const squadActionIds = workersIds.map(workerId => {
-		const employee = removeFields("id", findById(workerId, employees));
-		return {
-			...document,
-			...employee,
-			employeeId: employee.id,
-		}
-	});
+	const transportExplosiveObjectAction = transportExplosiveObjectId 
+		? createAction<ITransportActionDB, ITransportDB>("transportId", transportExplosiveObjectId, transports, document)
+		: undefined;
 
-	const transportHumans = removeFields("id", findById(transportHumansId, transports));
-	const transportHumansAction = {
-		...document,
-		...transportHumans,
-		transportId: transportHumansId
-	}
-
-	const transportExplosiveObject = removeFields("id", findById(transportExplosiveObjectId, transports));
-	const transportExplosiveObjectAction = {
-		...document,
-		...transportExplosiveObject,
-		transportId: transportExplosiveObjectId
-	}
-
-	const mineDetector = removeFields("id", findById(mineDetectorId, equipments));
-	const mineDetectorAction = {
-		...document,
-		...mineDetector,
-		equipmentId: mineDetectorId
-	}
+	const mineDetectorAction = mineDetectorId 
+		? createAction<IEquipmentActionDB, IEquipmentDB>("equipmentId", mineDetectorId, equipments, document)
+		: undefined;
 
 	const explosiveObjectsActions = explosiveObjectActions.map(explosiveObjectAction => {
 		const explosiveObject = removeFields("id", findById(explosiveObjectAction.explosiveObjectId, explosiveObjects));
@@ -262,7 +252,7 @@ export const getRemoveList = (
 	const transportHumansActionCurrent = missionReportDTO.transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS) as ITransportActionDB;
 	const transportExplosiveObjectActionCurrent = missionReportDTO.transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS) as ITransportActionDB;
 	const mineDetectorActionCurrent = missionReportDTO.equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR) as IEquipmentActionDB;
-	const workersIdsCurrent = missionReportDTO.squadActions.map(el => el.employeeId)
+	const workersCurrent = missionReportDTO.squadActions
 	const explosiveObjectIdsCurrent = missionReportDTO.explosiveObjectActions.map(el => el.explosiveObjectId)
 
 	return {
@@ -275,10 +265,10 @@ export const getRemoveList = (
 		mineDetectorActionId: !mineDetectorId && mineDetectorActionCurrent.id
 			? mineDetectorActionCurrent.id
 			: undefined,
-		workersActionIds: workersIdsCurrent.length
-			?  workersIdsCurrent
-				.filter(workerIdCurrent => !workersIds.includes(workerIdCurrent))
-				.map((_, i) => missionReportDTO.squadActions[i].id)
+		workersActionIds: workersCurrent.length
+			?  workersCurrent
+				.filter(workerCurrent => !workersIds.includes(workerCurrent.employeeId))
+				.map((el) => el.id)
 			: [],
 		explosiveObjectActionIds:explosiveObjectIdsCurrent.length
 			? explosiveObjectIdsCurrent
@@ -327,7 +317,7 @@ export const getCreateList = (
 	}
 }
 
-const update = async (id:string, value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
+export const update = async (id:string, value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
 	const {
 		approvedById,
 		mapView, 
@@ -397,9 +387,9 @@ const update = async (id:string, value: CreateValue<IMissionReportDTOParams>):Pr
 				explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectId) as IExplosiveObjectActionDB
 			)
 		)),
-		createList.transportHumansId ? DB.transportAction.add(transportHumansAction) : undefined,
-		createList.transportExplosiveObjectId ? DB.transportAction.add(transportExplosiveObjectAction) : undefined,
-		createList.mineDetectorId ? DB.equipmentAction.add(mineDetectorAction) : undefined,
+		createList.transportHumansId && transportHumansAction ? DB.transportAction.add(transportHumansAction) : undefined,
+		createList.transportExplosiveObjectId && transportExplosiveObjectAction ? DB.transportAction.add(transportExplosiveObjectAction) : undefined,
+		createList.mineDetectorId && mineDetectorAction ? DB.equipmentAction.add(mineDetectorAction) : undefined,
 	];
 
 	const updateListPromises = [
@@ -410,13 +400,13 @@ const update = async (id:string, value: CreateValue<IMissionReportDTOParams>):Pr
 				explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectActionId) as IExplosiveObjectActionDB
 			)
 		)),
-		updateList.transportHumansId
+		updateList.transportHumansId && transportHumansAction
 		  ? DB.transportAction.update(updateList.transportHumansId, transportHumansAction)
 		  : undefined,
-		updateList.transportExplosiveObjectId 
+		updateList.transportExplosiveObjectId && transportExplosiveObjectAction
 		  ? DB.transportAction.update(transportExplosiveObjectActionCurrent.id, transportExplosiveObjectAction)
 		  : undefined,
-		updateList.mineDetectorId
+		updateList.mineDetectorId && mineDetectorAction
 		  ? DB.equipmentAction.update(mineDetectorActionCurrent.id, mineDetectorAction)
 		  : undefined,
 	];
@@ -470,7 +460,7 @@ const update = async (id:string, value: CreateValue<IMissionReportDTOParams>):Pr
 	return get(missionReportDTO.id);
 }
 
-const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
+export const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
 	const {
 		approvedById,
 		mapView, 
@@ -524,9 +514,9 @@ const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMission
 			DB.employeeAction.add(approvedByAction),
 			DB.employeeAction.add(squadLeadAction),
 			Promise.all(squadActionIds.map(el  => DB.employeeAction.add(el))),
-			DB.transportAction.add(transportHumansAction),
-			DB.transportAction.add(transportExplosiveObjectAction),
-			DB.equipmentAction.add(mineDetectorAction),
+			transportHumansAction ? DB.transportAction.add(transportHumansAction) : Promise.resolve(undefined),
+			transportExplosiveObjectAction ? DB.transportAction.add(transportExplosiveObjectAction) : Promise.resolve(undefined),
+			mineDetectorAction ? DB.equipmentAction.add(mineDetectorAction) : Promise.resolve(undefined),
 			Promise.all(explosiveObjectsActions.map(el  => DB.explosiveObjectAction.add(el))),
 		])
 
@@ -534,8 +524,8 @@ const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMission
 			...rest,
 			approvedByActionId: approvedByActionDB.id,
 			mapViewId: mapViewDB.id,
-			transportActionIds: [transportHumansActionDB.id, transportExplosiveObjectActionDB.id],
-			equipmentActionIds: [mineDetectorActionDB.id],
+			transportActionIds: [transportHumansActionDB?.id, transportExplosiveObjectActionDB?.id].filter(el => !el) as string[],
+			equipmentActionIds: [mineDetectorActionDB?.id].filter(el => !!el) as string[],
 			explosiveObjectActionIds: explosiveObjectsActionsDB.map((el) => el.id),
 			squadLeaderActionId: squadLeadActionDB.id,
 			squadActionIds: squadActionIdsDB.map((el) => el.id),

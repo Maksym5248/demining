@@ -87,9 +87,9 @@ export interface IMissionReportDTOParams {
     transportingStart: Date | undefined;
     destroyedStart: Date | undefined;
     workEnd: Date;
-    transportExplosiveObjectId: string;
-    transportHumansId: string;
-    mineDetectorId: string,
+    transportExplosiveObjectId?: string;
+    transportHumansId?: string;
+    mineDetectorId?: string,
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
     squadLeadId: string;
     workersIds: string[];
