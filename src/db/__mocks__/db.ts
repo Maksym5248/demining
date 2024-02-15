@@ -1,5 +1,4 @@
 import { IWhereQueryOption } from 'jsstore';
-import uuid from 'uuid/v4';
 
 import {
 	IEmployeeDB, 
@@ -18,38 +17,22 @@ import {
 } from '../types';
 
 export class DBBase<T extends {id: string}> {
-	uuid(){
-		return Promise.resolve(uuid());
-	}
+	uuid = jest.fn(() => Promise.resolve("id"))
 
-	select() {
-		return Promise.resolve([]);
-	}
+	select = jest.fn(() => Promise.resolve([]))
 
-	get(id:string){
-		return Promise.resolve({ id })
-	}
+	get = jest.fn((id:string) => Promise.resolve({ id }))
 
-	exist():Promise<boolean> {
-		return Promise.resolve(false);
-	}
+	exist = jest.fn(() => Promise.resolve(false))
 
-	async add(value: Omit<T, "createdAt" | "updatedAt" | "id">){
-		const id = await this.uuid();
+	add = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "id">) => ({
+		id: "id",
+		...value, 
+		createdAt: new Date(),
+		updatedAt: new Date()
+	}))
 
-		return {
-			id,
-			...value, 
-			createdAt: new Date(),
-			updatedAt: new Date()
-		};
-	}
-
-	async initData(values:any){
-		return Promise.resolve(values);
-	}
-
-	async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>){
+	update = jest.fn((id, value: Omit<T, "createdAt" | "updatedAt" | "id">) => {
 		const newValue = {...value};
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -68,15 +51,13 @@ export class DBBase<T extends {id: string}> {
 			createdAt: new Date(),
 			updatedAt: new Date()
 		};
-	}
+	})
 
-	async remove(id:string | IWhereQueryOption) {
-		return Promise.resolve(id)
-	}
+	initData = jest.fn((values:any) => Promise.resolve(values))
 
-	removeBy() {
-		return Promise.resolve("removed")
-	}
+	remove = jest.fn((id:string | IWhereQueryOption) => Promise.resolve(id))
+
+	removeBy = jest.fn(() => Promise.resolve("removed"))
 }
 
 export const DB = {

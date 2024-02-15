@@ -1,15 +1,10 @@
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE } from '~/constants';
 
 export const explosiveObjectActionsInput = {
-	"id": "EXPLOSIVE_OBJECT_ACTION-dc098eb4-9d56-441e-9121-f4d4f744e7f0",
 	"type": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9",
 	"name": "ТМ-62М",
 	"caliber": 0,
-	"createdAt": new Date("2024-02-04T17:20:17.502Z"),
-	"updatedAt": new Date("2024-02-12T07:50:49.854Z"),
 	"explosiveObjectId": "EXPLOSIVE_OBJECT-80824494-bd3f-4303-9b4a-1286842deccf",
-	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
-	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"quantity": 132,
 	"category": EXPLOSIVE_OBJECT_CATEGORY.I,
 	"isDiscovered": true,
@@ -30,7 +25,9 @@ export const mapViewInput = {
 	"circleCenterLat": 50.40330119,
 	"circleCenterLng": 30.519830598,
 	"circleRadius": 33.424996681,
-	"zoom": 18
+	"zoom": 18,
+	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
+	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
 }
 
 export const missionReportInput = {
@@ -41,7 +38,7 @@ export const missionReportInput = {
 	"orderId": "ORDER-36a247ff-3105-47af-aaa6-f7e7e2985494",
 	"missionRequestId": "MISSION_REQUEST-14e2e3fc-d8eb-4ee6-b7d4-4937a7ab8616",
 	"checkedTerritory": 100,
-	"depthExamination": 0.014,
+	"depthExamination": 0.015,
 	"mapView": mapViewInput,
 	"workStart":  new Date("2024-02-04T17:18:19.202Z"),
 	"exclusionStart":  new Date("2024-02-04T00:25:03.668Z"),
@@ -52,9 +49,12 @@ export const missionReportInput = {
 	"transportHumansId": "TRANSPORT-5207e63d-cdfa-46ca-bd84-3235dc7986f9",
 	"mineDetectorId": "EQUIPMENT-f4929004-6c13-40d7-9f05-2ba865860673",
 	explosiveObjectActions: [explosiveObjectActionsInput],
-	"squadLeadId": "EMPLOYEE-1cb833c1-72bb-42da-ad57-6d2631782b04",
-	"workersIds": workersInput,
-	"address": "місто Київ, Київ, проспект 40-річчя Жовтня, 11"
+	"squadLeaderId": "EMPLOYEE-1cb833c1-72bb-42da-ad57-6d2631782b04",
+	"squadIds": workersInput,
+	"address": "місто Київ, Київ, проспект 40-річчя Жовтня, 11",
+	subNumber: undefined,
+	uncheckedTerritory: undefined,
+	uncheckedReason: undefined,
 }
 
 const orderSignedByActionDTO = {
@@ -128,8 +128,8 @@ export const MRTransportExplosiveDTO = {
 	"type": TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS,
 	"createdAt":  new Date("2024-02-11T14:02:48.762Z"),
 	"updatedAt":  new Date("2024-02-11T14:02:48.762Z"),
-	"transportId": "TRANSPORT-62b77733-2ef8-4dd7-90a1-6edf27b7746f",
-	"id": "TRANSPORT_ACTION-90c9ec98-beac-49fe-872b-813b0899f840"
+	"transportId": "TRANSPORT-2219e1f0-eb07-428b-a8ad-3a439740daf0",
+	"id": "TRANSPORT_ACTION-90c9ec98-beac-49fe-872b-813b0899f841"
 }
 
 export const MRTransportHumansDTO = {
@@ -140,7 +140,7 @@ export const MRTransportHumansDTO = {
 	"type": TRANSPORT_TYPE.FOR_HUMANS,
 	"createdAt":  new Date("2024-02-11T14:02:48.762Z"),
 	"updatedAt":  new Date("2024-02-11T14:02:48.762Z"),
-	"transportId": "TRANSPORT-62b77733-2ef8-4dd7-90a1-6edf27b7746f",
+	"transportId": "TRANSPORT-5207e63d-cdfa-46ca-bd84-3235dc7986f9",
 	"id": "TRANSPORT_ACTION-90c9ec98-beac-49fe-872b-813b0899f840"
 }
 
@@ -233,6 +233,7 @@ export const MRExplosiveObjectAсtionDTO = {
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
 	"name": "ТМ-62М",
+	"caliber": 0,
 	"id": "EXPLOSIVE_OBJECT_ACTION-dc098eb4-9d56-441e-9121-f4d4f744e7f0",
 	"createdAt":  new Date("2024-02-04T17:20:17.502Z"),
 	"updatedAt":  new Date("2024-02-11T14:03:15.343Z"),

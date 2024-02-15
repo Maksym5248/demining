@@ -45,8 +45,8 @@ export interface IMissionReportValueParams {
     transportHumansId: string;
     mineDetectorId: string,
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
-    squadLeadId: string;
-    workersIds: string[];
+    squadLeaderId: string;
+    squadIds: string[];
     address: string;
 };
 
@@ -101,8 +101,8 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	transportHumansId: value.transportHumansId,
 	mineDetectorId: value.mineDetectorId,
 	explosiveObjectActions: value.explosiveObjectActions,
-	squadLeadId: value.squadLeadId,
-	workersIds: value.workersIds,
+	squadLeaderId: value.squadLeaderId,
+	squadIds: value.squadIds,
 	address: value.address,
 });
 

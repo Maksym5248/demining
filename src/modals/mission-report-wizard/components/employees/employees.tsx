@@ -33,7 +33,7 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 	return <>
 		<Form.Item
 			label="Керівник розрахунку"
-			name="squadLeadId"
+			name="squadLeaderId"
 			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
 			<Form.Item
@@ -41,14 +41,14 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 				shouldUpdate={() => true}
 			>
 				{({ getFieldValue }) => {
-					const workersIds = getFieldValue("workersIds");
+					const squadIds = getFieldValue("squadIds");
 
 					return (
 						<Select
 							options={squadLeads
-								.filter(el => !workersIds.includes(el.id))
+								.filter(el => !squadIds.includes(el.id))
 								.map((el) => ({ label: el.fullName, value: el.id }))}
-							value={getFieldValue("squadLeadId")}
+							value={getFieldValue("squadLeaderId")}
 							dropdownRender={dropdownRender}
 						/>
 					)
@@ -58,10 +58,10 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 		</Form.Item>
 		<Form.Item
 			label="Розрахунок"
-			name="workersIds"
+			name="squadIds"
 			rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 		>
-			<Form.List name="workersIds">
+			<Form.List name="squadIds">
 				{(fields, { add, remove }) => (
 					<>
 						{fields.map(({ key, name, ...restField }) => (
@@ -71,10 +71,10 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 								shouldUpdate={() => true}
 							>
 								{({ getFieldValue }) => {
-									const workersIds = getFieldValue("workersIds");
-									const squadLeadId = getFieldValue("squadLeadId");
+									const squadIds = getFieldValue("squadIds");
+									const squadLeaderId = getFieldValue("squadLeaderId");
 
-									const currentSelectedId = workersIds[name];
+									const currentSelectedId = squadIds[name];
 
 									return  (
 										<Form.Item
@@ -83,8 +83,8 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 										>
 											<Select
 												options={workers
-													.filter(el => el.id !== squadLeadId)
-												    .filter(el => el.id === currentSelectedId || !workersIds.includes(el.id))
+													.filter(el => el.id !== squadLeaderId)
+												    .filter(el => el.id === currentSelectedId || !squadIds.includes(el.id))
 													.map((el) => ({ label: el?.fullName, value: el.id }))
 												}
 												value={currentSelectedId}
@@ -111,10 +111,10 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 							shouldUpdate={() => true}
 						>
 							{({ getFieldValue }) => {
-								const workersIds = getFieldValue("workersIds");
-								const squadLeadId = getFieldValue("squadLeadId");
+								const squadIds = getFieldValue("squadIds");
+								const squadLeaderId = getFieldValue("squadLeaderId");
 
-								const freeWorkers =  workers.filter(el => !(el.id === squadLeadId || workersIds.includes(el.id)));
+								const freeWorkers =  workers.filter(el => !(el.id === squadLeaderId || squadIds.includes(el.id)));
 
 								return  !!freeWorkers.length && (
 									<Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>

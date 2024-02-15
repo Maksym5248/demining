@@ -25,7 +25,7 @@ export interface IMissionReportForm {
     transportHumansId?: string;
     mineDetectorId?: string,
     explosiveObjectActions: IExplosiveObjectActionValueParams[];
-    squadLeadId: string;
-    workersIds: string[];
+    squadLeaderId: string;
+    squadIds: string[];
     address: string;
 }

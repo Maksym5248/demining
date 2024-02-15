@@ -14,7 +14,7 @@
                 "--runTestsByPath",
                 "${jest.testFile}"
             ],
-            "cwd": "/Users/mac/Documents/work/mil/battlespace-management-client",
+            "cwd": "/Users/mac/Documents/work/my/dsns",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,

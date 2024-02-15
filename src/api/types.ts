@@ -91,8 +91,8 @@ export interface IMissionReportDTOParams {
     transportHumansId?: string;
     mineDetectorId?: string,
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
-    squadLeadId: string;
-    workersIds: string[];
+    squadLeaderId: string;
+    squadIds: string[];
     address: string;
 }
 
@@ -119,8 +119,8 @@ export interface IMissionReportDTOParamsUpdate {
     transportHumansId: string;
     mineDetectorId: string,
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
-    squadLeadId: string;
-    workersIds: string[];
+    squadLeaderId: string;
+    squadIds: string[];
     address: string;
 }
 

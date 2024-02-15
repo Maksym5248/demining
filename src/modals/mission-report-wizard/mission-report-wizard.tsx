@@ -105,8 +105,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId,
 		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId,
 		explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
-		squadLeadId: currentMissionReport?.squadLeaderAction.employeeId,
-		workersIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
+		squadLeaderId: currentMissionReport?.squadLeaderAction.employeeId,
+		squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
 		address: currentMissionReport?.address,
 		mapView: {
 			markerLat: currentMissionReport?.mapView?.markerLat,
@@ -137,8 +137,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		transportHumansId: transport.transportHumansFirst?.id,
 		mineDetectorId: equipment.firstMineDetector?.id,
 		explosiveObjectActions:[],
-		squadLeadId: employee.employeesSquadLeadFirst?.id,
-		workersIds: [],
+		squadLeaderId: employee.employeesSquadLeadFirst?.id,
+		squadIds: [],
 		address: "",
 		mapView: {
 			zoom: currentMissionReport?.mapView?.zoom || MAP_ZOOM.DEFAULT
