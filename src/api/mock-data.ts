@@ -1,3 +1,5 @@
+import omit from "lodash/omit";
+
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE } from '~/constants';
 
 export const explosiveObjectActionsInput = {
@@ -12,7 +14,20 @@ export const explosiveObjectActionsInput = {
 	"isDestroyed": false
 };
 
-export const workersInput = [
+export const explosiveObjectActionsUpdateInput = {
+	"id": "EXPLOSIVE_OBJECT_ACTION-dc098eb4-9d56-441e-9121-f4d4f744e7f0",
+	"type": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9",
+	"name": "ТМ-62М",
+	"caliber": 0,
+	"explosiveObjectId": "EXPLOSIVE_OBJECT-80824494-bd3f-4303-9b4a-1286842deccf",
+	"quantity": 132,
+	"category": EXPLOSIVE_OBJECT_CATEGORY.I,
+	"isDiscovered": true,
+	"isTransported": true,
+	"isDestroyed": false
+};
+
+export const squadInput = [
 	"EMPLOYEE-2d639faa-dfb0-4530-a7aa-f6fa96b8ca81",
 	"EMPLOYEE-6e67b207-6f47-4017-ae9c-4efc5ff389b6",
 	"EMPLOYEE-ca8f193d-670b-4b61-b870-502b6e0d2d6f",
@@ -50,7 +65,7 @@ export const missionReportInput = {
 	"mineDetectorId": "EQUIPMENT-f4929004-6c13-40d7-9f05-2ba865860673",
 	explosiveObjectActions: [explosiveObjectActionsInput],
 	"squadLeaderId": "EMPLOYEE-1cb833c1-72bb-42da-ad57-6d2631782b04",
-	"squadIds": workersInput,
+	"squadIds": squadInput,
 	"address": "місто Київ, Київ, проспект 40-річчя Жовтня, 11",
 	subNumber: undefined,
 	uncheckedTerritory: undefined,
@@ -228,7 +243,7 @@ export const MREmployeeActionDTO4 = {
 	"employeeId": "EMPLOYEE-ebacbcc0-6eba-4915-8d3d-22f096e9842e"
 }
 
-export const MRExplosiveObjectAсtionDTO = {
+export const MRExplosiveObjectActionDTO = {
 	category: EXPLOSIVE_OBJECT_CATEGORY.I,
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
@@ -241,6 +256,29 @@ export const MRExplosiveObjectAсtionDTO = {
 	"quantity": 132,
 	"isDiscovered": true,
 	"isTransported": true,
+	"isDestroyed": false,
+	"type": {
+		"name": "ІМ",
+		"fullName": "Інженерні міни",
+		"id": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9",
+		"createdAt":  new Date("2024-02-04T17:16:22.004Z"),
+		"updatedAt":  new Date("2024-02-04T17:16:22.004Z"),
+	}
+}
+
+export const MRExplosiveObjectActionDTO2 = {
+	category: EXPLOSIVE_OBJECT_CATEGORY.I,
+	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
+	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
+	"name": "ТМ-62М",
+	"caliber": 0,
+	"id": "EXPLOSIVE_OBJECT_ACTION-dc098eb4-9d56-441e-9121-f4d4f744e444",
+	"createdAt":  new Date("2024-02-04T17:20:17.502Z"),
+	"updatedAt":  new Date("2024-02-11T14:03:15.343Z"),
+	"explosiveObjectId": "EXPLOSIVE_OBJECT-80824494-bd3f-4303-9b4a-1286842deccf",
+	"quantity": 132,
+	"isDiscovered": false,
+	"isTransported": false,
 	"isDestroyed": false,
 	"type": {
 		"name": "ІМ",
@@ -281,7 +319,7 @@ export const missionReportDTO = {
 		MRMineDetectorActionDTO
 	],
 	"explosiveObjectActions": [
-		MRExplosiveObjectAсtionDTO
+		MRExplosiveObjectActionDTO
 	],
 	"squadLeaderAction": MRsquadLeaderActionDTO,
 	"squadActions": [
@@ -291,3 +329,62 @@ export const missionReportDTO = {
 		MREmployeeActionDTO4,
 	]
 }
+
+
+export const missionReportDB = {
+	...omit(missionReportDTO, [
+		"missionRequest",
+		"order",
+		"mapView",
+		"approvedByAction",
+		"squadLeaderAction",
+		"squadActions",
+		"transportActions",
+		"equipmentActions",
+		"explosiveObjectActions",
+	]),
+	missionRequestId: missionReportDTO.missionRequest.id,
+	orderId: missionReportDTO.order.id,
+	mapViewId: missionReportDTO.mapView.id,
+	approvedByActionId: missionReportDTO.approvedByAction.id,
+	squadLeaderActionId: missionReportDTO.squadLeaderAction.id,
+	squadActionIds: missionReportDTO.squadActions.map(el => el.id),
+	transportActionIds: missionReportDTO.transportActions.map(el => el.id),
+	equipmentActionIds: missionReportDTO.equipmentActions.map(el => el.id),
+	explosiveObjectActionIds: missionReportDTO.explosiveObjectActions.map(el => el.id),
+}
+
+
+
+export const orderDB = {
+	...omit(missionReportDTO.order, "signedByAction"),
+	signedByActionId: missionReportDTO.order.signedByAction.id
+}
+
+export const missionRequestDB = {
+	...missionReportDTO.missionRequest,
+}
+
+export const mapViewDB = {
+	...missionReportDTO.mapView,
+}
+
+export const approvedByActionDB = {
+	...missionReportDTO.approvedByAction,
+};
+
+export const squadLeaderActionDB = {
+	...missionReportDTO.squadLeaderAction,
+};
+
+export const squadActionsDB = [...missionReportDTO.squadActions];
+
+export const transportActionsDB = [...missionReportDTO.transportActions];
+
+export const equipmentActionsDB = [...missionReportDTO.equipmentActions];
+
+export const explosiveObjectActionsDB = missionReportDTO.explosiveObjectActions.map(el => ({...el, typeId: el.type.id}));
+
+export const explosiveObjectTypeDB =  missionReportDTO.explosiveObjectActions.map(el => el.type);
+
+export const orderSignedByActionDB =  orderDTO.signedByAction;

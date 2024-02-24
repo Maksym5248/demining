@@ -40,6 +40,7 @@ export interface IExplosiveObjectActionDTO extends Omit<IExplosiveObjectActionDB
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
 export interface IExplosiveObjectActionDTOParams {
+    id?: string;
     explosiveObjectId: string;
     quantity: number;
     category: EXPLOSIVE_OBJECT_CATEGORY;
@@ -95,6 +96,7 @@ export interface IMissionReportDTOParams {
     squadIds: string[];
     address: string;
 }
+
 
 export interface IMissionReportDTOParamsUpdate {
     id: string;

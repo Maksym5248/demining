@@ -23,8 +23,8 @@ export function WizardButtons({
 	isRemove,
 	isSave, 
 	children 
-}: DrawerExtraProps ){	
-
+}: DrawerExtraProps ){
+	
 	return (
 		<Space>
 			{children}
@@ -33,14 +33,14 @@ export function WizardButtons({
 					<Button icon={<Icon.SaveOutlined/>} onClick={onSave}/>
 				</Tooltip>
 			)}
-			{!!onEdit && isView && (
+			{!!onView && isEdit && (
 				<Tooltip placement="bottomRight" title="Редагувати" arrow>
-					<Button icon={<Icon.EditOutlined /> } onClick={onEdit}/>
+					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
 				</Tooltip>
 			)}
-			{!!onView && isEdit && (
+			{!!onEdit && isView && (
 				<Tooltip placement="bottomRight" title="Переглянути" arrow>
-					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
+					<Button icon={<Icon.EditOutlined /> } onClick={onEdit}/>
 				</Tooltip>
 			)}
 			{!!onRemove && isRemove && false && (

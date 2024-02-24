@@ -130,9 +130,7 @@ export const ExplosiveObjectActionWizardModal  = observer(({ isVisible, hide, on
 						<Form.Item label=" " colon={false}>
 							<Space>
 								<Button onClick={hide}>Скасувати</Button>
-								<Button htmlType="submit" type="primary">
-                    Додати
-								</Button>
+								<Button htmlType="submit" type="primary">Додати</Button>
 							</Space>
 						</Form.Item>
 					</Form>
