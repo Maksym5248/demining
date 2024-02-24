@@ -50,8 +50,9 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 		hide();
 	};
 
-	const onRemove = () => () => {
+	const onRemove = () => {
 		store.employee.remove.run(id);
+		hide()
 	};
 	
 	const ranks = store.employee.ranksList.asArray;
@@ -67,14 +68,12 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
 		>
 			<Form
-				name="complex-form"
+				name="emplooye-form"
 				onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 				labelCol={{ span: 8 }}
 				wrapperCol={{ span: 16 }}

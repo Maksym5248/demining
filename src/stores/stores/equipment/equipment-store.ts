@@ -41,6 +41,7 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentVal
 const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
 	try {
 		flow.start();
+		console.log("remove")
 		await Api.equipment.remove(id);
 		self.list.removeById(id);
 		self.collection.remove(id);

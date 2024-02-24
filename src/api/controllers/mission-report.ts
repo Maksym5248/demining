@@ -550,8 +550,6 @@ export const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<I
 	return missionReport;
 };
 
-
-
 export const missionReport = {
 	add,
 	update: updateController,

@@ -1,43 +1,37 @@
-import { JSXElementConstructor, ReactElement, useCallback } from 'react';
+import { useCallback } from 'react';
 
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Form, Space} from 'antd';
+import { Form} from 'antd';
 
 import { Select } from '~/components'
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { Modal } from '~/services';
-import { ITransport } from '~/stores';
+import { ITransport, ITransportAction } from '~/stores';
+import { select } from '~/utils';
 
 interface TransportProps {
 	dataHumans:ITransport[];
-	dataExplosiveObject:ITransport[]
+	dataExplosiveObject:ITransport[];
+	selectedTransportHumanAction?: ITransportAction;
+	selectedTransportExplosiveAction?: ITransportAction;
 }
 
-export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) {
+export function Transport({ dataHumans, dataExplosiveObject, selectedTransportHumanAction, selectedTransportExplosiveAction }: TransportProps ) {
 	const onAdd = useCallback( () => {
 		Modal.show(MODALS.TRANSPORT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
 	
-	const dropdownRender = useCallback(
-		(menu:ReactElement<any, string | JSXElementConstructor<any>>) => (
-			<>
-				{menu}
-				<Divider style={{ margin: '8px 0' }} />
-				<Space style={{ padding: '0 8px 4px' }}>
-					<Button type="text" icon={<PlusOutlined />} onClick={onAdd}>Додати</Button>
-				</Space>
-			</>
-		),[onAdd]
-	);
-	
+	console.log("Transport", selectedTransportExplosiveAction, selectedTransportHumanAction)
 	return <>
 		<Form.Item
 			label="Авто для ВР"
 			name="transportExplosiveObjectId"
 		>
 			<Select
-				options={dataExplosiveObject.map((el) => ({ label: el.fullName, value: el.id }))}
-				dropdownRender={dropdownRender}
+				options={select.append(
+					dataExplosiveObject.map((el) => ({ label: el.fullName, value: el.id })),
+					{ label: selectedTransportExplosiveAction?.fullName, value: selectedTransportExplosiveAction?.transportId }
+				)}
+				onAdd={onAdd}
 			/>
 		</Form.Item>
 		<Form.Item
@@ -45,8 +39,11 @@ export function Transport({ dataHumans, dataExplosiveObject }: TransportProps ) 
 			name="transportHumansId"
 		>
 			<Select
-				options={dataHumans.map((el) => ({ label: el.fullName, value: el.id }))}
-				dropdownRender={dropdownRender}
+				options={select.append(
+					dataHumans.map((el) => ({ label: el.fullName, value: el.id })),
+					{ label: selectedTransportHumanAction?.fullName, value: selectedTransportHumanAction?.transportId }
+				)}
+				onAdd={onAdd}
 			/>
 		</Form.Item>
 	</>

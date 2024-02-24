@@ -51,13 +51,12 @@ const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOPa
 	}
 };
 
-const remove = async (id:string) => {
-	const order = await DB.order.get(id);
-	await Promise.all([
-		DB.employeeAction.remove(order.signedByActionId),
-		DB.order.remove(id)
-	])
-};
+const remove = async (id:string) => Promise.all([
+	DB.employeeAction.removeBy({
+		documentId: id
+	}),
+	DB.order.remove(id)
+])
 
 const getList = async ():Promise<IOrderDTO[]> => {
 	const list = await DB.order.select({

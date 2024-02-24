@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { WizardButtons, Select, WizardFooter } from '~/components'
 import { useStore, useWizard } from '~/hooks'
 import { WIZARD_MODE } from '~/constants';
+import { select } from '~/utils';
 
 import { s } from './explosive-object-wizard.style'
 import { IExplosiveObjectForm } from './explosive-object-wizard.types';
@@ -41,7 +42,7 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 		hide();
 	};
 
-	const onRemove = () => () => {
+	const onRemove = () => {
 		explosiveObject.remove.run(id);
 	};
 
@@ -56,8 +57,6 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
@@ -66,7 +65,7 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="explosive-object-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
@@ -84,7 +83,10 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 						>
 							<Select
-								options={explosiveObject.sortedListTypes.map((el) => ({ label: el.fullName, value: el.id }))}
+								options={select.append(
+									explosiveObject.sortedListTypes.map((el) => ({ label: el.fullName, value: el.id })),
+									{ label: currentExplosiveObject?.type.fullName, value: currentExplosiveObject?.type?.id }
+								)}
 							/>
 						</Form.Item>
 						<Form.Item

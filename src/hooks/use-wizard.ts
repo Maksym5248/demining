@@ -16,6 +16,8 @@ export const useWizard = (params: IUseWizardParams) => {
 	const isEdit = !!id && currentMode === WIZARD_MODE.EDIT;
 	const isView = !!id && currentMode === WIZARD_MODE.VIEW;
 	const isCreate = !id && currentMode === WIZARD_MODE.CREATE;
+	const isRemove = isEdit;
+	const isSave = !isCreate;
 
 	const view = useCallback(() => {
 		setCurrentMode(WIZARD_MODE.VIEW)
@@ -32,6 +34,8 @@ export const useWizard = (params: IUseWizardParams) => {
 		onView: view,
 		isEdit,
 		isView,
-		isCreate
+		isCreate,
+		isRemove,
+		isSave
 	}
 }

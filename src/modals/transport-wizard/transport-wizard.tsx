@@ -48,8 +48,9 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 		hide();
 	};
 
-	const onRemove = () => {
+	const onRemove = async () => {
 		store.transport.remove.run(id);
+		hide();
 	};
 
 
@@ -64,8 +65,6 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
@@ -74,7 +73,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="transport-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}

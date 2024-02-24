@@ -45,8 +45,9 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 		hide();
 	};
 
-	const onRemove = () => () => {
+	const onRemove = () => {
 		store.equipment.remove.run(id);
+		hide()
 	};
 
 	return (   
@@ -60,8 +61,6 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
@@ -70,7 +69,7 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="equipment-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}

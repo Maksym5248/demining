@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
-import { Button, Form, Space, InputNumber, Drawer, Spin, Switch, Divider} from 'antd';
+import { Button, Form, Space, InputNumber, Drawer, Spin, Switch} from 'antd';
 import { observer } from 'mobx-react-lite'
-import { PlusOutlined } from '@ant-design/icons';
 
 import { useStore } from '~/hooks'
 import { IExplosiveObjectTypeValue } from '~/stores'
@@ -60,7 +59,7 @@ export const ExplosiveObjectActionWizardModal  = observer(({ isVisible, hide, on
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="explosive-object-actions--form"
 						onFinish={onFinish}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
@@ -80,15 +79,7 @@ export const ExplosiveObjectActionWizardModal  = observer(({ isVisible, hide, on
 							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 						>
 							<Select
-								dropdownRender={(menu) => (
-									<>
-										{menu}
-										<Divider style={{ margin: '8px 0' }} />
-										<Space style={{ padding: '0 8px 4px' }}>
-											<Button type="text" icon={<PlusOutlined />} onClick={onAddExplosiveObject}>Додати ВНП</Button>
-										</Space>
-									</>
-								)}                  
+								onAdd={onAddExplosiveObject}                  
 								options={explosiveObject.sortedList.map((el) => ({ label: el.fullDisplayName, value: el.id }))}
 							/>
 						</Form.Item>

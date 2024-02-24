@@ -1,34 +1,25 @@
-import { JSXElementConstructor, ReactElement, useCallback } from 'react';
+import { useCallback } from 'react';
 
 import { CloseOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Form, Space} from 'antd';
+import { Button, Form} from 'antd';
 
 import { Select } from '~/components'
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { Modal } from '~/services';
-import { IEmployee } from '~/stores';
+import { IEmployee, IEmployeeAction } from '~/stores';
+import { select } from '~/utils';
 
 interface IEmployeesProps {
 	squadLeads:IEmployee[];
 	workers:IEmployee[];
+	selectedSquadLead?:IEmployeeAction;
+	selectedWorkers?:IEmployeeAction[];
 }
 
-export function Employees({ squadLeads, workers }: IEmployeesProps ) {
+export function Employees({ squadLeads, workers, selectedSquadLead, selectedWorkers }: IEmployeesProps ) {
 	const onAdd = useCallback( () => {
 		Modal.show(MODALS.EMPLOYEES_WIZARD,  { mode: WIZARD_MODE.CREATE})
 	}, []);
-	
-	const dropdownRender = useCallback(
-		(menu:ReactElement<any, string | JSXElementConstructor<any>>) => (
-			<>
-				{menu}
-				<Divider style={{ margin: '8px 0' }} />
-				<Space style={{ padding: '0 8px 4px' }}>
-					<Button type="text" icon={<PlusOutlined />} onClick={onAdd}>Додати</Button>
-				</Space>
-			</>
-		),[onAdd]
-	);
 	
 	return <>
 		<Form.Item
@@ -45,11 +36,13 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 
 					return (
 						<Select
-							options={squadLeads
-								.filter(el => !squadIds.includes(el.id))
-								.map((el) => ({ label: el.fullName, value: el.id }))}
+							options={select.append(
+								squadLeads.filter(el => !squadIds.includes(el.id))
+									.map((el) => ({ label: el.fullName, value: el.id })),
+								{ label: selectedSquadLead?.fullName, value: selectedSquadLead?.employeeId }
+							)}
 							value={getFieldValue("squadLeaderId")}
-							dropdownRender={dropdownRender}
+							onAdd={onAdd}
 						/>
 					)
 				}}
@@ -75,6 +68,7 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 									const squadLeaderId = getFieldValue("squadLeaderId");
 
 									const currentSelectedId = squadIds[name];
+									const selected = selectedWorkers?.find(el => el.employeeId === currentSelectedId);
 
 									return  (
 										<Form.Item
@@ -82,11 +76,13 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 											{...restField}
 										>
 											<Select
-												options={workers
-													.filter(el => el.id !== squadLeaderId)
-												    .filter(el => el.id === currentSelectedId || !squadIds.includes(el.id))
-													.map((el) => ({ label: el?.fullName, value: el.id }))
-												}
+												options={select.append(
+													workers
+														.filter(el => el.id !== squadLeaderId)
+												        .filter(el => el.id === currentSelectedId || !squadIds.includes(el.id))
+														.map((el) => ({ label: el?.fullName, value: el.id })),
+													{ label: selected?.fullName, value: selected?.employeeId }
+												)}
 												value={currentSelectedId}
 												suffixIcon={
 													currentSelectedId
@@ -97,7 +93,7 @@ export function Employees({ squadLeads, workers }: IEmployeesProps ) {
 														/>
 														: <DownOutlined />
 												}
-												dropdownRender={dropdownRender}
+												onAdd={onAdd}
 											/>
 
 										</Form.Item>

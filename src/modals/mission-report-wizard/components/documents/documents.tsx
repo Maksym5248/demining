@@ -1,7 +1,6 @@
-import { JSXElementConstructor, ReactElement, useCallback} from 'react';
+import { useCallback } from 'react';
 
-import { Button, Form, Space, Divider} from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Form} from 'antd';
 
 import { Select } from '~/components'
 import { Modal } from '~/services'
@@ -23,30 +22,6 @@ export function Documents({ missionRequestData, orderData }: DocumentsProps) {
 		Modal.show(MODALS.MISSION_REQUEST_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
 
-	const dropdownRenderOrder = useCallback(
-		(menu:ReactElement<any, string | JSXElementConstructor<any>>) => (
-			<>
-				{menu}
-				<Divider style={{ margin: '8px 0' }} />
-				<Space style={{ padding: '0 8px 4px' }}>
-					<Button type="text" icon={<PlusOutlined />} onClick={onAddOrder}>Додати наказ</Button>
-				</Space>
-			</>
-		),[onAddOrder]
-	);
-
-	const dropdownRenderMissionRequest = useCallback(
-		(menu:ReactElement<any, string | JSXElementConstructor<any>>) => (
-			<>
-				{menu}
-				<Divider style={{ margin: '8px 0' }} />
-				<Space style={{ padding: '0 8px 4px' }}>
-					<Button type="text" icon={<PlusOutlined />} onClick={onAddMissionRequest}>Додати заявку</Button>
-				</Space>
-			</>
-		),[onAddMissionRequest]
-	);
-
 	return (
 		<>
 			<Form.Item
@@ -55,7 +30,7 @@ export function Documents({ missionRequestData, orderData }: DocumentsProps) {
 				rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 			>
 				<Select
-					dropdownRender={dropdownRenderOrder}
+					onAdd={onAddOrder}
 					options={orderData.map((el) => ({ label: `№${el.number} ${el.signedAt.format('DD/MM/YYYY')}`, value: el.id }))}
 				/>
 			</Form.Item>
@@ -65,7 +40,7 @@ export function Documents({ missionRequestData, orderData }: DocumentsProps) {
 				rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 			>
 				<Select
-					dropdownRender={dropdownRenderMissionRequest}
+					onAdd={onAddMissionRequest}
 					options={missionRequestData.map((el) => ({ label: `№${el.number} ${el.signedAt.format('DD/MM/YYYY')}`, value: el.id }))}
 				/>
 			</Form.Item>

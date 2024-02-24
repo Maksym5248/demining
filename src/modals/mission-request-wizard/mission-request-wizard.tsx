@@ -41,7 +41,7 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 		hide();
 	};
 
-	const onRemove = () => () => {
+	const onRemove = () => {
 		store.missionRequest.remove.run(id);
 	};
 
@@ -56,8 +56,6 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
@@ -66,7 +64,7 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="mission-request-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}

@@ -27,23 +27,7 @@ export function WizardButtons({
 	
 	return (
 		<Space>
-			{children}
-			{!!onSave && isSave && (
-				<Tooltip placement="bottomRight" title="Зберегти документ" arrow>
-					<Button icon={<Icon.SaveOutlined/>} onClick={onSave}/>
-				</Tooltip>
-			)}
-			{!!onView && isEdit && (
-				<Tooltip placement="bottomRight" title="Редагувати" arrow>
-					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
-				</Tooltip>
-			)}
-			{!!onEdit && isView && (
-				<Tooltip placement="bottomRight" title="Переглянути" arrow>
-					<Button icon={<Icon.EditOutlined /> } onClick={onEdit}/>
-				</Tooltip>
-			)}
-			{!!onRemove && isRemove && false && (
+			{!!onRemove && isRemove && (
 				<Tooltip placement="bottomRight" title="Видалити" arrow>
 					<Popconfirm
 						title="Видалити"
@@ -53,8 +37,25 @@ export function WizardButtons({
 						cancelText="Ні"
 					
 					>
-						<Button danger style={{ marginLeft: 20}} icon={<Icon.DeleteOutlined /> }/>
+						<Button danger style={{ marginRight: 20}} icon={<Icon.DeleteOutlined /> }/>
 					</Popconfirm>
+				</Tooltip>
+			)}
+			{children}
+
+			{!!onSave && isSave && (
+				<Tooltip placement="bottomRight" title="Зберегти документ" arrow>
+					<Button icon={<Icon.SaveOutlined/>} onClick={onSave}/>
+				</Tooltip>
+			)}
+			{!!onView && isEdit && (
+				<Tooltip placement="bottomRight" title="Переглянути" arrow>
+					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
+				</Tooltip>
+			)}
+			{!!onEdit && isView && (
+				<Tooltip placement="bottomRight" title="Редагувати" arrow>
+					<Button icon={<Icon.EditOutlined /> } onClick={onEdit}/>
 				</Tooltip>
 			)}
 		</Space>

@@ -5,13 +5,12 @@ import { observer } from 'mobx-react-lite'
 
 import { WizardButtons, Select, WizardFooter } from '~/components'
 import { useStore, useWizard } from '~/hooks'
-import { dates } from '~/utils'
-import { WIZARD_MODE } from '~/constants';
+import { dates, select } from '~/utils'
+import { MODALS, WIZARD_MODE } from '~/constants';
+import { Modal } from '~/services';
 
 import { s } from './order-wizard.style'
 import { IOrderForm } from './order-wizard.types';
-
-const { Option } = Select;
 
 interface Props {
   id?: string;
@@ -35,6 +34,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 
 	const isEdit = !!id;
 	const isLoading = (!order.fetchList.isLoaded && order.fetchList.inProgress) || (!order.fetchList.isLoaded && order.fetchList.inProgress);
+	const onAdd = () => Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
 
 	const onFinishCreate = async (values: IOrderForm) => {
 		await order.add.run(values);
@@ -61,8 +61,6 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
@@ -71,7 +69,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="complex-form"
+						name="order-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
@@ -104,11 +102,13 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 							name="signedById"
 							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 						>
-							<Select>
-								{employeesListChief.map(el => (
-									<Option value={el.id} key={el.type}>{el.fullName}</Option>
-								))}
-							</Select>
+							<Select
+							  onAdd={onAdd}
+							  options={select.append(
+									employeesListChief.map((el) => ({ label: el.fullName, value: el.id })),
+									{ label: currentOrder.signedByAction.fullName, value: currentOrder.signedByAction.employeeId }
+								)}
+							/>
 						</Form.Item>
 						<WizardFooter {...wizard} onCancel={hide}/>
 					</Form>

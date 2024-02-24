@@ -6,4 +6,5 @@ export * from './routes-info';
 export * from './sleep';
 export * from './string';
 export * from './validation';
+export * from './ui';
 export * from './data';

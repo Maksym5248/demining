@@ -84,6 +84,10 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	 || !equipment.fetchList.isLoaded
 	 || !employee.fetchList.isLoaded;
 
+	 const transportExplosiveObject = currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
+	 const transportHumans = currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS);
+	 const mineDetector = currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR);
+
 	 const initialValues: Partial<IMissionReportForm> = (wizard.isEdit || wizard.isView) ? {
 		approvedAt: currentMissionReport?.approvedAt,
 		approvedById: currentMissionReport?.approvedByAction?.employeeId,
@@ -101,9 +105,9 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		transportingStart: currentMissionReport?.transportingStart,
 		destroyedStart: currentMissionReport?.destroyedStart,
 		workEnd: currentMissionReport?.workEnd,
-		transportExplosiveObjectId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS))?.transportId,
-		transportHumansId: (currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS))?.transportId,
-		mineDetectorId: (currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR))?.equipmentId,
+		transportExplosiveObjectId: transportExplosiveObject?.transportId,
+		transportHumansId: transportHumans?.transportId,
+		mineDetectorId: mineDetector?.equipmentId,
 		explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
 		squadLeaderId: currentMissionReport?.squadLeaderAction.employeeId,
 		squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
@@ -146,8 +150,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	}
 
 	const onRemove = () => {
-		hide();
 		missionReport.remove.run(id);
+		hide();
 	};
 
 	return (
@@ -161,9 +165,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 			extra={
 				<WizardButtons
 					onRemove={onRemove}
-					isRemove={!wizard.isCreate}
 					onSave={onOpenDocxPreview}
-					isSave={!wizard.isCreate}
 					{...wizard}
 				/>
 			}
@@ -182,8 +184,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 						{ [
 							<Map key="Map" mode={mode} />,
 							<Territory key="Territory"/>,
-							<Approved key="Approved" data={employee.employeesListChief}/>,
-							<Act key="Act"/>,
+							<Approved key="Approved" data={employee.employeesListChief} selectedEmployee={currentMissionReport?.approvedByAction}/>,
+							<Act key="Act" />,
 							<Documents
 								key="Documents"
 								missionRequestData={missionRequest.list.asArray}
@@ -191,12 +193,24 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 							/>,
 							<Timer key="Timer" />,
 							<ExplosiveObjectAction key="ExplosiveObjectAction" />,
-							<Transport key="Transport" dataHumans={transport.transportHumansList} dataExplosiveObject={transport.transportExplosiveObjectList}/>,
-							<Equipment key="Equipment" data={equipment.list.asArray} />,
+							<Transport 
+								key="Transport" 
+								dataHumans={transport.transportHumansList}
+							 	dataExplosiveObject={transport.transportExplosiveObjectList}
+								selectedTransportHumanAction={transportHumans}
+								selectedTransportExplosiveAction={transportExplosiveObject}
+							 />,
+							<Equipment
+								key="Equipment" 
+								data={equipment.list.asArray}
+								selectedMineDetector={mineDetector}
+							  />,
 							<Employees
 								key="Employees" 
 								squadLeads={employee.squadLeads} 
 								workers={employee.workers}
+								selectedSquadLead={currentMissionReport?.squadLeaderAction}
+								selectedWorkers={currentMissionReport?.squadActions}
 							 />
 						].map((el, i) => (
 							<div  key={i}>
