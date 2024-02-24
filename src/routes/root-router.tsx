@@ -1,6 +1,6 @@
 import {
 	RouterProvider,
-	createMemoryRouter,
+	createBrowserRouter,
 } from "react-router-dom";
 
 import {
@@ -21,7 +21,7 @@ import { Layout } from "./layout"
 
 const routes = [
 	{
-		path: ROUTES.MISSION_REPORT_LIST,
+		index: true,
 		Component: MissionReportsListPage,
 	},
 	{
@@ -61,16 +61,14 @@ if(CONFIG.IS_DEV){
 	})
 }
 
-const router = createMemoryRouter([
+const router = createBrowserRouter([
 	{
 		id: "root",
-		path: "/",
+		path: ROUTES.MISSION_REPORT_LIST,
 		Component: Layout,
 		children: routes,
 	},
-], {
-	initialEntries: ["/", ROUTES.MISSION_REPORT_LIST],
-});
+]);
 
 export function RootRouter() {
 	return (

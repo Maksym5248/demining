@@ -5,7 +5,6 @@ import { DB } from '~/db';
 import { Api } from '~/api';
 import { Analytics, Crashlytics } from '~/services';
 import { FIREBASE_CONFIG } from '~/config';
-import { Platform } from '~/services/platform';
 
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
@@ -63,7 +62,6 @@ export const RootStore = types
 			Analytics.init();
 			Crashlytics.init();
 			self.employee.init();
-			yield Platform.init();
 			yield DB.init();
 			yield Api.init();
 			self.viewer.initUser.run();

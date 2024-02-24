@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd';
 
 import { RootStoreContext } from '~/context';
@@ -13,13 +12,12 @@ import { CONFIG } from './config';
 
 import "./index.css";
 
-
 Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
-
 
 const { store } = createStore();
 
-function App() {
+
+export function App() {
 	useEffect(() => {
 		store.init();
 
@@ -40,5 +38,3 @@ function App() {
 	)
 }
 
-const reactRootElement = createRoot(document.getElementById("root") as Element);
-reactRootElement.render(<App/>)

@@ -1,15 +1,21 @@
+import path from 'path';
+
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin' ;
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin' ;
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin' ;
 import Dotenv from 'dotenv-webpack' ;
 import webpack from 'webpack' ;
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { inDev } from './webpack.helpers';
 
 require('dotenv').config();
 
 export const plugins = [
+	new HtmlWebpackPlugin({
+		template: path.resolve(__dirname, 'public/index.html'),
+	}),
 	new webpack.ProvidePlugin({
 		Buffer: ['buffer', 'Buffer'],
 	}),

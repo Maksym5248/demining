@@ -1,4 +1,7 @@
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { ModuleOptions } from 'webpack';
+
+import { inDev } from './webpack.helpers';
 
 export const rules: Required<ModuleOptions>['rules'] = [
 	// Add support for native node modules
@@ -33,4 +36,11 @@ export const rules: Required<ModuleOptions>['rules'] = [
 		exclude: [/\.(cjs|js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
 		loader: require.resolve('file-loader'),
 	},
+	{
+		test: /\.css$/,
+		use: [
+			{ loader: inDev() ? 'style-loader' : MiniCssExtractPlugin.loader },
+			{ loader: 'css-loader' },
+		],
+	}
 ];
