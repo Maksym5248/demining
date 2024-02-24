@@ -80,7 +80,7 @@ export function Layout() {
 			key: '5',
 			icon: <Icon.SettingOutlined />,
 			label: 'Налаштування',
-			onClick: () => navigate("template")
+			onClick: () => navigate(ROUTES.SETTINGS)
 		},
 	];
 

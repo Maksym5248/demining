@@ -8,9 +8,20 @@ import { asyncAction } from '../../utils';
 
 const Store = types
 	.model('ViewerStore', {
-		user: types.maybe(CurrentUser),
+		user: types.maybeNull(types.maybe(CurrentUser)),
 	})
+	.views(self => ({
+		get isAuthorized(){
+			return !!self.user
+		},
+		get isLoadUserInfo(){
+			return self.user !== undefined
+		},
+	}))
 	.actions((self) => ({
+		clearUser() {
+			self.user = null;
+		},
 		setUser(user: User) {
 			self.user = createCurrentUser(user);
 		},
@@ -20,16 +31,17 @@ const Store = types
 	}));
 
 const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
-
 	try {
 		flow.start();
 
 		Auth.onAuthStateChanged((user) => {
+			console.log("user", user)
 			if(user){
 				Analytics.setUserId(user.uid)
 				self.setUser(user);
 			}  else {
-				Auth.signInAnonymously();
+				Analytics.setUserId(null)
+				self.clearUser();
 			}
 		})
 

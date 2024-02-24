@@ -2,6 +2,8 @@ import {
 	RouterProvider,
 	createBrowserRouter,
 } from "react-router-dom";
+import { observer } from "mobx-react";
+import { Spin } from "antd";
 
 import {
 	MissionReportsListPage,
@@ -12,14 +14,17 @@ import {
 	ExplosiveObjectListPage,
 	TransportListPage,
 	EquipmentListPage,
-	DevPage 
+	SignupPage,
+	DevPage,
+	SettingsPage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
+import { useStore } from "~/hooks";
 
 import { Layout } from "./layout"
 
-const routes = [
+const routesMain = [
 	{
 		index: true,
 		Component: MissionReportsListPage,
@@ -49,29 +54,56 @@ const routes = [
 		Component: EquipmentListPage,
 	},
 	{
+		path: ROUTES.SETTINGS,
+		Component: SettingsPage,
+	},
+	{
 		path: "*",
 		Component: ErrorNotFoundPage,
 	},
 ];
 
+const routesAuth = [
+	{
+		index: true,
+		Component: MissionReportsListPage,
+	},
+];
+
 if(CONFIG.IS_DEV){
-	routes.push(  {
+	routesMain.push(  {
 		path: "/dev",
 		Component: DevPage,
 	})
 }
 
-const router = createBrowserRouter([
+const routerMain = createBrowserRouter([
 	{
 		id: "root",
 		path: ROUTES.MISSION_REPORT_LIST,
 		Component: Layout,
-		children: routes,
+		children: routesMain,
 	},
 ]);
 
-export function RootRouter() {
-	return (
-		<RouterProvider router={router} fallbackElement={<p>Initial Load...</p>} />
-	);
-}
+const routerAuth = createBrowserRouter([
+	{
+		id: "root",
+		path: ROUTES.AUTH,
+		Component: SignupPage,
+		children: routesAuth,
+	},
+]);
+
+export const RootRouter = observer(() => {
+	const store = useStore();
+	
+	return store.isInitialized
+	 ? (
+			<RouterProvider
+				router={store.viewer.isAuthorized ? routerMain: routerAuth}
+				fallbackElement={<p>Initial Load...</p>}
+			/>
+		)
+		: <Spin fullscreen size="large" />;
+})

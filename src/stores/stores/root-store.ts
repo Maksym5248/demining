@@ -6,6 +6,7 @@ import { Api } from '~/api';
 import { Analytics, Crashlytics } from '~/services';
 import { FIREBASE_CONFIG } from '~/config';
 
+import { AuthStore } from './auth';
 import { ViewerStore } from './viewer';
 import { EmployeeStore } from './employee';
 import { OrderStore } from './order';
@@ -20,6 +21,7 @@ export type IRootStore = Instance<typeof RootStore>
 
 export const RootStore = types
 	.model('RootStore', {
+		auth: types.optional(AuthStore, {}),
 		employee: types.optional(EmployeeStore, {}),
 		order: types.optional(OrderStore, {}),
 		missionRequest: types.optional(MissionRequestStore, {}),
@@ -28,8 +30,13 @@ export const RootStore = types
 		transport: types.optional(TransportStore, {}),
 		equipment: types.optional(EquipmentStore, {}),
 		viewer: types.optional(ViewerStore, {}),
-		isInitialized: false,
+		isLoaded: false,
 	})
+	.views(self => ({
+		get isInitialized(){
+			return !!self.isLoaded && self.viewer.isLoadUserInfo
+		},
+	}))
 	.actions((self) => {
 		const { SecureStorage, Storage } = getEnv(self);
     
@@ -64,8 +71,13 @@ export const RootStore = types
 			self.employee.init();
 			yield DB.init();
 			yield Api.init();
-			self.viewer.initUser.run();
 
-			self.isInitialized = true;
+			try {
+				yield self.viewer.initUser.run();
+			} catch(e){
+				console.log("e", e)
+			}
+
+			self.isLoaded = true;
 		}),
 	}));

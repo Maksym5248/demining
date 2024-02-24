@@ -1,23 +1,31 @@
 import { getApp } from "firebase/app";
 import { 
-	signInAnonymously,
 	getAuth, 
 	onAuthStateChanged,
 	NextOrObserver,
-	User, 
+	User,
+	GoogleAuthProvider,
+	signInWithPopup,
+	signOut,
 } from "firebase/auth";
 
 class AuthClass {
+	googleProvide = new GoogleAuthProvider();
+
 	private get auth(){
 		return getAuth(getApp())
 	}
 
-	async signInAnonymously() {
-		return signInAnonymously(this.auth)
-	}
-
 	onAuthStateChanged(fn:NextOrObserver<User>) {
 		onAuthStateChanged(this.auth, fn);
+	}
+
+	async signInWithGoogle(){
+		await signInWithPopup(this.auth, this.googleProvide)
+	}
+
+	async signOut(){
+		await signOut(this.auth);
 	}
 }
 

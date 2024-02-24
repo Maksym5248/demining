@@ -5,6 +5,7 @@ export * from "./explosive-object-list";
 export * from "./mission-request-list";
 export * from "./mission-reports-list";
 export * from "./orders-list";
+export * from "./signup";
 export * from "./transport-list";
 export * from "./equipment-list";
-export * from "./template";
+export * from "./settings";

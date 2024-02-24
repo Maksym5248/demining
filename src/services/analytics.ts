@@ -36,9 +36,9 @@ class AnalyticsClass {
 		Logger.log(`ANALYTICS - Event: ${name}`);
 	}
 
-	setUserId = (uid: string) => {
+	setUserId = (uid: string | null) => {
 		setUserId(this.analytics, uid);
-		Crashlytics.setUser({id: uid});
+		Crashlytics.setUser(uid ? {id: uid}: null);
 		Logger.log(`ANALYTICS: User ID: ${uid}`);
 	};
 }
