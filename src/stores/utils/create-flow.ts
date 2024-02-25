@@ -1,5 +1,5 @@
 import { types } from 'mobx-state-tree';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 import { error } from '~/utils';
 
@@ -36,7 +36,7 @@ export const AsyncModel = types
 		},
 
 		get errorMessage(): string | null {
-			return _.get(self, 'error.message', null);
+			return get(self, 'error.message', null);
 		},
 
 		get inProgressAgain() {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Modal, message } from 'antd';
 import { observer } from 'mobx-react-lite'
-import { toLower } from 'lodash';
+import toLower from 'lodash/toLower';
 import { Dayjs } from 'dayjs';
 
 import { useAsyncEffect, useStore } from '~/hooks'

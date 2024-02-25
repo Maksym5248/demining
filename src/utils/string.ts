@@ -1,9 +1,10 @@
-import _ from "lodash"
+import camelCase from "lodash/camelCase"
+import upperFirst from "lodash/upperFirst"
 
 export const toUpper = (text: string) => (typeof text === 'string' ? text.toUpperCase() : text);
 export const toLower = (text: string) => (typeof text === 'string' ? text.toLowerCase() : text);
 
-export const toCamelCase = (str:string) => _.camelCase(str);
+export const toCamelCase = (str:string) => camelCase(str);
 
 
 export const isString = (text: string) => typeof text === 'string';
@@ -18,7 +19,7 @@ const getFullName = ({
     surname: string
 }) => `${lastName} ${firstName} ${surname}`
 
-const toUpperFirst = (str:string) => _.upperFirst(str);
+const toUpperFirst = (str:string) => upperFirst(str);
 
 
 export const str = {

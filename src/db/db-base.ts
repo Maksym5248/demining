@@ -1,6 +1,6 @@
 import { Connection, ISelectQuery, IWhereQuery, IWhereQueryOption } from 'jsstore';
 import uuid from 'uuid/v4';
-import _ from 'lodash';
+import isArray from 'lodash/isArray';
 
 export class DBBase<T extends {id: string}> {
 	db: Connection;
@@ -93,7 +93,7 @@ export class DBBase<T extends {id: string}> {
 			.map(value => this.add(value)));
 
 		// @ts-ignore
-		return _.isArray(res) ? res: null;
+		return isArray(res) ? res: null;
 	}
 
 	async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {

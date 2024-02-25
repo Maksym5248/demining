@@ -7,6 +7,7 @@ import {
 	GoogleAuthProvider,
 	signInWithPopup,
 	signOut,
+	createUserWithEmailAndPassword,
 } from "firebase/auth";
 
 class AuthClass {
@@ -27,6 +28,11 @@ class AuthClass {
 	async signOut(){
 		await signOut(this.auth);
 	}
+
+	async createUserWithEmailAndPassword(email:string, password: string){
+		await createUserWithEmailAndPassword(this.auth, email, password);
+	}
+
 }
 
 export const Auth = new AuthClass();

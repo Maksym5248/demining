@@ -2,12 +2,14 @@ export enum ROUTES {
     MISSION_REQUEST_LIST ="/mission-request-list",
     ORDER_LIST ="/order-list",
     MISSION_REPORT_LIST ="/",
-	AUTH ="/",
     EMPLOYEES_LIST ="/employees-list",
     EXPLOSIVE_OBJECT_LIST ="/explosive-object-list",
     TRANSPORT_LIST ="/transport-list",
     EQUIPMENT_LIST ="/equipment-list",
-	SETTINGS = "/settings"
+	SETTINGS = "/settings",
+
+	AUTH ="/",
+	LOGIN ="/login",
 }
 
 export const routesInfo = {
@@ -34,5 +36,8 @@ export const routesInfo = {
 	},
 	[ROUTES.SETTINGS]: {
 		title: "Налаштування",
+	},
+	[ROUTES.LOGIN]: {
+		title: "Увійти",
 	},
 }

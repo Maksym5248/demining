@@ -35,6 +35,9 @@ const config: Configuration = {
 			'~': path.resolve(__dirname, 'src'),
 		},
 	},
+	watchOptions: {
+		ignored: /node_modules/,
+	},
 };
 // eslint-disable-next-line import/no-default-export
 export default config;

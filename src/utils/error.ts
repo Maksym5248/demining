@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 const getMessage = (e: Error) =>
 	get(e, 'response.data.message') || get(e, 'message') || 'errors.unexpected_error';

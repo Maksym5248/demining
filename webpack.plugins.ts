@@ -7,12 +7,19 @@ import { sentryWebpackPlugin } from '@sentry/webpack-plugin' ;
 import Dotenv from 'dotenv-webpack' ;
 import webpack from 'webpack' ;
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
 import { inDev } from './webpack.helpers';
+
 
 require('dotenv').config();
 
 export const plugins = [
+	new CopyPlugin({
+		patterns: [
+		  { from: 'assets/icon.ico', to: 'icon.ico' },
+		],
+	}),
 	new HtmlWebpackPlugin({
 		template: path.resolve(__dirname, 'public/index.html'),
 	}),
