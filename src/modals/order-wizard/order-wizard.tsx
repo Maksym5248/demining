@@ -37,7 +37,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 	const onAdd = () => Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
 
 	const onFinishCreate = async (values: IOrderForm) => {
-		await order.add.run(values);
+		await order.create.run(values);
 		hide();
 	};
 

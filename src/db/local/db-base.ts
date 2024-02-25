@@ -71,7 +71,7 @@ export class DBBase<T extends {id: string}> {
 		return !!res
 	}
 
-	async add(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T>{
+	async create(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T>{
 		const id = await this.uuid();
 
 		const res = await this.db.insert<T>({
@@ -90,7 +90,7 @@ export class DBBase<T extends {id: string}> {
 
 		const res = await Promise.all(values
 			.filter((value, i) => !filteredValues[i])
-			.map(value => this.add(value)));
+			.map(value => this.create(value)));
 
 		// @ts-ignore
 		return isArray(res) ? res: null;

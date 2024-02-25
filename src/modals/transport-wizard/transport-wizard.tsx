@@ -39,7 +39,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 	const isLoading = !store.transport.fetchList.isLoaded && store.transport.fetchList.inProgress;
 
 	const onFinishCreate = async (values: ITransportForm) => {
-		await store.transport.add.run(values);
+		await store.transport.create.run(values);
 		hide();
 	};
 

@@ -47,25 +47,26 @@ export const RootStore = types
 			},
 			createMocks(){
 				mockEmployees.forEach(el => {
-					self.employee.add.run(el);
+					self.employee.create.run(el);
 				});
 
 				mockMissionRequest.forEach(el => {
-					self.missionRequest.add.run(el);
+					self.missionRequest.create.run(el);
 				});
 
 				mockTransport.forEach(el => {
-					self.transport.add.run(el);
+					self.transport.create.run(el);
 				});
 
 				mockEquipment.forEach(el => {
-					self.equipment.add.run(el);
+					self.equipment.create.run(el);
 				});
 			},
 		};
 	}).actions((self) => ({
 		init: flow(function* init() {
 			initializeApp(FIREBASE_CONFIG);
+
 			Analytics.init();
 			Crashlytics.init();
 			self.employee.init();

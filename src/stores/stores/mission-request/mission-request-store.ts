@@ -13,11 +13,11 @@ const Store = types
 		list: createList<IMissionRequest>("MissionRequestsList", safeReference(MissionRequest), { pageSize: 20 }),
 	});
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRequestValue>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRequestValue>) => async function addEmployeeFlow({ flow, self }) {
 	try {
 		flow.start();
 
-		const res = await Api.missionRequest.add(createMissionRequestDTO(data));
+		const res = await Api.missionRequest.create(createMissionRequestDTO(data));
 		const missionRequest = createMissionRequest(res);
 
 		self.collection.set(res.id, missionRequest);
@@ -67,4 +67,4 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const MissionRequestStore = Store.props({ add, remove, fetchList })
+export const MissionRequestStore = Store.props({ create, remove, fetchList })

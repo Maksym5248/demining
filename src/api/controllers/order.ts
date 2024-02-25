@@ -4,14 +4,14 @@ import { UpdateValue } from '~/types';
 
 import { IOrderDTO, IOrderDTOParams } from '../types';
 
-const add = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
-	const order = await DB.order.add({
+const create = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
+	const order = await DB.order.create({
 		...value,
 		signedByActionId: DB_FIELD.NONE
 	});
 
 	const { id, ...employee} = await DB.employee.get(value.signedById);
-	const employeeAction = await DB.employeeAction.add({
+	const employeeAction = await DB.employeeAction.create({
 		...employee,
 		documentType: DOCUMENT_TYPE.ORDER,
 		documentId: order.id,
@@ -79,7 +79,7 @@ const getList = async ():Promise<IOrderDTO[]> => {
 };
 
 export const order = {
-	add,
+	create,
 	update,
 	remove,
 	getList

@@ -397,15 +397,15 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 	];
 
 	const createListPromises = [
-		Promise.all(createList.squadIds.map(id => DB.employeeAction.add(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB))),
+		Promise.all(createList.squadIds.map(id => DB.employeeAction.create(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB))),
 		Promise.all(createList.explosiveObjectIds.map(
-			explosiveObjectId => DB.explosiveObjectAction.add(
+			explosiveObjectId => DB.explosiveObjectAction.create(
 					explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectId) as IExplosiveObjectActionDB
 			)
 		)),
-		createList.transportHumansId && transportHumansAction ? DB.transportAction.add(transportHumansAction) : undefined,
-		createList.transportExplosiveObjectId && transportExplosiveObjectAction ? DB.transportAction.add(transportExplosiveObjectAction) : undefined,
-		createList.mineDetectorId && mineDetectorAction ? DB.equipmentAction.add(mineDetectorAction) : undefined,
+		createList.transportHumansId && transportHumansAction ? DB.transportAction.create(transportHumansAction) : undefined,
+		createList.transportExplosiveObjectId && transportExplosiveObjectAction ? DB.transportAction.create(transportExplosiveObjectAction) : undefined,
+		createList.mineDetectorId && mineDetectorAction ? DB.equipmentAction.create(mineDetectorAction) : undefined,
 	];
 	
 	const [
@@ -467,7 +467,7 @@ export const updateController = async (id:string, value: CreateValue<IMissionRep
 	return get(missionReportDTO.id);
 }
 
-export const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
+export const create = async (value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
 	const {
 		approvedById,
 		mapView, 
@@ -494,7 +494,7 @@ export const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<I
 	let initialMissionReport;
 	
 	try {
-		initialMissionReport  = await DB.missionReport.add(initialMissionReportData)
+		initialMissionReport  = await DB.missionReport.create(initialMissionReportData)
 
 		const {
 			mapViewValue,
@@ -517,14 +517,14 @@ export const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<I
 			mineDetectorActionDB,
 			explosiveObjectsActionsDB
 		] = await Promise.all([
-			DB.mapViewAction.add(mapViewValue),
-			DB.employeeAction.add(approvedByAction),
-			DB.employeeAction.add(squadLeaderAction),
-			Promise.all(squadActions.map(el  => DB.employeeAction.add(el))),
-			transportHumansAction ? DB.transportAction.add(transportHumansAction) : Promise.resolve(undefined),
-			transportExplosiveObjectAction ? DB.transportAction.add(transportExplosiveObjectAction) : Promise.resolve(undefined),
-			mineDetectorAction ? DB.equipmentAction.add(mineDetectorAction) : Promise.resolve(undefined),
-			Promise.all(explosiveObjectsActions.map(el  => DB.explosiveObjectAction.add(el))),
+			DB.mapViewAction.create(mapViewValue),
+			DB.employeeAction.create(approvedByAction),
+			DB.employeeAction.create(squadLeaderAction),
+			Promise.all(squadActions.map(el  => DB.employeeAction.create(el))),
+			transportHumansAction ? DB.transportAction.create(transportHumansAction) : Promise.resolve(undefined),
+			transportExplosiveObjectAction ? DB.transportAction.create(transportExplosiveObjectAction) : Promise.resolve(undefined),
+			mineDetectorAction ? DB.equipmentAction.create(mineDetectorAction) : Promise.resolve(undefined),
+			Promise.all(explosiveObjectsActions.map(el  => DB.explosiveObjectAction.create(el))),
 		])
 
 		await DB.missionReport.update(initialMissionReport.id, {
@@ -551,7 +551,7 @@ export const add = async (value: CreateValue<IMissionReportDTOParams>):Promise<I
 };
 
 export const missionReport = {
-	add,
+	create,
 	update: updateController,
 	get,
 	remove,

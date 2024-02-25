@@ -14,7 +14,7 @@ import {
 	ITransportActionDB,
 	IEquipmentDB,
 	IEquipmentActionDB
-} from '../types';
+} from '../../types';
 
 export class DBBase<T extends {id: string}> {
 	uuid = jest.fn(() => Promise.resolve("id"))
@@ -25,7 +25,7 @@ export class DBBase<T extends {id: string}> {
 
 	exist = jest.fn(() => Promise.resolve(false))
 
-	add = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "id">) => ({
+	create = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "id">) => ({
 		id: "id",
 		...value, 
 		createdAt: new Date(),

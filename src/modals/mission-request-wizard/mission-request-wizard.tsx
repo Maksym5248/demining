@@ -32,7 +32,7 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 	const isLoading = !store.missionRequest.fetchList.isLoaded && store.missionRequest.fetchList.inProgress;
 
 	const onFinishCreate = async (values: IMissionRequestForm) => {
-		await store.missionRequest.add.run(values);
+		await store.missionRequest.create.run(values);
 		hide();
 	};
 

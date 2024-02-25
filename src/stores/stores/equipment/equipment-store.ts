@@ -22,11 +22,11 @@ const Store = types
 		},
 	}));
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
 	try {
 		flow.start();
 
-		const res = await Api.equipment.add(createEquipmentDTO(data));
+		const res = await Api.equipment.create(createEquipmentDTO(data));
 		const value = createEquipment(res);
 
 		self.collection.set(res.id, value);
@@ -77,4 +77,4 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const EquipmentStore = Store.props({ add, remove, fetchList })
+export const EquipmentStore = Store.props({ create, remove, fetchList })

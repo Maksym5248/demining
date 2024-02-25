@@ -34,7 +34,7 @@ import {
 	ITransportActionDB,
 	IEquipmentDB,
 	IEquipmentActionDB
-} from './types';
+} from '../types';
 
 const getSchema = ():IDataBase => ({
 	name: CONFIG.DB_NAME,

@@ -44,7 +44,7 @@ const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiv
 	try {
 		flow.start();
 
-		const res = await Api.explosiveObjectType.add(createExplosiveObjectTypeDTO(data));
+		const res = await Api.explosiveObjectType.create(createExplosiveObjectTypeDTO(data));
 		const value = createExplosiveObjectType(res);
 
 		self.collectionTypes.set(res.id, value);
@@ -56,11 +56,11 @@ const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiv
 	}
 });
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
 
-		const res = await Api.explosiveObject.add(createExplosiveObjectDTO(data));
+		const res = await Api.explosiveObject.create(createExplosiveObjectDTO(data));
 		const value = createExplosiveObject(res);
 
 		self.collection.set(res.id, value);
@@ -138,4 +138,4 @@ const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function 
 	}
 });
 
-export const ExplosiveObjectStore = Store.props({ add, addType, remove, fetchList, fetchListTypes })
+export const ExplosiveObjectStore = Store.props({ create, addType, remove, fetchList, fetchListTypes })

@@ -12,7 +12,8 @@ import {
 	IEquipmentDB,
 	IEquipmentActionDB,
 	IMissionReportDB,
-	IMapViewActionActionDB
+	IMapViewActionActionDB,
+	IUserDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -123,7 +124,7 @@ export interface IMissionReportDTOParamsUpdate {
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
     squadLeaderId: string;
     squadIds: string[];
-    address: string;
+    address: string; 
 }
 
-
+export interface IUserDTO extends IUserDB {}
