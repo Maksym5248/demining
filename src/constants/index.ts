@@ -14,6 +14,5 @@ export * from './routes';
 export * from './secure-storage';
 export * from './storage';
 export * from './tables';
-export * from './user';
 
 

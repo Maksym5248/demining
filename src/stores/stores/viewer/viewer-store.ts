@@ -1,7 +1,8 @@
 import { types, Instance } from 'mobx-state-tree';
-import { User } from 'firebase/auth';
+import { message } from 'antd';
 
-import { Analytics, Auth } from "~/services";
+import { Analytics, Auth, Logger } from "~/services";
+import { Api, IUserDTO } from '~/api';
 
 import { CurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
@@ -19,29 +20,45 @@ const Store = types
 		},
 	}))
 	.actions((self) => ({
-		clearUser() {
-			self.user = null;
-		},
-		setUser(user: User) {
+		setUser(user: IUserDTO) {
+			// @ts-expect-error
 			self.user = createCurrentUser(user);
 		},
 		removeUser() {
-			self.user = undefined;
+			self.user = null;
+		},
+	})).actions((self) => ({
+		async getUserData(id: string) {
+			try {
+				let user = await Api.user.get(id);
+
+				if(!user) {
+					user = await Api.user.create({ id });
+				}
+
+				Analytics.setUserId(id);
+				self.setUser(user)
+			} catch(e){
+				Logger.error(e)
+				self.removeUser();
+				message.error('Bиникла помилка');
+			}
+
 		},
 	}));
+
 
 const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
 	try {
 		flow.start();
 
 		Auth.onAuthStateChanged((user) => {
-			console.log("user", user)
 			if(user){
 				Analytics.setUserId(user.uid)
-				self.setUser(user);
+				self.getUserData(user.uid);
 			}  else {
 				Analytics.setUserId(null)
-				self.clearUser();
+				self.removeUser();
 			}
 		})
 

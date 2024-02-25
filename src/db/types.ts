@@ -1,4 +1,4 @@
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE , USER_ROLES } from "~/constants"
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES } from "~/constants"
 import { ICircle, ILatLng } from "~/types";
 
 export interface ILinkedToDocumentDB {
@@ -142,7 +142,7 @@ export interface IMissionReportDB {
 
 export interface IUserDB {
     id: string;
-    roles: USER_ROLES[];
+    roles: ROLES[];
     organizationId: string | null;
     createdAt: Date;
     updatedAt: Date;

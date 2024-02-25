@@ -6,5 +6,5 @@ import {
 } from '../types';
 
 export const DBRemote = {
-	user: new DBBase<IUserDB>(TABLES.USER),
+	user: new DBBase<IUserDB>(TABLES.USERS),
 }

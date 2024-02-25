@@ -70,6 +70,7 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 
 	async get(id:string):Promise<T | null> {
 		const ref = doc(this.collection, id);
+
 		const res = await getDoc(ref);
 	
 		let data:T & {
@@ -113,7 +114,7 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 			createdAt: Timestamp,
 			updatedAt: Timestamp,
 		};
-	
+
 		await setDoc(ref, newValue);
 	
 		return {
