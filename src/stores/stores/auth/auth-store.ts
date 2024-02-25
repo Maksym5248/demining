@@ -46,8 +46,22 @@ const signUpWithEmail = asyncAction<Instance<typeof Store>>((email:string, passw
 	}
 });
 
+const signInWithEmail = asyncAction<Instance<typeof Store>>((email:string, password: string) => async ({ flow }) => {
+	try {
+		flow.start();
+
+		await Auth.signInWithEmailAndPassword(email, password);
+
+		flow.success();
+	} catch (e) {
+		message.error("Не вдалось увйти, спробуйте ще раз")
+		flow.failed(e as Error, true);
+	}
+});
+
 export const AuthStore = Store.props({
 	signInWithGoogle,
 	signInOut,
-	signUpWithEmail
+	signUpWithEmail,
+	signInWithEmail
 });

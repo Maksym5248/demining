@@ -6,24 +6,37 @@ import { Link } from 'react-router-dom';
 import { Icon } from "~/components"
 import { useStore } from '~/hooks';
 import { ROUTES } from '~/constants';
+import { error } from '~/utils';
 
 import AppIcon from '../../../assets/icon.svg';
-import { s } from './signup.styles';
+import { s } from './login.styles';
 
-interface ISignInFrom {
+interface ILoginFrom {
 	email: string;
 	password: string;
 }
 
-export const SignupPage  = observer(() => {
+export const LoginPage  = observer(() => {
+	const [form] = Form.useForm();
 	const store = useStore();
 
 	const handleGoogleSignIn = () => {
 		store.auth.signInWithGoogle.run();
 	};
 
-	const onFinish = async (values: ISignInFrom) => {
-		store.auth.signUpWithEmail.run(values.email, values.password);
+	const onFinish = async (values: ILoginFrom) => {
+		try {
+			await store.auth.signInWithEmail.run(values.email, values.password);
+		} catch (e) {
+			const message = error.getErrorTranslation(store.auth.signInWithEmail.error);
+			
+			if(message){
+				form.setFields([{
+					name: message?.field,
+					errors: [message?.message],
+				}]);
+			}
+		}
 	};
 
 	const isLoading = store.auth.signInWithGoogle.inProgress || store.auth.signInWithGoogle.inProgress;
@@ -32,9 +45,10 @@ export const SignupPage  = observer(() => {
 		<div css={s.container}>
 			<AppIcon css={s.appIcon}/>
 			<div css={s.content}>
-				<Typography.Title level={2} css={s.title}>Реєстрація</Typography.Title>
+				<Typography.Title level={2} css={s.title}>Увійти</Typography.Title>
 				<Form
-					name="sign_in"
+					form={form}
+					name="login"
 					onFinish={onFinish}
 					autoComplete="off"
 				>
@@ -69,16 +83,16 @@ export const SignupPage  = observer(() => {
 
 					<Form.Item>
 						<Button type="primary" htmlType="submit" size="large" className="login-form-button" css={s.button}>
-							Зареєструватись
+							Увійти
 						</Button>
 					</Form.Item>
 					<Typography.Paragraph style={{ marginTop: 16, textAlign: 'center' }}>
-						Вже є акаунт? <Link to={ROUTES.SIGNUP}>Увійти</Link>
+						Немає акаунта? <Link to={ROUTES.SIGNUP}>Зареєструватись</Link>
 					</Typography.Paragraph>
 				</Form>
 				<Divider>Або</Divider>
 				<Button type="primary" size="large" icon={<GoogleOutlined />} onClick={handleGoogleSignIn} css={s.buttonGoogle}>
-					Зареєструватись з google
+					Увійти з google
 				</Button>
 			</div>
 			{isLoading && <Spin fullscreen size="large" />}

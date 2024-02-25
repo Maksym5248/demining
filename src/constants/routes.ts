@@ -9,7 +9,7 @@ export enum ROUTES {
 	SETTINGS = "/settings",
 
 	AUTH ="/",
-	LOGIN ="/login",
+	SIGNUP ="/signup",
 }
 
 export const routesInfo = {
@@ -37,7 +37,7 @@ export const routesInfo = {
 	[ROUTES.SETTINGS]: {
 		title: "Налаштування",
 	},
-	[ROUTES.LOGIN]: {
-		title: "Увійти",
+	[ROUTES.SIGNUP]: {
+		title: "Зареєструватись",
 	},
 }

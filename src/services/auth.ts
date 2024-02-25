@@ -8,6 +8,7 @@ import {
 	signInWithPopup,
 	signOut,
 	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword
 } from "firebase/auth";
 
 class AuthClass {
@@ -32,7 +33,10 @@ class AuthClass {
 	async createUserWithEmailAndPassword(email:string, password: string){
 		await createUserWithEmailAndPassword(this.auth, email, password);
 	}
-
+	
+	async signInWithEmailAndPassword(email:string, password: string){
+		await signInWithEmailAndPassword(this.auth, email, password);
+	}
 }
 
 export const Auth = new AuthClass();

@@ -16,7 +16,8 @@ import {
 	EquipmentListPage,
 	SignupPage,
 	DevPage,
-	SettingsPage
+	SettingsPage,
+	LoginPage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
@@ -63,13 +64,6 @@ const routesMain = [
 	},
 ];
 
-const routesAuth = [
-	{
-		index: true,
-		Component: MissionReportsListPage,
-	},
-];
-
 if(CONFIG.IS_DEV){
 	routesMain.push(  {
 		path: "/dev",
@@ -90,8 +84,11 @@ const routerAuth = createBrowserRouter([
 	{
 		id: "root",
 		path: ROUTES.AUTH,
+		Component: LoginPage,
+	},
+	{
+		path: ROUTES.SIGNUP,
 		Component: SignupPage,
-		children: routesAuth,
 	},
 ]);
 
@@ -105,5 +102,9 @@ export const RootRouter = observer(() => {
 				fallbackElement={<p>Initial Load...</p>}
 			/>
 		)
-		: <Spin fullscreen size="large" />;
+		: (
+			<div style={{ flex: 1, background: "#4070f4"}}>
+				<Spin fullscreen size="large" />
+			</div>
+		);
 })

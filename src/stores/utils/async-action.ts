@@ -46,6 +46,9 @@ export function asyncAction<T>(
 
 				return promise();
 			},
+			clearError(){
+				self.error = null
+			}
 		}));
 
 	return types.optional(FlowModel, {});

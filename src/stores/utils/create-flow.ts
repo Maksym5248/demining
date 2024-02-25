@@ -3,20 +3,6 @@ import get from 'lodash/get';
 
 import { error } from '~/utils';
 
-const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-
-const integrateDevTools = (err: Error) => {
-	if (IS_DEV && process.env.JEST_WORKER_ID === undefined) {
-
-		const { message, stack } = err;
-		if (stack) {
-			console.error(message, stack);
-		} else {
-			console.log(`Error:\n${message}`);
-		}
-	}
-};
-
 const ErrorModel = types.model({
 	message: '',
 	status: types.maybeNull(types.number),
@@ -69,11 +55,8 @@ export const AsyncModel = types
 			if (!self.hasEverBeenRan) {
 				self.hasEverBeenRan = true;
 			}
-
-			integrateDevTools(e);
-
+			console.log("e-------", e)
 			self.inProgress = false;
-
 			self.error = error.createError(e);
 
 			if (throwError) {
