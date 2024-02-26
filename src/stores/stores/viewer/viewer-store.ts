@@ -10,13 +10,11 @@ import { asyncAction } from '../../utils';
 const Store = types
 	.model('ViewerStore', {
 		user: types.maybeNull(types.maybe(CurrentUser)),
+		isLoadingUserInfo: false
 	})
 	.views(self => ({
-		get isAuthorized(){
+		get isUser(){
 			return !!self.user
-		},
-		get isLoadUserInfo(){
-			return self.user !== undefined
 		},
 	}))
 	.actions((self) => ({
@@ -27,8 +25,13 @@ const Store = types
 		removeUser() {
 			self.user = null;
 		},
+		setLoadingUserInfo(value: boolean) {
+			self.isLoadingUserInfo = value;
+		},
 	})).actions((self) => ({
 		async getUserData(id: string) {
+			self.setLoadingUserInfo(true);
+
 			try {
 				let user = await Api.user.get(id);
 
@@ -36,14 +39,15 @@ const Store = types
 					user = await Api.user.create({ id });
 				}
 
-				Analytics.setUserId(id);
 				self.setUser(user)
+				Analytics.setUserId(id);
 			} catch(e){
-				Logger.error(e)
-				self.removeUser();
+				Logger.error(e);
 				message.error('Bиникла помилка');
+				self.removeUser();
 			}
-
+			
+			self.setLoadingUserInfo(false);
 		},
 	}));
 

@@ -34,7 +34,7 @@ export const RootStore = types
 	})
 	.views(self => ({
 		get isInitialized(){
-			return !!self.isLoaded && self.viewer.isLoadUserInfo
+			return !!self.isLoaded && !self.viewer.isLoadingUserInfo
 		},
 	}))
 	.actions((self) => {

@@ -10,6 +10,7 @@ export enum ROUTES {
 
 	AUTH ="/",
 	SIGNUP ="/signup",
+	WAITING_APPROVE ="/waiting-approve",
 }
 
 export const routesInfo = {
@@ -39,5 +40,8 @@ export const routesInfo = {
 	},
 	[ROUTES.SIGNUP]: {
 		title: "Зареєструватись",
+	},
+	[ROUTES.WAITING_APPROVE]: {
+		title: "Очікування підтвердження",
 	},
 }

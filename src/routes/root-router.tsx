@@ -17,7 +17,8 @@ import {
 	SignupPage,
 	DevPage,
 	SettingsPage,
-	LoginPage
+	LoginPage,
+	WaitingApprovePage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
@@ -83,7 +84,7 @@ const routerMain = createBrowserRouter([
 const routerAuth = createBrowserRouter([
 	{
 		id: "root",
-		path: ROUTES.AUTH,
+		index: true,
 		Component: LoginPage,
 	},
 	{
@@ -92,13 +93,32 @@ const routerAuth = createBrowserRouter([
 	},
 ]);
 
+const waitingApproveAuth = createBrowserRouter([
+	{
+		id: "root",
+		index: true,
+		Component: WaitingApprovePage,
+	},
+]);
+
 export const RootRouter = observer(() => {
 	const store = useStore();
+
+	const getRoute = () => {
+		if(store.viewer.user?.isAuthorized){
+			return routerMain;
+		}
+		if(!store.viewer.user?.isAuthorized && store.viewer.isUser){
+			return waitingApproveAuth
+		} 
+
+		return routerAuth
+	}
 	
 	return store.isInitialized
-	 ? (
+		? (
 			<RouterProvider
-				router={store.viewer.isAuthorized ? routerMain: routerAuth}
+				router={getRoute()}
 				fallbackElement={<p>Initial Load...</p>}
 			/>
 		)

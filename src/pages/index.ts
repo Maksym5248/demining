@@ -10,3 +10,4 @@ export * from "./login";
 export * from "./transport-list";
 export * from "./equipment-list";
 export * from "./settings";
+export * from "./waiting-approve";

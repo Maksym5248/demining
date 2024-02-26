@@ -13,4 +13,15 @@ export const CurrentUser = types.model('CurrentUser', {
 	organizationId: types.maybe(types.maybeNull(types.string)),
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
-});
+}).views(self => ({
+	get isRootAdmin(){
+		return self.roles.includes(ROLES.ROOT_ADMIN)
+	},
+	get isOrganizationAdmin(){
+		return self.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!self.organizationId
+	},
+})).views(self => ({
+	get isAuthorized(){
+		return !!self.isRootAdmin || !!self.isOrganizationAdmin;
+	},
+}));
