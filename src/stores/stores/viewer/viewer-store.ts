@@ -10,7 +10,7 @@ import { asyncAction } from '../../utils';
 const Store = types
 	.model('ViewerStore', {
 		user: types.maybeNull(types.maybe(CurrentUser)),
-		isLoadingUserInfo: false
+		isLoadingUserInfo: true
 	})
 	.views(self => ({
 		get isUser(){
@@ -30,8 +30,6 @@ const Store = types
 		},
 	})).actions((self) => ({
 		async getUserData(id: string) {
-			self.setLoadingUserInfo(true);
-
 			try {
 				let user = await Api.user.get(id);
 
@@ -63,6 +61,7 @@ const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }
 			}  else {
 				Analytics.setUserId(null)
 				self.removeUser();
+				self.setLoadingUserInfo(true);
 			}
 		})
 
