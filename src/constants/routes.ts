@@ -1,14 +1,16 @@
 export enum ROUTES {
     MISSION_REQUEST_LIST ="/mission-request-list",
     ORDER_LIST ="/order-list",
-    MISSION_REPORT_LIST ="/",
+    MISSION_REPORT_LIST ="/mission-report",
     EMPLOYEES_LIST ="/employees-list",
     EXPLOSIVE_OBJECT_LIST ="/explosive-object-list",
     TRANSPORT_LIST ="/transport-list",
     EQUIPMENT_LIST ="/equipment-list",
 	SETTINGS = "/settings",
 
-	AUTH ="/",
+	ORGANIZATIONS_LIST = "/organization-list",
+
+	AUTH ="/login",
 	SIGNUP ="/signup",
 	WAITING_APPROVE ="/waiting-approve",
 }
@@ -37,6 +39,12 @@ export const routesInfo = {
 	},
 	[ROUTES.SETTINGS]: {
 		title: "Налаштування",
+	},
+	[ROUTES.ORGANIZATIONS_LIST]: {
+		title: "Організації",
+	},
+	[ROUTES.AUTH]: {
+		title: "Увійти",
 	},
 	[ROUTES.SIGNUP]: {
 		title: "Зареєструватись",

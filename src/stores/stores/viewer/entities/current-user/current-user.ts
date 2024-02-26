@@ -24,4 +24,11 @@ export const CurrentUser = types.model('CurrentUser', {
 	get isAuthorized(){
 		return !!self.isRootAdmin || !!self.isOrganizationAdmin;
 	},
+})).views(self => ({
+	get isVisibleOrganizationRoutes(){
+		return !!self.isOrganizationAdmin;
+	},
+	get isVisibleOrganizationsListRoute(){
+		return !!self.isRootAdmin;
+	},
 }));

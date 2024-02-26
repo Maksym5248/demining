@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Layout as Lay, Menu, Breadcrumb } from 'antd';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { observer } from "mobx-react-lite";
 
 import { Icon } from '~/components';
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
-import { useNavigate } from "~/hooks";
+import { useNavigate, useStore } from "~/hooks";
 
 import { nav } from "../../utils/routes-info";
 import { s } from './layout.styles';
 
 const { Sider, Content } = Lay;
 
-export function Layout() {
+export const Layout = observer(() => {
+	const store = useStore();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const params = useParams();
@@ -26,74 +28,98 @@ export function Layout() {
 		onClick: () => navigate(el.route, params)
 	}));
   
-	const items = [
-		{
-			key: "Documents",
-			icon: <Icon.FileTextOutlined />,
-			label: "Документи",
-			children: [
-				{
-					key: ROUTES.MISSION_REPORT_LIST,
-					icon: <Icon.FileTextOutlined />,
-					label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
-					onClick: () => navigate(ROUTES.MISSION_REPORT_LIST),
-				},
-				{
-					key: ROUTES.MISSION_REQUEST_LIST,
-					icon: <Icon.FileExclamationOutlined />,
-					label: nav.getRouteTitle(ROUTES.MISSION_REQUEST_LIST),
-					onClick: () => navigate(ROUTES.MISSION_REQUEST_LIST)
-				},
-				{
-					key: ROUTES.ORDER_LIST,
-					icon: <Icon.FileTextOutlined />,
-					label: nav.getRouteTitle(ROUTES.ORDER_LIST),
-					onClick: () => navigate(ROUTES.ORDER_LIST)
-				},
-			]
-		},
-		{
-			key: ROUTES.EXPLOSIVE_OBJECT_LIST,
-			icon: <Icon.FireOutlined />,
-			label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
-			onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST)
-		},
-		{
-			key: ROUTES.EMPLOYEES_LIST,
-			icon: <Icon.TeamOutlined />,
-			label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
-			onClick: () => navigate(ROUTES.EMPLOYEES_LIST)
-		},
-		{
-			key: ROUTES.TRANSPORT_LIST,
-			icon: <Icon.CarOutlined />,
-			label: nav.getRouteTitle(ROUTES.TRANSPORT_LIST),
-			onClick: () => navigate(ROUTES.TRANSPORT_LIST)
-		},
-		{
-			key: ROUTES.EQUIPMENT_LIST,
-			icon: <Icon.ToolOutlined />,
-			label: nav.getRouteTitle(ROUTES.EQUIPMENT_LIST),
-			onClick: () => navigate(ROUTES.EQUIPMENT_LIST)
-		},
-		{
-			key: '5',
-			icon: <Icon.SettingOutlined />,
-			label: 'Налаштування',
-			onClick: () => navigate(ROUTES.SETTINGS)
-		},
-	];
+	const { isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute } = store.viewer.user ?? {};
 
-	if(CONFIG.IS_DEV){
-		items.push(
+	const items = useMemo(() => {
+		const arr = [
+			...(isVisibleOrganizationRoutes ? [
+				{
+					key: "Documents",
+					icon: <Icon.FileTextOutlined />,
+					label: "Документи",
+					children: [
+						{
+							key: ROUTES.MISSION_REPORT_LIST,
+							icon: <Icon.FileTextOutlined />,
+							label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
+							onClick: () => navigate(ROUTES.MISSION_REPORT_LIST),
+						},
+						{
+							key: ROUTES.MISSION_REQUEST_LIST,
+							icon: <Icon.FileExclamationOutlined />,
+							label: nav.getRouteTitle(ROUTES.MISSION_REQUEST_LIST),
+							onClick: () => navigate(ROUTES.MISSION_REQUEST_LIST)
+						},
+						{
+							key: ROUTES.ORDER_LIST,
+							icon: <Icon.FileTextOutlined />,
+							label: nav.getRouteTitle(ROUTES.ORDER_LIST),
+							onClick: () => navigate(ROUTES.ORDER_LIST)
+						},
+					]
+				},
+				{
+					key: ROUTES.EXPLOSIVE_OBJECT_LIST,
+					icon: <Icon.FireOutlined />,
+					label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
+					onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST)
+				},
+				{
+					key: ROUTES.EMPLOYEES_LIST,
+					icon: <Icon.TeamOutlined />,
+					label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
+					onClick: () => navigate(ROUTES.EMPLOYEES_LIST)
+				},
+				{
+					key: ROUTES.TRANSPORT_LIST,
+					icon: <Icon.CarOutlined />,
+					label: nav.getRouteTitle(ROUTES.TRANSPORT_LIST),
+					onClick: () => navigate(ROUTES.TRANSPORT_LIST)
+				},
+				{
+					key: ROUTES.EQUIPMENT_LIST,
+					icon: <Icon.ToolOutlined />,
+					label: nav.getRouteTitle(ROUTES.EQUIPMENT_LIST),
+					onClick: () => navigate(ROUTES.EQUIPMENT_LIST)
+				},
+			] : []),
+			...(isVisibleOrganizationsListRoute ? [
+				{
+					key: ROUTES.ORGANIZATIONS_LIST,
+					icon: <Icon.FileTextOutlined />,
+					label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
+					onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST)
+				},
+			]: []),
 			{
-				key: '999',
-				icon: <Icon.DeploymentUnitOutlined />,
-				label: 'DEV',
-				onClick: () => navigate("dev")
+				key: '5',
+				icon: <Icon.SettingOutlined />,
+				label: 'Налаштування',
+				onClick: () => navigate(ROUTES.SETTINGS)
 			},
-		)
-	}
+		];
+
+		if(CONFIG.IS_DEV){
+			arr.push(
+				{
+					key: '999',
+					icon: <Icon.DeploymentUnitOutlined />,
+					label: 'DEV',
+					onClick: () => navigate("dev")
+				},
+			)
+		}
+
+		return arr;
+	}, []);
+
+	const defaultSelectedKeys = useMemo(() => {
+		if(isVisibleOrganizationsListRoute){
+			return [ROUTES.ORGANIZATIONS_LIST];
+		};
+
+		return [ROUTES.MISSION_REPORT_LIST];
+	}, [isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute])
 
 	return (
 		<Lay hasSider>
@@ -101,7 +127,7 @@ export function Layout() {
 				<div className="demo-logo-vertical" />
 				<Menu
 					theme="dark"
-					defaultSelectedKeys={[ROUTES.MISSION_REPORT_LIST]}
+					defaultSelectedKeys={defaultSelectedKeys}
 					defaultOpenKeys={["Documents"]}
 					mode="inline"
 					items={items}
@@ -118,4 +144,4 @@ export function Layout() {
 			</Lay>
 		</Lay>
 	);
-}
+})

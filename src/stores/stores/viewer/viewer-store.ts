@@ -61,7 +61,7 @@ const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }
 			}  else {
 				Analytics.setUserId(null)
 				self.removeUser();
-				self.setLoadingUserInfo(true);
+				self.setLoadingUserInfo(false);
 			}
 		})
 

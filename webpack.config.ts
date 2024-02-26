@@ -1,14 +1,12 @@
 import path from 'path';
 
-import { Configuration } from 'webpack';
-
 import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
 import { inDev } from './webpack.helpers';
 
 rules.push();
 
-const config: Configuration = {
+const config = {
 	entry: path.resolve(__dirname, 'src/index.tsx'),
 	output: {
 		path: path.resolve('dist'),
@@ -37,6 +35,19 @@ const config: Configuration = {
 	},
 	watchOptions: {
 		ignored: /node_modules/,
+	},
+	devServer: {
+		compress: true,
+		hot: true,
+		liveReload: false,
+		historyApiFallback: true,
+		port: 8080,
+		watchFiles: {
+			paths: ['./src/**/*.(svg|ts|tsx)'],
+			options: {
+				ignored: ['./src/**/__tests__/*', './src/**/__mocks__/*'],
+			},
+		},
 	},
 };
 // eslint-disable-next-line import/no-default-export

@@ -1,4 +1,7 @@
+import { useMemo } from "react";
+
 import {
+	Navigate,
 	RouterProvider,
 	createBrowserRouter,
 } from "react-router-dom";
@@ -18,7 +21,8 @@ import {
 	DevPage,
 	SettingsPage,
 	LoginPage,
-	WaitingApprovePage
+	WaitingApprovePage,
+	OrganizationsListPage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
@@ -26,9 +30,9 @@ import { useStore } from "~/hooks";
 
 import { Layout } from "./layout"
 
-const routesMain = [
-	{
-		index: true,
+const mainRoutes = [
+	{	
+		path: ROUTES.MISSION_REPORT_LIST,
 		Component: MissionReportsListPage,
 	},
 	{
@@ -55,76 +59,145 @@ const routesMain = [
 		path: ROUTES.EQUIPMENT_LIST,
 		Component: EquipmentListPage,
 	},
+];
+
+const organizationsRoutes = [
 	{
-		path: ROUTES.SETTINGS,
-		Component: SettingsPage,
-	},
-	{
-		path: "*",
-		Component: ErrorNotFoundPage,
+		path: ROUTES.ORGANIZATIONS_LIST,
+		Component: OrganizationsListPage,
 	},
 ];
 
-if(CONFIG.IS_DEV){
-	routesMain.push(  {
-		path: "/dev",
-		Component: DevPage,
-	})
-}
+const restRoutes = [{
+	path: ROUTES.SETTINGS,
+	Component: SettingsPage,
+}];
 
-const routerMain = createBrowserRouter([
+const notFoundRoutes = [{
+	path: "*",
+	Component: ErrorNotFoundPage,
+}];
+
+const devRoutes = [{
+	path: "/dev",
+	Component: DevPage,
+}]
+
+const authRoutes = [
 	{
 		id: "root",
-		path: ROUTES.MISSION_REPORT_LIST,
-		Component: Layout,
-		children: routesMain,
-	},
-]);
-
-const routerAuth = createBrowserRouter([
-	{
-		id: "root",
-		index: true,
+		path: ROUTES.AUTH,
 		Component: LoginPage,
 	},
 	{
 		path: ROUTES.SIGNUP,
 		Component: SignupPage,
 	},
-]);
+];
 
-const waitingApproveAuth = createBrowserRouter([
+const waitingApproveRoutes = [
 	{
 		id: "root",
-		index: true,
+		path: ROUTES.WAITING_APPROVE,
 		Component: WaitingApprovePage,
 	},
+];
+
+const routerMain = createBrowserRouter([
+	{
+		id: "routerMain",
+		path: "/",
+		Component: Layout,
+		children: [
+			{ index: true, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			{ path: ROUTES.WAITING_APPROVE, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			{ path: ROUTES.AUTH, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			...mainRoutes,
+			...organizationsRoutes,
+			...restRoutes,
+			...notFoundRoutes,
+			...(CONFIG.IS_DEV ? devRoutes: [])
+		],
+	},
+]);
+
+const routerOrganizations = createBrowserRouter([
+	{
+		id: "routerOrganizations",
+		path: "/",
+		Component: Layout,
+		children: [
+			{ index: true, element: <Navigate to={ROUTES.ORGANIZATIONS_LIST} replace />},
+			{ path: ROUTES.WAITING_APPROVE, element: <Navigate to={ROUTES.ORGANIZATIONS_LIST} replace />},
+			{ path: ROUTES.AUTH, element: <Navigate to={ROUTES.ORGANIZATIONS_LIST} replace />},
+			...organizationsRoutes,
+			...restRoutes,
+			...notFoundRoutes,
+			...(CONFIG.IS_DEV ? devRoutes: [])
+		],
+	},
+]);
+
+const routerOrganization = createBrowserRouter([
+	{
+		id: "routerOrganization",
+		path: "/",
+		Component: Layout,
+		children: [
+			{ index: true, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			{ path: ROUTES.WAITING_APPROVE, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			{ path: ROUTES.AUTH, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			...mainRoutes,
+			...restRoutes,
+			...notFoundRoutes,
+			...(CONFIG.IS_DEV ? devRoutes: [])
+		],
+	},
+]);
+
+const routerAuth = createBrowserRouter([
+	...authRoutes,
+	{ path: '*', element: <Navigate to={ROUTES.AUTH} replace />},
+]);
+
+const routerWaiting = createBrowserRouter([
+	...waitingApproveRoutes,
+	{ path: '*', element: <Navigate to={ROUTES.WAITING_APPROVE} replace />},
 ]);
 
 export const RootRouter = observer(() => {
 	const store = useStore();
 
-	const getRoute = () => {
-		if(store.viewer.user?.isAuthorized){
+	const { isUser } = store.viewer ?? {};
+	const { isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute, isAuthorized } = store.viewer.user ?? {};
+
+	const router = useMemo(() => {
+		if(isVisibleOrganizationRoutes && isVisibleOrganizationsListRoute){
 			return routerMain;
-		}
-		if(!store.viewer.user?.isAuthorized && store.viewer.isUser){
-			return waitingApproveAuth
+		} if(isVisibleOrganizationsListRoute){
+			return routerOrganizations;
+		} if(isVisibleOrganizationRoutes){
+			return routerOrganization;
+		} if(!isAuthorized && isUser){
+			return routerWaiting
 		} 
 
 		return routerAuth
-	}
-	
+		
+	}, [isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute, isUser, isAuthorized])
+
+	const renderLoader = () => (
+		<div style={{ flex: 1, background: "#4070f4"}}>
+			<Spin fullscreen size="large" />
+		</div>
+	);
+
 	return store.isInitialized
 		? (
 			<RouterProvider
-				router={getRoute()}
-				fallbackElement={<p>Initial Load...</p>}
+				router={router}
+				fallbackElement={renderLoader()}
 			/>
 		)
-		: (
-			<div style={{ flex: 1, background: "#4070f4"}}>
-				<Spin fullscreen size="large" />
-			</div>
-		);
+		: renderLoader();
 })
