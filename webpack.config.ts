@@ -1,5 +1,7 @@
 import path from 'path';
 
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+
 import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
 import { inDev } from './webpack.helpers';
@@ -18,9 +20,11 @@ const config = {
 	plugins,
 	optimization: {
 		minimize: true,
+		minimizer: [`...`, new CssMinimizerPlugin()],
+		mangleWasmImports: true,
 		splitChunks: { minChunks: Infinity, chunks: 'all' },
 	},
-	devtool: inDev() ? 'eval-cheap-module-source-map' : 'source-map',
+	devtool: inDev() ? 'eval-cheap-module-source-map' : false,
 	target: 'web',
 	mode: inDev() ? 'development' : 'production',
 	resolve: {

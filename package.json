@@ -11,16 +11,14 @@
     "scripts": {
         "start": "cross-env NODE_ENV=development webpack serve",
         "build": "cross-env NODE_ENV=production webpack",
-        "package": "cross-env NODE_ENV=production electron-forge package",
-        "make": "cross-env NODE_ENV=development electron-forge make",
-        "deploy": "cross-env NODE_ENV=production electron-forge publish",
         "lint": "eslint --fix",
         "postinstall": "patch-package",
         "test": "jest --watchAll=true --coverage",
         "lint-staged": "lint-staged",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
-        "check:eslint": "eslint --fix"
+        "check:eslint": "eslint --fix",
+        "bundle-size": "webpack --config webpack.config.ts --env analyse"
     },
     "keywords": [],
     "author": {
@@ -55,6 +53,7 @@
         "copy-webpack-plugin": "^12.0.2",
         "cross-env": "^7.0.3",
         "css-loader": "^6.0.0",
+        "css-minimizer-webpack-plugin": "^6.0.0",
         "dotenv-webpack": "^8.0.1",
         "eslint": "8.45.0",
         "eslint-config-airbnb": "19.0.4",
@@ -80,6 +79,7 @@
         "prettier": "^3.0.3",
         "react-refresh": "^0.14.0",
         "style-loader": "^3.0.0",
+        "terser-webpack-plugin": "^5.3.10",
         "ts-jest": "^29.1.2",
         "ts-loader": "^9.2.2",
         "ts-node": "^10.0.0",
