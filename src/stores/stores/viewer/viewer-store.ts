@@ -2,7 +2,7 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { Analytics, Auth, Logger } from "~/services";
-import { Api, IUserDTO } from '~/api';
+import { Api, ICurrentUserDTO } from '~/api';
 
 import { CurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
@@ -13,12 +13,12 @@ const Store = types
 		isLoadingUserInfo: true
 	})
 	.views(self => ({
-		get isUser(){
-			return !!self.user
+		get isNotApproved(){
+			return !!self.user && !self.user.isAuthorized
 		},
 	}))
 	.actions((self) => ({
-		setUser(user: IUserDTO) {
+		setUser(user: ICurrentUserDTO) {
 			// @ts-expect-error
 			self.user = createCurrentUser(user);
 		},
@@ -29,12 +29,12 @@ const Store = types
 			self.isLoadingUserInfo = value;
 		},
 	})).actions((self) => ({
-		async getUserData(id: string) {
+		async getUserData(id: string, email:string) {
 			try {
 				let user = await Api.user.get(id);
 
 				if(!user) {
-					user = await Api.user.create({ id });
+					user = await Api.user.create({ id, email });
 				}
 
 				self.setUser(user)
@@ -57,7 +57,7 @@ const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }
 		Auth.onAuthStateChanged((user) => {
 			if(user){
 				Analytics.setUserId(user.uid)
-				self.getUserData(user.uid);
+				self.getUserData(user.uid, user.email as string);
 			}  else {
 				Analytics.setUserId(null)
 				self.removeUser();

@@ -16,6 +16,8 @@ import { TransportStore } from './transport';
 import { EquipmentStore } from './equipment';
 import { mockEmployees, mockMissionRequest, mockEquipment, mockTransport } from './mock-data';
 import { MissionReportStore } from './mission-report';
+import { OrganizationStore } from './organization';
+import { UserStore } from './user';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -30,6 +32,8 @@ export const RootStore = types
 		transport: types.optional(TransportStore, {}),
 		equipment: types.optional(EquipmentStore, {}),
 		viewer: types.optional(ViewerStore, {}),
+		organization: types.optional(OrganizationStore, {}),
+		user: types.optional(UserStore, {}),
 		isLoaded: false,
 	})
 	.views(self => ({

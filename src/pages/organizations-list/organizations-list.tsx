@@ -3,40 +3,39 @@ import React, { useEffect } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
-import { IEmployee } from '~/stores';
 import { Icon, List } from '~/components';
-import { str } from '~/utils';
-import { useStore, useRouteTitle } from '~/hooks';
+import { useStore, useRouteTitle, useNavigate } from '~/hooks';
 import { Modal } from '~/services';
-import { MODALS, WIZARD_MODE } from '~/constants';
+import { MODALS, ROUTES, WIZARD_MODE } from '~/constants';
+import { IOrganization } from '~/stores/stores/organization/entities/organization';
 
 import { s } from './organizations-list.styles';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
-
-const ListItem = observer(({ item }: { item: IEmployee}) => {
+const ListItem = observer(({ item }: { item: IOrganization}) => {
+	const navigate = useNavigate();
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
+		Modal.show(MODALS.ORGANIZATION_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
+	};
+
+	const onOpenUsers = (e:React.SyntheticEvent) => {
+		e.preventDefault();
+		navigate(ROUTES.MEMBERS_LIST.replace(":organizationId", item.id))
 	};
 
 	return (
 		<List.Item
 			key={item.id}
 			actions={[
+				<Button key="list-members" icon={<Icon.TeamOutlined type="danger"/>} onClick={onOpenUsers}/>,
 				<Button key="list-edit" icon={<Icon.EyeOutlined type="danger"/>} onClick={onOpen}/>,
 			]}
 		>
 			<List.Item.Meta
 				avatar={<Icon.UserOutlined />}
-				title={str.getFullName(item)}
-				description={
-					<Space css={s.listItemDesc}>
-						<Text type="secondary">{str.toUpperFirst(item.rank.fullName)}</Text>
-						<Text type="secondary">{str.toUpperFirst(item.position)}</Text>
-					</Space>
-				}
+				title={item.name}
 			/>
 		</List.Item>
 	)
@@ -46,23 +45,23 @@ export const OrganizationsListPage  = observer(() => {
 	const store = useStore();
 	const title = useRouteTitle();
 
-	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
+	const onCreate = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
+		Modal.show(MODALS.ORGANIZATION_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
 
 	useEffect(() => {
-		store.employee.fetchList.run();
+		store.organization.fetchList.run();
 	}, []);
 
 	return (
 		<List
-			loading={store.employee.fetchList.inProgress}
-			dataSource={store.employee.list.asArray}
+			loading={store.organization.fetchList.inProgress}
+			dataSource={store.organization.list.asArray}
 			header={
 				<Space css={s.listHeader}>
 					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.UserAddOutlined />} onClick={onGoToEmployeesCreate}/>
+					<Button type="primary" icon={<Icon.PlusOutlined />} onClick={onCreate}/>
 				</Space>
 			}
 			renderItem={(item) => <ListItem item={item}/>}

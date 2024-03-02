@@ -22,7 +22,8 @@ import {
 	SettingsPage,
 	LoginPage,
 	WaitingApprovePage,
-	OrganizationsListPage
+	OrganizationsListPage,
+	MembersListPage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
@@ -61,10 +62,21 @@ const mainRoutes = [
 	},
 ];
 
-const organizationsRoutes = [
+const rootAdminRoutes = [
 	{
 		path: ROUTES.ORGANIZATIONS_LIST,
 		Component: OrganizationsListPage,
+	},
+	{
+		path: ROUTES.MEMBERS_LIST,
+		Component: MembersListPage,
+	},
+];
+
+const organizationAdminRoutes = [
+	{
+		path: ROUTES.MY_ORGANIZATION,
+		Component: MembersListPage,
 	},
 ];
 
@@ -103,9 +115,9 @@ const waitingApproveRoutes = [
 	},
 ];
 
-const routerMain = createBrowserRouter([
+const routerAll = createBrowserRouter([
 	{
-		id: "routerMain",
+		id: "routerAll",
 		path: "/",
 		Component: Layout,
 		children: [
@@ -113,7 +125,8 @@ const routerMain = createBrowserRouter([
 			{ path: ROUTES.WAITING_APPROVE, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
 			{ path: ROUTES.AUTH, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
 			...mainRoutes,
-			...organizationsRoutes,
+			...rootAdminRoutes,
+			...organizationAdminRoutes,
 			...restRoutes,
 			...notFoundRoutes,
 			...(CONFIG.IS_DEV ? devRoutes: [])
@@ -121,16 +134,16 @@ const routerMain = createBrowserRouter([
 	},
 ]);
 
-const routerOrganizations = createBrowserRouter([
+const routerRootAdmin = createBrowserRouter([
 	{
-		id: "routerOrganizations",
+		id: "routerRootAdmin",
 		path: "/",
 		Component: Layout,
 		children: [
 			{ index: true, element: <Navigate to={ROUTES.ORGANIZATIONS_LIST} replace />},
 			{ path: ROUTES.WAITING_APPROVE, element: <Navigate to={ROUTES.ORGANIZATIONS_LIST} replace />},
 			{ path: ROUTES.AUTH, element: <Navigate to={ROUTES.ORGANIZATIONS_LIST} replace />},
-			...organizationsRoutes,
+			...rootAdminRoutes,
 			...restRoutes,
 			...notFoundRoutes,
 			...(CONFIG.IS_DEV ? devRoutes: [])
@@ -138,7 +151,25 @@ const routerOrganizations = createBrowserRouter([
 	},
 ]);
 
-const routerOrganization = createBrowserRouter([
+const routerOrganizationAdmin = createBrowserRouter([
+	{
+		id: "routerOrganizationAdmin",
+		path: "/",
+		Component: Layout,
+		children: [
+			{ index: true, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			{ path: ROUTES.WAITING_APPROVE, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			{ path: ROUTES.AUTH, element: <Navigate to={ROUTES.MISSION_REPORT_LIST} replace />},
+			...mainRoutes,
+			...organizationAdminRoutes,
+			...restRoutes,
+			...notFoundRoutes,
+			...(CONFIG.IS_DEV ? devRoutes: [])
+		],
+	},
+]);
+
+const routerOrganizationViewer = createBrowserRouter([
 	{
 		id: "routerOrganization",
 		path: "/",
@@ -168,23 +199,25 @@ const routerWaiting = createBrowserRouter([
 export const RootRouter = observer(() => {
 	const store = useStore();
 
-	const { isUser } = store.viewer ?? {};
-	const { isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute, isAuthorized } = store.viewer.user ?? {};
+	const { isNotApproved } = store.viewer ?? {};
+	const { isRootAdmin,isOrganizationAdmin, isOrganizationMember } = store.viewer.user ?? {};
 
 	const router = useMemo(() => {
-		if(isVisibleOrganizationRoutes && isVisibleOrganizationsListRoute){
-			return routerMain;
-		} if(isVisibleOrganizationsListRoute){
-			return routerOrganizations;
-		} if(isVisibleOrganizationRoutes){
-			return routerOrganization;
-		} if(!isAuthorized && isUser){
+		if(isRootAdmin && (isOrganizationAdmin || isOrganizationMember)){
+			return routerAll;
+		} if(isRootAdmin){
+			return routerRootAdmin;
+		} if(isOrganizationAdmin){
+			return routerOrganizationAdmin;
+		} if(isOrganizationMember){
+			return routerOrganizationViewer;
+		} if(isNotApproved){
 			return routerWaiting
 		} 
 
 		return routerAuth
 		
-	}, [isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute, isUser, isAuthorized])
+	}, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isNotApproved])
 
 	const renderLoader = () => (
 		<div style={{ flex: 1, background: "#4070f4"}}>

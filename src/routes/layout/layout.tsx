@@ -28,11 +28,11 @@ export const Layout = observer(() => {
 		onClick: () => navigate(el.route, params)
 	}));
   
-	const { isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute } = store.viewer.user ?? {};
+	const { isRootAdmin, isOrganizationAdmin, isOrganizationMember } = store.viewer.user ?? {};
 
 	const items = useMemo(() => {
 		const arr = [
-			...(isVisibleOrganizationRoutes ? [
+			...((isOrganizationAdmin || isOrganizationMember) ? [
 				{
 					key: "Documents",
 					icon: <Icon.FileTextOutlined />,
@@ -83,12 +83,20 @@ export const Layout = observer(() => {
 					onClick: () => navigate(ROUTES.EQUIPMENT_LIST)
 				},
 			] : []),
-			...(isVisibleOrganizationsListRoute ? [
+			...(isRootAdmin ? [
 				{
 					key: ROUTES.ORGANIZATIONS_LIST,
-					icon: <Icon.FileTextOutlined />,
+					icon: <Icon.BankOutlined />,
 					label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
 					onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST)
+				},
+			]: []),
+			...(isOrganizationAdmin ? [
+				{
+					key: ROUTES.MY_ORGANIZATION,
+					icon: <Icon.TeamOutlined />,
+					label: nav.getRouteTitle(ROUTES.MY_ORGANIZATION),
+					onClick: () => navigate(ROUTES.MY_ORGANIZATION)
 				},
 			]: []),
 			{
@@ -111,15 +119,15 @@ export const Layout = observer(() => {
 		}
 
 		return arr;
-	}, []);
+	}, [isRootAdmin, isOrganizationAdmin, isOrganizationMember]);
 
 	const defaultSelectedKeys = useMemo(() => {
-		if(isVisibleOrganizationsListRoute){
+		if(isRootAdmin && (!isOrganizationAdmin || !isOrganizationMember)){
 			return [ROUTES.ORGANIZATIONS_LIST];
 		};
 
 		return [ROUTES.MISSION_REPORT_LIST];
-	}, [isVisibleOrganizationRoutes, isVisibleOrganizationsListRoute])
+	}, [isRootAdmin, isOrganizationAdmin, isOrganizationMember])
 
 	return (
 		<Lay hasSider>

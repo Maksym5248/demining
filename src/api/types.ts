@@ -13,7 +13,8 @@ import {
 	IEquipmentActionDB,
 	IMissionReportDB,
 	IMapViewActionActionDB,
-	IUserDB
+	IUserDB,
+	IOrganizationDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -127,4 +128,15 @@ export interface IMissionReportDTOParamsUpdate {
     address: string; 
 }
 
+export interface ICurrentUserDTO extends Omit<IUserDB, "organizationId">  {
+    organization: IUserOrganizationDTO | null;
+}
+
 export interface IUserDTO extends IUserDB {}
+
+export interface IOrganizationDTO extends Omit<IOrganizationDB, "membersIds"> {}
+
+export interface IUserOrganizationDTO extends Omit<IOrganizationDB, "membersIds"> {}
+
+export interface ICreateOrganizationDTO extends Pick<IOrganizationDB, "name"> {}
+export interface ICreateOrganizationMembersDTO extends Pick<IOrganizationDB, "membersIds"> {}

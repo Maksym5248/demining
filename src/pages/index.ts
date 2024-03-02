@@ -8,6 +8,7 @@ export * from "./orders-list";
 export * from "./organizations-list";
 export * from "./signup";
 export * from "./login";
+export * from "./members-list";
 export * from "./transport-list";
 export * from "./equipment-list";
 export * from "./settings";

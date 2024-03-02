@@ -1,21 +1,37 @@
 import { Dayjs } from 'dayjs';
 
 import { ROLES } from '~/constants';
-import { IUserDTO } from '~/api';
+import { ICurrentUserDTO, IUserOrganizationDTO } from '~/api';
 import { dates } from '~/utils';
 
-interface IUserValue {
+interface IUserOrganizationValue {
 	id: string;
-    roles: ROLES[];
-    organizationId: string | null;
+    name: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
 
-export const createCurrentUser = (value: IUserDTO): IUserValue => ({
+interface IUserValue {
+	id: string;
+    roles: ROLES[];
+	email: string;
+    organization: IUserOrganizationValue | null;
+    createdAt: Dayjs;
+    updatedAt: Dayjs;
+}
+
+export const createUserOrganization = (value: IUserOrganizationDTO): IUserOrganizationValue => ({
+	id: value.id,
+	name: value.name ?? "",
+	createdAt: dates.create(value.createdAt),
+	updatedAt: dates.create(value.updatedAt),
+});
+
+export const createCurrentUser = (value: ICurrentUserDTO): IUserValue => ({
 	id: value.id,
 	roles: value?.roles ?? [],
-	organizationId: value?.organizationId,
+	email: value.email ?? "",
+	organization: value?.organization ? createUserOrganization(value.organization) : null,
 	createdAt: dates.create(value.createdAt),
 	updatedAt: dates.create(value.updatedAt),
 });

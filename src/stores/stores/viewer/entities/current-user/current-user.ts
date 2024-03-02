@@ -7,10 +7,17 @@ import { types } from '../../../../types'
 
 export type ICurrentUser = Instance<typeof CurrentUser>
 
+const CurrentUserOrganization = types.model('CurrentUserOrganization', {
+	id: types.identifier,
+	name: types.string,
+	createdAt: types.dayjs,
+	updatedAt: types.dayjs,
+})
+
 export const CurrentUser = types.model('CurrentUser', {
 	id: types.identifier,
 	roles: types.optional(types.array(types.enumeration<ROLES[]>(Object.values(ROLES))), []),
-	organizationId: types.maybe(types.maybeNull(types.string)),
+	organization: types.maybe(types.maybeNull(CurrentUserOrganization)),
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).views(self => ({
@@ -18,17 +25,13 @@ export const CurrentUser = types.model('CurrentUser', {
 		return self.roles.includes(ROLES.ROOT_ADMIN)
 	},
 	get isOrganizationAdmin(){
-		return self.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!self.organizationId
+		return self.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!self.organization
+	},
+	get isOrganizationMember(){
+		return !!self.organization
 	},
 })).views(self => ({
 	get isAuthorized(){
-		return !!self.isRootAdmin || !!self.isOrganizationAdmin;
-	},
-})).views(self => ({
-	get isVisibleOrganizationRoutes(){
-		return !!self.isOrganizationAdmin;
-	},
-	get isVisibleOrganizationsListRoute(){
-		return !!self.isRootAdmin;
+		return !!self.isRootAdmin || !!self.isOrganizationAdmin || !!self.isOrganizationMember;
 	},
 }));

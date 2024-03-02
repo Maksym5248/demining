@@ -16,7 +16,7 @@ import {
 	orderBy
 } from 'firebase/firestore';
 
-type IWhere = {[field:string]: string};
+type IWhere = {[field:string]: any};
 type IOrder = {
 	by: string,
 	type: "asc" | 'desc',
@@ -54,9 +54,9 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 			 ...(args?.order ? [getOrder(args?.order)] : [])
 		);
 
-		const userSnapshot = await getDocs(q);
+		const snapshot = await getDocs(q);
 
-		const data = userSnapshot.docs.map(d => d.data()) as (T &{
+		const data = snapshot.docs.map(d => d.data()) as (T &{
 			createdAt: Timestamp,
 			updatedAt: Timestamp,
 		})[];
@@ -72,7 +72,7 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 		const ref = doc(this.collection, id);
 
 		const res = await getDoc(ref);
-	
+
 		let data:T & {
 			createdAt: Timestamp,
 			updatedAt: Timestamp,
@@ -100,7 +100,7 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 		return !querySnapshot.empty
 	}
 
-	async create(value: Omit<T, "createdAt" | "updatedAt">): Promise<T>{
+	async create(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>): Promise<T>{
 		const id = value?.id ?? (await this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();

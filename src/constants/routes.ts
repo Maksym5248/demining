@@ -9,6 +9,8 @@ export enum ROUTES {
 	SETTINGS = "/settings",
 
 	ORGANIZATIONS_LIST = "/organization-list",
+	MEMBERS_LIST = "/organization-list/:organizationId/members-list/",
+	MY_ORGANIZATION = "/my-organization",
 
 	AUTH ="/login",
 	SIGNUP ="/signup",
@@ -42,6 +44,12 @@ export const routesInfo = {
 	},
 	[ROUTES.ORGANIZATIONS_LIST]: {
 		title: "Організації",
+	},
+	[ROUTES.MEMBERS_LIST]: {
+		title: "Учасники",
+	},
+	[ROUTES.MY_ORGANIZATION]: {
+		title: "Учасники",
 	},
 	[ROUTES.AUTH]: {
 		title: "Увійти",

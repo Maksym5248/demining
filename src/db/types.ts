@@ -142,8 +142,17 @@ export interface IMissionReportDB {
 
 export interface IUserDB {
     id: string;
+    email: string;
     roles: ROLES[];
     organizationId: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IOrganizationDB {
+    id: string;
+    name: string;
+    membersIds: string[];
     createdAt: Date;
     updatedAt: Date;
 }
