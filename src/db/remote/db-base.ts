@@ -80,7 +80,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const res = await getDoc(ref);
 
 		if(!res) throw new Error("there is no element by id");
-		if(!res?.exists())throw new Error("there is no element by id");
+		if(!res?.exists()) throw new Error("there is no element by id");
 
 		const data = res.data() as T & {
 				createdAt: Timestamp,
