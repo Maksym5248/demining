@@ -35,25 +35,22 @@ const Store = types
 		},
 	})).actions((self) => ({
 		async getUserData(id: string, email:string) {
-			let user = null;
-			
 			try {
-				user = await Api.user.get(id);
-			} catch(e){
-				Logger.error(e);
-			};
+				let user = await Api.user.get(id);
 
-			try {
-				user = await Api.user.create({ id, email });
-				self.setUser(user);
+				if(!user) {
+					user = await Api.user.create({ id, email });
+				}
+
+				self.setUser(user)
 				Analytics.setUserId(id);
 			} catch(e){
 				Logger.error(e);
 				message.error('Bиникла помилка');
 				self.removeUser();
-			} finally {
-				self.setLoadingUserInfo(false);
 			}
+			
+			self.setLoadingUserInfo(false);
 		},
 	}));
 

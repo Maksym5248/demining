@@ -10,9 +10,16 @@ const create = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 		signedByActionId: DB_FIELD.NONE
 	});
 
-	const { id, ...employee} = await DB.employee.get(value.signedById);
+	const employee = await DB.employee.get(value.signedById);
+
+	if(!employee){
+		throw new Error("there is no employee")
+	}
+
+	const { id, ...employeeData} = employee;
+
 	const employeeAction = await DB.employeeAction.create({
-		...employee,
+		...employeeData,
 		documentType: DOCUMENT_TYPE.ORDER,
 		documentId: order.id,
 		employeeId: id,
@@ -28,10 +35,23 @@ const create = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 
 const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOParams>):Promise<IOrderDTO> => {
 	const order = await DB.order.get(id);
-	const signedBy = await DB.employeeAction.get(order?.signedByActionId);
+
+	if(!order){
+		throw new Error("there is no order")
+	}
+	const signedBy = await DB.employeeAction.get(order.signedByActionId);
+
+	if(!signedBy){
+		throw new Error("there is no signedBy")
+	}
 
 	if(signedById && signedById !== signedBy.employeeId){
 		const employee = await DB.employee.get(signedById);
+
+		if(!employee){
+			throw new Error("there is no employee")
+		}
+
 		await DB.employeeAction.update(order.signedByActionId, {
 			...employee,
 			employeeId: employee.id,
@@ -41,7 +61,16 @@ const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOPa
 	await DB.order.update(id, value);
 
 	const resOrder = await DB.order.get(id);
+
+	if(!resOrder){
+		throw new Error("there is no order")
+	}
+
 	const resSignedBy = await DB.employeeAction.get(resOrder?.signedByActionId)
+
+	if(!resSignedBy){
+		throw new Error("there is no employee")
+	}
 
 	const { signedByActionId: signedByIdRes, ...res} = resOrder;
 
@@ -68,6 +97,10 @@ const getList = async ():Promise<IOrderDTO[]> => {
 
 	const newList = await Promise.all(list.map(async ({ signedByActionId, ...order }) => {
 		const employeeAction = await DB.employeeAction.get(signedByActionId)
+
+		if(!employeeAction){
+			throw new Error("there is no employeeAction")
+		}
 
 		return {
 			...order,

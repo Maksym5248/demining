@@ -78,6 +78,9 @@ const getListUnassignedUsers = ():Promise<IUserDTO[]> => DB.user.select({
 
 const get = async (id:string):Promise<ICurrentUserDTO | null> => {
 	const res = await DB.user.get(id);
+
+	if(!res) return null;
+
 	const organization = await getUserOrganization(res);
 	const { organizationId, ...user} = res;
 

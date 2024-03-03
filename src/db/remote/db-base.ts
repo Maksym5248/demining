@@ -74,7 +74,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return data as T[]
 	}
 
-	async get(id:string):Promise<T> {
+	async get(id:string):Promise<T | null> {
 		const ref = doc(this.collection, id);
 
 		const res = await getDoc(ref);
