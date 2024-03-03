@@ -1,0 +1,88 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    match /USER/{userId} {
+      allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
+      allow create: if (isUserSelf(userId) && isArrayEmpty("roles")) || isRootAdmin();
+      allow update: if (isUserSelf(userId) && disableUpdateKeys(["roles"])) || isRootAdmin() || (isOrganizationAdmin() && isNoOrganization(userId) && hasOnly(["organizationId", "updatedAt"]));
+      allow delete: if isRootAdmin();
+    }
+    
+    match /ORGANIZATION/{organizationId} {
+      allow read: if isMember(organizationId);
+      allow update: if isMember(organizationId) && isOrganizationAdmin();
+      allow read, create, update, delete: if isRootAdmin();
+    }
+    
+    match /ORGANIZATION_DATA/{organizationId}/{document=**} {
+      allow read, create, update, delete: if isMember(organizationId)
+    }
+    
+    match /EXPLOSIVE_OBJECT/{explosiveObjectId} {
+    	allow read: if request.auth != null && isOrganization();
+      allow create: if isRootAdmin() || isOrganizationAdmin();
+      allow update, delete: if isRootAdmin();
+    }
+    
+    match /EXPLOSIVE_OBJECT_TYPE/{explosiveObjectTypeId} {
+      allow read: if request.auth != null && isOrganization();
+      allow create, update, delete: if isRootAdmin();
+    }
+
+    function isRootAdmin() {
+      return 'ROOT_ADMIN' in get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.roles;
+    }
+
+    function isOrganizationAdmin() {
+      return 'ORGANIZATION_ADMIN' in get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.roles;
+    }
+
+		function isUserWithNoOrganization(userId) {
+        let userDoc = get(/databases/$(database)/documents/USER/$(userId));
+        return userDoc.data.organizationId == null;
+    }
+    
+    function isUserInAdminsOrganization(userId) {
+      let adminOrgId = get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.organizationId;
+      let userOrgId = get(/databases/$(database)/documents/USER/$(userId)).data.organizationId;
+      return adminOrgId == userOrgId;
+    }
+
+    function isMember(organizationId) {
+      let userOrgId = get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.organizationId;
+      return organizationId == userOrgId;
+    }
+
+    function isOrganization() {
+      let currentUserid = get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.organizationId;
+      return currentUserid != null;
+    }
+    
+    function isUserSelf(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    } 
+
+    function isNoOrganization(userId) {
+      let currentUserid = get(/databases/$(database)/documents/USER/$(userId)).data.organizationId;
+      return currentUserid == null;
+    }
+    
+    function hasOnly(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    function disableUpdateKeys(keys) {
+      return (!request.resource.data.diff(resource.data).affectedKeys().hasAny(keys));
+    }
+    
+    function isArrayEmpty(key){
+    	return request.resource.data[key] is list && request.resource.data[key].size() == 0;
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
