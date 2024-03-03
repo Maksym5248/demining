@@ -38,6 +38,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValu
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		console.log("error", err)
 		message.error('Не вдалось додати');
 	}
@@ -52,6 +53,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
 	}
 });
@@ -70,6 +72,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 

@@ -55,7 +55,7 @@ export const AsyncModel = types
 			if (!self.hasEverBeenRan) {
 				self.hasEverBeenRan = true;
 			}
-			console.log("e-------", e)
+
 			self.inProgress = false;
 			self.error = error.createError(e);
 

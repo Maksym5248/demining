@@ -15,6 +15,7 @@ import {
 	UpdateData,
 	orderBy
 } from 'firebase/firestore';
+import isArray from 'lodash/isArray';
 
 type IWhere = {[field:string]: any};
 type IOrder = {
@@ -32,15 +33,24 @@ const getWhere = (value: IWhere) =>
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
-export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
+export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Timestamp}> {
 	tableName: string;
 
+	rootCollection: string;
+
 	constructor(tableName: string){
+		this.rootCollection = "";
 		this.tableName = tableName;
 	}
 
+	setRootCollection(rootCollection: string){
+		this.rootCollection = rootCollection;
+
+	}
+
 	get collection(){
-		return collection(getFirestore(), this.tableName) as CollectionReference<T>
+		const name = this.rootCollection ? `${this.rootCollection}/${this.tableName}` : this.tableName;
+		return collection(getFirestore(), name) as CollectionReference<T>
 	}
 
 	async uuid(){
@@ -56,40 +66,28 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 
 		const snapshot = await getDocs(q);
 
-		const data = snapshot.docs.map(d => d.data()) as (T &{
+		const data = snapshot.docs.map(d => d.data()) as (T & {
 			createdAt: Timestamp,
 			updatedAt: Timestamp,
 		})[];
 
-		return data.map((el) => ({
-			...el,
-			createdAt: el?.createdAt?.toDate(),
-			updatedAt: el?.updatedAt?.toDate()
-		})) as T[]
+		return data as T[]
 	}
 
-	async get(id:string):Promise<T | null> {
+	async get(id:string):Promise<T> {
 		const ref = doc(this.collection, id);
 
 		const res = await getDoc(ref);
 
-		let data:T & {
-			createdAt: Timestamp,
-			updatedAt: Timestamp,
-		} | null = null;
-	
-		if(res.exists()){
-			data = res.data() as T & {
+		if(!res) throw new Error("there is no element by id");
+		if(!res?.exists())throw new Error("there is no element by id");
+
+		const data = res.data() as T & {
 				createdAt: Timestamp,
 				updatedAt: Timestamp,
-			};
-		}
-	
-		return data ? {
-			...data,
-			createdAt: data?.createdAt?.toDate(),
-			updatedAt: data?.updatedAt?.toDate()
-		} : null
+		};
+		
+		return data
 	}
 
 	async exist(field:keyof T, value: any):Promise<boolean> {
@@ -116,16 +114,18 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 		};
 
 		await setDoc(ref, newValue);
-	
-		return {
-			...newValue,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		} as T
+		const res = await this.get(id) as T;
+		return res
 	}
 
-	async initData(): Promise<T[]>{
-		return []
+	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
+		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
+
+		const res = await Promise.all(values
+			.filter((value, i) => !filteredValues[i])
+			.map(value => this.create(value)));
+
+		return isArray(res) ? res: [];
 	}
 
 	async update(id:string, value: Partial<T>): Promise<T> {
@@ -172,4 +172,6 @@ export class DBBase<T extends {id: string, createdAt: Date, updatedAt: Date}> {
 	  
 		await Promise.all(deletePromises);
 	}
+
+
 }

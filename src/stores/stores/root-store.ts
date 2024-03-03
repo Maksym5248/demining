@@ -2,8 +2,7 @@ import { types, flow, getEnv, Instance } from 'mobx-state-tree';
 import { initializeApp } from 'firebase/app';
 
 import { DB } from '~/db';
-import { Api } from '~/api';
-import { Analytics, Crashlytics } from '~/services';
+import { Analytics, Crashlytics, Logger } from '~/services';
 import { FIREBASE_CONFIG } from '~/config';
 
 import { AuthStore } from './auth';
@@ -14,7 +13,6 @@ import { MissionRequestStore } from './mission-request';
 import { ExplosiveObjectStore } from './explosive-object';
 import { TransportStore } from './transport';
 import { EquipmentStore } from './equipment';
-import { mockEmployees, mockMissionRequest, mockEquipment, mockTransport } from './mock-data';
 import { MissionReportStore } from './mission-report';
 import { OrganizationStore } from './organization';
 import { UserStore } from './user';
@@ -49,24 +47,7 @@ export const RootStore = types
 				SecureStorage.removeAllListeners();
 				Storage.removeAllListeners();
 			},
-			createMocks(){
-				mockEmployees.forEach(el => {
-					self.employee.create.run(el);
-				});
-
-				mockMissionRequest.forEach(el => {
-					self.missionRequest.create.run(el);
-				});
-
-				mockTransport.forEach(el => {
-					self.transport.create.run(el);
-				});
-
-				mockEquipment.forEach(el => {
-					self.equipment.create.run(el);
-				});
-			},
-		};
+		};			
 	}).actions((self) => ({
 		init: flow(function* init() {
 			initializeApp(FIREBASE_CONFIG);
@@ -75,12 +56,11 @@ export const RootStore = types
 			Crashlytics.init();
 			self.employee.init();
 			yield DB.init();
-			yield Api.init();
 
 			try {
 				yield self.viewer.initUser.run();
 			} catch(e){
-				console.log("e", e)
+				Logger.error("init", e)
 			}
 
 			self.isLoaded = true;

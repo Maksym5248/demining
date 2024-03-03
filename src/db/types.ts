@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES } from "~/constants"
 import { ICircle, ILatLng } from "~/types";
 
@@ -14,8 +16,8 @@ export interface IEmployeeDB {
     surname: string;
     rankId: string;
     position: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
@@ -25,27 +27,27 @@ export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
 
 export interface IOrderDB {
     id: string;
-    signedAt: Date;
+    signedAt: Timestamp;
     signedByActionId: string;
     number: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IMissionRequestDB {
     id: string;
-    signedAt: Date;
+    signedAt: Timestamp;
     number: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IExplosiveObjectTypeDB {
     id: string;
     name: string;
     fullName: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IExplosiveObjectDB {
@@ -53,8 +55,8 @@ export interface IExplosiveObjectDB {
     typeId: string;
     name?: string;
     caliber?: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {
@@ -64,8 +66,8 @@ export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToD
     isDiscovered: boolean;
     isTransported: boolean;
     isDestroyed: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface ITransportDB {
@@ -73,8 +75,8 @@ export interface ITransportDB {
     name: string;
     number: string;
     type: TRANSPORT_TYPE;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface ITransportActionDB extends ITransportDB, ILinkedToDocumentDB {
@@ -85,8 +87,8 @@ export interface IEquipmentDB {
     id: string;
     name: string;
     type: EQUIPMENT_TYPE;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
@@ -107,17 +109,17 @@ export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     circleCenterLng: number;
     circleRadius: number;
     zoom: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IMissionReportDB {
     id: string;
     approvedByActionId: string;
-    approvedAt: Date;
+    approvedAt: Timestamp;
     number: number;
     subNumber: number | undefined,
-    executedAt: Date;
+    executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | undefined;
@@ -125,19 +127,19 @@ export interface IMissionReportDB {
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
     mapViewId: string;
-    workStart: Date;
-    exclusionStart: Date | undefined;
-    transportingStart: Date | undefined;
-    destroyedStart: Date | undefined;
-    workEnd: Date;
+    workStart: Timestamp;
+    exclusionStart: Timestamp | undefined;
+    transportingStart: Timestamp | undefined;
+    destroyedStart: Timestamp | undefined;
+    workEnd: Timestamp;
     transportActionIds: string[];
     equipmentActionIds: string[];
     explosiveObjectActionIds: string[];
     squadLeaderActionId: string;
     squadActionIds: string[];
     address: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IUserDB {
@@ -145,14 +147,14 @@ export interface IUserDB {
     email: string;
     roles: ROLES[];
     organizationId: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 
 export interface IOrganizationDB {
     id: string;
     name: string;
     membersIds: string[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }

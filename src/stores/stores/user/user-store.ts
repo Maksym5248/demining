@@ -1,4 +1,5 @@
 import { types, Instance } from 'mobx-state-tree';
+import { message } from 'antd';
 
 import { Api, IUserDTO } from '~/api'
 
@@ -13,7 +14,6 @@ const Store = types
 		push: (values: IUserDTO[]) => {
 			values.forEach((el) => {
 				const value = createUser(el);
-
 				if(!self.collection.has(value.id)){
 					self.collection.set(value.id, value);
 					self.listUnassigned.push(value.id);
@@ -36,6 +36,7 @@ const fetchListUnassigned = asyncAction<Instance<typeof Store>>(() => async func
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 

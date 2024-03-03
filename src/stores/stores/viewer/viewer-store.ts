@@ -21,9 +21,14 @@ const Store = types
 		setUser(user: ICurrentUserDTO) {
 			// @ts-expect-error
 			self.user = createCurrentUser(user);
+
+			if(user.organization?.id){
+				Api.user.setOrganization(user.organization?.id)
+			}
 		},
 		removeUser() {
 			self.user = null;
+			Api.user.setOrganization("")
 		},
 		setLoadingUserInfo(value: boolean) {
 			self.isLoadingUserInfo = value;
@@ -36,6 +41,7 @@ const Store = types
 				if(!user) {
 					user = await Api.user.create({ id, email });
 				}
+
 
 				self.setUser(user)
 				Analytics.setUserId(id);

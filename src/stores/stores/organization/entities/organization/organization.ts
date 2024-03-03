@@ -3,7 +3,7 @@ import { message } from 'antd';
 
 import { asyncAction, createList, safeReference } from '~/stores/utils';
 import { Api, ICreateOrganizationDTO } from '~/api';
-import { IUser, User } from '~/stores/stores/user';
+import { IUser, User, createUser } from '~/stores/stores/user';
 
 import { types } from '../../../../types'
 import { IOrganizationValue, createOrganization, createOrganizationDTO } from './organization.schema';
@@ -40,8 +40,8 @@ const update = asyncAction<Instance<typeof Entity>>((data: ICreateOrganizationDT
 
 const createMember = asyncAction<Instance<typeof Entity>>((userId: string, isAdmin: boolean) => async function fn({ flow, root, self }) {
 	try {
-		const member = await Api.organization.updateMember(self.id, userId, isAdmin, !!root.viewer.user?.isRootAdmin);    
-
+		const res = await Api.organization.updateMember(self.id, userId, isAdmin, !!root.viewer.user?.isRootAdmin);    
+		const member = createUser(res);
 		root.user.collection.set(member.id, member);
 		self.members.push(member.id);
 
@@ -55,7 +55,8 @@ const createMember = asyncAction<Instance<typeof Entity>>((userId: string, isAdm
 
 const updateMember = asyncAction<Instance<typeof Entity>>((userId: string, isAdmin: boolean) => async function fn({ flow, root, self }) {
 	try {
-		const member = await Api.organization.updateMember(self.id, userId, isAdmin, !!root.viewer.user?.isRootAdmin);    
+		const res = await Api.organization.updateMember(self.id, userId, isAdmin, !!root.viewer.user?.isRootAdmin);    
+		const member = createUser(res);
 
 		root.user.collection.update(member.id, member);
 
@@ -92,7 +93,9 @@ const fetchMembers = asyncAction<Instance<typeof Entity>>(() => async function f
 		flow.start();
 		const res = await Api.organization.getMembers(self.id);
 
-		res.forEach((member) => {
+		res.forEach((value) => {
+			const member = createUser(value);
+
 			root.user.collection.set(member.id, member);
 			self.members.push(member.id);
 		})
@@ -100,6 +103,7 @@ const fetchMembers = asyncAction<Instance<typeof Entity>>(() => async function f
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 

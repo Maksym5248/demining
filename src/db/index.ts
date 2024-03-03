@@ -1,3 +1,5 @@
-export * from './local/db';
-export * from './remote/db';
+import { DBRemote } from './remote/db';
+
 export * from './types';
+
+export const DB = DBRemote

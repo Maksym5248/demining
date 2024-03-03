@@ -20,11 +20,12 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRe
 		const res = await Api.missionRequest.create(createMissionRequestDTO(data));
 		const missionRequest = createMissionRequest(res);
 
-		self.collection.set(res.id, missionRequest);
-		self.list.unshift(res.id);
+		self.collection.set(missionRequest.id, missionRequest);
+		self.list.unshift(missionRequest.id);
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось додати');
 	}
 });
@@ -38,6 +39,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
 	}
 });
@@ -64,6 +66,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 

@@ -1,6 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/uk'; // Import Ukrainian locale
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { Timestamp } from 'firebase/firestore';
 
 dayjs.locale('uk'); // Set Ukrainian as default locale
 dayjs.extend(customParseFormat);
@@ -12,7 +13,17 @@ const genitiveMonths = [
 
 const today = ():Dayjs => dayjs(new Date());
 
-const create = (value:Date):Dayjs => dayjs(value);
+const create = (value:Timestamp):Dayjs => {
+	const res = dayjs(value.toDate());
+	return res;
+};
+const toDateServer = (value: Date | Dayjs) => {
+	if(dayjs.isDayjs(value)){
+		return Timestamp.fromDate(value.toDate());
+	}
+
+	return Timestamp.fromDate(value)
+};
 
 const toDate = (value: Date | Dayjs):Date => {
 	if(dayjs.isDayjs(value)){
@@ -32,4 +43,5 @@ export const dates = {
 	create,
 	toDate,
 	formatGenitiveMonth,
+	toDateServer
 };

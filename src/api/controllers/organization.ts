@@ -1,4 +1,4 @@
-import { DBRemote, IOrganizationDB, IUserDB } from '~/db';
+import { DB, IOrganizationDB, IUserDB } from '~/db';
 import { ROLES } from '~/constants';
 
 import { IOrganizationDTO, IUserDTO, ICreateOrganizationDTO } from '../types'
@@ -9,14 +9,14 @@ const getMembers = async (organization:Pick<IOrganizationDB, "membersIds"> | nul
 	}
 
 	const users = await Promise.all(
-		organization.membersIds.map((id) => DBRemote.user.get(id))
+		organization.membersIds.map((id) => DB.user.get(id))
 	) as IUserDB[]
 
 	return users;
 }
 
 const create = async (value: Pick<ICreateOrganizationDTO, "name">):Promise<IOrganizationDTO> => {
-	const { membersIds, ...organization} = await DBRemote.organization.create({
+	const { membersIds, ...organization} = await DB.organization.create({
 		...value,
 		membersIds: []
 	});
@@ -25,7 +25,7 @@ const create = async (value: Pick<ICreateOrganizationDTO, "name">):Promise<IOrga
 };
 
 const update = async (id:string, value: ICreateOrganizationDTO):Promise<Omit<IOrganizationDTO, "members">> => {
-	const res = await DBRemote.organization.update(id, value);
+	const res = await DB.organization.update(id, value);
 	const { membersIds, ...organization} = res;
 	return organization
 };
@@ -35,8 +35,8 @@ const updateMember = async (organizationId:string, userId: string, isAdmin: bool
 		organization,
 		user 
 	] = await Promise.all([
-		DBRemote.organization.get(organizationId),
-		DBRemote.user.get(userId) as Promise<IUserDTO>
+		DB.organization.get(organizationId),
+		DB.user.get(userId) as Promise<IUserDTO>
 	]);
 
 	const membersIds = organization?.membersIds ?? [];
@@ -44,10 +44,10 @@ const updateMember = async (organizationId:string, userId: string, isAdmin: bool
 	const roles = isAdmin ? userRolesWithAdmin : user.roles.filter(el => el !== ROLES.ORGANIZATION_ADMIN);
 
 	await Promise.all([
-		DBRemote.organization.update(organizationId, {
+		DB.organization.update(organizationId, {
 			membersIds: membersIds.includes(userId) ? membersIds : [...membersIds, userId],
 		}),
-		DBRemote.user.update(userId, {
+		DB.user.update(userId, {
 			 organizationId,
 			 ...(isRootAdmin? { roles } : {}),
 		})
@@ -61,15 +61,15 @@ const removeMember = async (organizationId:string, userId: string):Promise<void>
 		organization,
 		user 
 	] = await Promise.all([
-		DBRemote.organization.get(organizationId) as Promise<IOrganizationDB>,
-		DBRemote.user.get(userId) as Promise<IUserDB>
+		DB.organization.get(organizationId) as Promise<IOrganizationDB>,
+		DB.user.get(userId) as Promise<IUserDB>
 	]);
 
 	await Promise.all([
-		DBRemote.organization.update(organizationId, {
+		DB.organization.update(organizationId, {
 			membersIds: organization.membersIds.filter(el => el !== userId)
 		}),
-		DBRemote.user.update(userId, {
+		DB.user.update(userId, {
 			 organizationId: null,
 			 roles: user.roles.filter(el => el !== ROLES.ORGANIZATION_ADMIN)
 		})
@@ -77,15 +77,15 @@ const removeMember = async (organizationId:string, userId: string):Promise<void>
 };
 
 
-const remove = (id:string) => DBRemote.organization.remove(id);
+const remove = (id:string) => DB.organization.remove(id);
 
 const getList = async ():Promise<IOrganizationDTO[]> => {
-	const organizations = await DBRemote.organization.select();
+	const organizations = await DB.organization.select();
 	return organizations.map(({ membersIds,  ...restOrganization}) => restOrganization)
 };
 
 const get = async (id:string):Promise<IOrganizationDTO | null> => {
-	const res = await DBRemote.organization.get(id);
+	const res = await DB.organization.get(id);
 
 	if(!res){
 		return null;
@@ -97,7 +97,7 @@ const get = async (id:string):Promise<IOrganizationDTO | null> => {
 };
 
 const getOrganizationMembers = async (id:string):Promise<IUserDTO[]> => {
-	const res = await DBRemote.organization.get(id);
+	const res = await DB.organization.get(id);
 
 	if(!res){
 		return [];
@@ -107,7 +107,7 @@ const getOrganizationMembers = async (id:string):Promise<IUserDTO[]> => {
 	return members
 };
 
-const exist = (id:string):Promise<boolean> => DBRemote.organization.exist("id", id);
+const exist = (id:string):Promise<boolean> => DB.organization.exist("id", id);
 
 export const organization = {
 	create,

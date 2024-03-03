@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 import { EXPLOSIVE_OBJECT_CATEGORY } from "~/constants";
 import { 
 	IEmployeeDB,
@@ -73,11 +75,11 @@ export interface IMissionReportDTO extends Omit<IMissionReportDB, "orderId" | "a
 export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
 
 export interface IMissionReportDTOParams {
-    approvedAt: Date;
+    approvedAt: Timestamp;
     approvedById:  string;
     number: number;
     subNumber: number | undefined,
-    executedAt: Date;
+    executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | undefined;
@@ -85,11 +87,11 @@ export interface IMissionReportDTOParams {
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
     mapView: IMapViewActionDTOParams;
-    workStart: Date;
-    exclusionStart: Date | undefined;
-    transportingStart: Date | undefined;
-    destroyedStart: Date | undefined;
-    workEnd: Date;
+    workStart: Timestamp;
+    exclusionStart: Timestamp | undefined;
+    transportingStart: Timestamp | undefined;
+    destroyedStart: Timestamp | undefined;
+    workEnd: Timestamp;
     transportExplosiveObjectId?: string;
     transportHumansId?: string;
     mineDetectorId?: string,
@@ -102,11 +104,11 @@ export interface IMissionReportDTOParams {
 
 export interface IMissionReportDTOParamsUpdate {
     id: string;
-    approvedAt: Date;
+    approvedAt: Timestamp;
     approvedById:  string;
     number: number;
     subNumber: number | undefined,
-    executedAt: Date;
+    executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | undefined;
@@ -114,11 +116,11 @@ export interface IMissionReportDTOParamsUpdate {
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
     mapView: IMapViewActionDTOParams;
-    workStart: Date;
-    exclusionStart: Date | undefined;
-    transportingStart: Date | undefined;
-    destroyedStart: Date | undefined;
-    workEnd: Date;
+    workStart: Timestamp;
+    exclusionStart: Timestamp | undefined;
+    transportingStart: Timestamp | undefined;
+    destroyedStart: Timestamp | undefined;
+    workEnd: Timestamp;
     transportExplosiveObjectId: string;
     transportHumansId: string;
     mineDetectorId: string,

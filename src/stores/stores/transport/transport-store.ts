@@ -35,12 +35,12 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransport
 		const res = await Api.transport.create(createTransportDTO(data));
 		const value = createTransport(res);
 
-		self.collection.set(res.id, value);
-		self.list.unshift(res.id);
+		self.collection.set(value.id, value);
+		self.list.unshift(value.id);
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
-		console.log("e", err);
+		flow.failed(err as Error);
 		message.error('Не вдалось додати');
 	}
 });
@@ -54,6 +54,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
 	}
 });
@@ -69,17 +70,18 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 		const list = await Api.transport.getList();
 
 		list.forEach((el) => {
-			const item = createTransport(el);
+			const value = createTransport(el);
 
-			if(!self.collection.has(item.id)){
-				self.collection.set(item.id, item);
-				self.list.push(item.id);
+			if(!self.collection.has(value.id)){
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
 			}
 		})
 
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 

@@ -88,7 +88,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 
 		flow.success();
 	} catch (err) {
-		console.log("ERROR fetchList", err)
+		message.error('Виникла помилка');
 		flow.failed(err as Error);
 	}
 });
@@ -102,6 +102,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
 	}
 });

@@ -1,9 +1,10 @@
-import { Button, Space, Typography, message } from 'antd';
+import { Button, Space, Typography } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '~/hooks';
-import { DB } from '~/db';
+import { Loading } from '~/components';
 
+import { mockEmployees, mockMissionRequest, mockEquipment, mockTransport } from './mock-data';
 import { s } from './dev.styles';
 
 const { Title } = Typography;
@@ -13,16 +14,29 @@ export const DevPage = observer(() => {
 	const store = useStore();
     
 	const onClickGenerateEmployee = () => {
-		store.createMocks();
+		mockEmployees.forEach(el => {
+			store.employee.create.run(el);
+		});
+
+		mockMissionRequest.forEach(el => {
+			store.missionRequest.create.run(el);
+		});
+
+		mockTransport.forEach(el => {
+			store.transport.create.run(el);
+		});
+
+		mockEquipment.forEach(el => {
+			store.equipment.create.run(el);
+		});
 	}
 
-	const onDropDb = async () => {
-		try {
-			await DB.dropDb();    
-			message.success("Базу даних вдалено")
-		} catch(e){
-			message.error("Базу даних не вдалось видалити")
-		}
+	const onCreateExplosiveObjects = async () => {
+		store.explosiveObject.createExplosiveObjects.run();
+	}
+
+	const createExplosiveObjectsTypes = async () => {
+		store.explosiveObject.createExplosiveObjectsTypes.run();
 	}
 
 	return (
@@ -32,16 +46,29 @@ export const DevPage = observer(() => {
 			</Space>
 
 			<div css={s.content}>
-				<Space>
-					<Button onClick={onClickGenerateEmployee}>
-            Згенеруват дані о/c
-					</Button>
-				</Space>
-				<Space>
-					<Button onClick={onDropDb}>
-            Вдалити базу даних
-					</Button>
-				</Space>
+				{(
+					store.explosiveObject.createExplosiveObjects.inProgress || store.explosiveObject.createExplosiveObjectsTypes.inProgress 
+				)
+					? <Loading/>
+					: (
+						<>
+							<Space>
+								<Button onClick={onClickGenerateEmployee}>
+									Згенеруват дані о/c
+								</Button>
+							</Space>
+							<Space>
+								<Button onClick={onCreateExplosiveObjects}>
+									Створити ВНП
+								</Button>
+							</Space>
+							<Space>
+								<Button onClick={createExplosiveObjectsTypes}>
+									Створити типи ВНП
+								</Button>
+							</Space>
+						</>
+					)}
 			</div>
 		</div>
 	);

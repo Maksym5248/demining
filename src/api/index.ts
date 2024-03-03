@@ -5,12 +5,16 @@ export * from "./external";
 export * from "./types"
 
 
-const init = async () => {
+const createExplosiveObjectsTypes = async () => {
 	await controllers.explosiveObjectType.init();
+}
+
+const createExplosiveObjects = async () => {
 	await controllers.explosiveObject.init();
 }
 
 export const Api = {
 	...controllers,
-	init
+	createExplosiveObjectsTypes,
+	createExplosiveObjects
 }

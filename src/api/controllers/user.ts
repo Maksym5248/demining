@@ -3,7 +3,7 @@ import map from "lodash/map"
 import uniq from "lodash/uniq"
 
 import { UpdateValue } from '~/types'
-import { DBRemote, IOrganizationDB, IUserDB } from '~/db';
+import { DB, IOrganizationDB, IUserDB } from '~/db';
 
 import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types'
 
@@ -14,7 +14,7 @@ const getUserOrganization = async (user:IUserDB | null): Promise<IUserOrganizati
 		return null;
 	}
 
-	const res = await DBRemote.organization.get(user.organizationId);
+	const res = await DB.organization.get(user.organizationId);
 
 	if(!res){
 		return null
@@ -26,7 +26,7 @@ const getUserOrganization = async (user:IUserDB | null): Promise<IUserOrganizati
 }
 
 const create = async (value: Pick<ICurrentUserDTO, "id" | "email">):Promise<ICurrentUserDTO> => {
-	const { organizationId, ...user} = await DBRemote.user.create({
+	const { organizationId, ...user} = await DB.user.create({
 		roles: [],
 		organizationId: null,
 		...value,
@@ -39,7 +39,7 @@ const create = async (value: Pick<ICurrentUserDTO, "id" | "email">):Promise<ICur
 };
 
 const update = async (id:string, value: UpdateValue<ICurrentUserDTO>):Promise<ICurrentUserDTO> => {
-	const res = await DBRemote.user.update(id, value);
+	const res = await DB.user.update(id, value);
 
 	const organization = await getUserOrganization(res);
 	const { organizationId, ...user} = res;
@@ -51,15 +51,15 @@ const update = async (id:string, value: UpdateValue<ICurrentUserDTO>):Promise<IC
 
 };
 
-const remove = (id:string) => DBRemote.user.remove(id);
+const remove = (id:string) => DB.user.remove(id);
 
 const getList = async ():Promise<ICurrentUserDTO[]> => {
-	const users = await DBRemote.user.select();
+	const users = await DB.user.select();
 
 	const organizationIds = getIds(users, "organizationId");
 
 	const organizations = await Promise.all(
-		organizationIds.map((organizationId) => DBRemote.organization.get(organizationId))
+		organizationIds.map((organizationId) => DB.organization.get(organizationId))
 	) as IOrganizationDB[];
 
 	const collection = keyBy(organizations, "id");
@@ -70,14 +70,14 @@ const getList = async ():Promise<ICurrentUserDTO[]> => {
 	}))
 };
 
-const getListUnassignedUsers = ():Promise<IUserDTO[]> => DBRemote.user.select({
+const getListUnassignedUsers = ():Promise<IUserDTO[]> => DB.user.select({
 	where: {
 		organizationId: null
 	}
 })
 
 const get = async (id:string):Promise<ICurrentUserDTO | null> => {
-	const res = await DBRemote.user.get(id);
+	const res = await DB.user.get(id);
 
 	if(!res){
 		return null;
@@ -92,7 +92,9 @@ const get = async (id:string):Promise<ICurrentUserDTO | null> => {
 	}
 };
 
-const exist = (id:string):Promise<boolean> => DBRemote.user.exist("id", id);
+const exist = (id:string):Promise<boolean> => DB.user.exist("id", id);
+
+const setOrganization = (rootCollection:string) => DB.setRootCollection(rootCollection);
 
 export const user = {
 	create,
@@ -101,5 +103,6 @@ export const user = {
 	get,
 	getList,
 	exist,
-	getListUnassignedUsers
+	getListUnassignedUsers,
+	setOrganization
 }
