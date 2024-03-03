@@ -9,6 +9,10 @@ const create = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IEx
 	const explosiveObject = await DB.explosiveObject.create(value);
 	const type = await DB.explosiveObjectType.get(value.typeId);
 
+	if(!type){
+		throw new Error(" there is no type")
+	}
+
 	return {
 		...explosiveObject,
 		type
@@ -18,7 +22,11 @@ const create = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IEx
 const update = async (id:string, value: UpdateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
 	const explosiveObject = await DB.explosiveObject.update(id, value);
 	const type = await DB.explosiveObjectType.get(explosiveObject.typeId);
- 
+
+	if(!type){
+		throw new Error(" there is no type")
+	}
+
 	return {
 		...explosiveObject,
 		type
@@ -31,6 +39,10 @@ const getList = async ():Promise<IExplosiveObjectDTO[]> => {
 	const list = await DB.explosiveObject.select();
 	const res = await Promise.all(list.map(async ({typeId, ...explosiveObject}) => {
 		const type = await DB.explosiveObjectType.get(typeId);
+
+		if(!type){
+			throw new Error(" there is no type")
+		}
 
 		return {
 			...explosiveObject,

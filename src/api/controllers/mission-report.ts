@@ -28,6 +28,12 @@ const creatorAction = (document:ILinkedToDocumentDB) => <B, T extends IItemId>(
 }
 
 export const get = async (id:string): Promise<IMissionReportDTO> => {
+	const res = await DB.missionReport.get(id);
+
+	if(!res){
+		throw new Error("there is no missionReport")
+	}
+
 	const {
 		missionRequestId,
 		orderId,
@@ -39,7 +45,7 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		squadLeaderActionId,
 		squadActionIds,
 		...missionReport
-	} = await DB.missionReport.get(id);
+	} = res
 
 	const [
 		missionRequest,
@@ -75,6 +81,10 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		}),
 	]);
 
+	if(!order){
+		throw new Error("there is no order")
+	}
+
 	const [explosiveObjectsActionTypes, signedByActionOrder] = await Promise.all([
 		DB.explosiveObjectType.select({
 			where: {
@@ -83,6 +93,10 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		}),
 		DB.employeeAction.get(order.signedByActionId),
 	])
+
+	if(!signedByActionOrder) throw new Error("there is no signedByActionOrder");
+	if(!missionRequest) throw new Error("there is no missionRequest");
+	if(!mapViewAction) throw new Error("there is no mapViewAction");
 
 	return {
 		...missionReport,

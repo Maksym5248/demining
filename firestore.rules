@@ -21,13 +21,13 @@ service cloud.firestore {
     }
     
     match /EXPLOSIVE_OBJECT/{explosiveObjectId} {
-    	allow read: if request.auth != null && isOrganization();
+    	allow read: if request.auth != null && (isOrganization() || isRootAdmin());
       allow create: if isRootAdmin() || isOrganizationAdmin();
       allow update, delete: if isRootAdmin();
     }
     
     match /EXPLOSIVE_OBJECT_TYPE/{explosiveObjectTypeId} {
-      allow read: if request.auth != null && isOrganization();
+      allow read: if request.auth != null && (isOrganization() || isRootAdmin());
       allow create, update, delete: if isRootAdmin();
     }
 

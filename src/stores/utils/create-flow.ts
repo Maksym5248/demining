@@ -2,6 +2,7 @@ import { types } from 'mobx-state-tree';
 import get from 'lodash/get';
 
 import { error } from '~/utils';
+import { Logger } from '~/services';
 
 const ErrorModel = types.model({
 	message: '',
@@ -58,7 +59,7 @@ export const AsyncModel = types
 
 			self.inProgress = false;
 			self.error = error.createError(e);
-
+			Logger.log(e)
 			if (throwError) {
 				throw e;
 			}
