@@ -1,21 +1,11 @@
 
-import { DOCX_TEMPLATE, MIME_TYPE } from '~/constants';
-import { fileUtils } from '~/utils/file';
+import { getApp } from "firebase/app";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+
+import { DOCX_TEMPLATE } from '~/constants';
 
 import { Storage } from './storage/storage';
-import { Platform } from './platform';
 
-
-const {
-	path,
-	fs
-} = window.electronAPI;
-
-interface IMetaData {
-	lastModified: number;
-	name: string;
-    type: string;
-}
 
 const createMetadata = (data:File) => ({
 	lastModified: data.lastModified,
@@ -24,35 +14,28 @@ const createMetadata = (data:File) => ({
 })
 
 async function saveTemplate(name: DOCX_TEMPLATE, data:File): Promise<void> {
-	const buffer = await fileUtils.fileToBuffer(data);
+	const storage = getStorage(getApp());
+	const fileRef = ref(storage, name);
 
-	if (!fs.existsSync(Platform.appDataPath)) {
-		fs.mkdirSync(Platform.appDataPath);
-	}
-	const str = await path.join(Platform.appDataPath, name);
+	await uploadBytes(fileRef, data);
 
-	await fs.writeFile(str, buffer);
 	Storage.set(name, createMetadata(data))
 }
 
-async function readTemplate(name:DOCX_TEMPLATE):Promise<File> {
-	const str = await path.join(Platform.appDataPath, name);
+async function readTemplate(name:DOCX_TEMPLATE):Promise<File | null> {
+	const storage = getStorage(getApp());
+	const fileRef = ref(storage, name);
 
-	const data = await fs.readFile(str);
+	const url = await getDownloadURL(fileRef);
+	const blob = await fetch(url).then(response => response.blob())
 
-	const metaData = Storage.get(name) as IMetaData | null;
-
-	if(!metaData){
-		throw Error()
-	}
-
-	return fileUtils.bufferToFile(data, MIME_TYPE.DOCX, metaData);
+	return new File([blob], name, { type: blob.type });
 }
 
 async function removeTemplate(name:DOCX_TEMPLATE){
-	const str = await path.join(Platform.appDataPath, name);
-
-	await fs.unlink(str);
+	const storage = getStorage();
+	const fileRef = ref(storage, name);
+	await deleteObject(fileRef)
 }
 
 async function saveAsUser(blob: Blob, name:string){

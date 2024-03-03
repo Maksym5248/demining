@@ -37,7 +37,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 	const onAdd = () => Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
 
 	const onFinishCreate = async (values: IOrderForm) => {
-		await order.add.run(values);
+		await order.create.run(values);
 		hide();
 	};
 
@@ -75,7 +75,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 						wrapperCol={{ span: 16 }}
 						disabled={wizard.isView}
 						initialValues={currentOrder
-							? ({ ...currentOrder, signedById: currentOrder.signedByAction?.employeeId})
+							? ({ ...currentOrder, signedById: currentOrder?.signedByAction?.employeeId})
 							: {
 								number: (order.list.first?.number ?? 0) + 1,
 								signedById: order.list.first?.signedByAction.employeeId || employeeChiefFirst?.id,
@@ -106,7 +106,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 							  onAdd={onAdd}
 							  options={select.append(
 									employeesListChief.map((el) => ({ label: el.fullName, value: el.id })),
-									{ label: currentOrder.signedByAction.fullName, value: currentOrder.signedByAction.employeeId }
+									{ label: currentOrder?.signedByAction.fullName, value: currentOrder?.signedByAction.employeeId }
 								)}
 							/>
 						</Form.Item>

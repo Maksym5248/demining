@@ -5,7 +5,7 @@ import { ERRORS } from '~/constants'
 import { IExplosiveObjectTypeDTO } from '../types'
 import {explosiveObjectTypes } from '../data'
 
-const add = (value: CreateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.explosiveObjectType.add(value);
+const create = (value: CreateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.explosiveObjectType.create(value);
 const update = (id:string, value: UpdateValue<IExplosiveObjectTypeDTO>):Promise<IExplosiveObjectTypeDTO> => DB.explosiveObjectType.update(id, value);
 const remove = async (id:string) => {
 	const isCreateExplosiveObject = await DB.explosiveObject.exist("typeId", id);
@@ -21,7 +21,7 @@ const init = ():Promise<IExplosiveObjectTypeDTO[]> => DB.explosiveObjectType.ini
 
 export const explosiveObjectType = {
 	init,
-	add,
+	create,
 	update,
 	remove,
 	getList

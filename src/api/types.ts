@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 import { EXPLOSIVE_OBJECT_CATEGORY } from "~/constants";
 import { 
 	IEmployeeDB,
@@ -12,7 +14,9 @@ import {
 	IEquipmentDB,
 	IEquipmentActionDB,
 	IMissionReportDB,
-	IMapViewActionActionDB
+	IMapViewActionActionDB,
+	IUserDB,
+	IOrganizationDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -71,11 +75,11 @@ export interface IMissionReportDTO extends Omit<IMissionReportDB, "orderId" | "a
 export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
 
 export interface IMissionReportDTOParams {
-    approvedAt: Date;
+    approvedAt: Timestamp;
     approvedById:  string;
     number: number;
     subNumber: number | undefined,
-    executedAt: Date;
+    executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | undefined;
@@ -83,11 +87,11 @@ export interface IMissionReportDTOParams {
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
     mapView: IMapViewActionDTOParams;
-    workStart: Date;
-    exclusionStart: Date | undefined;
-    transportingStart: Date | undefined;
-    destroyedStart: Date | undefined;
-    workEnd: Date;
+    workStart: Timestamp;
+    exclusionStart: Timestamp | undefined;
+    transportingStart: Timestamp | undefined;
+    destroyedStart: Timestamp | undefined;
+    workEnd: Timestamp;
     transportExplosiveObjectId?: string;
     transportHumansId?: string;
     mineDetectorId?: string,
@@ -100,11 +104,11 @@ export interface IMissionReportDTOParams {
 
 export interface IMissionReportDTOParamsUpdate {
     id: string;
-    approvedAt: Date;
+    approvedAt: Timestamp;
     approvedById:  string;
     number: number;
     subNumber: number | undefined,
-    executedAt: Date;
+    executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | undefined;
@@ -112,18 +116,29 @@ export interface IMissionReportDTOParamsUpdate {
     uncheckedTerritory: number |undefined;
     uncheckedReason: string | undefined;
     mapView: IMapViewActionDTOParams;
-    workStart: Date;
-    exclusionStart: Date | undefined;
-    transportingStart: Date | undefined;
-    destroyedStart: Date | undefined;
-    workEnd: Date;
+    workStart: Timestamp;
+    exclusionStart: Timestamp | undefined;
+    transportingStart: Timestamp | undefined;
+    destroyedStart: Timestamp | undefined;
+    workEnd: Timestamp;
     transportExplosiveObjectId: string;
     transportHumansId: string;
     mineDetectorId: string,
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
     squadLeaderId: string;
     squadIds: string[];
-    address: string;
+    address: string; 
 }
 
+export interface ICurrentUserDTO extends Omit<IUserDB, "organizationId">  {
+    organization: IUserOrganizationDTO | null;
+}
 
+export interface IUserDTO extends IUserDB {}
+
+export interface IOrganizationDTO extends Omit<IOrganizationDB, "membersIds"> {}
+
+export interface IUserOrganizationDTO extends Omit<IOrganizationDB, "membersIds"> {}
+
+export interface ICreateOrganizationDTO extends Pick<IOrganizationDB, "name"> {}
+export interface ICreateOrganizationMembersDTO extends Pick<IOrganizationDB, "membersIds"> {}

@@ -41,7 +41,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 	const isEdit = !!id;
 
 	const onFinishCreate = async (values: IEmployeeForm) => {
-		await store.employee.add.run(values);
+		await store.employee.create.run(values);
 		hide();
 	};
 

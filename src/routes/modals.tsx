@@ -8,7 +8,9 @@ import {
 	ExplosiveObjectActionWizardModal,
 	TransportWizardModal,
 	EquipmentWizardModal,
-	DocxPreviewModal
+	DocxPreviewModal,
+	OrganizationWizardModal,
+	MemberWizardModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -36,6 +38,12 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.EQUIPMENT_WIZARD]: {
 		renderComponent: (props: any) => <EquipmentWizardModal {...props} />,
+	},
+	[MODALS.ORGANIZATION_WIZARD]: {
+		renderComponent: (props: any) => <OrganizationWizardModal {...props} />,
+	},
+	[MODALS.MEMBER_WIZARD]: {
+		renderComponent: (props: any) => <MemberWizardModal {...props} />,
 	},
 	[MODALS.DOCX_PREVIEW]: {
 		renderComponent: (props: any) => <DocxPreviewModal {...props} />,

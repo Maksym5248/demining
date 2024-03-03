@@ -20,7 +20,6 @@ export function Transport({ dataHumans, dataExplosiveObject, selectedTransportHu
 		Modal.show(MODALS.TRANSPORT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
 	
-	console.log("Transport", selectedTransportExplosiveAction, selectedTransportHumanAction)
 	return <>
 		<Form.Item
 			label="Авто для ВР"

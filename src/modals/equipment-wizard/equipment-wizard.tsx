@@ -36,7 +36,7 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 	const isLoading = !store.equipment.fetchList.isLoaded && store.equipment.fetchList.inProgress;
 
 	const onFinishCreate = async (values: IEquipmentForm) => {
-		await store.equipment.add.run(values);
+		await store.equipment.create.run(values);
 		hide();
 	};
 

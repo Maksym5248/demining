@@ -22,11 +22,11 @@ const Store = types
 		},
 	}));
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
 	try {
 		flow.start();
 
-		const res = await Api.equipment.add(createEquipmentDTO(data));
+		const res = await Api.equipment.create(createEquipmentDTO(data));
 		const value = createEquipment(res);
 
 		self.collection.set(res.id, value);
@@ -34,6 +34,7 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentVal
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось додати');
 	}
 });
@@ -41,13 +42,14 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentVal
 const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
 	try {
 		flow.start();
-		console.log("remove")
+
 		await Api.equipment.remove(id);
 		self.list.removeById(id);
 		self.collection.remove(id);
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
 	}
 });
@@ -73,8 +75,9 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 
 		flow.success();
 	} catch (err) {
+		message.error('Виникла помилка');
 		flow.failed(err as Error);
 	}
 });
 
-export const EquipmentStore = Store.props({ add, remove, fetchList })
+export const EquipmentStore = Store.props({ create, remove, fetchList })

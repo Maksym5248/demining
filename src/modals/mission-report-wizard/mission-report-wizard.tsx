@@ -49,7 +49,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	};
 
 	const onFinishCreate = async (values: IMissionReportForm) => {
-		await missionReport.add.run(values);
+		await missionReport.create.run(values);
 		hide();
 	};
 	

@@ -6,3 +6,5 @@ export * from './mission-report';
 export * from './explosive-object';
 export * from './transport';
 export * from './equipment';
+export * from './user';
+export * from './organization';

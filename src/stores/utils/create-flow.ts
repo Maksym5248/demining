@@ -1,21 +1,7 @@
 import { types } from 'mobx-state-tree';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 import { error } from '~/utils';
-
-const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-
-const integrateDevTools = (err: Error) => {
-	if (IS_DEV && process.env.JEST_WORKER_ID === undefined) {
-
-		const { message, stack } = err;
-		if (stack) {
-			console.error(message, stack);
-		} else {
-			console.log(`Error:\n${message}`);
-		}
-	}
-};
 
 const ErrorModel = types.model({
 	message: '',
@@ -36,7 +22,7 @@ export const AsyncModel = types
 		},
 
 		get errorMessage(): string | null {
-			return _.get(self, 'error.message', null);
+			return get(self, 'error.message', null);
 		},
 
 		get inProgressAgain() {
@@ -70,10 +56,7 @@ export const AsyncModel = types
 				self.hasEverBeenRan = true;
 			}
 
-			integrateDevTools(e);
-
 			self.inProgress = false;
-
 			self.error = error.createError(e);
 
 			if (throwError) {

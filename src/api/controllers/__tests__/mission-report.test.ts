@@ -4,7 +4,7 @@ import { IMissionReportDTO } from '~/api/types';
 import { DB as DBMock } from '~/db';
 import { EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
 
-import { getCreateList, getRemoveList, generateActions, add, update, get, getUpdatedList } from '../mission-report';
+import { getCreateList, getRemoveList, generateActions, create, update, get, getUpdatedList } from '../mission-report';
 import { 
 	missionReportInput, 
 	missionReportDTO, 
@@ -331,7 +331,7 @@ describe('mission-report', () => {
 		});
 	});
 
-	describe('add function', () => {
+	describe('create function', () => {
 		const DB = jest.mocked<any>(DBMock);
 
 		const msParam = omitted(missionReportDB)
@@ -340,15 +340,15 @@ describe('mission-report', () => {
 	  jest.clearAllMocks();
 		
 	  DB.missionReport.get.mockResolvedValueOnce(missionReportDB);
-	  DB.missionReport.add.mockResolvedValueOnce(missionReportDB);
+	  DB.missionReport.create.mockResolvedValueOnce(missionReportDB);
 
-	  DB.mapViewAction.add.mockResolvedValueOnce(missionReportDTO.mapView);
-	  DB.employeeAction.add.mockResolvedValueOnce(missionReportDTO.approvedByAction);
-	  DB.employeeAction.add.mockResolvedValueOnce(missionReportDTO.squadLeaderAction);
+	  DB.mapViewAction.create.mockResolvedValueOnce(missionReportDTO.mapView);
+	  DB.employeeAction.create.mockResolvedValueOnce(missionReportDTO.approvedByAction);
+	  DB.employeeAction.create.mockResolvedValueOnce(missionReportDTO.squadLeaderAction);
 	  
-	  missionReportDTO.squadActions.map(el  => DB.employeeAction.add.mockResolvedValueOnce(el))
-	  missionReportDTO.transportActions.map(el  => DB.transportAction.add.mockResolvedValueOnce(el))
-	  missionReportDTO.equipmentActions.map(el  => DB.equipmentAction.add.mockResolvedValueOnce(el))
+	  missionReportDTO.squadActions.map(el  => DB.employeeAction.create.mockResolvedValueOnce(el))
+	  missionReportDTO.transportActions.map(el  => DB.transportAction.create.mockResolvedValueOnce(el))
+	  missionReportDTO.equipmentActions.map(el  => DB.equipmentAction.create.mockResolvedValueOnce(el))
 
 	  DB.employee.select.mockResolvedValueOnce([
 				missionReportDTO.approvedByAction,
@@ -361,11 +361,11 @@ describe('mission-report', () => {
 
 		test('successfully adds a new mission report with all related actions', async () => {
 			DB.explosiveObject.select.mockResolvedValueOnce(missionReportDTO.explosiveObjectActions.map(el => ({ ...el, id: el.explosiveObjectId })));
-			missionReportDTO.explosiveObjectActions.map(el  => DB.explosiveObjectAction.add.mockResolvedValueOnce(el))
+			missionReportDTO.explosiveObjectActions.map(el  => DB.explosiveObjectAction.create.mockResolvedValueOnce(el))
 
-			await add(missionReportInput);
+			await create(missionReportInput);
 	
-			expect(DBMock.missionReport.add).toHaveBeenCalledTimes(1);
+			expect(DBMock.missionReport.create).toHaveBeenCalledTimes(1);
 			expect(DBMock.missionReport.update).toHaveBeenCalledTimes(1);
 			expect(DBMock.missionReport.update).toHaveBeenCalledWith(missionReportDTO.id, msParam);
 		});
@@ -388,12 +388,12 @@ describe('mission-report', () => {
 			}
 
 			DB.explosiveObject.select.mockResolvedValueOnce(explosiveObjectActions.map(el => ({ ...el, id: el.explosiveObjectId })));
-			explosiveObjectActions.map(el  => DB.explosiveObjectAction.add.mockResolvedValueOnce(el))
+			explosiveObjectActions.map(el  => DB.explosiveObjectAction.create.mockResolvedValueOnce(el))
 
-			await add(input);
+			await create(input);
 	
-			expect(DBMock.explosiveObjectAction.add).toHaveBeenCalledTimes(2);
-			expect(DBMock.missionReport.add).toHaveBeenCalledTimes(1);
+			expect(DBMock.explosiveObjectAction.create).toHaveBeenCalledTimes(2);
+			expect(DBMock.missionReport.create).toHaveBeenCalledTimes(1);
 			expect(DBMock.missionReport.update).toHaveBeenCalledTimes(1);
 			expect(DBMock.missionReport.update).toHaveBeenCalledWith(missionReportDTO.id, {
 				...msParam,
@@ -443,7 +443,7 @@ describe('mission-report', () => {
 			DB.equipment.select.mockResolvedValueOnce(missionReportDTO.equipmentActions.map(el => ({ ...el, id: el.equipmentId })));
 			DB.explosiveObject.select.mockResolvedValueOnce(missionReportDTO.explosiveObjectActions.map(el => ({ ...el, id: el.explosiveObjectId })));
 			DB.explosiveObjectAction.update.mockResolvedValueOnce(missionReportDTO.explosiveObjectActions[0]);
-			DB.explosiveObjectAction.add.mockResolvedValueOnce(missionReportDTO.explosiveObjectActions[0]);
+			DB.explosiveObjectAction.create.mockResolvedValueOnce(missionReportDTO.explosiveObjectActions[0]);
 		});
 
 		test('successfully update a mission report with all related actions', async () => {
@@ -466,7 +466,7 @@ describe('mission-report', () => {
 
 			await update(input, missionReportDTO);
 	
-			expect(DBMock.explosiveObjectAction.add).toHaveBeenCalledTimes(1);
+			expect(DBMock.explosiveObjectAction.create).toHaveBeenCalledTimes(1);
 			expect(DBMock.explosiveObjectAction.update).toHaveBeenCalledTimes(1);
 			expect(DBMock.missionReport.update).toHaveBeenCalledTimes(1);
 			expect(DBMock.missionReport.update).toHaveBeenCalledWith(missionReportDTO.id, {

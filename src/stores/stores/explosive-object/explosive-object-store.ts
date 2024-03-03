@@ -44,7 +44,7 @@ const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiv
 	try {
 		flow.start();
 
-		const res = await Api.explosiveObjectType.add(createExplosiveObjectTypeDTO(data));
+		const res = await Api.explosiveObjectType.create(createExplosiveObjectTypeDTO(data));
 		const value = createExplosiveObjectType(res);
 
 		self.collectionTypes.set(res.id, value);
@@ -52,15 +52,16 @@ const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiv
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось додати');
 	}
 });
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
 
-		const res = await Api.explosiveObject.add(createExplosiveObjectDTO(data));
+		const res = await Api.explosiveObject.create(createExplosiveObjectDTO(data));
 		const value = createExplosiveObject(res);
 
 		self.collection.set(res.id, value);
@@ -68,6 +69,7 @@ const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObj
 		flow.success();
 		message.success('Додано успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось додати');
 	}
 });
@@ -81,7 +83,32 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
+	}
+});
+
+const createExplosiveObjects = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow }) {
+	try {
+		flow.start();
+		await Api.createExplosiveObjects();
+		flow.success();
+		message.success('Виконано успішно');
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Не вдалось виконати');
+	}
+});
+
+const createExplosiveObjectsTypes = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow }) {
+	try {
+		flow.start();
+		await Api.createExplosiveObjectsTypes();
+		flow.success();
+		message.success('Виконано успішно');
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Не вдалось виконати');
 	}
 });
 
@@ -112,6 +139,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 
@@ -135,7 +163,8 @@ const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function 
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 
-export const ExplosiveObjectStore = Store.props({ add, addType, remove, fetchList, fetchListTypes })
+export const ExplosiveObjectStore = Store.props({ create, addType, remove, fetchList, fetchListTypes, createExplosiveObjects, createExplosiveObjectsTypes })
