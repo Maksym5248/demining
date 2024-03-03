@@ -2,7 +2,7 @@ import { theme } from 'antd';
 import { SeedToken } from 'antd/es/theme/interface/seeds'
 import { AliasToken } from 'antd/es/theme/interface/alias'
 import { css } from '@emotion/react'
-import _ from 'lodash'
+import isString from 'lodash/isString'
 
 const { getDesignToken } = theme;
 interface Token extends SeedToken, AliasToken {}
@@ -16,7 +16,7 @@ class ThemeClass {
 	}
 
 	css(arg: ((obj: {token: Token }) => string) | string) {
-		return _.isString(arg) ? css`${arg}`: css`${arg({ token: this.token })}`;
+		return isString(arg) ? css`${arg}`: css`${arg({ token: this.token })}`;
 	}
 
 	getToken(){

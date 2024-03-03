@@ -26,13 +26,13 @@ export interface IOrderValueParams {
 }
 
 export const createOrderDTO = (order: CreateValue<IOrderValueParams>): CreateValue<IOrderDTOParams>  => ({
-	signedAt: dates.toDate(order.signedAt),
+	signedAt: dates.toDateServer(order.signedAt),
 	signedById: order.signedById,
 	number: order.number
 });
 
 export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOParams>(value => ({
-	signedAt: dates.toDate(value?.signedAt ?? new Date()),
+	signedAt: dates.toDateServer(value?.signedAt ?? new Date()),
 	signedById: value?.signedById ?? "",
 	number: value?.number ?? 0
 }));

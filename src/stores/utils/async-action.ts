@@ -2,11 +2,21 @@ import {
 	types,
 	getParent,
 	getEnv,
+	IAnyStateTreeNode,
+	IAnyComplexType,
 } from 'mobx-state-tree';
 
 import { AsyncModel } from './create-flow';
 import { getRoot } from './get-root';
-import { IAsyncActionParams } from '../types';
+import { IFlow } from '../types';
+
+export interface IAsyncActionParams<T> {
+	flow: IFlow;
+	env: any;
+	self: T;
+	root: any;
+	parent: IAnyStateTreeNode | IAnyComplexType;
+}
 
 export function asyncAction<T>(
 	action: (...args: any[]) => (value: IAsyncActionParams<T>) => any,
@@ -46,6 +56,9 @@ export function asyncAction<T>(
 
 				return promise();
 			},
+			clearError(){
+				self.error = null
+			}
 		}));
 
 	return types.optional(FlowModel, {});

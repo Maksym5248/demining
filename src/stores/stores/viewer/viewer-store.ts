@@ -1,35 +1,73 @@
 import { types, Instance } from 'mobx-state-tree';
-import { User } from 'firebase/auth';
+import { message } from 'antd';
 
-import { Analytics, Auth } from "~/services";
+import { Analytics, Auth, Logger } from "~/services";
+import { Api, ICurrentUserDTO } from '~/api';
 
 import { CurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
 
 const Store = types
 	.model('ViewerStore', {
-		user: types.maybe(CurrentUser),
+		user: types.maybeNull(types.maybe(CurrentUser)),
+		isLoadingUserInfo: true
 	})
+	.views(self => ({
+		get isNotApproved(){
+			return !!self.user && !self.user.isAuthorized
+		},
+	}))
 	.actions((self) => ({
-		setUser(user: User) {
+		setUser(user: ICurrentUserDTO) {
+			// @ts-expect-error
 			self.user = createCurrentUser(user);
+
+			if(user.organization?.id){
+				Api.user.setOrganization(user.organization?.id)
+			}
 		},
 		removeUser() {
-			self.user = undefined;
+			self.user = null;
+			Api.user.setOrganization("")
+		},
+		setLoadingUserInfo(value: boolean) {
+			self.isLoadingUserInfo = value;
+		},
+	})).actions((self) => ({
+		async getUserData(id: string, email:string) {
+			try {
+				let user = await Api.user.get(id);
+
+				if(!user) {
+					user = await Api.user.create({ id, email });
+				}
+
+
+				self.setUser(user)
+				Analytics.setUserId(id);
+			} catch(e){
+				Logger.error(e);
+				message.error('Bиникла помилка');
+				self.removeUser();
+			}
+			
+			self.setLoadingUserInfo(false);
 		},
 	}));
 
-const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
 
+const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }) => {
 	try {
 		flow.start();
 
 		Auth.onAuthStateChanged((user) => {
 			if(user){
 				Analytics.setUserId(user.uid)
-				self.setUser(user);
+				self.getUserData(user.uid, user.email as string);
 			}  else {
-				Auth.signInAnonymously();
+				Analytics.setUserId(null)
+				self.removeUser();
+				self.setLoadingUserInfo(false);
 			}
 		})
 

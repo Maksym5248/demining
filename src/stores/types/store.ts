@@ -1,8 +1,3 @@
-import {
-	IAnyStateTreeNode,
-	IAnyComplexType,
-} from 'mobx-state-tree';
-
 import { IEmployeeValue } from '..';
 
 
@@ -10,14 +5,6 @@ export interface IError {
   message: string;
   status: number | null;
   reason: string | null;
-}
-
-export interface IAsyncActionParams<T> {
-	flow: IFlow;
-	env: any;
-	self: T;
-	root: any;
-	parent: IAnyStateTreeNode | IAnyComplexType;
 }
 
 export interface IFlow {

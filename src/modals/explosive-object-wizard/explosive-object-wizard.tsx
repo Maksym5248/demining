@@ -33,7 +33,7 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 	const firstType = explosiveObject.listTypes.first;
 
 	const onFinishCreate = async (values: IExplosiveObjectForm) => {
-		await explosiveObject.add.run(values);
+		await explosiveObject.create.run(values);
 		hide();
 	};
 

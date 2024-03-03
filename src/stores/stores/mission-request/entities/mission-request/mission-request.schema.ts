@@ -13,12 +13,12 @@ export interface IMissionRequestValue {
 }
   
 export const createMissionRequestDTO = (value: CreateValue<IMissionRequestValue>): CreateValue<IMissionRequestDTO>  => ({
-	signedAt: dates.toDate(value.signedAt),
+	signedAt: dates.toDateServer(value.signedAt),
 	number: value.number
 });
 
 export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue, IMissionRequestDTO>(value => ({
-	signedAt: dates.toDate(value?.signedAt ?? new Date()),
+	signedAt: dates.toDateServer(value?.signedAt ?? new Date()),
 	number: value?.number ?? 0
 }));
 

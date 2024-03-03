@@ -16,11 +16,11 @@ const Store = types
 		list: createList<IMissionReport>("MissionReportsList", safeReference(MissionReport), { pageSize: 20 }),
 	});
 
-const add = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self, root }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self, root }) {
 	try {
 		flow.start();
 
-		const res = await Api.missionReport.add(createMissionReportDTO(data));
+		const res = await Api.missionReport.create(createMissionReportDTO(data));
 
 		root.order.collection.set(res.order.id, createOrder(res.order));
 		root.missionRequest.collection.set(res.missionRequest.id, createMissionRequest(res.missionRequest));
@@ -88,7 +88,7 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 
 		flow.success();
 	} catch (err) {
-		console.log("ERROR fetchList", err)
+		message.error('Виникла помилка');
 		flow.failed(err as Error);
 	}
 });
@@ -102,8 +102,9 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 		flow.success();
 		message.success('Видалено успішно');
 	} catch (err) {
+		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
 	}
 });
 
-export const MissionReportStore = Store.props({ add, update, remove, fetchList })
+export const MissionReportStore = Store.props({ create, update, remove, fetchList })

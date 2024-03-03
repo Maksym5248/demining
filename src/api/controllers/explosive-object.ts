@@ -5,8 +5,8 @@ import { IExplosiveObjectDTO, IExplosiveObjectDTOParams } from '../types'
 import { explosiveObjectType } from "./explosive-object-type";
 import { explosiveObjects } from "../data";
 
-const add = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
-	const explosiveObject = await DB.explosiveObject.add(value);
+const create = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
+	const explosiveObject = await DB.explosiveObject.create(value);
 	const type = await DB.explosiveObjectType.get(value.typeId);
 
 	return {
@@ -88,7 +88,7 @@ const init = async ():Promise<void> => {
 
 
 export const explosiveObject = {
-	add,
+	create,
 	update,
 	remove,
 	getList,

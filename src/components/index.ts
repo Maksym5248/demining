@@ -6,3 +6,4 @@ export * from "./select";
 export * from "./select-template";
 export * from './wizard-buttons';
 export * from './wizard-footer';
+export * from "./loading";
