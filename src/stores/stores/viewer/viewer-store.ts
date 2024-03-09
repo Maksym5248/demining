@@ -1,7 +1,7 @@
 import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
-import { Analytics, Auth, Logger } from "~/services";
+import { Analytics, Auth, DocumentStorage, Logger } from "~/services";
 import { Api, ICurrentUserDTO } from '~/api';
 
 import { CurrentUser, createCurrentUser } from './entities';
@@ -23,12 +23,14 @@ const Store = types
 			self.user = createCurrentUser(user);
 
 			if(user.organization?.id){
-				Api.user.setOrganization(user.organization?.id)
+				Api.user.setOrganization(user.organization?.id);
+				DocumentStorage.setOrganizationId(user?.organization?.id)
 			}
 		},
 		removeUser() {
 			self.user = null;
-			Api.user.setOrganization("")
+			Api.user.setOrganization("");
+			DocumentStorage.setOrganizationId("")
 		},
 		setLoadingUserInfo(value: boolean) {
 			self.isLoadingUserInfo = value;
@@ -36,6 +38,7 @@ const Store = types
 	})).actions((self) => ({
 		async getUserData(id: string, email:string) {
 			try {
+
 				let user = await Api.user.get(id);
 
 				if(!user) {
@@ -43,7 +46,6 @@ const Store = types
 				}
 
 				self.setUser(user)
-				Analytics.setUserId(id);
 			} catch(e){
 				Logger.error(e);
 				message.error('Bиникла помилка');

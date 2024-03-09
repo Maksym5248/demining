@@ -7,6 +7,7 @@ export enum ROUTES {
     TRANSPORT_LIST ="/transport-list",
     EQUIPMENT_LIST ="/equipment-list",
 	SETTINGS = "/settings",
+	TEMPLATES = "/templates",
 
 	ORGANIZATIONS_LIST = "/organization-list",
 	MEMBERS_LIST = "/organization-list/:organizationId/members-list/",
@@ -44,6 +45,9 @@ export const routesInfo = {
 	},
 	[ROUTES.ORGANIZATIONS_LIST]: {
 		title: "Організації",
+	},
+	[ROUTES.TEMPLATES]: {
+		title: "Шаблони",
 	},
 	[ROUTES.MEMBERS_LIST]: {
 		title: "Учасники",

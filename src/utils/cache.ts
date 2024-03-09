@@ -25,6 +25,10 @@ export class Cache {
 		return this._data[name];
 	}
 
+	exist(name:string){
+		return !!this._data[name];
+	}
+
 	getAll() {
 		return this._data;
 	}

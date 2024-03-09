@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Form, Drawer, Divider, Spin, message} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
 import { dates } from '~/utils';
-import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER } from '~/constants';
-import { WizardButtons, WizardFooter } from '~/components';
-import { Modal, Image, Crashlytics } from '~/services';
+import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
+import { Select, WizardButtons, WizardFooter } from '~/components';
+import { Modal, Image, Crashlytics, Template } from '~/services';
+import { fileUtils } from '~/utils/file';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -32,7 +33,10 @@ interface Props {
 }
 
 export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport } = useStore();
+	const [isLoadingPreview, setLoadingPreview] = useState(false);
+	const [templateId, setTemplateId] = useState();
+
+	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport, document } = useStore();
 
 	const wizard = useWizard({id, mode});
 
@@ -40,11 +44,48 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 
 	const onOpenDocxPreview = async () => {
 		try {
+			setLoadingPreview(true);
+
+			if(!currentMissionReport) throw new Error("there is no mission report");
+			if(!templateId) throw new Error("there is no selected template");
+
 			const image = await Image.takeMapImage(`#${MAP_VIEW_TAKE_PRINT_CONTAINER}`);
-			Modal.show(MODALS.DOCX_PREVIEW, { id, image })
+
+			const imageData = {
+				_type: "image",
+				source: fileUtils.b64toBlob(image),
+				format: 'image/jpeg',
+				altText: "image",
+				width: MAP_SIZE.MEDIUM_WIDTH,
+				height: MAP_SIZE.MEDIUM_HEIGHT,
+			};
+		
+			const data = {
+				...currentMissionReport.data,
+				imageData
+			}
+
+			const currentDocument = document.collection.get(templateId);
+
+			if(!currentDocument) throw new Error("there is no selected document");
+
+			const template = await currentDocument.load.run();
+			
+			const value = await Template.generateFile(template, data);
+
+			const name = `${currentMissionReport.executedAt.format("YYYY.MM.DD")} ${data.actNumber}`
+
+			const file = fileUtils.blobToFile(value, {
+				name,
+				type: "docx"
+			});
+
+			Modal.show(MODALS.DOCX_PREVIEW, { file, name })
 		} catch (e) {
 			Crashlytics.error("MissionReportWizardModal - onOpenDocxPreview: ", e)
 			message.error('Bиникла помилка');
+		} finally {
+			setLoadingPreview(false);
 		}
 	};
 
@@ -67,9 +108,11 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		transport.fetchList.run();
 		equipment.fetchList.run();
 		employee.fetchList.run();
+		document.fetchTemplatesList.run();
 	}, []);
 
-	const isLoading = explosiveObject.fetchList.inProgress
+	const isLoading = isLoadingPreview
+	 || explosiveObject.fetchList.inProgress
 	 || explosiveObject.fetchListTypes.inProgress
 	 || order.fetchList.inProgress
 	 || missionRequest.fetchList.inProgress
@@ -154,6 +197,10 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		hide();
 	};
 
+	const onAddTemplate = () => {
+		// TODO: navigate to create template page
+	};
+
 	return (
 		<Drawer
 			open={isVisible}
@@ -167,7 +214,18 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 					onRemove={onRemove}
 					onSave={onOpenDocxPreview}
 					{...wizard}
-				/>
+					isSave={wizard.isSave && !!templateId}
+				>
+					{!wizard.isCreate && (
+						<Select
+							onAdd={onAddTemplate}
+							value={templateId}
+							onChange={setTemplateId}
+							placeholder="Виберіть шаблон"
+							options={document.missionReportTemplatesList.map((el) => ({ label: el.name, value: el.id }))}
+						/>
+					)}
+				</WizardButtons>
 			}
 		>
 			{isLoading

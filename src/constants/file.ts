@@ -3,6 +3,6 @@ export enum MIME_TYPE {
     PNG = "image/png"
 }
 
-export enum DOCX_TEMPLATE {
-    MISSION_REPORT = "doc-template.docx"
+export enum ASSET_TYPE {
+    DOCUMENT = "DOCUMENT"
 };

@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES } from "~/constants"
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
 import { ICircle, ILatLng } from "~/types";
 
 export interface ILinkedToDocumentDB {
@@ -155,6 +155,16 @@ export interface IOrganizationDB {
     id: string;
     name: string;
     membersIds: string[];
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface IDocumentDB {
+    id: string;
+    name: string;
+    type: ASSET_TYPE;
+    documentType: DOCUMENT_TYPE;
+    mime: MIME_TYPE;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }

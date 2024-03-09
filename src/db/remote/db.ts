@@ -2,6 +2,7 @@ import { TABLES } from '~/constants';
 
 import { DBBase } from './db-base';
 import {
+	IDocumentDB,
 	IEmployeeActionDB,
 	IEmployeeDB,
 	IEquipmentActionDB,
@@ -38,6 +39,7 @@ export const DBRemote = {
 		this.transportAction.setRootCollection(rootCollection);
 		this.equipment.setRootCollection(rootCollection);
 		this.equipmentAction.setRootCollection(rootCollection);
+		this.document.setRootCollection(rootCollection);
 	},
 	/** COMMON COLLECTIONS */
 	user: new DBBase<IUserDB>(TABLES.USER),
@@ -57,4 +59,5 @@ export const DBRemote = {
 	transportAction: new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION),
 	equipment: new DBBase<IEquipmentDB>(TABLES.EQUIPMENT),
 	equipmentAction: new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION),
+	document: new DBBase<IDocumentDB>(TABLES.DOCUMENT),
 }

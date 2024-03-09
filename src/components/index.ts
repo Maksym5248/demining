@@ -3,7 +3,7 @@ export * from './icon';
 export * from "./list";
 export * from "./map-view";
 export * from "./select";
-export * from "./select-template";
+export * from "./upload-file";
 export * from './wizard-buttons';
 export * from './wizard-footer';
 export * from "./loading";

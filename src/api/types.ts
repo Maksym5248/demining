@@ -16,7 +16,8 @@ import {
 	IMissionReportDB,
 	IMapViewActionActionDB,
 	IUserDB,
-	IOrganizationDB
+	IOrganizationDB,
+	IDocumentDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -59,6 +60,7 @@ export type ITransportActionDTO = ITransportActionDB;
 export type IEquipmentDTO = IEquipmentDB;
 export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = IMapViewActionActionDB;
+export type IDocumentDTO = IDocumentDB;
 
 export interface IMissionReportDTO extends Omit<IMissionReportDB, "orderId" | "approvedByActionId"  | "missionRequestId" | "mapViewId" | "transportActionIds" | "equipmentActionIds" | "explosiveObjectActionIds" | "squadLeaderActionId" | "squadActionIds">{
     "order": IOrderDTO;

@@ -15,7 +15,16 @@ const handler = new TemplateHandler({
 	maxXmlDepth: 30
 });
 
-async function generateFile(template: File, data: {[key:string]: string | number}) {
+interface DocxImage {
+	_type: string,
+	source: Blob;
+	format: string,
+	altText: string,
+	width: number;
+	height: number;
+}
+
+async function generateFile(template: File, data: {[key:string]: string | number | DocxImage}) {
 	const blob = await fileUtils.fileToBlob(template, MIME_TYPE.DOCX);
 	return handler.process(blob, data)
 }

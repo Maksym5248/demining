@@ -8,3 +8,4 @@ export * from './transport';
 export * from './equipment';
 export * from './user';
 export * from './organization';
+export * from './document';
