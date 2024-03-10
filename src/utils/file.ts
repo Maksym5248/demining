@@ -21,7 +21,7 @@ function blobToFile(blob: Blob, meta: IMetaData ) {
 	return new File([blob], meta.name, meta);
 }
 
-function b64toBlob(dataURI:string) {
+function b64toBlob(dataURI:string):Blob {
 	const byteString = atob(dataURI.split(',')[1]);
 	const ab = new ArrayBuffer(byteString.length);
 	const ia = new Uint8Array(ab);
@@ -32,11 +32,15 @@ function b64toBlob(dataURI:string) {
 	return new Blob([ab], { type: 'image/jpeg' });
 }
 
+function getPath(id:string){
+	return id
+};
 
 export const fileUtils = {
 	fileToBlob,
 	fileToBuffer,
 	bufferToFile,
 	b64toBlob,
-	blobToFile
+	blobToFile,
+	getPath
 }

@@ -10,7 +10,8 @@ import {
 	EquipmentWizardModal,
 	DocxPreviewModal,
 	OrganizationWizardModal,
-	MemberWizardModal
+	MemberWizardModal,
+	TemplateWizardModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -41,6 +42,9 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.ORGANIZATION_WIZARD]: {
 		renderComponent: (props: any) => <OrganizationWizardModal {...props} />,
+	},
+	[MODALS.TEMPLATE_WIZARD]: {
+		renderComponent: (props: any) => <TemplateWizardModal {...props} />,
 	},
 	[MODALS.MEMBER_WIZARD]: {
 		renderComponent: (props: any) => <MemberWizardModal {...props} />,

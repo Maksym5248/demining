@@ -42,7 +42,7 @@ export const createEmployee = (employee: IEmployeeDTO): IEmployeeValue => ({
 	type: employee.type || EMPLOYEE_TYPE.WORKER,
 	firstName: String(employee.firstName) || '',
 	lastName: String(employee.lastName) || '',
-	surname: String(employee.lastName) || '',
+	surname: String(employee.surname) || '',
 	rank: employee.rankId,
 	position: employee.position || '',
 	createdAt: dates.create(employee.createdAt),

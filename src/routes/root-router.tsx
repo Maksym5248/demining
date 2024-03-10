@@ -23,7 +23,8 @@ import {
 	LoginPage,
 	WaitingApprovePage,
 	OrganizationsListPage,
-	MembersListPage
+	MembersListPage,
+	TemplatesListPage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
@@ -59,6 +60,10 @@ const mainRoutes = [
 	{
 		path: ROUTES.EQUIPMENT_LIST,
 		Component: EquipmentListPage,
+	},
+	{
+		path: ROUTES.TEMPLATES,
+		Component: TemplatesListPage,
 	},
 ];
 

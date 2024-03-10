@@ -13,3 +13,4 @@ export * from "./transport-list";
 export * from "./equipment-list";
 export * from "./settings";
 export * from "./waiting-approve";
+export * from "./templates-list";

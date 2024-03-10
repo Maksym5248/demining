@@ -7,7 +7,7 @@ import { createOrder } from '~/stores/stores/order';
 import { createMissionRequest } from '~/stores/stores/mission-request';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO } from './entities';
+import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview } from './entities';
 import { createExplosiveObjectType } from '../explosive-object';
 
 const Store = types
@@ -53,7 +53,7 @@ const update = asyncAction<Instance<typeof Store>>((id: string, data: CreateValu
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self, root }) {
+const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
 	if(flow.isLoaded){
 		return
 	}
@@ -64,27 +64,44 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 		const res = await Api.missionReport.getList();
 
 		res.forEach((el) => {
-			el.explosiveObjectActions.forEach((item) => {
-				root.explosiveObject.collectionTypes.set(item.type.id, createExplosiveObjectType(item.type));
-			})
-
-			if(!root.order.collection.has(el.order.id)){
-				root.order.collection.set(el.order.id, createOrder(el.order));
-				root.order.list.push(el.order.id);
-			}
-
-			if(!root.missionRequest.collection.has(el.missionRequest.id)){
-				root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
-				root.missionRequest.list.push(el.missionRequest.id);
-			}
-
-			const missionReport = createMissionReport(el);
+			const missionReport = createMissionReportPreview(el);
 
 			if(!self.collection.has(missionReport.id)){
 				self.collection.set(missionReport.id, missionReport);
 				self.list.push(missionReport.id);
 			}
 		})
+
+		flow.success();
+	} catch (err) {
+		message.error('Виникла помилка');
+		flow.failed(err as Error);
+	}
+});
+
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function addFlow({ flow, self, root }) {
+	try {
+		flow.start();
+
+		const el = await Api.missionReport.get(id);
+
+		el.explosiveObjectActions.forEach((item) => {
+			root.explosiveObject.collectionTypes.set(item.type.id, createExplosiveObjectType(item.type));
+		})
+
+		if(!root.order.collection.has(el.order.id)){
+			root.order.collection.set(el.order.id, createOrder(el.order));
+			root.order.list.push(el.order.id);
+		}
+
+		if(!root.missionRequest.collection.has(el.missionRequest.id)){
+			root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
+			root.missionRequest.list.push(el.missionRequest.id);
+		}
+
+		const missionReport = createMissionReport(el);
+
+		self.collection.set(missionReport.id, missionReport);
 
 		flow.success();
 	} catch (err) {
@@ -107,4 +124,4 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-export const MissionReportStore = Store.props({ create, update, remove, fetchList })
+export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchItem })

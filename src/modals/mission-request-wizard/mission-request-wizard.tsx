@@ -29,7 +29,10 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 	}, []);
 
 	const isEdit = !!id;
-	const isLoading = !store.missionRequest.fetchList.isLoaded && store.missionRequest.fetchList.inProgress;
+	const isLoading = store.missionRequest.fetchList.inProgress
+	|| store.missionRequest.remove.inProgress
+	|| store.missionRequest.create.inProgress
+	|| missionRequest?.update.inProgress;
 
 	const onFinishCreate = async (values: IMissionRequestForm) => {
 		await store.missionRequest.create.run(values);
@@ -41,8 +44,9 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 		hide();
 	};
 
-	const onRemove = () => {
-		store.missionRequest.remove.run(id);
+	const onRemove = async () => {
+		await store.missionRequest.remove.run(id);
+		hide();
 	};
 
 	return (   

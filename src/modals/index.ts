@@ -9,3 +9,4 @@ export * from "./transport-wizard";
 export * from "./equipment-wizard";
 export * from "./docx-preview";
 export * from "./organization-wizard";
+export * from "./template-wizard";

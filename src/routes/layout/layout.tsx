@@ -39,6 +39,12 @@ export const Layout = observer(() => {
 					label: "Документи",
 					children: [
 						{
+							key: ROUTES.TEMPLATES,
+							icon: <Icon.FileTextOutlined />,
+							label: nav.getRouteTitle(ROUTES.TEMPLATES),
+							onClick: () => navigate(ROUTES.TEMPLATES),
+						},
+						{
 							key: ROUTES.MISSION_REPORT_LIST,
 							icon: <Icon.FileTextOutlined />,
 							label: nav.getRouteTitle(ROUTES.MISSION_REPORT_LIST),
@@ -122,12 +128,9 @@ export const Layout = observer(() => {
 	}, [isRootAdmin, isOrganizationAdmin, isOrganizationMember]);
 
 	const defaultSelectedKeys = useMemo(() => {
-		if(isRootAdmin && (!isOrganizationAdmin || !isOrganizationMember)){
-			return [ROUTES.ORGANIZATIONS_LIST];
-		};
-
-		return [ROUTES.MISSION_REPORT_LIST];
-	}, [isRootAdmin, isOrganizationAdmin, isOrganizationMember])
+		const [, initialRoute]=location.pathname.split("/");
+		return [`/${initialRoute}`];
+	}, [])
 
 	return (
 		<Lay hasSider>

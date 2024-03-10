@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES } from "~/constants"
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
 import { ICircle, ILatLng } from "~/types";
 
 export interface ILinkedToDocumentDB {
@@ -22,13 +22,13 @@ export interface IEmployeeDB {
 
 export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     employeeId: string;
+    typeInDocument: EMPLOYEE_TYPE;
 }
 
 
 export interface IOrderDB {
     id: string;
     signedAt: Timestamp;
-    signedByActionId: string;
     number: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;
@@ -105,9 +105,9 @@ export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
     markerLat: number;
     markerLng: number;
-    circleCenterLat: number;
-    circleCenterLng: number;
-    circleRadius: number;
+    circleCenterLat: number | null;
+    circleCenterLng: number | null;
+    circleRadius: number | null;
     zoom: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;
@@ -115,28 +115,21 @@ export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
 
 export interface IMissionReportDB {
     id: string;
-    approvedByActionId: string;
     approvedAt: Timestamp;
     number: number;
-    subNumber: number | undefined,
+    subNumber: number | null,
     executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
-    mapViewId: string;
+    checkedTerritory: number | null;
+    depthExamination: number |null;
+    uncheckedTerritory: number |null;
+    uncheckedReason: string | null;
     workStart: Timestamp;
-    exclusionStart: Timestamp | undefined;
-    transportingStart: Timestamp | undefined;
-    destroyedStart: Timestamp | undefined;
+    exclusionStart: Timestamp | null;
+    transportingStart: Timestamp | null;
+    destroyedStart: Timestamp | null;
     workEnd: Timestamp;
-    transportActionIds: string[];
-    equipmentActionIds: string[];
-    explosiveObjectActionIds: string[];
-    squadLeaderActionId: string;
-    squadActionIds: string[];
     address: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
@@ -155,6 +148,16 @@ export interface IOrganizationDB {
     id: string;
     name: string;
     membersIds: string[];
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface IDocumentDB {
+    id: string;
+    name: string;
+    type: ASSET_TYPE;
+    documentType: DOCUMENT_TYPE;
+    mime: MIME_TYPE;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
