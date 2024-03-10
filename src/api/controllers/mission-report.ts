@@ -365,60 +365,56 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 		explosiveObjectsActions,
 	} = await generateActions(missionReportDTO.id, value);
 	
+	DB.batchStart();
+
 	const removeList = getRemoveList(value, missionReportDTO);
 	const createList = getCreateList(value, missionReportDTO);
 	const updateList = getUpdatedList(removeList, missionReportDTO);
 				
-	const removeListPromises = [
-		Promise.all(removeList.squadActionIds.map(id => DB.employeeAction.remove(missionReportDTO.squadActions.find(el => el.employeeId === id)?.id as string))),
-		Promise.all(removeList.explosiveObjectActionIds.map(explosiveObjectActionId => DB.explosiveObjectAction.remove(explosiveObjectActionId))),
-		removeList.transportHumansActionId ? DB.transportAction.remove(removeList.transportHumansActionId) : undefined,
-		removeList.transportExplosiveObjectActionId ? DB.transportAction.remove(removeList.transportExplosiveObjectActionId) : undefined,
-		removeList.mineDetectorActionId ? DB.equipment.remove(removeList.mineDetectorActionId) : undefined,
-	]
+	removeList.squadActionIds.map(id => DB.employeeAction.batchRemove(missionReportDTO.squadActions.find(el => el.employeeId === id)?.id as string));
+	removeList.explosiveObjectActionIds.map(explosiveObjectActionId => DB.explosiveObjectAction.batchRemove(explosiveObjectActionId));
+	if(removeList.transportHumansActionId) DB.transportAction.batchRemove(removeList.transportHumansActionId);
+	if(removeList.transportExplosiveObjectActionId )DB.transportAction.batchRemove(removeList.transportExplosiveObjectActionId);
+	if(removeList.mineDetectorActionId) DB.equipment.batchRemove(removeList.mineDetectorActionId);
 	
-	const updateListPromises = [
-		Promise.all(updateList.squadActionIds.map((workerId) => DB.employeeAction.get(workerId))),
-		Promise.all(updateList.explosiveObjectActionsIds.map(
-			explosiveObjectActionId => DB.explosiveObjectAction.update(
-				explosiveObjectActionId,
+	updateList.squadActionIds.map((workerId) => DB.employeeAction.get(workerId));
+	updateList.explosiveObjectActionsIds.map(
+		explosiveObjectActionId => DB.explosiveObjectAction.batchUpdate(
+			explosiveObjectActionId,
 					explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectActionId) as IExplosiveObjectActionDB
-			)
-		)),
-		updateList.transportHumansActionId && transportHumansAction
-			  ? DB.transportAction.update(updateList.transportHumansActionId, transportHumansAction)
-			  : undefined,
-		updateList.transportExplosiveObjectActionId && transportExplosiveObjectAction
-			  ? DB.transportAction.update(updateList.transportExplosiveObjectActionId, transportExplosiveObjectAction)
-			  : undefined,
-		updateList.mineDetectorActionId && mineDetectorAction
-			  ? DB.equipmentAction.update(updateList.mineDetectorActionId, mineDetectorAction)
-			  : undefined,
-	];
+		)
+	);
+	if(updateList.transportHumansActionId && transportHumansAction)
+		DB.transportAction.batchUpdate(updateList.transportHumansActionId, transportHumansAction);
+	if(updateList.transportExplosiveObjectActionId && transportExplosiveObjectAction)
+		DB.transportAction.batchUpdate(updateList.transportExplosiveObjectActionId, transportExplosiveObjectAction);
+	if(updateList.mineDetectorActionId && mineDetectorAction)
+			   DB.equipmentAction.batchUpdate(updateList.mineDetectorActionId, mineDetectorAction);
 
-	const createListPromises = [
-		Promise.all(createList.squadIds.map(id => DB.employeeAction.create(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB))),
-		Promise.all(createList.explosiveObjectIds.map(
-			explosiveObjectId => DB.explosiveObjectAction.create(
+	createList.squadIds.map(id => DB.employeeAction.batchCreate(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB));
+	createList.explosiveObjectIds.map(
+		explosiveObjectId => DB.explosiveObjectAction.batchCreate(
 					explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectId) as IExplosiveObjectActionDB
-			)
-		)),
-		createList.transportHumansId && transportHumansAction ? DB.transportAction.create(transportHumansAction) : undefined,
-		createList.transportExplosiveObjectId && transportExplosiveObjectAction ? DB.transportAction.create(transportExplosiveObjectAction) : undefined,
-		createList.mineDetectorId && mineDetectorAction ? DB.equipmentAction.create(mineDetectorAction) : undefined,
-	];
+		)
+	);
+	if(createList.transportHumansId && transportHumansAction) DB.transportAction.batchCreate(transportHumansAction);
+	if(createList.transportExplosiveObjectId && transportExplosiveObjectAction) DB.transportAction.batchCreate(transportExplosiveObjectAction);
+	if(createList.mineDetectorId && mineDetectorAction) DB.equipmentAction.batchCreate(mineDetectorAction);
 	
-	const [data] = await Promise.all([
-		DB.missionReport.update(missionReportDTO.id, rest),
-		DB.mapViewAction.update(missionReportDTO.mapView.id, mapViewValue),
-		DB.employeeAction.update(missionReportDTO.approvedByAction.id, approvedByAction),
-		DB.employeeAction.update(missionReportDTO.squadLeaderAction.id, squadLeaderAction),
-		Promise.all(updateListPromises),
-		Promise.all(createListPromises),
-		Promise.all(removeListPromises),
-	]);
-	
-	return data;
+	DB.missionReport.batchUpdate(missionReportDTO.id, rest);
+	DB.mapViewAction.batchUpdate(missionReportDTO.mapView.id, mapViewValue);
+	DB.employeeAction.batchUpdate(missionReportDTO.approvedByAction.id, approvedByAction);
+	DB.employeeAction.batchUpdate(missionReportDTO.squadLeaderAction.id, squadLeaderAction);
+		
+	await DB.batchCommit();
+
+	const res = await DB.missionReport.get(missionReportDTO.id);
+
+	if(!res){
+		throw new Error("There is no mission report with id")
+	}
+
+	return res;
 }
 
 export const updateController = async (id:string, value: CreateValue<IMissionReportDTOParams>):Promise<IMissionReportDTO> => {
@@ -457,17 +453,19 @@ export const create = async (value: CreateValue<IMissionReportDTOParams>):Promis
 			explosiveObjectsActions,
 		} = await generateActions(missionReportData.id, value)
 
-		await Promise.all([
-			DB.mapViewAction.create(mapViewValue),
-			DB.employeeAction.create(approvedByAction),
-			DB.employeeAction.create(squadLeaderAction),
-			Promise.all(squadActions.map(el  => DB.employeeAction.create(el))),
-			transportHumansAction ? DB.transportAction.create(transportHumansAction) : Promise.resolve(undefined),
-			transportExplosiveObjectAction ? DB.transportAction.create(transportExplosiveObjectAction) : Promise.resolve(undefined),
-			mineDetectorAction ? DB.equipmentAction.create(mineDetectorAction) : Promise.resolve(undefined),
-			Promise.all(explosiveObjectsActions.map(el  => DB.explosiveObjectAction.create(el))),
-			await DB.missionReport.create(missionReportData)
-		]);
+		DB.batchStart();
+
+		DB.mapViewAction.batchCreate(mapViewValue);
+		DB.employeeAction.batchCreate(approvedByAction);
+		DB.employeeAction.batchCreate(squadLeaderAction);
+		squadActions.map(el  => DB.employeeAction.batchCreate(el));
+		if(transportHumansAction) DB.transportAction.batchCreate(transportHumansAction);
+		if(transportExplosiveObjectAction) DB.transportAction.batchCreate(transportExplosiveObjectAction);
+		if(mineDetectorAction) DB.equipmentAction.batchCreate(mineDetectorAction);
+		explosiveObjectsActions.map(el  => DB.explosiveObjectAction.batchCreate(el));
+		DB.missionReport.batchCreate(missionReportData);
+
+		await DB.batchCommit();
 
 		const res = await get(missionReportData.id);
 

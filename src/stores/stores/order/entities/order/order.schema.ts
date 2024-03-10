@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
-import { IOrderDTO, IOrderDTOParams } from '~/api';
+import { IOrderDTO, IOrderDTOParams, IOrderPreviewDTO } from '~/api';
 
 import { createEmployeeAction, IEmployeeActionValue } from "../../../employee"
 
@@ -10,7 +10,7 @@ import { createEmployeeAction, IEmployeeActionValue } from "../../../employee"
 export interface IOrderValue {
   id: string,
   signedAt: Dayjs,
-  signedByAction: IEmployeeActionValue,
+  signedByAction?: IEmployeeActionValue,
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
@@ -37,11 +37,15 @@ export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOP
 	number: value?.number ?? 0
 }));
 
-export const createOrder = (order: IOrderDTO): IOrderValue => ({
+export const createOrderPreview = (order: IOrderPreviewDTO): IOrderValue => ({
 	id: order.id,
 	signedAt: dates.create(order.signedAt),
-	signedByAction: createEmployeeAction(order.signedByAction),
 	number: order.number,
 	createdAt: dates.create(order.createdAt),
 	updatedAt: dates.create(order.updatedAt),
+});
+
+export const createOrder = (order: IOrderDTO): IOrderValue => ({
+	...createOrderPreview(order),
+	signedByAction: order?.signedByAction ? createEmployeeAction(order.signedByAction) : undefined,
 });

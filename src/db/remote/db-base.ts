@@ -14,7 +14,8 @@ import {
 	updateDoc, 
 	UpdateData,
 	orderBy,
-	limit
+	limit,
+	WriteBatch
 } from 'firebase/firestore';
 import isArray from 'lodash/isArray';
 
@@ -48,6 +49,8 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	rootCollection: string;
 
+	batch: WriteBatch | null = null;
+
 	constructor(tableName: string){
 		this.rootCollection = "";
 		this.tableName = tableName;
@@ -56,6 +59,10 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	setRootCollection(rootCollection: string){
 		this.rootCollection = rootCollection;
 
+	}
+
+	setBatch(batch: WriteBatch | null){
+		this.batch = batch;
 	}
 
 	get collection(){
@@ -109,37 +116,25 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return !querySnapshot.empty
 	}
 
-	async create(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>): Promise<T>{
+	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
 		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
-
+	
 		const newValue = {
 			...value,
 			id,
 			createdAt: timestamp,
 			updatedAt: timestamp
 		} as T & {
-			createdAt: Timestamp,
-			updatedAt: Timestamp,
-		};
-
-		await setDoc(ref, newValue);
-		const res = await this.get(id) as T;
-		return res
+				createdAt: Timestamp,
+				updatedAt: Timestamp,
+			};
+	
+		return { ref, newValue }
 	}
 
-	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
-		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
-
-		const res = await Promise.all(values
-			.filter((value, i) => !filteredValues[i])
-			.map(value => this.create(value)));
-
-		return isArray(res) ? res: [];
-	}
-
-	async update(id:string, value: Partial<T>): Promise<T> {
+	private getUpdateValue(id:string, value: Partial<T>) {
 		const newValue = {...value};
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -155,20 +150,58 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 
-		await updateDoc(ref, {
+		const updatedValue = {
 			...newValue,
 			updatedAt: timestamp
-		} as UpdateData<T>);
+		} as UpdateData<T>
 
+		return { ref, newValue: updatedValue};
+	}
+
+	async create(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>): Promise<T>{
+		const { ref, newValue } = this.getCreateValue(value)
+
+		await setDoc(ref, newValue);
+		const res = await this.get(newValue.id) as T;
+		return res
+	}
+
+	batchCreate(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
+		const { ref, newValue } = this.getCreateValue(value)
+		this.batch?.set(ref, newValue);
+	}
+
+	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
+		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
+
+		const res = await Promise.all(values
+			.filter((value, i) => !filteredValues[i])
+			.map(value => this.create(value)));
+
+		return isArray(res) ? res: [];
+	}
+
+	async update(id:string, value: Partial<T>): Promise<T> {
+		const { ref, newValue } = this.getUpdateValue(id, value);
+		await updateDoc(ref, newValue);
 		const res = await this.get(id) as T;
-
 		return res;
+	}
+
+	batchUpdate(id:string, value: Partial<T>) {
+		const { ref, newValue } = this.getUpdateValue(id, value)
+		this.batch?.update(ref, newValue);
 	}
 
 	async remove(id:string) {
 		const ref = doc(this.collection, id);
 		await deleteDoc(ref)
 		return id;
+	}
+
+	batchRemove(id:string) {
+		const ref = doc(this.collection, id);
+		this.batch?.delete(ref);
 	}
 
 	async removeBy(args: IWhere) {

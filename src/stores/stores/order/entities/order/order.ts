@@ -14,10 +14,11 @@ export type IOrder = Instance<typeof Order>
 const Entity = types.model('Order', {
 	id: types.identifier,
 	signedAt: types.dayjs,
-	signedByAction: EmployeeAction.named("EmployeeOrder"),
 	number: types.number,
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
+}).props({
+	signedByAction: types.maybe(EmployeeAction.named("EmployeeOrder")),
 }).actions((self) => ({
 	updateFields(data: Partial<IOrderValue>) {
 		Object.assign(self, data);

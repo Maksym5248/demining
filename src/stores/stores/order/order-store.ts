@@ -2,19 +2,19 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api, IOrderDTO } from '~/api'
+import { Api, IOrderPreviewDTO } from '~/api'
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO } from './entities';
+import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
 
 const Store = types
 	.model('OrderStore', {
 		collection: createCollection<IOrder, IOrderValue>("Orders", Order),
 		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 20 }),
 	}).actions((self) => ({
-		push: (values: IOrderDTO[]) => {
+		push: (values: IOrderPreviewDTO[]) => {
 			values.forEach((el) => {
-				const order = createOrder(el);
+				const order = createOrderPreview(el);
 
 				if(!self.collection.has(order.id)){
 					self.collection.set(order.id, order);
@@ -39,7 +39,6 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValu
 		message.success('Додано успішно');
 	} catch (err) {
 		flow.failed(err as Error);
-		console.log("error", err)
 		message.error('Не вдалось додати');
 	}
 });
@@ -55,6 +54,24 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	} catch (err) {
 		flow.failed(err as Error);
 		message.error('Не вдалось видалити');
+	}
+});
+
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+	if(flow.isLoaded){
+		return
+	}
+    
+	try {
+		flow.start();
+		const res = await Api.order.get(id);
+
+		self.collection.set(res.id, createOrder(res));
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
 	}
 });
 
@@ -76,4 +93,4 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const OrderStore = Store.props({ create, remove, fetchList })
+export const OrderStore = Store.props({ create, remove, fetchList, fetchItem })
