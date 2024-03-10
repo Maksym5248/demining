@@ -101,6 +101,9 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	};
 
 	useEffect(() => {
+		if(id){
+			missionReport.fetchItem.run(id)
+		}
 		explosiveObject.fetchList.run();
 		explosiveObject.fetchListTypes.run();
 		order.fetchList.run();
@@ -112,6 +115,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	}, []);
 
 	const isLoading = isLoadingPreview
+	 || missionReport.fetchItem.inProgress
 	 || explosiveObject.fetchList.inProgress
 	 || explosiveObject.fetchListTypes.inProgress
 	 || order.fetchList.inProgress
@@ -152,7 +156,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		transportHumansId: transportHumans?.transportId,
 		mineDetectorId: mineDetector?.equipmentId,
 		explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
-		squadLeaderId: currentMissionReport?.squadLeaderAction.employeeId,
+		squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
 		squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
 		address: currentMissionReport?.address,
 		mapView: {
@@ -198,7 +202,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	};
 
 	const onAddTemplate = () => {
-		// TODO: navigate to create template page
+		Modal.show(MODALS.TEMPLATE_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
 
 	return (

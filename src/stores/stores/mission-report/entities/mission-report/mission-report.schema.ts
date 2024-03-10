@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates } from '~/utils';
-import { IExplosiveObjectActionDTOParams, IMapViewActionDTO, IMapViewActionDTOParams, IMissionReportDTO, IMissionReportDTOParams } from '~/api';
+import { IExplosiveObjectActionDTOParams, IMapViewActionDTO, IMapViewActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
 import { IEmployeeActionValue, createEmployeeAction } from '~/stores/stores/employee';
 import { ILinkedToDocumentDB } from '~/db';
 import { ITransportActionValue, createTransportAction } from '~/stores/stores/transport/entities/transport-action';
@@ -68,15 +68,15 @@ export interface IMissionReportValue {
     address: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
-	order: string;
-    missionRequest: string;
-    approvedByAction: IEmployeeActionValue;
-	mapView: IMapViewActionValue;
-	transportActions: ITransportActionValue[];
-	equipmentActions: IEquipmentActionValue[];
-	explosiveObjectActions: IExplosiveObjectActionValue[];
-	squadLeaderAction: IEmployeeActionValue;
-	squadActions: IEmployeeActionValue[]
+	order?: string;
+    missionRequest?: string;
+    approvedByAction?: IEmployeeActionValue;
+	mapView?: IMapViewActionValue;
+	transportActions?: ITransportActionValue[];
+	equipmentActions?: IEquipmentActionValue[];
+	explosiveObjectActions?: IExplosiveObjectActionValue[];
+	squadLeaderAction?: IEmployeeActionValue;
+	squadActions?: IEmployeeActionValue[]
 }
 
 export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewActionDTOParams  => ({
@@ -101,7 +101,7 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	uncheckedTerritory: value.uncheckedTerritory ?? null,
 	uncheckedReason: value.uncheckedReason ?? null,
 	mapView: createMapViewDTO(value.mapView),
-	workStart: dates.toDateServer(value.approvedAt),
+	workStart: dates.toDateServer(value.workStart),
 	exclusionStart: value.exclusionStart ? dates.toDateServer(value.exclusionStart) : null,
 	transportingStart: value.transportingStart ? dates.toDateServer(value.transportingStart) : null,
 	destroyedStart: value.destroyedStart ? dates.toDateServer(value.destroyedStart) : null,
@@ -129,31 +129,35 @@ export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => 
 	updatedAt: dates.create(value.updatedAt),
 });
 
-export const createMissionReport = (value: IMissionReportDTO): IMissionReportValue => ({
+export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportValue => ({
 	id: value.id,
 	approvedAt: dates.create(value.approvedAt),
-	approvedByAction: createEmployeeAction(value.approvedByAction),
 	number: value.number,
 	subNumber: value.subNumber ?? undefined,
 	executedAt: dates.create(value.executedAt),
-	order: value.order.id,
-	missionRequest: value.missionRequest.id,
 	checkedTerritory: value.checkedTerritory ?? undefined,
 	depthExamination: value.depthExamination ?? undefined,
 	uncheckedTerritory: value.uncheckedTerritory ?? undefined,
 	uncheckedReason: value.uncheckedReason ?? undefined,
-	mapView: createMapView(value.mapView),
 	workStart: dates.create(value.workStart),
 	exclusionStart: value.exclusionStart ? dates.create(value.exclusionStart) : undefined,
 	transportingStart: value.transportingStart ? dates.create(value.transportingStart) : undefined,
 	destroyedStart: value.destroyedStart ? dates.create(value.destroyedStart) : undefined,
 	workEnd: dates.create(value.workEnd),
+	address: value.address,
+	createdAt: dates.create(value.createdAt),
+	updatedAt: dates.create(value.updatedAt),
+});
+
+export const createMissionReport = (value: IMissionReportDTO): IMissionReportValue => ({
+	...createMissionReportPreview(value),
+	approvedByAction: createEmployeeAction(value.approvedByAction),
+	order: value.order.id,
+	missionRequest: value.missionRequest?.id,
+	mapView: createMapView(value.mapView),
 	explosiveObjectActions: value.explosiveObjectActions.map(el => createExplosiveObjectAction(el)),
 	squadLeaderAction: createEmployeeAction(value.squadLeaderAction),
 	squadActions: value.squadActions.map(el => createEmployeeAction(el)),
 	transportActions: value.transportActions.map(el => createTransportAction(el)),
 	equipmentActions: value.equipmentActions.map(el => createEquipmentAction(el)),
-	address: value.address,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
 });

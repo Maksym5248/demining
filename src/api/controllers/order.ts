@@ -1,82 +1,69 @@
 import { DB } from '~/db';
-import { DB_FIELD, DOCUMENT_TYPE } from "~/constants";
+import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from "~/constants";
 import { UpdateValue } from '~/types';
 
 import { IOrderDTO, IOrderDTOParams } from '../types';
 
 const create = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
-	const order = await DB.order.create({
-		...value,
-		signedByActionId: DB_FIELD.NONE
-	});
-
 	const employee = await DB.employee.get(value.signedById);
 
 	if(!employee){
-		throw new Error("there is no employee")
+		throw new Error("there is no employee with selected id")
 	}
 
 	const { id, ...employeeData} = employee;
+	const orderId = DB.order.uuid();
 
-	const employeeAction = await DB.employeeAction.create({
-		...employeeData,
-		documentType: DOCUMENT_TYPE.ORDER,
-		documentId: order.id,
-		employeeId: id,
-	});
-
-	const {signedByActionId, ...res} = await DB.order.update(order.id, { signedByActionId: employeeAction.id });
+	const [order, employeeAction] = await Promise.all([
+		DB.order.create({
+			id: orderId,
+			...value,
+		}),
+		DB.employeeAction.create({
+			...employeeData,
+			typeInDocument: EMPLOYEE_TYPE.CHIEF,
+			documentType: DOCUMENT_TYPE.ORDER,
+			documentId: orderId,
+			employeeId: id,
+		})
+	]);
 
 	return {
-		...res,
+		...order,
 		signedByAction: employeeAction,
 	};
 };
 
 const update = async (id:string, {signedById, ...value}: UpdateValue<IOrderDTOParams>):Promise<IOrderDTO> => {
-	const order = await DB.order.get(id);
+	const [order, signedByArr] = await Promise.all([
+		DB.order.update(id, value),
+		DB.employeeAction.select({
+			where: {
+				documentId: id,
+				documentType: DOCUMENT_TYPE.ORDER
+			},
+			limit: 1
+		})
+	]);
 
-	if(!order){
-		throw new Error("there is no order")
-	}
-	const signedBy = await DB.employeeAction.get(order.signedByActionId);
-
-	if(!signedBy){
-		throw new Error("there is no signedBy")
-	}
-
-	if(signedById && signedById !== signedBy.employeeId){
-		const employee = await DB.employee.get(signedById);
-
-		if(!employee){
-			throw new Error("there is no employee")
-		}
-
-		await DB.employeeAction.update(order.signedByActionId, {
-			...employee,
-			employeeId: employee.id,
-		});
-	}
-
-	await DB.order.update(id, value);
-
-	const resOrder = await DB.order.get(id);
-
-	if(!resOrder){
-		throw new Error("there is no order")
+	let [signedBy] = signedByArr;
+	
+	if(signedById && signedById !== signedBy.employeeId) {
+		const newEmployee = await DB.employee.get(signedById);
+		if(!newEmployee) throw new Error("there is no employee");
+		
+		signedBy = await DB.employeeAction.update(signedBy.id, {
+			...newEmployee,
+			employeeId: newEmployee.id,
+		})
 	}
 
-	const resSignedBy = await DB.employeeAction.get(resOrder?.signedByActionId)
-
-	if(!resSignedBy){
-		throw new Error("there is no employee")
-	}
-
-	const { signedByActionId: signedByIdRes, ...res} = resOrder;
+	if(!order) throw new Error("there is no order");
+	if(!signedBy) throw new Error("there is no signedBy");
 
 	return {
-		...res,
-		signedByAction: resSignedBy
+		...order,
+		signedByAction: signedBy
 	}
 };
 
@@ -95,8 +82,14 @@ const getList = async ():Promise<IOrderDTO[]> => {
 		},
 	});
 
-	const newList = await Promise.all(list.map(async ({ signedByActionId, ...order }) => {
-		const employeeAction = await DB.employeeAction.get(signedByActionId)
+	const newList = await Promise.all(list.map(async (order) => {
+		const [employeeAction] = await DB.employeeAction.select({
+			where: {
+				documentId: order.id,
+				documentType: DOCUMENT_TYPE.ORDER
+			},
+			limit: 1
+		})
 
 		if(!employeeAction){
 			throw new Error("there is no employeeAction")

@@ -13,7 +13,8 @@ import {
 	Timestamp, 
 	updateDoc, 
 	UpdateData,
-	orderBy
+	orderBy,
+	limit
 } from 'firebase/firestore';
 import isArray from 'lodash/isArray';
 
@@ -25,12 +26,14 @@ type IOrder = {
 
 type IQuery = {
 	where: IWhere,
-	order: IOrder
+	order: IOrder,
+	limit: number
 };
 
 const getWhere = (values: IWhere) => 
 	 Object.keys(values).map(key => {
-		const value = values[key]
+		const value = values[key];
+
 		if(value?.in && isArray(value.in)){
 			return where(key, "in", value.in) 
 		}
@@ -60,15 +63,16 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return collection(getFirestore(), name) as CollectionReference<T>
 	}
 
-	async uuid(){
+	uuid(){
 		const newDocumentRef = doc(this.collection);
-		return  newDocumentRef.id;
+		return newDocumentRef.id;
 	}
 
 	async select(args?: Partial<IQuery> ): Promise<T[]> {
 		const q = query(this.collection,
 			 ...(args?.where ? getWhere(args.where) : []),
-			 ...(args?.order ? [getOrder(args?.order)] : [])
+			 ...(args?.order ? [getOrder(args?.order)] : []),
+			 ...(args?.limit ? [limit(args?.limit)] : [])
 		);
 
 		const snapshot = await getDocs(q);
@@ -106,7 +110,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	}
 
 	async create(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>): Promise<T>{
-		const id = value?.id ?? (await this.uuid());
+		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 

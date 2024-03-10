@@ -22,13 +22,13 @@ export interface IEmployeeDB {
 
 export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     employeeId: string;
+    typeInDocument: EMPLOYEE_TYPE;
 }
 
 
 export interface IOrderDB {
     id: string;
     signedAt: Timestamp;
-    signedByActionId: string;
     number: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;
@@ -115,7 +115,6 @@ export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
 
 export interface IMissionReportDB {
     id: string;
-    approvedByActionId: string;
     approvedAt: Timestamp;
     number: number;
     subNumber: number | null,
@@ -126,17 +125,11 @@ export interface IMissionReportDB {
     depthExamination: number |null;
     uncheckedTerritory: number |null;
     uncheckedReason: string | null;
-    mapViewId: string;
     workStart: Timestamp;
     exclusionStart: Timestamp | null;
     transportingStart: Timestamp | null;
     destroyedStart: Timestamp | null;
     workEnd: Timestamp;
-    transportActionIds: string[];
-    equipmentActionIds: string[];
-    explosiveObjectActionIds: string[];
-    squadLeaderActionId: string;
-    squadActionIds: string[];
     address: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;

@@ -62,7 +62,8 @@ export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = IMapViewActionActionDB;
 export type IDocumentDTO = IDocumentDB;
 
-export interface IMissionReportDTO extends Omit<IMissionReportDB, "orderId" | "approvedByActionId"  | "missionRequestId" | "mapViewId" | "transportActionIds" | "equipmentActionIds" | "explosiveObjectActionIds" | "squadLeaderActionId" | "squadActionIds">{
+export interface IMissionReportPreviewDTO extends Omit<IMissionReportDB, "orderId"  | "missionRequestId"> {}
+export interface IMissionReportDTO extends IMissionReportPreviewDTO {
     "order": IOrderDTO;
     "missionRequest": IMissionRequestDTO;
     "approvedByAction": IEmployeeActionDTO;
