@@ -28,8 +28,15 @@ type IQuery = {
 	order: IOrder
 };
 
-const getWhere = (value: IWhere) => 
-	 Object.keys(value).map(key => where(key, "==", value[key]));
+const getWhere = (values: IWhere) => 
+	 Object.keys(values).map(key => {
+		const value = values[key]
+		if(value?.in && isArray(value.in)){
+			return where(key, "in", value.in) 
+		}
+		
+		return where(key, "==", value)
+	});
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 

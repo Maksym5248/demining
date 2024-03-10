@@ -15,9 +15,9 @@ export interface IMapViewActionValue extends ILinkedToDocumentDB {
     id: string;
     markerLat: number;
     markerLng: number;
-    circleCenterLat: number;
-    circleCenterLng: number;
-    circleRadius: number;
+    circleCenterLat?: number;
+    circleCenterLng?: number;
+    circleRadius?: number;
     zoom: number;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -27,19 +27,19 @@ export interface IMissionReportValueParams {
 	approvedAt: Dayjs;
     approvedById:  string;
     number: number;
-    subNumber: number | undefined,
+    subNumber: number | null,
     executedAt: Dayjs;
     orderId: string;
     missionRequestId: string;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
+    checkedTerritory: number | null;
+    depthExamination: number |null;
+    uncheckedTerritory: number |null;
+    uncheckedReason: string | null;
     mapView: IMapViewActionValueParams;
     workStart: Dayjs;
-    exclusionStart: Dayjs | undefined;
-    transportingStart: Dayjs | undefined;
-    destroyedStart: Dayjs | undefined;
+    exclusionStart: Dayjs | null;
+    transportingStart: Dayjs | null;
+    destroyedStart: Dayjs | null;
     workEnd: Dayjs;
     transportExplosiveObjectId: string;
     transportHumansId: string;
@@ -54,16 +54,16 @@ export interface IMissionReportValue {
 	id: string;
     approvedAt: Dayjs;
     number: number;
-    subNumber: number | undefined,
+    subNumber?: number,
     executedAt: Dayjs;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
+    checkedTerritory?: number;
+    depthExamination?: number;
+    uncheckedTerritory?: number;
+    uncheckedReason?: string;
     workStart: Dayjs;
-    exclusionStart: Dayjs | undefined;
-    transportingStart: Dayjs | undefined;
-    destroyedStart: Dayjs | undefined;
+    exclusionStart?: Dayjs;
+    transportingStart?: Dayjs;
+    destroyedStart?: Dayjs;
     workEnd: Dayjs;
     address: string;
     createdAt: Dayjs;
@@ -78,24 +78,33 @@ export interface IMissionReportValue {
 	squadLeaderAction: IEmployeeActionValue;
 	squadActions: IEmployeeActionValue[]
 }
+
+export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewActionDTOParams  => ({
+	markerLat: value?.markerLat ?? 0,
+	markerLng: value?.markerLng ?? 0,
+	circleCenterLat: value?.circleCenterLat ?? null,
+	circleCenterLng: value?.circleCenterLng ?? null,
+	circleRadius: value?.circleRadius ?? null,
+	zoom: value?.zoom ?? 1,
+});
   
 export const createMissionReportDTO = (value: CreateValue<IMissionReportValueParams>): CreateValue<IMissionReportDTOParams>  => ({
 	approvedAt: dates.toDateServer(value.approvedAt),
 	approvedById: value.approvedById,
 	number: value.number,
-	subNumber: value.subNumber,
+	subNumber: value.subNumber ?? null,
 	executedAt: dates.toDateServer(value.approvedAt),
 	orderId: value.orderId,
 	missionRequestId: value.missionRequestId,
-	checkedTerritory: value.checkedTerritory,
-	depthExamination: value.depthExamination,
-	uncheckedTerritory: value.uncheckedTerritory,
-	uncheckedReason: value.uncheckedReason,
-	mapView: value.mapView,
+	checkedTerritory: value.checkedTerritory ?? null,
+	depthExamination: value.depthExamination ?? null,
+	uncheckedTerritory: value.uncheckedTerritory ?? null,
+	uncheckedReason: value.uncheckedReason ?? null,
+	mapView: createMapViewDTO(value.mapView),
 	workStart: dates.toDateServer(value.approvedAt),
-	exclusionStart: value.exclusionStart ? dates.toDateServer(value.exclusionStart) : undefined,
-	transportingStart: value.transportingStart ? dates.toDateServer(value.transportingStart) : undefined,
-	destroyedStart: value.destroyedStart ? dates.toDateServer(value.destroyedStart) : undefined,
+	exclusionStart: value.exclusionStart ? dates.toDateServer(value.exclusionStart) : null,
+	transportingStart: value.transportingStart ? dates.toDateServer(value.transportingStart) : null,
+	destroyedStart: value.destroyedStart ? dates.toDateServer(value.destroyedStart) : null,
 	workEnd: dates.toDateServer(value.workEnd),
 	transportExplosiveObjectId: value.transportExplosiveObjectId,
 	transportHumansId: value.transportHumansId,
@@ -103,7 +112,7 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	explosiveObjectActions: value.explosiveObjectActions,
 	squadLeaderId: value.squadLeaderId,
 	squadIds: value.squadIds,
-	address: value.address,
+	address: value.address ?? "",
 });
 
 export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => ({
@@ -112,9 +121,9 @@ export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => 
 	documentType: value.documentType,
 	markerLat: value.markerLat,
 	markerLng: value.markerLng,
-	circleCenterLat: value.circleCenterLat,
-	circleCenterLng: value.circleCenterLng,
-	circleRadius: value.circleRadius,
+	circleCenterLat: value.circleCenterLat ?? undefined,
+	circleCenterLng: value.circleCenterLng ?? undefined,
+	circleRadius: value.circleRadius ?? undefined,
 	zoom: value.zoom,
 	createdAt: dates.create(value.createdAt),
 	updatedAt: dates.create(value.updatedAt),
@@ -125,14 +134,14 @@ export const createMissionReport = (value: IMissionReportDTO): IMissionReportVal
 	approvedAt: dates.create(value.approvedAt),
 	approvedByAction: createEmployeeAction(value.approvedByAction),
 	number: value.number,
-	subNumber: value.subNumber,
+	subNumber: value.subNumber ?? undefined,
 	executedAt: dates.create(value.executedAt),
 	order: value.order.id,
 	missionRequest: value.missionRequest.id,
-	checkedTerritory: value.checkedTerritory,
-	depthExamination: value.depthExamination,
-	uncheckedTerritory: value.uncheckedTerritory,
-	uncheckedReason: value.uncheckedReason,
+	checkedTerritory: value.checkedTerritory ?? undefined,
+	depthExamination: value.depthExamination ?? undefined,
+	uncheckedTerritory: value.uncheckedTerritory ?? undefined,
+	uncheckedReason: value.uncheckedReason ?? undefined,
 	mapView: createMapView(value.mapView),
 	workStart: dates.create(value.workStart),
 	exclusionStart: value.exclusionStart ? dates.create(value.exclusionStart) : undefined,

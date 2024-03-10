@@ -105,9 +105,9 @@ export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
     markerLat: number;
     markerLng: number;
-    circleCenterLat: number;
-    circleCenterLng: number;
-    circleRadius: number;
+    circleCenterLat: number | null;
+    circleCenterLng: number | null;
+    circleRadius: number | null;
     zoom: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;
@@ -118,19 +118,19 @@ export interface IMissionReportDB {
     approvedByActionId: string;
     approvedAt: Timestamp;
     number: number;
-    subNumber: number | undefined,
+    subNumber: number | null,
     executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
+    checkedTerritory: number | null;
+    depthExamination: number |null;
+    uncheckedTerritory: number |null;
+    uncheckedReason: string | null;
     mapViewId: string;
     workStart: Timestamp;
-    exclusionStart: Timestamp | undefined;
-    transportingStart: Timestamp | undefined;
-    destroyedStart: Timestamp | undefined;
+    exclusionStart: Timestamp | null;
+    transportingStart: Timestamp | null;
+    destroyedStart: Timestamp | null;
     workEnd: Timestamp;
     transportActionIds: string[];
     equipmentActionIds: string[];

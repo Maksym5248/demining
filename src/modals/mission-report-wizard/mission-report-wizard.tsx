@@ -62,7 +62,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		
 			const data = {
 				...currentMissionReport.data,
-				imageData
+				image: imageData
 			}
 
 			const currentDocument = document.collection.get(templateId);

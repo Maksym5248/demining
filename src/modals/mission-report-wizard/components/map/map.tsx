@@ -40,13 +40,12 @@ export function Map({ mode }: Props){
 						const executedAt = getFieldValue("executedAt");
 						const mapView = getFieldValue("mapView") as IMapViewActionValue;
 
-						const isCircle = mapView?.circleCenterLat && mapView?.circleCenterLng && mapView?.circleRadius;
 						const isMarker = mapView?.markerLat && mapView?.markerLng;
 
 						return (
 							<MapView
 								type={mode === WIZARD_MODE.VIEW  ? "picture": "edit"}
-								initialCircle={isCircle ? {
+								initialCircle={mapView?.circleCenterLat && mapView?.circleCenterLng && mapView?.circleRadius ? {
 									center: {
 										lat: mapView?.circleCenterLat,
 										lng: mapView?.circleCenterLng,

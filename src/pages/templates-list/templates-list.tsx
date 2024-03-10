@@ -17,7 +17,7 @@ const { Title, Text } = Typography;
 const ListItem = observer(({ item }: { item: IDocument}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
-		Modal.show(MODALS.TEMPLATE_WIZARD, { id: item.id, mode: WIZARD_MODE.CREATE })
+		Modal.show(MODALS.TEMPLATE_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW })
 	};
 
 	return (

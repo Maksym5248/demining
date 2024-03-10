@@ -68,9 +68,9 @@ export const missionReportInput = {
 	"squadLeaderId": "EMPLOYEE-1cb833c1-72bb-42da-ad57-6d2631782b04",
 	"squadIds": squadInput,
 	"address": "місто Київ, Київ, проспект 40-річчя Жовтня, 11",
-	subNumber: undefined,
-	uncheckedTerritory: undefined,
-	uncheckedReason: undefined,
+	subNumber: null,
+	uncheckedTerritory: null,
+	uncheckedReason: null,
 }
 
 const orderSignedByActionDTO = {
@@ -305,9 +305,9 @@ export const missionReportDTO = {
 	"id": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"createdAt": dates.toDateServer(new Date("2024-02-04T17:20:17.477Z")),
 	"updatedAt": dates.toDateServer(new Date("2024-02-11T14:02:48.819Z")),
-	subNumber: undefined,
-	uncheckedTerritory: undefined,
-	uncheckedReason: undefined,
+	subNumber: null,
+	uncheckedTerritory: null,
+	uncheckedReason: null,
 	"order": orderDTO,
 	"missionRequest": missionRequestDTO,
 	"mapView": MRmapViewDTO,

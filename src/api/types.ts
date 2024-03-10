@@ -80,19 +80,19 @@ export interface IMissionReportDTOParams {
     approvedAt: Timestamp;
     approvedById:  string;
     number: number;
-    subNumber: number | undefined,
+    subNumber: number | null,
     executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
+    checkedTerritory: number | null;
+    depthExamination: number |null;
+    uncheckedTerritory: number |null;
+    uncheckedReason: string | null;
     mapView: IMapViewActionDTOParams;
     workStart: Timestamp;
-    exclusionStart: Timestamp | undefined;
-    transportingStart: Timestamp | undefined;
-    destroyedStart: Timestamp | undefined;
+    exclusionStart: Timestamp | null;
+    transportingStart: Timestamp | null;
+    destroyedStart: Timestamp | null;
     workEnd: Timestamp;
     transportExplosiveObjectId?: string;
     transportHumansId?: string;
@@ -109,19 +109,19 @@ export interface IMissionReportDTOParamsUpdate {
     approvedAt: Timestamp;
     approvedById:  string;
     number: number;
-    subNumber: number | undefined,
+    subNumber: number | null,
     executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
-    checkedTerritory: number | undefined;
-    depthExamination: number |undefined;
-    uncheckedTerritory: number |undefined;
-    uncheckedReason: string | undefined;
+    checkedTerritory: number | null;
+    depthExamination: number |null;
+    uncheckedTerritory: number |null;
+    uncheckedReason: string | null;
     mapView: IMapViewActionDTOParams;
     workStart: Timestamp;
-    exclusionStart: Timestamp | undefined;
-    transportingStart: Timestamp | undefined;
-    destroyedStart: Timestamp | undefined;
+    exclusionStart: Timestamp | null;
+    transportingStart: Timestamp | null;
+    destroyedStart: Timestamp | null;
     workEnd: Timestamp;
     transportExplosiveObjectId: string;
     transportHumansId: string;

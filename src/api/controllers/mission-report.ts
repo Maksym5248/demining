@@ -18,8 +18,9 @@ const creatorAction = (document:ILinkedToDocumentDB) => <B, T extends IItemId>(
 	sourceAction: T[],
 ):B => {
 	const source = sourceAction.find(el => el.id === sourceValueId) as T;
-	const sourceWithRemovedFields = omit(source, ['id', "updatedAt", "createdAt"])
 
+	const sourceWithRemovedFields = omit(source, ['id', "updatedAt", "createdAt"])
+	
 	return {
 		...document,
 		...sourceWithRemovedFields,
@@ -47,6 +48,12 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		...missionReport
 	} = res
 
+	const query = {
+		where: {
+			documentId: missionReport.id,
+		}
+	};
+
 	const [
 		missionRequest,
 		order,
@@ -59,26 +66,10 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		DB.missionRequest.get(missionRequestId),
 		DB.order.get(orderId),
 		DB.mapViewAction.get(mapViewId),
-		DB.employeeAction.select({
-			where: {
-				documentId: missionReport.id,
-			}
-		}),
-		DB.transportAction.select({
-			where: {
-				documentId: missionReport.id,
-			}
-		}),
-		DB.explosiveObjectAction.select({
-			where: {
-				documentId: missionReport.id,
-			}
-		}),
-		DB.equipmentAction.select({
-			where: {
-				documentId: missionReport.id,
-			}
-		}),
+		DB.employeeAction.select(query),
+		DB.transportAction.select(query),
+		DB.explosiveObjectAction.select(query),
+		DB.equipmentAction.select(query),
 	]);
 
 	if(!order){
@@ -132,23 +123,17 @@ const getList = async ():Promise<IMissionReportDTO[]> => {
 };
 
 const remove = async (id:string) => {
+	const query = {
+		documentId: id
+	};
+
 	await Promise.allSettled([
 		DB.missionReport.remove(id),
-		DB.mapViewAction.removeBy({
-			documentId: id
-		}),
-		DB.employeeAction.removeBy({
-			documentId: id
-		}),
-		DB.transportAction.removeBy({
-			documentId: id
-		}),
-		DB.explosiveObjectAction.removeBy({
-			documentId: id
-		}),
-		DB.equipmentAction.removeBy({
-			documentId: id
-		}),
+		DB.mapViewAction.removeBy(query),
+		DB.employeeAction.removeBy(query),
+		DB.transportAction.removeBy(query),
+		DB.explosiveObjectAction.removeBy(query),
+		DB.equipmentAction.removeBy(query),
 	]);
 };
 
@@ -243,7 +228,6 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 	const explosiveObjectsActions = explosiveObjectActions.map(el => (
 		createAction<IExplosiveObjectActionDB, IExplosiveObjectDB>(el.explosiveObjectId, el, explosiveObjects)
 	));
-
 
 	return {
 		mapViewValue,

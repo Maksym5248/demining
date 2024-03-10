@@ -1,6 +1,6 @@
 
 import { getApp } from "firebase/app";
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, ref, uploadBytes, deleteObject, getBlob } from "firebase/storage";
 
 import { ASSET_TYPE } from "~/constants";
 import { Cache } from "~/utils"
@@ -40,11 +40,8 @@ class FileStorageClass {
 		}
 
 		const fileRef = this.getFileRef(id);
-		console.log("fileRef", fileRef)
-		const url = await getDownloadURL(fileRef);
-		console.log("url", url)
 
-		const blob = await fetch(url).then(response => response.blob())
+		const blob = await getBlob(fileRef);
 
 		return new File([blob], id, { type: blob.type });
 	}
