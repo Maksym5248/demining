@@ -101,10 +101,7 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 
 		const missionReport = createMissionReport(el);
 
-		if(!self.collection.has(missionReport.id)){
-			self.collection.set(missionReport.id, missionReport);
-			self.list.push(missionReport.id);
-		}
+		self.collection.set(missionReport.id, missionReport);
 
 		flow.success();
 	} catch (err) {
