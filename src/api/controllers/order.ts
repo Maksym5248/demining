@@ -2,7 +2,7 @@ import { DB } from '~/db';
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from "~/constants";
 import { UpdateValue } from '~/types';
 
-import { IOrderDTO, IOrderDTOParams } from '../types';
+import { IOrderDTO, IOrderDTOParams, IOrderPreviewDTO } from '../types';
 
 const create = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 	const employee = await DB.employee.get(value.signedById);
@@ -74,39 +74,40 @@ const remove = async (id:string) => Promise.all([
 	DB.order.remove(id)
 ])
 
-const getList = async ():Promise<IOrderDTO[]> => {
-	const list = await DB.order.select({
-		order: {
-			by: "number",
-			type: "desc",
-		},
-	});
+const getList = async ():Promise<IOrderPreviewDTO[]> => DB.order.select({
+	order: {
+		by: "number",
+		type: "desc",
+	},
+});
 
-	const newList = await Promise.all(list.map(async (order) => {
-		const [employeeAction] = await DB.employeeAction.select({
+const get = async (id:string):Promise<IOrderDTO> => {
+	const [order, employeeActionArr] = await Promise.all([
+		DB.order.get(id),
+		DB.employeeAction.select({
 			where: {
-				documentId: order.id,
+				documentId: id,
 				documentType: DOCUMENT_TYPE.ORDER
 			},
 			limit: 1
 		})
+	]);
 
-		if(!employeeAction){
-			throw new Error("there is no employeeAction")
-		}
+	const [employeeAction] = employeeActionArr;
 
-		return {
-			...order,
-			signedByAction: employeeAction
-		}
-	}));
+	if(!employeeAction) throw new Error("There is no employee action by order id");
+	if(!order) throw new Error("There is no order by id");
 
-	return newList
+	return {
+		...order,
+		signedByAction: employeeAction
+	}
 };
 
 export const order = {
 	create,
 	update,
 	remove,
+	get,
 	getList
 }

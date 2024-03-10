@@ -23,7 +23,9 @@ import {
 export type IEmployeeDTO = IEmployeeDB
 export type IEmployeeActionDTO = IEmployeeActionDB
 
-export interface IOrderDTO extends Omit<IOrderDB, "signedByActionId">{
+export interface IOrderPreviewDTO extends IOrderDB {}
+
+export interface IOrderDTO extends IOrderPreviewDTO {
     signedByAction: IEmployeeActionDTO;
 }
 
