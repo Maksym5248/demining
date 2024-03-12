@@ -144,10 +144,6 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 });
 
 const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-
 	try {
 		flow.start();
 

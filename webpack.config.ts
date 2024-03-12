@@ -6,8 +6,6 @@ import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
 import { inDev } from './webpack.helpers';
 
-rules.push();
-
 const config = {
 	entry: path.resolve(__dirname, 'src/index.tsx'),
 	output: {
@@ -18,12 +16,14 @@ const config = {
 		rules,
 	},
 	plugins,
-	optimization: {
-		minimize: true,
-		minimizer: [`...`, new CssMinimizerPlugin()],
-		mangleWasmImports: true,
-		splitChunks: { minChunks: Infinity, chunks: 'all' },
-	},
+	optimization: inDev()
+		? {}
+		: {
+			minimize: !inDev(),
+			minimizer: [`...`, new CssMinimizerPlugin()],
+			mangleWasmImports: true,
+			splitChunks: { minChunks: Infinity, chunks: 'all' },
+		},
 	devtool: inDev() ? 'eval-cheap-module-source-map' : false,
 	target: 'web',
 	mode: inDev() ? 'development' : 'production',
