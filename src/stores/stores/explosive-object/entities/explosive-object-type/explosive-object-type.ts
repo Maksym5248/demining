@@ -9,7 +9,11 @@ const Entity = types.model('ExplosiveObjectType', {
 	id: types.identifier,
 	name: types.string,
 	fullName: types.string,
-}).actions((self) => ({
+}).views((self) => ({
+	get displayName() {
+		return `${self.name} (${self.fullName})`
+	}
+})).actions((self) => ({
 	updateFields(data: Partial<IExplosiveObjectTypeValue>) {
 		Object.assign(self, data);
 	}

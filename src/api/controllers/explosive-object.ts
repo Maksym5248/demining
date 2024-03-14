@@ -23,12 +23,9 @@ const remove = (id:string) => DB.explosiveObject.remove(id);
 const getList = async (query?: IQuery):Promise<IExplosiveObjectDTO[]> => DB.explosiveObject.select(query);
 
 const init = async ():Promise<void> => {
-	console.log("init");
-
 	const count = await DB.explosiveObject.count();
-	console.log("count", count);
+
 	if(count) return;
-	console.log("count 2", explosiveObjectsData);
 
 	DB.batchStart();
 
@@ -37,8 +34,6 @@ const init = async ():Promise<void> => {
 	});
 
 	await DB.batchCommit();
-	console.log("count 3");
-
 };
 
 

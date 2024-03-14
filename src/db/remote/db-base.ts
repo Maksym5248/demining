@@ -16,7 +16,7 @@ import {
 	orderBy,
 	limit,
 	WriteBatch,
-	startAt,
+	startAfter,
 	getCountFromServer
 } from 'firebase/firestore';
 import isArray from 'lodash/isArray';
@@ -31,7 +31,7 @@ export type IQuery = {
 	where?: IWhere;
 	order?: IOrder;
 	limit?: number;
-	startAt?: number;
+	startAfter?: string | number | Timestamp;
 };
 
 const getWhere = (values: IWhere) => 
@@ -82,12 +82,16 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	}
 
 	async select(args?: Partial<IQuery> ): Promise<T[]> {
+		console.log("select", args)
+
 		const q = query(this.collection,
 			 ...(args?.where ? getWhere(args.where) : []),
 			 ...(args?.order ? [getOrder(args?.order)] : []),
+			 ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
 			 ...(args?.limit ? [limit(args?.limit)] : []),
-			 ...(args?.startAt ? [startAt(args?.startAt)] : [])
 		);
+
+		console.log("select 2",  q)
 
 		const snapshot = await getDocs(q);
 

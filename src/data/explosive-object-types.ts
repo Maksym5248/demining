@@ -11,15 +11,15 @@ export const explosiveObjectTypesData = [{
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.AS,
 	name: "AC",
-	fullName: "Артилерійський снаряд"
+	fullName: "Артилерійський снаряд",
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.MM,
 	name: "ММ",
-	fullName: "Мінометна Міна"
+	fullName: "Мінометна Міна",
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.MLRS,
 	name: "РСЗВ",
-	fullName: "Реактивний снаряд залпового вогню"
+	fullName: "Реактивний снаряд залпового вогню",
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.RG,
 	name: "РГ",
@@ -27,7 +27,7 @@ export const explosiveObjectTypesData = [{
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.IM,
 	name: "ІМ",
-	fullName: "Інженерні міни"
+	fullName: "Інженерна міна"
 },{
 	id: EXPLOSIVE_OBJECT_TYPE.AMMO,
 	name: "Набої",

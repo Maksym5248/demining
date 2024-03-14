@@ -78,8 +78,8 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 						>
 							<Select
 								options={select.append(
-									explosiveObject.sortedListTypes.map((el) => ({ label: el.fullName, value: el.id })),
-									{ label: currentExplosiveObject?.type.fullName, value: currentExplosiveObject?.type?.id }
+									explosiveObject.sortedListTypes.map((el) => ({ label: el.displayName, value: el.id })),
+									{ label: currentExplosiveObject?.type.displayName, value: currentExplosiveObject?.type?.id }
 								)}
 							/>
 						</Form.Item>

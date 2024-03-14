@@ -65,12 +65,12 @@ export const IM = [
 
 export const explosiveObjectsData = [
 	...AC.map((caliber) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.AB,
+		typeId: EXPLOSIVE_OBJECT_TYPE.AS,
 		name: "",
 		caliber
 	})),
 	...MM.map((caliber) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.AB,
+		typeId: EXPLOSIVE_OBJECT_TYPE.MM,
 		name: "",
 		caliber
 	})),

@@ -17,6 +17,7 @@ export function createList<T>(
 				_array: types.optional(types.array(Model), []),
 				pages: 0,
 				pageSize,
+				_isMorePages: true,
 			})
 
 			.views((self) => ({
@@ -47,7 +48,7 @@ export function createList<T>(
 			}))
 			.views((self) => ({
 				get isMorePages() {
-					return !((self.length / self.pageSize) % 0 && self.pages !== undefined);
+					return self.length % self.pageSize === 0 && self._isMorePages;
 				},
 			}))
 			.views((self) => ({

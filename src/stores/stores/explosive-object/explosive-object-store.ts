@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { CreateValue } from '~/types'
 import { Api, IExplosiveObjectDTO } from '~/api'
 import { explosiveObjectTypesData } from '~/data';
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { 
@@ -24,9 +25,9 @@ const getStr = (v: IExplosiveObject) => v.caliber ? `${v.type.fullName} ${v.cali
 const Store = types
 	.model('ExplosiveObjectStore', {
 		collectionTypes: createCollection<IExplosiveObjectType, IExplosiveObjectTypeValue>("ExplosiveObjectTypes", ExplosiveObjectType),
-		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 20 }),
+		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 10 }),
 		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
-		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 20 }),
+		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 10 }),
 	}).views(self => ({
 		get sortedList(){
 			return self.list.asArray.sort((a, b) => {
@@ -45,6 +46,7 @@ const Store = types
 	
 				if(!self.collectionTypes.has(explosiveObjectType.id)){
 					self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
+					self.listTypes.push(explosiveObjectType.id)
 				}
 			})
 		},
@@ -108,10 +110,11 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 		flow.start();
 
 		const res = await Api.explosiveObject.getList({
-			where: {
-				limit: self.list.pageSize,
-				startAt: 0
-			}
+			order: {
+				by: "createdAt",
+				type: "asc"
+			},
+			limit: self.list.pageSize,
 		});
 
 		self.push(res);
@@ -125,15 +128,19 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 
 const fetchListMore = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
 	try {
+		console.log("self.list.isMorePages", self.list.isMorePages)
+
 		if(!self.list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.explosiveObject.getList({
-			where: {
-				limit: self.list.pageSize,
-				startAt: self.list.startAt,
-			}
+			order: {
+				by: "updatedAt",
+				type: "asc"
+			},
+			limit: self.list.pageSize,
+			startAfter: dates.toDateServer(self.list.last.createdAt),
 		});
 
 		self.push(res);

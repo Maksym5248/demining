@@ -27,10 +27,10 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
 			]}
 		>
 			<List.Item.Meta
-				title={item.type.fullName}
+				title={item.fullDisplayName}
 				description={
 					<Space css={s.listItemDesc}>
-						<Text type="secondary">{item.displayName}</Text>
+						<Text type="secondary">{item.type.fullName}</Text>
 					</Space>
 				}
 			/>
@@ -57,6 +57,9 @@ export const ExplosiveObjectListPage  = observer(() => {
 	return (
 		<List
 			loading={explosiveObject.fetchList.inProgress}
+			loadingMore={explosiveObject.fetchListMore.inProgress}
+			isReachedEnd={!explosiveObject.list.isMorePages}
+			onLoadMore={explosiveObject.fetchListMore.run}
 			dataSource={explosiveObject.sortedList}
 			header={
 				<ListHeader

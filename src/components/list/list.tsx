@@ -1,15 +1,44 @@
-import { List as ListAnt, ListProps } from 'antd';
+import { Button, List as ListAnt, ListProps, Spin } from 'antd';
 
 
-export function List<T extends { id: string }>(props: ListProps<T>) {
+interface IList<T> extends ListProps<T>{
+	loadingMore?: boolean;
+	isReachedEnd?: boolean;
+	onLoadMore?: () => void;
+}
+export function List<T extends { id: string }>({
+	loading,
+	loadingMore,
+	isReachedEnd,
+	onLoadMore,
+	...props
+}: IList<T>) {
+
+	let loadMore = null;
+	
+	if(!loading && !isReachedEnd && !loadingMore){
+		loadMore = (
+			<div
+    		style={{
+    			textAlign: 'center',
+    			marginTop: 12,
+    			height: 32,
+    			lineHeight: '32px',
+    		}}
+    	>
+    		<Button onClick={onLoadMore}>Завантажити більше</Button>
+    	</div>
+		)
+	} else if(!loading && !isReachedEnd && loadingMore){
+		loadMore = ( <div style={{ width: "100%", display: "flex", justifyContent: 'center', margin: 10}}><Spin /></div> )
+	}
+	
 	return (
 		<ListAnt
 			rowKey="id"
 			itemLayout="horizontal"
-			pagination={{
-				position: "bottom",
-				align: "center",
-			}}
+			loading={loading}
+			loadMore={loadMore}
 			{...props}
 		/>
 	);
