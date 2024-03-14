@@ -2,7 +2,8 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api } from '~/api'
+import { Api, IExplosiveObjectDTO } from '~/api'
+import { explosiveObjectTypesData } from '~/data';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { 
@@ -16,7 +17,6 @@ import {
 	createExplosiveObject,
 	createExplosiveObjectDTO,
 	createExplosiveObjectType,
-	createExplosiveObjectTypeDTO,
 } from './entities';
 
 const getStr = (v: IExplosiveObject) => v.caliber ? `${v.type.fullName} ${v.caliber}` : `${v.type.fullName} ${v.name}`
@@ -38,24 +38,27 @@ const Store = types
 		get sortedListTypes(){
 			return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
 		}
+	})).actions(self => ({
+		init() {
+			explosiveObjectTypesData.forEach((el) => {
+				const explosiveObjectType = createExplosiveObjectType(el);
+	
+				if(!self.collectionTypes.has(explosiveObjectType.id)){
+					self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
+				}
+			})
+		},
+		push(res: IExplosiveObjectDTO[]){
+			res.forEach((el) => {
+				const explosiveObject = createExplosiveObject(el);
+
+				if(!self.collection.has(explosiveObject.id)){
+					self.collection.set(explosiveObject.id, explosiveObject);
+					self.list.push(explosiveObject.id);
+				}
+			})
+		},
 	}));
-
-const addType = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectTypeValue>) => async function addFlow({ flow, self }) {
-	try {
-		flow.start();
-
-		const res = await Api.explosiveObjectType.create(createExplosiveObjectTypeDTO(data));
-		const value = createExplosiveObjectType(res);
-
-		self.collectionTypes.set(res.id, value);
-		self.listTypes.unshift(res.id);
-		flow.success();
-		message.success('Додано успішно');
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Не вдалось додати');
-	}
-});
 
 const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
 	try {
@@ -100,41 +103,18 @@ const createExplosiveObjects = asyncAction<Instance<typeof Store>>(() => async f
 	}
 });
 
-const createExplosiveObjectsTypes = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow }) {
-	try {
-		flow.start();
-		await Api.createExplosiveObjectsTypes();
-		flow.success();
-		message.success('Виконано успішно');
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Не вдалось виконати');
-	}
-});
-
 const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
 	try {
 		flow.start();
 
-		const res = await Api.explosiveObject.getList();
-
-		res.forEach((el) => {
-			const explosiveObjectType = createExplosiveObjectType(el.type);
-			const explosiveObject = createExplosiveObject(el);
-
-			if(!self.collectionTypes.has(explosiveObjectType.id)){
-				self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
+		const res = await Api.explosiveObject.getList({
+			where: {
+				limit: self.list.pageSize,
+				startAt: 0
 			}
+		});
 
-			if(!self.collection.has(explosiveObject.id)){
-				self.collection.set(explosiveObject.id, explosiveObject);
-				self.list.push(explosiveObject.id);
-			}
-		})
+		self.push(res);
 
 		flow.success();
 	} catch (err) {
@@ -143,18 +123,20 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 	}
 });
 
-const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
+const fetchListMore = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
 	try {
+		if(!self.list.isMorePages) return;
+
 		flow.start();
 
-		const res = await Api.explosiveObjectType.getList();
-		self.listTypes.clear();
-      
-		res.forEach((el) => {
-			const explosiveObjectType = createExplosiveObjectType(el);
-			self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
-			self.listTypes.push(explosiveObjectType.id);
-		})
+		const res = await Api.explosiveObject.getList({
+			where: {
+				limit: self.list.pageSize,
+				startAt: self.list.startAt,
+			}
+		});
+
+		self.push(res);
 
 		flow.success();
 	} catch (err) {
@@ -163,4 +145,10 @@ const fetchListTypes = asyncAction<Instance<typeof Store>>(() => async function 
 	}
 });
 
-export const ExplosiveObjectStore = Store.props({ create, addType, remove, fetchList, fetchListTypes, createExplosiveObjects, createExplosiveObjectsTypes })
+export const ExplosiveObjectStore = Store.props({
+	create,
+	remove, 
+	fetchList,
+	fetchListMore, 
+	createExplosiveObjects
+})

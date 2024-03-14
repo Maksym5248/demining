@@ -11,7 +11,6 @@ import {
 	IEquipmentDB,
 	IExplosiveObjectActionDB,
 	IExplosiveObjectDB,
-	IExplosiveObjectTypeDB,
 	IMapViewActionActionDB,
 	IMissionReportDB,
 	IMissionRequestDB,
@@ -29,8 +28,6 @@ class DBRemoteClass {
 	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION);
 
 	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT);
-
-	explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE);
 
 	/** ORGANIZATION SUBCOLLECTION */
 	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE);
@@ -98,6 +95,10 @@ class DBRemoteClass {
 	private setBatch(batch:WriteBatch | null){
 		this.batch = batch;
 		
+		this.user.setBatch(batch);
+		this.organization.setBatch(batch);
+		this.explosiveObject.setBatch(batch);
+
 		this.employee.setBatch(batch);
 		this.employeeAction.setBatch(batch);
 		this.mapViewAction.setBatch(batch);

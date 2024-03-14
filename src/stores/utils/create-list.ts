@@ -41,23 +41,16 @@ export function createList<T>(
 				},
 			}))
 			.views((self) => ({
-				get currentPage() {
-					if (self.length === 0 || self.pages === undefined) {
-						return 0;
-					}
-
-					return Math.ceil(self.length / self.pageSize);
-				},
+				get startAt(){
+					return self.length
+				}
 			}))
 			.views((self) => ({
 				get isMorePages() {
-					return !(self.currentPage >= self.pages && self.pages !== undefined);
+					return !((self.length / self.pageSize) % 0 && self.pages !== undefined);
 				},
 			}))
 			.views((self) => ({
-				get nextPage() {
-					return self.isMorePages ? self.currentPage + 1 : 0;
-				},
 				byIndex(index: number) {
 					return self._array[index];
 				},
@@ -72,10 +65,6 @@ export function createList<T>(
 			}))
 
 			.actions((self) => ({
-				setPages(pages: number) {
-					self.pages = pages;
-				},
-
 				push(...ids: string[]) {
 					self._array.push(...ids);
 				},

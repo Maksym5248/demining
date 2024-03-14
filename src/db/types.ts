@@ -25,7 +25,6 @@ export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     typeInDocument: EMPLOYEE_TYPE;
 }
 
-
 export interface IOrderDB {
     id: string;
     signedAt: Timestamp;
@@ -38,14 +37,6 @@ export interface IMissionRequestDB {
     id: string;
     signedAt: Timestamp;
     number: number;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
-}
-
-export interface IExplosiveObjectTypeDB {
-    id: string;
-    name: string;
-    fullName: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }

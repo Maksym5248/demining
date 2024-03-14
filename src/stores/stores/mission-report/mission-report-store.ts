@@ -8,7 +8,6 @@ import { createMissionRequest } from '~/stores/stores/mission-request';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview } from './entities';
-import { createExplosiveObjectType } from '../explosive-object';
 
 const Store = types
 	.model('MissionReportStore', {
@@ -84,10 +83,6 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 		flow.start();
 
 		const el = await Api.missionReport.get(id);
-
-		el.explosiveObjectActions.forEach((item) => {
-			root.explosiveObject.collectionTypes.set(item.type.id, createExplosiveObjectType(item.type));
-		})
 
 		if(!root.order.collection.has(el.order.id)){
 			root.order.collection.set(el.order.id, createOrder(el.order));

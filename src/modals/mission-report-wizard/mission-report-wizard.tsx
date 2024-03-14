@@ -105,7 +105,6 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 			missionReport.fetchItem.run(id)
 		}
 		explosiveObject.fetchList.run();
-		explosiveObject.fetchListTypes.run();
 		order.fetchList.run();
 		missionRequest.fetchList.run();
 		transport.fetchList.run();
@@ -117,14 +116,12 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	const isLoading = isLoadingPreview
 	 || missionReport.fetchItem.inProgress
 	 || explosiveObject.fetchList.inProgress
-	 || explosiveObject.fetchListTypes.inProgress
 	 || order.fetchList.inProgress
 	 || missionRequest.fetchList.inProgress
 	 || transport.fetchList.inProgress
 	 || equipment.fetchList.inProgress
 	 || employee.fetchList.inProgress
 	 || !explosiveObject.fetchList.isLoaded
-	 || !explosiveObject.fetchListTypes.isLoaded
 	 || !order.fetchList.isLoaded
 	 || !missionRequest.fetchList.isLoaded
 	 || !transport.fetchList.isLoaded

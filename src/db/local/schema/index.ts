@@ -3,7 +3,6 @@ export * from './employee-action';
 export * from './equipment';
 export * from './equipment-action';
 export * from './explosive-object';
-export * from './explosive-object-type';
 export * from './explosive-object-action';
 export * from './map-view-action';
 export * from './mission-report';

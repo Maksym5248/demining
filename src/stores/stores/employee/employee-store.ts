@@ -2,13 +2,13 @@ import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { Api, IEmployeeDTO } from '~/api'
-import { EMPLOYEE_TYPE } from '~/constants'
+import { EMPLOYEE_TYPE } from '~/constants';
+import { ranksData } from '~/data'
 import { CreateValue } from '~/types'
 
 import { types } from '../../types'
 import { asyncAction , createCollection, createList, safeReference } from '../../utils';
 import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmployee, createEmployeeDTO,  createRank } from './entities';
-import { ranksData } from './ranks-data'
 
 const Store = types
 	.model('EmployeeStore', {

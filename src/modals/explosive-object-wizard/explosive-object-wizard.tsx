@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { Form, Input, Drawer, InputNumber, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
@@ -24,12 +22,8 @@ export const ExplosiveObjectWizardModal  = observer(({ id, isVisible, hide, mode
 
 	const currentExplosiveObject = explosiveObject.collection.get(id as string);
 
-	useEffect(() => {
-		explosiveObject.fetchListTypes.run();
-	}, []);
-
 	const isEdit = !!id;
-	const isLoading = explosiveObject.fetchListTypes.inProgress;
+	const isLoading = false;
 	const firstType = explosiveObject.listTypes.first;
 
 	const onFinishCreate = async (values: IExplosiveObjectForm) => {

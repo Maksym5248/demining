@@ -265,13 +265,7 @@ export const MRExplosiveObjectActionDTO = {
 	"isDiscovered": true,
 	"isTransported": true,
 	"isDestroyed": false,
-	"type": {
-		"name": "ІМ",
-		"fullName": "Інженерні міни",
-		"id": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9",
-		"createdAt":  dates.toDateServer(new Date("2024-02-04T17:16:22.004Z")),
-		"updatedAt":  dates.toDateServer(new Date("2024-02-04T17:16:22.004Z")),
-	}
+	"typeId": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9"
 }
 
 export const MRExplosiveObjectActionDTO2 = {
@@ -391,8 +385,6 @@ export const transportActionsDB = [...missionReportDTO.transportActions];
 
 export const equipmentActionsDB = [...missionReportDTO.equipmentActions];
 
-export const explosiveObjectActionsDB = missionReportDTO.explosiveObjectActions.map(el => ({...el, typeId: el.type.id}));
-
-export const explosiveObjectTypeDB =  missionReportDTO.explosiveObjectActions.map(el => el.type);
+export const explosiveObjectActionsDB = missionReportDTO.explosiveObjectActions.map(el => ({...el, typeId: el.typeId}));
 
 export const orderSignedByActionDB =  orderDTO.signedByAction;

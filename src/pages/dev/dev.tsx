@@ -35,10 +35,6 @@ export const DevPage = observer(() => {
 		store.explosiveObject.createExplosiveObjects.run();
 	}
 
-	const createExplosiveObjectsTypes = async () => {
-		store.explosiveObject.createExplosiveObjectsTypes.run();
-	}
-
 	return (
 		<div>
 			<Space css={s.titleContainer}>
@@ -47,7 +43,7 @@ export const DevPage = observer(() => {
 
 			<div css={s.content}>
 				{(
-					store.explosiveObject.createExplosiveObjects.inProgress || store.explosiveObject.createExplosiveObjectsTypes.inProgress 
+					store.explosiveObject.createExplosiveObjects.inProgress 
 				)
 					? <Loading/>
 					: (
@@ -60,11 +56,6 @@ export const DevPage = observer(() => {
 							<Space>
 								<Button onClick={onCreateExplosiveObjects}>
 									Створити ВНП
-								</Button>
-							</Space>
-							<Space>
-								<Button onClick={createExplosiveObjectsTypes}>
-									Створити типи ВНП
 								</Button>
 							</Space>
 						</>

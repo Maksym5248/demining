@@ -57,6 +57,8 @@ export const RootStore = types
 			Analytics.init();
 			Crashlytics.init();
 			self.employee.init();
+			self.explosiveObject.init();
+			
 			yield DB.init();
 
 			try {

@@ -15,7 +15,9 @@ import {
 	UpdateData,
 	orderBy,
 	limit,
-	WriteBatch
+	WriteBatch,
+	startAt,
+	getCountFromServer
 } from 'firebase/firestore';
 import isArray from 'lodash/isArray';
 
@@ -25,10 +27,11 @@ type IOrder = {
 	type: "asc" | 'desc',
 };
 
-type IQuery = {
-	where: IWhere,
-	order: IOrder,
-	limit: number
+export type IQuery = {
+	where?: IWhere;
+	order?: IOrder;
+	limit?: number;
+	startAt?: number;
 };
 
 const getWhere = (values: IWhere) => 
@@ -82,7 +85,8 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const q = query(this.collection,
 			 ...(args?.where ? getWhere(args.where) : []),
 			 ...(args?.order ? [getOrder(args?.order)] : []),
-			 ...(args?.limit ? [limit(args?.limit)] : [])
+			 ...(args?.limit ? [limit(args?.limit)] : []),
+			 ...(args?.startAt ? [startAt(args?.startAt)] : [])
 		);
 
 		const snapshot = await getDocs(q);
@@ -174,16 +178,6 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		this.batch?.set(ref, newValue);
 	}
 
-	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
-		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
-
-		const res = await Promise.all(values
-			.filter((value, i) => !filteredValues[i])
-			.map(value => this.create(value)));
-
-		return isArray(res) ? res: [];
-	}
-
 	async update(id:string, value: Partial<T>): Promise<T> {
 		const { ref, newValue } = this.getUpdateValue(id, value);
 		await updateDoc(ref, newValue);
@@ -205,6 +199,12 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	batchRemove(id:string) {
 		const ref = doc(this.collection, id);
 		this.batch?.delete(ref);
+	}
+
+	async count(){
+		const snapshot = await getCountFromServer(this.collection);
+		
+		return snapshot.data().count
 	}
 
 	async removeBy(args: IWhere) {

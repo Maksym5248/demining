@@ -36,7 +36,7 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectVal
 
 export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObjectValue => ({
 	id: value.id,
-	type: value.type.id,
+	type: value.typeId,
 	name: value?.name ?? "",
 	caliber: value?.caliber ?? 0,
 	createdAt: dates.create(value.createdAt),

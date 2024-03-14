@@ -10,8 +10,6 @@ interface IItemId {
 	id: string
 }
 
-const findById = <T extends IItemId>(id: string, data: T[]) => data.find(el => el.id === id) as T;
-
 const creatorAction = (document:ILinkedToDocumentDB) => <B, T extends IItemId>(
 	sourceValueId: string,
 	merge:Partial<B>,
@@ -49,7 +47,7 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		mapViewActionArr,
 		employeesAction,
 		transportActions,
-		explosiveObjectsActions,
+		explosiveObjectActions,
 		equipmentActions,
 		signedByActionOrderArr
 	] = await Promise.all([
@@ -89,12 +87,6 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 	if(!approvedByAction) throw new Error("there is no approvedByAction");
 	if(!squadLeaderAction) throw new Error("there is no squadLeaderAction");
 
-	const explosiveObjectsActionTypes = await DB.explosiveObjectType.select({
-		where: {
-			id: { in: explosiveObjectsActions.map(el => el.typeId) }
-		}
-	});
-
 	return {
 		...missionReport,
 		order: {
@@ -106,10 +98,7 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		approvedByAction,
 		transportActions,
 		equipmentActions,
-		explosiveObjectActions: explosiveObjectsActions.map(({ typeId, ...value}) => ({
-			...value,
-			type: findById(typeId, explosiveObjectsActionTypes)
-		})),
+		explosiveObjectActions,
 		squadLeaderAction,
 		squadActions,
 	}
