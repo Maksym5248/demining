@@ -1,6 +1,6 @@
 import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
-import { TABLES } from '~/constants';
+import { TABLES, TABLES_DIR } from '~/constants';
 
 import { DBBase } from './db-base';
 import {
@@ -63,8 +63,8 @@ class DBRemoteClass {
 
 	dropDb  = () => Promise.resolve();
 
-	setRootCollection(id:string){
-		const rootCollection = `${TABLES.ORGANIZATION_DATA}/${id}`;
+	setOrganizationId(id:string){
+		const rootCollection = `${TABLES_DIR.ORGANIZATION_DATA}/${id}`;
 
 		this.employee.setRootCollection(rootCollection);
 		this.employeeAction.setRootCollection(rootCollection);
@@ -78,6 +78,21 @@ class DBRemoteClass {
 		this.equipment.setRootCollection(rootCollection);
 		this.equipmentAction.setRootCollection(rootCollection);
 		this.document.setRootCollection(rootCollection);
+	};
+
+	removeOrganizationId(){
+		this.employee.removeRootCollection();
+		this.employeeAction.removeRootCollection();
+		this.mapViewAction.removeRootCollection();
+		this.missionReport.removeRootCollection();
+		this.missionRequest.removeRootCollection();
+		this.order.removeRootCollection();
+		this.explosiveObjectAction.removeRootCollection();
+		this.transport.removeRootCollection();
+		this.transportAction.removeRootCollection();
+		this.equipment.removeRootCollection();
+		this.equipmentAction.removeRootCollection();
+		this.document.removeRootCollection();
 	};
 
 	private setBatch(batch:WriteBatch | null){

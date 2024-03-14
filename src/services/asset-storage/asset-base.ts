@@ -5,9 +5,8 @@ import { getStorage, ref, uploadBytes, deleteObject, getBlob } from "firebase/st
 import { ASSET_TYPE } from "~/constants";
 import { Cache } from "~/utils"
 
-
-class FileStorageClass {
-	organizationId: string = "";
+export class AssetStorageBase {
+	rootCollection?:string;
 
 	assetType:ASSET_TYPE;
 
@@ -17,13 +16,21 @@ class FileStorageClass {
 		this.assetType = assetType;
 	}
 
-	setOrganizationId(organizationId:string){
-		this.organizationId = organizationId;
+	setRootCollect(rootCollection:string){
+		this.rootCollection = rootCollection;
+	}
+
+	removeRootCollect(){
+		this.rootCollection = undefined;
 	}
 
 	getFileRef = (id:string) => {
 		const storage = getStorage(getApp());
-		return ref(storage, `${this.assetType}/${this.organizationId}/${id}`);
+		const dirPath = this.rootCollection
+			? `${this.rootCollection}/${this.assetType}`
+			: `${this.assetType}`;
+
+		return ref(storage, `${dirPath}/${id}`);
 	}
 
 	async save(id: string, data:File): Promise<void> {
@@ -32,7 +39,6 @@ class FileStorageClass {
 		await uploadBytes(fileRef, data);
 		this.cache.set(id, data);
 	}
-
 
 	async read(id:string):Promise<File | null> {
 		if(this.cache.exist(id)){
@@ -57,24 +63,4 @@ class FileStorageClass {
 		await this.save(id, file);
 		this.cache.set(id, file);
 	}
-
-	async saveAsUser(blob: Blob, id:string){
-		const blobUrl = URL.createObjectURL(blob);
-
-		let link:HTMLAnchorElement = document.createElement("a");
-		link.download = `${id}.docx`;
-		link.href = blobUrl;
-
-		document.body.appendChild(link);
-		link.click();
-
-		setTimeout(() => {
-			link.remove();
-			window.URL.revokeObjectURL(blobUrl);
-			// @ts-expect-error
-			link = null;
-		}, 0);
-	}
 }
-
-export const DocumentStorage = new FileStorageClass(ASSET_TYPE.DOCUMENT)

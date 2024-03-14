@@ -4,6 +4,7 @@ import uniq from "lodash/uniq"
 
 import { UpdateValue } from '~/types'
 import { DB, IOrganizationDB, IUserDB } from '~/db';
+import { AssetStorage } from "~/services";
 
 import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types'
 
@@ -92,7 +93,14 @@ const get = async (id:string):Promise<ICurrentUserDTO | null> => {
 
 const exist = (id:string):Promise<boolean> => DB.user.exist("id", id);
 
-const setOrganization = (rootCollection:string) => DB.setRootCollection(rootCollection);
+const setOrganization = async (id:string) => {
+	AssetStorage.setOrganizationId(id)
+	DB.setOrganizationId(id);
+};
+const removeOrganization = () => {
+	AssetStorage.removeOrganizationId();
+	DB.removeOrganizationId();
+};
 
 export const user = {
 	create,
@@ -102,5 +110,6 @@ export const user = {
 	getList,
 	exist,
 	getListUnassignedUsers,
-	setOrganization
+	setOrganization,
+	removeOrganization
 }

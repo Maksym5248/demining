@@ -36,11 +36,30 @@ function getPath(id:string){
 	return id
 };
 
+async function saveAsUser(blob: Blob, id:string){
+	const blobUrl = URL.createObjectURL(blob);
+
+	let link:HTMLAnchorElement = document.createElement("a");
+	link.download = `${id}.docx`;
+	link.href = blobUrl;
+
+	document.body.appendChild(link);
+	link.click();
+
+	setTimeout(() => {
+		link.remove();
+		window.URL.revokeObjectURL(blobUrl);
+		// @ts-expect-error
+		link = null;
+	}, 0);
+};
+
 export const fileUtils = {
 	fileToBlob,
 	fileToBuffer,
 	bufferToFile,
 	b64toBlob,
 	blobToFile,
-	getPath
+	getPath,
+	saveAsUser
 }

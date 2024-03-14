@@ -47,18 +47,21 @@ const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Timestamp}> {
 	tableName: string;
 
-	rootCollection: string;
+	rootCollection?: string;
 
 	batch: WriteBatch | null = null;
 
 	constructor(tableName: string){
-		this.rootCollection = "";
 		this.tableName = tableName;
 	}
 
 	setRootCollection(rootCollection: string){
 		this.rootCollection = rootCollection;
 
+	}
+
+	removeRootCollection(){
+		this.rootCollection = undefined;
 	}
 
 	setBatch(batch: WriteBatch | null){

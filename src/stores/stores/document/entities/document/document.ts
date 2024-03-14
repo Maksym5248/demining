@@ -1,7 +1,6 @@
 import { Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
-import { DocumentStorage } from '~/services'
 import { fileUtils } from '~/utils/file';
 import { DOCUMENT_TYPE, ASSET_TYPE , MIME_TYPE } from '~/constants';
 import { Api } from '~/api';
@@ -32,7 +31,7 @@ const load = asyncAction<Instance<typeof Entity>>(() => async function fn({ flow
 
 	try {
 		flow.start();
-		file = await DocumentStorage.read(fileUtils.getPath(self.id));
+		file = await Api.document.load(fileUtils.getPath(self.id));
 		flow.success();
 	} catch (err) {
 		flow.failed(err as Error);

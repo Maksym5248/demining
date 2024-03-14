@@ -1,7 +1,7 @@
 import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
-import { Analytics, Auth, DocumentStorage, Logger } from "~/services";
+import { Analytics, Auth, Logger } from "~/services";
 import { Api, ICurrentUserDTO } from '~/api';
 
 import { CurrentUser, createCurrentUser } from './entities';
@@ -24,13 +24,11 @@ const Store = types
 
 			if(user.organization?.id){
 				Api.user.setOrganization(user.organization?.id);
-				DocumentStorage.setOrganizationId(user?.organization?.id)
 			}
 		},
 		removeUser() {
 			self.user = null;
-			Api.user.setOrganization("");
-			DocumentStorage.setOrganizationId("")
+			Api.user.removeOrganization();
 		},
 		setLoadingUserInfo(value: boolean) {
 			self.isLoadingUserInfo = value;
