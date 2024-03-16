@@ -1,5 +1,4 @@
 import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE } from "~/constants"
-import { dates } from "~/utils";
 
 export const mockEmployees = [{
 	firstName: "Андрій",
@@ -48,19 +47,19 @@ export const mockEmployees = [{
 
 export const mockMissionRequest = [{
 	number: 1,
-	signedAt: dates.toDateServer(new Date())
+	signedAt: new Date()
 },{
 	number: 2,
-	signedAt: dates.toDateServer(new Date())
+	signedAt:new Date()
 },{
 	number: 3,
-	signedAt: dates.toDateServer(new Date())
+	signedAt: new Date()
 },{
 	number: 4,
-	signedAt: dates.toDateServer(new Date())
+	signedAt: new Date()
 },{
 	number: 5,
-	signedAt: dates.toDateServer(new Date())
+	signedAt: new Date()
 }];
 
 export const mockTransport = [{

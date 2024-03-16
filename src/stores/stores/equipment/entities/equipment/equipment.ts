@@ -24,7 +24,7 @@ const Entity = types.model('Equipment', {
 }));
 
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IEquipmentValue>) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 

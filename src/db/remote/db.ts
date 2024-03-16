@@ -23,36 +23,36 @@ import {
 
 class DBRemoteClass {
 	/** COMMON COLLECTIONS */
-	user = new DBBase<IUserDB>(TABLES.USER);
+	user = new DBBase<IUserDB>(TABLES.USER, ["email"]);
 
-	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION);
+	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"]);
 
-	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT);
+	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"]);
 
 	/** ORGANIZATION SUBCOLLECTION */
-	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE);
+	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"]);
 
 	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION);
 
 	mapViewAction = new DBBase<IMapViewActionActionDB>(TABLES.MAP_VIEW_ACTION);
 
-	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT);
+	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"]);
 
-	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST);
+	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ["number"]);
 
-	order = new DBBase<IOrderDB>(TABLES.ORDER);
+	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"]);
 
 	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
 
-	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT);
+	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
 
 	transportAction = new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION);
 
-	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT);
+	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT, ["name"]);
 
 	equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION);
 
-	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT);
+	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ["name"]);
 
 	batch:WriteBatch | null = null;
 

@@ -1,4 +1,4 @@
-import { DB } from '~/db';
+import { DB, IQuery } from '~/db';
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from "~/constants";
 import { UpdateValue } from '~/types';
 
@@ -74,11 +74,12 @@ const remove = async (id:string) => Promise.all([
 	DB.order.remove(id)
 ])
 
-const getList = async ():Promise<IOrderPreviewDTO[]> => DB.order.select({
+const getList = async (query?: IQuery):Promise<IOrderPreviewDTO[]> => DB.order.select({
 	order: {
-		by: "number",
-		type: "desc",
+		by: "createdAt",
+		type: "desc"
 	},
+	...(query ?? {})
 });
 
 const get = async (id:string):Promise<IOrderDTO> => {

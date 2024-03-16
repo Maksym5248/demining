@@ -3,7 +3,7 @@ import map from "lodash/map"
 import uniq from "lodash/uniq"
 
 import { UpdateValue } from '~/types'
-import { DB, IOrganizationDB, IUserDB } from '~/db';
+import { DB, IOrganizationDB, IQuery, IUserDB } from '~/db';
 import { AssetStorage } from "~/services";
 
 import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types'
@@ -54,8 +54,14 @@ const update = async (id:string, value: UpdateValue<ICurrentUserDTO>):Promise<IC
 
 const remove = (id:string) => DB.user.remove(id);
 
-const getList = async ():Promise<ICurrentUserDTO[]> => {
-	const users = await DB.user.select();
+const getList = async (query?: IQuery):Promise<ICurrentUserDTO[]> => {
+	const users = await DB.user.select({
+		order: {
+			by: "createdAt",
+			type: "desc"
+		},
+		...(query ?? {})
+	});
 
 	const organizationIds = getIds(users, "organizationId");
 

@@ -1,6 +1,6 @@
 import omit from "lodash/omit";
 
-import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB } from '~/db'
+import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB, IQuery } from '~/db'
 import { CreateValue } from '~/types'
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
 
@@ -104,12 +104,13 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 	}
 };
 
-const getList = async ():Promise<IMissionReportPreviewDTO[]> => {
+const getList = async (query?: IQuery):Promise<IMissionReportPreviewDTO[]> => {
 	const list = await DB.missionReport.select({
 		order: {
-			by: "number",
-			type: "desc",
-		}
+			by: "createdAt",
+			type: "desc"
+		},
+		...(query ?? {})
 	});
 
 	return list.map(({ missionRequestId, orderId, ...rest }) => rest);

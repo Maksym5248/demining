@@ -1,4 +1,4 @@
-import { DB } from '~/db'
+import { DB, IQuery } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'
 import { ASSET_TYPE } from '~/constants';
 import { AssetStorage } from '~/services';
@@ -38,10 +38,16 @@ const remove = async (id:string) => {
 	await DB.document.remove(id)
 };
 
-const getListTemplates = ():Promise<IDocumentDTO[]> => DB.document.select({
+const getListTemplates = (query?: IQuery):Promise<IDocumentDTO[]> => DB.document.select({
+	...(query ?? {}),
 	where: {
+		...(query?.where ?? {}),
 		type: ASSET_TYPE.DOCUMENT,
-	}
+	},
+	order: {
+		by: "createdAt",
+		type: "desc"
+	},
 });
 
 const load = async (id:string) => {

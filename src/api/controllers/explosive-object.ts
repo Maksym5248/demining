@@ -20,7 +20,13 @@ const update = async (id:string, value: UpdateValue<IExplosiveObjectDTOParams>):
 
 const remove = (id:string) => DB.explosiveObject.remove(id);
 
-const getList = async (query?: IQuery):Promise<IExplosiveObjectDTO[]> => DB.explosiveObject.select(query);
+const getList = async (query?: IQuery):Promise<IExplosiveObjectDTO[]> => DB.explosiveObject.select({
+	order: {
+		by: "createdAt",
+		type: "desc"
+	},
+	...(query ?? {})
+});
 
 const init = async ():Promise<void> => {
 	const count = await DB.explosiveObject.count();

@@ -4,16 +4,15 @@ import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { IMissionReport } from '~/stores';
-import { Icon, List } from '~/components';
+import { Icon, List, ListHeader } from '~/components';
 import { str } from '~/utils';
-import { useStore, useRouteTitle } from '~/hooks';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { WIZARD_MODE, MODALS } from '~/constants';
 
 import { s } from './mission-reports-list.styles';
 
-const { Title, Text } = Typography;
-
+const { Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IMissionReport}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
@@ -44,27 +43,37 @@ const ListItem = observer(({ item }: { item: IMissionReport}) => {
 export const MissionReportsListPage  = observer(() => {
 	const title = useRouteTitle();
 
-	const store = useStore();
+	const { missionReport} = useStore();
+	const search = useSearch();
 
-	const onGoToMissionReportCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.MISSION_REPORT_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		missionReport.fetchList.run(value);
+	}
+	
 	useEffect(() => {
-		store.missionReport.fetchList.run();
+		missionReport.fetchList.run(search.searchBy);
 	}, []);
 
 	return (
 		<List
-			loading={store.missionReport.fetchList.inProgress}
-			dataSource={store.missionReport.list.asArray}
+			loading={missionReport.fetchList.inProgress}
+			loadingMore={missionReport.fetchListMore.inProgress}
+			isReachedEnd={!missionReport.list.isMorePages}
+			onLoadMore={missionReport.fetchListMore.run}
+			dataSource={missionReport.list.asArray}
 			style={{ flex: 1}}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToMissionReportCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>

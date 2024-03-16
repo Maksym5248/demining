@@ -55,7 +55,7 @@ export const MembersListPage  = observer(() => {
 
 	useAsyncEffect(async () => {
 		if(!currentOrganization){
-			await organization.fetchById.run(viewer.user?.organization?.id ?? "");
+			await organization.fetchItem.run(viewer.user?.organization?.id ?? "");
 			setId(viewer.user?.organization?.id ?? "")
 		}
 	}, []);
@@ -68,8 +68,9 @@ export const MembersListPage  = observer(() => {
 
 	return (
 		<List
-			loading={currentOrganization?.fetchMembers.inProgress || organization.fetchById.inProgress}
+			loading={currentOrganization?.fetchMembers.inProgress || organization.fetchItem.inProgress}
 			dataSource={currentOrganization?.members.asArray}
+			isReachedEnd
 			header={
 				<Space css={s.listHeader}>
 					<Title level={4}>{title}</Title>

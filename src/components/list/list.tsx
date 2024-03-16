@@ -11,12 +11,13 @@ export function List<T extends { id: string }>({
 	loadingMore,
 	isReachedEnd,
 	onLoadMore,
+	dataSource,
 	...props
 }: IList<T>) {
 
 	let loadMore = null;
 	
-	if(!loading && !isReachedEnd && !loadingMore){
+	if(!loading && !isReachedEnd && !loadingMore && !!dataSource?.length){
 		loadMore = (
 			<div
     		style={{
@@ -26,7 +27,7 @@ export function List<T extends { id: string }>({
     			lineHeight: '32px',
     		}}
     	>
-    		<Button onClick={onLoadMore}>Завантажити більше</Button>
+    		<Button onClick={() => onLoadMore?.()}>Завантажити більше</Button>
     	</div>
 		)
 	} else if(!loading && !isReachedEnd && loadingMore){
@@ -39,6 +40,7 @@ export function List<T extends { id: string }>({
 			itemLayout="horizontal"
 			loading={loading}
 			loadMore={loadMore}
+			dataSource={dataSource}
 			{...props}
 		/>
 	);

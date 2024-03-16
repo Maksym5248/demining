@@ -9,7 +9,7 @@ import { createUser, IUser, IUserValue, User } from './entities';
 const Store = types
 	.model('UserStore', {
 		collection: createCollection<IUser, IUserValue>("Users", User),
-		listUnassigned: createList<IUser>("UserList", safeReference(User), { pageSize: 20 }),
+		listUnassigned: createList<IUser>("UserList", safeReference(User), { pageSize: 10 }),
 	}).actions((self) => ({
 		push: (values: IUserDTO[]) => {
 			values.forEach((el) => {
@@ -22,7 +22,7 @@ const Store = types
 		}
 	}));
 
-const fetchListUnassigned = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
+const fetchListUnassigned = asyncAction<Instance<typeof Store>>(() => async function fn({ flow, self }) {
 	if(flow.isLoaded){
 		return
 	}

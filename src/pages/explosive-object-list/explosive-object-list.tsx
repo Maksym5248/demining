@@ -4,7 +4,7 @@ import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { Icon, List, ListHeader } from '~/components';
-import { useStore, useRouteTitle } from '~/hooks';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { IExplosiveObject } from '~/stores';
@@ -41,17 +41,23 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
 export const ExplosiveObjectListPage  = observer(() => {
 	const { explosiveObject } = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
 	const onCreate = () => {
 		Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
-	const onSearch = () => {
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		explosiveObject.fetchList.run(value);
+	}
 
+	const onLoadMore = () => {
+		explosiveObject.fetchListMore.run(search.searchValue);
 	}
 
 	useEffect(() => {
-		explosiveObject.fetchList.run();
+		explosiveObject.fetchList.run(search.searchValue);
 	}, []);
 
 	return (
@@ -59,13 +65,14 @@ export const ExplosiveObjectListPage  = observer(() => {
 			loading={explosiveObject.fetchList.inProgress}
 			loadingMore={explosiveObject.fetchListMore.inProgress}
 			isReachedEnd={!explosiveObject.list.isMorePages}
-			onLoadMore={explosiveObject.fetchListMore.run}
-			dataSource={explosiveObject.sortedList}
+			dataSource={explosiveObject.list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}
 					onSearch={onSearch}
 					onCreate={onCreate}
+					{...search}
 				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}

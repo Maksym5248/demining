@@ -2,8 +2,9 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api } from '~/api'
+import { Api, ITransportDTO } from '~/api'
 import { TRANSPORT_TYPE } from '~/constants';
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { ITransport, ITransportValue, Transport, createTransport, createTransportDTO } from './entities';
@@ -11,8 +12,30 @@ import { ITransport, ITransportValue, Transport, createTransport, createTranspor
 const Store = types
 	.model('TransportStore', {
 		collection: createCollection<ITransport, ITransportValue>("Transports", Transport),
-		list: createList<ITransport>("TransportsList", safeReference(Transport), { pageSize: 20 }),
-	}).views((self) => ({
+		list: createList<ITransport>("TransportsList", safeReference(Transport), { pageSize: 10 }),
+	}).actions((self) => ({
+		push: (values: ITransportDTO[]) => {
+			self.list.checkMore(values.length);
+
+			values.forEach((el) => {
+				const value = createTransport(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		},
+		set(values: ITransportDTO[]){
+			self.list.checkMore(values.length);
+			self.list.clear();
+
+			values.forEach((el) => {
+				const value = createTransport(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		}
+	})).views((self) => ({
 		get transportExplosiveObjectList(){
 			return self.list.asArray.filter(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
 		},
@@ -28,7 +51,7 @@ const Store = types
 		},
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportValue>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransportValue>) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
@@ -45,7 +68,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<ITransport
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		await Api.transport.remove(id);
@@ -59,24 +82,16 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
 		flow.start();
 
-		const list = await Api.transport.getList();
+		const res = await Api.transport.getList({
+			search,
+			limit: self.list.pageSize,
+		});
 
-		list.forEach((el) => {
-			const value = createTransport(el);
-
-			if(!self.collection.has(value.id)){
-				self.collection.set(value.id, value);
-				self.list.push(value.id);
-			}
-		})
+		self.set(res);
 
 		flow.success();
 	} catch (err) {
@@ -85,4 +100,23 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const TransportStore = Store.props({ create, remove, fetchList })
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
+	try {
+		flow.start();
+
+		const res = await Api.transport.getList({
+			search,
+			limit: self.list.pageSize,
+			startAfter: dates.toDateServer(self.list.last.createdAt),
+		});
+
+		self.push(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const TransportStore = Store.props({ create, remove, fetchList, fetchListMore })

@@ -3,15 +3,15 @@ import React, { useEffect } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon, List } from '~/components';
-import { useStore, useRouteTitle } from '~/hooks';
+import { Icon, List, ListHeader } from '~/components';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { IOrder } from '~/stores';
 
 import { s } from './orders-list.styles';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IOrder}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
@@ -39,27 +39,37 @@ const ListItem = observer(({ item }: { item: IOrder}) => {
 });
 
 export const OrdersListPage  = observer(() => {
-	const store = useStore();
+	const { order } = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
-	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.ORDER_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		order.fetchList.run(value);
+	}
+
 	useEffect(() => {
-		store.order.fetchList.run();
+		order.fetchList.run(search.searchBy);
 	}, []);
 
 	return (
 		<List
-			loading={store.order.fetchList.inProgress}
-			dataSource={store.order.list.asArray}
+			loading={order.fetchList.inProgress}
+			loadingMore={order.fetchListMore.inProgress}
+			isReachedEnd={!order.list.isMorePages}
+			onLoadMore={order.fetchListMore.run}
+			dataSource={order.list.asArray}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToEmployeesCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>

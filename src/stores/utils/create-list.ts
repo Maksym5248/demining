@@ -48,7 +48,7 @@ export function createList<T>(
 			}))
 			.views((self) => ({
 				get isMorePages() {
-					return self.length % self.pageSize === 0 && self._isMorePages;
+					return self._isMorePages;
 				},
 			}))
 			.views((self) => ({
@@ -66,6 +66,14 @@ export function createList<T>(
 			}))
 
 			.actions((self) => ({
+				checkMore(length: number) {
+					if(length < self.pageSize){
+						self._isMorePages = false;
+
+					} else {
+						self._isMorePages = true;
+					}
+				},
 				push(...ids: string[]) {
 					self._array.push(...ids);
 				},

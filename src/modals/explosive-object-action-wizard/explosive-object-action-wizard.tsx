@@ -64,7 +64,7 @@ export const ExplosiveObjectActionWizardModal  = observer(({ isVisible, hide, on
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
 						initialValues={initialValue ?? {
-							explosiveObjectId: explosiveObject.sortedList[0]?.id,
+							explosiveObjectId: explosiveObject.list?.first.id,
 							quantity: 1,
 							category: EXPLOSIVE_OBJECT_CATEGORY.I, 
 							isDiscovered: true,
@@ -80,7 +80,7 @@ export const ExplosiveObjectActionWizardModal  = observer(({ isVisible, hide, on
 						>
 							<Select
 								onAdd={onAddExplosiveObject}                  
-								options={explosiveObject.sortedList.map((el) => ({ label: el.fullDisplayName, value: el.id }))}
+								options={explosiveObject.list?.asArray.map((el) => ({ label: el.fullDisplayName, value: el.id }))}
 							/>
 						</Form.Item>
 						<Form.Item

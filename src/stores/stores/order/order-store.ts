@@ -3,6 +3,7 @@ import { message } from 'antd';
 
 import { CreateValue } from '~/types'
 import { Api, IOrderPreviewDTO } from '~/api'
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
@@ -10,21 +11,31 @@ import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrder
 const Store = types
 	.model('OrderStore', {
 		collection: createCollection<IOrder, IOrderValue>("Orders", Order),
-		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 20 }),
+		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 10 }),
 	}).actions((self) => ({
 		push: (values: IOrderPreviewDTO[]) => {
+			self.list.checkMore(values.length);
 			values.forEach((el) => {
 				const order = createOrderPreview(el);
 
-				if(!self.collection.has(order.id)){
-					self.collection.set(order.id, order);
-					self.list.push(order.id);
-				}
+				self.collection.set(order.id, order);
+				self.list.push(order.id);
+			})
+		},
+		set(values: IOrderPreviewDTO[]){
+			self.list.checkMore(values.length);
+			self.list.clear();
+
+			values.forEach((el) => {
+				const value = createOrderPreview(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
 			})
 		}
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
@@ -43,7 +54,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValu
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		await Api.order.remove(id);
@@ -57,11 +68,7 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
 	try {
 		flow.start();
 		const res = await Api.order.get(id);
@@ -75,14 +82,34 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
-		const res = await Api.order.getList();
+		const res = await Api.order.getList({
+			search,
+			limit: self.list.pageSize,
+		});
+
+		self.set(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
+	try {
+		if(!self.list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.order.getList({
+			search,
+			limit: self.list.pageSize,
+			startAfter: dates.toDateServer(self.list.last.createdAt),
+		});
 
 		self.push(res);
 
@@ -93,4 +120,4 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const OrderStore = Store.props({ create, remove, fetchList, fetchItem })
+export const OrderStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem })

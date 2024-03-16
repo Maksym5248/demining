@@ -20,22 +20,13 @@ import {
 	createExplosiveObjectType,
 } from './entities';
 
-const getStr = (v: IExplosiveObject) => v.caliber ? `${v.type.fullName} ${v.caliber}` : `${v.type.fullName} ${v.name}`
-
 const Store = types
 	.model('ExplosiveObjectStore', {
 		collectionTypes: createCollection<IExplosiveObjectType, IExplosiveObjectTypeValue>("ExplosiveObjectTypes", ExplosiveObjectType),
-		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 10 }),
+		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 100 }),
 		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
 		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 10 }),
 	}).views(self => ({
-		get sortedList(){
-			return self.list.asArray.sort((a, b) => {
-				const str1 = getStr(a);
-				const str2 = getStr(b);
-				return str1.localeCompare(str2, ["uk"], { numeric: true, sensitivity: 'base' })
-			})
-		},
 		get sortedListTypes(){
 			return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
 		}
@@ -51,15 +42,26 @@ const Store = types
 			})
 		},
 		push(res: IExplosiveObjectDTO[]){
+			self.list.checkMore(res.length);
+
 			res.forEach((el) => {
 				const explosiveObject = createExplosiveObject(el);
 
-				if(!self.collection.has(explosiveObject.id)){
-					self.collection.set(explosiveObject.id, explosiveObject);
-					self.list.push(explosiveObject.id);
-				}
+				self.collection.set(explosiveObject.id, explosiveObject);
+				self.list.push(explosiveObject.id);
 			})
 		},
+		set(res: IExplosiveObjectDTO[]){
+			self.list.checkMore(res.length);
+			self.list.clear();
+
+			res.forEach((el) => {
+				const explosiveObject = createExplosiveObject(el);
+
+				self.collection.set(explosiveObject.id, explosiveObject);
+				self.list.push(explosiveObject.id);
+			})
+		}
 	}));
 
 const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
@@ -105,19 +107,16 @@ const createExplosiveObjects = asyncAction<Instance<typeof Store>>(() => async f
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
 
 		const res = await Api.explosiveObject.getList({
-			order: {
-				by: "createdAt",
-				type: "asc"
-			},
+			search,
 			limit: self.list.pageSize,
 		});
-
-		self.push(res);
+		
+		self.set(res);
 
 		flow.success();
 	} catch (err) {
@@ -126,19 +125,14 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFl
 	}
 });
 
-const fetchListMore = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
+const fetchListMore = asyncAction<Instance<typeof Store>>((search) => async function addFlow({ flow, self }) {
 	try {
-		console.log("self.list.isMorePages", self.list.isMorePages)
-
 		if(!self.list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.explosiveObject.getList({
-			order: {
-				by: "updatedAt",
-				type: "asc"
-			},
+			search,
 			limit: self.list.pageSize,
 			startAfter: dates.toDateServer(self.list.last.createdAt),
 		});

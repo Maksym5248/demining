@@ -32,7 +32,7 @@ const Entity = types.model('ExplosiveObject', {
 	}
 }));
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IExplosiveObjectValueParams>) => async function addEmployeeFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IExplosiveObjectValueParams>) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 

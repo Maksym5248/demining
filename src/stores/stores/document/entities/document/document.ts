@@ -41,7 +41,7 @@ const load = asyncAction<Instance<typeof Entity>>(() => async function fn({ flow
 	return file;
 });
 
-const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IDocumentValue>, file:File) => async function addEmployeeFlow({ flow, self }) {
+const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IDocumentValue>, file:File) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 

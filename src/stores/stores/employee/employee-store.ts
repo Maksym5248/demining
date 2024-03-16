@@ -5,6 +5,7 @@ import { Api, IEmployeeDTO } from '~/api'
 import { EMPLOYEE_TYPE } from '~/constants';
 import { ranksData } from '~/data'
 import { CreateValue } from '~/types'
+import { dates } from '~/utils';
 
 import { types } from '../../types'
 import { asyncAction , createCollection, createList, safeReference } from '../../utils';
@@ -13,10 +14,10 @@ import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmp
 const Store = types
 	.model('EmployeeStore', {
 		ranksCollection: createCollection<IRank, IRankValue>("Ranks", Rank),
-		ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 20 }),
+		ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 100 }),
 
 		collection: createCollection<IEmployee, IEmployeeValue>("Employees", Employee),
-		list: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 20 })
+		list: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 10 })
 	})
 	.actions((self) => ({
 		init() {
@@ -25,14 +26,24 @@ const Store = types
 				self.ranksList.push(data.id);
 			})
 		},
-		push: (values: IEmployeeDTO[]) => {
-			values.forEach((el) => {
-				const employee = createEmployee(el);
+		push: (res: IEmployeeDTO[]) => {
+			self.list.checkMore(res.length);
+			res.forEach((el) => {
+				const value = createEmployee(el);
 
-				if(!self.collection.has(employee.id)){
-					self.collection.set(employee.id, employee);
-					self.list.push(employee.id);
-				}
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		},
+		set(res: IEmployeeDTO[]){
+			self.list.checkMore(res.length);
+			self.list.clear();
+
+			res.forEach((el) => {
+				const value = createEmployee(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
 			})
 		}
 	})).views((self) => ({
@@ -57,7 +68,7 @@ const Store = types
 		},
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeValue>) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		const res = await Api.employee.create(createEmployeeDTO(data));
@@ -73,7 +84,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEmployeeV
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		await Api.employee.remove(id);
@@ -87,17 +98,16 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
 		flow.start();
 
-		const res = await Api.employee.getList();
+		const res = await Api.employee.getList({
+			search,
+			limit: self.list.pageSize,
+		});
 
-		self.push(res);
+		self.set(res);
 
 		flow.success();
 	} catch (err) {
@@ -105,4 +115,24 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const EmployeeStore = Store.props({ create, remove, fetchList })
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
+	try {
+		if(!self.list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.employee.getList({
+			search,
+			limit: self.list.pageSize,
+			startAfter: dates.toDateServer(self.list.last.createdAt),
+		});
+
+		self.push(res);
+		
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+	}
+});
+
+export const EmployeeStore = Store.props({ create, remove, fetchList, fetchListMore })

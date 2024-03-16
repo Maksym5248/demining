@@ -13,7 +13,7 @@ export type IOrganization = Instance<typeof Organization>
 const Entity = types.model('Organization', {
 	id: types.identifier,
 	name: types.string,
-	members: createList<IUser>("MembersList", safeReference(User), { pageSize: 20 }),
+	members: createList<IUser>("MembersList", safeReference(User), { pageSize: 10 }),
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).actions((self) => ({

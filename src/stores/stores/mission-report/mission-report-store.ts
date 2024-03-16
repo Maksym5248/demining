@@ -2,9 +2,10 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api } from '~/api'
+import { Api, IMissionReportPreviewDTO } from '~/api'
 import { createOrder } from '~/stores/stores/order';
 import { createMissionRequest } from '~/stores/stores/mission-request';
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview } from './entities';
@@ -12,8 +13,29 @@ import { IMissionReport, IMissionReportValue, IMissionReportValueParams, Mission
 const Store = types
 	.model('MissionReportStore', {
 		collection: createCollection<IMissionReport, IMissionReportValue>("MissionReports", MissionReport),
-		list: createList<IMissionReport>("MissionReportsList", safeReference(MissionReport), { pageSize: 20 }),
-	});
+		list: createList<IMissionReport>("MissionReportsList", safeReference(MissionReport), { pageSize: 10 }),
+	}).actions((self) => ({
+		push: (values: IMissionReportPreviewDTO[]) => {
+			self.list.checkMore(values.length);
+			values.forEach((el) => {
+				const value = createMissionReportPreview(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		},
+		set(values: IMissionReportPreviewDTO[]){
+			self.list.checkMore(values.length);
+			self.list.clear();
+
+			values.forEach((el) => {
+				const value = createMissionReportPreview(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		}
+	}));
 
 const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self, root }) {
 	try {
@@ -52,24 +74,37 @@ const update = asyncAction<Instance<typeof Store>>((id: string, data: CreateValu
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {    
 	try {
 		flow.start();
 
-		const res = await Api.missionReport.getList();
+		const res = await Api.missionReport.getList({
+			search,
+			limit: self.list.pageSize,
+		});
 
-		res.forEach((el) => {
-			const missionReport = createMissionReportPreview(el);
+		self.set(res)
 
-			if(!self.collection.has(missionReport.id)){
-				self.collection.set(missionReport.id, missionReport);
-				self.list.push(missionReport.id);
-			}
-		})
+		flow.success();
+	} catch (err) {
+		message.error('Виникла помилка');
+		flow.failed(err as Error);
+	}
+});
+
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {    
+	try {
+		if(!self.list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.missionReport.getList({
+			search,
+			limit: self.list.pageSize,
+			startAfter: dates.toDateServer(self.list.last.createdAt),
+		});
+
+		self.push(res)
 
 		flow.success();
 	} catch (err) {
@@ -105,7 +140,7 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		await Api.missionReport.remove(id);
@@ -119,4 +154,4 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchItem })
+export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchListMore, fetchItem })

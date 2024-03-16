@@ -17,7 +17,7 @@ import {
 	limit,
 	WriteBatch,
 	startAfter,
-	getCountFromServer
+	getCountFromServer,
 } from 'firebase/firestore';
 import isArray from 'lodash/isArray';
 
@@ -28,11 +28,25 @@ type IOrder = {
 };
 
 export type IQuery = {
+	search?: string;
 	where?: IWhere;
 	order?: IOrder;
 	limit?: number;
 	startAfter?: string | number | Timestamp;
 };
+
+function generateValueStartsWith(value: string): string[] {
+	const prefixes: string[] = [];
+	const arr = value.toLowerCase().split(/\s+/);
+
+	arr.forEach(v => {
+		for (let i = 1; i <= v.length; i+=1) {
+			prefixes.push(v.substring(0, i));
+		}
+	});
+
+	return prefixes;
+}
 
 const getWhere = (values: IWhere) => 
 	 Object.keys(values).map(key => {
@@ -40,6 +54,10 @@ const getWhere = (values: IWhere) =>
 
 		if(value?.in && isArray(value.in)){
 			return where(key, "in", value.in) 
+		}
+
+		if(value["array-contains-any"]){
+			return where(key, "array-contains-any", value["array-contains-any"]) 
 		}
 		
 		return where(key, "==", value)
@@ -54,13 +72,15 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	batch: WriteBatch | null = null;
 
-	constructor(tableName: string){
+	searchFields: (keyof T)[];
+
+	constructor(tableName: string, searchFields?: (keyof T)[]){
 		this.tableName = tableName;
+		this.searchFields = searchFields ?? [];
 	}
 
 	setRootCollection(rootCollection: string){
 		this.rootCollection = rootCollection;
-
 	}
 
 	removeRootCollection(){
@@ -81,23 +101,25 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return newDocumentRef.id;
 	}
 
-	async select(args?: Partial<IQuery> ): Promise<T[]> {
-		console.log("select", args)
-
+	async select(args?: Partial<IQuery>): Promise<T[]> {
 		const q = query(this.collection,
+			 ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
 			 ...(args?.where ? getWhere(args.where) : []),
 			 ...(args?.order ? [getOrder(args?.order)] : []),
 			 ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
 			 ...(args?.limit ? [limit(args?.limit)] : []),
 		);
 
-		console.log("select 2",  q)
-
 		const snapshot = await getDocs(q);
 
-		const data = snapshot.docs.map(d => d.data()) as (T & {
+		const data = snapshot.docs.map(d => {
+			// @ts-expect-error
+			const { _search, ...newData } = d.data();
+			return newData
+		}) as (T & {
 			createdAt: Timestamp,
 			updatedAt: Timestamp,
+			_search: Record<keyof T, string>
 		})[];
 
 		return data as T[]
@@ -114,7 +136,11 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const data = res.data() as T & {
 				createdAt: Timestamp,
 				updatedAt: Timestamp,
+				_search: Record<keyof T, string>
 		};
+
+		// @ts-expect-error
+		if(data?._search) delete data._search;
 		
 		return data
 	}
@@ -127,19 +153,43 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return !querySnapshot.empty
 	}
 
+	private createSearchField(value:Partial<T>){
+		let _search: string[] = [];
+
+		this.searchFields.forEach((field) => {
+			const arr = generateValueStartsWith(String(value[field] ?? ""));
+			_search = [..._search, ...arr]
+		});
+
+		return { _search }
+	}
+
+	private createSearchWhere(search:string){
+		const searchLower = String(search ?? "").toLowerCase().split(/\s+/);
+
+		const _search = {
+			"array-contains-any": searchLower
+		};
+
+		return { _search }
+	}
+
 	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
 		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
+		const search = this.createSearchField(value as T);
 	
 		const newValue = {
+			...search,
 			...value,
 			id,
 			createdAt: timestamp,
-			updatedAt: timestamp
+			updatedAt: timestamp,
 		} as T & {
 				createdAt: Timestamp,
 				updatedAt: Timestamp,
+				_search: string[]
 			};
 	
 		return { ref, newValue }
@@ -147,21 +197,17 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	private getUpdateValue(id:string, value: Partial<T>) {
 		const newValue = {...value};
+		const search = this.createSearchField(value as T);
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
 		if(newValue?.id) delete newValue.id;
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
 		if(newValue?.updatedAt) delete newValue.updatedAt;
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
 		if(newValue?.createdAt) delete newValue.createdAt;
 
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 
 		const updatedValue = {
+			...search,
 			...newValue,
 			updatedAt: timestamp
 		} as UpdateData<T>

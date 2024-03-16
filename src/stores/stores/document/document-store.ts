@@ -2,8 +2,9 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api } from '~/api'
+import { Api, IDocumentDTO } from '~/api'
 import { DOCUMENT_TYPE } from '~/constants';
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IDocument, IDocumentValue, Document, createDocument, createDocumentDTO } from './entities';
@@ -11,16 +12,37 @@ import { IDocument, IDocumentValue, Document, createDocument, createDocumentDTO 
 const Store = types
 	.model('DocumentStore', {
 		collection: createCollection<IDocument, IDocumentValue>("Documents", Document),
-		templatesList: createList<IDocument>("DocumentsList", safeReference(Document), { pageSize: 20 }),
+		templatesList: createList<IDocument>("DocumentsList", safeReference(Document), { pageSize: 10 }),
 	})
 	.views((self) => ({
 		 get missionReportTemplatesList(){
 			return self.templatesList.asArray.filter(el => el.documentType === DOCUMENT_TYPE.MISSION_REPORT);
 		}
+	})).actions(self => ({
+		pushTemplates(res: IDocumentDTO[]){
+			self.templatesList.checkMore(res.length);
+
+			res.forEach((el) => {
+				const value = createDocument(el);
+
+				self.collection.set(value.id, value);
+				self.templatesList.push(value.id);
+			})
+		},
+		setTemplates(res: IDocumentDTO[]){
+			self.templatesList.checkMore(res.length);
+			self.templatesList.clear();
+
+			res.forEach((el) => {
+				const value = createDocument(el);
+	
+				self.collection.set(value.id, value);
+				self.templatesList.push(value.id);
+			})
+		}
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IDocumentValue>, file:File) => async function addEmployeeFlow({ flow, self }) {
-
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IDocumentValue>, file:File) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
@@ -38,7 +60,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IDocumentV
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		await Api.document.remove(id);
@@ -52,24 +74,16 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchTemplatesList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchTemplatesList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
-		const list = await Api.document.getListTemplates();
+		const list = await Api.document.getListTemplates({
+			search,
+			limit: self.templatesList.pageSize,
+		});
 
-		list.forEach((el) => {
-			const value = createDocument(el);
-
-			if(!self.collection.has(value.id)){
-				self.collection.set(value.id, value);
-				self.templatesList.push(value.id);
-			}
-		})
+		self.setTemplates(list);
 
 		flow.success();
 	} catch (err) {
@@ -78,4 +92,25 @@ const fetchTemplatesList = asyncAction<Instance<typeof Store>>(() => async funct
 	}
 });
 
-export const DocumentStore = Store.props({ create, remove, fetchTemplatesList })
+const fetchTemplatesListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
+	try {
+		if(!self.templatesList.isMorePages) return;
+
+		flow.start();
+
+		const value = await Api.document.getListTemplates({
+			search,
+			limit: self.templatesList.pageSize,
+			startAfter: dates.toDateServer(self.templatesList.last.createdAt),
+		});
+
+		self.pushTemplates(value);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const DocumentStore = Store.props({ create, remove, fetchTemplatesList, fetchTemplatesListMore })

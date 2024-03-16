@@ -2,8 +2,9 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api } from '~/api'
+import { Api, IEquipmentDTO } from '~/api'
 import { EQUIPMENT_TYPE } from '~/constants';
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IEquipment, IEquipmentValue, Equipment, createEquipment, createEquipmentDTO } from './entities';
@@ -11,18 +12,39 @@ import { IEquipment, IEquipmentValue, Equipment, createEquipment, createEquipmen
 const Store = types
 	.model('EquipmentStore', {
 		collection: createCollection<IEquipment, IEquipmentValue>("Equipments", Equipment),
-		list: createList<IEquipment>("EquipmentsList", safeReference(Equipment), { pageSize: 20 }),
+		list: createList<IEquipment>("EquipmentsList", safeReference(Equipment), { pageSize: 10 }),
 	}).views(self => ({
 		get listMineDetectors(){
 			return self.list.asArray.filter(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)
 		},
+	})).actions((self) => ({
+		push: (values: IEquipmentDTO[]) => {
+			self.list.checkMore(values.length);
+			values.forEach((el) => {
+				const value = createEquipment(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		},
+		set(values: IEquipmentDTO[]){
+			self.list.checkMore(values.length);
+			self.list.clear();
+
+			values.forEach((el) => {
+				const value = createEquipment(el);
+
+				self.collection.set(value.id, value);
+				self.list.push(value.id);
+			})
+		}
 	})).views(self => ({
 		get firstMineDetector(){
 			return self.listMineDetectors[0]
 		},
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipmentValue>) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
@@ -39,7 +61,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IEquipment
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
@@ -54,24 +76,36 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
 		flow.start();
 
-		const list = await Api.equipment.getList();
+		const res = await Api.equipment.getList({
+			search,
+			limit: self.list.pageSize,
+		});
 
-		list.forEach((el) => {
-			const item = createEquipment(el);
+		self.set(res);
+		flow.success();
+	} catch (err) {
+		message.error('Виникла помилка');
+		flow.failed(err as Error);
+	}
+});
 
-			if(!self.collection.has(item.id)){
-				self.collection.set(item.id, item);
-				self.list.push(item.id);
-			}
-		})
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
+	try {
+		if(!self.list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.equipment.getList({
+			search,
+			limit: self.list.pageSize,
+			startAfter: dates.toDateServer(self.list.last.createdAt),
+		});
+
+		self.push(res);
 
 		flow.success();
 	} catch (err) {
@@ -80,4 +114,4 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const EquipmentStore = Store.props({ create, remove, fetchList })
+export const EquipmentStore = Store.props({ create, remove, fetchList, fetchListMore })

@@ -4,16 +4,15 @@ import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { IEmployee } from '~/stores';
-import { Icon, List } from '~/components';
+import { Icon, List, ListHeader } from '~/components';
 import { str } from '~/utils';
-import { useStore, useRouteTitle } from '~/hooks';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, WIZARD_MODE } from '~/constants';
 
 import { s } from './employees-list.styles';
 
-const { Title, Text } = Typography;
-
+const { Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IEmployee}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
@@ -43,27 +42,37 @@ const ListItem = observer(({ item }: { item: IEmployee}) => {
 });
 
 export const EmployeesListPage  = observer(() => {
-	const store = useStore();
+	const { employee } = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
-	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		employee.fetchList.run(value);
+	}
+
 	useEffect(() => {
-		store.employee.fetchList.run();
+		employee.fetchList.run(search.searchBy);
 	}, []);
 
 	return (
 		<List
-			loading={store.employee.fetchList.inProgress}
-			dataSource={store.employee.list.asArray}
+			loading={employee.fetchList.inProgress}
+			loadingMore={employee.fetchListMore.inProgress}
+			isReachedEnd={!employee.list.isMorePages}
+			onLoadMore={employee.fetchListMore.run}
+			dataSource={employee.list.asArray}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.UserAddOutlined />} onClick={onGoToEmployeesCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>

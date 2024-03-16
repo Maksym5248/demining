@@ -3,15 +3,15 @@ import React, { useEffect } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon, List } from '~/components';
-import { useStore, useRouteTitle } from '~/hooks';
+import { Icon, List, ListHeader } from '~/components';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, TRANSPORT_TYPE, WIZARD_MODE } from '~/constants';
 import { ITransport } from '~/stores';
 
 import { s } from './transport-list.styles';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const types = {
 	[TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS]: "ВНП",
@@ -45,27 +45,37 @@ const ListItem = observer(({ item }: { item: ITransport}) => {
 });
 
 export const TransportListPage  = observer(() => {
-	const store = useStore();
+	const { transport } = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
-	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.TRANSPORT_WIZARD,  { mode: WIZARD_MODE.CREATE})
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		transport.fetchList.run(value);
+	}
+
 	useEffect(() => {
-		store.transport.fetchList.run();
+		transport.fetchList.run(search.searchBy);
 	}, []);
 
 	return (
 		<List
-			loading={store.transport.fetchList.inProgress}
-			dataSource={store.transport.list.asArray}
+			loading={transport.fetchList.inProgress}
+			loadingMore={transport.fetchListMore.inProgress}
+			isReachedEnd={!transport.list.isMorePages}
+			onLoadMore={transport.fetchListMore.run}
+			dataSource={transport.list.asArray}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToEmployeesCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>
