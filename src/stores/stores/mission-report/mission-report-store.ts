@@ -13,26 +13,19 @@ import { IMissionReport, IMissionReportValue, IMissionReportValueParams, Mission
 const Store = types
 	.model('MissionReportStore', {
 		collection: createCollection<IMissionReport, IMissionReportValue>("MissionReports", MissionReport),
-		list: createList<IMissionReport>("MissionReportsList", safeReference(MissionReport), { pageSize: 10 }),
+		list: createList<IMissionReport>("IMissionReport", safeReference(MissionReport), { pageSize: 10 }),
+		searchList: createList<IMissionReport>("IMissionSearchList", safeReference(MissionReport), { pageSize: 10 }),
 	}).actions((self) => ({
-		push: (values: IMissionReportPreviewDTO[]) => {
-			self.list.checkMore(values.length);
-			values.forEach((el) => {
+		append(res: IMissionReportPreviewDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
+
+			list.checkMore(res.length);
+
+			res.forEach((el) => {
 				const value = createMissionReportPreview(el);
 
 				self.collection.set(value.id, value);
-				self.list.push(value.id);
-			})
-		},
-		set(values: IMissionReportPreviewDTO[]){
-			self.list.checkMore(values.length);
-			self.list.clear();
-
-			values.forEach((el) => {
-				const value = createMissionReportPreview(el);
-
-				self.collection.set(value.id, value);
-				self.list.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
@@ -76,14 +69,19 @@ const update = asyncAction<Instance<typeof Store>>((id: string, data: CreateValu
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {    
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
 		const res = await Api.missionReport.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.set(res)
+		self.append(res, isSearch)
 
 		flow.success();
 	} catch (err) {
@@ -94,17 +92,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {    
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.missionReport.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res)
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -119,15 +120,8 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 
 		const el = await Api.missionReport.get(id);
 
-		if(!root.order.collection.has(el.order.id)){
-			root.order.collection.set(el.order.id, createOrder(el.order));
-			root.order.list.push(el.order.id);
-		}
-
-		if(!root.missionRequest.collection.has(el.missionRequest.id)){
-			root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
-			root.missionRequest.list.push(el.missionRequest.id);
-		}
+		root.order.collection.set(el.order.id, createOrder(el.order));
+		root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
 
 		const missionReport = createMissionReport(el);
 

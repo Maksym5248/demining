@@ -52,17 +52,23 @@ export const OrganizationsListPage  = observer(() => {
 		organization.fetchList.run(value);
 	}
 
+	const onLoadMore = () => {
+		organization.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		organization.fetchList.run(search.searchBy);
+		organization.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? organization.searchList :  organization.list;
 
 	return (
 		<List
 			loading={organization.fetchList.inProgress}
 			loadingMore={organization.fetchListMore.inProgress}
-			isReachedEnd={!organization.list.isMorePages}
-			onLoadMore={organization.fetchListMore.run}
-			dataSource={organization.list.asArray}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}

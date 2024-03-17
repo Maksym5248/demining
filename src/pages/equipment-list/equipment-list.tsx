@@ -56,17 +56,23 @@ export const EquipmentListPage  = observer(() => {
 		equipment.fetchList.run(value);
 	}
 
+	const onLoadMore = () => {
+		equipment.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		equipment.fetchList.run(search.searchBy);
+		equipment.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? equipment.searchList :  equipment.list;
 
 	return (
 		<List
 			loading={equipment.fetchList.inProgress}
 			loadingMore={equipment.fetchListMore.inProgress}
-			isReachedEnd={!equipment.list.isMorePages}
-			onLoadMore={equipment.fetchListMore.run}
-			dataSource={equipment.list.asArray}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}

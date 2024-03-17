@@ -12,25 +12,18 @@ const Store = types
 	.model('MissionRequestStore', {
 		collection: createCollection<IMissionRequest, IMissionRequestValue>("MissionRequests", MissionRequest),
 		list: createList<IMissionRequest>("MissionRequestsList", safeReference(MissionRequest), { pageSize: 10 }),
+		searchList: createList<IMissionRequest>("ExplosiveObjectsSearchList", safeReference(MissionRequest), { pageSize: 10 }),
 	}).actions((self) => ({
-		push: (values: IMissionRequestDTO[]) => {
-			self.list.checkMore(values.length);
-			values.forEach((el) => {
+		append(res: IMissionRequestDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
+
+			list.checkMore(res.length);
+
+			res.forEach((el) => {
 				const value = createMissionRequest(el);
 
 				self.collection.set(value.id, value);
-				self.list.push(value.id);
-			})
-		},
-		set(values: IMissionRequestDTO[]){
-			self.list.checkMore(values.length);
-			self.list.clear();
-
-			values.forEach((el) => {
-				const value = createMissionRequest(el);
-
-				self.collection.set(value.id, value);
-				self.list.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
@@ -68,14 +61,19 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
 		const res = await Api.missionRequest.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.set(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -86,17 +84,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.missionRequest.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res);
+		self.append(res, isSearch);
 		
 		flow.success();
 	} catch (err) {

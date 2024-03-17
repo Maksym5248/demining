@@ -11,25 +11,19 @@ const Store = types
 	.model('OrganizationStore', {
 		collection: createCollection<IOrganization, IOrganizationValue>("Organizations", Organization),
 		list: createList<IOrganization>("OrganizationList", safeReference(Organization), { pageSize: 10 }),
+		searchList: createList<IOrganization>("OrganizationSearchList", safeReference(Organization), { pageSize: 10 }),
+
 	}).actions((self) => ({
-		push: (values: IOrganizationDTO[]) => {
-			self.list.checkMore(values.length);
-			values.forEach((el) => {
+		append(res: IOrganizationDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
+
+			list.checkMore(res.length);
+
+			res.forEach((el) => {
 				const value = createOrganization(el);
 
 				self.collection.set(value.id, value);
-				self.list.push(value.id);
-			})
-		},
-		set(values: IOrganizationDTO[]){
-			self.list.checkMore(values.length);
-			self.list.clear();
-
-			values.forEach((el) => {
-				const value = createOrganization(el);
-
-				self.collection.set(value.id, value);
-				self.list.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
@@ -69,14 +63,19 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async ({ flow,
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
 		const res = await Api.organization.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.set(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -86,17 +85,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.organization.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {

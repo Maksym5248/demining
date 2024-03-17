@@ -55,17 +55,23 @@ export const EmployeesListPage  = observer(() => {
 		employee.fetchList.run(value);
 	}
 
+	const onLoadMore = () => {
+		employee.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		employee.fetchList.run(search.searchBy);
+		employee.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? employee.searchList :  employee.list;
 
 	return (
 		<List
 			loading={employee.fetchList.inProgress}
 			loadingMore={employee.fetchListMore.inProgress}
-			isReachedEnd={!employee.list.isMorePages}
-			onLoadMore={employee.fetchListMore.run}
-			dataSource={employee.list.asArray}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}

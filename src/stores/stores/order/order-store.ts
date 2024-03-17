@@ -12,25 +12,18 @@ const Store = types
 	.model('OrderStore', {
 		collection: createCollection<IOrder, IOrderValue>("Orders", Order),
 		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 10 }),
+		searchList: createList<IOrder>("OrderSearchList", safeReference(Order), { pageSize: 10 }),
 	}).actions((self) => ({
-		push: (values: IOrderPreviewDTO[]) => {
-			self.list.checkMore(values.length);
-			values.forEach((el) => {
-				const order = createOrderPreview(el);
+		append(res: IOrderPreviewDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
 
-				self.collection.set(order.id, order);
-				self.list.push(order.id);
-			})
-		},
-		set(values: IOrderPreviewDTO[]){
-			self.list.checkMore(values.length);
-			self.list.clear();
+			list.checkMore(res.length);
 
-			values.forEach((el) => {
+			res.forEach((el) => {
 				const value = createOrderPreview(el);
 
 				self.collection.set(value.id, value);
-				self.list.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
@@ -84,13 +77,19 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
+
 		const res = await Api.order.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.set(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -101,17 +100,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.order.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {

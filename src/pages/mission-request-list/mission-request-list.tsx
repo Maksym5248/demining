@@ -53,17 +53,23 @@ export const MissionRequestListPage  = observer(() => {
 		missionRequest.fetchList.run(value);
 	}
 
+	const onLoadMore = () => {
+		missionRequest.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		missionRequest.fetchList.run(search.searchBy);
+		missionRequest.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? missionRequest.searchList :  missionRequest.list;
 
 	return (
 		<List
 			loading={missionRequest.fetchList.inProgress}
 			loadingMore={missionRequest.fetchListMore.inProgress}
-			isReachedEnd={!missionRequest.list.isMorePages}
-			onLoadMore={missionRequest.fetchListMore.run}
-			dataSource={missionRequest.list.asArray}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}

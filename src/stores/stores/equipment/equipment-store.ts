@@ -13,29 +13,22 @@ const Store = types
 	.model('EquipmentStore', {
 		collection: createCollection<IEquipment, IEquipmentValue>("Equipments", Equipment),
 		list: createList<IEquipment>("EquipmentsList", safeReference(Equipment), { pageSize: 10 }),
+		searchList: createList<IEquipment>("EquipmentsSearchList", safeReference(Equipment), { pageSize: 10 }),
 	}).views(self => ({
 		get listMineDetectors(){
 			return self.list.asArray.filter(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)
 		},
 	})).actions((self) => ({
-		push: (values: IEquipmentDTO[]) => {
-			self.list.checkMore(values.length);
-			values.forEach((el) => {
+		append(res: IEquipmentDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
+
+			list.checkMore(res.length);
+
+			res.forEach((el) => {
 				const value = createEquipment(el);
 
 				self.collection.set(value.id, value);
-				self.list.push(value.id);
-			})
-		},
-		set(values: IEquipmentDTO[]){
-			self.list.checkMore(values.length);
-			self.list.clear();
-
-			values.forEach((el) => {
-				const value = createEquipment(el);
-
-				self.collection.set(value.id, value);
-				self.list.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	})).views(self => ({
@@ -78,14 +71,20 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
 		const res = await Api.equipment.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.set(res);
+		self.append(res, isSearch);
+
 		flow.success();
 	} catch (err) {
 		message.error('Виникла помилка');
@@ -95,17 +94,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.equipment.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {

@@ -17,7 +17,8 @@ const Store = types
 		ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 100 }),
 
 		collection: createCollection<IEmployee, IEmployeeValue>("Employees", Employee),
-		list: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 10 })
+		list: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 10 }),
+		searchList: createList<IEmployee>("EmployeesSearchList", safeReference(Employee), { pageSize: 10 }),
 	})
 	.actions((self) => ({
 		init() {
@@ -26,24 +27,16 @@ const Store = types
 				self.ranksList.push(data.id);
 			})
 		},
-		push: (res: IEmployeeDTO[]) => {
-			self.list.checkMore(res.length);
-			res.forEach((el) => {
-				const value = createEmployee(el);
+		append(res: IEmployeeDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
 
-				self.collection.set(value.id, value);
-				self.list.push(value.id);
-			})
-		},
-		set(res: IEmployeeDTO[]){
-			self.list.checkMore(res.length);
-			self.list.clear();
+			list.checkMore(res.length);
 
 			res.forEach((el) => {
 				const value = createEmployee(el);
 
 				self.collection.set(value.id, value);
-				self.list.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	})).views((self) => ({
@@ -100,14 +93,19 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
 		const res = await Api.employee.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.set(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -117,17 +115,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.employee.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res);
+		self.append(res, isSearch);
 		
 		flow.success();
 	} catch (err) {

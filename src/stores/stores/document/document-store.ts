@@ -13,31 +13,23 @@ const Store = types
 	.model('DocumentStore', {
 		collection: createCollection<IDocument, IDocumentValue>("Documents", Document),
 		templatesList: createList<IDocument>("DocumentsList", safeReference(Document), { pageSize: 10 }),
+		templatesSearchList: createList<IDocument>("DocumentsSearchList", safeReference(Document), { pageSize: 10 }),
 	})
 	.views((self) => ({
 		 get missionReportTemplatesList(){
 			return self.templatesList.asArray.filter(el => el.documentType === DOCUMENT_TYPE.MISSION_REPORT);
 		}
 	})).actions(self => ({
-		pushTemplates(res: IDocumentDTO[]){
-			self.templatesList.checkMore(res.length);
+		appendTemplates(res: IDocumentDTO[], isSearch: boolean){
+			const list = isSearch ? self.templatesSearchList : self.templatesList;
+
+			list.checkMore(res.length);
 
 			res.forEach((el) => {
 				const value = createDocument(el);
 
 				self.collection.set(value.id, value);
-				self.templatesList.push(value.id);
-			})
-		},
-		setTemplates(res: IDocumentDTO[]){
-			self.templatesList.checkMore(res.length);
-			self.templatesList.clear();
-
-			res.forEach((el) => {
-				const value = createDocument(el);
-	
-				self.collection.set(value.id, value);
-				self.templatesList.push(value.id);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
@@ -76,14 +68,19 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 
 const fetchTemplatesList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.templatesSearchList : self.templatesList
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
-		const list = await Api.document.getListTemplates({
+		const res = await Api.document.getListTemplates({
 			search,
-			limit: self.templatesList.pageSize,
+			limit: list.pageSize,
 		});
 
-		self.setTemplates(list);
+		self.appendTemplates(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -94,17 +91,20 @@ const fetchTemplatesList = asyncAction<Instance<typeof Store>>((search: string) 
 
 const fetchTemplatesListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
-		if(!self.templatesList.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.templatesSearchList : self.templatesList;
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const value = await Api.document.getListTemplates({
 			search,
-			limit: self.templatesList.pageSize,
-			startAfter: dates.toDateServer(self.templatesList.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.pushTemplates(value);
+		self.appendTemplates(value, isSearch);
 
 		flow.success();
 	} catch (err) {

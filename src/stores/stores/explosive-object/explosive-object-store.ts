@@ -26,6 +26,7 @@ const Store = types
 		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 100 }),
 		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
 		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 10 }),
+		searchList: createList<IExplosiveObject>("ExplosiveObjectsSearchList", safeReference(ExplosiveObject), { pageSize: 10 }),
 	}).views(self => ({
 		get sortedListTypes(){
 			return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
@@ -41,25 +42,16 @@ const Store = types
 				}
 			})
 		},
-		push(res: IExplosiveObjectDTO[]){
-			self.list.checkMore(res.length);
+		append(res: IExplosiveObjectDTO[], isSearch: boolean){
+			const list = isSearch ? self.searchList : self.list;
+
+			list.checkMore(res.length);
 
 			res.forEach((el) => {
-				const explosiveObject = createExplosiveObject(el);
+				const value = createExplosiveObject(el);
 
-				self.collection.set(explosiveObject.id, explosiveObject);
-				self.list.push(explosiveObject.id);
-			})
-		},
-		set(res: IExplosiveObjectDTO[]){
-			self.list.checkMore(res.length);
-			self.list.clear();
-
-			res.forEach((el) => {
-				const explosiveObject = createExplosiveObject(el);
-
-				self.collection.set(explosiveObject.id, explosiveObject);
-				self.list.push(explosiveObject.id);
+				self.collection.set(value.id, value);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
@@ -109,14 +101,19 @@ const createExplosiveObjects = asyncAction<Instance<typeof Store>>(() => async f
 
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {
 	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!isSearch && !list.isMorePages) return;
+
 		flow.start();
 
 		const res = await Api.explosiveObject.getList({
 			search,
-			limit: self.list.pageSize,
+			limit: list.pageSize,
 		});
 		
-		self.set(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -127,17 +124,20 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 
 const fetchListMore = asyncAction<Instance<typeof Store>>((search) => async function addFlow({ flow, self }) {
 	try {
-		if(!self.list.isMorePages) return;
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
 
 		flow.start();
 
 		const res = await Api.explosiveObject.getList({
 			search,
-			limit: self.list.pageSize,
-			startAfter: dates.toDateServer(self.list.last.createdAt),
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.push(res);
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {

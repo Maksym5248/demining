@@ -77,9 +77,15 @@ const getList = async (query?: IQuery):Promise<ICurrentUserDTO[]> => {
 	}))
 };
 
-const getListUnassignedUsers = ():Promise<IUserDTO[]> => DB.user.select({
+const getListUnassignedUsers = (query?: IQuery):Promise<IUserDTO[]> => DB.user.select({
+	...(query ?? {}),
+	order: {
+		by: "createdAt",
+		type: "desc"
+	},
 	where: {
-		organizationId: null
+		organizationId: null,
+		...(query?.where ?? {}),
 	}
 })
 

@@ -58,17 +58,23 @@ export const TransportListPage  = observer(() => {
 		transport.fetchList.run(value);
 	}
 
+	const onLoadMore = () => {
+		transport.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		transport.fetchList.run(search.searchBy);
+		transport.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? transport.searchList :  transport.list;
 
 	return (
 		<List
 			loading={transport.fetchList.inProgress}
 			loadingMore={transport.fetchListMore.inProgress}
-			isReachedEnd={!transport.list.isMorePages}
-			onLoadMore={transport.fetchListMore.run}
-			dataSource={transport.list.asArray}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}

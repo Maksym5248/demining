@@ -40,7 +40,7 @@ const ListItem = observer(({ item }: { item: IDocument}) => {
 });
 
 export const TemplatesListPage  = observer(() => {
-	const store = useStore();
+	const { document} = useStore();
 	const title = useRouteTitle();
 	const search = useSearch();
 
@@ -50,22 +50,28 @@ export const TemplatesListPage  = observer(() => {
 
 	const onSearch = (value:string) => {
 		search.updateSearchParams(value)
-		store.document.fetchTemplatesList.run(value);
+		document.fetchTemplatesList.run(value);
+	}
+
+	const onLoadMore = () => {
+		document.fetchTemplatesListMore.run(search.searchValue);
 	}
 
 	useEffect(() => {
-		store.document.fetchTemplatesList.run(search.searchBy);
+		document.fetchTemplatesList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? document.templatesSearchList :  document.templatesList;
 
 	return (
 		<List
 			rowKey="id"
 			itemLayout="horizontal"
-			loading={store.document.fetchTemplatesList.inProgress}
-			loadingMore={store.document.fetchTemplatesListMore.inProgress}
-			isReachedEnd={!store.document.templatesList.isMorePages}
-			onLoadMore={store.document.fetchTemplatesListMore.run}
-			dataSource={store.document.templatesList.asArray}
+			loading={document.fetchTemplatesList.inProgress}
+			loadingMore={document.fetchTemplatesListMore.inProgress}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
 				<ListHeader
 					title={title}
