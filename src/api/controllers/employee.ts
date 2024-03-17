@@ -15,9 +15,16 @@ const getList = (query?: IQuery):Promise<IEmployeeDTO[]> => DB.employee.select({
 	...(query ?? {})
 });
 
+const get = async (id:string):Promise<IEmployeeDTO> => {
+	const res = await DB.employee.get(id);
+	if(!res) throw new Error("there is employee with id");
+	return res;
+}
+
 export const employee = {
 	create,
 	update,
 	remove,
-	getList
+	getList,
+	get
 }

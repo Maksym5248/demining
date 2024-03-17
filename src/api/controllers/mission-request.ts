@@ -14,9 +14,16 @@ const getList = (query?: IQuery):Promise<IMissionRequestDTO[]> => DB.missionRequ
 	...(query ?? {})
 });
 
+const get = async (id:string):Promise<IMissionRequestDTO> => {
+	const res = await DB.missionRequest.get(id);
+	if(!res) throw new Error("there is mission request with id");
+	return res;
+}
+
 export const missionRequest = {
 	create,
 	update,
 	remove,
-	getList
+	getList,
+	get
 }

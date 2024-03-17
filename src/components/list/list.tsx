@@ -17,7 +17,7 @@ export function List<T extends { id: string }>({
 
 	let loadMore = null;
 	
-	if(!loading && !isReachedEnd && !loadingMore && !!dataSource?.length){
+	if(!!onLoadMore && !loading && !isReachedEnd && !loadingMore && !!dataSource?.length){
 		loadMore = (
 			<div
     		style={{

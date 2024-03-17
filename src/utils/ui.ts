@@ -1,22 +1,23 @@
+import { isArray } from "lodash";
 
 interface Option {
     label: string;
     value: string
 }
 
-const append = (options: Option[], newOption: Partial<Option>) => {
-	if(!newOption?.value || !newOption?.label){
+const append = (options: Option[], newOption: Partial<Option> | Partial<Option>[]) => {
+	const optionValue = isArray(newOption) ? newOption : [newOption];
+
+	if(!optionValue?.length){
 		return options
 	}
 
-	if(options.find(el => el.value === newOption?.value)) {
-		return options
-	}
+	const optionsValue = options.filter(el => !optionValue.find(item => el.value === item.value))
 
-	return newOption?.value &&  newOption?.label ? [
-		...(newOption ? [newOption] : []),
-		...options
-	]: options
+	return [
+		...optionValue,
+		...optionsValue
+	]
 };
 
 export const select = {

@@ -13,8 +13,9 @@ const Store = types
 		listUnassigned: createList<IUser>("UnassignedUserList", safeReference(User), { pageSize: 10 }),
 		searchListUnassigned: createList<IUser>("UnassignedUserSearchList", safeReference(User), { pageSize: 10 }),
 	}).actions((self) => ({
-		append(res: IUserDTO[], isSearch: boolean){
+		append(res: IUserDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchListUnassigned : self.listUnassigned;
+			if(isSearch && !isMore) self.searchListUnassigned.clear();
 
 			list.checkMore(res.length);
 
@@ -31,7 +32,7 @@ const fetchListUnassigned = asyncAction<Instance<typeof Store>>((search: string)
 	const isSearch = !!search;
 	const list = isSearch ? self.searchListUnassigned : self.listUnassigned
 
-	if(!isSearch && !list.isMorePages) return;
+	if(!isSearch && list.length) return;
     
 	try {
 		flow.start();
@@ -64,7 +65,8 @@ const fetchListUnassignedMore = asyncAction<Instance<typeof Store>>((search: str
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
+
 
 		flow.success();
 	} catch (err) {

@@ -3,11 +3,7 @@ import { Dayjs } from 'dayjs';
 import { CreateValue } from '~/types'
 import { dates } from '~/utils';
 import { IExplosiveObjectActionDTOParams, IMapViewActionDTO, IMapViewActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
-import { IEmployeeActionValue, createEmployeeAction } from '~/stores/stores/employee';
 import { ILinkedToDocumentDB } from '~/db';
-import { ITransportActionValue, createTransportAction } from '~/stores/stores/transport/entities/transport-action';
-import { IEquipmentActionValue, createEquipmentAction } from '~/stores/stores/equipment/entities/equipment-action';
-import { IExplosiveObjectActionValue, createExplosiveObjectAction } from '~/stores/stores/explosive-object';
 
 
 export interface IMapViewActionValueParams extends IMapViewActionDTOParams {};
@@ -70,13 +66,13 @@ export interface IMissionReportValue {
     updatedAt: Dayjs;
 	order?: string;
     missionRequest?: string;
-    approvedByAction?: IEmployeeActionValue;
+    approvedByAction?: string;
 	mapView?: IMapViewActionValue;
-	transportActions?: ITransportActionValue[];
-	equipmentActions?: IEquipmentActionValue[];
-	explosiveObjectActions?: IExplosiveObjectActionValue[];
-	squadLeaderAction?: IEmployeeActionValue;
-	squadActions?: IEmployeeActionValue[]
+	transportActions?: string[];
+	equipmentActions?: string[];
+	explosiveObjectActions?: string[];
+	squadLeaderAction?: string;
+	squadActions?: string[]
 }
 
 export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewActionDTOParams  => ({
@@ -151,13 +147,13 @@ export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMi
 
 export const createMissionReport = (value: IMissionReportDTO): IMissionReportValue => ({
 	...createMissionReportPreview(value),
-	approvedByAction: createEmployeeAction(value.approvedByAction),
+	approvedByAction: value.approvedByAction.id,
 	order: value.order.id,
 	missionRequest: value.missionRequest?.id,
 	mapView: createMapView(value.mapView),
-	explosiveObjectActions: value.explosiveObjectActions.map(el => createExplosiveObjectAction(el)),
-	squadLeaderAction: createEmployeeAction(value.squadLeaderAction),
-	squadActions: value.squadActions.map(el => createEmployeeAction(el)),
-	transportActions: value.transportActions.map(el => createTransportAction(el)),
-	equipmentActions: value.equipmentActions.map(el => createEquipmentAction(el)),
+	explosiveObjectActions: value.explosiveObjectActions.map(el => el.id),
+	squadLeaderAction: value.squadLeaderAction.id,
+	squadActions: value.squadActions.map(el => el.id),
+	transportActions: value.transportActions.map(el => el.id),
+	equipmentActions: value.equipmentActions.map(el => el.id),
 });

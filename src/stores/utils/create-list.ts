@@ -74,6 +74,9 @@ export function createList<T>(
 						self._isMorePages = true;
 					}
 				},
+				setMore(value: boolean) {
+					self._isMorePages = value;
+				},
 				push(...ids: string[]) {
 					ids.forEach(id => {
 						self._map.set(id, true)

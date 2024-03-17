@@ -1,14 +1,18 @@
-import { types, Instance } from 'mobx-state-tree';
+import { types, Instance, getRoot } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { CreateValue } from '~/types'
-import { Api, IMissionReportPreviewDTO } from '~/api'
+import { Api, IMissionReportDTO, IMissionReportPreviewDTO } from '~/api'
 import { createOrder } from '~/stores/stores/order';
 import { createMissionRequest } from '~/stores/stores/mission-request';
 import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview } from './entities';
+import { createEmployeeAction } from '../employee';
+import { createExplosiveObjectAction } from '../explosive-object';
+import { createTransportAction } from '../transport';
+import { createEquipmentAction } from '../equipment';
 
 const Store = types
 	.model('MissionReportStore', {
@@ -16,8 +20,36 @@ const Store = types
 		list: createList<IMissionReport>("IMissionReport", safeReference(MissionReport), { pageSize: 10 }),
 		searchList: createList<IMissionReport>("IMissionSearchList", safeReference(MissionReport), { pageSize: 10 }),
 	}).actions((self) => ({
-		append(res: IMissionReportPreviewDTO[], isSearch: boolean){
+		appendToCollections(res: IMissionReportDTO){
+			const root = getRoot(self) as any;
+
+			root.employee.collectionActions.set(res.approvedByAction?.id, createEmployeeAction(res.approvedByAction));
+			root.employee.collectionActions.set(res.squadLeaderAction?.id, createEmployeeAction(res.squadLeaderAction));
+	
+			res.squadActions.forEach(el => {
+				root.employee.collectionActions.set(el?.id, createEmployeeAction(el))
+			});
+	
+			res.explosiveObjectActions.forEach(el => {
+				root.explosiveObject.collectionActions.set(el?.id, createExplosiveObjectAction(el))
+			});
+	
+			res.transportActions.forEach(el => {
+				root.transport.collectionActions.set(el?.id, createTransportAction(el))
+			});
+	
+			res.equipmentActions.forEach(el => {
+				root.equipment.collectionActions.set(el?.id, createEquipmentAction(el))
+			});
+	
+			root.order.collection.set(res.order.id, createOrder(res.order));
+			root.missionRequest.collection.set(res.missionRequest.id, createMissionRequest(res.missionRequest));
+	
+			self.collection.set(res.id, createMissionReport(res));
+		},
+		append(res: IMissionReportPreviewDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
@@ -30,16 +62,12 @@ const Store = types
 		}
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self, root }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
 
 		const res = await Api.missionReport.create(createMissionReportDTO(data));
-
-		root.order.collection.set(res.order.id, createOrder(res.order));
-		root.missionRequest.collection.set(res.missionRequest.id, createMissionRequest(res.missionRequest));
-
-		self.collection.set(res.id, createMissionReport(res));
+ 		self.appendToCollections(res);
 		self.list.unshift(res.id);
 		flow.success();
 		message.success('Додано успішно');
@@ -49,15 +77,13 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionRe
 	}
 });
 
-const update = asyncAction<Instance<typeof Store>>((id: string, data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self, root }) {
+const update = asyncAction<Instance<typeof Store>>((id: string, data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
 
 		const res = await Api.missionReport.update(id, createMissionReportDTO(data));
 
-		root.order.collection.set(res.order.id, createOrder(res.order));
-		root.missionRequest.collection.set(res.missionRequest.id, createMissionRequest(res.missionRequest));
-		self.collection.set(res.id, createMissionReport(res));
+		self.appendToCollections(res);
 
 		flow.success();
 		message.success('Додано успішно');
@@ -72,7 +98,7 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -105,7 +131,7 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
 
 		flow.success();
 	} catch (err) {
@@ -114,18 +140,13 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 	}
 });
 
-const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function addFlow({ flow, self, root }) {
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
 
-		const el = await Api.missionReport.get(id);
+		const res = await Api.missionReport.get(id);
 
-		root.order.collection.set(el.order.id, createOrder(el.order));
-		root.missionRequest.collection.set(el.missionRequest.id, createMissionRequest(el.missionRequest));
-
-		const missionReport = createMissionReport(el);
-
-		self.collection.set(missionReport.id, missionReport);
+		self.appendToCollections(res);
 
 		flow.success();
 	} catch (err) {

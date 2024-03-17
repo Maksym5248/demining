@@ -20,8 +20,9 @@ const Store = types
 			return self.templatesList.asArray.filter(el => el.documentType === DOCUMENT_TYPE.MISSION_REPORT);
 		}
 	})).actions(self => ({
-		appendTemplates(res: IDocumentDTO[], isSearch: boolean){
+		appendTemplates(res: IDocumentDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.templatesSearchList : self.templatesList;
+			if(isSearch && !isMore) self.templatesSearchList.clear();
 
 			list.checkMore(res.length);
 
@@ -71,7 +72,7 @@ const fetchTemplatesList = asyncAction<Instance<typeof Store>>((search: string) 
 		const isSearch = !!search;
 		const list = isSearch ? self.templatesSearchList : self.templatesList
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -104,7 +105,7 @@ const fetchTemplatesListMore = asyncAction<Instance<typeof Store>>((search: stri
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.appendTemplates(value, isSearch);
+		self.appendTemplates(value, isSearch, true);
 
 		flow.success();
 	} catch (err) {
@@ -113,4 +114,18 @@ const fetchTemplatesListMore = asyncAction<Instance<typeof Store>>((search: stri
 	}
 });
 
-export const DocumentStore = Store.props({ create, remove, fetchTemplatesList, fetchTemplatesListMore })
+const fetchTemplateItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
+	try {
+		flow.start();
+		const res = await Api.document.get(id);
+
+		self.collection.set(res.id, createDocument(res));
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const DocumentStore = Store.props({ create, remove, fetchTemplateItem, fetchTemplatesList, fetchTemplatesListMore })

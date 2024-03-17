@@ -18,10 +18,14 @@ import {
 	createExplosiveObject,
 	createExplosiveObjectDTO,
 	createExplosiveObjectType,
+	ExplosiveObjectAction,
+	IExplosiveObjectActionValue,
+	IExplosiveObjectAction,
 } from './entities';
 
 const Store = types
 	.model('ExplosiveObjectStore', {
+		collectionActions: createCollection<IExplosiveObjectAction, IExplosiveObjectActionValue>("ExplosiveObjectActions", ExplosiveObjectAction),
 		collectionTypes: createCollection<IExplosiveObjectType, IExplosiveObjectTypeValue>("ExplosiveObjectTypes", ExplosiveObjectType),
 		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 100 }),
 		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
@@ -42,8 +46,9 @@ const Store = types
 				}
 			})
 		},
-		append(res: IExplosiveObjectDTO[], isSearch: boolean){
+		append(res: IExplosiveObjectDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
@@ -53,7 +58,7 @@ const Store = types
 				self.collection.set(value.id, value);
 				if(!list.includes(value.id)) list.push(value.id);
 			})
-		}
+		},
 	}));
 
 const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
@@ -104,7 +109,7 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -137,7 +142,22 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search) => async func
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
+
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
+	try {
+		flow.start();
+		const res = await Api.explosiveObject.get(id);
+
+		self.collection.set(res.id, createExplosiveObject(res));
 
 		flow.success();
 	} catch (err) {
@@ -150,6 +170,7 @@ export const ExplosiveObjectStore = Store.props({
 	create,
 	remove, 
 	fetchList,
-	fetchListMore, 
+	fetchListMore,
+	fetchItem,
 	createExplosiveObjects
 })

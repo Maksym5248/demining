@@ -7,10 +7,11 @@ import { EQUIPMENT_TYPE } from '~/constants';
 import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IEquipment, IEquipmentValue, Equipment, createEquipment, createEquipmentDTO } from './entities';
+import { IEquipment, IEquipmentValue, Equipment, createEquipment, createEquipmentDTO, EquipmentAction } from './entities';
 
 const Store = types
 	.model('EquipmentStore', {
+		collectionActions: createCollection<IEquipment, IEquipmentValue>("EquipmentsActions", EquipmentAction),
 		collection: createCollection<IEquipment, IEquipmentValue>("Equipments", Equipment),
 		list: createList<IEquipment>("EquipmentsList", safeReference(Equipment), { pageSize: 10 }),
 		searchList: createList<IEquipment>("EquipmentsSearchList", safeReference(Equipment), { pageSize: 10 }),
@@ -19,8 +20,9 @@ const Store = types
 			return self.list.asArray.filter(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)
 		},
 	})).actions((self) => ({
-		append(res: IEquipmentDTO[], isSearch: boolean){
+		append(res: IEquipmentDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
@@ -74,7 +76,7 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -107,7 +109,8 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
+
 
 		flow.success();
 	} catch (err) {
@@ -116,4 +119,18 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 	}
 });
 
-export const EquipmentStore = Store.props({ create, remove, fetchList, fetchListMore })
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
+	try {
+		flow.start();
+		const res = await Api.equipment.get(id);
+
+		self.collection.set(res.id, createEquipment(res));
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const EquipmentStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem })

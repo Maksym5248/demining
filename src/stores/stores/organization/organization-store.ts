@@ -14,8 +14,9 @@ const Store = types
 		searchList: createList<IOrganization>("OrganizationSearchList", safeReference(Organization), { pageSize: 10 }),
 
 	}).actions((self) => ({
-		append(res: IOrganizationDTO[], isSearch: boolean){
+		append(res: IOrganizationDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
@@ -66,7 +67,7 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -98,7 +99,8 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
+
 
 		flow.success();
 	} catch (err) {

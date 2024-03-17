@@ -14,10 +14,16 @@ const getList = (query?: IQuery):Promise<ITransportDTO[]> => DB.transport.select
 	},
 	...(query ?? {})
 });
+const get = async (id:string):Promise<ITransportDTO> => {
+	const res = await DB.transport.get(id);
+	if(!res) throw new Error("there is transport with id");
+	return res;
+}
 
 export const transport = {
 	create,
 	update,
 	remove,
-	getList
+	getList,
+	get
 }

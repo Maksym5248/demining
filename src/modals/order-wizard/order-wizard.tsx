@@ -24,17 +24,17 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 	const wizard = useWizard({id, mode});
 
 	const currentOrder = order.collection.get(id as string);
-	const {employeesListChief} = employee;
-	const employeeChiefFirst = employeesListChief[0];
+	const {chiefs} = employee;
+	const employeeChiefFirst = chiefs[0];
 
 	useEffect(() => {
 		if(id) order.fetchItem.run(id);
-		employee.fetchList.run();
+		employee.fetchListAll.run();
 	}, []);
 
 	const isEdit = !!id;
 	const isLoading =  order?.fetchItem.inProgress;
-	const onAdd = () => Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE})
+	const onAdd = () => Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE })
 
 	const onFinishCreate = async (values: IOrderForm) => {
 		await order.create.run(values);
@@ -105,7 +105,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 							<Select
 							  onAdd={onAdd}
 							  options={select.append(
-									employeesListChief.map((el) => ({ label: el.fullName, value: el.id })),
+									chiefs.map((el) => ({ label: el.fullName, value: el.id })),
 									{ label: currentOrder?.signedByAction?.fullName, value: currentOrder?.signedByAction?.employeeId }
 								)}
 							/>

@@ -81,9 +81,7 @@ const getList = async (query?: IQuery):Promise<IOrganizationDTO[]> => {
 const get = async (id:string):Promise<IOrganizationDTO | null> => {
 	const res = await DB.organization.get(id);
 
-	if(!res){
-		return null;
-	}
+	if(!res) throw new Error("There is no organization with id")
 
 	const { membersIds, ...organization} = res;
 

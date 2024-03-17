@@ -55,10 +55,17 @@ const load = async (id:string) => {
 	return file;
 }
 
+const get = async (id:string):Promise<IDocumentDTO> => {
+	const res = await DB.document.get(id);
+	if(!res) throw new Error("there is document with id");
+	return res;
+}
+
 export const document = {
 	create,
 	update,
 	remove,
 	getListTemplates,
+	get,
 	load
 }

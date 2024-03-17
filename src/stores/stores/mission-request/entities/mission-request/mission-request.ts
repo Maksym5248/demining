@@ -20,6 +20,10 @@ const Entity = types.model('MissionRequest', {
 	updateFields(data: Partial<IMissionRequestValue>) {
 		Object.assign(self, data);
 	}
+})).views((self) => ({
+	get displayValue(){
+		return `№${self.number} ${self.signedAt.format('DD/MM/YYYY')}`
+	},
 }));
 
 

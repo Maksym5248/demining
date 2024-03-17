@@ -14,8 +14,9 @@ const Store = types
 		list: createList<IMissionRequest>("MissionRequestsList", safeReference(MissionRequest), { pageSize: 10 }),
 		searchList: createList<IMissionRequest>("ExplosiveObjectsSearchList", safeReference(MissionRequest), { pageSize: 10 }),
 	}).actions((self) => ({
-		append(res: IMissionRequestDTO[], isSearch: boolean){
+		append(res: IMissionRequestDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
@@ -64,7 +65,7 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -97,7 +98,8 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
+
 		
 		flow.success();
 	} catch (err) {
@@ -105,4 +107,18 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 	}
 });
 
-export const MissionRequestStore = Store.props({ create, remove, fetchList, fetchListMore })
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
+	try {
+		flow.start();
+		const res = await Api.missionRequest.get(id);
+
+		self.collection.set(res.id, createMissionRequest(res));
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const MissionRequestStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem })

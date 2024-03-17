@@ -42,11 +42,17 @@ const init = async ():Promise<void> => {
 	await DB.batchCommit();
 };
 
+const get = async (id:string):Promise<IExplosiveObjectDTO> => {
+	const res = await DB.explosiveObject.get(id);
+	if(!res) throw new Error("there is explosiveObject with id");
+	return res;
+}
 
 export const explosiveObject = {
 	create,
 	update,
 	remove,
 	getList,
-	init
+	init,
+	get
 }

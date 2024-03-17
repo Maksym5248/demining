@@ -57,10 +57,11 @@ export function Map({ mode }: Props){
 									lng: mapView?.markerLng,
 								}: undefined}
 								initialZoom={mapView?.zoom}
-						 	mapContainerStyle={mapContainerStyle}
+						 		mapContainerStyle={mapContainerStyle}
 								date={executedAt}
 								explosiveObjects={explosiveObjectActions.map(el => {
-									const item = explosiveObject.collection.get(el.explosiveObjectId);
+									const item = explosiveObject.collectionActions.get(el?.id ?? "")  || explosiveObject.collection.get(el.explosiveObjectId);
+									
 									return `${item.fullDisplayName} ${el.quantity} од.`
 								})}
 								onChange={async (value) => {

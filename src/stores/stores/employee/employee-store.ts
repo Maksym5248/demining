@@ -9,13 +9,14 @@ import { dates } from '~/utils';
 
 import { types } from '../../types'
 import { asyncAction , createCollection, createList, safeReference } from '../../utils';
-import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmployee, createEmployeeDTO,  createRank } from './entities';
+import { Rank, IRank, IRankValue, Employee, IEmployee, IEmployeeValue, createEmployee, createEmployeeDTO,  createRank, EmployeeAction, IEmployeeAction, IEmployeeActionValue } from './entities';
 
 const Store = types
 	.model('EmployeeStore', {
 		ranksCollection: createCollection<IRank, IRankValue>("Ranks", Rank),
 		ranksList: createList<IRank>("RanksList", safeReference(Rank), { pageSize: 100 }),
 
+		collectionActions: createCollection<IEmployeeAction, IEmployeeActionValue>("EmployeesActions", EmployeeAction),
 		collection: createCollection<IEmployee, IEmployeeValue>("Employees", Employee),
 		list: createList<IEmployee>("EmployeesList", safeReference(Employee), { pageSize: 10 }),
 		searchList: createList<IEmployee>("EmployeesSearchList", safeReference(Employee), { pageSize: 10 }),
@@ -27,8 +28,9 @@ const Store = types
 				self.ranksList.push(data.id);
 			})
 		},
-		append(res: IEmployeeDTO[], isSearch: boolean){
+		append(res: IEmployeeDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
@@ -38,9 +40,19 @@ const Store = types
 				self.collection.set(value.id, value);
 				if(!list.includes(value.id)) list.push(value.id);
 			})
+		},
+		setAll(res: IEmployeeDTO[]){
+			self.list.setMore(false);
+
+			res.forEach((el) => {
+				const value = createEmployee(el);
+
+				self.collection.set(value.id, value);
+				if(!self.list.includes(value.id)) self.list.push(value.id);
+			})
 		}
 	})).views((self) => ({
-		get employeesListChief(){
+		get chiefs(){
 			return self.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF)
 		},
 		get squadLeads(){
@@ -53,10 +65,10 @@ const Store = types
 			return self.collection.get(id as string);
 		}
 	})).views((self) => ({
-		get employeesChiefFirst(){
-			return self.employeesListChief[0];
+		get chiefFirst(){
+			return self.chiefs[0];
 		},
-		get employeesSquadLeadFirst(){
+		get squadLeadFirst(){
 			return self.squadLeads[0];
 		},
 	}));
@@ -91,12 +103,28 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
+const fetchListAll = asyncAction<Instance<typeof Store>>(() => async function fn({ flow, self }) {    
+	try {
+		if(!self.list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.employee.getList();
+
+		self.setAll(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+	}
+});
+
 const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
 	try {
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -128,7 +156,7 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
 		
 		flow.success();
 	} catch (err) {
@@ -136,4 +164,18 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 	}
 });
 
-export const EmployeeStore = Store.props({ create, remove, fetchList, fetchListMore })
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
+	try {
+		flow.start();
+		const res = await Api.employee.get(id);
+
+		self.collection.set(res.id, createEmployee(res));
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const EmployeeStore = Store.props({ create, remove, fetchList, fetchItem, fetchListMore, fetchListAll })

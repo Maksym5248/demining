@@ -1,19 +1,26 @@
 import { useCallback } from 'react';
 
 import { Form} from 'antd';
+import { observer } from 'mobx-react';
 
-import { Select } from '~/components'
 import { Modal } from '~/services'
 import { MODALS, WIZARD_MODE } from '~/constants'
-import { IMissionRequest, IOrder } from '~/stores';
+import { useStore, useSelectStore } from '~/hooks';
+import { SelectAsync } from '~/components';
+import { select } from '~/utils';
 
+import { IMissionReportForm } from '../../mission-report-wizard.types';
 
-interface DocumentsProps {
-	orderData: IOrder[];
-	missionRequestData: IMissionRequest[];
+interface IDocumentsProps {
+	initialValues: Pick<Partial<IMissionReportForm>, "orderId" | "missionRequestId">
 }
 
-export function Documents({ missionRequestData, orderData }: DocumentsProps) {
+export const Documents = observer(({ initialValues }: IDocumentsProps) => {
+	const { order, missionRequest } = useStore();
+
+	const { initialItem: orderItem, ...orderProps} = useSelectStore(order, initialValues.orderId);
+	const { initialItem: missionRequestItem, ...missionRequestProps} = useSelectStore(missionRequest, initialValues.missionRequestId);
+
 	const onAddOrder = useCallback( () => {
 		Modal.show(MODALS.ORDER_WIZARD, { mode: WIZARD_MODE.CREATE})
 	}, []);
@@ -29,9 +36,12 @@ export function Documents({ missionRequestData, orderData }: DocumentsProps) {
 				name="orderId"
 				rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 			>
-				<Select
+				<SelectAsync
+					{...orderProps}
 					onAdd={onAddOrder}
-					options={orderData.map((el) => ({ label: `№${el.number} ${el.signedAt.format('DD/MM/YYYY')}`, value: el.id }))}
+					options={select.append(
+						orderProps.list.map((el) => ({ label: el?.displayValue, value: el.id })),
+						{ label: orderItem?.displayValue, value: orderItem?.id})}
 				/>
 			</Form.Item>
 			<Form.Item
@@ -39,11 +49,14 @@ export function Documents({ missionRequestData, orderData }: DocumentsProps) {
 				name="missionRequestId"
 				rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 			>
-				<Select
+				<SelectAsync
+					{...missionRequestProps}
 					onAdd={onAddMissionRequest}
-					options={missionRequestData.map((el) => ({ label: `№${el.number} ${el.signedAt.format('DD/MM/YYYY')}`, value: el.id }))}
+					options={select.append(missionRequestProps.list.map((el) => ({ label: el.displayValue, value: el.id })), {
+						label: missionRequestItem?.displayValue, value: missionRequestItem?.id
+					})}
 				/>
 			</Form.Item>
 		</>
 	)
-}
+})

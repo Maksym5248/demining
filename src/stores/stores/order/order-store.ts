@@ -7,6 +7,7 @@ import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
+import { createEmployeeAction } from '../employee';
 
 const Store = types
 	.model('OrderStore', {
@@ -14,27 +15,29 @@ const Store = types
 		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 10 }),
 		searchList: createList<IOrder>("OrderSearchList", safeReference(Order), { pageSize: 10 }),
 	}).actions((self) => ({
-		append(res: IOrderPreviewDTO[], isSearch: boolean){
+		append(res: IOrderPreviewDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
 			list.checkMore(res.length);
 
 			res.forEach((el) => {
 				const value = createOrderPreview(el);
-
 				self.collection.set(value.id, value);
 				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function fn({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function fn({ flow, self, root }) {
 	try {
 		flow.start();
 
 		const res = await Api.order.create(createOrderDTO(data));
 
 		const order = createOrder(res);
+
+		root.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction))
 
 		self.collection.set(order.id, order);
 		self.list.unshift(order.id);
@@ -61,11 +64,11 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self, root }) {    
 	try {
 		flow.start();
 		const res = await Api.order.get(id);
-
+		root.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction))
 		self.collection.set(res.id, createOrder(res));
 
 		flow.success();
@@ -80,7 +83,7 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 		const isSearch = !!search;
 		const list = isSearch ? self.searchList : self.list
 
-		if(!isSearch && !list.isMorePages) return;
+		if(!isSearch && list.length) return;
 
 		flow.start();
 
@@ -113,7 +116,7 @@ const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => as
 			startAfter: dates.toDateServer(list.last.createdAt),
 		});
 
-		self.append(res, isSearch);
+		self.append(res, isSearch, true);
 
 		flow.success();
 	} catch (err) {

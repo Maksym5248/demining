@@ -5,6 +5,7 @@ export * from "./list-header";
 export * from "./map-view";
 export * from "./search";
 export * from "./select";
+export * from "./select-async";
 export * from "./upload-file";
 export * from './wizard-buttons';
 export * from './wizard-footer';

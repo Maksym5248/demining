@@ -14,9 +14,16 @@ const getList = (query?: IQuery):Promise<IEquipmentDTO[]> => DB.equipment.select
 	...(query ?? {})
 });
 
+const get = async (id:string):Promise<IEquipmentDTO> => {
+	const res = await DB.equipment.get(id);
+	if(!res) throw new Error("there is equipment with id");
+	return res;
+}
+
 export const equipment = {
 	create,
 	update,
 	remove,
-	getList
+	getList,
+	get
 }
