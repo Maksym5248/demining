@@ -11,6 +11,7 @@ import { TransportAction } from '~/stores/stores/transport/entities/transport-ac
 import { EquipmentAction } from '~/stores/stores/equipment/entities/equipment-action';
 import { dates, str } from '~/utils';
 import { EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
+import { MapViewAction } from '~/stores/stores/map';
 
 import { safeReference } from '../../../../utils';
 import { types } from '../../../../types'
@@ -18,18 +19,6 @@ import { IMissionReportValue } from './mission-report.schema';
 
 
 export type IMissionReport = Instance<typeof MissionReport>
-
-const MapView = types.model('MapView', {
-	id: types.identifier,
-	markerLat: types.number,
-	markerLng: types.number,
-	circleCenterLat: types.maybe(types.number),
-	circleCenterLng: types.maybe(types.number),
-	circleRadius: types.maybe(types.number),
-	zoom: types.number,
-	createdAt: types.dayjs,
-	updatedAt: types.dayjs
-});
 
 const Entity = types.model('MissionReport', {
 	id: types.identifier,
@@ -53,7 +42,7 @@ const Entity = types.model('MissionReport', {
 	approvedByAction: types.maybe(types.maybe(safeReference(EmployeeAction))),
 	order: types.maybe(safeReference(Order)),
 	missionRequest:  types.maybe(safeReference(MissionRequest)),
-	mapView: types.maybe(MapView.named("MapViewMissionReport")),
+	mapView: types.maybe(safeReference(MapViewAction)),
 	explosiveObjectActions: types.optional(types.array(safeReference(ExplosiveObjectAction)), []),
 	squadLeaderAction: types.maybe(safeReference(EmployeeAction)),
 	squadActions: types.optional(types.array(safeReference(EmployeeAction)), []),
@@ -113,8 +102,8 @@ const Entity = types.model('MissionReport', {
 			missionRequestAt:  getDate(missionRequest?.signedAt),
 			missionNumber: missionRequest?.number ?? "",
 			address,
-			lat: mapView?.markerLat ?? 0,
-			lng: mapView?.markerLng ?? 0,
+			lat: mapView?.marker?.lat ?? 0,
+			lng: mapView?.marker?.lng ?? 0,
 			checkedM2: checkedTerritory ?? "---",
 			checkedGA: checkedTerritory ? checkedTerritory / 10000 : "---",
 			uncheckedM2: uncheckedTerritory ?? "---",

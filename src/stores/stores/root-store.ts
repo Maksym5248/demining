@@ -17,6 +17,7 @@ import { MissionReportStore } from './mission-report';
 import { OrganizationStore } from './organization';
 import { UserStore } from './user';
 import { DocumentStore } from './document';
+import { MapStore } from './map';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -34,6 +35,7 @@ export const RootStore = types
 		organization: types.optional(OrganizationStore, {}),
 		user: types.optional(UserStore, {}),
 		document: types.optional(DocumentStore, {}),
+		map: types.optional(MapStore, {}),
 		isLoaded: false,
 	})
 	.views(self => ({

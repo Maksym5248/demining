@@ -21,6 +21,7 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
 		Modal.show(MODALS.EMPLOYEES_WIZARD,  { mode: WIZARD_MODE.CREATE})
 	}, []);
 	
+
 	return <>
 		<Form.Item
 			label="Керівник розрахунку"
@@ -34,6 +35,12 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
 				{({ getFieldValue }) => {
 					const squadIds = getFieldValue("squadIds");
 
+					console.log("employee", select.append(
+						squadLeads.filter(el => !squadIds.includes(el.id))
+							.map((el) => ({ label: el.fullName, value: el.id })),
+						{ label: selectedSquadLead?.fullName, value: selectedSquadLead?.employeeId }
+					))
+					
 					return (
 						<Select
 							options={select.append(

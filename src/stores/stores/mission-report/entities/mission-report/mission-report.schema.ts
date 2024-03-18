@@ -2,22 +2,8 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates } from '~/utils';
-import { IExplosiveObjectActionDTOParams, IMapViewActionDTO, IMapViewActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
-import { ILinkedToDocumentDB } from '~/db';
-
-
-export interface IMapViewActionValueParams extends IMapViewActionDTOParams {};
-export interface IMapViewActionValue extends ILinkedToDocumentDB {
-    id: string;
-    markerLat: number;
-    markerLng: number;
-    circleCenterLat?: number;
-    circleCenterLng?: number;
-    circleRadius?: number;
-    zoom: number;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
-}
+import { IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
+import { IMapViewActionValueParams, createMapViewDTO } from '~/stores/stores/map';
 
 export interface IMissionReportValueParams {
 	approvedAt: Dayjs;
@@ -67,22 +53,13 @@ export interface IMissionReportValue {
 	order?: string;
     missionRequest?: string;
     approvedByAction?: string;
-	mapView?: IMapViewActionValue;
+	mapView?: string;
 	transportActions?: string[];
 	equipmentActions?: string[];
 	explosiveObjectActions?: string[];
 	squadLeaderAction?: string;
 	squadActions?: string[]
 }
-
-export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewActionDTOParams  => ({
-	markerLat: value?.markerLat ?? 0,
-	markerLng: value?.markerLng ?? 0,
-	circleCenterLat: value?.circleCenterLat ?? null,
-	circleCenterLng: value?.circleCenterLng ?? null,
-	circleRadius: value?.circleRadius ?? null,
-	zoom: value?.zoom ?? 1,
-});
   
 export const createMissionReportDTO = (value: CreateValue<IMissionReportValueParams>): CreateValue<IMissionReportDTOParams>  => ({
 	approvedAt: dates.toDateServer(value.approvedAt),
@@ -111,20 +88,6 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	address: value.address ?? "",
 });
 
-export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => ({
-	id: value.id,
-	documentId: value.documentId,
-	documentType: value.documentType,
-	markerLat: value.markerLat,
-	markerLng: value.markerLng,
-	circleCenterLat: value.circleCenterLat ?? undefined,
-	circleCenterLng: value.circleCenterLng ?? undefined,
-	circleRadius: value.circleRadius ?? undefined,
-	zoom: value.zoom,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
-});
-
 export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportValue => ({
 	id: value.id,
 	approvedAt: dates.create(value.approvedAt),
@@ -150,7 +113,7 @@ export const createMissionReport = (value: IMissionReportDTO): IMissionReportVal
 	approvedByAction: value.approvedByAction.id,
 	order: value.order.id,
 	missionRequest: value.missionRequest?.id,
-	mapView: createMapView(value.mapView),
+	mapView: value.mapView.id,
 	explosiveObjectActions: value.explosiveObjectActions.map(el => el.id),
 	squadLeaderAction: value.squadLeaderAction.id,
 	squadActions: value.squadActions.map(el => el.id),

@@ -6,16 +6,15 @@ interface Option {
 }
 
 const append = (options: Option[], newOption: Partial<Option> | Partial<Option>[]) => {
-	const optionValue = isArray(newOption) ? newOption : [newOption];
+	const arr = isArray(newOption) ? newOption : [newOption];
+	const arrFiltered = arr.filter(el => !!el.value);
 
-	if(!optionValue?.length){
-		return options
-	}
+	if(!arrFiltered?.length) return options;
 
-	const optionsValue = options.filter(el => !optionValue.find(item => el.value === item.value))
+	const optionsValue = options.filter(el => !arrFiltered.find(item => el.value === item.value))
 
 	return [
-		...optionValue,
+		...arrFiltered,
 		...optionsValue
 	]
 };

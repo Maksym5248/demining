@@ -21,7 +21,7 @@ export function Map({ mode }: Props){
 	const { explosiveObject } = useStore();
 
 	const validateMapView = (_:any, value: IMapViewActionValue) => {
-		if (!value.markerLat || !value.markerLng || !value.zoom) {
+		if (!value.marker || !value.zoom) {
 			return Promise.reject(new Error('Є обов\'язковим полем'));
 		}
 
@@ -40,22 +40,11 @@ export function Map({ mode }: Props){
 						const executedAt = getFieldValue("executedAt");
 						const mapView = getFieldValue("mapView") as IMapViewActionValue;
 
-						const isMarker = mapView?.markerLat && mapView?.markerLng;
-
 						return (
 							<MapView
 								type={mode === WIZARD_MODE.VIEW  ? "picture": "edit"}
-								initialCircle={mapView?.circleCenterLat && mapView?.circleCenterLng && mapView?.circleRadius ? {
-									center: {
-										lat: mapView?.circleCenterLat,
-										lng: mapView?.circleCenterLng,
-									},
-									radius: mapView?.circleRadius
-								}: undefined}
-								initialMarker={isMarker ? {
-									lat: mapView?.markerLat,
-									lng: mapView?.markerLng,
-								}: undefined}
+								initialCircle={mapView?.circle ?? undefined}
+								initialMarker={mapView?.marker ?? undefined}
 								initialZoom={mapView?.zoom}
 						 		mapContainerStyle={mapContainerStyle}
 								date={executedAt}
@@ -66,12 +55,18 @@ export function Map({ mode }: Props){
 								})}
 								onChange={async (value) => {
 									setFieldValue("mapView", {
-										markerLat: mathUtils.toFixed(value.marker?.lat, 9),
-										markerLng:  mathUtils.toFixed(value.marker?.lng, 9),
-										circleCenterLat:  mathUtils.toFixed(value.circle?.center.lat, 9),
-										circleCenterLng:  mathUtils.toFixed(value.circle?.center.lng, 9),
-										circleRadius:  mathUtils.toFixed(value.circle?.radius, 9),
-										zoom:  mathUtils.toFixed(value.zoom, 9)
+										marker: {
+											lat: mathUtils.toFixed(value.marker?.lat, 9),
+											lng: mathUtils.toFixed(value.marker?.lng, 9),
+										},
+										circle: value.circle ? {
+											center:  {
+												lat: mathUtils.toFixed(value.circle?.center.lat, 9),
+											 	lng: mathUtils.toFixed(value.circle?.center.lng, 9)
+											},
+											radius: mathUtils.toFixed(value.circle?.radius, 9),
+										} : undefined,
+										zoom: mathUtils.toFixed(value.zoom, 9)
 									});
 
 									if(value?.marker){

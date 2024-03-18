@@ -35,6 +35,7 @@ function Select<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionT
 			showSearch
 			allowClear
 			filterOption={filterOption}
+			placeholder="Вибрати"
 			{...addtitionalProps}
 			{...rest}
 		/>

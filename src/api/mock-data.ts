@@ -36,11 +36,15 @@ export const squadInput = [
 ]
 
 export const mapViewInput = {
-	"markerLat": 50.4032592,
-	"markerLng": 30.519838,
-	"circleCenterLat": 50.40330119,
-	"circleCenterLng": 30.519830598,
-	"circleRadius": 33.424996681,
+	"marker": {
+		"lat": 50.4032592,
+		"lng": 30.519838,
+	},
+	"circle": {
+		"lat": 50.40330119,
+		"lng": 30.519830598,
+		"radius": 33.424996681
+	},
 	"zoom": 18,
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
@@ -111,11 +115,15 @@ const missionRequestDTO = {
 const MRmapViewDTO = {
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
-	"markerLat": 50.4032592,
-	"markerLng": 30.519838,
-	"circleCenterLat": 50.40330119,
-	"circleCenterLng": 30.519830598,
-	"circleRadius": 33.424996681,
+	"marker": {
+		"lat": 50.4032592,
+		"lng": 30.519838,
+	},
+	"circle": {
+		"lat": 50.40330119,
+		"lng": 30.519830598,
+		"radius": 33.424996681
+	},
 	"zoom": 18,
 	"id": "MAP_VIEW_ACTION-359e894a-d903-4573-9954-3ab4e784c8df",
 	"createdAt": dates.toDateServer(new Date("2024-02-04T17:20:17.496Z")),

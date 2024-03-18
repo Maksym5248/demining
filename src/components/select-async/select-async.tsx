@@ -57,6 +57,7 @@ function SelectAsync<T, B extends BaseOptionType | DefaultOptionType = DefaultOp
 			allowClear
 			loading={loadingInput}
 			filterOption={false}
+			placeholder="Вибрати"
 			{...additionalProps}
 			{...rest}
 		/>

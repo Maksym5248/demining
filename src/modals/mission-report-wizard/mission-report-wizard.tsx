@@ -57,14 +57,7 @@ const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
 	squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
 	squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
 	address: currentMissionReport?.address,
-	mapView: {
-		markerLat: currentMissionReport?.mapView?.markerLat,
-		markerLng: currentMissionReport?.mapView?.markerLng,
-		circleCenterLat: currentMissionReport?.mapView?.circleCenterLat,
-		circleCenterLng: currentMissionReport?.mapView?.circleCenterLng,
-		circleRadius: currentMissionReport?.mapView?.circleRadius,
-		zoom: currentMissionReport?.mapView?.zoom
-	},
+	mapView: currentMissionReport?.mapView,
 })
 
 const createCreateValue = (
@@ -160,13 +153,19 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 	};
 
 	const onFinishCreate = async (values: IMissionReportForm) => {
-		await missionReport.create.run(values);
+		await missionReport.create.run({
+			...values,
+			squadIds: values.squadIds.filter(el => !!el)
+		});
 		hide();
 	};
 	
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinishUpdate = async (values: IMissionReportForm) => {
-		await missionReport.update.run(id, values);
+		await missionReport.update.run(id, {
+			...values,
+			squadIds: values.squadIds.filter(el => !!el)
+		});
 		hide();
 	};
 

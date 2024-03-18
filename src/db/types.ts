@@ -92,13 +92,21 @@ export interface IMapViewAction {
     zoom: number;
 }
 
+
+export interface IMarkerDB {
+    lat: number;
+    lng: number;
+}
+
+export interface ICircleDB {
+    lat: number;
+    lng: number;
+    radius: number;
+}
 export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
-    markerLat: number;
-    markerLng: number;
-    circleCenterLat: number | null;
-    circleCenterLng: number | null;
-    circleRadius: number | null;
+    marker: IMarkerDB | null;
+    circle: ICircleDB | null;
     zoom: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;
