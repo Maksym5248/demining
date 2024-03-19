@@ -1,19 +1,7 @@
-import { DB, IOrganizationDB, IUserDB } from '~/db';
+import { DB, IOrganizationDB, IQuery, IUserDB } from '~/db';
 import { ROLES } from '~/constants';
 
 import { IOrganizationDTO, IUserDTO, ICreateOrganizationDTO } from '../types'
-
-const getMembers = async (organization:Pick<IOrganizationDB, "membersIds"> | null): Promise<IUserDTO[]> => {
-	if(!organization || !organization?.membersIds){
-		return [];
-	}
-
-	const users = await Promise.all(
-		organization.membersIds.map((id) => DB.user.get(id))
-	) as IUserDB[]
-
-	return users;
-}
 
 const create = async (value: Pick<ICreateOrganizationDTO, "name">):Promise<IOrganizationDTO> => {
 	const { membersIds, ...organization} = await DB.organization.create({
@@ -79,17 +67,21 @@ const removeMember = async (organizationId:string, userId: string):Promise<void>
 
 const remove = (id:string) => DB.organization.remove(id);
 
-const getList = async ():Promise<IOrganizationDTO[]> => {
-	const organizations = await DB.organization.select();
+const getList = async (query?: IQuery):Promise<IOrganizationDTO[]> => {
+	const organizations = await DB.organization.select({
+		order: {
+			by: "createdAt",
+			type: "desc"
+		},
+		...(query ?? {})
+	});
 	return organizations.map(({ membersIds,  ...restOrganization}) => restOrganization)
 };
 
 const get = async (id:string):Promise<IOrganizationDTO | null> => {
 	const res = await DB.organization.get(id);
 
-	if(!res){
-		return null;
-	}
+	if(!res) throw new Error("There is no organization with id")
 
 	const { membersIds, ...organization} = res;
 
@@ -97,14 +89,17 @@ const get = async (id:string):Promise<IOrganizationDTO | null> => {
 };
 
 const getOrganizationMembers = async (id:string):Promise<IUserDTO[]> => {
-	const res = await DB.organization.get(id);
+	const res = await DB.user.select({
+		where: {
+			organizationId: id
+		}
+	});
 
 	if(!res){
 		return [];
 	}
 
-	const members = await getMembers(res);
-	return members
+	return res
 };
 
 const exist = (id:string):Promise<boolean> => DB.organization.exist("id", id);

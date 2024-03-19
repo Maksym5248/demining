@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
-import { Form, Drawer, Divider, Spin, message} from 'antd';
+import { Form, Drawer, Divider, Spin, message, Button} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
-import { dates } from '~/utils';
-import { EQUIPMENT_TYPE, MAP_ZOOM, WIZARD_MODE, TRANSPORT_TYPE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
-import { Select, WizardButtons, WizardFooter } from '~/components';
+import { dates, mapUtils } from '~/utils';
+import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE, MIME_TYPE } from '~/constants';
+import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 import { fileUtils } from '~/utils/file';
+import { IEmployee, IMissionReport, IOrder } from '~/stores';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -32,11 +33,73 @@ interface Props {
   mode: WIZARD_MODE
 }
 
+const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
+	approvedAt: currentMissionReport?.approvedAt,
+	approvedById: currentMissionReport?.approvedByAction?.employeeId,
+	number: currentMissionReport?.number,
+	subNumber: currentMissionReport?.subNumber,
+	executedAt: currentMissionReport?.executedAt,
+	orderId: currentMissionReport?.order?.id,
+	missionRequestId: currentMissionReport?.missionRequest?.id,
+	checkedTerritory: currentMissionReport?.checkedTerritory,
+	depthExamination: currentMissionReport?.depthExamination,
+	uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
+	uncheckedReason: currentMissionReport?.uncheckedReason,
+	workStart: currentMissionReport?.workStart,
+	exclusionStart: currentMissionReport?.exclusionStart,
+	transportingStart: currentMissionReport?.transportingStart,
+	destroyedStart: currentMissionReport?.destroyedStart,
+	workEnd: currentMissionReport?.workEnd,
+	transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
+	transportHumansId: currentMissionReport?.transportHumans?.transportId,
+	mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
+	explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
+	squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
+	squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
+	address: currentMissionReport?.address,
+	mapView: currentMissionReport?.mapView,
+})
+
+const createCreateValue = (
+	chiefFirst?: IEmployee,
+	firstMissionReport?: IMissionReport,
+	firstOrder?: IOrder,
+	firstMissionRequest?: IOrder,
+	firstSquadLeader?: IEmployee,
+) => ({
+	approvedAt: dates.today(),
+	approvedById: chiefFirst?.id,
+	number: firstMissionReport?.subNumber ? firstMissionReport?.number : ((firstMissionReport?.number ?? 0) + 1),
+	subNumber:  firstMissionReport?.subNumber ? (firstMissionReport?.subNumber ?? 0) + 1 : undefined,
+	executedAt: dates.today(),
+	orderId: firstOrder?.id,
+	missionRequestId: firstMissionRequest?.id,
+	checkedTerritory: undefined,
+	depthExamination: undefined,
+	uncheckedTerritory: undefined,
+	uncheckedReason: undefined,
+	workStart: undefined,
+	exclusionStart: undefined,
+	transportingStart: undefined,
+	destroyedStart: undefined,
+	workEnd: undefined,
+	transportExplosiveObjectId: undefined,
+	transportHumansId: undefined,
+	mineDetectorId: undefined,
+	explosiveObjectActions:[],
+	squadLeaderId: firstSquadLeader?.id,
+	squadIds: [],
+	address: "",
+	mapView: {
+		zoom: MAP_ZOOM.DEFAULT
+	},
+})
+
 export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const [isLoadingPreview, setLoadingPreview] = useState(false);
 	const [templateId, setTemplateId] = useState();
 
-	const { explosiveObject, order, missionRequest, transport, equipment, employee, missionReport, document } = useStore();
+	const { order, missionRequest, employee, missionReport, document } = useStore();
 
 	const wizard = useWizard({id, mode});
 
@@ -89,14 +152,27 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		}
 	};
 
+	const onLoadKmlFile = () => {
+		const { polygon, circle, marker } = currentMissionReport?.mapView ?? {};
+
+		const kml = mapUtils.generateKML(marker, circle, polygon);
+		fileUtils.saveAsUser(new Blob([kml], { type: MIME_TYPE.KML }), currentMissionReport?.docName ?? "", "kml");
+	}
+
 	const onFinishCreate = async (values: IMissionReportForm) => {
-		await missionReport.create.run(values);
+		await missionReport.create.run({
+			...values,
+			squadIds: values.squadIds.filter(el => !!el)
+		});
 		hide();
 	};
 	
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinishUpdate = async (values: IMissionReportForm) => {
-		await missionReport.update.run(id, values);
+		await missionReport.update.run(id, {
+			...values,
+			squadIds: values.squadIds.filter(el => !!el)
+		});
 		hide();
 	};
 
@@ -104,97 +180,32 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		if(id){
 			missionReport.fetchItem.run(id)
 		}
-		explosiveObject.fetchList.run();
-		explosiveObject.fetchListTypes.run();
-		order.fetchList.run();
-		missionRequest.fetchList.run();
-		transport.fetchList.run();
-		equipment.fetchList.run();
-		employee.fetchList.run();
+
+		if(wizard.isCreate){
+			order.fetchList.run();
+			missionRequest.fetchList.run();
+		}
+
+		employee.fetchListAll.run();
 		document.fetchTemplatesList.run();
 	}, []);
 
 	const isLoading = isLoadingPreview
 	 || missionReport.fetchItem.inProgress
-	 || explosiveObject.fetchList.inProgress
-	 || explosiveObject.fetchListTypes.inProgress
-	 || order.fetchList.inProgress
-	 || missionRequest.fetchList.inProgress
-	 || transport.fetchList.inProgress
-	 || equipment.fetchList.inProgress
-	 || employee.fetchList.inProgress
-	 || !explosiveObject.fetchList.isLoaded
-	 || !explosiveObject.fetchListTypes.isLoaded
-	 || !order.fetchList.isLoaded
-	 || !missionRequest.fetchList.isLoaded
-	 || !transport.fetchList.isLoaded
-	 || !equipment.fetchList.isLoaded
-	 || !employee.fetchList.isLoaded;
+	 || employee.fetchListAll.inProgress
+	 || document.fetchTemplatesList.inProgress;
 
-	 const transportExplosiveObject = currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
-	 const transportHumans = currentMissionReport?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS);
-	 const mineDetector = currentMissionReport?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR);
-
-	 const initialValues: Partial<IMissionReportForm> = (wizard.isEdit || wizard.isView) ? {
-		approvedAt: currentMissionReport?.approvedAt,
-		approvedById: currentMissionReport?.approvedByAction?.employeeId,
-		number: currentMissionReport?.number,
-		subNumber: currentMissionReport?.subNumber,
-		executedAt: currentMissionReport?.executedAt,
-		orderId: currentMissionReport?.order?.id,
-		missionRequestId: currentMissionReport?.missionRequest?.id,
-		checkedTerritory: currentMissionReport?.checkedTerritory,
-		depthExamination: currentMissionReport?.depthExamination,
-		uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
-		uncheckedReason: currentMissionReport?.uncheckedReason,
-		workStart: currentMissionReport?.workStart,
-		exclusionStart: currentMissionReport?.exclusionStart,
-		transportingStart: currentMissionReport?.transportingStart,
-		destroyedStart: currentMissionReport?.destroyedStart,
-		workEnd: currentMissionReport?.workEnd,
-		transportExplosiveObjectId: transportExplosiveObject?.transportId,
-		transportHumansId: transportHumans?.transportId,
-		mineDetectorId: mineDetector?.equipmentId,
-		explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
-		squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
-		squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
-		address: currentMissionReport?.address,
-		mapView: {
-			markerLat: currentMissionReport?.mapView?.markerLat,
-			markerLng: currentMissionReport?.mapView?.markerLng,
-			circleCenterLat: currentMissionReport?.mapView?.circleCenterLat,
-			circleCenterLng: currentMissionReport?.mapView?.circleCenterLng,
-			circleRadius: currentMissionReport?.mapView?.circleRadius,
-			zoom: currentMissionReport?.mapView?.zoom
-		},
-	} : {
-		approvedAt: dates.today(),
-		approvedById: employee.employeesChiefFirst?.id,
-		number: missionReport.list.first?.subNumber ? missionReport.list.first?.number : ((missionReport.list.first?.number ?? 0) + 1),
-		subNumber:  missionReport.list.first?.subNumber ? (missionReport.list.first?.subNumber ?? 0) + 1 : undefined,
-		executedAt: dates.today(),
-		orderId: order.list.first?.id,
-		missionRequestId: missionRequest.list.first?.id,
-		checkedTerritory: undefined,
-		depthExamination: undefined,
-		uncheckedTerritory: undefined,
-		uncheckedReason: undefined,
-		workStart: undefined,
-		exclusionStart: undefined,
-		transportingStart: undefined,
-		destroyedStart: undefined,
-		workEnd: undefined,
-		transportExplosiveObjectId:  transport.transportExplosiveObjectFirst?.id,
-		transportHumansId: transport.transportHumansFirst?.id,
-		mineDetectorId: equipment.firstMineDetector?.id,
-		explosiveObjectActions:[],
-		squadLeaderId: employee.employeesSquadLeadFirst?.id,
-		squadIds: [],
-		address: "",
-		mapView: {
-			zoom: currentMissionReport?.mapView?.zoom || MAP_ZOOM.DEFAULT
-		},
-	}
+	 const initialValues: Partial<IMissionReportForm> = useMemo(() => (
+		(wizard.isEdit || wizard.isView)
+	    ? createEditValue(currentMissionReport)
+			: createCreateValue(
+				employee.chiefFirst,
+				missionReport.list.first,
+				order.list.first,
+				missionRequest.list.first,
+				employee.squadLeadFirst
+	   )
+	 ), [isLoading]);
 
 	const onRemove = () => {
 		missionReport.remove.run(id);
@@ -229,6 +240,11 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 							options={document.missionReportTemplatesList.map((el) => ({ label: el.name, value: el.id }))}
 						/>
 					)}
+					{!wizard.isCreate && (
+						<Button icon={<Icon.DownloadOutlined />} onClick={onLoadKmlFile}>
+							Kml
+						</Button>
+					)}
 				</WizardButtons>
 			}
 		>
@@ -246,26 +262,21 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 						{ [
 							<Map key="Map" mode={mode} />,
 							<Territory key="Territory"/>,
-							<Approved key="Approved" data={employee.employeesListChief} selectedEmployee={currentMissionReport?.approvedByAction}/>,
+							<Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction}/>,
 							<Act key="Act" />,
-							<Documents
-								key="Documents"
-								missionRequestData={missionRequest.list.asArray}
-								orderData={order.list.asArray}
-							/>,
+							<Documents key="Documents" initialValues={initialValues}/>,
 							<Timer key="Timer" />,
 							<ExplosiveObjectAction key="ExplosiveObjectAction" />,
 							<Transport 
-								key="Transport" 
-								dataHumans={transport.transportHumansList}
-							 	dataExplosiveObject={transport.transportExplosiveObjectList}
-								selectedTransportHumanAction={transportHumans}
-								selectedTransportExplosiveAction={transportExplosiveObject}
+								key="Transport"
+								initialValues={initialValues}
+								selectedTransportHumanAction={currentMissionReport?.transportHumans}
+								selectedTransportExplosiveAction={currentMissionReport?.transportExplosiveObject}
 							 />,
 							<Equipment
 								key="Equipment" 
-								data={equipment.list.asArray}
-								selectedMineDetector={mineDetector}
+								initialValues={initialValues}
+								selectedMineDetector={currentMissionReport?.mineDetector}
 							  />,
 							<Employees
 								key="Employees" 

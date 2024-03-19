@@ -1,17 +1,14 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space } from 'antd';
+import { Button } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon, List } from '~/components';
-import { useStore, useRouteTitle, useNavigate } from '~/hooks';
+import { Icon, List, ListHeader } from '~/components';
+import { useStore, useRouteTitle, useNavigate, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, ROUTES, WIZARD_MODE } from '~/constants';
 import { IOrganization } from '~/stores/stores/organization/entities/organization';
 
-import { s } from './organizations-list.styles';
-
-const { Title } = Typography;
 
 const ListItem = observer(({ item }: { item: IOrganization}) => {
 	const navigate = useNavigate();
@@ -42,27 +39,43 @@ const ListItem = observer(({ item }: { item: IOrganization}) => {
 });
 
 export const OrganizationsListPage  = observer(() => {
-	const store = useStore();
+	const { organization } = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
-	const onCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.ORGANIZATION_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		organization.fetchList.run(value);
+	}
+
+	const onLoadMore = () => {
+		organization.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		store.organization.fetchList.run();
+		organization.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? organization.searchList :  organization.list;
 
 	return (
 		<List
-			loading={store.organization.fetchList.inProgress}
-			dataSource={store.organization.list.asArray}
+			loading={organization.fetchList.inProgress}
+			loadingMore={organization.fetchListMore.inProgress}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.PlusOutlined />} onClick={onCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>

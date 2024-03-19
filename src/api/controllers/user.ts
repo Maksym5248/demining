@@ -3,7 +3,8 @@ import map from "lodash/map"
 import uniq from "lodash/uniq"
 
 import { UpdateValue } from '~/types'
-import { DB, IOrganizationDB, IUserDB } from '~/db';
+import { DB, IOrganizationDB, IQuery, IUserDB } from '~/db';
+import { AssetStorage } from "~/services";
 
 import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types'
 
@@ -53,8 +54,14 @@ const update = async (id:string, value: UpdateValue<ICurrentUserDTO>):Promise<IC
 
 const remove = (id:string) => DB.user.remove(id);
 
-const getList = async ():Promise<ICurrentUserDTO[]> => {
-	const users = await DB.user.select();
+const getList = async (query?: IQuery):Promise<ICurrentUserDTO[]> => {
+	const users = await DB.user.select({
+		order: {
+			by: "createdAt",
+			type: "desc"
+		},
+		...(query ?? {})
+	});
 
 	const organizationIds = getIds(users, "organizationId");
 
@@ -70,9 +77,15 @@ const getList = async ():Promise<ICurrentUserDTO[]> => {
 	}))
 };
 
-const getListUnassignedUsers = ():Promise<IUserDTO[]> => DB.user.select({
+const getListUnassignedUsers = (query?: IQuery):Promise<IUserDTO[]> => DB.user.select({
+	...(query ?? {}),
+	order: {
+		by: "createdAt",
+		type: "desc"
+	},
 	where: {
-		organizationId: null
+		organizationId: null,
+		...(query?.where ?? {}),
 	}
 })
 
@@ -92,7 +105,14 @@ const get = async (id:string):Promise<ICurrentUserDTO | null> => {
 
 const exist = (id:string):Promise<boolean> => DB.user.exist("id", id);
 
-const setOrganization = (rootCollection:string) => DB.setRootCollection(rootCollection);
+const setOrganization = async (id:string) => {
+	AssetStorage.setOrganizationId(id)
+	DB.setOrganizationId(id);
+};
+const removeOrganization = () => {
+	AssetStorage.removeOrganizationId();
+	DB.removeOrganizationId();
+};
 
 export const user = {
 	create,
@@ -102,5 +122,6 @@ export const user = {
 	getList,
 	exist,
 	getListUnassignedUsers,
-	setOrganization
+	setOrganization,
+	removeOrganization
 }

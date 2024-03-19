@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
-import { ICircle, ILatLng } from "~/types";
+import { ICircle, IPoint } from "~/types";
 
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
@@ -25,7 +25,6 @@ export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     typeInDocument: EMPLOYEE_TYPE;
 }
 
-
 export interface IOrderDB {
     id: string;
     signedAt: Timestamp;
@@ -38,14 +37,6 @@ export interface IMissionRequestDB {
     id: string;
     signedAt: Timestamp;
     number: number;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
-}
-
-export interface IExplosiveObjectTypeDB {
-    id: string;
-    name: string;
-    fullName: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -96,18 +87,33 @@ export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
 }
 
 export interface IMapViewAction {
-    marker?: ILatLng;
+    marker?: IPoint;
     circle?: ICircle;
     zoom: number;
 }
 
+
+export interface IPointDB {
+    lat: number;
+    lng: number;
+}
+
+export interface IMarkerDB extends IPointDB {}
+
+export interface ICircleDB {
+    center: IPointDB;
+    radius: number;
+}
+
+export interface IPolygonDB {
+    points: IPointDB[];
+}
+
 export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
-    markerLat: number;
-    markerLng: number;
-    circleCenterLat: number | null;
-    circleCenterLng: number | null;
-    circleRadius: number | null;
+    marker: IMarkerDB | null;
+    circle: ICircleDB | null;
+    polygon: IPolygonDB | null;
     zoom: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;

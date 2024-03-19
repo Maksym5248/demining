@@ -1,4 +1,4 @@
-import { DB } from '~/db'
+import { DB, IQuery } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'
 
 import { IMissionRequestDTO } from '../types'
@@ -6,16 +6,24 @@ import { IMissionRequestDTO } from '../types'
 const create = (value: CreateValue<IMissionRequestDTO>):Promise<IMissionRequestDTO> => DB.missionRequest.create(value);
 const update = (id:string, value: UpdateValue<IMissionRequestDTO>):Promise<IMissionRequestDTO> => DB.missionRequest.update(id, value);
 const remove = (id:string) => DB.missionRequest.remove(id);
-const getList = ():Promise<IMissionRequestDTO[]> => DB.missionRequest.select({
+const getList = (query?: IQuery):Promise<IMissionRequestDTO[]> => DB.missionRequest.select({
 	order: {
-		by: "number",
-		type: "desc",
-	}
+		by: "createdAt",
+		type: "desc"
+	},
+	...(query ?? {})
 });
+
+const get = async (id:string):Promise<IMissionRequestDTO> => {
+	const res = await DB.missionRequest.get(id);
+	if(!res) throw new Error("there is mission request with id");
+	return res;
+}
 
 export const missionRequest = {
 	create,
 	update,
 	remove,
-	getList
+	getList,
+	get
 }

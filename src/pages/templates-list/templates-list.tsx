@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon, List } from '~/components';
-import { useStore, useRouteTitle } from '~/hooks';
+import { Icon, List, ListHeader } from '~/components';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { IDocument } from '~/stores';
@@ -12,7 +12,7 @@ import { str } from '~/utils';
 
 import { s } from './templates-list.styles';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IDocument}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
@@ -40,29 +40,45 @@ const ListItem = observer(({ item }: { item: IDocument}) => {
 });
 
 export const TemplatesListPage  = observer(() => {
-	const store = useStore();
+	const { document} = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
-	const onGoToTemplateCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.TEMPLATE_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		document.fetchTemplatesList.run(value);
+	}
+
+	const onLoadMore = () => {
+		document.fetchTemplatesListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		store.document.fetchTemplatesList.run();
+		document.fetchTemplatesList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? document.templatesSearchList :  document.templatesList;
 
 	return (
 		<List
 			rowKey="id"
 			itemLayout="horizontal"
-			loading={store.document.fetchTemplatesList.inProgress}
-			dataSource={store.document.templatesList.asArray}
+			loading={document.fetchTemplatesList.inProgress}
+			loadingMore={document.fetchTemplatesListMore.inProgress}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToTemplateCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>

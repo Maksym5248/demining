@@ -45,7 +45,9 @@ export function WizardButtons({
 
 			{!!onSave && isSave && (
 				<Tooltip placement="bottomRight" title="Зберегти документ" arrow>
-					<Button icon={<Icon.SaveOutlined/>} onClick={onSave}/>
+					<Button icon={<Icon.DownloadOutlined/>} onClick={onSave}>
+						Word
+					</Button>
 				</Tooltip>
 			)}
 			{!!onView && isEdit && (

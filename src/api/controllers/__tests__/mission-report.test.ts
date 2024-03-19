@@ -26,7 +26,6 @@ import {
 	transportActionsDB,
 	equipmentActionsDB ,
 	explosiveObjectActionsDB,
-	explosiveObjectTypeDB,
 	orderSignedByActionDB,
 } from "../../mock-data"
 
@@ -298,7 +297,7 @@ describe('mission-report', () => {
 				transportHumansAction: omitted(missionReportDTO.transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS)),
 				transportExplosiveObjectAction: omitted(missionReportDTO.transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)),
 				mineDetectorAction: omitted(missionReportDTO.equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)),
-				explosiveObjectsActions: missionReportDTO.explosiveObjectActions.map(el => (omitted({...el, type: el.type.id}))),
+				explosiveObjectsActions: missionReportDTO.explosiveObjectActions.map(el => (omitted({...el, type: el.typeId}))),
 	  });
 		});
 
@@ -417,7 +416,6 @@ describe('mission-report', () => {
 	  DB.equipmentAction.select.mockResolvedValueOnce(equipmentActionsDB);
 	  DB.order.select.mockResolvedValueOnce(missionReportDB);
 	  DB.explosiveObjectAction.select.mockResolvedValueOnce(explosiveObjectActionsDB);
-	  DB.explosiveObjectType.select.mockResolvedValueOnce(explosiveObjectTypeDB);
 	  DB.employeeAction.get.mockResolvedValueOnce(orderSignedByActionDB);
 		});
 

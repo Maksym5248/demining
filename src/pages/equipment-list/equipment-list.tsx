@@ -3,15 +3,15 @@ import React, { useEffect } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
-import { Icon, List } from '~/components';
-import { useStore, useRouteTitle } from '~/hooks';
+import { Icon, List, ListHeader } from '~/components';
+import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 import { MODALS, EQUIPMENT_TYPE, WIZARD_MODE } from '~/constants';
 import { IEquipment } from '~/stores';
 
 import { s } from './equipment-list.styles';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const types = {
 	[EQUIPMENT_TYPE.MINE_DETECTOR]: "Міношукач",
@@ -43,29 +43,43 @@ const ListItem = observer(({ item }: { item: IEquipment}) => {
 });
 
 export const EquipmentListPage  = observer(() => {
-	const store = useStore();
+	const { equipment } = useStore();
 	const title = useRouteTitle();
+	const search = useSearch();
 
-	const onGoToEmployeesCreate = (e:React.SyntheticEvent) => {
-		e.preventDefault();
+	const onCreate = () => {
 		Modal.show(MODALS.EQUIPMENT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	};
 
+	const onSearch = (value:string) => {
+		search.updateSearchParams(value)
+		equipment.fetchList.run(value);
+	}
+
+	const onLoadMore = () => {
+		equipment.fetchListMore.run(search.searchValue);
+	}
+
 	useEffect(() => {
-		store.equipment.fetchList.run();
+		equipment.fetchList.run(search.searchValue);
 	}, []);
+
+	const list = search.searchValue ? equipment.searchList :  equipment.list;
 
 	return (
 		<List
-			rowKey="id"
-			itemLayout="horizontal"
-			loading={store.equipment.fetchList.inProgress}
-			dataSource={store.equipment.list.asArray}
+			loading={equipment.fetchList.inProgress}
+			loadingMore={equipment.fetchListMore.inProgress}
+			isReachedEnd={!list.isMorePages}
+			dataSource={list.asArray}
+			onLoadMore={onLoadMore}
 			header={
-				<Space css={s.listHeader}>
-					<Title level={4}>{title}</Title>
-					<Button type="primary" icon={<Icon.FileAddOutlined />} onClick={onGoToEmployeesCreate}/>
-				</Space>
+				<ListHeader
+					title={title}
+					onSearch={onSearch}
+					onCreate={onCreate}
+					{...search}
+				 />
 			}
 			renderItem={(item) => <ListItem item={item}/>}
 		/>

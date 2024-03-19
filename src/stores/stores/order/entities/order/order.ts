@@ -18,13 +18,16 @@ const Entity = types.model('Order', {
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).props({
-	signedByAction: types.maybe(EmployeeAction.named("EmployeeOrder")),
+	signedByAction: types.maybe(types.maybe(types.reference(EmployeeAction))),
 }).actions((self) => ({
 	updateFields(data: Partial<IOrderValue>) {
 		Object.assign(self, data);
 	}
+})).views((self) => ({
+	get displayValue(){
+		return `№${self.number} ${self.signedAt.format('DD/MM/YYYY')}`
+	},
 }));
-
 
 const update = asyncAction<Instance<typeof Entity>>((data: UpdateValue<IOrderValueParams>) => async function addFlow({ flow, self }) {
 	try {

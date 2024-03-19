@@ -1,6 +1,7 @@
 export * from './root-store';
 export * from './employee';
 export * from './order';
+export * from './map';
 export * from './mission-request';
 export * from './mission-report';
 export * from './explosive-object';

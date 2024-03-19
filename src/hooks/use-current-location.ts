@@ -2,10 +2,10 @@ import { useState } from "react";
 
 import { ExternalApi } from "~/api";
 import { useAsyncEffect } from "~/hooks";
-import { ILatLng } from "~/types";
+import { IPoint } from "~/types";
 
-export const useCurrentLocation = (defaultValue?: ILatLng)  => {
-	const [coords, setCoords] = useState<ILatLng | undefined>(defaultValue);
+export const useCurrentLocation = (defaultValue?: IPoint)  => {
+	const [coords, setCoords] = useState<IPoint | undefined>(defaultValue);
 	const [isLoading, setLoading] = useState(true);
 
 	useAsyncEffect(async () => {

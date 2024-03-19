@@ -17,7 +17,9 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 	const store = useStore();
 	const _onRemove = () => onRemove?.(index);
 
-	const explosiveObject = store.explosiveObject.collection.get(item.explosiveObjectId)
+	console.log("item", item)
+
+	const explosiveObject = store.explosiveObject.collectionActions.get(item?.id ?? "") || store.explosiveObject.collection.get(item.explosiveObjectId)
   
 	return (
 		<List.Item
@@ -29,7 +31,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 			]}
 		>
 			<List.Item.Meta
-				title={`${explosiveObject.fullDisplayName}; Категорія: ${item.category}; ${item.quantity} од.`}
+				title={`${explosiveObject?.fullDisplayName}; Категорія: ${item.category}; ${item.quantity} од.`}
 				description={
 					`Виявлено ${getIcon(item.isDiscovered)}; Транспортовано ${getIcon(item.isTransported)}; Знищено ${getIcon(item.isDestroyed)}: `
 				}
@@ -52,7 +54,7 @@ function Component() {
 						<List
 							size="small"
 							pagination={false}
-							dataSource={data.map((el:IExplosiveObjectActionValueParams, i:number) => ({...el, id: `${i}`}))}
+							dataSource={data.map((el:IExplosiveObjectActionValueParams, i:number) => ({...el, index: `${i}`}))}
 							renderItem={(item:IExplosiveObjectActionValueParams & { id: string}, i:number) => (
 								<ObservedListItem
 								    item={item}

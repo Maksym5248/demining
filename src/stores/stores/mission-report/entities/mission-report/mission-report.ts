@@ -2,6 +2,7 @@ import { Instance } from 'mobx-state-tree';
 import { toLower } from 'lodash';
 import { Dayjs } from 'dayjs';
 
+
 import { EmployeeAction } from '~/stores/stores/employee';
 import { Order } from '~/stores/stores/order';
 import { MissionRequest } from '~/stores/stores/mission-request';
@@ -10,24 +11,14 @@ import { TransportAction } from '~/stores/stores/transport/entities/transport-ac
 import { EquipmentAction } from '~/stores/stores/equipment/entities/equipment-action';
 import { dates, str } from '~/utils';
 import { EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
+import { MapViewAction } from '~/stores/stores/map';
 
+import { safeReference } from '../../../../utils';
 import { types } from '../../../../types'
 import { IMissionReportValue } from './mission-report.schema';
 
 
 export type IMissionReport = Instance<typeof MissionReport>
-
-const MapView = types.model('MapView', {
-	id: types.identifier,
-	markerLat: types.number,
-	markerLng: types.number,
-	circleCenterLat: types.maybe(types.number),
-	circleCenterLng: types.maybe(types.number),
-	circleRadius: types.maybe(types.number),
-	zoom: types.number,
-	createdAt: types.dayjs,
-	updatedAt: types.dayjs
-});
 
 const Entity = types.model('MissionReport', {
 	id: types.identifier,
@@ -48,15 +39,15 @@ const Entity = types.model('MissionReport', {
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).props({
-	approvedByAction: types.maybe(EmployeeAction.named("EmployeeActionMissionReport")),
-	order: types.maybe(types.reference(Order)),
-	missionRequest:  types.maybe(types.reference(MissionRequest)),
-	mapView: types.maybe(MapView.named("MapViewMissionReport")),
-	explosiveObjectActions: types.optional(types.array(ExplosiveObjectAction), []),
-	squadLeaderAction: types.maybe(EmployeeAction.named("EmployeeActionMissionReport")),
-	squadActions: types.optional(types.array(EmployeeAction.named("EmployeeActionMissionReport")), []),
-	transportActions: types.optional(types.array(TransportAction), []),
-	equipmentActions: types.optional(types.array(EquipmentAction), []),
+	approvedByAction: types.maybe(types.maybe(safeReference(EmployeeAction))),
+	order: types.maybe(safeReference(Order)),
+	missionRequest:  types.maybe(safeReference(MissionRequest)),
+	mapView: types.maybe(safeReference(MapViewAction)),
+	explosiveObjectActions: types.optional(types.array(safeReference(ExplosiveObjectAction)), []),
+	squadLeaderAction: types.maybe(safeReference(EmployeeAction)),
+	squadActions: types.optional(types.array(safeReference(EmployeeAction)), []),
+	transportActions: types.optional(types.array(safeReference(TransportAction)), []),
+	equipmentActions: types.optional(types.array(safeReference(EquipmentAction)), []),
 }).actions((self) => ({
 	updateFields(data: Partial<IMissionReportValue>) {
 		Object.assign(self, data);
@@ -111,8 +102,8 @@ const Entity = types.model('MissionReport', {
 			missionRequestAt:  getDate(missionRequest?.signedAt),
 			missionNumber: missionRequest?.number ?? "",
 			address,
-			lat: mapView?.markerLat ?? 0,
-			lng: mapView?.markerLng ?? 0,
+			lat: mapView?.marker?.lat ?? 0,
+			lng: mapView?.marker?.lng ?? 0,
 			checkedM2: checkedTerritory ?? "---",
 			checkedGA: checkedTerritory ? checkedTerritory / 10000 : "---",
 			uncheckedM2: uncheckedTerritory ?? "---",
@@ -122,7 +113,7 @@ const Entity = types.model('MissionReport', {
 			explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => el.quantity + acc, 0),
 			explosiveObjects: explosiveObjectActions.reduce((acc, el, i) => {
 				const lasSign = explosiveObjectActions.length - 1 === i ? ".": ", ";
-				return `${acc}${el.fullDisplayName} – ${el.quantity} од., ${el.category} категорії${lasSign}`;
+				return `${acc}${el.fullDisplayName} – ${el.quantity} од., ${el?.category} категорії${lasSign}`;
 			},  ""),
 			exclusionTime: getTime(exclusionStart, transportingStart ?? destroyedStart ?? workEnd),
 			exclusionDate: getDate(exclusionStart, ""),
@@ -142,6 +133,18 @@ const Entity = types.model('MissionReport', {
 })).views((self) => ({
 	get docName(){
 		return `${self.executedAt.format("YYYY.MM.DD")} ${self.data.actNumber}`
+	},
+
+	get transportExplosiveObject(){
+		return self?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)
+	},
+
+	get transportHumans(){
+		return self?.transportActions?.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS)
+	},
+
+	get mineDetector(){
+		return self?.equipmentActions?.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)
 	},
 }));
 

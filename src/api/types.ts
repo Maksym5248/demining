@@ -7,7 +7,6 @@ import {
 	IOrderDB,
 	IMissionRequestDB,
 	IExplosiveObjectDB,
-	IExplosiveObjectTypeDB,
 	IExplosiveObjectActionDB,
 	ITransportDB,
 	ITransportActionDB,
@@ -35,15 +34,9 @@ export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | 
 
 export type IMissionRequestDTO = IMissionRequestDB
 
-export type IExplosiveObjectTypeDTO = IExplosiveObjectTypeDB
+export interface IExplosiveObjectDTO extends IExplosiveObjectDB {};
 
-export interface IExplosiveObjectDTO extends Omit<IExplosiveObjectDB, "typeId">{
-    type: IExplosiveObjectTypeDTO;
-}
-
-export interface IExplosiveObjectActionDTO extends Omit<IExplosiveObjectActionDB, "typeId">{
-    type: IExplosiveObjectTypeDTO;
-}
+export interface IExplosiveObjectActionDTO extends IExplosiveObjectActionDB  {};
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
 export interface IExplosiveObjectActionDTOParams {

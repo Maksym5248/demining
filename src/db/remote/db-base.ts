@@ -15,7 +15,9 @@ import {
 	UpdateData,
 	orderBy,
 	limit,
-	WriteBatch
+	WriteBatch,
+	startAfter,
+	getCountFromServer,
 } from 'firebase/firestore';
 import isArray from 'lodash/isArray';
 
@@ -25,11 +27,26 @@ type IOrder = {
 	type: "asc" | 'desc',
 };
 
-type IQuery = {
-	where: IWhere,
-	order: IOrder,
-	limit: number
+export type IQuery = {
+	search?: string;
+	where?: IWhere;
+	order?: IOrder;
+	limit?: number;
+	startAfter?: string | number | Timestamp;
 };
+
+function generateValueStartsWith(value: string): string[] {
+	const prefixes: string[] = [];
+	const arr = value.toLowerCase().split(/\s+/);
+
+	arr.forEach(v => {
+		for (let i = 1; i <= v.length; i+=1) {
+			prefixes.push(v.substring(0, i));
+		}
+	});
+
+	return prefixes;
+}
 
 const getWhere = (values: IWhere) => 
 	 Object.keys(values).map(key => {
@@ -37,6 +54,10 @@ const getWhere = (values: IWhere) =>
 
 		if(value?.in && isArray(value.in)){
 			return where(key, "in", value.in) 
+		}
+
+		if(value["array-contains-any"]){
+			return where(key, "array-contains-any", value["array-contains-any"]) 
 		}
 		
 		return where(key, "==", value)
@@ -47,18 +68,23 @@ const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Timestamp}> {
 	tableName: string;
 
-	rootCollection: string;
+	rootCollection?: string;
 
 	batch: WriteBatch | null = null;
 
-	constructor(tableName: string){
-		this.rootCollection = "";
+	searchFields: (keyof T)[];
+
+	constructor(tableName: string, searchFields?: (keyof T)[]){
 		this.tableName = tableName;
+		this.searchFields = searchFields ?? [];
 	}
 
 	setRootCollection(rootCollection: string){
 		this.rootCollection = rootCollection;
+	}
 
+	removeRootCollection(){
+		this.rootCollection = undefined;
 	}
 
 	setBatch(batch: WriteBatch | null){
@@ -75,18 +101,25 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return newDocumentRef.id;
 	}
 
-	async select(args?: Partial<IQuery> ): Promise<T[]> {
+	async select(args?: Partial<IQuery>): Promise<T[]> {
 		const q = query(this.collection,
+			 ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
 			 ...(args?.where ? getWhere(args.where) : []),
 			 ...(args?.order ? [getOrder(args?.order)] : []),
-			 ...(args?.limit ? [limit(args?.limit)] : [])
+			 ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
+			 ...(args?.limit ? [limit(args?.limit)] : []),
 		);
 
 		const snapshot = await getDocs(q);
 
-		const data = snapshot.docs.map(d => d.data()) as (T & {
+		const data = snapshot.docs.map(d => {
+			// @ts-expect-error
+			const { _search, ...newData } = d.data();
+			return newData
+		}) as (T & {
 			createdAt: Timestamp,
 			updatedAt: Timestamp,
+			_search: Record<keyof T, string>
 		})[];
 
 		return data as T[]
@@ -103,7 +136,11 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const data = res.data() as T & {
 				createdAt: Timestamp,
 				updatedAt: Timestamp,
+				_search: Record<keyof T, string>
 		};
+
+		// @ts-expect-error
+		if(data?._search) delete data._search;
 		
 		return data
 	}
@@ -116,19 +153,43 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return !querySnapshot.empty
 	}
 
+	private createSearchField(value:Partial<T>){
+		let _search: string[] = [];
+
+		this.searchFields.forEach((field) => {
+			const arr = generateValueStartsWith(String(value[field] ?? ""));
+			_search = [..._search, ...arr]
+		});
+
+		return { _search }
+	}
+
+	private createSearchWhere(search:string){
+		const searchLower = String(search ?? "").toLowerCase().split(/\s+/);
+
+		const _search = {
+			"array-contains-any": searchLower
+		};
+
+		return { _search }
+	}
+
 	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
 		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
+		const search = this.createSearchField(value as T);
 	
 		const newValue = {
+			...search,
 			...value,
 			id,
 			createdAt: timestamp,
-			updatedAt: timestamp
+			updatedAt: timestamp,
 		} as T & {
 				createdAt: Timestamp,
 				updatedAt: Timestamp,
+				_search: string[]
 			};
 	
 		return { ref, newValue }
@@ -136,21 +197,17 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	private getUpdateValue(id:string, value: Partial<T>) {
 		const newValue = {...value};
+		const search = this.createSearchField(value as T);
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
 		if(newValue?.id) delete newValue.id;
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
 		if(newValue?.updatedAt) delete newValue.updatedAt;
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
 		if(newValue?.createdAt) delete newValue.createdAt;
 
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 
 		const updatedValue = {
+			...search,
 			...newValue,
 			updatedAt: timestamp
 		} as UpdateData<T>
@@ -169,16 +226,6 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	batchCreate(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
 		const { ref, newValue } = this.getCreateValue(value)
 		this.batch?.set(ref, newValue);
-	}
-
-	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
-		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
-
-		const res = await Promise.all(values
-			.filter((value, i) => !filteredValues[i])
-			.map(value => this.create(value)));
-
-		return isArray(res) ? res: [];
 	}
 
 	async update(id:string, value: Partial<T>): Promise<T> {
@@ -202,6 +249,12 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	batchRemove(id:string) {
 		const ref = doc(this.collection, id);
 		this.batch?.delete(ref);
+	}
+
+	async count(){
+		const snapshot = await getCountFromServer(this.collection);
+		
+		return snapshot.data().count
 	}
 
 	async removeBy(args: IWhere) {

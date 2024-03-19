@@ -3,7 +3,7 @@ export * from './storage/secure-storage';
 export * from './analytics';
 export * from './auth';
 export * from './crashlytics';
-export * from './file-system';
+export * from "./asset-storage";
 export * from './logger';
 export * from './modal';
 export * from './image';

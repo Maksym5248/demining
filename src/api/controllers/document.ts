@@ -1,7 +1,7 @@
-import { DB } from '~/db'
+import { DB, IQuery } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'
 import { ASSET_TYPE } from '~/constants';
-import { DocumentStorage } from '~/services';
+import { AssetStorage } from '~/services';
 import { fileUtils } from '~/utils';
 
 import { IDocumentDTO } from '../types'
@@ -11,7 +11,7 @@ const create = async (value: CreateValue<IDocumentDTO>, file:File):Promise<IDocu
 
 	try {
 		res = await DB.document.create(value);
-		await DocumentStorage.save(fileUtils.getPath(res.id), file);
+		await AssetStorage.document.save(fileUtils.getPath(res.id), file);
 	} catch (error) {
 		if(res){
 			DB.document.remove(res?.id);
@@ -27,26 +27,45 @@ const update = async (id:string, value: UpdateValue<IDocumentDTO>, file?:File):P
 	const res = await DB.document.update(id, value);
 
 	if(file){
-		await DocumentStorage.update(id, file);    
+		await AssetStorage.document.update(id, file);    
 	}
 
 	return res;
 };
 
 const remove = async (id:string) => {
-	await DocumentStorage.remove(fileUtils.getPath(id));
+	await AssetStorage.document.remove(fileUtils.getPath(id));
 	await DB.document.remove(id)
 };
 
-const getListTemplates = ():Promise<IDocumentDTO[]> => DB.document.select({
+const getListTemplates = (query?: IQuery):Promise<IDocumentDTO[]> => DB.document.select({
+	...(query ?? {}),
 	where: {
+		...(query?.where ?? {}),
 		type: ASSET_TYPE.DOCUMENT,
-	}
+	},
+	order: {
+		by: "createdAt",
+		type: "desc"
+	},
 });
+
+const load = async (id:string) => {
+	const file = await AssetStorage.document.read(fileUtils.getPath(id));
+	return file;
+}
+
+const get = async (id:string):Promise<IDocumentDTO> => {
+	const res = await DB.document.get(id);
+	if(!res) throw new Error("there is document with id");
+	return res;
+}
 
 export const document = {
 	create,
 	update,
 	remove,
-	getListTemplates
+	getListTemplates,
+	get,
+	load
 }

@@ -2,6 +2,7 @@ import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 
 import { Api, ICreateOrganizationDTO, IOrganizationDTO } from '~/api'
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IOrganization, IOrganizationValue, Organization, createOrganization, createOrganizationDTO } from './entities/organization';
@@ -9,21 +10,26 @@ import { IOrganization, IOrganizationValue, Organization, createOrganization, cr
 const Store = types
 	.model('OrganizationStore', {
 		collection: createCollection<IOrganization, IOrganizationValue>("Organizations", Organization),
-		list: createList<IOrganization>("OrganizationList", safeReference(Organization), { pageSize: 20 }),
+		list: createList<IOrganization>("OrganizationList", safeReference(Organization), { pageSize: 10 }),
+		searchList: createList<IOrganization>("OrganizationSearchList", safeReference(Organization), { pageSize: 10 }),
+
 	}).actions((self) => ({
-		push: (values: IOrganizationDTO[]) => {
-			values.forEach((el) => {
+		append(res: IOrganizationDTO[], isSearch: boolean, isMore?:boolean){
+			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
+
+			list.checkMore(res.length);
+
+			res.forEach((el) => {
 				const value = createOrganization(el);
 
-				if(!self.collection.has(value.id)){
-					self.collection.set(value.id, value);
-					self.list.push(value.id);
-				}
+				self.collection.set(value.id, value);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: ICreateOrganizationDTO) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: ICreateOrganizationDTO) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 
@@ -56,16 +62,21 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async ({ flow,
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
-		flow.start();
-		const res = await Api.organization.getList();
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
 
-		self.push(res);
+		if(!isSearch && list.length) return;
+
+		flow.start();
+
+		const res = await Api.organization.getList({
+			search,
+			limit: list.pageSize,
+		});
+
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -73,11 +84,31 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-const fetchById = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
+	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.organization.getList({
+			search,
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
+		});
+
+		self.append(res, isSearch, true);
+
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
 	}
-    
+});
+
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		const res = await Api.organization.get(id);
@@ -97,4 +128,4 @@ const fetchById = asyncAction<Instance<typeof Store>>((id:string) => async funct
 	}
 });
 
-export const OrganizationStore = Store.props({ create, remove, fetchList, fetchById })
+export const OrganizationStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem })

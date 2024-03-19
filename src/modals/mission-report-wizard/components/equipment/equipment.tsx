@@ -1,12 +1,25 @@
 import { Form} from 'antd';
+import { observer } from 'mobx-react';
 
-import { Select } from '~/components'
-import { EQUIPMENT_TYPE, MODALS, WIZARD_MODE } from '~/constants';
+import { SelectAsync } from '~/components'
+import { MODALS, WIZARD_MODE } from '~/constants';
+import { useStore, useSelectStore } from '~/hooks';
 import { Modal } from '~/services';
-import { IEquipment, IEquipmentAction } from '~/stores';
+import { IEquipmentAction } from '~/stores';
 import { select } from '~/utils';
 
-export function Equipment({ data, selectedMineDetector }: { data:IEquipment[], selectedMineDetector?: IEquipmentAction} ) {
+import { IMissionReportForm } from '../../mission-report-wizard.types';
+
+interface EquipmentProps {
+	initialValues: Pick<Partial<IMissionReportForm>, "mineDetectorId">
+	selectedMineDetector?: IEquipmentAction;
+}
+
+export const Equipment = observer(({ initialValues, selectedMineDetector }: EquipmentProps ) => {
+	const { equipment } = useStore();
+
+	const { initialItem, ...props} = useSelectStore(equipment, initialValues.mineDetectorId);
+	
 	const onAdd = () => Modal.show(MODALS.EQUIPMENT_WIZARD, { mode: WIZARD_MODE.CREATE})
 	
 	return <Form.Item
@@ -14,14 +27,16 @@ export function Equipment({ data, selectedMineDetector }: { data:IEquipment[], s
 		name="mineDetectorId"
 		rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 	>
-		<Select
-			options={select.append(
-				data
-					.filter(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)
-					.map((el) => ({ label: el.name, value: el.id })),
-				{ label: selectedMineDetector?.name, value: selectedMineDetector?.equipmentId }
-			)}
+		<SelectAsync
+			{...props}
 			onAdd={onAdd}
+			options={select.append(
+				equipment.listMineDetectors.map((el) => ({ label: el.name, value: el.id })),
+				[
+					{ label: selectedMineDetector?.name, value: selectedMineDetector?.equipmentId },
+					{ label: initialItem?.name, value: initialItem?.id }
+				].filter(el => !!el.value)
+			)}
 		/>
 	</Form.Item>
-}
+})

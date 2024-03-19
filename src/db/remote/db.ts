@@ -1,6 +1,6 @@
 import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
-import { TABLES } from '~/constants';
+import { TABLES, TABLES_DIR } from '~/constants';
 
 import { DBBase } from './db-base';
 import {
@@ -11,7 +11,6 @@ import {
 	IEquipmentDB,
 	IExplosiveObjectActionDB,
 	IExplosiveObjectDB,
-	IExplosiveObjectTypeDB,
 	IMapViewActionActionDB,
 	IMissionReportDB,
 	IMissionRequestDB,
@@ -24,38 +23,36 @@ import {
 
 class DBRemoteClass {
 	/** COMMON COLLECTIONS */
-	user = new DBBase<IUserDB>(TABLES.USER);
+	user = new DBBase<IUserDB>(TABLES.USER, ["email"]);
 
-	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION);
+	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"]);
 
-	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT);
-
-	explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE);
+	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"]);
 
 	/** ORGANIZATION SUBCOLLECTION */
-	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE);
+	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"]);
 
 	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION);
 
 	mapViewAction = new DBBase<IMapViewActionActionDB>(TABLES.MAP_VIEW_ACTION);
 
-	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT);
+	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"]);
 
-	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST);
+	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ["number"]);
 
-	order = new DBBase<IOrderDB>(TABLES.ORDER);
+	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"]);
 
 	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
 
-	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT);
+	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
 
 	transportAction = new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION);
 
-	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT);
+	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT, ["name"]);
 
 	equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION);
 
-	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT);
+	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ["name"]);
 
 	batch:WriteBatch | null = null;
 
@@ -63,8 +60,8 @@ class DBRemoteClass {
 
 	dropDb  = () => Promise.resolve();
 
-	setRootCollection(id:string){
-		const rootCollection = `${TABLES.ORGANIZATION_DATA}/${id}`;
+	setOrganizationId(id:string){
+		const rootCollection = `${TABLES_DIR.ORGANIZATION_DATA}/${id}`;
 
 		this.employee.setRootCollection(rootCollection);
 		this.employeeAction.setRootCollection(rootCollection);
@@ -80,9 +77,28 @@ class DBRemoteClass {
 		this.document.setRootCollection(rootCollection);
 	};
 
+	removeOrganizationId(){
+		this.employee.removeRootCollection();
+		this.employeeAction.removeRootCollection();
+		this.mapViewAction.removeRootCollection();
+		this.missionReport.removeRootCollection();
+		this.missionRequest.removeRootCollection();
+		this.order.removeRootCollection();
+		this.explosiveObjectAction.removeRootCollection();
+		this.transport.removeRootCollection();
+		this.transportAction.removeRootCollection();
+		this.equipment.removeRootCollection();
+		this.equipmentAction.removeRootCollection();
+		this.document.removeRootCollection();
+	};
+
 	private setBatch(batch:WriteBatch | null){
 		this.batch = batch;
 		
+		this.user.setBatch(batch);
+		this.organization.setBatch(batch);
+		this.explosiveObject.setBatch(batch);
+
 		this.employee.setBatch(batch);
 		this.employeeAction.setBatch(batch);
 		this.mapViewAction.setBatch(batch);

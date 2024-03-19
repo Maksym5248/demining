@@ -4,13 +4,10 @@ import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
 import { IOrderDTO, IOrderDTOParams, IOrderPreviewDTO } from '~/api';
 
-import { createEmployeeAction, IEmployeeActionValue } from "../../../employee"
-
-
 export interface IOrderValue {
   id: string,
   signedAt: Dayjs,
-  signedByAction?: IEmployeeActionValue,
+  signedByAction?: string,
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
@@ -47,5 +44,5 @@ export const createOrderPreview = (order: IOrderPreviewDTO): IOrderValue => ({
 
 export const createOrder = (order: IOrderDTO): IOrderValue => ({
 	...createOrderPreview(order),
-	signedByAction: order?.signedByAction ? createEmployeeAction(order.signedByAction) : undefined,
+	signedByAction: order?.signedByAction.id,
 });

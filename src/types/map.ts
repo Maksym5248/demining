@@ -1,10 +1,14 @@
-export interface ILatLng {
+export interface IPoint {
     lat: number, 
 	lng: number,
 }
 
 export interface ICircle {
-    center: ILatLng,
+    center: IPoint,
     radius: number
+}
+
+export interface IPolygon {
+    points: IPoint[],
 }
 

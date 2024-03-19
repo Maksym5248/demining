@@ -36,11 +36,18 @@ export const squadInput = [
 ]
 
 export const mapViewInput = {
-	"markerLat": 50.4032592,
-	"markerLng": 30.519838,
-	"circleCenterLat": 50.40330119,
-	"circleCenterLng": 30.519830598,
-	"circleRadius": 33.424996681,
+	polygon: null,
+	"marker": {
+		"lat": 50.4032592,
+		"lng": 30.519838,
+	},
+	"circle": {
+		"center": {
+			"lat": 50.40330119,
+			"lng": 30.519830598,
+		},
+		"radius": 33.424996681
+	},
 	"zoom": 18,
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
@@ -111,11 +118,18 @@ const missionRequestDTO = {
 const MRmapViewDTO = {
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
-	"markerLat": 50.4032592,
-	"markerLng": 30.519838,
-	"circleCenterLat": 50.40330119,
-	"circleCenterLng": 30.519830598,
-	"circleRadius": 33.424996681,
+	polygon: null,
+	"marker": {
+		"lat": 50.4032592,
+		"lng": 30.519838,
+	},
+	"circle": {
+		"center": {
+			"lat": 50.40330119,
+			"lng": 30.519830598,
+		},
+		"radius": 33.424996681
+	},
 	"zoom": 18,
 	"id": "MAP_VIEW_ACTION-359e894a-d903-4573-9954-3ab4e784c8df",
 	"createdAt": dates.toDateServer(new Date("2024-02-04T17:20:17.496Z")),
@@ -265,13 +279,7 @@ export const MRExplosiveObjectActionDTO = {
 	"isDiscovered": true,
 	"isTransported": true,
 	"isDestroyed": false,
-	"type": {
-		"name": "ІМ",
-		"fullName": "Інженерні міни",
-		"id": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9",
-		"createdAt":  dates.toDateServer(new Date("2024-02-04T17:16:22.004Z")),
-		"updatedAt":  dates.toDateServer(new Date("2024-02-04T17:16:22.004Z")),
-	}
+	"typeId": "EXPLOSIVE_OBJECT_TYPE-6f899613-2221-4a91-9e05-c12fa698b1e9"
 }
 
 export const MRExplosiveObjectActionDTO2 = {
@@ -391,8 +399,6 @@ export const transportActionsDB = [...missionReportDTO.transportActions];
 
 export const equipmentActionsDB = [...missionReportDTO.equipmentActions];
 
-export const explosiveObjectActionsDB = missionReportDTO.explosiveObjectActions.map(el => ({...el, typeId: el.type.id}));
-
-export const explosiveObjectTypeDB =  missionReportDTO.explosiveObjectActions.map(el => el.type);
+export const explosiveObjectActionsDB = missionReportDTO.explosiveObjectActions.map(el => ({...el, typeId: el.typeId}));
 
 export const orderSignedByActionDB =  orderDTO.signedByAction;

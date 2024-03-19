@@ -3,34 +3,41 @@ import { message } from 'antd';
 
 import { CreateValue } from '~/types'
 import { Api, IOrderPreviewDTO } from '~/api'
+import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
+import { createEmployeeAction } from '../employee';
 
 const Store = types
 	.model('OrderStore', {
 		collection: createCollection<IOrder, IOrderValue>("Orders", Order),
-		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 20 }),
+		list: createList<IOrder>("OrdersList", safeReference(Order), { pageSize: 10 }),
+		searchList: createList<IOrder>("OrderSearchList", safeReference(Order), { pageSize: 10 }),
 	}).actions((self) => ({
-		push: (values: IOrderPreviewDTO[]) => {
-			values.forEach((el) => {
-				const order = createOrderPreview(el);
+		append(res: IOrderPreviewDTO[], isSearch: boolean, isMore?:boolean){
+			const list = isSearch ? self.searchList : self.list;
+			if(isSearch && !isMore) self.searchList.clear();
 
-				if(!self.collection.has(order.id)){
-					self.collection.set(order.id, order);
-					self.list.push(order.id);
-				}
+			list.checkMore(res.length);
+
+			res.forEach((el) => {
+				const value = createOrderPreview(el);
+				self.collection.set(value.id, value);
+				if(!list.includes(value.id)) list.push(value.id);
 			})
 		}
 	}));
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function addEmployeeFlow({ flow, self }) {
+const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValueParams>) => async function fn({ flow, self, root }) {
 	try {
 		flow.start();
 
 		const res = await Api.order.create(createOrderDTO(data));
 
 		const order = createOrder(res);
+
+		root.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction))
 
 		self.collection.set(order.id, order);
 		self.list.unshift(order.id);
@@ -43,7 +50,7 @@ const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IOrderValu
 	}
 });
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
+const remove = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {
 	try {
 		flow.start();
 		await Api.order.remove(id);
@@ -57,15 +64,11 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self, root }) {    
 	try {
 		flow.start();
 		const res = await Api.order.get(id);
-
+		root.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction))
 		self.collection.set(res.id, createOrder(res));
 
 		flow.success();
@@ -75,16 +78,21 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 	}
 });
 
-const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEmployeeFlow({ flow, self }) {
-	if(flow.isLoaded){
-		return
-	}
-    
+const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
 	try {
-		flow.start();
-		const res = await Api.order.getList();
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
 
-		self.push(res);
+		if(!isSearch && list.length) return;
+
+		flow.start();
+
+		const res = await Api.order.getList({
+			search,
+			limit: list.pageSize,
+		});
+
+		self.append(res, isSearch);
 
 		flow.success();
 	} catch (err) {
@@ -93,4 +101,28 @@ const fetchList = asyncAction<Instance<typeof Store>>(() => async function addEm
 	}
 });
 
-export const OrderStore = Store.props({ create, remove, fetchList, fetchItem })
+const fetchListMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
+	try {
+		const isSearch = !!search;
+		const list = isSearch ? self.searchList : self.list
+
+		if(!list.isMorePages) return;
+
+		flow.start();
+
+		const res = await Api.order.getList({
+			search,
+			limit: list.pageSize,
+			startAfter: dates.toDateServer(list.last.createdAt),
+		});
+
+		self.append(res, isSearch, true);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const OrderStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem })

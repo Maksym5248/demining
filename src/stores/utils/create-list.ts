@@ -15,6 +15,8 @@ export function createList<T>(
 		types
 			.model(name, {
 				_array: types.optional(types.array(Model), []),
+				_map: types.optional(types.map(types.boolean), {}),
+				_isMorePages: true,
 				pages: 0,
 				pageSize,
 			})
@@ -39,31 +41,23 @@ export function createList<T>(
 				get isEmpty() {
 					return !!self._array.length;
 				},
-			}))
-			.views((self) => ({
-				get currentPage() {
-					if (self.length === 0 || self.pages === undefined) {
-						return 0;
-					}
 
-					return Math.ceil(self.length / self.pageSize);
-				},
+				includes(id:string){
+					return !!self._map.get(id);
+				}
 			}))
 			.views((self) => ({
 				get isMorePages() {
-					return !(self.currentPage >= self.pages && self.pages !== undefined);
+					return self._isMorePages;
 				},
 			}))
 			.views((self) => ({
-				get nextPage() {
-					return self.isMorePages ? self.currentPage + 1 : 0;
-				},
 				byIndex(index: number) {
 					return self._array[index];
 				},
 
-				includes(id: string) {
-					return self._array.includes(id);
+				includes(id:string){
+					return !!self._map.get(id);
 				},
 
 				findIndex(id: string) {
@@ -72,32 +66,54 @@ export function createList<T>(
 			}))
 
 			.actions((self) => ({
-				setPages(pages: number) {
-					self.pages = pages;
-				},
+				checkMore(length: number) {
+					if(length < self.pageSize){
+						self._isMorePages = false;
 
+					} else {
+						self._isMorePages = true;
+					}
+				},
+				setMore(value: boolean) {
+					self._isMorePages = value;
+				},
 				push(...ids: string[]) {
+					ids.forEach(id => {
+						self._map.set(id, true)
+					})
 					self._array.push(...ids);
 				},
 
 				unshift(...ids: string[]) {
+					ids.forEach(id => {
+						self._map.delete(id)
+					})
+
 					self._array.unshift(...ids);
 				},
 
 				replace(index: number, id: string) {
+					const value = self._array[index];
+					self._map.delete(value.id);
+					self._map.set(id, true)
 					self._array[index] = id;
 				},
 
 				remove(index: number) {
+					const value = self._array[index];
+					self._map.delete(value.id);
+
 					self._array.splice(index, 1);
 				},
 
 				removeById(id: string) {
+					self._map.delete(id);
 					const index = self._array.findIndex(item => id === item.id);
 					self._array.splice(index, 1);
 				},
 
 				clear() {
+					self._map.clear();
 					self._array.clear();
 				},
 			})),

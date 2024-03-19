@@ -65,3 +65,7 @@ export const routesInfo = {
 		title: "Очікування підтвердження",
 	},
 }
+
+export enum SEARCH_PARAMS {
+	SEARCH_BY = "searchBy"
+}

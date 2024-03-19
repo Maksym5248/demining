@@ -1,6 +1,6 @@
 import omit from "lodash/omit";
 
-import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB } from '~/db'
+import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB, IQuery } from '~/db'
 import { CreateValue } from '~/types'
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
 
@@ -9,8 +9,6 @@ import { IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } 
 interface IItemId {
 	id: string
 }
-
-const findById = <T extends IItemId>(id: string, data: T[]) => data.find(el => el.id === id) as T;
 
 const creatorAction = (document:ILinkedToDocumentDB) => <B, T extends IItemId>(
 	sourceValueId: string,
@@ -49,7 +47,7 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		mapViewActionArr,
 		employeesAction,
 		transportActions,
-		explosiveObjectsActions,
+		explosiveObjectActions,
 		equipmentActions,
 		signedByActionOrderArr
 	] = await Promise.all([
@@ -89,12 +87,6 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 	if(!approvedByAction) throw new Error("there is no approvedByAction");
 	if(!squadLeaderAction) throw new Error("there is no squadLeaderAction");
 
-	const explosiveObjectsActionTypes = await DB.explosiveObjectType.select({
-		where: {
-			id: { in: explosiveObjectsActions.map(el => el.typeId) }
-		}
-	});
-
 	return {
 		...missionReport,
 		order: {
@@ -106,21 +98,19 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		approvedByAction,
 		transportActions,
 		equipmentActions,
-		explosiveObjectActions: explosiveObjectsActions.map(({ typeId, ...value}) => ({
-			...value,
-			type: findById(typeId, explosiveObjectsActionTypes)
-		})),
+		explosiveObjectActions,
 		squadLeaderAction,
 		squadActions,
 	}
 };
 
-const getList = async ():Promise<IMissionReportPreviewDTO[]> => {
+const getList = async (query?: IQuery):Promise<IMissionReportPreviewDTO[]> => {
 	const list = await DB.missionReport.select({
 		order: {
-			by: "number",
-			type: "desc",
-		}
+			by: "createdAt",
+			type: "desc"
+		},
+		...(query ?? {})
 	});
 
 	return list.map(({ missionRequestId, orderId, ...rest }) => rest);
