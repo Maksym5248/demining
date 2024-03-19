@@ -3,13 +3,13 @@ import { Dayjs } from 'dayjs';
 import { dates } from '~/utils';
 import { IMapViewActionDTO, IMapViewActionDTOParams } from '~/api';
 import { ILinkedToDocumentDB } from '~/db';
-import { ICircle, ILatLng } from '~/types';
+import { ICircle, IPoint } from '~/types';
 
 
 
 export interface IMapViewActionValue extends ILinkedToDocumentDB {
     id: string;
-    marker?: ILatLng;
+    marker?: IPoint;
     circle?: ICircle;
     zoom: number;
     createdAt: Dayjs;
@@ -18,7 +18,7 @@ export interface IMapViewActionValue extends ILinkedToDocumentDB {
 
 export interface IMapViewActionValueParams extends IMapViewActionValue {
 	id: string;
-    marker: ILatLng;
+    marker: IPoint;
     circle?: ICircle;
     zoom: number;
 };
@@ -30,8 +30,10 @@ export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewAct
 		lng: value?.marker?.lng
 	} : null,
 	circle: value?.circle ? {
-		lat: value.circle.center.lat,
-		lng: value.circle.center.lng,
+		center: {
+			lat: value.circle.center.lat,
+			lng: value.circle.center.lng,
+		},
 		radius: value.circle.radius,
 	} : null,
 	zoom: value?.zoom ?? 1,
@@ -47,8 +49,8 @@ export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => 
 	} : undefined,
 	circle: value?.circle ? {
 		center: {
-			lat: value.circle.lat,
-			lng: value.circle.lng,
+			lat: value.circle.center.lat,
+			lng: value.circle.center.lng,
 		},
 		radius: value.circle.radius,
 	} : undefined,

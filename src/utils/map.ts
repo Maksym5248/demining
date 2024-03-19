@@ -1,4 +1,4 @@
-import { ICircle, ILatLng } from "~/types";
+import { ICircle, IPoint } from "~/types";
 
 const getLatLngLiteral = (latLng: google.maps.LatLng) => ({
 	lng: latLng?.lng(),
@@ -56,7 +56,7 @@ function adjustLatLngByPixelOffset(
 
 };
 
-function getLatLng(latLang: google.maps.LatLngLiteral):ILatLng {
+function getLatLng(latLang: google.maps.LatLngLiteral):IPoint {
 	return {
 		lat: latLang.lat,
 		lng: latLang.lng,
@@ -77,7 +77,7 @@ function getCircle(circle: { center: google.maps.LatLngLiteral, radius: number }
 	}
 };
 
-function getMapLatLng(latLang: ILatLng) {
+function getMapLatLng(latLang: IPoint) {
 	return latLang
 };
 

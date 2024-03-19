@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
-import { ICircle, ILatLng } from "~/types";
+import { ICircle, IPoint } from "~/types";
 
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
@@ -87,22 +87,24 @@ export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
 }
 
 export interface IMapViewAction {
-    marker?: ILatLng;
+    marker?: IPoint;
     circle?: ICircle;
     zoom: number;
 }
 
 
-export interface IMarkerDB {
+export interface IPointDB {
     lat: number;
     lng: number;
 }
 
+export interface IMarkerDB extends IPointDB {}
+
 export interface ICircleDB {
-    lat: number;
-    lng: number;
+    center: IPointDB;
     radius: number;
 }
+
 export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
     marker: IMarkerDB | null;

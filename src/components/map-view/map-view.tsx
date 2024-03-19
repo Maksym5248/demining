@@ -8,7 +8,7 @@ import { CONFIG } from "~/config";
 import { Icon } from "~/components";
 import { useCurrentLocation } from "~/hooks";
 import { mapUtils} from "~/utils";
-import { ICircle, ILatLng } from "~/types/map";
+import { ICircle, IPoint } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
 import { mathUtils } from "~/utils/math";
 
@@ -28,18 +28,18 @@ const defaultCenter = {
 }
 
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
-	initialMarker?: ILatLng | undefined;
+	initialMarker?: IPoint | undefined;
 	initialCircle?: ICircle | undefined;
 	initialZoom?: number;
 	onChange: (value: {
-		marker?: ILatLng,
+		marker?: IPoint,
 		circle?: ICircle,
 		zoom: number,
 	}) => void;
 	type?: "picture" | "edit";
 	date?: Dayjs;
 	explosiveObjects?: string[];
-	position?: ILatLng;
+	position?: IPoint;
 }
 
 type IMarkerState = google.maps.LatLngLiteral | undefined;

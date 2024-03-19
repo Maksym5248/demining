@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { publicIpv4 } from "public-ip";
 
-import { ILatLng } from '~/types';
+import { IPoint } from '~/types';
 
 import {
 	IIpLocation,
@@ -15,7 +15,7 @@ class ExternalApiClass {
 		return res?.data;
 	};
 
-	getGeocode(value: ILatLng):Promise<string> {
+	getGeocode(value: IPoint):Promise<string> {
 		return new Promise((resolve, reject) => {
 			const geocoder = new google.maps.Geocoder();
 			const latlng = new google.maps.LatLng(value.lat, value.lng);
