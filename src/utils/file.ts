@@ -36,11 +36,11 @@ function getPath(id:string){
 	return id
 };
 
-async function saveAsUser(blob: Blob, id:string){
+async function saveAsUser(blob: Blob, name:string, format = "docx"){
 	const blobUrl = URL.createObjectURL(blob);
 
 	let link:HTMLAnchorElement = document.createElement("a");
-	link.download = `${id}.docx`;
+	link.download = `${name}.${format}`;
 	link.href = blobUrl;
 
 	document.body.appendChild(link);

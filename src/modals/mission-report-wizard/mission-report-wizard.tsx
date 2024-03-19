@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { Form, Drawer, Divider, Spin, message} from 'antd';
+import { Form, Drawer, Divider, Spin, message, Button} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
-import { dates } from '~/utils';
-import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
-import { Select, WizardButtons, WizardFooter } from '~/components';
+import { dates, mapUtils } from '~/utils';
+import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE, MIME_TYPE } from '~/constants';
+import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 import { fileUtils } from '~/utils/file';
 import { IEmployee, IMissionReport, IOrder } from '~/stores';
@@ -152,6 +152,13 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		}
 	};
 
+	const onLoadKmlFile = () => {
+		const { polygon, circle, marker } = currentMissionReport?.mapView ?? {};
+
+		const kml = mapUtils.generateKML(marker, circle, polygon);
+		fileUtils.saveAsUser(new Blob([kml], { type: MIME_TYPE.KML }), currentMissionReport?.docName ?? "", "kml");
+	}
+
 	const onFinishCreate = async (values: IMissionReportForm) => {
 		await missionReport.create.run({
 			...values,
@@ -232,6 +239,11 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 							placeholder="Виберіть шаблон"
 							options={document.missionReportTemplatesList.map((el) => ({ label: el.name, value: el.id }))}
 						/>
+					)}
+					{!wizard.isCreate && (
+						<Button icon={<Icon.DownloadOutlined />} onClick={onLoadKmlFile}>
+							Kml
+						</Button>
 					)}
 				</WizardButtons>
 			}
