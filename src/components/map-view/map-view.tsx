@@ -1,14 +1,14 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Divider, Input, Spin, Typography } from "antd";
-import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle, Polyline, OverlayViewF } from '@react-google-maps/api';
+import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, DrawingManager, Autocomplete, Marker, Circle, Polyline, OverlayViewF, Polygon } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
 import { CONFIG } from "~/config";
 import { Icon } from "~/components";
 import { useCurrentLocation } from "~/hooks";
 import { mapUtils} from "~/utils";
-import { ICircle, IPoint } from "~/types/map";
+import { ICircle, IPoint, IPolygon } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
 import { mathUtils } from "~/utils/math";
 
@@ -30,8 +30,10 @@ const defaultCenter = {
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	initialMarker?: IPoint | undefined;
 	initialCircle?: ICircle | undefined;
+	initialPolygon?: IPolygon | undefined;
 	initialZoom?: number;
 	onChange: (value: {
+		polygon?: IPolygon,
 		marker?: IPoint,
 		circle?: ICircle,
 		zoom: number,
@@ -44,20 +46,10 @@ interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerS
 
 type IMarkerState = google.maps.LatLngLiteral | undefined;
 type ICircleState = { center: google.maps.LatLngLiteral, radius: number } | undefined;
+type IPolygonState = { points: google.maps.LatLngLiteral[] } | undefined;
 
-function Component({
-	initialMarker,
-	initialCircle,
-	initialZoom,
-	onChange,
-	type = "edit",
-	date,
-	explosiveObjects,
-	position,
-	...rest
-}: IMapViewProps) {
-	const isPictureType = type === "picture";
 
+const useMapOptions = ({ isPictureType}: { isPictureType: boolean }) => {
 	const mapOptions = {
 		streetViewControl: false,
 		scaleControl: !isPictureType,
@@ -82,6 +74,15 @@ function Component({
 		editable: !isPictureType
 	}
 
+	const polygonOptions = {
+		fillOpacity: 0.3,
+		fillColor: '#ff0000',
+		strokeColor: '#ff0000',
+		strokeWeight: 2,
+		draggable: !isPictureType,
+		editable: !isPictureType
+	}
+
 	const polylineOptions = {
 		fillOpacity: 0.3,
 		fillColor: '#fff',
@@ -97,25 +98,56 @@ function Component({
 	const drawingManagerOptions  = {
 		circleOptions,
 		markerOptions,
+		polygonOptions,
 		drawingControl: !isPictureType,
 		drawingControlOptions: {
 			position: window?.google?.maps?.ControlPosition?.TOP_LEFT,
 			drawingModes: [
 				window?.google?.maps?.drawing?.OverlayType?.CIRCLE,
 				window?.google?.maps?.drawing?.OverlayType?.MARKER,
+				window?.google?.maps?.drawing?.OverlayType?.POLYGON,
 			]
 		}
 	}
+
+	return {
+		mapOptions,
+		polygonOptions,
+		circleOptions,
+		polylineOptions,
+		drawingManagerOptions
+	}
+}
+function Component({
+	initialMarker,
+	initialCircle,
+	initialPolygon,
+	initialZoom,
+	onChange,
+	type = "edit",
+	date,
+	explosiveObjects,
+	position,
+	...rest
+}: IMapViewProps) {
+	const isPictureType = type === "picture";
+
+	const {
+		 mapOptions, polygonOptions, circleOptions, polylineOptions, drawingManagerOptions
+	 } = useMapOptions({ isPictureType });
 
 	const mapRef = useRef<google.maps.Map>();
 	const autocompleteRef = useRef<google.maps.places.Autocomplete>();
 	const drawingManagerRef = useRef<google.maps.drawing.DrawingManager>();
 	const circleRef = useRef<google.maps.Circle>();
+	const polygonRef = useRef<google.maps.Polygon>();
 
 	const interval = useRef<NodeJS.Timeout>();
 
-	const [marker, setMarker] = useState<IMarkerState>(initialMarker ? mapUtils.getMapLatLng(initialMarker): undefined);
+	const [marker, setMarker] = useState<IMarkerState>(initialMarker ? mapUtils.getMapPoint(initialMarker): undefined);
 	const [circle, setCircle] = useState<ICircleState>(initialCircle ? mapUtils.getMapCircle(initialCircle): undefined);
+	const [polygon, setPolygon] = useState<IPolygonState>(initialPolygon ? mapUtils.getMapPolygon(initialPolygon): undefined);
+
 	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 	const [isVisibleMap, setVisibleMap] = useState(false);
 
@@ -153,7 +185,7 @@ function Component({
 		}
 
 		if(geometry?.location){
-			setMarker(mapUtils.getLatLngLiteral(geometry.location));
+			setMarker(mapUtils.getPointLiteral(geometry.location));
 		}
 
 		mapRef?.current?.fitBounds(bounds);
@@ -167,31 +199,49 @@ function Component({
 		circleRef.current = newCircleRef;
 	}
 
+	const onLoadPolygon = (newPolygonRef: google.maps.Polygon) => {
+		polygonRef.current = newPolygonRef;
+	}
+
+	const _onChange = (value: { polygon?: IPolygon, marker?: IPoint, circle?: ICircle}) => {
+		onChange?.({
+			polygon: polygon ? mapUtils.getPolygon(polygon) : undefined,
+			circle: circle ? mapUtils.getCircle(circle) : undefined,
+			marker: marker ? mapUtils.getPoint(marker) : undefined,
+			zoom,
+			...value
+		})
+	}
+
 	const onOverlayComplete = (event: google.maps.drawing.OverlayCompleteEvent) => {
 		if (event.type === window?.google?.maps?.drawing?.OverlayType.MARKER) {
-			const newMarker = mapUtils.getLatLngLiteral((event.overlay as google.maps.Marker)?.getPosition()  as google.maps.LatLng);
+			const newValue = mapUtils.getPointLiteral((event.overlay as google.maps.Marker)?.getPosition()  as google.maps.LatLng);
 			event.overlay?.setMap(null);
-			setMarker(newMarker);
-			mapRef?.current?.setCenter(newMarker);
-			onChange?.({
-				marker: mapUtils.getLatLng(newMarker),
-				circle: circle ? mapUtils.getCircle(circle) : undefined,
-				zoom 
-			})
+			setMarker(newValue);
+			mapRef?.current?.setCenter(newValue);
+			_onChange?.({ marker: mapUtils.getPoint(newValue) })
 		}
 		if (event.type === window?.google?.maps?.drawing?.OverlayType.CIRCLE) {
 			const newValue =  {
-				center: mapUtils.getLatLngLiteral((event.overlay as google.maps.Circle)?.getCenter() as google.maps.LatLng),
+				center: mapUtils.getPointLiteral((event.overlay as google.maps.Circle)?.getCenter() as google.maps.LatLng),
 				radius: (event.overlay as google.maps.Circle)?.getRadius()
 			}
 
 			event.overlay?.setMap(null);
 			setCircle(newValue);
-			onChange?.({
-				marker: marker ? mapUtils.getLatLng(marker) : undefined,
-				circle: mapUtils.getCircle(newValue),
-				zoom 
-			})
+			_onChange?.({ circle: mapUtils.getCircle(newValue) }) // Fixed the property name from 'circle' to 'circe'
+		}
+
+		if (event.type === window?.google?.maps?.drawing?.OverlayType.POLYGON) {
+			const newValue = {
+				points: (event.overlay instanceof google.maps.Polygon)
+				 ? event.overlay.getPath().getArray().map(point => mapUtils.getPointLiteral(point))
+					: [],
+			};
+
+			event.overlay?.setMap(null);
+			setPolygon(newValue);
+			_onChange?.({ polygon: mapUtils.getPolygon(newValue) })
 		}
 	}
 
@@ -204,7 +254,7 @@ function Component({
 	
 		setZoom(mapRef.current.getZoom() as number);
 		onChange?.({
-			marker: marker ? mapUtils.getLatLng(marker) : undefined,
+			marker: marker ? mapUtils.getPoint(marker) : undefined,
 			circle: circle ? mapUtils.getCircle(circle) : undefined,
 			zoom: newZoom
 		})
@@ -219,7 +269,7 @@ function Component({
 			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
 			const circleRadius = circleRef.current?.getRadius();
 
-			setCircle({ center: mapUtils.getLatLngLiteral(circleCenter), radius: circleRadius})
+			setCircle({ center: mapUtils.getPointLiteral(circleCenter), radius: circleRadius})
 		}
 	}, []);
 	
@@ -228,14 +278,15 @@ function Component({
 			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
 			const circleRadius = circleRef.current?.getRadius();
 
-			setCircle({ center: mapUtils.getLatLngLiteral(circleCenter), radius: circleRadius})
+			setCircle({ center: mapUtils.getPointLiteral(circleCenter), radius: circleRadius})
 		}
 	}, []);
 
 	const callout = useMemo(() =>
-		mapUtils.adjustLatLngByPixelOffset(marker, 150, -150, mapRef.current, zoom),
+		mapUtils.adjustPointByPixelOffset(marker, 150, -150, mapRef.current, zoom),
 	[marker, mapRef.current, zoom, isVisibleMap]);
 
+	const isVisiblePolygon = !!polygon?.points.length;
 	const isVisibleCircle = !!circle?.center && circle?.radius;
 	const isVisibleCircleMetaData = isVisibleCircle && !isPictureType;
 	const isVisibleMarker = !!marker;
@@ -261,6 +312,15 @@ function Component({
 					onOverlayComplete={onOverlayComplete}
 					options={drawingManagerOptions}
 				/>
+				{isVisiblePolygon && (
+					<Polygon
+						onLoad={onLoadPolygon}
+					   options={polygonOptions} 
+					   {...(circle ?? {})}
+					   paths={polygon?.points}
+					   onDragEnd={onDragEnd}
+					/>
+				) }
 				{isVisibleCircle && (
 					<Circle
 						onLoad={onLoadCircle}

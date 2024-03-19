@@ -8,3 +8,7 @@ export interface ICircle {
     radius: number
 }
 
+export interface IPolygon {
+    points: IPoint[],
+}
+

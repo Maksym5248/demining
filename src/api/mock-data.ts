@@ -36,6 +36,7 @@ export const squadInput = [
 ]
 
 export const mapViewInput = {
+	polygon: null,
 	"marker": {
 		"lat": 50.4032592,
 		"lng": 30.519838,
@@ -117,6 +118,7 @@ const missionRequestDTO = {
 const MRmapViewDTO = {
 	"documentId": "MISSION_REPORT-ad4a59db-951a-458f-b4aa-e2c056c3225f",
 	"documentType": DOCUMENT_TYPE.MISSION_REPORT,
+	polygon: null,
 	"marker": {
 		"lat": 50.4032592,
 		"lng": 30.519838,

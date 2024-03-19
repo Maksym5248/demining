@@ -105,10 +105,15 @@ export interface ICircleDB {
     radius: number;
 }
 
+export interface IPolygonDB {
+    points: IPointDB[];
+}
+
 export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
     id: string;
     marker: IMarkerDB | null;
     circle: ICircleDB | null;
+    polygon: IPolygonDB | null;
     zoom: number;
     createdAt: Timestamp;
     updatedAt: Timestamp;

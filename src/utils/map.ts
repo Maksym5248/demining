@@ -1,6 +1,6 @@
-import { ICircle, IPoint } from "~/types";
+import { ICircle, IPoint, IPolygon } from "~/types";
 
-const getLatLngLiteral = (latLng: google.maps.LatLng) => ({
+const getPointLiteral = (latLng: google.maps.LatLng) => ({
 	lng: latLng?.lng(),
 	lat: latLng?.lat(),
 })
@@ -16,10 +16,10 @@ const getComputedOffset = (latLng: google.maps.LatLngLiteral  | undefined, dista
 		return null
 	}
 
-	return getLatLngLiteral(value)
+	return getPointLiteral(value)
 }
 
-function adjustLatLngByPixelOffset(
+function adjustPointByPixelOffset(
 	latLng: google.maps.LatLngLiteral | undefined | null,
 	xOffset:number,
 	yOffset:number,
@@ -52,16 +52,10 @@ function adjustLatLngByPixelOffset(
 		return null
 	}
 
-	return getLatLngLiteral(value)
+	return getPointLiteral(value)
 
 };
 
-function getLatLng(latLang: google.maps.LatLngLiteral):IPoint {
-	return {
-		lat: latLang.lat,
-		lng: latLang.lng,
-	}
-};
 
 function getMapCircle(circle: ICircle) {
 	return {
@@ -70,23 +64,45 @@ function getMapCircle(circle: ICircle) {
 	}
 };
 
+function getMapPolygon(polygon: IPolygon) {
+	return {
+		points: polygon.points,
+	}
+};
+
+function getPoint(latLang: google.maps.LatLngLiteral):IPoint {
+	return {
+		lat: latLang.lat,
+		lng: latLang.lng,
+	}
+};
+
+
 function getCircle(circle: { center: google.maps.LatLngLiteral, radius: number }):ICircle {
 	return {
-		center: getLatLng(circle.center),
+		center: getPoint(circle.center),
 		radius: circle.radius
 	}
 };
 
-function getMapLatLng(latLang: IPoint) {
+function getPolygon(polygon: { points: google.maps.LatLngLiteral[] }):IPolygon {
+	return {
+		points: polygon?.points?.map(getPoint),
+	}
+};
+
+function getMapPoint(latLang: IPoint) {
 	return latLang
 };
 
 export const mapUtils = {
-	getLatLngLiteral,
-	getLatLng,
-	getMapLatLng,
+	getPointLiteral,
+	getPoint,
+	getMapPoint,
 	getCircle,
+	getPolygon,
 	getMapCircle,
-	adjustLatLngByPixelOffset,
+	getMapPolygon,
+	adjustPointByPixelOffset,
 	getComputedOffset,
 }

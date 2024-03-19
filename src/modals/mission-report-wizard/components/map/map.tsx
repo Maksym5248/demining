@@ -43,8 +43,9 @@ export function Map({ mode }: Props){
 						return (
 							<MapView
 								type={mode === WIZARD_MODE.VIEW  ? "picture": "edit"}
-								initialCircle={mapView?.circle ?? undefined}
-								initialMarker={mapView?.marker ?? undefined}
+								initialCircle={mapView?.circle}
+								initialMarker={mapView?.marker}
+								initialPolygon={mapView?.polygon}
 								initialZoom={mapView?.zoom}
 						 		mapContainerStyle={mapContainerStyle}
 								date={executedAt}
@@ -55,6 +56,12 @@ export function Map({ mode }: Props){
 								})}
 								onChange={async (value) => {
 									setFieldValue("mapView", {
+										polygon: value.polygon ? {
+											points: value.polygon.points.map(el => ({
+												lat: mathUtils.toFixed(el.lat, 9),
+												lng: mathUtils.toFixed(el.lng, 9),
+											}))
+										} : undefined,
 										marker: {
 											lat: mathUtils.toFixed(value.marker?.lat, 9),
 											lng: mathUtils.toFixed(value.marker?.lng, 9),
