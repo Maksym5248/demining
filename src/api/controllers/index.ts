@@ -1,6 +1,7 @@
 export * from "./employee";
 export * from "./equipment";
 export * from "./explosive-object";
+export * from "./explosive";
 export * from "./mission-report";
 export * from "./mission-request";
 export * from "./order";

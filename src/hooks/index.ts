@@ -2,6 +2,7 @@ export * from './common/useValues';
 export * from './common/useDebounce';
 export * from './context/use-store';
 export * from './store/use-select-store';
+export * from './store/use-item-store';
 export * from './use-async-effect';
 export * from './use-current-location';
 export * from './use-navigate';

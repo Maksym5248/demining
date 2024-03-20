@@ -1,0 +1,25 @@
+import { Instance } from 'mobx-state-tree';
+
+import { DOCUMENT_TYPE } from '~/constants';
+
+import { types } from '../../../../types'
+import { IExplosiveActionValue } from './explosive-action.schema';
+import { Explosive } from '../explosive';
+
+export type IExplosiveAction = Instance<typeof ExplosiveAction>
+
+const Entity = Explosive.named("ExplosiveAction").props({
+	documentType: types.enumeration(Object.values(DOCUMENT_TYPE)),
+	documentId: types.string,
+	quantity:  types.maybe(types.number),
+	weight: types.maybe(types.number),
+	name: types.string,
+	explosiveId: types.string,
+}).actions((self) => ({
+	updateFields(data: Partial<IExplosiveActionValue>) {
+		Object.assign(self, data);
+	}
+}));
+
+
+export const ExplosiveAction = Entity;

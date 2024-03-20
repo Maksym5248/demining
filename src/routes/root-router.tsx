@@ -24,7 +24,8 @@ import {
 	WaitingApprovePage,
 	OrganizationsListPage,
 	MembersListPage,
-	TemplatesListPage
+	TemplatesListPage,
+	ExplosiveListPage
 } from "~/pages"
 import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
@@ -52,6 +53,10 @@ const mainRoutes = [
 	{
 		path: ROUTES.EXPLOSIVE_OBJECT_LIST,
 		Component: ExplosiveObjectListPage,
+	},
+	{
+		path: ROUTES.EXPLOSIVE_LIST,
+		Component: ExplosiveListPage,
 	},
 	{
 		path: ROUTES.TRANSPORT_LIST,

@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
+import { EXPLOSIVE_TYPE } from "~/constants/db/explosive-type";
 import { ICircle, IPoint } from "~/types";
 
 export interface ILinkedToDocumentDB {
@@ -166,4 +167,18 @@ export interface IDocumentDB {
     mime: MIME_TYPE;
     createdAt: Timestamp;
     updatedAt: Timestamp;
+}
+
+export interface IExplosiveDB {
+    id: string;
+    name: string;
+    type: EXPLOSIVE_TYPE;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {
+    explosiveId: string;
+    weight: number | null; /* in kilograms */
+    quantity: number | null;
 }

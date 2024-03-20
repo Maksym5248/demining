@@ -2,11 +2,12 @@ import { Form, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { WizardButtons, Select, WizardFooter } from '~/components'
-import { TRANSPORT_TYPE, WIZARD_MODE } from "~/constants"
-import { useStore, useWizard } from '~/hooks'
+import { WIZARD_MODE } from "~/constants"
+import { useStore, useWizard , useItemStore } from '~/hooks'
+import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
 
-import { s } from './transport-wizard.style'
-import { ITransportForm } from './transport-wizard.types';
+import { s } from './explosive-wizard.style'
+import { IExplosiveForm } from './explosive-wizard.types';
 
 interface Props {
   id?: string;
@@ -16,36 +17,36 @@ interface Props {
 }
 
 const typeOptions = [{
-	label: "Для перевезення о/c",
-	value: TRANSPORT_TYPE.FOR_HUMANS
+	label: "Вибухова речовна",
+	value: EXPLOSIVE_TYPE.EXPLOSIVE
 }, {
-	label: "Для перевезення ВНП",
-	value: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS
+	label: "Засіб підриву",
+	value: EXPLOSIVE_TYPE.DETONATOR
 }]
 
-export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
+export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const store = useStore();
 	const wizard = useWizard({id, mode});
 
-	const transport = store.transport.collection.get(id ?? "");
+	const { isLoading, item } = useItemStore(store.explosive, id as string);
 
 	const isEdit = !!id;
-	const isLoading = !store.transport.fetchList.isLoaded && store.transport.fetchList.inProgress;
 
-	const onFinishCreate = async (values: ITransportForm) => {
-		await store.transport.create.run(values);
+	const onFinishCreate = async (values: IExplosiveForm) => {
+		await store.explosive.create.run(values);
 		hide();
 	};
 
-	const onFinishUpdate = async (values: ITransportForm) => {
-		await transport.update.run(values);
+	const onFinishUpdate = async (values: IExplosiveForm) => {
+		await item.update.run(values);
 		hide();
 	};
 
 	const onRemove = async () => {
-		store.transport.remove.run(id);
+		store.explosive.remove.run(id);
 		hide();
 	};
+
 
 	return (   
 		<Drawer
@@ -66,26 +67,19 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 				? (<Spin css={s.spin} />)
 				: (
 					<Form
-						name="transport-form"
+						name="explosive-form"
 						onFinish={isEdit ? onFinishUpdate : onFinishCreate}
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
 						disabled={wizard.isView}
-						initialValues={transport
-							? ({ ...transport})
-							: {  type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS }
+						initialValues={ item
+							? ({ ...item})
+							: {  type: EXPLOSIVE_TYPE.EXPLOSIVE }
 						}
 					>
 						<Form.Item
 							label="Назва"
 							name="name"
-							rules={[{ required: true, message: 'Прізвище є обов\'язковим полем' }]}
-						>
-							<Input placeholder="Введіть дані" />
-						</Form.Item>
-						<Form.Item
-							label="Номер автомобіля"
-							name="number"
 							rules={[{ required: true, message: 'Прізвище є обов\'язковим полем' }]}
 						>
 							<Input placeholder="Введіть дані" />

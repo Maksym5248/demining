@@ -1,11 +1,10 @@
-import { useEffect } from 'react';
-
 import { Form, Select, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { EQUIPMENT_TYPE, WIZARD_MODE } from "~/constants"
 import { useStore, useWizard } from '~/hooks'
 import { WizardButtons, WizardFooter } from '~/components';
+import { useItemStore } from '~/hooks/store/use-item-store';
 
 import { s } from './equipment-wizard.style'
 import { IEquipmentForm } from './equipment-wizard.types';
@@ -26,14 +25,9 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 	const store = useStore();
 	const wizard = useWizard({id, mode});
 
-	const equipment = store.equipment.collection.get(id as string);
-
-	useEffect(() => {
-		store.equipment.fetchList.run();
-	}, []);
+	const { isLoading, item} = useItemStore(store.equipment, id as string);
 
 	const isEdit = !!id;
-	const isLoading = !store.equipment.fetchList.isLoaded && store.equipment.fetchList.inProgress;
 
 	const onFinishCreate = async (values: IEquipmentForm) => {
 		await store.equipment.create.run(values);
@@ -41,7 +35,7 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 	};
 
 	const onFinishUpdate = async (values: IEquipmentForm) => {
-		await equipment.update.run(values);
+		await item?.update.run(values);
 		hide();
 	};
 
@@ -74,8 +68,8 @@ export const EquipmentWizardModal  = observer(({ id, isVisible, hide, mode }: Pr
 						labelCol={{ span: 8 }}
 						wrapperCol={{ span: 16 }}
 						disabled={wizard.isView}
-						initialValues={equipment
-							? ({ ...equipment})
+						initialValues={item
+							? ({ ...item})
 							: {  type: EQUIPMENT_TYPE.MINE_DETECTOR }
 						}
 					>

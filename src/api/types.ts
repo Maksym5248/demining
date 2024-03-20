@@ -16,7 +16,9 @@ import {
 	IMapViewActionActionDB,
 	IUserDB,
 	IOrganizationDB,
-	IDocumentDB
+	IDocumentDB,
+	IExplosiveActionDB,
+	IExplosiveDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -37,6 +39,10 @@ export type IMissionRequestDTO = IMissionRequestDB
 export interface IExplosiveObjectDTO extends IExplosiveObjectDB {};
 
 export interface IExplosiveObjectActionDTO extends IExplosiveObjectActionDB  {};
+
+export interface IExplosiveDTO extends IExplosiveDB {};
+
+export interface IExplosiveActionDTO extends IExplosiveActionDB {};
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
 export interface IExplosiveObjectActionDTOParams {

@@ -11,7 +11,8 @@ import {
 	DocxPreviewModal,
 	OrganizationWizardModal,
 	MemberWizardModal,
-	TemplateWizardModal
+	TemplateWizardModal,
+	ExplosiveWizardModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -45,6 +46,9 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.TEMPLATE_WIZARD]: {
 		renderComponent: (props: any) => <TemplateWizardModal {...props} />,
+	},
+	[MODALS.EXPLOSIVE_WIZARD]: {
+		renderComponent: (props: any) => <ExplosiveWizardModal {...props} />,
 	},
 	[MODALS.MEMBER_WIZARD]: {
 		renderComponent: (props: any) => <MemberWizardModal {...props} />,

@@ -9,6 +9,7 @@ import {
 	IEmployeeDB,
 	IEquipmentActionDB,
 	IEquipmentDB,
+	IExplosiveDB,
 	IExplosiveObjectActionDB,
 	IExplosiveObjectDB,
 	IMapViewActionActionDB,
@@ -29,6 +30,8 @@ class DBRemoteClass {
 
 	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"]);
 
+	explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ["name"]);
+
 	/** ORGANIZATION SUBCOLLECTION */
 	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"]);
 
@@ -43,6 +46,8 @@ class DBRemoteClass {
 	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"]);
 
 	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
+
+	explosiveAction = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE_ACTION, ["name"]);
 
 	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
 

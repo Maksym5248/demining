@@ -1,27 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { IUseSelectStore } from '~/types/store';
+
 import { useDebounce } from '../common/useDebounce';
 
-interface IAsyncAction {
-	run: (search:string) => Promise<void>;
-	inProgress: boolean;
-}
-
-interface IList<T> {
-	asArray: T[];
-	isMorePages: boolean;
-}
-
-interface IUseSelectStore<T> {
-		fetchList: IAsyncAction;
-		fetchListMore: IAsyncAction;
-		fetchItem: IAsyncAction;
-		collection: {
-			get: (id: string) => T;
-		}
-		searchList: IList<T>;
-		list: IList<T>;
-}
 
 export function useSelectStore<T>(store : IUseSelectStore<T>, defaultValue?: string) {
 	const [searchValue, setSearchValue] = useState("");

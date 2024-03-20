@@ -71,6 +71,12 @@ export const Layout = observer(() => {
 					onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST)
 				},
 				{
+					key: ROUTES.EXPLOSIVE_LIST,
+					icon: <Icon.FireOutlined />,
+					label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
+					onClick: () => navigate(ROUTES.EXPLOSIVE_LIST)
+				},
+				{
 					key: ROUTES.EMPLOYEES_LIST,
 					icon: <Icon.TeamOutlined />,
 					label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
