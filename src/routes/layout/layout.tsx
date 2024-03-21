@@ -72,7 +72,7 @@ export const Layout = observer(() => {
 				},
 				{
 					key: ROUTES.EXPLOSIVE_LIST,
-					icon: <Icon.FireOutlined />,
+					icon: <Icon.CodeSandboxOutlined />,
 					label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
 					onClick: () => navigate(ROUTES.EXPLOSIVE_LIST)
 				},

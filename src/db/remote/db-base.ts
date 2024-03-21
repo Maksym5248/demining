@@ -56,7 +56,7 @@ const getWhere = (values: IWhere) =>
 			return where(key, "in", value.in) 
 		}
 
-		if(value["array-contains-any"]){
+		if(!!value && value["array-contains-any"]){
 			return where(key, "array-contains-any", value["array-contains-any"]) 
 		}
 		

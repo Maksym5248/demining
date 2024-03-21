@@ -6,7 +6,7 @@ export function useItemStore<T>(store: IUseSelectStore<T>,id: string) {
 	const item = store.collection.get(id as string);
 
 	useEffect(() => {
-		if(!item){
+		if(!item && id){
 			store.fetchItem.run(id);
 		}
 	}, []);

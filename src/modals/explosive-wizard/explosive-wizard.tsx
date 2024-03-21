@@ -27,7 +27,7 @@ const typeOptions = [{
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const store = useStore();
 	const wizard = useWizard({id, mode});
-
+	console.log('wizard', id);
 	const { isLoading, item } = useItemStore(store.explosive, id as string);
 
 	const isEdit = !!id;
@@ -47,12 +47,11 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 		hide();
 	};
 
-
 	return (   
 		<Drawer
 			open={isVisible}
 			destroyOnClose
-			title={`${isEdit ? "Редагувати": "Створити"} транспорт`}
+			title={`${isEdit ? "Редагувати": "Створити"} ВР та ЗП`}
 			placement="right"
 			width={500}
 			onClose={hide}
@@ -78,13 +77,6 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 						}
 					>
 						<Form.Item
-							label="Назва"
-							name="name"
-							rules={[{ required: true, message: 'Прізвище є обов\'язковим полем' }]}
-						>
-							<Input placeholder="Введіть дані" />
-						</Form.Item>
-						<Form.Item
 							label="Тип"
 							name="type"
 							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
@@ -92,6 +84,13 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 							<Select
 								options={typeOptions}
 							/>
+						</Form.Item>
+						<Form.Item
+							label="Назва"
+							name="name"
+							rules={[{ required: true, message: 'Прізвище є обов\'язковим полем' }]}
+						>
+							<Input placeholder="Введіть дані" />
 						</Form.Item>
 						<WizardFooter {...wizard} onCancel={hide}/>
 					</Form>

@@ -28,4 +28,5 @@ export interface IMissionReportForm {
     squadLeaderId: string;
     squadIds: string[];
     address: string;
+    explosiveIds: string[];
 }
