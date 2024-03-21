@@ -214,7 +214,8 @@ describe('mission-report', () => {
 				transportHumansActionId: undefined,
 				mineDetectorActionId: undefined,
 				squadActionIds: [],
-				explosiveObjectActionIds: []
+				explosiveObjectActionIds: [],
+				explosiveActionIds: [],
 			};
 
 			const result = getUpdatedList(removeList, mockMissionReportDTO);
@@ -235,6 +236,7 @@ describe('mission-report', () => {
 				mineDetectorActionId: "mineDetector1",
 				squadActionIds: ["squadAction1", "squadAction2"],
 				explosiveObjectActionIds: ["explosiveObjectAction1", "explosiveObjectAction2"],
+				explosiveActionIds: [],
 			};
 
 			const result = getUpdatedList(removeList, mockMissionReportDTO);
@@ -255,6 +257,7 @@ describe('mission-report', () => {
 				mineDetectorActionId: "3",
 				squadActionIds: ["4", "5"],
 				explosiveObjectActionIds: ["6", "7"],
+				explosiveActionIds: [],
 			};
 
 			const result = getUpdatedList(removeList, mockMissionReportDTO);

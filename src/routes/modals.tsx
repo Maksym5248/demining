@@ -12,7 +12,8 @@ import {
 	OrganizationWizardModal,
 	MemberWizardModal,
 	TemplateWizardModal,
-	ExplosiveWizardModal
+	ExplosiveWizardModal,
+	ExplosiveActionWizardModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -46,6 +47,9 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.TEMPLATE_WIZARD]: {
 		renderComponent: (props: any) => <TemplateWizardModal {...props} />,
+	},
+	[MODALS.EXPLOSIVE_ACTION_WIZARD]: {
+		renderComponent: (props: any) => <ExplosiveActionWizardModal {...props} />,
 	},
 	[MODALS.EXPLOSIVE_WIZARD]: {
 		renderComponent: (props: any) => <ExplosiveWizardModal {...props} />,

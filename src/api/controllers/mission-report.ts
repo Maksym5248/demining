@@ -1,6 +1,6 @@
 import omit from "lodash/omit";
 
-import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB, IQuery } from '~/db'
+import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB, IQuery, IExplosiveActionDB, IExplosiveDB } from '~/db'
 import { CreateValue } from '~/types'
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
 
@@ -49,7 +49,8 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		transportActions,
 		explosiveObjectActions,
 		equipmentActions,
-		signedByActionOrderArr
+		signedByActionOrderArr,
+		explosiveActions,
 	] = await Promise.all([
 		DB.missionRequest.get(missionRequestId),
 		DB.order.get(orderId),
@@ -68,6 +69,13 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 			where: {
 				documentId: orderId,
 				documentType: DOCUMENT_TYPE.ORDER
+			},
+			limit: 1
+		}),
+		DB.explosiveAction.select({
+			where: {
+				documentId: id,
+				documentType: DOCUMENT_TYPE.MISSION_REPORT
 			},
 			limit: 1
 		}),
@@ -101,6 +109,7 @@ export const get = async (id:string): Promise<IMissionReportDTO> => {
 		explosiveObjectActions,
 		squadLeaderAction,
 		squadActions,
+		explosiveActions
 	}
 };
 
@@ -128,6 +137,7 @@ const remove = async (id:string) => {
 		DB.transportAction.removeBy(query),
 		DB.explosiveObjectAction.removeBy(query),
 		DB.equipmentAction.removeBy(query),
+		DB.explosiveAction.removeBy(query),
 	]);
 };
 
@@ -140,6 +150,7 @@ interface IGenerateActionsParams {
 	transportExplosiveObjectAction?: ITransportActionDB;
 	mineDetectorAction?: IEquipmentActionDB;
 	explosiveObjectsActions: IExplosiveObjectActionDB[];
+	explosiveActionsData?: IExplosiveActionDB[];
 }
 
 export interface IRemoveList {
@@ -148,6 +159,7 @@ export interface IRemoveList {
 	mineDetectorActionId?: string;
 	squadActionIds: string[];
 	explosiveObjectActionIds: string[];
+	explosiveActionIds: string[];
 }
 
 export interface ICreateList {
@@ -156,6 +168,7 @@ export interface ICreateList {
 	mineDetectorId?: string;
 	squadIds: string[];
 	explosiveObjectIds: string[];
+	explosiveIds: string[];
 }
 
 export const generateActions = async (missionReportId:string, value: CreateValue<IMissionReportDTOParams>):Promise<IGenerateActionsParams> => {
@@ -168,9 +181,10 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 		explosiveObjectActions,
 		squadLeaderId,
 		squadIds,
+		explosiveActions,
 	} = value;
 
-	const [employees, transports, explosiveObjects, equipments] = await Promise.all([
+	const [employees, transports, explosiveObjects, equipments, explosives] = await Promise.all([
 		DB.employee.select({
 			where: {
 				id: { in: [approvedById, squadLeaderId, ...squadIds] }
@@ -189,6 +203,11 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 		DB.equipment.select({
 			where: {
 				id: { in: [mineDetectorId] }
+			}
+		}),
+		DB.explosive.select({
+			where: {
+				id: { in: explosiveActions?.map(el => el.explosiveId) }
 			}
 		}),
 	]);
@@ -221,6 +240,10 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 		createAction<IExplosiveObjectActionDB, IExplosiveObjectDB>(el.explosiveObjectId, el, explosiveObjects)
 	));
 
+	const explosiveActionsData = explosiveActions?.map(el => (
+		createAction<IExplosiveActionDB, IExplosiveDB>(el.explosiveId, el, explosives)
+	));
+
 	return {
 		mapViewValue,
 		approvedByAction,
@@ -230,11 +253,12 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 		transportExplosiveObjectAction,
 		mineDetectorAction,
 		explosiveObjectsActions,
+		explosiveActionsData
 	}
 };
 
 export const getRemoveList = (
-	value: Pick<IMissionReportDTOParams, "transportExplosiveObjectId" | "transportHumansId" | "mineDetectorId" | "squadIds" | "explosiveObjectActions">,
+	value: Pick<IMissionReportDTOParams, "transportExplosiveObjectId" | "transportHumansId" | "mineDetectorId" | "squadIds" | "explosiveObjectActions" | "explosiveActions">,
 	missionReportDTO:IMissionReportDTO):IRemoveList => {
 	const {
 		transportExplosiveObjectId,
@@ -242,6 +266,7 @@ export const getRemoveList = (
 		mineDetectorId,
 		squadIds,
 		explosiveObjectActions,
+		explosiveActions,
 	} = value;
 
 	const transportHumansActionCurrent = missionReportDTO.transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS) as ITransportActionDB;
@@ -249,6 +274,7 @@ export const getRemoveList = (
 	const mineDetectorActionCurrent = missionReportDTO.equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR) as IEquipmentActionDB;
 	const squadCurrent = missionReportDTO.squadActions
 	const explosiveObjectActionsCurrent = missionReportDTO.explosiveObjectActions
+	const explosiveActionsCurrent = missionReportDTO.explosiveActions
 
 	return {
 		transportExplosiveObjectActionId: transportExplosiveObjectId !== transportExplosiveObjectActionCurrent.transportId
@@ -270,11 +296,16 @@ export const getRemoveList = (
 				.filter(actionCurrent => !explosiveObjectActions.find(el => el?.id === actionCurrent.id))
 				.map((el) => el.id)
 			: [],
+		explosiveActionIds: explosiveActionsCurrent.length && !!explosiveActions
+			? explosiveActionsCurrent
+				.filter(actionCurrent => !explosiveActions?.find(el => el?.id === actionCurrent.id))
+				.map((el) => el.id)
+			: [],
 	}
 }
 
 export const getCreateList = (
-	value: Pick<IMissionReportDTOParams, "transportExplosiveObjectId" | "transportHumansId" | "mineDetectorId" | "squadIds" | "explosiveObjectActions">,
+	value: Pick<IMissionReportDTOParams, "transportExplosiveObjectId" | "transportHumansId" | "mineDetectorId" | "squadIds" | "explosiveObjectActions" | "explosiveActions">,
 	missionReportDTO:IMissionReportDTO
 ):ICreateList => {
 	const {
@@ -283,6 +314,7 @@ export const getCreateList = (
 		mineDetectorId,
 		squadIds,
 		explosiveObjectActions,
+		explosiveActions,
 	} = value;
 
 	const transportHumansActionCurrent = missionReportDTO.transportActions.find(el => el.type === TRANSPORT_TYPE.FOR_HUMANS) as ITransportActionDB;
@@ -290,6 +322,7 @@ export const getCreateList = (
 	const mineDetectorActionCurrent = missionReportDTO.equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR) as IEquipmentActionDB;
 	const squadIdsCurrent = missionReportDTO.squadActions.map(el => el.employeeId)
 	const explosiveObjectsActionsCurrent = missionReportDTO.explosiveObjectActions
+	const explosiveActionsCurrent = missionReportDTO.explosiveActions
 
 	return {
 		transportExplosiveObjectId: transportExplosiveObjectId && transportExplosiveObjectId !== transportExplosiveObjectActionCurrent?.transportId
@@ -309,6 +342,11 @@ export const getCreateList = (
 				.filter(action => !explosiveObjectsActionsCurrent.find(el => el.id === action?.id))
 				.map(el => el.explosiveObjectId)
 			: [],
+		explosiveIds: explosiveActions?.length
+			? explosiveActions
+				.filter(action => !explosiveActionsCurrent.find(el => el.id === action?.id))
+				.map(el => el.explosiveId)
+			: [],
 	}
 }
 
@@ -321,6 +359,7 @@ export const getUpdatedList = (
 	const mineDetectorAction = missionReportDTO.equipmentActions.find(el => el.type === EQUIPMENT_TYPE.MINE_DETECTOR) as IEquipmentActionDB;
 	const workersActionIds = missionReportDTO.squadActions.map(el => el.id)
 	const explosiveObjectActionIds = missionReportDTO.explosiveObjectActions.map(el => el.id);
+	const explosiveActionIds = missionReportDTO.explosiveActions.map(el => el.id);
 
 	return {
 		transportHumansActionId: removeList.transportHumansActionId !== transportHumansAction.id ? transportHumansAction.id : undefined,
@@ -328,6 +367,7 @@ export const getUpdatedList = (
 		mineDetectorActionId: removeList.mineDetectorActionId !== mineDetectorAction.id ? mineDetectorAction.id : undefined,
 		squadActionIds: workersActionIds.filter(id => !removeList.squadActionIds.includes(id)),
 		explosiveObjectActionsIds:  explosiveObjectActionIds.filter(id => !removeList.explosiveObjectActionIds.includes(id)),
+		explosiveActionsIds:  explosiveActionIds.filter(id => !removeList.explosiveActionIds.includes(id)),
 	}
 }
 
@@ -353,6 +393,7 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 		squadLeaderAction,
 		squadActions,
 		explosiveObjectsActions,
+		explosiveActionsData
 	} = await generateActions(missionReportDTO.id, value);
 	
 	DB.batchStart();
@@ -364,9 +405,10 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 	removeList.squadActionIds.map(id => DB.employeeAction.batchRemove(missionReportDTO.squadActions.find(el => el.employeeId === id)?.id as string));
 	removeList.explosiveObjectActionIds.map(explosiveObjectActionId => DB.explosiveObjectAction.batchRemove(explosiveObjectActionId));
 	if(removeList.transportHumansActionId) DB.transportAction.batchRemove(removeList.transportHumansActionId);
-	if(removeList.transportExplosiveObjectActionId )DB.transportAction.batchRemove(removeList.transportExplosiveObjectActionId);
+	if(removeList.transportExplosiveObjectActionId ) DB.transportAction.batchRemove(removeList.transportExplosiveObjectActionId);
 	if(removeList.mineDetectorActionId) DB.equipment.batchRemove(removeList.mineDetectorActionId);
-	
+	removeList.explosiveActionIds.map(explosiveActionId => DB.explosiveAction.batchRemove(explosiveActionId));
+
 	updateList.squadActionIds.map((workerId) => DB.employeeAction.get(workerId));
 	updateList.explosiveObjectActionsIds.map(
 		explosiveObjectActionId => DB.explosiveObjectAction.batchUpdate(
@@ -380,7 +422,13 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 		DB.transportAction.batchUpdate(updateList.transportExplosiveObjectActionId, transportExplosiveObjectAction);
 	if(updateList.mineDetectorActionId && mineDetectorAction)
 			   DB.equipmentAction.batchUpdate(updateList.mineDetectorActionId, mineDetectorAction);
-
+	updateList.explosiveActionsIds.map(
+		explosiveActionId => DB.explosiveAction.batchUpdate(
+			explosiveActionId,
+			explosiveActionsData?.find(el => el.explosiveId === explosiveActionId) as IExplosiveActionDB
+		)
+	);
+			
 	createList.squadIds.map(id => DB.employeeAction.batchCreate(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB));
 	createList.explosiveObjectIds.map(
 		explosiveObjectId => DB.explosiveObjectAction.batchCreate(
@@ -390,7 +438,12 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 	if(createList.transportHumansId && transportHumansAction) DB.transportAction.batchCreate(transportHumansAction);
 	if(createList.transportExplosiveObjectId && transportExplosiveObjectAction) DB.transportAction.batchCreate(transportExplosiveObjectAction);
 	if(createList.mineDetectorId && mineDetectorAction) DB.equipmentAction.batchCreate(mineDetectorAction);
-	
+	createList.explosiveIds.map(
+		explosiveId => DB.explosiveAction.batchCreate(
+			explosiveActionsData?.find(el => el.explosiveId === explosiveId) as IExplosiveActionDB
+		)
+	);
+
 	DB.missionReport.batchUpdate(missionReportDTO.id, rest);
 	DB.mapViewAction.batchUpdate(missionReportDTO.mapView.id, mapViewValue);
 	DB.employeeAction.batchUpdate(missionReportDTO.approvedByAction.id, approvedByAction);
@@ -423,6 +476,7 @@ export const create = async (value: CreateValue<IMissionReportDTOParams>):Promis
 		explosiveObjectActions,
 		squadLeaderId,
 		squadIds,
+		explosiveActions,
 		...rest
 	} = value;
 
@@ -431,43 +485,36 @@ export const create = async (value: CreateValue<IMissionReportDTOParams>):Promis
 		...rest,
 	}
 	
-	try {
-		const {
-			mapViewValue,
-			approvedByAction,
-			squadLeaderAction,
-			squadActions,
-			transportHumansAction,
-			transportExplosiveObjectAction,
-			mineDetectorAction,
-			explosiveObjectsActions,
-		} = await generateActions(missionReportData.id, value)
+	const {
+		mapViewValue,
+		approvedByAction,
+		squadLeaderAction,
+		squadActions,
+		transportHumansAction,
+		transportExplosiveObjectAction,
+		mineDetectorAction,
+		explosiveObjectsActions,
+		explosiveActionsData,
+	} = await generateActions(missionReportData.id, value)
 
-		DB.batchStart();
+	DB.batchStart();
 
-		DB.mapViewAction.batchCreate(mapViewValue);
-		DB.employeeAction.batchCreate(approvedByAction);
-		DB.employeeAction.batchCreate(squadLeaderAction);
-		squadActions.map(el  => DB.employeeAction.batchCreate(el));
-		if(transportHumansAction) DB.transportAction.batchCreate(transportHumansAction);
-		if(transportExplosiveObjectAction) DB.transportAction.batchCreate(transportExplosiveObjectAction);
-		if(mineDetectorAction) DB.equipmentAction.batchCreate(mineDetectorAction);
-		explosiveObjectsActions.map(el  => DB.explosiveObjectAction.batchCreate(el));
-		DB.missionReport.batchCreate(missionReportData);
+	DB.mapViewAction.batchCreate(mapViewValue);
+	DB.employeeAction.batchCreate(approvedByAction);
+	DB.employeeAction.batchCreate(squadLeaderAction);
+	squadActions.map(el  => DB.employeeAction.batchCreate(el));
+	if(transportHumansAction) DB.transportAction.batchCreate(transportHumansAction);
+	if(transportExplosiveObjectAction) DB.transportAction.batchCreate(transportExplosiveObjectAction);
+	if(mineDetectorAction) DB.equipmentAction.batchCreate(mineDetectorAction);
+	explosiveObjectsActions.map(el  => DB.explosiveObjectAction.batchCreate(el));
+	explosiveActionsData?.map(el  => DB.explosiveAction.batchCreate(el));
+	DB.missionReport.batchCreate(missionReportData);
 
-		await DB.batchCommit();
+	await DB.batchCommit();
 
-		const res = await get(missionReportData.id);
+	const res = await get(missionReportData.id);
 
-		return res;
-	} catch (e) {
-		if(missionReportData){
-			await remove(missionReportData.id);
-		}
-
-		throw e;
-	}
-
+	return res;
 };
 
 export const missionReport = {

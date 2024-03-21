@@ -27,7 +27,7 @@ const typeOptions = [{
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
 	const store = useStore();
 	const wizard = useWizard({id, mode});
-	console.log('wizard', id);
+
 	const { isLoading, item } = useItemStore(store.explosive, id as string);
 
 	const isEdit = !!id;

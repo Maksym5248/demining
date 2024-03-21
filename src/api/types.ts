@@ -73,10 +73,17 @@ export interface IMissionReportDTO extends IMissionReportPreviewDTO {
 	"equipmentActions": IEquipmentActionDTO[];
 	"explosiveObjectActions": IExplosiveObjectActionDTO[];
 	"squadLeaderAction": IEmployeeActionDTO;
-	"squadActions": IEmployeeActionDTO[]
+	"squadActions": IEmployeeActionDTO[];
+    "explosiveActions": IExplosiveActionDTO[]
 }
 
 export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
+export interface IExplosiveActionDTOParams {
+    id?: string;
+    explosiveId: string;
+    weight: number | null; /* in kilograms */
+    quantity: number | null;
+}
 
 export interface IMissionReportDTOParams {
     approvedAt: Timestamp;
@@ -102,6 +109,7 @@ export interface IMissionReportDTOParams {
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
     squadLeaderId: string;
     squadIds: string[];
+    explosiveActions?: IExplosiveActionDTOParams[];
     address: string;
 }
 

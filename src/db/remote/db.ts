@@ -9,6 +9,7 @@ import {
 	IEmployeeDB,
 	IEquipmentActionDB,
 	IEquipmentDB,
+	IExplosiveActionDB,
 	IExplosiveDB,
 	IExplosiveObjectActionDB,
 	IExplosiveObjectDB,
@@ -47,7 +48,7 @@ class DBRemoteClass {
 
 	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
 
-	explosiveAction = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE_ACTION, ["name"]);
+	explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, ["name"]);
 
 	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
 
@@ -80,6 +81,7 @@ class DBRemoteClass {
 		this.equipment.setRootCollection(rootCollection);
 		this.equipmentAction.setRootCollection(rootCollection);
 		this.document.setRootCollection(rootCollection);
+		this.explosiveAction.setRootCollection(rootCollection);
 	};
 
 	removeOrganizationId(){
@@ -95,6 +97,7 @@ class DBRemoteClass {
 		this.equipment.removeRootCollection();
 		this.equipmentAction.removeRootCollection();
 		this.document.removeRootCollection();
+		this.explosiveAction.removeRootCollection();
 	};
 
 	private setBatch(batch:WriteBatch | null){

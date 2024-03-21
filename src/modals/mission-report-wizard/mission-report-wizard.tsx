@@ -25,6 +25,7 @@ import  {
 	Employees,
 	Map
 } from "./components";
+import { ExplosiveAction } from './components/explosive-action';
 
 interface Props {
   id?: string;
@@ -54,6 +55,7 @@ const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
 	transportHumansId: currentMissionReport?.transportHumans?.transportId,
 	mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
 	explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
+	explosiveActions: currentMissionReport?.explosiveActions.slice() ?? [],
 	squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
 	squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
 	address: currentMissionReport?.address,
@@ -87,6 +89,7 @@ const createCreateValue = (
 	transportHumansId: undefined,
 	mineDetectorId: undefined,
 	explosiveObjectActions:[],
+	explosiveActions:[],
 	squadLeaderId: firstSquadLeader?.id,
 	squadIds: [],
 	address: "",
@@ -267,6 +270,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 							<Documents key="Documents" initialValues={initialValues}/>,
 							<Timer key="Timer" />,
 							<ExplosiveObjectAction key="ExplosiveObjectAction" />,
+							<ExplosiveAction key="ExplosiveAction" />,
 							<Transport 
 								key="Transport"
 								initialValues={initialValues}

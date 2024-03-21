@@ -34,12 +34,6 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
 			>
 				{({ getFieldValue }) => {
 					const squadIds = getFieldValue("squadIds");
-
-					console.log("employee", select.append(
-						squadLeads.filter(el => !squadIds.includes(el.id))
-							.map((el) => ({ label: el.fullName, value: el.id })),
-						{ label: selectedSquadLead?.fullName, value: selectedSquadLead?.employeeId }
-					))
 					
 					return (
 						<Select

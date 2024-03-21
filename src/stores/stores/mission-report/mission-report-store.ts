@@ -14,6 +14,7 @@ import { createExplosiveObjectAction } from '../explosive-object';
 import { createTransportAction } from '../transport';
 import { createEquipmentAction } from '../equipment';
 import { createMapView } from '../map';
+import { createExplosiveAction } from '../explosive';
 
 const Store = types
 	.model('MissionReportStore', {
@@ -43,6 +44,10 @@ const Store = types
 			res.equipmentActions.forEach(el => {
 				root.equipment.collectionActions.set(el?.id, createEquipmentAction(el))
 			});
+
+			res.explosiveActions.forEach(el => {
+				root.explosive.collectionActions.set(el?.id, createExplosiveAction(el))
+			});
 	
 			root.order.collection.set(res.order.id, createOrder(res.order));
 			root.missionRequest.collection.set(res.missionRequest.id, createMissionRequest(res.missionRequest));
@@ -67,7 +72,7 @@ const Store = types
 const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
-		console.log("sssss", createMissionReportDTO(data))
+
 		const res = await Api.missionReport.create(createMissionReportDTO(data));
  		self.appendToCollections(res);
 		self.list.unshift(res.id);

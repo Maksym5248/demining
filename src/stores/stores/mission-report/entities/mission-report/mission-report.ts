@@ -12,6 +12,7 @@ import { EquipmentAction } from '~/stores/stores/equipment/entities/equipment-ac
 import { dates, str } from '~/utils';
 import { EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
 import { MapViewAction } from '~/stores/stores/map';
+import { ExplosiveAction } from '~/stores/stores/explosive';
 
 import { safeReference } from '../../../../utils';
 import { types } from '../../../../types'
@@ -48,6 +49,7 @@ const Entity = types.model('MissionReport', {
 	squadActions: types.optional(types.array(safeReference(EmployeeAction)), []),
 	transportActions: types.optional(types.array(safeReference(TransportAction)), []),
 	equipmentActions: types.optional(types.array(safeReference(EquipmentAction)), []),
+	explosiveActions: types.optional(types.array(safeReference(ExplosiveAction)), []),
 }).actions((self) => ({
 	updateFields(data: Partial<IMissionReportValue>) {
 		Object.assign(self, data);

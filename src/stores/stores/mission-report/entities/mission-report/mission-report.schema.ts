@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates } from '~/utils';
-import { IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
+import { IExplosiveActionDTOParams, IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
 import { IMapViewActionValueParams, createMapViewDTO } from '~/stores/stores/map';
 
 export interface IMissionReportValueParams {
@@ -30,6 +30,7 @@ export interface IMissionReportValueParams {
     squadLeaderId: string;
     squadIds: string[];
     address: string;
+	explosiveActions?: IExplosiveActionDTOParams[];
 };
 
 export interface IMissionReportValue {
@@ -58,7 +59,8 @@ export interface IMissionReportValue {
 	equipmentActions?: string[];
 	explosiveObjectActions?: string[];
 	squadLeaderAction?: string;
-	squadActions?: string[]
+	squadActions?: string[];
+	explosiveActions?: string[];
 }
   
 export const createMissionReportDTO = (value: CreateValue<IMissionReportValueParams>): CreateValue<IMissionReportDTOParams>  => ({
@@ -85,6 +87,7 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	explosiveObjectActions: value.explosiveObjectActions,
 	squadLeaderId: value.squadLeaderId,
 	squadIds: value.squadIds,
+	explosiveActions: value.explosiveActions,
 	address: value.address ?? "",
 });
 
@@ -119,4 +122,5 @@ export const createMissionReport = (value: IMissionReportDTO): IMissionReportVal
 	squadActions: value.squadActions.map(el => el.id),
 	transportActions: value.transportActions.map(el => el.id),
 	equipmentActions: value.equipmentActions.map(el => el.id),
+	explosiveActions: value.explosiveActions.map(el => el.id),
 });

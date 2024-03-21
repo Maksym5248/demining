@@ -1,5 +1,5 @@
 import { CreateValue } from '~/types'
-import { IExplosiveActionDTO } from '~/api';
+import { IExplosiveActionDTO, IExplosiveActionDTOParams } from '~/api';
 import { DOCUMENT_TYPE } from '~/constants';
 
 import { IExplosiveValue, createExplosive, createExplosiveDTO } from '../explosive/explosive.schema';
@@ -11,8 +11,9 @@ export interface IExplosiveActionValue extends IExplosiveValue {
 	quantity?: number;
 	weight?: number;
 }
+export interface IExplosiveActionValueParams extends IExplosiveActionDTOParams {}
 
-export const createEquipmentActionDTO = (value: CreateValue<IExplosiveActionValue>): CreateValue<IExplosiveActionDTO>  => ({
+export const createExplosiveActionDTO = (value: CreateValue<IExplosiveActionValue>): CreateValue<IExplosiveActionDTO>  => ({
 	...createExplosiveDTO(value),
 	documentType: value?.documentType,
 	documentId: value?.documentId,
@@ -21,7 +22,7 @@ export const createEquipmentActionDTO = (value: CreateValue<IExplosiveActionValu
 	weight:value?.weight ?? null,
 });
 
-export const createEquipmentAction = (value: IExplosiveActionDTO): IExplosiveActionValue => ({
+export const createExplosiveAction = (value: IExplosiveActionDTO): IExplosiveActionValue => ({
 	...createExplosive(value),
 	documentType: value?.documentType,
 	documentId: value?.documentId,

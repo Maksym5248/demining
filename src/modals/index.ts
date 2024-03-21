@@ -1,5 +1,6 @@
 export * from "./employees-wizard";
 export * from "./explosive-wizard";
+export * from "./explosive-action-wizard";
 export * from "./explosive-object-wizard";
 export * from "./explosive-object-action-wizard";
 export * from "./member-wizard";
