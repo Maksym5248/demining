@@ -381,6 +381,7 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 		squadLeaderId,
 		squadIds,
 		explosiveObjectActions,
+		explosiveActions,
 		...rest
 	} = value;
 
@@ -395,25 +396,30 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 		explosiveObjectsActions,
 		explosiveActionsData
 	} = await generateActions(missionReportDTO.id, value);
-	
+
 	DB.batchStart();
 
 	const removeList = getRemoveList(value, missionReportDTO);
 	const createList = getCreateList(value, missionReportDTO);
 	const updateList = getUpdatedList(removeList, missionReportDTO);
-				
-	removeList.squadActionIds.map(id => DB.employeeAction.batchRemove(missionReportDTO.squadActions.find(el => el.employeeId === id)?.id as string));
-	removeList.explosiveObjectActionIds.map(explosiveObjectActionId => DB.explosiveObjectAction.batchRemove(explosiveObjectActionId));
+
+	removeList.squadActionIds.forEach(id => DB.employeeAction.batchRemove(id));
+	removeList.explosiveObjectActionIds.forEach(explosiveObjectActionId => DB.explosiveObjectAction.batchRemove(explosiveObjectActionId));
 	if(removeList.transportHumansActionId) DB.transportAction.batchRemove(removeList.transportHumansActionId);
 	if(removeList.transportExplosiveObjectActionId ) DB.transportAction.batchRemove(removeList.transportExplosiveObjectActionId);
 	if(removeList.mineDetectorActionId) DB.equipment.batchRemove(removeList.mineDetectorActionId);
-	removeList.explosiveActionIds.map(explosiveActionId => DB.explosiveAction.batchRemove(explosiveActionId));
+	removeList.explosiveActionIds.forEach(explosiveActionId => DB.explosiveAction.batchRemove(explosiveActionId));
 
-	updateList.squadActionIds.map((workerId) => DB.employeeAction.get(workerId));
-	updateList.explosiveObjectActionsIds.map(
+	updateList.explosiveObjectActionsIds.forEach(
 		explosiveObjectActionId => DB.explosiveObjectAction.batchUpdate(
 			explosiveObjectActionId,
-					explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectActionId) as IExplosiveObjectActionDB
+			explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectActionId) as IExplosiveObjectActionDB
+		)
+	);
+	updateList.explosiveActionsIds.forEach(
+		explosiveActionId => DB.explosiveAction.batchUpdate(
+			explosiveActionId,
+			explosiveActionsData?.find(el => el.explosiveId === explosiveActionId) as IExplosiveActionDB
 		)
 	);
 	if(updateList.transportHumansActionId && transportHumansAction)
@@ -422,15 +428,9 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 		DB.transportAction.batchUpdate(updateList.transportExplosiveObjectActionId, transportExplosiveObjectAction);
 	if(updateList.mineDetectorActionId && mineDetectorAction)
 			   DB.equipmentAction.batchUpdate(updateList.mineDetectorActionId, mineDetectorAction);
-	updateList.explosiveActionsIds.map(
-		explosiveActionId => DB.explosiveAction.batchUpdate(
-			explosiveActionId,
-			explosiveActionsData?.find(el => el.explosiveId === explosiveActionId) as IExplosiveActionDB
-		)
-	);
-			
-	createList.squadIds.map(id => DB.employeeAction.batchCreate(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB));
-	createList.explosiveObjectIds.map(
+
+	createList.squadIds.forEach(id => DB.employeeAction.batchCreate(squadActions.find(el => el.employeeId === id) as IEmployeeActionDB));
+	createList.explosiveObjectIds.forEach(
 		explosiveObjectId => DB.explosiveObjectAction.batchCreate(
 					explosiveObjectsActions.find(el => el.explosiveObjectId === explosiveObjectId) as IExplosiveObjectActionDB
 		)
@@ -438,12 +438,12 @@ export const update = async (value: CreateValue<IMissionReportDTOParams>, missio
 	if(createList.transportHumansId && transportHumansAction) DB.transportAction.batchCreate(transportHumansAction);
 	if(createList.transportExplosiveObjectId && transportExplosiveObjectAction) DB.transportAction.batchCreate(transportExplosiveObjectAction);
 	if(createList.mineDetectorId && mineDetectorAction) DB.equipmentAction.batchCreate(mineDetectorAction);
-	createList.explosiveIds.map(
+	createList.explosiveIds.forEach(
 		explosiveId => DB.explosiveAction.batchCreate(
 			explosiveActionsData?.find(el => el.explosiveId === explosiveId) as IExplosiveActionDB
 		)
 	);
-
+	
 	DB.missionReport.batchUpdate(missionReportDTO.id, rest);
 	DB.mapViewAction.batchUpdate(missionReportDTO.mapView.id, mapViewValue);
 	DB.employeeAction.batchUpdate(missionReportDTO.approvedByAction.id, approvedByAction);

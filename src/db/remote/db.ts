@@ -48,7 +48,7 @@ class DBRemoteClass {
 
 	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
 
-	explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, ["name"]);
+	explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION);
 
 	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
 
@@ -119,6 +119,7 @@ class DBRemoteClass {
 		this.equipment.setBatch(batch);
 		this.equipmentAction.setBatch(batch);
 		this.document.setBatch(batch);
+		this.explosiveAction.setBatch(batch);
 	};
 
 	batchStart() {

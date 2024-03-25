@@ -3,23 +3,24 @@ import { observer } from 'mobx-react-lite'
 
 import { useSelectStore, useStore } from '~/hooks'
 import { IExplosiveActionValue } from '~/stores'
-import { MODALS, WIZARD_MODE } from '~/constants'
+import { EXPLOSIVE_TYPE, MODALS, WIZARD_MODE } from '~/constants'
 import { Modal } from '~/services'
 import { SelectAsync } from '~/components'
 
 import { IExplosiveActionForm } from './explosive-action-wizard.types';
 
 interface Props {
-  id?: string;
-  isVisible: boolean;
-  hide: () => void;
-  initialValue: IExplosiveActionValue;
-  onSubmit: (value: IExplosiveActionForm) => void;
+	id?: string;
+	isVisible: boolean;
+	hide: () => void;
+	initialValue: IExplosiveActionValue;
+	onSubmit: (value: IExplosiveActionForm) => void;
 }
 
 export const ExplosiveActionWizardModal  = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
 	const { explosive } = useStore();
 	const { initialItem, ...explosiveProps} = useSelectStore(explosive);
+
 
 	const onFinish = async (values: IExplosiveActionForm) => {
 		onSubmit?.(values);
@@ -29,7 +30,6 @@ export const ExplosiveActionWizardModal  = observer(({ isVisible, hide, onSubmit
 	const onCreateExplosive = () => {
 		Modal.show(MODALS.EXPLOSIVE_WIZARD,  { mode: WIZARD_MODE.CREATE })
 	};
-
 	
 	return (
 		<Drawer
@@ -62,19 +62,39 @@ export const ExplosiveActionWizardModal  = observer(({ isVisible, hide, onSubmit
 						options={explosiveProps.list.map((el) => ({ label: el?.name, value: el.id }))}
 					/>
 				</Form.Item>
-				<Form.Item
-					label="Кількість"
-					name="quantity"
-					rules={[{ required: true, message: 'Обов\'язкове поле' }]}
-				>
-					<InputNumber size="middle" min={1} max={100000}/>
+				<Form.Item noStyle shouldUpdate={() => true}>
+					{({ getFieldValue }) => {
+						const explosiveId = getFieldValue('explosiveId');
+						const currentExplosive = explosive.collection.get(explosiveId);
+
+						return currentExplosive?.type === EXPLOSIVE_TYPE.EXPLOSIVE ? (
+							<Form.Item
+								label="Вага, кг"
+								name="weight"
+								rules={[{ required: true, message: 'Обов\'язкове поле' }]}
+							>
+								<InputNumber size="middle" min={0.001} max={100000}/>
+							</Form.Item>
+						) : undefined
+					}}
 				</Form.Item>
-				<Form.Item
-					label="Вага"
-					name="weight"
-					rules={[{ required: true, message: 'Обов\'язкове поле' }]}
-				>
-					<InputNumber size="middle" min={0.001} max={100000}/>
+
+				<Form.Item noStyle shouldUpdate={() => true} >
+					{({ getFieldValue }) => {
+						const explosiveId = getFieldValue('explosiveId');
+						const currentExplosive = explosive.collection.get(explosiveId);
+
+						return currentExplosive?.type === EXPLOSIVE_TYPE.DETONATOR ? (
+							<Form.Item
+								label="Кількість, од"
+								name="quantity"
+								rules={[{ required: true, message: 'Обов\'язкове поле' }]}
+							>
+								<InputNumber size="middle" min={1} step={1} max={100000}/>
+							</Form.Item>
+						) : null
+
+					}}
 				</Form.Item>
 				<Form.Item label=" " colon={false}>
 					<Space>

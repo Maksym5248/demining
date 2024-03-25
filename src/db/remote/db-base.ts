@@ -154,11 +154,11 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	}
 
 	private createSearchField(value:Partial<T>){
-		let _search: string[] = [];
+		const _search: string[] = [];
 
 		this.searchFields.forEach((field) => {
 			const arr = generateValueStartsWith(String(value[field] ?? ""));
-			_search = [..._search, ...arr]
+			_search.push(...arr);
 		});
 
 		return { _search }

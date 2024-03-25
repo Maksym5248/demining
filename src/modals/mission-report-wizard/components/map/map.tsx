@@ -52,7 +52,7 @@ export function Map({ mode }: Props){
 								explosiveObjects={explosiveObjectActions.map(el => {
 									const item = explosiveObject.collectionActions.get(el?.id ?? "")  || explosiveObject.collection.get(el.explosiveObjectId);
 									
-									return `${item.fullDisplayName} ${el.quantity} од.`
+									return `${item?.fullDisplayName} ${el.quantity} од.`
 								})}
 								onChange={async (value) => {
 									setFieldValue("mapView", {
