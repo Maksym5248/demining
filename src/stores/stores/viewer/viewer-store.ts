@@ -12,11 +12,6 @@ const Store = types
 		user: types.maybeNull(types.maybe(CurrentUser)),
 		isLoadingUserInfo: true
 	})
-	.views(self => ({
-		get isNotApproved(){
-			return !!self.user && !self.user.isAuthorized
-		},
-	}))
 	.actions((self) => ({
 		setUser(user: ICurrentUserDTO) {
 			// @ts-expect-error

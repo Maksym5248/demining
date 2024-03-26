@@ -9,7 +9,7 @@ import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
 import { useNavigate, useStore } from "~/hooks";
 
-import { nav } from "../../utils/routes-info";
+import { nav } from "../../utils/routes";
 import { s } from './layout.styles';
 
 const { Sider, Content } = Lay;

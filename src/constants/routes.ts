@@ -1,6 +1,7 @@
 export enum ROUTES {
     MISSION_REQUEST_LIST ="/mission-request-list",
     ORDER_LIST ="/order-list",
+	HOME ="/mission-report",
     MISSION_REPORT_LIST ="/mission-report",
     EMPLOYEES_LIST ="/employees-list",
     EXPLOSIVE_OBJECT_LIST ="/explosive-object-list",
@@ -11,12 +12,14 @@ export enum ROUTES {
 	TEMPLATES = "/templates",
 
 	ORGANIZATIONS_LIST = "/organization-list",
-	MEMBERS_LIST = "/organization-list/:organizationId/members-list/",
+	MEMBERS_LIST = "/organization-list/:organizationId/members-list",
 	MY_ORGANIZATION = "/my-organization",
 
-	AUTH ="/login",
+	LOGIN ="/login",
 	SIGNUP ="/signup",
 	WAITING_APPROVE ="/waiting-approve",
+
+	NOT_FOUND = "/not-found",
 }
 
 export const routesInfo = {
@@ -59,7 +62,7 @@ export const routesInfo = {
 	[ROUTES.MY_ORGANIZATION]: {
 		title: "Учасники",
 	},
-	[ROUTES.AUTH]: {
+	[ROUTES.LOGIN]: {
 		title: "Увійти",
 	},
 	[ROUTES.SIGNUP]: {
@@ -67,6 +70,9 @@ export const routesInfo = {
 	},
 	[ROUTES.WAITING_APPROVE]: {
 		title: "Очікування підтвердження",
+	},
+	[ROUTES.NOT_FOUND]: {
+		title: "Сторінку не знайдено",
 	},
 }
 
