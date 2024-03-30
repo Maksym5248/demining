@@ -1,4 +1,4 @@
-import { Instance } from 'mobx-state-tree';
+import { Instance, getSnapshot } from 'mobx-state-tree';
 
 import { DOCUMENT_TYPE } from '~/constants';
 
@@ -15,7 +15,12 @@ const Entity = Explosive.named("ExplosiveAction").props({
 	weight: types.maybe(types.number),
 	name: types.string,
 	explosiveId: types.string,
-}).actions((self) => ({
+}).views((self) => ({
+	get value() {
+		const { update, ...value } = getSnapshot(self);
+		return value;
+	}
+})).actions((self) => ({
 	updateFields(data: Partial<IExplosiveActionValue>) {
 		Object.assign(self, data);
 	}
@@ -23,3 +28,4 @@ const Entity = Explosive.named("ExplosiveAction").props({
 
 
 export const ExplosiveAction = Entity;
+

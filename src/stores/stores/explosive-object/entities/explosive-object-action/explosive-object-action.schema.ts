@@ -1,4 +1,3 @@
-import { CreateValue } from '~/types'
 import { data } from '~/utils';
 import { IExplosiveObjectActionDTO, IExplosiveObjectActionDTOParams } from '~/api';
 import { DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
@@ -19,7 +18,8 @@ export interface IExplosiveObjectActionValue extends IExplosiveObjectValue {
 export interface IExplosiveObjectActionValueParams extends IExplosiveObjectActionDTOParams {}
 
   
-export const createExplosiveObjectActionDTO = (value: CreateValue<IExplosiveObjectActionValueParams>): IExplosiveObjectActionDTOParams  => ({
+export const createExplosiveObjectActionDTO = (value: IExplosiveObjectActionValueParams): IExplosiveObjectActionDTOParams  => ({
+	id: value?.id,
 	explosiveObjectId: value?.explosiveObjectId,
 	quantity: value.quantity,
 	category: value.category,

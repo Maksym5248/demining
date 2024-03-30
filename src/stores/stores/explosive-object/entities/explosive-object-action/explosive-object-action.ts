@@ -1,4 +1,4 @@
-import { Instance } from 'mobx-state-tree';
+import { Instance, getSnapshot } from 'mobx-state-tree';
 
 import { DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 
@@ -17,7 +17,12 @@ const Entity =  ExplosiveObject.named("ExplosiveObjectAction").props({
 	isDiscovered: types.boolean,
 	isTransported: types.boolean,
 	isDestroyed: types.boolean,
-}).actions((self) => ({
+}).views((self) => ({
+	get value() {
+		const { update, type, ...value } = getSnapshot(self);
+		return value;
+	}
+})).actions((self) => ({
 	updateFields(data: Partial<IExplosiveObjectActionValue>) {
 		Object.assign(self, data);
 	}

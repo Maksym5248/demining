@@ -110,7 +110,7 @@ export interface IPolygonDB {
     points: IPointDB[];
 }
 
-export interface IMapViewActionActionDB extends ILinkedToDocumentDB {
+export interface IMapViewActionDB extends ILinkedToDocumentDB {
     id: string;
     marker: IMarkerDB | null;
     circle: ICircleDB | null;

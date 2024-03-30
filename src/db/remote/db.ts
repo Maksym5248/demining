@@ -13,7 +13,7 @@ import {
 	IExplosiveDB,
 	IExplosiveObjectActionDB,
 	IExplosiveObjectDB,
-	IMapViewActionActionDB,
+	IMapViewActionDB,
 	IMissionReportDB,
 	IMissionRequestDB,
 	IOrderDB,
@@ -38,7 +38,7 @@ class DBRemoteClass {
 
 	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION);
 
-	mapViewAction = new DBBase<IMapViewActionActionDB>(TABLES.MAP_VIEW_ACTION);
+	mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION);
 
 	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"]);
 

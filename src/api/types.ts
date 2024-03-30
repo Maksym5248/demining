@@ -13,7 +13,7 @@ import {
 	IEquipmentDB,
 	IEquipmentActionDB,
 	IMissionReportDB,
-	IMapViewActionActionDB,
+	IMapViewActionDB,
 	IUserDB,
 	IOrganizationDB,
 	IDocumentDB,
@@ -60,7 +60,7 @@ export type ITransportActionDTO = ITransportActionDB;
 ;
 export type IEquipmentDTO = IEquipmentDB;
 export type IEquipmentActionDTO = IEquipmentActionDB;
-export type IMapViewActionDTO = IMapViewActionActionDB;
+export type IMapViewActionDTO = IMapViewActionDB;
 export type IDocumentDTO = IDocumentDB;
 
 export interface IMissionReportPreviewDTO extends Omit<IMissionReportDB, "orderId"  | "missionRequestId"> {}

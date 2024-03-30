@@ -4,6 +4,8 @@ import { CreateValue } from '~/types'
 import { dates } from '~/utils';
 import { IExplosiveActionDTOParams, IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
 import { IMapViewActionValueParams, createMapViewDTO } from '~/stores/stores/map';
+import { createExplosiveActionDTO } from '~/stores/stores/explosive';
+import { createExplosiveObjectActionDTO } from '~/stores';
 
 export interface IMissionReportValueParams {
 	approvedAt: Dayjs;
@@ -84,10 +86,10 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	transportExplosiveObjectId: value.transportExplosiveObjectId,
 	transportHumansId: value.transportHumansId,
 	mineDetectorId: value.mineDetectorId,
-	explosiveObjectActions: value.explosiveObjectActions,
+	explosiveObjectActions: value.explosiveObjectActions.map(el => createExplosiveObjectActionDTO(el)),
+	explosiveActions: value.explosiveActions?.map(el => createExplosiveActionDTO(el)) ?? [],
 	squadLeaderId: value.squadLeaderId,
 	squadIds: value.squadIds,
-	explosiveActions: value.explosiveActions,
 	address: value.address ?? "",
 });
 
