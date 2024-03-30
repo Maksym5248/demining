@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { ConfigProvider } from 'antd';
+import uk_UA from 'antd/lib/locale/uk_UA';
 
 import { RootStoreContext } from '~/context';
 import { createStore } from '~/stores';
@@ -28,7 +29,7 @@ export function App() {
 	}, []);
 
 	return (
-		<ConfigProvider>
+		<ConfigProvider locale={uk_UA}>
 			<ThemeProvider>
 				<RootStoreContext.Provider value={store}>
 					<RootRouter />

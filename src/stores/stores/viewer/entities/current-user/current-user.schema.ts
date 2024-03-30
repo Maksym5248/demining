@@ -23,8 +23,8 @@ interface IUserValue {
 export const createUserOrganization = (value: IUserOrganizationDTO): IUserOrganizationValue => ({
 	id: value.id,
 	name: value.name ?? "",
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
 export const createCurrentUser = (value: ICurrentUserDTO): IUserValue => ({
@@ -32,6 +32,6 @@ export const createCurrentUser = (value: ICurrentUserDTO): IUserValue => ({
 	roles: value?.roles ?? [],
 	email: value.email ?? "",
 	organization: value?.organization ? createUserOrganization(value.organization) : null,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

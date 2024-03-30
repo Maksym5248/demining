@@ -35,6 +35,6 @@ export const createDocument = (value: IDocumentDTO): IDocumentValue => ({
 	type: value.type,
 	documentType: value.documentType,
 	mime: value.mime,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

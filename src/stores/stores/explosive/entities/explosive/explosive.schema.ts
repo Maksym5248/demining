@@ -27,6 +27,6 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveValue => ({
 	id: value.id,
 	type: value.type,
 	name: value?.name ?? "",
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

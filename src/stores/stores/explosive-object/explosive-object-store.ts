@@ -1,5 +1,6 @@
 import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { Api, IExplosiveObjectDTO } from '~/api'
@@ -23,6 +24,13 @@ import {
 	IExplosiveObjectAction,
 } from './entities';
 
+const CountExplosiveObjectActions = types.model('CountExplosiveObjectActions', {
+	total: types.number,
+	discovered: types.number,
+	transported: types.number,
+	destroyed: types.number,
+});
+
 const Store = types
 	.model('ExplosiveObjectStore', {
 		collectionActions: createCollection<IExplosiveObjectAction, IExplosiveObjectActionValue>("ExplosiveObjectActions", ExplosiveObjectAction),
@@ -31,11 +39,20 @@ const Store = types
 		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
 		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 10 }),
 		searchList: createList<IExplosiveObject>("ExplosiveObjectsSearchList", safeReference(ExplosiveObject), { pageSize: 10 }),
+		count: types.optional(CountExplosiveObjectActions, {
+			total: 0,
+			discovered: 0,
+			transported: 0,
+			destroyed: 0
+		}),
 	}).views(self => ({
 		get sortedListTypes(){
 			return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
 		}
 	})).actions(self => ({
+		setCount(count: { total: number, discovered: number, transported: number, destroyed: number }){
+			self.count = count;
+		},
 		init() {
 			explosiveObjectTypesData.forEach((el) => {
 				const explosiveObjectType = createExplosiveObjectType(el);
@@ -127,6 +144,28 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 	}
 });
 
+const fetchCount = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
+	try {
+		flow.start();
+
+		const res = await Api.explosiveObject.count({
+			where: {
+				createdAt: {
+					">=": dates.toDateServer(startDate),
+					"<=": dates.toDateServer(endDate),
+				},
+			}
+		});
+		console.log("res", res)
+		self.setCount(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
 const fetchListMore = asyncAction<Instance<typeof Store>>((search) => async function addFlow({ flow, self }) {
 	try {
 		const isSearch = !!search;
@@ -172,5 +211,6 @@ export const ExplosiveObjectStore = Store.props({
 	fetchList,
 	fetchListMore,
 	fetchItem,
-	createExplosiveObjects
+	createExplosiveObjects,
+	fetchCount
 })

@@ -24,8 +24,8 @@ export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue
 
 export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequestValue => ({
 	id: value.id,
-	signedAt: dates.create(value.signedAt),
+	signedAt: dates.fromServerDate(value.signedAt),
 	number: value.number,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

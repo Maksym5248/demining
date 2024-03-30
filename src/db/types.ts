@@ -7,6 +7,7 @@ import { ICircle, IPoint } from "~/types";
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
     documentId: string;
+    executedAt: Timestamp | null;
 }
 
 export interface IEmployeeDB {
@@ -58,6 +59,7 @@ export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToD
     isDiscovered: boolean;
     isTransported: boolean;
     isDestroyed: boolean;
+    executedAt: Timestamp;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -181,4 +183,5 @@ export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {
     explosiveId: string;
     weight: number | null; /* in kilograms */
     quantity: number | null;
+    executedAt: Timestamp;
 }

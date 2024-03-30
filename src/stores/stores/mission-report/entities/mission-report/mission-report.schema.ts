@@ -95,22 +95,22 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 
 export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportValue => ({
 	id: value.id,
-	approvedAt: dates.create(value.approvedAt),
+	approvedAt: dates.fromServerDate(value.approvedAt),
 	number: value.number,
 	subNumber: value.subNumber ?? undefined,
-	executedAt: dates.create(value.executedAt),
+	executedAt: dates.fromServerDate(value.executedAt),
 	checkedTerritory: value.checkedTerritory ?? undefined,
 	depthExamination: value.depthExamination ?? undefined,
 	uncheckedTerritory: value.uncheckedTerritory ?? undefined,
 	uncheckedReason: value.uncheckedReason ?? undefined,
-	workStart: dates.create(value.workStart),
-	exclusionStart: value.exclusionStart ? dates.create(value.exclusionStart) : undefined,
-	transportingStart: value.transportingStart ? dates.create(value.transportingStart) : undefined,
-	destroyedStart: value.destroyedStart ? dates.create(value.destroyedStart) : undefined,
-	workEnd: dates.create(value.workEnd),
+	workStart: dates.fromServerDate(value.workStart),
+	exclusionStart: value.exclusionStart ? dates.fromServerDate(value.exclusionStart) : undefined,
+	transportingStart: value.transportingStart ? dates.fromServerDate(value.transportingStart) : undefined,
+	destroyedStart: value.destroyedStart ? dates.fromServerDate(value.destroyedStart) : undefined,
+	workEnd: dates.fromServerDate(value.workEnd),
 	address: value.address,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
 export const createMissionReport = (value: IMissionReportDTO): IMissionReportValue => ({

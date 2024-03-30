@@ -39,6 +39,6 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
 	type: value.typeId,
 	name: value?.name ?? "",
 	caliber: value?.caliber ?? 0,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

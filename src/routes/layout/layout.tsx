@@ -34,6 +34,12 @@ export const Layout = observer(() => {
 		const arr = [
 			...((isOrganizationAdmin || isOrganizationMember) ? [
 				{
+					key: ROUTES.HOME,
+					icon: <Icon.HomeOutlined />,
+					label: nav.getRouteTitle(ROUTES.HOME),
+					onClick: () => navigate(ROUTES.HOME)
+				},
+				{
 					key: "Documents",
 					icon: <Icon.FileTextOutlined />,
 					label: "Документи",

@@ -22,7 +22,8 @@ import {
 	OrganizationsListPage,
 	MembersListPage,
 	TemplatesListPage,
-	ExplosiveListPage
+	ExplosiveListPage,
+	HomePage
 } from "~/pages"
 import { ROUTES } from "~/constants";
 import { useStore } from "~/hooks";
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
 					children: [
 						nav.withAccess(
 							[
+								{	
+									path: ROUTES.HOME,
+									Component: HomePage,
+								},
 								{	
 									path: ROUTES.MISSION_REPORT_LIST,
 									Component: MissionReportsListPage,

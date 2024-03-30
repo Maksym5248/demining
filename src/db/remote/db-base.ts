@@ -18,7 +18,11 @@ import {
 	WriteBatch,
 	startAfter,
 	getCountFromServer,
+	getAggregateFromServer,
+	sum,
+	QueryFieldFilterConstraint
 } from 'firebase/firestore';
+import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
 
 type IWhere = {[field:string]: any};
@@ -48,20 +52,35 @@ function generateValueStartsWith(value: string): string[] {
 	return prefixes;
 }
 
-const getWhere = (values: IWhere) => 
-	 Object.keys(values).map(key => {
+const getWhere = (values: IWhere) => {
+	const res:QueryFieldFilterConstraint[] = [];
+
+	Object.keys(values).forEach(key => {
 		const value = values[key];
 
 		if(value?.in && isArray(value.in)){
-			return where(key, "in", value.in) 
+			res.push(where(key, "in", value.in) )
+		}
+
+		if(value?.[">="]){
+			res.push(where(key, ">=", value['>=']))
+		}
+
+		if(value?.["<="]){
+			res.push(where(key, "<=", value['<=']))
 		}
 
 		if(!!value && value["array-contains-any"]){
-			return where(key, "array-contains-any", value["array-contains-any"]) 
+			res.push(where(key, "array-contains-any", value["array-contains-any"]))
 		}
 		
-		return where(key, "==", value)
+		if(!isObject(value) && !isArray(value)) {
+			res.push(where(key, "==", value))
+		};
 	});
+
+	return res;
+};
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
@@ -100,15 +119,19 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const newDocumentRef = doc(this.collection);
 		return newDocumentRef.id;
 	}
+	
+	query(args?: Partial<IQuery>){
+		return query(this.collection,
+			...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
+			...(args?.where ? getWhere(args.where) : []),
+			...(args?.order ? [getOrder(args?.order)] : []),
+			...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
+			...(args?.limit ? [limit(args?.limit)] : []),
+	   );
+	}
 
 	async select(args?: Partial<IQuery>): Promise<T[]> {
-		const q = query(this.collection,
-			 ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
-			 ...(args?.where ? getWhere(args.where) : []),
-			 ...(args?.order ? [getOrder(args?.order)] : []),
-			 ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
-			 ...(args?.limit ? [limit(args?.limit)] : []),
-		);
+		const q = this.query(args);
 
 		const snapshot = await getDocs(q);
 
@@ -251,10 +274,23 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		this.batch?.delete(ref);
 	}
 
-	async count(){
-		const snapshot = await getCountFromServer(this.collection);
+	async count(args?: Partial<IQuery>){
+		const q = this.query(args);
+
+		const snapshot = await getCountFromServer(q);
 		
 		return snapshot.data().count
+	}
+
+	async sum(field: keyof T, args?: Partial<IQuery>){
+		const q = this.query(args);
+
+		const snapshot = await getAggregateFromServer(q, {
+			sum: sum(field as string)
+		});
+		
+		console.log("snapshot.data()", snapshot.data())
+		return snapshot.data().sum;
 	}
 
 	async removeBy(args: IWhere) {

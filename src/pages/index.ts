@@ -1,4 +1,5 @@
 export * from "./dev";
+export * from "./home";
 export * from "./employees-list";
 export * from "./error-not-found";
 export * from "./explosive-list";

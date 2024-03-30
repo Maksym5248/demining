@@ -13,8 +13,8 @@ export interface IOrganizationValue {
 export const createOrganization = (value: Omit<IOrganizationDTO, "members">): IOrganizationValue => ({
 	id: value.id,
 	name: value?.name ?? "",
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
 export const createOrganizationDTO = (value: ICreateOrganizationDTO): ICreateOrganizationDTO => ({

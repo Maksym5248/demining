@@ -45,8 +45,8 @@ export const createEmployee = (employee: IEmployeeDTO): IEmployeeValue => ({
 	surname: String(employee.surname) || '',
 	rank: employee.rankId,
 	position: employee.position || '',
-	createdAt: dates.create(employee.createdAt),
-	updatedAt: dates.create(employee.updatedAt),
+	createdAt: dates.fromServerDate(employee.createdAt),
+	updatedAt: dates.fromServerDate(employee.updatedAt),
 });
 
 

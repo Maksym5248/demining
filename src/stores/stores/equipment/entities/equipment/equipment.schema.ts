@@ -27,6 +27,6 @@ export const createEquipment = (value: IEquipmentDTO): IEquipmentValue => ({
 	id: value.id,
 	name: value.name,
 	type: value.type,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

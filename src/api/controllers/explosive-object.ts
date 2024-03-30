@@ -48,11 +48,53 @@ const get = async (id:string):Promise<IExplosiveObjectDTO> => {
 	return res;
 }
 
+const count = async (query?: IQuery):Promise<{
+	total: number,
+	discovered: number,
+	transported: number,
+	destroyed: number,
+}> => {
+	const [
+		total,
+		discovered,
+		transported,
+		destroyed
+	] = await Promise.all([
+		DB.explosiveObjectAction.sum("quantity", query),
+		DB.explosiveObjectAction.sum("quantity", {
+			where: {
+				isDiscovered: true,
+				...(query?.where ?? {})
+			},
+		}),
+		DB.explosiveObjectAction.sum("quantity", {
+			where: {
+				isTransported: true,
+				...(query?.where ?? {})
+			},
+		}),
+		DB.explosiveObjectAction.sum("quantity", {
+			where: {
+				isDestroyed: true,
+				...(query?.where ?? {})
+			},
+		}),
+	]);
+
+	return {
+		total,
+		discovered,
+		transported,
+		destroyed
+	};
+}
+
 export const explosiveObject = {
 	create,
 	update,
 	remove,
 	getList,
 	init,
-	get
+	get,
+	count
 }

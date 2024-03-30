@@ -1,7 +1,7 @@
 export enum ROUTES {
+	HOME ="/home",
     MISSION_REQUEST_LIST ="/mission-request-list",
     ORDER_LIST ="/order-list",
-	HOME ="/mission-report",
     MISSION_REPORT_LIST ="/mission-report",
     EMPLOYEES_LIST ="/employees-list",
     EXPLOSIVE_OBJECT_LIST ="/explosive-object-list",
@@ -23,6 +23,9 @@ export enum ROUTES {
 }
 
 export const routesInfo = {
+	[ROUTES.HOME]: {
+		title: "Домашня",
+	},
 	[ROUTES.MISSION_REPORT_LIST]: {
 		title: "Виїзд",
 	},

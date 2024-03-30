@@ -23,9 +23,9 @@ const creatorAction = (document:ILinkedToDocumentDB) => <B, T extends IItemId>(
 	const sourceWithRemovedFields = omit(source, ['id', "updatedAt", "createdAt"])
 	
 	return {
-		...document,
 		...sourceWithRemovedFields,
-		...merge
+		...merge,
+		...document,
 	} as B
 }
 
@@ -218,6 +218,7 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 		explosiveObjectActions:explosiveObjectActionsValue,
 		squadLeaderId,
 		squadIds,
+		executedAt,
 		explosiveActions:explosiveActionsValue,
 	} = value;
 
@@ -257,7 +258,8 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 
 	const document:ILinkedToDocumentDB = {
 		documentId: missionReportId,
-		documentType: DOCUMENT_TYPE.MISSION_REPORT
+		documentType: DOCUMENT_TYPE.MISSION_REPORT,
+		executedAt
 	}
 
 	const createAction = creatorAction(document);

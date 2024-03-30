@@ -5,16 +5,17 @@ import { IEmployeeValue, createEmployee } from '../employee';
 
 
 export interface IEmployeeActionValue extends IEmployeeValue {
+  executedAt?: Date;
   documentType: DOCUMENT_TYPE;
   documentId: string;
   employeeId: string;
 }
 
-export const createEmployeeAction = (employee: IEmployeeActionDTO): IEmployeeActionValue => ({
-	...createEmployee(employee),
-	documentType: employee.documentType,
-	documentId: employee.documentId,
-	employeeId: employee.employeeId,
+export const createEmployeeAction = (value: IEmployeeActionDTO): IEmployeeActionValue => ({
+	...createEmployee(value),
+	documentType: value.documentType,
+	documentId: value.documentId,
+	employeeId: value.employeeId,
 });
 
 

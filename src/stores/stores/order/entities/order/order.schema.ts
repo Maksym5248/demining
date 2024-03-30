@@ -36,10 +36,10 @@ export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOP
 
 export const createOrderPreview = (order: IOrderPreviewDTO): IOrderValue => ({
 	id: order.id,
-	signedAt: dates.create(order.signedAt),
+	signedAt: dates.fromServerDate(order.signedAt),
 	number: order.number,
-	createdAt: dates.create(order.createdAt),
-	updatedAt: dates.create(order.updatedAt),
+	createdAt: dates.fromServerDate(order.createdAt),
+	updatedAt: dates.fromServerDate(order.updatedAt),
 });
 
 export const createOrder = (order: IOrderDTO): IOrderValue => ({
