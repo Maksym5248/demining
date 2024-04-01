@@ -13,10 +13,10 @@ const { RangePicker } = DatePicker;
 type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 const options = [
-	{ label: 'День', value: dates.startOfDay().valueOf() },
-	{ label: 'Тиждень', value: dates.startOfWeek().valueOf() },
-	{ label: 'Місяць', value: dates.startOfMonth().valueOf() },
-	{ label: 'Рік', value: dates.startOfYear().valueOf() },
+	{ label: 'День', value: dates.startOfDay().valueOf(), id: 'day'},
+	{ label: 'Тиждень', value: dates.startOfWeek().valueOf() + 1, id: 'week'},
+	{ label: 'Місяць', value: dates.startOfMonth().valueOf() + 2, id: 'month'},
+	{ label: 'Рік', value: dates.startOfYear().valueOf() + 3, id: 'year'},
 ];
   
 export const HomePage  = observer(() => {
@@ -63,7 +63,7 @@ export const HomePage  = observer(() => {
 				<RangePicker
 					value={[startDate, endDate]}
 					format="YYYY-MM-DD"
-					onOk={onSelectDates}
+					onChange={onSelectDates}
 				/>
 			</div>
 			<div css={s.mainData}>
