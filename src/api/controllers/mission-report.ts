@@ -6,7 +6,7 @@ import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITranspo
 import { CreateValue } from '~/types'
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 
-import { IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '../types'
+import { IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO, IMissionReportSumDTO } from '../types'
 
 interface IItemId {
 	id: string
@@ -429,35 +429,20 @@ export const create = async (value: CreateValue<IMissionReportDTOParams>):Promis
 	return res;
 };
 
+const sum = async (query?: IQuery):Promise<IMissionReportSumDTO> => {
+	const total = await DB.missionReport.count(query);
+
+	return {
+		total,
+	};
+}
+
+
 export const missionReport = {
 	create,
 	update: updateController,
 	get,
 	remove,
 	getList,
+	sum
 }
-
-// caliber: 0
-// category: "I"
-// documentId: "RnLKaq4BX6f1MK7kLWNe"
-// documentType: "MISSION_REPORT"
-// explosiveObjectId: "ns8ncqmlq2dXjgHAFsHZ"
-// isDestroyed: true
-// isDiscovered: true
-// isTransported: true
-// name: "МЛ-7"
-// quantity: 1
-// type: "IM"
-// typeId: "IM"
-
-
-// category: "I"
-// documentId: "RnLKaq4BX6f1MK7kLWNe"
-// documentType: "MISSION_REPORT"
-// explosiveObjectId: "ns8ncqmlq2dXjgHAFsHZ"
-// isDestroyed: true
-// isDiscovered: true
-// isTransported: true
-// name: "МЛ-7"
-// quantity: 1
-// typeId: "IM"

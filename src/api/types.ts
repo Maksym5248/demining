@@ -35,14 +35,28 @@ export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | 
 }
 
 export type IMissionRequestDTO = IMissionRequestDB
-
+export interface IMissionRequestSumDTO {
+	total: number;
+}
 export interface IExplosiveObjectDTO extends IExplosiveObjectDB {};
 
 export interface IExplosiveObjectActionDTO extends IExplosiveObjectActionDB  {};
 
+export interface IExplosiveObjectActionSumDTO {
+	total: number;
+	discovered: number;
+	transported: number;
+	destroyed: number;
+}
+
 export interface IExplosiveDTO extends IExplosiveDB {};
 
 export interface IExplosiveActionDTO extends IExplosiveActionDB {};
+
+export interface IExplosiveActionSumDTO {
+	explosive: number;
+	detonator: number;
+}
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
 export interface IExplosiveObjectActionDTOParams {
@@ -75,6 +89,10 @@ export interface IMissionReportDTO extends IMissionReportPreviewDTO {
 	"squadLeaderAction": IEmployeeActionDTO;
 	"squadActions": IEmployeeActionDTO[];
     "explosiveActions": IExplosiveActionDTO[]
+}
+
+export interface IMissionReportSumDTO {
+	total: number;
 }
 
 export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt" | "authorId">{}

@@ -1,8 +1,9 @@
 import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
-import { Api, IExplosiveDTO } from '~/api'
+import { Api, IExplosiveActionSumDTO, IExplosiveDTO } from '~/api'
 import { dates } from '~/utils';
 import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
 
@@ -16,7 +17,13 @@ import {
 	createExplosiveDTO,
 	Explosive,
 	ExplosiveAction,
+	createExplosiveActionSum,
 } from './entities';
+
+const SumExplosiveActions = types.model('SumExplosiveObjectActions', {
+	explosive: types.number,
+	detonator: types.number,
+});
 
 const Store = types
 	.model('ExplosiveStore', {
@@ -24,7 +31,14 @@ const Store = types
 		collection: createCollection<IExplosive, IExplosiveValue>("Explosives", Explosive),
 		list: createList<IExplosive>("ExplosivesList", safeReference(Explosive), { pageSize: 10 }),
 		searchList: createList<IExplosive>("ExplosivesSearchList", safeReference(Explosive), { pageSize: 10 }),
+		sum: types.optional(SumExplosiveActions, {
+			explosive: 0,
+			detonator: 0,
+		}),
 	}).actions(self => ({
+		setSum(sum: IExplosiveActionSumDTO){
+			self.sum = createExplosiveActionSum(sum);
+		},
 		append(res: IExplosiveDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
 			if(isSearch && !isMore) self.searchList.clear();
@@ -140,10 +154,33 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 	}
 });
 
+const fetchSum = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
+	try {
+		flow.start();
+
+		const res = await Api.explosive.sum({
+			where: {
+				executedAt: {
+					">=": dates.toDateServer(startDate),
+					"<=": dates.toDateServer(endDate),
+				},
+			}
+		});
+
+		self.setSum(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
 export const ExplosiveStore = Store.props({
 	create,
 	remove, 
 	fetchList,
 	fetchListMore,
 	fetchItem,
+	fetchSum,
 })

@@ -1,4 +1,4 @@
-import { IExplosiveActionDTO, IExplosiveActionDTOParams } from '~/api';
+import { IExplosiveActionDTO, IExplosiveActionDTOParams, IExplosiveActionSumDTO } from '~/api';
 import { DOCUMENT_TYPE } from '~/constants';
 
 import { IExplosiveValue, createExplosive } from '../explosive/explosive.schema';
@@ -12,6 +12,11 @@ export interface IExplosiveActionValue extends IExplosiveValue {
 }
 
 export interface IExplosiveActionValueParams extends IExplosiveActionDTOParams {}
+
+export interface IExplosiveActionSumValue {
+	explosive: number;
+	detonator: number;
+}
 
 export const createExplosiveActionDTO = (value: IExplosiveActionValueParams): IExplosiveActionDTOParams  => ({
 	id: value?.id,
@@ -27,5 +32,10 @@ export const createExplosiveAction = (value: IExplosiveActionDTO): IExplosiveAct
 	explosiveId: value?.explosiveId,
 	quantity: value?.quantity ?? undefined,
 	weight:value?.weight ?? undefined,
+});
+
+export const createExplosiveActionSum = (value: IExplosiveActionSumDTO): IExplosiveActionSumValue => ({
+	explosive: value.explosive,
+	detonator: value.detonator,
 });
 

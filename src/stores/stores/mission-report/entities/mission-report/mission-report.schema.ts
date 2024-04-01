@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates } from '~/utils';
-import { IExplosiveActionDTOParams, IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
+import { IExplosiveActionDTOParams, IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO, IMissionReportSumDTO } from '~/api';
 import { IMapViewActionValueParams, createMapViewDTO } from '~/stores/stores/map';
 import { createExplosiveActionDTO } from '~/stores/stores/explosive';
 import { createExplosiveObjectActionDTO } from '~/stores';
@@ -34,6 +34,10 @@ export interface IMissionReportValueParams {
     address: string;
 	explosiveActions?: IExplosiveActionDTOParams[];
 };
+
+export interface IMissionReportSumValue {
+	total: number;
+}
 
 export interface IMissionReportValue {
 	id: string;
@@ -125,4 +129,8 @@ export const createMissionReport = (value: IMissionReportDTO): IMissionReportVal
 	transportActions: value.transportActions.map(el => el.id),
 	equipmentActions: value.equipmentActions.map(el => el.id),
 	explosiveActions: value.explosiveActions.map(el => el.id),
+});
+
+export const createMissionReportSum = (value: IMissionReportSumDTO): IMissionReportSumValue => ({
+	total: value.total,
 });

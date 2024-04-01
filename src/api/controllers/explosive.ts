@@ -59,6 +59,34 @@ const get = async (id:string):Promise<IExplosiveDTO> => {
 	return res;
 }
 
+const sum = async (query?: IQuery):Promise<{
+	explosive: number,
+	detonator: number,
+}> => {
+	const [
+		explosive,
+		detonator,
+	] = await Promise.all([
+		DB.explosiveAction.sum("weight", {
+			where: {
+				type: EXPLOSIVE_TYPE.EXPLOSIVE,
+				...(query?.where ?? {})
+			},
+		}),
+		DB.explosiveAction.sum("quantity", {
+			where: {
+				type: EXPLOSIVE_TYPE.DETONATOR,
+				...(query?.where ?? {})
+			},
+		}),
+	]);
+
+	return {
+		explosive,
+		detonator,
+	};
+}
+
 export const explosive = {
 	create,
 	update,
@@ -66,5 +94,6 @@ export const explosive = {
 	getList,
 	getListExplosive,
 	getListDetonators,
-	get
+	get,
+	sum
 }

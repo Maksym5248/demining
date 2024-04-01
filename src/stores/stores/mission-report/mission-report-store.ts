@@ -1,14 +1,15 @@
 import { types, Instance, getRoot } from 'mobx-state-tree';
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
-import { Api, IMissionReportDTO, IMissionReportPreviewDTO } from '~/api'
+import { Api, IMissionReportDTO, IMissionReportPreviewDTO, IMissionReportSumDTO } from '~/api'
 import { createOrder } from '~/stores/stores/order';
 import { createMissionRequest } from '~/stores/stores/mission-request';
 import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview } from './entities';
+import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview, createMissionReportSum } from './entities';
 import { createEmployeeAction } from '../employee';
 import { createExplosiveObjectAction } from '../explosive-object';
 import { createTransportAction } from '../transport';
@@ -16,12 +17,22 @@ import { createEquipmentAction } from '../equipment';
 import { createMapView } from '../map';
 import { createExplosiveAction } from '../explosive';
 
+const SumMissionReport = types.model('SumMissionReport', {
+	total: types.number,
+});
+
 const Store = types
 	.model('MissionReportStore', {
 		collection: createCollection<IMissionReport, IMissionReportValue>("MissionReports", MissionReport),
 		list: createList<IMissionReport>("IMissionReport", safeReference(MissionReport), { pageSize: 10 }),
 		searchList: createList<IMissionReport>("IMissionSearchList", safeReference(MissionReport), { pageSize: 10 }),
+		sum: types.optional(SumMissionReport, {
+			total: 0,
+		}),
 	}).actions((self) => ({
+		setSum(sum: IMissionReportSumDTO){
+			self.sum = createMissionReportSum(sum);
+		},
 		appendToCollections(res: IMissionReportDTO){
 			const root = getRoot(self) as any;
 
@@ -176,4 +187,26 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchListMore, fetchItem })
+const fetchSum = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
+	try {
+		flow.start();
+
+		const res = await Api.missionReport.sum({
+			where: {
+				executedAt: {
+					">=": dates.toDateServer(startDate),
+					"<=": dates.toDateServer(endDate),
+				},
+			}
+		});
+
+		self.setSum(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchListMore, fetchItem, fetchSum })

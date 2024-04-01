@@ -39,11 +39,16 @@ export const HomePage  = observer(() => {
 	};
 
 	useEffect(() => {
-		store.explosiveObject.fetchCount.run(startDate, endDate);
+		store.explosiveObject.fetchSum.run(startDate, endDate);
+		store.explosive.fetchSum.run(startDate, endDate);
+		store.missionReport.fetchSum.run(startDate, endDate);
+		store.missionRequest.fetchSum.run(startDate, endDate);
 	}, [startDate, endDate]);
 
-	const isLoading = store.explosiveObject.fetchCount.inProgress;
-	const { count } = store.explosiveObject;
+	const isLoading = store.explosiveObject.fetchSum.inProgress
+	 || store.explosive.fetchSum.inProgress
+	 || store.missionReport.fetchSum.inProgress
+	 || store.missionRequest.fetchSum.inProgress;
 
 	return (
 		<div css={s.container}>
@@ -62,20 +67,18 @@ export const HomePage  = observer(() => {
 				/>
 			</div>
 			<div css={s.mainData}>
-				<Card title={`ВНП: ${count.total}`} css={s.card}>
-					<p>Виявлено: {count.discovered}</p>
-					<p>Транспортовано: {count.discovered}</p>
-					<p>Знищено: {count.discovered}</p>
+				<Card title={`ВНП: ${store.explosiveObject.sum.total}`} css={s.card}>
+					<p>Виявлено: {store.explosiveObject.sum.discovered}</p>
+					<p>Транспортовано: {store.explosiveObject.sum.transported}</p>
+					<p>Знищено: {store.explosiveObject.sum.destroyed}</p>
 				</Card>
 				<Card title="ВР та ЗП" css={s.card}>
-					<p>Card content</p>
-					<p>Card content</p>
-					<p>Card content</p>
+					<p>ВР: {store.explosive.sum.explosive} кг.</p>
+					<p>ЗП: {store.explosive.sum.detonator} од.</p>
 				</Card>
 				<Card title="Виконано" css={s.card}>
-					<p>Card content</p>
-					<p>Card content</p>
-					<p>Card content</p>
+					<p>Акт: {store.missionReport.sum.total}</p>
+					<p>Заявка: {store.missionRequest.sum.total}</p>
 				</Card>
 			</div>
 		
