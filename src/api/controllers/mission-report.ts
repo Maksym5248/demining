@@ -173,12 +173,12 @@ const remove = async (id:string) => {
 };
 
 interface INewActions {
-	mapView?: Omit<IMapViewActionDB, "id" |  "createdAt" | "updatedAt">;
-	employeesActions: Omit<IEmployeeActionDB, "id" |  "createdAt" | "updatedAt">[];
-	transportActions: Omit<ITransportActionDB, "id" |  "createdAt" | "updatedAt">[];
-	equipmentActions: Omit<IEquipmentActionDB, "id" |  "createdAt" | "updatedAt">[];
-	explosiveObjectActions: Omit<IExplosiveObjectActionDB, "id" |  "createdAt" | "updatedAt">[];
-	explosiveActions: Omit<IExplosiveActionDB, "id" |  "createdAt" | "updatedAt">[];
+	mapView?: Omit<IMapViewActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">;
+	employeesActions: Omit<IEmployeeActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
+	transportActions: Omit<ITransportActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
+	equipmentActions: Omit<IEquipmentActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
+	explosiveObjectActions: Omit<IExplosiveObjectActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
+	explosiveActions: Omit<IExplosiveActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
 }
 
 interface IPrevActions {
@@ -410,7 +410,7 @@ export const create = async (value: CreateValue<IMissionReportDTOParams>):Promis
 		...rest
 	} = value;
 
-	const missionReportData: Omit<IMissionReportDB, "createdAt" | "updatedAt"> = {
+	const missionReportData: Omit<IMissionReportDB, "createdAt" | "updatedAt" | "authorId"| "authorId"> = {
 		id: DB.missionReport.uuid(),
 		...rest,
 	}

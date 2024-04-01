@@ -24,14 +24,14 @@ export class DBBase<T extends {id: string}> {
 
 	exist = jest.fn(() => Promise.resolve(false))
 
-	create = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "id">) => ({
+	create = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">) => ({
 		id: "id",
 		...value, 
 		createdAt: new Date(),
 		updatedAt: new Date()
 	}))
 
-	update = jest.fn((id, value: Omit<T, "createdAt" | "updatedAt" | "id">) => {
+	update = jest.fn((id, value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">) => {
 		const newValue = {...value};
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -18,6 +18,10 @@ class AuthClass {
 		return getAuth(getApp())
 	}
 
+	uuid(){
+		return this.auth.currentUser?.uid;
+	}
+
 	onAuthStateChanged(fn:NextOrObserver<User>) {
 		onAuthStateChanged(this.auth, fn);
 	}

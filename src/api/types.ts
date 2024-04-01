@@ -30,7 +30,7 @@ export interface IOrderDTO extends IOrderPreviewDTO {
     signedByAction: IEmployeeActionDTO;
 }
 
-export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | "signedByActionId"> & {
+export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | "signedByActionId" | "authorId"> & {
 	signedById: string
 }
 
@@ -77,7 +77,7 @@ export interface IMissionReportDTO extends IMissionReportPreviewDTO {
     "explosiveActions": IExplosiveActionDTO[]
 }
 
-export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
+export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt" | "authorId">{}
 export interface IExplosiveActionDTOParams {
     id?: string;
     explosiveId: string;

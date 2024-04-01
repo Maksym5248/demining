@@ -93,9 +93,12 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	searchFields: (keyof T)[];
 
-	constructor(tableName: string, searchFields?: (keyof T)[]){
+	getCreateData: (() => Partial<T>) | undefined = undefined;
+	
+	constructor(tableName: string, searchFields: (keyof T)[], getCreateData?: () => Partial<T>){
 		this.tableName = tableName;
 		this.searchFields = searchFields ?? [];
+		this.getCreateData = getCreateData;
 	}
 
 	setRootCollection(rootCollection: string){
@@ -197,16 +200,19 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return { _search }
 	}
 
-	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
+	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id"> & Partial<Pick<T, "id">>) {
 		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 		const search = this.createSearchField(value as T);
+
+		const createData = this.getCreateData ? this.getCreateData() : {};
 	
 		const newValue = {
 			...search,
 			...value,
 			id,
+			...createData,
 			createdAt: timestamp,
 			updatedAt: timestamp,
 		} as T & {
@@ -238,7 +244,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return { ref, newValue: updatedValue};
 	}
 
-	async create(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>): Promise<T>{
+	async create(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id" | "authorId"> & Partial<Pick<T, "id">>): Promise<T>{
 		const { ref, newValue } = this.getCreateValue(value)
 
 		await setDoc(ref, newValue);
@@ -246,7 +252,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return res
 	}
 
-	batchCreate(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
+	batchCreate(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id"> & Partial<Pick<T, "id">>) {
 		const { ref, newValue } = this.getCreateValue(value)
 		this.batch?.set(ref, newValue);
 	}
@@ -289,7 +295,6 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 			sum: sum(field as string)
 		});
 		
-		console.log("snapshot.data()", snapshot.data())
 		return snapshot.data().sum;
 	}
 

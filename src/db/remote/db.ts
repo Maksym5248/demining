@@ -1,6 +1,7 @@
 import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
 import { TABLES, TABLES_DIR } from '~/constants';
+import { Auth } from '~/services';
 
 import { DBBase } from './db-base';
 import {
@@ -23,42 +24,46 @@ import {
 	IUserDB
 } from '../types';
 
+const getCreateData = () => ({
+	authorId: Auth.uuid() as string,
+});
+
 class DBRemoteClass {
 	/** COMMON COLLECTIONS */
 	user = new DBBase<IUserDB>(TABLES.USER, ["email"]);
 
-	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"]);
+	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"], getCreateData);
 
-	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"]);
+	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"], getCreateData);
 
-	explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ["name"]);
+	explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ["name"], getCreateData);
 
 	/** ORGANIZATION SUBCOLLECTION */
-	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"]);
+	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"], getCreateData);
 
-	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION);
+	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION, [], getCreateData);
 
-	mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION);
+	mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION, [], getCreateData);
 
-	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"]);
+	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"], getCreateData);
 
-	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ["number"]);
+	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ["number"], getCreateData);
 
-	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"]);
+	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"], getCreateData);
 
-	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
+	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION, [], getCreateData);
 
-	explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION);
+	explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, [], getCreateData);
 
-	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
+	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"], getCreateData);
 
-	transportAction = new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION);
+	transportAction = new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION, [], getCreateData);
 
-	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT, ["name"]);
+	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT, ["name"], getCreateData);
 
-	equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION);
+	equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION, [], getCreateData);
 
-	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ["name"]);
+	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ["name"], getCreateData);
 
 	batch:WriteBatch | null = null;
 

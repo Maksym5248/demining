@@ -18,6 +18,7 @@ export interface IEmployeeDB {
     surname: string;
     rankId: string;
     position: string;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -31,6 +32,7 @@ export interface IOrderDB {
     id: string;
     signedAt: Timestamp;
     number: number;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -39,6 +41,7 @@ export interface IMissionRequestDB {
     id: string;
     signedAt: Timestamp;
     number: number;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -48,6 +51,7 @@ export interface IExplosiveObjectDB {
     typeId: string;
     name?: string;
     caliber?: number;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -69,6 +73,7 @@ export interface ITransportDB {
     name: string;
     number: string;
     type: TRANSPORT_TYPE;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -81,6 +86,7 @@ export interface IEquipmentDB {
     id: string;
     name: string;
     type: EQUIPMENT_TYPE;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -118,6 +124,7 @@ export interface IMapViewActionDB extends ILinkedToDocumentDB {
     circle: ICircleDB | null;
     polygon: IPolygonDB | null;
     zoom: number;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -140,6 +147,7 @@ export interface IMissionReportDB {
     destroyedStart: Timestamp | null;
     workEnd: Timestamp;
     address: string;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -157,6 +165,7 @@ export interface IOrganizationDB {
     id: string;
     name: string;
     membersIds: string[];
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -167,6 +176,7 @@ export interface IDocumentDB {
     type: ASSET_TYPE;
     documentType: DOCUMENT_TYPE;
     mime: MIME_TYPE;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -175,6 +185,7 @@ export interface IExplosiveDB {
     id: string;
     name: string;
     type: EXPLOSIVE_TYPE;
+    authorId: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
