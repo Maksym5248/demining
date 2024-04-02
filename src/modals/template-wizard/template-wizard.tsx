@@ -95,7 +95,6 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
 			onClose={hide}
 			extra={
 				<WizardButtons
-					onRemove={onRemove}
 					onSave={onOpenDocument}
 					{...wizard}
 				/>
@@ -132,7 +131,7 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
 							/>
 						</Form.Item>
 						<UploadFile onChangeFile={onChangeFile} file={file} />
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
 					</Form>
 				)}
 		</Drawer>

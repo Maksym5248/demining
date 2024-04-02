@@ -58,12 +58,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 			placement="right"
 			width={500}
 			onClose={hide}
-			extra={
-				<WizardButtons
-					onRemove={onRemove}
-					{...wizard}
-				/>
-			}
+			extra={<WizardButtons {...wizard} /> }
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)
@@ -110,7 +105,7 @@ export const OrderWizardModal  = observer(({ id, isVisible, hide, mode }: Props)
 								)}
 							/>
 						</Form.Item>
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
 					</Form>
 				)}
 		</Drawer>

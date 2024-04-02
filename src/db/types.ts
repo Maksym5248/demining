@@ -2,7 +2,6 @@ import { Timestamp } from "firebase/firestore";
 
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
 import { EXPLOSIVE_TYPE } from "~/constants/db/explosive-type";
-import { ICircle, IPoint } from "~/types";
 
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
@@ -94,13 +93,6 @@ export interface IEquipmentDB {
 export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
     equipmentId: string;
 }
-
-export interface IMapViewAction {
-    marker?: IPoint;
-    circle?: ICircle;
-    zoom: number;
-}
-
 
 export interface IPointDB {
     lat: number;

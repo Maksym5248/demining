@@ -12,7 +12,6 @@ interface IItemId {
 	id: string
 }
 
-// TODO: fix errors for update and remove
 const creatorAction = (document:ILinkedToDocumentDB) => <B, T extends IItemId>(
 	sourceValueId: string,
 	merge:Partial<B>,

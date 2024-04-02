@@ -13,7 +13,8 @@ import {
 	MemberWizardModal,
 	TemplateWizardModal,
 	ExplosiveWizardModal,
-	ExplosiveActionWizardModal
+	ExplosiveActionWizardModal,
+	MapEditorModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -59,5 +60,8 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.DOCX_PREVIEW]: {
 		renderComponent: (props: any) => <DocxPreviewModal {...props} />,
+	},
+	[MODALS.MAP_EDITOR]: {
+		renderComponent: (props: any) => <MapEditorModal {...props} />,
 	},
 };

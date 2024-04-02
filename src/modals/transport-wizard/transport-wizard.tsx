@@ -55,12 +55,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 			placement="right"
 			width={500}
 			onClose={hide}
-			extra={
-				<WizardButtons
-					onRemove={onRemove}
-					{...wizard}
-				/>
-			}
+			extra={<WizardButtons {...wizard} /> }
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)
@@ -99,7 +94,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 								options={typeOptions}
 							/>
 						</Form.Item>
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
 					</Form>
 				)}
 		</Drawer>

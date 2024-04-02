@@ -27,17 +27,18 @@ const defaultCenter = {
 	lng: 30.56128765735266,
 }
 
+export interface IOnChangeMapView {
+	polygon?: IPolygon,
+	marker?: IPoint,
+	circle?: ICircle,
+	zoom: number,
+}
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	initialMarker?: IPoint | undefined;
 	initialCircle?: ICircle | undefined;
 	initialPolygon?: IPolygon | undefined;
 	initialZoom?: number;
-	onChange: (value: {
-		polygon?: IPolygon,
-		marker?: IPoint,
-		circle?: ICircle,
-		zoom: number,
-	}) => void;
+	onChange: (value: IOnChangeMapView) => void;
 	type?: "picture" | "edit";
 	date?: Dayjs;
 	explosiveObjects?: string[];
@@ -203,12 +204,12 @@ function Component({
 		polygonRef.current = newPolygonRef;
 	}
 
-	const _onChange = (value: { polygon?: IPolygon, marker?: IPoint, circle?: ICircle}) => {
+	const _onChange = (value: { polygon?: IPolygon, marker?: IPoint, circle?: ICircle, zoom?: number}) => {
 		onChange?.({
 			polygon: polygon ? mapUtils.getPolygon(polygon) : undefined,
 			circle: circle ? mapUtils.getCircle(circle) : undefined,
 			marker: marker ? mapUtils.getPoint(marker) : undefined,
-			zoom,
+			zoom: value?.zoom ?? zoom,
 			...value
 		})
 	}
@@ -253,11 +254,7 @@ function Component({
 		const newZoom = mapRef.current.getZoom() as number;
 	
 		setZoom(mapRef.current.getZoom() as number);
-		onChange?.({
-			marker: marker ? mapUtils.getPoint(marker) : undefined,
-			circle: circle ? mapUtils.getCircle(circle) : undefined,
-			zoom: newZoom
-		})
+		_onChange?.({ zoom: newZoom })
 	};
 
 	const onClickMarker = () => {
@@ -300,7 +297,7 @@ function Component({
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
 				zoom={zoom}
-				center={isPictureType ? marker: position}
+				center={marker ?? position}
 				options={mapOptions}
 				onZoomChanged={onZoomChanged}
 				onLoad={onLoadMap}

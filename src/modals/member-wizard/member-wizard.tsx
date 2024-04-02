@@ -60,15 +60,7 @@ export const MemberWizardModal  = observer(({ organizationId, id, isVisible, hid
 			placement="right"
 			width={500}
 			onClose={hide}
-			extra={
-				<WizardButtons
-					onRemove={onRemove}
-					{...wizard}
-					isRemove={wizard.isRemove && (
-						viewer.user?.isRootAdmin  || (viewer.user?.isOrganizationAdmin && !member?.isOrganizationAdmin)
-					)}
-				/>
-			}
+			extra={ <WizardButtons {...wizard} />}
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)
@@ -106,7 +98,13 @@ export const MemberWizardModal  = observer(({ organizationId, id, isVisible, hid
 						>
 							<Switch disabled={!viewer.user?.isRootAdmin}/>
 						</Form.Item>
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter
+						 {...wizard}
+						  onCancel={hide} 
+						  onRemove={onRemove} 
+						  isRemove={wizard.isRemove && (
+								viewer.user?.isRootAdmin  || (viewer.user?.isOrganizationAdmin && !member?.isOrganizationAdmin)
+							)}/>
 					</Form>
 				)}
 		</Drawer>

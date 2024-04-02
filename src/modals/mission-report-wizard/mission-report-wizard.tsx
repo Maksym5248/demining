@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { Form, Drawer, Divider, Spin, message, Button} from 'antd';
+import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
@@ -98,7 +98,14 @@ const createCreateValue = (
 	},
 })
 
-export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
+const getTitles = ({ isEdit, isCreate}: { isEdit: boolean, isCreate: boolean}) => {
+	if(isCreate) return "Створення акту виконаних робіт";
+	if(isEdit) return "Редагування акту виконаних робіт";
+
+	return "Акт виконаних робіт";
+};
+
+export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: Props) => {
 	const [isLoadingPreview, setLoadingPreview] = useState(false);
 	const [templateId, setTemplateId] = useState();
 
@@ -223,18 +230,25 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		<Drawer
 			open={isVisible}
 			destroyOnClose
-			title={`${wizard.isView ? "Переглянути": "Створити"} акт виконаних робіт`}
+			title={getTitles(wizard)}
 			placement="right"
 			width={700}
 			onClose={hide}
 			extra={
 				<WizardButtons
-					onRemove={onRemove}
 					onSave={onOpenDocxPreview}
 					{...wizard}
 					isSave={wizard.isSave && !!templateId}
+					menu={[
+						...(wizard.isView ? [{
+							label: 'KML',
+							key: 'KML',
+							icon: <Icon.DownloadOutlined />,
+							onClick: onLoadKmlFile,
+						}]: [])
+					]}
 				>
-					{!wizard.isCreate && (
+					{wizard.isView && (
 						<Select
 							onAdd={onAddTemplate}
 							value={templateId}
@@ -242,11 +256,6 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 							placeholder="Виберіть шаблон"
 							options={document.missionReportTemplatesList.map((el) => ({ label: el.name, value: el.id }))}
 						/>
-					)}
-					{!wizard.isCreate && (
-						<Button icon={<Icon.DownloadOutlined />} onClick={onLoadKmlFile}>
-							Kml
-						</Button>
 					)}
 				</WizardButtons>
 			}
@@ -263,7 +272,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 						disabled={wizard.isView}
 					>
 						{ [
-							<Map key="Map" mode={mode} />,
+							<Map key="Map" isEdit={!wizard.isView}/>,
 							<Territory key="Territory"/>,
 							<Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction}/>,
 							<Act key="Act" />,
@@ -295,7 +304,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 								<Divider/>
 							</div>
 						))}
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
 					</Form>
 				)}
 		</Drawer>

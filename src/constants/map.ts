@@ -1,5 +1,5 @@
 export enum MAP_SIZE {
-    MEDIUM_HEIGHT = 600,
+    MEDIUM_HEIGHT = 540,
     MEDIUM_WIDTH = 640 
 }
 
