@@ -12,3 +12,8 @@ export interface IPolygon {
     points: IPoint[],
 }
 
+export interface IGeoBox {
+    topLeft: IPoint,
+    bottomRight: IPoint
+}
+

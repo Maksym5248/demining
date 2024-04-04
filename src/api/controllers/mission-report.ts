@@ -172,7 +172,7 @@ const remove = async (id:string) => {
 };
 
 interface INewActions {
-	mapView?: Omit<IMapViewActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">;
+	mapView?: Omit<IMapViewActionDB, "id" |  "createdAt" | "updatedAt" | "authorId" | "geo">;
 	employeesActions: Omit<IEmployeeActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
 	transportActions: Omit<ITransportActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
 	equipmentActions: Omit<IEquipmentActionDB, "id" |  "createdAt" | "updatedAt" | "authorId">[];
@@ -181,7 +181,7 @@ interface INewActions {
 }
 
 interface IPrevActions {
-	mapView?: IMapViewActionDB;
+	mapView?: Omit<IMapViewActionDB, "geo">;
 	employeesActions: IEmployeeActionDB[];
 	transportActions: ITransportActionDB[];
 	equipmentActions: IEquipmentActionDB[];

@@ -3,14 +3,18 @@ import { Timestamp } from "firebase/firestore";
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
 import { EXPLOSIVE_TYPE } from "~/constants/db/explosive-type";
 
+export interface IBaseDB {
+    id: string,
+    createdAt: Timestamp,
+    updatedAt: Timestamp
+}
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
     documentId: string;
     executedAt: Timestamp | null;
 }
 
-export interface IEmployeeDB {
-    id: string;
+export interface IEmployeeDB extends IBaseDB {
     type: EMPLOYEE_TYPE;
     firstName: string;
     lastName: string;
@@ -18,8 +22,6 @@ export interface IEmployeeDB {
     rankId: string;
     position: string;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
 export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
@@ -27,32 +29,23 @@ export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     typeInDocument: EMPLOYEE_TYPE;
 }
 
-export interface IOrderDB {
-    id: string;
+export interface IOrderDB extends IBaseDB {
     signedAt: Timestamp;
     number: number;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IMissionRequestDB {
-    id: string;
+export interface IMissionRequestDB extends IBaseDB {
     signedAt: Timestamp;
     number: number;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IExplosiveObjectDB {
-    id: string;
+export interface IExplosiveObjectDB extends IBaseDB {
     typeId: string;
     name?: string;
     caliber?: number;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
 export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {
@@ -63,31 +56,23 @@ export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToD
     isTransported: boolean;
     isDestroyed: boolean;
     executedAt: Timestamp;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface ITransportDB {
-    id: string;
+export interface ITransportDB extends IBaseDB {
     name: string;
     number: string;
     type: TRANSPORT_TYPE;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
 export interface ITransportActionDB extends ITransportDB, ILinkedToDocumentDB {
     transportId: string;
 }
 
-export interface IEquipmentDB {
-    id: string;
+export interface IEquipmentDB extends IBaseDB {
     name: string;
     type: EQUIPMENT_TYPE;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
 export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
@@ -97,6 +82,27 @@ export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
 export interface IPointDB {
     lat: number;
     lng: number;
+}
+
+export interface IGeoPointDB extends IPointDB{
+    lat: number;
+    lng: number;
+    hash: string;
+}
+
+export interface IGeoBoxDB {
+    topLeft: IGeoPointDB;
+    bottomRight: IGeoPointDB;
+}
+
+export interface IGeoBoxHashDB {
+    topLeft: string;
+    bottomRight: string;
+}
+
+export interface IGeoDB {
+    center: IGeoPointDB;
+    box: IGeoBoxDB | null;
 }
 
 export interface IMarkerDB extends IPointDB {}
@@ -110,19 +116,16 @@ export interface IPolygonDB {
     points: IPointDB[];
 }
 
-export interface IMapViewActionDB extends ILinkedToDocumentDB {
-    id: string;
+export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB  {
     marker: IMarkerDB | null;
     circle: ICircleDB | null;
     polygon: IPolygonDB | null;
     zoom: number;
+    geo: IGeoDB | null;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IMissionReportDB {
-    id: string;
+export interface IMissionReportDB extends IBaseDB {
     approvedAt: Timestamp;
     number: number;
     subNumber: number | null,
@@ -140,46 +143,32 @@ export interface IMissionReportDB {
     workEnd: Timestamp;
     address: string;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IUserDB {
-    id: string;
+export interface IUserDB extends IBaseDB {
     email: string;
     roles: ROLES[];
     organizationId: string | null;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IOrganizationDB {
-    id: string;
+export interface IOrganizationDB extends IBaseDB {
     name: string;
     membersIds: string[];
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IDocumentDB {
-    id: string;
+export interface IDocumentDB extends IBaseDB {
     name: string;
     type: ASSET_TYPE;
     documentType: DOCUMENT_TYPE;
     mime: MIME_TYPE;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
-export interface IExplosiveDB {
-    id: string;
+export interface IExplosiveDB extends IBaseDB {
     name: string;
     type: EXPLOSIVE_TYPE;
     authorId: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
 }
 
 export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {

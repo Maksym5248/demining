@@ -18,7 +18,8 @@ import {
 	IOrganizationDB,
 	IDocumentDB,
 	IExplosiveActionDB,
-	IExplosiveDB
+	IExplosiveDB,
+	IPointDB
 } from "~/db";
 
 export type IEmployeeDTO = IEmployeeDB
@@ -74,7 +75,7 @@ export type ITransportActionDTO = ITransportActionDB;
 ;
 export type IEquipmentDTO = IEquipmentDB;
 export type IEquipmentActionDTO = IEquipmentActionDB;
-export type IMapViewActionDTO = IMapViewActionDB;
+export type IMapViewActionDTO = Omit<IMapViewActionDB, "geo">;
 export type IDocumentDTO = IDocumentDB;
 
 export interface IMissionReportPreviewDTO extends Omit<IMissionReportDB, "orderId"  | "missionRequestId"> {}
@@ -95,7 +96,7 @@ export interface IMissionReportSumDTO {
 	total: number;
 }
 
-export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt" | "authorId">{}
+export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt" | "authorId" | "geo">{}
 export interface IExplosiveActionDTOParams {
     id?: string;
     explosiveId: string;
@@ -172,3 +173,8 @@ export interface IUserOrganizationDTO extends Omit<IOrganizationDB, "membersIds"
 
 export interface ICreateOrganizationDTO extends Pick<IOrganizationDB, "name"> {}
 export interface ICreateOrganizationMembersDTO extends Pick<IOrganizationDB, "membersIds"> {}
+
+export interface IGetAllInRectParams {
+    topLeft: IPointDB;
+    bottomRight: IPointDB;
+}

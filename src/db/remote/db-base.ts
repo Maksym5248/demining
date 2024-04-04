@@ -25,6 +25,8 @@ import {
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
 
+import { IBaseDB } from '../types';
+
 type IWhere = {[field:string]: any};
 type IOrder = {
 	by: string,
@@ -84,7 +86,9 @@ const getWhere = (values: IWhere) => {
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
-export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Timestamp}> {
+type CreateData<T extends IBaseDB> = Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo"> & Partial<Pick<T, "id">>;
+
+export class DBBase<T extends IBaseDB> {
 	tableName: string;
 
 	rootCollection?: string;
@@ -93,12 +97,20 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	searchFields: (keyof T)[];
 
-	getCreateData: (() => Partial<T>) | undefined = undefined;
+	getCreateData: ((value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>) | undefined = undefined;
 	
-	constructor(tableName: string, searchFields: (keyof T)[], getCreateData?: () => Partial<T>){
+	getUpdateData: ((value: Partial<T>) => Partial<T>) | undefined = undefined;
+
+	constructor(
+		tableName: string,
+		searchFields: (keyof T)[],
+		getCreateData?: (value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>,
+		getUpdateData?: (value: Partial<T>) => Partial<T>
+	){
 		this.tableName = tableName;
 		this.searchFields = searchFields ?? [];
 		this.getCreateData = getCreateData;
+		this.getUpdateData = getUpdateData;
 	}
 
 	setRootCollection(rootCollection: string){
@@ -200,13 +212,13 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return { _search }
 	}
 
-	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id"> & Partial<Pick<T, "id">>) {
+	private getCreateValue(value: CreateData<T>) {
 		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 		const search = this.createSearchField(value as T);
 
-		const createData = this.getCreateData ? this.getCreateData() : {};
+		const createData = this.getCreateData ? this.getCreateData(value) : {};
 	
 		const newValue = {
 			...search,
@@ -235,16 +247,19 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 
+		const updateData = this.getUpdateData ? this.getUpdateData(value) : {};
+
 		const updatedValue = {
 			...search,
 			...newValue,
+			...updateData,
 			updatedAt: timestamp
 		} as UpdateData<T>
 
 		return { ref, newValue: updatedValue};
 	}
 
-	async create(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id" | "authorId"> & Partial<Pick<T, "id">>): Promise<T>{
+	async create(value: CreateData<T>): Promise<T>{
 		const { ref, newValue } = this.getCreateValue(value)
 
 		await setDoc(ref, newValue);
@@ -252,7 +267,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return res
 	}
 
-	batchCreate(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id"> & Partial<Pick<T, "id">>) {
+	batchCreate(value: CreateData<T>) {
 		const { ref, newValue } = this.getCreateValue(value)
 		this.batch?.set(ref, newValue);
 	}

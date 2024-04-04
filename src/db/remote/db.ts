@@ -2,6 +2,7 @@ import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
 import { TABLES, TABLES_DIR } from '~/constants';
 import { Auth } from '~/services';
+import { mapDBUtils } from '~/api/map-util';
 
 import { DBBase } from './db-base';
 import {
@@ -28,6 +29,22 @@ const getCreateData = () => ({
 	authorId: Auth.uuid() as string,
 });
 
+const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | "updatedAt" | "authorId" | "id" | "geo">) => ({
+	authorId: Auth.uuid() as string,
+	geo: mapDBUtils.getGeo(value),
+});
+
+const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
+	if (!value.polygon && !value.circle && !value.marker) {
+		return {};
+	}
+
+	return {
+		geo: mapDBUtils.getGeo(value as IMapViewActionDB),
+	};
+};
+
+
 class DBRemoteClass {
 	/** COMMON COLLECTIONS */
 	user = new DBBase<IUserDB>(TABLES.USER, ["email"]);
@@ -43,7 +60,7 @@ class DBRemoteClass {
 
 	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION, [], getCreateData);
 
-	mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION, [], getCreateData);
+	mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION, [], getCreateDataMap, getUpdateDataMap);
 
 	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"], getCreateData);
 

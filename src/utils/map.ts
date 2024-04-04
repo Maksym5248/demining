@@ -1,6 +1,7 @@
 import { isArray } from "lodash";
 
-import { ICircle, IPoint, IPolygon } from "~/types";
+import { ICircle, IPoint, IPolygon, IGeoBox } from "~/types";
+
 
 const getPointLiteral = (latLng: google.maps.LatLng) => ({
 	lng: latLng?.lng(),
@@ -79,7 +80,6 @@ function getPoint(latLang: google.maps.LatLngLiteral):IPoint {
 	}
 };
 
-
 function getCircle(circle: { center: google.maps.LatLngLiteral, radius: number }):ICircle {
 	return {
 		center: getPoint(circle.center),
@@ -155,15 +155,35 @@ function generateKML(points: IPoint | IPoint[], circles: ICircle | ICircle[], po
 	return kml;
 }
 
+
+function getRadiusByZoom(center: IPoint, zoom:number ): number {
+	return 156543.03392 * Math.cos(center.lat * Math.PI / 180) / 2**zoom;
+}
+
+// radius in meters
+function getBoundingBox(center: IPoint, { zoom, radius }: ( { zoom?: number, radius?: number}) ): IGeoBox {
+	// distance in meters
+	const distance = radius ?? getRadiusByZoom(center, zoom as number);
+
+	const topLeft = google.maps.geometry.spherical.computeOffset(center, distance, 315);
+	const bottomRight = google.maps.geometry.spherical.computeOffset(center, distance, 135);
+
+	return {
+		topLeft: { lat: topLeft.lat(), lng: topLeft.lng() },
+		bottomRight: { lat: bottomRight.lat(), lng: bottomRight.lng() },
+	};
+}
+
 export const mapUtils = {
 	getPointLiteral,
 	getPoint,
-	getMapPoint,
 	getCircle,
 	getPolygon,
+	getMapPoint,
 	getMapCircle,
 	getMapPolygon,
 	adjustPointByPixelOffset,
 	getComputedOffset,
-	generateKML
+	generateKML,
+	getBoundingBox,
 }
