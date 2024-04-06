@@ -1,11 +1,13 @@
-export const useMapOptions = ({ isPictureType}: { isPictureType: boolean }) => {
+import { DrawingType } from "~/components"
+
+export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictureType: boolean, isCreating?: boolean, drawing?: DrawingType }) => {
 	const mapOptions = {
 		streetViewControl: false,
-		scaleControl: !isPictureType,
-		zoomControl: !isPictureType,
+		scaleControl: false,
+		zoomControl: false,
 		fullscreenControl: false,
 		mapTypeId: "satellite",
-		mapTypeControl: !isPictureType,
+		mapTypeControl: false,
 		disableDoubleClickZoom: !isPictureType,
 		draggable: !isPictureType,
 		isFractionalZoomEnabled: !isPictureType,
@@ -19,8 +21,9 @@ export const useMapOptions = ({ isPictureType}: { isPictureType: boolean }) => {
 		fillColor: '#ff0000',
 		strokeColor: '#ff0000',
 		strokeWeight: 2,
-		draggable: !isPictureType,
-		editable: !isPictureType
+		draggable: !isPictureType && !isCreating && drawing === DrawingType.CIRCLE,
+		editable: !isPictureType && !isCreating && drawing === DrawingType.CIRCLE,
+		clickable: !isPictureType && !isCreating && drawing === DrawingType.CIRCLE,
 	}
 
 	const polygonOptions = {
@@ -28,8 +31,9 @@ export const useMapOptions = ({ isPictureType}: { isPictureType: boolean }) => {
 		fillColor: '#ff0000',
 		strokeColor: '#ff0000',
 		strokeWeight: 2,
-		draggable: !isPictureType,
-		editable: !isPictureType
+		draggable: !isPictureType && drawing === DrawingType.POLYGON,
+		editable: !isPictureType && drawing === DrawingType.POLYGON,
+		clickable: !isPictureType && !isCreating && drawing === DrawingType.POLYGON,
 	}
 
 	const polylineOptions = {
@@ -39,24 +43,13 @@ export const useMapOptions = ({ isPictureType}: { isPictureType: boolean }) => {
 		strokeWeight: 2,
 	}
 
-	const markerOptions = {
-		draggable: !isPictureType,
-		editable: !isPictureType
-	};
-	
-	const drawingManagerOptions  = {
-		circleOptions,
-		markerOptions,
-		polygonOptions,
-		drawingControl: !isPictureType,
-		drawingControlOptions: {
-			position: window?.google?.maps?.ControlPosition?.TOP_LEFT,
-			drawingModes: [
-				window?.google?.maps?.drawing?.OverlayType?.CIRCLE,
-				window?.google?.maps?.drawing?.OverlayType?.MARKER,
-				window?.google?.maps?.drawing?.OverlayType?.POLYGON,
-			]
-		}
+	const createPolygonOptions = {
+		fillOpacity: 0,
+		fillColor: '#ff0000',
+		strokeColor: '#ff0000',
+		strokeWeight: 2,
+		draggable: true,
+		editable: true,
 	}
 
 	return {
@@ -64,6 +57,6 @@ export const useMapOptions = ({ isPictureType}: { isPictureType: boolean }) => {
 		polygonOptions,
 		circleOptions,
 		polylineOptions,
-		drawingManagerOptions
+		createPolygonOptions,
 	}
 }

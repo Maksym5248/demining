@@ -8,17 +8,12 @@ import { CONFIG } from "~/config";
 import { useCurrentLocation, useMapOptions } from "~/hooks";
 import { mapUtils} from "~/utils";
 import { ICircle, IPoint, IPolygon } from "~/types/map";
-import { MAP_ZOOM } from "~/constants";
+import { DEFAULT_CENTER, MAP_ZOOM } from "~/constants";
 
 import { s } from "./map-preview.style";
 import { Icon } from "../icon";
 
 const libraries:Libraries = ["places", "drawing", "geometry"];
-  
-const defaultCenter = {
-	lat: 50.30921013386864, 
-	lng: 30.56128765735266,
-}
 
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	marker?: IPoint | undefined;
@@ -38,6 +33,9 @@ function Component({
 	position,
 	isEdit,
 	onEdit,
+	marker,
+	circle,
+	polygon,
 	...rest
 }: IMapViewProps) {
 
@@ -48,9 +46,6 @@ function Component({
 	const mapRef = useRef<google.maps.Map>();
 	const interval = useRef<NodeJS.Timeout>();
 
-	const marker =  rest?.marker ? mapUtils.getMapPoint(rest?.marker): undefined;
-	const circle = rest?.circle ? mapUtils.getMapCircle(rest?.circle): undefined;
-	const polygon = rest?.polygon ? mapUtils.getMapPolygon(rest?.polygon): undefined;
 	const zoom = rest?.zoom ?? MAP_ZOOM.DEFAULT;
 	
 	const [isVisibleMap, setVisibleMap] = useState(false);
@@ -152,7 +147,7 @@ function MapLoader(props: IMapViewProps) {
 		libraries,
 	});
 
-	const position = useCurrentLocation(defaultCenter);
+	const position = useCurrentLocation(DEFAULT_CENTER);
 
 	if (loadError) {
 		return <div>Error loading maps</div>;

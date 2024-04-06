@@ -59,43 +59,39 @@ function adjustPointByPixelOffset(
 
 };
 
-
-function getMapCircle(circle: ICircle) {
-	return {
-		center: circle.center,
-		radius: circle.radius
+function calculatePixelDistance(
+	point1: google.maps.LatLngLiteral,
+	point2: google.maps.LatLngLiteral,
+	map: google.maps.Map
+): number | null {
+	const projection = map.getProjection();
+  
+	if (!projection) {
+	  return null;
 	}
-};
-
-function getMapPolygon(polygon: IPolygon) {
-	return {
-		points: polygon.points,
+  
+	// Convert the LatLng coordinates to pixel coordinates
+	const pixelPoint1 = projection.fromLatLngToPoint(new google.maps.LatLng(point1.lat, point1.lng));
+	const pixelPoint2 = projection.fromLatLngToPoint(new google.maps.LatLng(point2.lat, point2.lng));
+  
+	if (!pixelPoint1 || !pixelPoint2) {
+	  return null;
 	}
-};
-
-function getPoint(latLang: google.maps.LatLngLiteral):IPoint {
-	return {
-		lat: latLang.lat,
-		lng: latLang.lng,
-	}
-};
-
-function getCircle(circle: { center: google.maps.LatLngLiteral, radius: number }):ICircle {
-	return {
-		center: getPoint(circle.center),
-		radius: circle.radius
-	}
-};
-
-function getPolygon(polygon: { points: google.maps.LatLngLiteral[] }):IPolygon {
-	return {
-		points: polygon?.points?.map(getPoint),
-	}
-};
-
-function getMapPoint(latLang: IPoint) {
-	return latLang
-};
+  
+	// Calculate the distance in world pixels using the Pythagorean theorem
+	const dx = pixelPoint2.x - pixelPoint1.x;
+	const dy = pixelPoint2.y - pixelPoint1.y;
+	const distanceInWorldPixels = Math.sqrt(dx * dx + dy * dy);
+  
+	// Get the current zoom level
+	const zoom = map.getZoom() ?? 1;
+  
+	// Convert the distance from world pixels to screen pixels
+	const scaleFactor = 2**zoom;
+	const distanceInScreenPixels = distanceInWorldPixels * scaleFactor;
+  
+	return distanceInScreenPixels;
+}
 
 function generateKML(points: IPoint | IPoint[], circles: ICircle | ICircle[], polygons: IPolygon |IPolygon[]): string {
 	const pointsData = (isArray(points) ? points : [points]).filter(el => !!el);
@@ -173,17 +169,31 @@ function getBoundingBox(center: IPoint, { zoom, radius }: ( { zoom?: number, rad
 		bottomRight: { lat: bottomRight.lat(), lng: bottomRight.lng() },
 	};
 }
+  
+function calculateCircleArea(radius: number): number {
+	return Math.PI * radius**2;
+}
 
+function calculatePolygonArea(polygon: IPoint[]): number {
+	const path = polygon.map(point => new google.maps.LatLng(point.lat, point.lng));
+  
+	return google.maps.geometry.spherical.computeArea(path);
+}
+
+function calculateDistance(point1: IPoint, point2: IPoint): number {
+	const distance = google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
+  
+	return distance;
+}
+  
 export const mapUtils = {
+	calculatePixelDistance,
 	getPointLiteral,
-	getPoint,
-	getCircle,
-	getPolygon,
-	getMapPoint,
-	getMapCircle,
-	getMapPolygon,
 	adjustPointByPixelOffset,
 	getComputedOffset,
 	generateKML,
 	getBoundingBox,
+	calculateCircleArea,
+	calculatePolygonArea,
+	calculateDistance
 }

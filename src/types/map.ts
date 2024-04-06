@@ -3,6 +3,8 @@ export interface IPoint {
 	lng: number,
 }
 
+export interface IMarker extends IPoint {}
+
 export interface ICircle {
     center: IPoint,
     radius: number

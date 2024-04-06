@@ -92,7 +92,6 @@ export const MapEditorModal  = observer(({
 			onCancel={onCancel}
 		>
 			<MapView
-				type="edit"
 				initialCircle={initialCircle}
 				initialMarker={initialMarker}
 				initialPolygon={initialPolygon}
