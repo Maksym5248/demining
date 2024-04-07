@@ -35,7 +35,7 @@ export function useCircle({
 			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
 			const circleRadius = circleRef.current?.getRadius();
 
-			setCircle({ center: mapUtils.getPointLiteral(circleCenter), radius: circleRadius})
+			setCircle({ center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius})
 		}
 	}, []);
 	
@@ -44,7 +44,7 @@ export function useCircle({
 
 		const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
 		const circleRadius = circleRef.current?.getRadius();
-		const value = { center: mapUtils.getPointLiteral(circleCenter), radius: circleRadius};
+		const value = { center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius};
 
 		setCircle(value)
 		onChange?.({ circle: value })
@@ -81,7 +81,7 @@ export function useCircle({
 			const currentPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
 			const value ={
 				...circle,
-				radius: mapUtils.calculateDistance(circle?.center, currentPosition)
+				radius: mapUtils.getDistanceByPoints(circle?.center, currentPosition)
 			};
 
 			setCircle(value);

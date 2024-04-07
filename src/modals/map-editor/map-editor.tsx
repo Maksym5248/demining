@@ -25,7 +25,6 @@ export const MapEditorModal  = observer(({
 	hide
 }: MapEditorModalProps) => {
 	const store = useStore();
-	const [isLoading, setLoading] = useState(false);
 
 	const [circle, setCircle] = useState(initialCircle);
 	const [marker, setMarker] = useState(initialMarker);
@@ -58,17 +57,12 @@ export const MapEditorModal  = observer(({
 	
 	const fetchAllInGeoBox = useDebounce((box: IGeoBox) => {
 		store.map.fetchAllInGeoBox.run(box);
-		setLoading(false);
 	}, [], 2000);
 
 	const onChangeGeobox = (value: { box: IGeoBox, zoom: number}) => {
 		if(value.zoom < 16) return;
-
-		setLoading(true);
 		fetchAllInGeoBox(value.box);
 	};
-
-	// console.log("store.map.list.asArray", store.map.list.asArray.length)
 
 	return (   
 		<Modal 
@@ -90,7 +84,7 @@ export const MapEditorModal  = observer(({
 				onChangeGeobox={onChangeGeobox}
 				polygons={store.map.list.asArray.filter(el => el.id !== id && !!el.polygon).map(el => el.polygon as IPolygon)}
 				circles={store.map.list.asArray.filter(el => el.id !== id && !!el.circle).map(el => el.circle as ICircle)}
-				isLoadingVisibleInArea={store.map.fetchAllInGeoBox.inProgress || isLoading}
+				isLoadingVisibleInArea={store.map.fetchAllInGeoBox.inProgress}
 			/>
 		</Modal>
 	);

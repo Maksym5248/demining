@@ -106,7 +106,7 @@ function Component({
 
 	const _onChangeGeobox = () => {
 		if(!onChangeGeobox || !mapRef.current || !isVisibleInArea) return;
-		const box = mapUtils.getCurrentGeoBox(mapRef.current);
+		const box = mapUtils.getGeoBox(mapRef.current);
 
 		if(!box) return;
 		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number })
@@ -116,7 +116,7 @@ function Component({
 		setVisibleInArea(value);
 
 		if(!value || !mapRef.current) return;
-		const box = mapUtils.getCurrentGeoBox(mapRef.current);
+		const box = mapUtils.getGeoBox(mapRef.current);
 
 		if(!box) return;
 		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number})

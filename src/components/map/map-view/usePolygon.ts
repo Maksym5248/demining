@@ -37,7 +37,7 @@ export function usePolygon({
 
 		if(!points.getLength()) return;
 
-		const v = points.getArray().map((point) => mapUtils.getPointLiteral(point));
+		const v = points.getArray().map((point) => mapUtils.createPointLiteral(point));
 		const value = { points: v };
 		setPolygon(value);
 		onChange?.({ polygon: value })
@@ -67,7 +67,7 @@ export function usePolygon({
 		if (!polygonRef.current) return;
 	  
 		const path = polygonRef.current.getPath();
-		const points = path.getArray().map((point) => mapUtils.getPointLiteral(point));
+		const points = path.getArray().map((point) => mapUtils.createPointLiteral(point));
 		const value = { points };
 	  
 		setPolygon(value);

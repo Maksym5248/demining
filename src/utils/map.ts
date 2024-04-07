@@ -1,28 +1,15 @@
+import { geohashQueryBounds } from "geofire-common";
 import { isArray } from "lodash";
 
-import { ICircle, IPoint, IPolygon, IGeoBox } from "~/types";
+import { ICircleDB } from "~/db";
+import { ICircle, IPoint, IPolygon, IGeoBox, IGeohashRange } from "~/types";
 
-
-const getPointLiteral = (latLng: google.maps.LatLng) => ({
+const createPointLiteral = (latLng: google.maps.LatLng) => ({
 	lng: latLng?.lng(),
 	lat: latLng?.lat(),
 })
 
-const getComputedOffset = (latLng: google.maps.LatLngLiteral  | undefined, distance:number | undefined, bearing:number) => {
-	if(!latLng || !distance){
-		return null;
-	}
-
-	const value = window?.google.maps.geometry.spherical.computeOffset(latLng, distance, bearing);
-	
-	if(!value){
-		return null
-	}
-
-	return getPointLiteral(value)
-}
-
-function adjustPointByPixelOffset(
+function getPointByPixelOffset(
 	latLng: google.maps.LatLngLiteral | undefined | null,
 	xOffset:number,
 	yOffset:number,
@@ -55,11 +42,14 @@ function adjustPointByPixelOffset(
 		return null
 	}
 
-	return getPointLiteral(value)
+	return createPointLiteral(value)
 
 };
 
-function calculatePixelDistance(
+/**
+ * @returns px
+ */
+function getDistanceByPointsInPixels(
 	point1: google.maps.LatLngLiteral,
 	point2: google.maps.LatLngLiteral,
 	map: google.maps.Map
@@ -91,6 +81,15 @@ function calculatePixelDistance(
 	const distanceInScreenPixels = distanceInWorldPixels * scaleFactor;
   
 	return distanceInScreenPixels;
+}
+
+/**
+ * @returns m2
+ */
+function getDistanceByPoints(point1: IPoint, point2: IPoint): number {
+	const distance = google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
+  
+	return distance;
 }
 
 function generateKML(points: IPoint | IPoint[], circles: ICircle | ICircle[], polygons: IPolygon |IPolygon[]): string {
@@ -156,8 +155,11 @@ function getRadiusByZoom(center: IPoint, zoom:number ): number {
 	return 156543.03392 * Math.cos(center.lat * Math.PI / 180) / 2**zoom;
 }
 
-// radius in meters
-function getBoundingBox(center: IPoint, { zoom, radius }: ( { zoom?: number, radius?: number}) ): IGeoBox {
+/**
+ * 
+ * @param param2 { radius: m2 }
+ */
+function getGeobox(center: IPoint, { zoom, radius }: ( { zoom?: number, radius?: number}) ): IGeoBox {
 	// distance in meters
 	const distance = radius ?? getRadiusByZoom(center, zoom as number);
 
@@ -170,35 +172,29 @@ function getBoundingBox(center: IPoint, { zoom, radius }: ( { zoom?: number, rad
 	};
 }
   
-function calculateCircleArea(radius: number): number {
+function getAreaCircle(radius: number): number {
 	return Math.PI * radius**2;
 }
 
-function calculatePolygonArea(polygon: IPoint[]): number {
+function getAreaPolygon(polygon: IPoint[]): number {
 	const path = polygon.map(point => new google.maps.LatLng(point.lat, point.lng));
   
 	return google.maps.geometry.spherical.computeArea(path);
 }
 
-function calculateDistance(point1: IPoint, point2: IPoint): number {
-	const distance = google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
-  
-	return distance;
-}
-
 const getArea = (circle?:ICircle, polygon?: IPolygon) => {
 	if(circle){
-		return calculateCircleArea(circle.radius);
+		return getAreaCircle(circle.radius);
 	}
 
 	if(polygon){
-		return calculatePolygonArea(polygon.points);
+		return getAreaPolygon(polygon.points);
 	}
 
 	return null;
 }
 
-function getCurrentGeoBox(map: google.maps.Map): IGeoBox | null {
+function getGeoBox(map: google.maps.Map): IGeoBox | null {
 	const bounds = map.getBounds();
   
 	if (!bounds) {
@@ -215,17 +211,84 @@ function getCurrentGeoBox(map: google.maps.Map): IGeoBox | null {
   
 	return geoBox;
 }
+
+function haversineDistance(point1: { lat: number, lng: number }, point2: { lat: number, lng: number }): number {
+	const R = 6371e3; // Radius of the Earth in meters
+	const lat1Rad = point1.lat * Math.PI/180;
+	const lat2Rad = point2.lat * Math.PI/180;
+	const deltaLat = (point2.lat - point1.lat) * Math.PI/180;
+	const deltaLng = (point2.lng - point1.lng) * Math.PI/180;
   
+	const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+			  Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+			  Math.sin(deltaLng/2) * Math.sin(deltaLng/2);
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  
+	return R * c;
+}
+
+function getCenterAndRadiusByGeoBox(geoBox: IGeoBox): ICircleDB {
+	// Calculate the center
+	const center = {
+	  lat: (geoBox.topLeft.lat + geoBox.bottomRight.lat) / 2,
+	  lng: (geoBox.topLeft.lng + geoBox.bottomRight.lng) / 2
+	};
+  
+	// Calculate the radius using the Haversine formula
+	const radius = haversineDistance(center, geoBox.topLeft);
+  
+	return { center, radius };
+}
+  
+
+function getGeohashRangesByGeoBox(geoBox: IGeoBox): IGeohashRange[] {
+	const { radius, center } = getCenterAndRadiusByGeoBox(geoBox);
+	const bounds = geohashQueryBounds([center.lat, center.lng], radius);
+	return bounds.map(bound => ({ start: bound[0], end: bound[1] }));
+}
+
+
+function rangeIsSubset(newRange: IGeohashRange, oldRange: IGeohashRange): boolean {
+	return newRange.start >= oldRange.start && newRange.end <= oldRange.end;
+}
+
+function rangeIsOverlap(newRange: IGeohashRange, oldRange: IGeohashRange): boolean {
+	return newRange.start < oldRange.end && newRange.end > oldRange.start;
+}
+
+function adjustRange(newRange: IGeohashRange, oldRange: IGeohashRange): IGeohashRange {
+	if (newRange.start < oldRange.end) {
+	  return { start: oldRange.end, end: newRange.end };
+	}
+	return newRange;
+}
+
+function getAdjustedRanges(newRanges: IGeohashRange[], oldRanges: IGeohashRange[]): IGeohashRange[] {
+	const rangesToLoad = newRanges.filter(newR => !oldRanges.some(oldR => rangeIsSubset(newR, oldR)));
+		
+	if (!rangesToLoad.length) return [];
+
+	const adjustedRanges = rangesToLoad.map(newR => {
+		oldRanges.forEach(oldR => {
+			  if (rangeIsOverlap(newR, oldR)) {
+				newR = adjustRange(newR, oldR);
+			  }
+		});
+		return newR;
+	});
+
+	return adjustedRanges
+}
+
 export const mapUtils = {
-	calculatePixelDistance,
-	getPointLiteral,
-	adjustPointByPixelOffset,
-	getComputedOffset,
+	createPointLiteral,
+	getDistanceByPointsInPixels,
+	getDistanceByPoints,
+	getPointByPixelOffset,
 	generateKML,
-	getBoundingBox,
-	calculateCircleArea,
-	calculatePolygonArea,
-	calculateDistance,
+	getGeobox,
 	getArea,
-	getCurrentGeoBox
+	getGeoBox,
+	getGeohashRangesByGeoBox,
+	getAdjustedRanges
 }

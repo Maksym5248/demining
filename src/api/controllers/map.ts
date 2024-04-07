@@ -1,17 +1,16 @@
+
 import { DB } from '~/db'
+import { IGeohashRange } from '~/types';
 
-import { IGetAllInRectParams, IMapViewActionDTO } from '../types';
-import { mapDBUtils } from '../map-util';
+import { IMapViewActionDTO } from '../types';
 
-const getAllInGeoBox = async (box: IGetAllInRectParams):Promise<IMapViewActionDTO[]> =>{
-	const bounds = mapDBUtils.getBoundsByGeoBox(box);
-
-	const promises = bounds.map(b => DB.mapViewAction.select({
+const getByGeohashRanges = async (ranges: IGeohashRange[]):Promise<IMapViewActionDTO[]> =>{
+	const promises = ranges.map(b => DB.mapViewAction.select({
 		order: {
 			by: "geo.center.hash",
 		},
-		startAt: b[0],
-		endAt: b[1],
+		startAt: b.start,
+		endAt: b.end,
 	}));
 
 	const res = await Promise.all(promises);
@@ -27,5 +26,5 @@ const getAllInGeoBox = async (box: IGetAllInRectParams):Promise<IMapViewActionDT
 };
 
 export const map = {
-	getAllInGeoBox,
+	getByGeohashRanges,
 }

@@ -70,7 +70,7 @@ function Component({
 	}, []);
 
 	const callout = useMemo(() =>
-		mapUtils.adjustPointByPixelOffset(marker, 150, -150, mapRef.current, zoom),
+		mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef.current, zoom),
 	[marker, mapRef.current, zoom, isVisibleMap]);
 
 	const isVisiblePolygon = !!polygon?.points.length;

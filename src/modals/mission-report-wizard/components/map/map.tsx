@@ -57,6 +57,7 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 								initialMarker: mapView?.marker,
 								initialPolygon: mapView?.polygon,
 								initialZoom: mapView?.zoom,
+								id: mapView?.id,
 								onSubmit
 							})
 						

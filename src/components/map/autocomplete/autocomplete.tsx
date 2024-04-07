@@ -32,7 +32,7 @@ export function Autocomplete({ onPlaceChanged }: IAutocompleteProps) {
 		  point = { lat, lng };
 		} else if (place?.geometry?.location) {
 		  // If the input is not a pair of coordinates, get the location from the place's geometry
-		  point = mapUtils.getPointLiteral(place.geometry.location);
+		  point = mapUtils.createPointLiteral(place.geometry.location);
 		}
 	  
 		if (!point) {

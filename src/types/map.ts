@@ -19,3 +19,7 @@ export interface IGeoBox {
     bottomRight: IPoint
 }
 
+export interface IGeohashRange {
+    start: string,
+    end: string
+}
