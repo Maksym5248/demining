@@ -185,6 +185,18 @@ function calculateDistance(point1: IPoint, point2: IPoint): number {
   
 	return distance;
 }
+
+const getArea = (circle?:ICircle, polygon?: IPolygon) => {
+	if(circle){
+		return calculateCircleArea(circle.radius);
+	}
+
+	if(polygon){
+		return calculatePolygonArea(polygon.points);
+	}
+
+	return null;
+}
   
 export const mapUtils = {
 	calculatePixelDistance,
@@ -195,5 +207,6 @@ export const mapUtils = {
 	getBoundingBox,
 	calculateCircleArea,
 	calculatePolygonArea,
-	calculateDistance
+	calculateDistance,
+	getArea
 }

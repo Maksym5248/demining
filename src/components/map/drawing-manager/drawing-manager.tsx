@@ -8,6 +8,7 @@ interface IDrawingManagerProps {
 	value?: DrawingType;
 	onChange?: (value: DrawingType) => void;
 	onClear?: () => void;
+	isDisabledClean?: boolean;
 }
 
 
@@ -15,6 +16,7 @@ export function DrawingManager({
 	value,
 	onChange,
 	onClear,
+	isDisabledClean
 }: IDrawingManagerProps) {
 
 	const _onChange = (e: any) => {
@@ -34,24 +36,26 @@ export function DrawingManager({
 				<Radio.Button value={DrawingType.POLYGON} css={s.button}><Icon.Polygon /></Radio.Button>
 			</Radio.Group>
 
-			<Button.Group>
-				<Tooltip placement="bottomRight" title="Очистити" arrow>
-					<Popconfirm
-						title="Очистити"
-						description="Підтвердити очищення елементів на карті"
-						onConfirm={_onClear}
-						okText="Так"
-						cancelText="Ні"
-					
-					>
-						<Button
-							size="large"
-							danger
-							icon={<Icon.ClearOutlined /> }
-						/>
-					</Popconfirm>
-				</Tooltip>
-			</Button.Group>
+			{!isDisabledClean && (
+				<Button.Group>
+					<Tooltip placement="bottomRight" title="Очистити" arrow>
+						<Popconfirm
+							title="Очистити"
+							description="Підтвердити очищення елементів на карті"
+							onConfirm={_onClear}
+							okText="Так"
+							cancelText="Ні"
+				
+						>
+							<Button
+								size="large"
+								danger
+								icon={<Icon.ClearOutlined /> }
+							/>
+						</Popconfirm>
+					</Tooltip>
+				</Button.Group>
+			)}
 		</div>
 	);
 }

@@ -21,9 +21,9 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		fillColor: '#ff0000',
 		strokeColor: '#ff0000',
 		strokeWeight: 2,
-		draggable: !isPictureType && !isCreating && drawing === DrawingType.CIRCLE,
-		editable: !isPictureType && !isCreating && drawing === DrawingType.CIRCLE,
-		clickable: !isPictureType && !isCreating && drawing === DrawingType.CIRCLE,
+		draggable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
+		editable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
+		clickable: !isPictureType && !isCreating && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
 	}
 
 	const polygonOptions = {
@@ -31,9 +31,9 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		fillColor: '#ff0000',
 		strokeColor: '#ff0000',
 		strokeWeight: 2,
-		draggable: !isPictureType && drawing === DrawingType.POLYGON,
-		editable: !isPictureType && drawing === DrawingType.POLYGON,
-		clickable: !isPictureType && !isCreating && drawing === DrawingType.POLYGON,
+		draggable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
+		editable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
+		clickable: !isPictureType && !isCreating && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
 	}
 
 	const polylineOptions = {

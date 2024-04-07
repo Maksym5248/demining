@@ -1,22 +1,25 @@
-import { memo, useCallback, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 
 import { Spin } from "antd";
 import { GoogleMap, Marker, Circle, Polygon, useLoadScript, Libraries, Polyline } from '@react-google-maps/api';
 
-import { mapUtils} from "~/utils";
 import { ICircle, IMarker, IPoint, IPolygon } from "~/types/map";
 import { DEFAULT_CENTER, MAP_ZOOM } from "~/constants";
 import { useCurrentLocation, useMapOptions } from "~/hooks";
 import { CONFIG } from "~/config";
+import { mapUtils, mathUtils } from "~/utils";
 
 import { s } from "./map-view.style";
 import { DrawingManager } from "../drawing-manager";
 import { MapInfo } from "../map-info";
 import { Autocomplete } from "../autocomplete";
 import { DrawingType, IMapViewProps } from "../map.types";
+import { usePolygon } from "./usePolygon";
+import { useCircle } from "./useCircle";
 
 const libraries:Libraries = ["places", "drawing", "geometry"];
 
+const getArea = (circle?:ICircle, polygon?: IPolygon) => (circle ||  polygon) ? mathUtils.toFixed(mapUtils.getArea(circle, polygon), 0) : undefined;
 
 function Component({
 	initialMarker,
@@ -29,44 +32,58 @@ function Component({
 }: IMapViewProps) {
 	const isPictureType = false;
 
-	 const [drawing, setDrawing] = useState(DrawingType.MOVE);
-	 const [isCreating, setCreating] = useState(false);
+	const [drawing, setDrawing] = useState(DrawingType.MOVE);
+	const [isCreating, setCreating] = useState(false);
 
-	 const {
+	const {
 		mapOptions, polygonOptions, circleOptions, createPolygonOptions
 	} = useMapOptions({ isPictureType, isCreating, drawing});
 
 	const mapRef = useRef<google.maps.Map>();
-	const circleRef = useRef<google.maps.Circle>();
-	const polygonRef = useRef<google.maps.Polygon>();
 
 	const [center, setCenter] = useState<IMarker | undefined>(initialMarker ?? position);
 	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
 	const [circle, setCircle] = useState<ICircle | undefined>(initialCircle);
 	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
-
 	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
-	
-	const onLoadMap = (map:google.maps.Map) => {
-		mapRef.current = map;
-	}
-
-	const onLoadCircle = (newCircleRef: google.maps.Circle) => {
-		circleRef.current = newCircleRef;
-	}
-
-	const onLoadPolygon = (newPolygonRef: google.maps.Polygon) => {
-		polygonRef.current = newPolygonRef;
-	}
 
 	const _onChange = (value: { polygon?: IPolygon, marker?: IPoint, circle?: ICircle, zoom?: number}) => {
-		onChange?.({
+		const newValue = {
 			polygon,
 			circle,
 			marker,
 			zoom,
 			...value
+		};
+
+		onChange?.({
+			...newValue,
+			area: getArea(newValue.circle, newValue.polygon),
 		})
+	}
+
+	const polygonManager = usePolygon({
+		isCreating,
+		setCreating,
+		drawing,
+		polygon,
+		setPolygon,
+		setCircle,
+		onChange: _onChange
+	});
+
+	const circleManager = useCircle({
+		isCreating,
+		setCreating,
+		drawing,
+		circle,
+		setPolygon,
+		setCircle,
+		onChange: _onChange
+	});
+	
+	const onLoadMap = (map:google.maps.Map) => {
+		mapRef.current = map;
 	}
 
 	const onPlaceChanged = ({ point }: { point: IPoint}) => {	  
@@ -95,43 +112,10 @@ function Component({
 		_onChange?.({ zoom: newZoom })
 	};
 
-	const onRadiusChanged = useCallback(() => {
-		if(circleRef.current){
-			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
-			const circleRadius = circleRef.current?.getRadius();
-
-			setCircle({ center: mapUtils.getPointLiteral(circleCenter), radius: circleRadius})
-		}
-	}, []);
-	
-	const onDragCircleEnd = useCallback(() => {
-		if(!circleRef.current) return;
-
-		const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
-		const circleRadius = circleRef.current?.getRadius();
-		const value = { center: mapUtils.getPointLiteral(circleCenter), radius: circleRadius};
-
-		setCircle(value)
-		_onChange?.({ circle: value })
-	}, []);
-
-	const onDragPolygonEnd = useCallback(() => {
-		if(!polygonRef.current) return;
-
-		const points = polygonRef.current?.getPath();
-
-		if(!points.getLength()) return;
-
-		const v = points.getArray().map((point) => mapUtils.getPointLiteral(point));
-		const value = { points: v };
-		setPolygon(value);
-		_onChange?.({ polygon: value })
-	}, []);
-
 	const onClear = () => {
 		setMarker(undefined);
-		setCircle(undefined);
-		setPolygon(undefined);
+		circleManager.clear();
+		polygonManager.clear();
 	}
 
 	const onClickMap = (e: google.maps.MapMouseEvent) => {
@@ -144,54 +128,20 @@ function Component({
 			_onChange?.({ marker: point })
 		}
 
-		if(drawing === DrawingType.CIRCLE && isCreating){
-			setCreating(false);
-			_onChange?.({ circle })
+		if(drawing === DrawingType.CIRCLE){
+			circleManager.onClickMap(e)
 		}
 
-		if(drawing === DrawingType.CIRCLE && !isCreating && !circle){
-			setCreating(true);
-			setPolygon(undefined);
-			setCircle({
-				center: { lat: e.latLng.lat(), lng: e.latLng.lng() },
-				radius: 0,
-			});
-		}
-
-		if(drawing === DrawingType.POLYGON && !isCreating && !polygon?.points.length){
-			setCreating(true);
-			setCircle(undefined);
-			setPolygon({ points: [point] });
-		}
-		
-		if(drawing === DrawingType.POLYGON && isCreating && !!polygon?.points.length ){
-			setPolygon(prev => ({ points: [...(prev?.points ?? []), point] }));
-		}
-	}
-
-	const onClickPolyline = (e: google.maps.PolyMouseEvent) => {
-		if(!e?.latLng) return;
-
-		const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-		const first = polygon?.points[0]
-
-		if(drawing === DrawingType.POLYGON && isCreating && !!polygon?.points.length && first?.lat === point.lat && first?.lng === point.lng){
-			setCreating(false);
-			_onChange?.({ polygon })
+		if(drawing === DrawingType.POLYGON){
+			polygonManager.onClickMap(e)
 		}
 	}
 
 	const onMouseMove = (e: google.maps.MapMouseEvent) => {
 		if(!e?.latLng || !circle?.center) return;
 
-		if(drawing === DrawingType.CIRCLE  && isCreating){
-			const currentPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-			const value ={
-				...circle,
-				radius: mapUtils.calculateDistance(circle?.center, currentPosition)
-			};
-
-			setCircle(value);
+		if(drawing === DrawingType.CIRCLE){
+			circleManager.onMouseMove(e)
 		}
 	}
 
@@ -199,9 +149,8 @@ function Component({
 		setDrawing(value)
 	}
 
-	const isVisiblePolygon = !!polygon?.points.length;
-	const isVisibleCircle = !!circle?.center && circle?.radius;
 	const isVisibleMarker = !!marker;
+	const area = getArea(circle, polygon);
 
 	return (
 		<div css={s.container}>
@@ -219,37 +168,43 @@ function Component({
 				onMouseMove={onMouseMove}
 				{...rest}
 			>
-				<DrawingManager onChange={onChangeDrawing} value={drawing} onClear={onClear}/>
-				{isVisiblePolygon && !isCreating && (
-					<Polygon
-						onLoad={onLoadPolygon}
-					   options={polygonOptions} 
-					   {...(circle ?? {})}
-					   path={polygon?.points}
-					   onDragEnd={onDragPolygonEnd}
-					/>
-				) }
-				{isVisibleCircle && (
+				<DrawingManager
+				  onChange={onChangeDrawing} 
+				  value={drawing}
+				  onClear={onClear}
+				  isDisabledClean={!polygonManager.isVisiblePolygon && !circleManager.isVisibleCircle && !isVisibleMarker}
+				  />
+				{isVisibleMarker && <Marker position={marker} />}
+				{circleManager.isVisibleCircle && (
 					<Circle
-					   onLoad={onLoadCircle}
+					   onLoad={circleManager.onLoadCircle}
 					   options={circleOptions} 
-					   {...(circle ?? {})}
-					   onRadiusChanged={onRadiusChanged} 
-					   onDragEnd={onDragCircleEnd}
+					   radius={circle?.radius ?? 0}
+					   center={circle?.center ?? { lat: 0, lng: 0 }}
+					   onRadiusChanged={circleManager.onRadiusChanged} 
+					   onDragEnd={circleManager.onDragCircleEnd}
 					/>
-				) }
-				{isVisibleMarker && <Marker position={marker} clickable />}
-				{polygon?.points.length && isCreating && drawing === DrawingType.POLYGON && (
+				)}
+				{polygonManager.isVisiblePolygon && (
+					<Polygon
+					   onLoad={polygonManager.onLoadPolygon}
+					   options={polygonOptions} 
+					   path={polygon?.points}
+					   onDragEnd={polygonManager.onDragPolygonEnd}
+					   onMouseUp={polygonManager.onPathChanged}
+					/>
+				)}
+				{polygonManager.isVisiblePolyline && (
 					<Polyline
-						path={polygon.points}
+						path={polygon?.points}
 						options={createPolygonOptions}
-						onClick={onClickPolyline}
+						onClick={polygonManager.onClickPolyline}
 					/>
 				)}
 				{!isPictureType && (
 					<Autocomplete onPlaceChanged={onPlaceChanged} />
 				)}
-				<MapInfo marker={marker} circle={circle} polygon={polygon}/>
+				<MapInfo marker={marker} area={area}/>
 			</GoogleMap>
 		</div>
 	);

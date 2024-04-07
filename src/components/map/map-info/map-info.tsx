@@ -1,36 +1,20 @@
 
 import { Divider, Typography, message } from "antd";
 
-import { ICircle, IPoint, IPolygon } from "~/types";
-import { mapUtils, mathUtils } from "~/utils";
+import { IPoint } from "~/types";
+import { mathUtils } from "~/utils";
 
 import { s } from "./map-info.style";
 
 interface IMapInfoProps {
 	marker?: IPoint;
-	circle?: ICircle;
-	polygon?: IPolygon;
-}
-
-const getArea = (circle?:ICircle, polygon?: IPolygon) => {
-	if(circle){
-		return mapUtils.calculateCircleArea(circle.radius);
-	}
-
-	if(polygon){
-		return mapUtils.calculatePolygonArea(polygon.points);
-	}
-
-	return null;
+	area?: number;
 }
 
 export function MapInfo({
 	marker,
-	circle,
-	polygon,
+	area,
 }: IMapInfoProps) {
-
-	const area = getArea(circle, polygon);
 
 	const onCopyCoords = () => {
 		const text = `${marker?.lat},${marker?.lng}`;
@@ -43,13 +27,12 @@ export function MapInfo({
 		message.success("Скопійовано");
 	}
 
-
 	return (
 		<div css={s.container}>
 			<div css={s.content}>
 				<div css={s.group} onClick={onCopyArea} role="button" tabIndex={0} onKeyDown={onCopyArea}>
 					<Typography.Text css={s.areaItem}>
-						Площа: {area ? mathUtils.toFixed(area, 2) : "-"} м2
+						Площа: {area ? `${area}  м2`: "-"}
 					</Typography.Text>
 				</div>
 				<Divider type="vertical" css={s.divider}/>

@@ -6,6 +6,7 @@ import { MAP_SIZE, MAP_VIEW_TAKE_PRINT_CONTAINER, MODALS } from "~/constants";
 import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
 import { IMapViewActionValue } from "~/stores";
 import { Modal } from "~/services";
+import { IMapEditorSubmit } from "~/modals/map-editor/map-editor.types";
 
 import { s, MAP_PADDING_TOP, MAP_PADDING_BOTTOM } from "./map.styles";
 
@@ -38,9 +39,12 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 						const executedAt = getFieldValue("executedAt");
 						const mapView = getFieldValue("mapView") as IMapViewActionValue;
 
-
-						const onSubmit = async (value: IMapViewActionValue) => {
+						const onSubmit = async ({ area, ...value}: IMapEditorSubmit) => {
 							setFieldValue("mapView", value);
+
+							if(area) {
+								setFieldValue("checkedTerritory", area);
+							}
 			
 							if(!value?.marker) return;
 							const address = await ExternalApi.getGeocode(value.marker);

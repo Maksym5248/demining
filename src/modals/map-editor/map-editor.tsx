@@ -17,6 +17,7 @@ export const MapEditorModal  = observer(({
 	initialMarker,
 	initialPolygon,
 	initialZoom,
+	initialArea,
 	onSubmit,
 	isVisible,
 	hide
@@ -25,6 +26,7 @@ export const MapEditorModal  = observer(({
 	const [marker, setMarker] = useState(initialMarker);
 	const [polygon, setPolygon] = useState(initialPolygon);
 	const [zoom, setZoom] = useState(initialZoom);
+	const [area, setArea] = useState(initialArea);
 
 	const onCancel = () => {
 		hide();
@@ -35,29 +37,10 @@ export const MapEditorModal  = observer(({
 		setMarker(value.marker);
 		setPolygon(value.polygon);
 		setZoom(value.zoom);
+		setArea(value.area);
 	}
 
 	const onSave = () => {
-		console.log("sd", {
-			marker: {
-				lat: mathUtils.toFixed(marker?.lat, 9),
-				lng: mathUtils.toFixed(marker?.lng, 9),
-			},
-			polygon: polygon ? {
-				points: polygon.points.map(el => ({
-					lat: mathUtils.toFixed(el.lat, 9),
-					lng: mathUtils.toFixed(el.lng, 9),
-				}))
-			} : undefined,
-			circle: circle ? {
-				center:  {
-					lat: mathUtils.toFixed(circle?.center.lat, 9),
-					lng: mathUtils.toFixed(circle?.center.lng, 9)
-				},
-				radius: mathUtils.toFixed(circle?.radius, 9),
-			} : undefined,
-			zoom: mathUtils.toFixed(zoom, 9)
-		});
 		onSubmit?.({
 			marker: {
 				lat: mathUtils.toFixed(marker?.lat, 9),
@@ -76,7 +59,8 @@ export const MapEditorModal  = observer(({
 				},
 				radius: mathUtils.toFixed(circle?.radius, 9),
 			} : undefined,
-			zoom: mathUtils.toFixed(zoom, 9)
+			zoom: mathUtils.toFixed(zoom, 9),
+			area: area ? mathUtils.toFixed(area, 9) : undefined,
 		});
 		hide();
 	}

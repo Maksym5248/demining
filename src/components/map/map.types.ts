@@ -8,6 +8,7 @@ export interface IOnChangeMapView {
 	marker?: IPoint,
 	circle?: ICircle,
 	zoom: number,
+	area?: number, // m2
 }
 
 export enum DrawingType {
