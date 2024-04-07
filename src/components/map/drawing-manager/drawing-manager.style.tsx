@@ -17,9 +17,15 @@ const activeButton = Theme.css(({ token }) => `
 	color: ${token.colorPrimary};
 `);
 
+const disabledButton = Theme.css(({ token }) => `
+	background: ${token.colorBorder};
+	border-color: ${token.colorBorder};
+`);
+
 export const s = {
 	container,
 	button,
 	activeButton,
+	disabledButton
 }
     

@@ -28,7 +28,7 @@ export interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapCon
 	polygons?: IPolygon[],
 	circles?: ICircle[],
 	isLoadingVisibleInArea?: boolean;
-	onChangeGeobox?: (value: IGeoBox) => void;
+	onChangeGeobox?: (value: { box: IGeoBox, zoom: number}) => void;
 }
 
 

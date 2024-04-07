@@ -13,10 +13,12 @@ interface IDrawingManagerProps {
 	onChangeStick?: (value: boolean) => void;
 	isVisibleInArea?: boolean;
 	isLoadingVisibleInArea?: boolean;
+	canVisibleInArea?: boolean;
 	onChangeVisibleInArea?: (value: boolean) => void;
 }
 
 export function DrawingManager({
+	canVisibleInArea,
 	value,
 	onChange,
 	onClear,
@@ -44,6 +46,18 @@ export function DrawingManager({
 		onClear?.();
 	}
 	
+	const getClassShowArea = () => {
+		if(!canVisibleInArea){
+			return s.disabledButton;
+		}
+
+		if(isVisibleInArea){
+			return s.activeButton;
+		}
+		
+		return undefined;
+	}
+
 	return (
 		<div css={s.container}>
 			<Radio.Group value={value} onChange={_onChange} size="large">
@@ -57,9 +71,9 @@ export function DrawingManager({
 				<Tooltip placement="bottomRight" title="Показати обстежені ділянки в зоні" arrow>
 					<Button
 						size="large"
-						loading={isLoadingVisibleInArea}
-						onClick={_onChangeShowInArea}
-						css={isVisibleInArea ? s.activeButton: undefined}
+						loading={isLoadingVisibleInArea && canVisibleInArea}
+						onClick={canVisibleInArea ?_onChangeShowInArea : undefined}
+						css={getClassShowArea()}
 						icon={<Icon.GatewayOutlined /> }
 					/>
 				</Tooltip>

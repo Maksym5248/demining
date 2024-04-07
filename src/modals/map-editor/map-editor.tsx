@@ -61,9 +61,11 @@ export const MapEditorModal  = observer(({
 		setLoading(false);
 	}, [], 2000);
 
-	const onChangeGeobox = (box: IGeoBox) => {
+	const onChangeGeobox = (value: { box: IGeoBox, zoom: number}) => {
+		if(value.zoom < 16) return;
+
 		setLoading(true);
-		fetchAllInGeoBox(box);
+		fetchAllInGeoBox(value.box);
 	};
 
 	// console.log("store.map.list.asArray", store.map.list.asArray.length)

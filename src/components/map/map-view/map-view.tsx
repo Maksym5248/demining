@@ -109,7 +109,7 @@ function Component({
 		const box = mapUtils.getCurrentGeoBox(mapRef.current);
 
 		if(!box) return;
-		onChangeGeobox?.(box)
+		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number })
 	}
 
 	const onChangeVisibleInArea = (value:boolean) => {
@@ -119,7 +119,7 @@ function Component({
 		const box = mapUtils.getCurrentGeoBox(mapRef.current);
 
 		if(!box) return;
-		onChangeGeobox?.(box)
+		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number})
 	}
 
 	const polygonManager = usePolygon({
@@ -230,6 +230,7 @@ function Component({
 				{...rest}
 			>
 				<DrawingManager
+				 canVisibleInArea={zoom > 16}
 				  onChange={onChangeDrawing} 
 				  value={drawing}
 				  onClear={onClear}
