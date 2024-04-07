@@ -20,7 +20,9 @@ import {
 	getCountFromServer,
 	getAggregateFromServer,
 	sum,
-	QueryFieldFilterConstraint
+	QueryFieldFilterConstraint,
+	startAt,
+	endAt
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
@@ -30,7 +32,7 @@ import { IBaseDB } from '../types';
 type IWhere = {[field:string]: any};
 type IOrder = {
 	by: string,
-	type: "asc" | 'desc',
+	type?: "asc" | 'desc',
 };
 
 export type IQuery = {
@@ -39,6 +41,8 @@ export type IQuery = {
 	order?: IOrder;
 	limit?: number;
 	startAfter?: string | number | Timestamp;
+	startAt?: string | number | Timestamp;
+	endAt?: string | number | Timestamp;
 };
 
 function generateValueStartsWith(value: string): string[] {
@@ -141,6 +145,8 @@ export class DBBase<T extends IBaseDB> {
 			...(args?.where ? getWhere(args.where) : []),
 			...(args?.order ? [getOrder(args?.order)] : []),
 			...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
+			...(args?.startAt ? [startAt(args?.startAt)] : []),
+			...(args?.endAt ? [endAt(args?.endAt)] : []),
 			...(args?.limit ? [limit(args?.limit)] : []),
 	   );
 	}

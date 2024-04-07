@@ -4,7 +4,8 @@ import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { IOnChangeMapView, MapView } from '~/components';
-import { mathUtils } from '~/utils';
+import { useDebounce, useStore } from '~/hooks';
+import { ICircle, IGeoBox, IPolygon } from '~/types';
 
 import { MapEditorModalProps } from './map-editor.types';
 
@@ -18,10 +19,14 @@ export const MapEditorModal  = observer(({
 	initialPolygon,
 	initialZoom,
 	initialArea,
-	onSubmit,
+	id,
 	isVisible,
+	onSubmit,
 	hide
 }: MapEditorModalProps) => {
+	const store = useStore();
+	const [isLoading, setLoading] = useState(false);
+
 	const [circle, setCircle] = useState(initialCircle);
 	const [marker, setMarker] = useState(initialMarker);
 	const [polygon, setPolygon] = useState(initialPolygon);
@@ -42,29 +47,27 @@ export const MapEditorModal  = observer(({
 
 	const onSave = () => {
 		onSubmit?.({
-			marker: {
-				lat: mathUtils.toFixed(marker?.lat, 9),
-				lng: mathUtils.toFixed(marker?.lng, 9),
-			},
-			polygon: polygon ? {
-				points: polygon.points.map(el => ({
-					lat: mathUtils.toFixed(el.lat, 9),
-					lng: mathUtils.toFixed(el.lng, 9),
-				}))
-			} : undefined,
-			circle: circle ? {
-				center:  {
-					lat: mathUtils.toFixed(circle?.center.lat, 9),
-					lng: mathUtils.toFixed(circle?.center.lng, 9)
-				},
-				radius: mathUtils.toFixed(circle?.radius, 9),
-			} : undefined,
-			zoom: mathUtils.toFixed(zoom, 9),
-			area: area ? mathUtils.toFixed(area, 9) : undefined,
+			marker,
+			polygon,
+			circle,
+			zoom,
+			area,
 		});
 		hide();
 	}
-		
+	
+	const fetchAllInGeoBox = useDebounce((box: IGeoBox) => {
+		store.map.fetchAllInGeoBox.run(box);
+		setLoading(false);
+	}, [], 2000);
+
+	const onChangeGeobox = (box: IGeoBox) => {
+		setLoading(true);
+		fetchAllInGeoBox(box);
+	};
+
+	// console.log("store.map.list.asArray", store.map.list.asArray.length)
+
 	return (   
 		<Modal 
 			centered
@@ -82,6 +85,10 @@ export const MapEditorModal  = observer(({
 				initialZoom={initialZoom}
 				mapContainerStyle={mapContainerStyle}
 				onChange={onChange}
+				onChangeGeobox={onChangeGeobox}
+				polygons={store.map.list.asArray.filter(el => el.id !== id && !!el.polygon).map(el => el.polygon as IPolygon)}
+				circles={store.map.list.asArray.filter(el => el.id !== id && !!el.circle).map(el => el.circle as ICircle)}
+				isLoadingVisibleInArea={store.map.fetchAllInGeoBox.inProgress || isLoading}
 			/>
 		</Modal>
 	);

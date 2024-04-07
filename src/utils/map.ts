@@ -197,6 +197,24 @@ const getArea = (circle?:ICircle, polygon?: IPolygon) => {
 
 	return null;
 }
+
+function getCurrentGeoBox(map: google.maps.Map): IGeoBox | null {
+	const bounds = map.getBounds();
+  
+	if (!bounds) {
+	  return null;
+	}
+  
+	const ne = bounds.getNorthEast();
+	const sw = bounds.getSouthWest();
+  
+	const geoBox: IGeoBox = {
+	  topLeft: { lat: ne.lat(), lng: sw.lng() },
+	  bottomRight: { lat: sw.lat(), lng: ne.lng() },
+	};
+  
+	return geoBox;
+}
   
 export const mapUtils = {
 	calculatePixelDistance,
@@ -208,5 +226,6 @@ export const mapUtils = {
 	calculateCircleArea,
 	calculatePolygonArea,
 	calculateDistance,
-	getArea
+	getArea,
+	getCurrentGeoBox
 }

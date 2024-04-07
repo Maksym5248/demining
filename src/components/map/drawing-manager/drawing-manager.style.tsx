@@ -12,8 +12,14 @@ const button = Theme.css(({ token }) => `
 	color: ${token.colorIcon};
 `);
 
+const activeButton = Theme.css(({ token }) => `
+	border-color: ${token.colorPrimary};
+	color: ${token.colorPrimary};
+`);
+
 export const s = {
 	container,
 	button,
+	activeButton,
 }
     

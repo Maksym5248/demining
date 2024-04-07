@@ -8,6 +8,7 @@ export interface IMapEditorSubmit {
 	area?: number;
 }
 export interface MapEditorModalProps {
+	id?: string;
     initialCircle?: ICircle;
 	initialMarker?: IPoint;
 	initialPolygon?: IPolygon;

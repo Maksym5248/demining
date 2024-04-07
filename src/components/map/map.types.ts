@@ -1,7 +1,7 @@
 
 import { GoogleMapProps } from '@react-google-maps/api';
 
-import { ICircle, IPoint, IPolygon } from '~/types';
+import { ICircle, IGeoBox, IPoint, IPolygon } from '~/types';
 
 export interface IOnChangeMapView {
 	polygon?: IPolygon,
@@ -25,6 +25,10 @@ export interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapCon
 	initialZoom?: number;
 	onChange: (value: IOnChangeMapView) => void;
 	position?: IPoint;
+	polygons?: IPolygon[],
+	circles?: ICircle[],
+	isLoadingVisibleInArea?: boolean;
+	onChangeGeobox?: (value: IGeoBox) => void;
 }
 
 

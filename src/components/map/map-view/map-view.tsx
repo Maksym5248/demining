@@ -21,6 +21,26 @@ const libraries:Libraries = ["places", "drawing", "geometry"];
 
 const getArea = (circle?:ICircle, polygon?: IPolygon) => (circle ||  polygon) ? mathUtils.toFixed(mapUtils.getArea(circle, polygon), 0) : undefined;
 
+const circlesOptions = {
+	fillOpacity: 0.3,
+	fillColor: '#FFFF00',
+	strokeColor: '#FFFF00',
+	strokeWeight: 2,
+	draggable: false,
+	editable: false,
+	clickable: false,
+}
+
+const polygonsOptions = {
+	fillOpacity: 0.3,
+	fillColor: '#FFFF00',
+	strokeColor: '#FFFF00',
+	strokeWeight: 2,
+	draggable: false,
+	editable: false,
+	clickable: false,
+}
+
 function Component({
 	initialMarker,
 	initialCircle,
@@ -28,18 +48,23 @@ function Component({
 	initialZoom,
 	onChange,
 	position,
+	circles,
+	polygons,
+	onChangeGeobox,
+	isLoadingVisibleInArea,
 	...rest
 }: IMapViewProps) {
-	const isPictureType = false;
-
 	const [drawing, setDrawing] = useState(DrawingType.MOVE);
 	const [isCreating, setCreating] = useState(false);
 
 	const {
 		mapOptions, polygonOptions, circleOptions, createPolygonOptions
-	} = useMapOptions({ isPictureType, isCreating, drawing});
+	} = useMapOptions({ isPictureType: false, isCreating, drawing});
 
 	const mapRef = useRef<google.maps.Map>();
+
+	const [isActiveStick, setActiveStick] = useState(false);
+	const [isVisibleInArea, setVisibleInArea] = useState(false);
 
 	const [center, setCenter] = useState<IMarker | undefined>(initialMarker ?? position);
 	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
@@ -57,9 +82,44 @@ function Component({
 		};
 
 		onChange?.({
-			...newValue,
+			marker: {
+				lat: mathUtils.toFixed(newValue.marker?.lat, 9),
+				lng: mathUtils.toFixed(newValue.marker?.lng, 9),
+			},
+			polygon: newValue.polygon ? {
+				points: newValue.polygon.points.map(el => ({
+					lat: mathUtils.toFixed(el.lat, 9),
+					lng: mathUtils.toFixed(el.lng, 9),
+				}))
+			} : undefined,
+			circle: newValue.circle ? {
+				center:  {
+					lat: mathUtils.toFixed(newValue.circle?.center.lat, 9),
+					lng: mathUtils.toFixed(newValue.circle?.center.lng, 9)
+				},
+				radius: mathUtils.toFixed(newValue.circle?.radius, 9),
+			} : undefined,
+			zoom: mathUtils.toFixed(newValue.zoom, 9),
 			area: getArea(newValue.circle, newValue.polygon),
 		})
+	}
+
+	const _onChangeGeobox = () => {
+		if(!onChangeGeobox || !mapRef.current || !isVisibleInArea) return;
+		const box = mapUtils.getCurrentGeoBox(mapRef.current);
+
+		if(!box) return;
+		onChangeGeobox?.(box)
+	}
+
+	const onChangeVisibleInArea = (value:boolean) => {
+		setVisibleInArea(value);
+
+		if(!value || !mapRef.current) return;
+		const box = mapUtils.getCurrentGeoBox(mapRef.current);
+
+		if(!box) return;
+		onChangeGeobox?.(box)
 	}
 
 	const polygonManager = usePolygon({
@@ -166,13 +226,19 @@ function Component({
 				onLoad={onLoadMap}
 				onClick={onClickMap}
 				onMouseMove={onMouseMove}
+				onBoundsChanged={_onChangeGeobox}
 				{...rest}
 			>
 				<DrawingManager
 				  onChange={onChangeDrawing} 
 				  value={drawing}
 				  onClear={onClear}
+				  isActiveStick={isActiveStick}
+				  isVisibleInArea={isVisibleInArea}
+				  onChangeVisibleInArea={onChangeVisibleInArea}
+				  onChangeStick={setActiveStick}
 				  isDisabledClean={!polygonManager.isVisiblePolygon && !circleManager.isVisibleCircle && !isVisibleMarker}
+				  isLoadingVisibleInArea={isLoadingVisibleInArea}
 				  />
 				{isVisibleMarker && <Marker position={marker} />}
 				{circleManager.isVisibleCircle && (
@@ -194,6 +260,21 @@ function Component({
 					   onMouseUp={polygonManager.onPathChanged}
 					/>
 				)}
+				{isVisibleInArea && !!circles?.length && (circles.map((item, index) => (
+					<Circle
+						key={index}
+						options={circlesOptions}
+						radius={item?.radius ?? 0}
+						center={item?.center ?? { lat: 0, lng: 0 }}
+					/>
+				)))}
+				{isVisibleInArea && !!polygons?.length && (polygons.map((item, index) => (
+					<Polygon
+						key={index}
+						options={polygonsOptions}
+						path={item?.points}
+					/>
+				)))}
 				{polygonManager.isVisiblePolyline && (
 					<Polyline
 						path={polygon?.points}
@@ -201,9 +282,7 @@ function Component({
 						onClick={polygonManager.onClickPolyline}
 					/>
 				)}
-				{!isPictureType && (
-					<Autocomplete onPlaceChanged={onPlaceChanged} />
-				)}
+				<Autocomplete onPlaceChanged={onPlaceChanged} />
 				<MapInfo marker={marker} area={area}/>
 			</GoogleMap>
 		</div>

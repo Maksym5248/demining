@@ -1,7 +1,7 @@
-import { geohashForLocation, boundingBoxCoordinates } from 'geofire-common';
+import { geohashForLocation, boundingBoxCoordinates, geohashQueryBounds, GeohashRange } from 'geofire-common';
 
 import { ICircleDB, IGeoBoxDB, IGeoDB, IGeoPointDB, IMapViewActionDB, IPointDB, IPolygonDB } from '~/db';
-import { IPoint } from '~/types';
+import { IGeoBox, IPoint } from '~/types';
 
 function getGeoPoint(point: IPointDB): IGeoPointDB {
 	const hash = geohashForLocation([point.lat, point.lng]);
@@ -114,8 +114,44 @@ function getGeo(mapViewAction: Pick<IMapViewActionDB, "circle" | "polygon" | "ma
 	return null
 }
 
+function haversineDistance(point1: { lat: number, lng: number }, point2: { lat: number, lng: number }): number {
+	const R = 6371e3; // Radius of the Earth in meters
+	const lat1Rad = point1.lat * Math.PI/180;
+	const lat2Rad = point2.lat * Math.PI/180;
+	const deltaLat = (point2.lat - point1.lat) * Math.PI/180;
+	const deltaLng = (point2.lng - point1.lng) * Math.PI/180;
+  
+	const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+			  Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+			  Math.sin(deltaLng/2) * Math.sin(deltaLng/2);
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  
+	return R * c;
+}
+
+function getCenterAndRadiusByGeoBox(geoBox: IGeoBox): ICircleDB {
+	// Calculate the center
+	const center = {
+	  lat: (geoBox.topLeft.lat + geoBox.bottomRight.lat) / 2,
+	  lng: (geoBox.topLeft.lng + geoBox.bottomRight.lng) / 2
+	};
+  
+	// Calculate the radius using the Haversine formula
+	const radius = haversineDistance(center, geoBox.topLeft);
+  
+	return { center, radius };
+}
+  
+
+function getBoundsByGeoBox(geoBox: IGeoBox): GeohashRange[] {
+	const { radius, center } = getCenterAndRadiusByGeoBox(geoBox);
+	return geohashQueryBounds([center.lat, center.lng], radius);
+}
+
 export const mapDBUtils = {
 	getGeoBox,
 	getGeoPoint,
 	getGeo,
+	getCenterAndRadiusByGeoBox,
+	getBoundsByGeoBox
 }
