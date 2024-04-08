@@ -12,7 +12,6 @@ interface IUseCircleParams {
     circle?: ICircle;
     setPolygon: (value?: IPolygon | undefined) => void;
 	setCircle: (value?: ICircle  | undefined) => void;
-    onChange?: (value: { circle?: ICircle }) => void;
 }
 
 export function useCircle({
@@ -22,7 +21,6 @@ export function useCircle({
 	circle,
 	setPolygon,
 	setCircle,
-	onChange,
 }: IUseCircleParams) {
 	const circleRef = useRef<google.maps.Circle>();
 
@@ -47,7 +45,6 @@ export function useCircle({
 		const value = { center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius};
 
 		setCircle(value)
-		onChange?.({ circle: value })
 	}, []);
 
 	const clear = () => {
@@ -61,7 +58,6 @@ export function useCircle({
 
 		if(drawing === DrawingType.CIRCLE && isCreating){
 			setCreating(false);
-			onChange?.({ circle })
 		}
 
 		if(drawing === DrawingType.CIRCLE && !isCreating && !circle){

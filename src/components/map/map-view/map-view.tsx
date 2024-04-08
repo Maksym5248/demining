@@ -1,11 +1,11 @@
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { Spin } from "antd";
 import { GoogleMap, Marker, Circle, Polygon, useLoadScript, Libraries, Polyline } from '@react-google-maps/api';
 
 import { ICircle, IMarker, IPoint, IPolygon } from "~/types/map";
 import { DEFAULT_CENTER, MAP_ZOOM } from "~/constants";
-import { useCurrentLocation, useMapOptions } from "~/hooks";
+import { useCurrentLocation, useMapOptions, useValues } from "~/hooks";
 import { CONFIG } from "~/config";
 import { mapUtils, mathUtils } from "~/utils";
 
@@ -41,6 +41,8 @@ const polygonsOptions = {
 	clickable: false,
 }
 
+
+
 function Component({
 	initialMarker,
 	initialCircle,
@@ -65,6 +67,7 @@ function Component({
 
 	const [isActiveStick, setActiveStick] = useState(false);
 	const [isVisibleInArea, setVisibleInArea] = useState(false);
+	const values = useValues();
 
 	const [center, setCenter] = useState<IMarker | undefined>(initialMarker ?? position);
 	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
@@ -72,13 +75,12 @@ function Component({
 	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
 	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 
-	const _onChange = (value: { polygon?: IPolygon, marker?: IPoint, circle?: ICircle, zoom?: number}) => {
+	const _onChange = () => {
 		const newValue = {
 			polygon,
 			circle,
 			marker,
 			zoom,
-			...value
 		};
 
 		onChange?.({
@@ -103,6 +105,13 @@ function Component({
 			area: getArea(newValue.circle, newValue.polygon),
 		})
 	}
+
+	useEffect(() => {
+		if(!values.get("isInitialized") || isCreating) return;
+		_onChange();
+
+		values.set("isInitialized", true)
+	}, [polygon, circle, marker, zoom]);
 
 	const _onChangeGeobox = () => {
 		if(!onChangeGeobox || !mapRef.current || !isVisibleInArea) return;
@@ -129,7 +138,10 @@ function Component({
 		polygon,
 		setPolygon,
 		setCircle,
-		onChange: _onChange
+		polygons,
+		circles,
+		isActiveStick,
+		mapRef,
 	});
 
 	const circleManager = useCircle({
@@ -139,7 +151,6 @@ function Component({
 		circle,
 		setPolygon,
 		setCircle,
-		onChange: _onChange
 	});
 	
 	const onLoadMap = (map:google.maps.Map) => {
@@ -154,7 +165,6 @@ function Component({
 		 setMarker(point);
 		 setCenter(point);
 		 mapRef?.current?.setCenter(point);
-		 _onChange?.({ marker: point });
 	 
 		 const bounds = new window.google.maps.LatLngBounds();
 		 bounds.extend(point);
@@ -162,14 +172,8 @@ function Component({
 	}
 
 	const onZoomChanged = () => {
-		if(!mapRef?.current){
-			return
-		}
-		
-		const newZoom = mapRef.current.getZoom() as number;
-	
+		if(!mapRef?.current) return;
 		setZoom(mapRef.current.getZoom() as number);
-		_onChange?.({ zoom: newZoom })
 	};
 
 	const onClear = () => {
@@ -185,7 +189,6 @@ function Component({
 
 		if(drawing === DrawingType.MARKER){
 			setMarker(point);
-			_onChange?.({ marker: point })
 		}
 
 		if(drawing === DrawingType.CIRCLE){
