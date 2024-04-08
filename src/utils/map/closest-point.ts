@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 
-import { ICircle, IPoint, IPolygon, ILine } from "~/types";
+import { IPoint, IPolygon, ILine } from "~/types";
 
 import { createArrFromPoint, createPointFromArr } from './fabric';
 import { getDistanceByPoints } from './common';
@@ -43,20 +43,7 @@ function getClosestPointOnPolygon(point:IPoint, polygon:IPolygon) {
 	return closestPoint;
 }
 
-function getClosestPointOnCircle(point: IPoint, circle: ICircle): IPoint {
-	const center = new google.maps.LatLng(circle.center.lat, circle.center.lng);
-	const target = new google.maps.LatLng(point.lat, point.lng);
-  
-	const heading = google.maps.geometry.spherical.computeHeading(center, target);
-	const edgePoint = google.maps.geometry.spherical.computeOffset(center, circle.radius, heading);
-  
-	return {
-	  lat: edgePoint.lat(),
-	  lng: edgePoint.lng()
-	};
-}
-
-function getClosestPointOnPolygons(point: IPoint, polygons: IPolygon[]): IPoint {
+function getClosestPointOnLineForPolygons(point: IPoint, polygons: IPolygon[] = []): IPoint {
 	let minDistance = Infinity;
 	let closestPoint:IPoint = {lat: 0, lng: 0};
   
@@ -79,12 +66,28 @@ function getClosestPointOnPolygons(point: IPoint, polygons: IPolygon[]): IPoint 
 	return closestPoint as IPoint;
 }
 
-function getClosestPointOnArrCircle(point: IPoint, circles: ICircle[]): IPoint {
+function getClosestPointOnPolygonPoint(point: IPoint, polygon: IPolygon): IPoint {
 	let minDistance = Infinity;
 	let closestPoint: IPoint = { lat: 0, lng: 0 };
   
-	circles.forEach(circle => {
-	  const currentClosestPoint = getClosestPointOnCircle(point, circle);
+	polygon.points.forEach(polygonPoint => {
+	  const distance = getDistanceByPoints(point, polygonPoint);
+  
+	  if (distance < minDistance) {
+			minDistance = distance;
+			closestPoint = polygonPoint;
+	  }
+	});
+  
+	return closestPoint;
+}
+
+function getClosestPointOnPointForPolygons(point: IPoint, polygons: IPolygon[] = []): IPoint {
+	let minDistance = Infinity;
+	let closestPoint: IPoint = { lat: 0, lng: 0 };
+  
+	polygons.forEach(polygon => {
+	  const currentClosestPoint = getClosestPointOnPolygonPoint(point, polygon);
 	  const distance = getDistanceByPoints(point, currentClosestPoint);
   
 	  if (distance < minDistance) {
@@ -96,16 +99,8 @@ function getClosestPointOnArrCircle(point: IPoint, circles: ICircle[]): IPoint {
 	return closestPoint;
 }
 
-function getClosestPoint(point: IPoint, polygons: IPolygon[] = [], circles: ICircle[] = []): IPoint {
-	const closestPointOnPolygons = getClosestPointOnPolygons(point, polygons);
-	const closestPointOnCircles = getClosestPointOnArrCircle(point, circles);
-  
-	const distanceToPolygons = getDistanceByPoints(point, closestPointOnPolygons);
-	const distanceToCircles = getDistanceByPoints(point, closestPointOnCircles);
-  
-	return distanceToPolygons < distanceToCircles ? closestPointOnPolygons : closestPointOnCircles;
-}
 
 export {
-	getClosestPoint
+	getClosestPointOnLineForPolygons,
+	getClosestPointOnPointForPolygons
 }

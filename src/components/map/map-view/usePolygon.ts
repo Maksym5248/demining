@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 
 import { mapUtils} from "~/utils";
 import { ICircle, IPoint, IPolygon } from "~/types/map";
@@ -26,25 +26,40 @@ export function usePolygon({
 	setPolygon,
 	setCircle,
 	polygons,
-	circles,
 	isActiveStick,
 	mapRef,
 }: IUsePolygonParams) {
 	const polygonRef = useRef<google.maps.Polygon>();
-
+	const polylineRef = useRef<google.maps.Polyline>(); // New reference for the polyline
+	
 	const onLoadPolygon = (newPolygonRef: google.maps.Polygon) => {
 		polygonRef.current = newPolygonRef;
 	}
 
+	const onLoadPolyline = (newPolylineRef: google.maps.Polyline) => { // New function to handle the load event of the polyline
+		polylineRef.current = newPolylineRef;
+	}
+
 	const getPoint = (point: IPoint) => {
-		if(!isActiveStick || !mapRef?.current || (!polygons?.length && !circles?.length)) {
+		if(!isActiveStick || !mapRef?.current || !polygons?.length) {
 			return point;
 		};
 		
-		const closestPoint = mapUtils.getClosestPoint(point, polygons, circles);
-		const pixelDistance = mapUtils.getDistanceByPointsInPixels(point, closestPoint, mapRef.current) ?? Infinity;
+		const closestPointOnPoint = mapUtils.getClosestPointOnPointForPolygons(point, polygons);
+		const closestPointOnLine = mapUtils.getClosestPointOnLineForPolygons(point, polygons);
 
-		return pixelDistance < 10 && closestPoint ? closestPoint : point;
+		const pixelDistanceOnPoint = mapUtils.getDistanceByPointsInPixels(point, closestPointOnPoint, mapRef.current) ?? Infinity;
+		const pixelDistanceOnLine = mapUtils.getDistanceByPointsInPixels(point, closestPointOnLine, mapRef.current) ?? Infinity;
+
+		if(pixelDistanceOnPoint < 30){
+			return closestPointOnPoint
+		}
+
+		if(pixelDistanceOnLine < 15){
+			return closestPointOnLine
+		}
+
+		return point;
 	}
 
 	const appendPoint = (value: IPoint) => {
@@ -57,7 +72,7 @@ export function usePolygon({
 		}
 	}
 
-	const onDragPolygonEnd = useCallback(() => {
+	const onDragEndPolygon = () => {
 		if(!polygonRef.current) return;
 
 		const points = polygonRef.current?.getPath();
@@ -65,8 +80,19 @@ export function usePolygon({
 		if(!points.getLength()) return;
 
 		const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
-		setPolygon({ points: value.map(getPoint)});
-	}, []);
+		setPolygon({ points: value.map(getPoint) });
+	};
+
+	const onDragEndPolyline = () => {
+		if(!polylineRef.current) return;
+
+		const points = polylineRef.current?.getPath();
+
+		if(!points.getLength()) return;
+
+		const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
+		setPolygon({ points: value.map(getPoint) });
+	};
 
 	const clear = () => {
 		setPolygon(undefined);
@@ -85,15 +111,16 @@ export function usePolygon({
 		appendPoint(point);
 	}
 
-	const onPathChanged = useCallback(() => {
+	const onMouseUpPolygon = () => {
 		if (!polygonRef.current) return;
-	  
+
 		const path = polygonRef.current.getPath();
-		const points = path.getArray().map((point) => mapUtils.createPointLiteral(point));	  
+		const points = path.getArray().map((point) => mapUtils.createPointLiteral(point));
+
 		setPolygon({ points: points.map(getPoint)});
-	  }, []);
-	  
-	const onClickPolyline = (e: google.maps.PolyMouseEvent) => {
+	};
+
+	const onMouseUpPolyline = (e: google.maps.MapMouseEvent) => {
 		if(!e?.latLng) return;
 
 		const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
@@ -101,6 +128,8 @@ export function usePolygon({
 
 		if(drawing === DrawingType.POLYGON && isCreating && !!polygon?.points.length && first?.lat === point.lat && first?.lng === point.lng){
 			setCreating(false);
+		} else {
+			onDragEndPolyline()
 		}
 	}
 
@@ -110,12 +139,14 @@ export function usePolygon({
 	return {
 		isVisiblePolygon,
 		isVisiblePolyline,
-		onClickPolyline,
-		onDragPolygonEnd,
+		value: polygon,
+		onDragEndPolygon,
+		onDragEndPolyline,
 		onLoadPolygon,
+		onLoadPolyline,
 		onClickMap,
 		clear,
-		value: polygon,
-		onPathChanged
+		onMouseUpPolygon,
+		onMouseUpPolyline
 	};
 }

@@ -139,7 +139,6 @@ function Component({
 		setPolygon,
 		setCircle,
 		polygons,
-		circles,
 		isActiveStick,
 		mapRef,
 	});
@@ -178,6 +177,7 @@ function Component({
 
 	const onClear = () => {
 		setMarker(undefined);
+		setCreating(false);
 		circleManager.clear();
 		polygonManager.clear();
 	}
@@ -241,7 +241,7 @@ function Component({
 				  isVisibleInArea={isVisibleInArea}
 				  onChangeVisibleInArea={onChangeVisibleInArea}
 				  onChangeStick={setActiveStick}
-				  isDisabledClean={!polygonManager.isVisiblePolygon && !circleManager.isVisibleCircle && !isVisibleMarker}
+				  isDisabledClean={!polygonManager.isVisiblePolygon && !circleManager.isVisibleCircle && !isVisibleMarker && !polygonManager.isVisiblePolyline}
 				  isLoadingVisibleInArea={isLoadingVisibleInArea}
 				  />
 				{isVisibleMarker && <Marker position={marker} />}
@@ -260,8 +260,8 @@ function Component({
 					   onLoad={polygonManager.onLoadPolygon}
 					   options={polygonOptions} 
 					   path={polygon?.points}
-					   onDragEnd={polygonManager.onDragPolygonEnd}
-					   onMouseUp={polygonManager.onPathChanged}
+					   onDragEnd={polygonManager.onDragEndPolygon}
+					   onMouseUp={polygonManager.onMouseUpPolygon}
 					/>
 				)}
 				{isVisibleInArea && !!circles?.length && (circles.map((item, index) => (
@@ -281,9 +281,11 @@ function Component({
 				)))}
 				{polygonManager.isVisiblePolyline && (
 					<Polyline
+						onLoad={polygonManager.onLoadPolyline}
 						path={polygon?.points}
 						options={createPolygonOptions}
-						onClick={polygonManager.onClickPolyline}
+						onDragEnd={polygonManager.onDragEndPolyline}
+						onMouseUp={polygonManager.onMouseUpPolyline}
 					/>
 				)}
 				<Autocomplete onPlaceChanged={onPlaceChanged} />
