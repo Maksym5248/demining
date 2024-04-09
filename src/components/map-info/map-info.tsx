@@ -7,17 +7,17 @@ import { mathUtils } from "~/utils";
 import { s } from "./map-info.style";
 
 interface IMapInfoProps {
-	marker?: IPoint;
+	point?: IPoint;
 	area?: number;
 }
 
 export function MapInfo({
-	marker,
+	point,
 	area,
 }: IMapInfoProps) {
 
 	const onCopyCoords = () => {
-		const text = `${marker?.lat},${marker?.lng}`;
+		const text = `${point?.lat},${point?.lng}`;
 		navigator.clipboard.writeText(text);
 		message.success("Скопійовано");
 	}
@@ -38,10 +38,10 @@ export function MapInfo({
 				<Divider type="vertical" css={s.divider}/>
 				<div css={s.group} onClick={onCopyCoords} role="button" tabIndex={0} onKeyDown={onCopyCoords}>
 					<Typography.Text css={s.coordsItem}>
-						Lat: {mathUtils.toFixed(marker?.lat, 9) ?? "-"}
+						Lat: {mathUtils.toFixed(point?.lat, 9) ?? "-"}
 					</Typography.Text>
 					<Typography.Text css={s.coordsItem}>
-						Lng: {mathUtils.toFixed(marker?.lng, 9) ?? "-"}
+						Lng: {mathUtils.toFixed(point?.lng, 9) ?? "-"}
 					</Typography.Text>
 				</div>
 			</div>

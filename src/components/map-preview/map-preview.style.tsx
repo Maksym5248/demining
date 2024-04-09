@@ -4,15 +4,6 @@ const container = Theme.css(`
 	position: relative;
 `);
 
-const containerLoading = Theme.css(`
-	display: flex;
-	flex: 1;
-	width: 100%;
-	height: 100%;
-	justify-content: center;
-	align-items: center;
-`);
-
 const autocomplete = Theme.css(`
 	width: 340px;
 	height: 38px;
@@ -67,13 +58,18 @@ const calloutDivider = Theme.css(`
 	height: 2px;
 `);
 
-const editButton = Theme.css(`
+const button = Theme.css(`
+	cursor: pointer;
+	background-color: #fff;
+`);
+
+const panel = Theme.css(`
 	position: absolute;
 	top: 8px;
 	right: 8px;
 	zIndex: 99999;
-	cursor: pointer;
-	background-color: #fff;
+	display: flex;
+	gap: 16px;
 `);
 
 
@@ -84,7 +80,6 @@ const mapContainerStyle = {
 
 export const s = {
 	container,
-	containerLoading,
 	autocomplete,
 	deleteIcon,
 	mapContainerStyle,
@@ -93,6 +88,7 @@ export const s = {
 	calloutHeader,
 	calloutText,
 	calloutDivider,
-	editButton
+	panel,
+	button
 }
     

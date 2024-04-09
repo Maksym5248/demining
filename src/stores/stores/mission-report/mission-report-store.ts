@@ -38,7 +38,7 @@ const Store = types
 
 			root.employee.collectionActions.set(res.approvedByAction?.id, createEmployeeAction(res.approvedByAction));
 			root.employee.collectionActions.set(res.squadLeaderAction?.id, createEmployeeAction(res.squadLeaderAction));
-			root.map.collectionViewActions.set(res.mapView?.id, createMapView(res.mapView));
+			root.map.append(createMapView(res.mapView));
 
 			res.squadActions.forEach(el => {
 				root.employee.collectionActions.set(el?.id, createEmployeeAction(el))

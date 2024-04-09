@@ -1,19 +1,21 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useMemo, useEffect, useState, useRef } from "react";
 
-import { Button , Divider, Spin, Typography } from "antd";
-import { OVERLAY_MOUSE_TARGET, GoogleMap, useLoadScript, Libraries, GoogleMapProps, Marker, Circle, Polyline, OverlayViewF, Polygon } from '@react-google-maps/api';
+import { Button } from "antd";
+import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
-import { CONFIG } from "~/config";
-import { useCurrentLocation, useMapOptions } from "~/hooks";
-import { mapUtils} from "~/utils";
+import { useMapOptions } from "~/hooks";
 import { ICircle, IPoint, IPolygon } from "~/types/map";
-import { DEFAULT_CENTER, MAP_ZOOM } from "~/constants";
+import { MAP_ZOOM } from "~/constants";
+import { withMapProvider } from "~/hoc";
+import { mapUtils } from "~/utils";
+import { getArea } from "~/utils/map/common";
 
 import { s } from "./map-preview.style";
 import { Icon } from "../icon";
-
-const libraries:Libraries = ["places", "drawing", "geometry"];
+import { MarkerCallout } from "./marker-callout";
+import { useVisibleMap } from "./useVisibleMap";
+import { MapInfo } from "../map-info";
 
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	marker?: IPoint | undefined;
@@ -40,67 +42,80 @@ function Component({
 }: IMapViewProps) {
 
 	const {
-		 mapOptions, polygonOptions, circleOptions, polylineOptions
+		 mapOptions, polygonOptions, circleOptions
 	 } = useMapOptions({ isPictureType: true });
 
 	const mapRef = useRef<google.maps.Map>();
-	const interval = useRef<NodeJS.Timeout>();
-
-	const zoom = rest?.zoom ?? MAP_ZOOM.DEFAULT;
-	
-	const [isVisibleMap, setVisibleMap] = useState(false);
+	const isVisibleMap = useVisibleMap({ mapRef });
+	const [zoom, setZoom] = useState<number>(MAP_ZOOM.DEFAULT);
 
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
 	}
 
+	const onZoomChanged = () => {
+		if(!mapRef?.current) return;
+		setZoom(mapRef.current.getZoom() as number);
+	};
+
+	const markerCallout = useMemo(() =>
+		mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom),
+	[marker, mapRef?.current, isVisibleMap, zoom]);
+
 	useEffect(() => {
-		interval.current = setInterval(() => {
-			if(mapRef.current && mapRef.current.getProjection()){
-				setVisibleMap(true);
-				clearInterval(interval.current);
-			}
-		},  100);
-
-		return () => {
-			if(interval.current){
-				clearInterval(interval.current)
-			}
+		if(!marker && !markerCallout && !circle && !polygon) return;
+		const bounds = new google.maps.LatLngBounds();
+		
+		if (marker) bounds.extend(marker);
+		if (markerCallout) bounds.extend(markerCallout);
+		if (circle) {
+			const box = mapUtils.getGeoBoxByZoomOrRadius(circle.center, { radius: circle.radius });
+			bounds.extend(box.bottomRight);
+			bounds.extend(box.topLeft);
+		};
+		if (polygon) {
+			polygon.points.forEach((point) => {
+				bounds.extend(point);
+			});
 		}
-	}, []);
-
-	const callout = useMemo(() =>
-		mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef.current, zoom),
-	[marker, mapRef.current, zoom, isVisibleMap]);
+		  
+		mapRef?.current?.fitBounds(bounds, 80);
+	}, [marker, polygon, circle, markerCallout, isVisibleMap])
 
 	const isVisiblePolygon = !!polygon?.points.length;
 	const isVisibleCircle = !!circle?.center && circle?.radius;
 	const isVisibleMarker = !!marker;
-	const isVisibleCallout = isVisibleMarker && !!callout && explosiveObjects?.length && date;
+	const isVisibleMarkerCallout = isVisibleMarker && explosiveObjects?.length && date && !!markerCallout;
+
+	const area = getArea(circle, polygon);
 
 	return (
 		<div css={s.container}>
 			<GoogleMap
 				mapContainerStyle={s.mapContainerStyle}
-				zoom={zoom ?? MAP_ZOOM.DEFAULT}
-				center={marker}
+				onZoomChanged={onZoomChanged}
+				zoom={MAP_ZOOM.DEFAULT}
+				center={marker ?? position}
 				options={mapOptions}
 				onLoad={onLoadMap}
 				{...rest}
-			>
-				{isEdit && (
-					<Button
-						css={s.editButton}
-						onClick={onEdit}
-						icon={<Icon.EditOutlined /> }
-					/>
-				)}
 				
+			>
+				<div css={s.panel}>
+					{isEdit && (
+						<Button
+							css={s.button}
+							onClick={onEdit}
+							icon={<Icon.EditOutlined /> }
+						/>
+					)}
+				</div>
+
 				{isVisiblePolygon && (
 					<Polygon
-					   options={polygonOptions} 
-					   {...(circle ?? {})}
+					   options={polygonOptions}
 					   paths={polygon?.points}
+					   {...(circle ?? {})}
 					/>
 				) }
 				{isVisibleCircle && (
@@ -110,54 +125,18 @@ function Component({
 					/>
 				) }
 				{isVisibleMarker && <Marker position={marker}/>}
-				{isVisibleCallout && (
-					<OverlayViewF
-						position={callout}
-						mapPaneName={OVERLAY_MOUSE_TARGET}
-					>
-						<div css={s.callout}>
-							<div css={s.calloutHeader} >
-								{explosiveObjects.map((el, i) => (
-									<Typography.Text key={i}  css={s.calloutText}>
-										{el}
-									</Typography.Text>
-								))}
-							</div>
-							<Divider css={s.calloutDivider} />
-							<Typography.Text css={s.calloutText}>{date?.format('DD.MM.YYYY')}</Typography.Text>
-						</div>
-					</OverlayViewF>
-				)}
-				{isVisibleCallout && (
-					<Polyline
-						options={polylineOptions}
-						path={[marker, callout]}
+				{isVisibleMarkerCallout && (
+					<MarkerCallout
+						date={date}
+						explosiveObjects={explosiveObjects}
+						marker={marker}
+						callout={markerCallout}
 					/>
 				)}
+				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
 			</GoogleMap>
 		</div>
 	);
 }
 
-
-function MapLoader(props: IMapViewProps) {
-	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: CONFIG.GOOGLE_API_KEY,
-		language: "uk",
-		libraries,
-	});
-
-	const position = useCurrentLocation(DEFAULT_CENTER);
-
-	if (loadError) {
-		return <div>Error loading maps</div>;
-	}
-
-	if (!isLoaded || position.isLoading) {
-		return <div css={s.containerLoading}><Spin/></div>;
-	}
-
-	return  <Component position={position.coords} {...props}/>
-}
-
-export const MapPreview = memo(MapLoader)
+export const MapPreview = memo(withMapProvider(Component))

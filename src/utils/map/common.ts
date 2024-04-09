@@ -1,5 +1,6 @@
-import { ICircleDB } from "~/db";
 import { ICircle, IPoint, IPolygon, IGeoBox } from "~/types";
+
+import { mathUtils } from "../math";
 
 /**
  * @returns m2
@@ -61,14 +62,14 @@ function getAreaPolygon(polygon: IPoint[]): number {
 
 const getArea = (circle?:ICircle, polygon?: IPolygon) => {
 	if(circle){
-		return getAreaCircle(circle.radius);
+		return mathUtils.toFixed(getAreaCircle(circle.radius), 0);
 	}
 
 	if(polygon){
-		return getAreaPolygon(polygon.points);
+		return mathUtils.toFixed(getAreaPolygon(polygon.points), 0);
 	}
 
-	return null;
+	return undefined;
 }
 
 function haversineDistance(point1: { lat: number, lng: number }, point2: { lat: number, lng: number }): number {
@@ -86,7 +87,15 @@ function haversineDistance(point1: { lat: number, lng: number }, point2: { lat: 
 	return R * c;
 }
 
-function getCenterAndRadiusByGeoBox(geoBox: IGeoBox): ICircleDB {
+function getCenterPolygon(data: IPolygon): IPoint | undefined {
+	// If the data is a polygon, calculate the centroid of the polygon
+	const {points} = (data as IPolygon);
+	const lat = points.reduce((sum, point) => sum + point.lat, 0) / points.length;
+	const lng = points.reduce((sum, point) => sum + point.lng, 0) / points.length;  
+	return { lat, lng }
+}
+
+function getCenterAndRadiusByGeoBox(geoBox: IGeoBox): ICircle {
 	// Calculate the center
 	const center = {
 	  lat: (geoBox.topLeft.lat + geoBox.bottomRight.lat) / 2,
@@ -98,9 +107,27 @@ function getCenterAndRadiusByGeoBox(geoBox: IGeoBox): ICircleDB {
   
 	return { center, radius };
 }
-  
+
+
+function getInfoPoint({ marker, circle, polygon }: {marker?: IPoint, circle?: ICircle, polygon?: IPolygon}): IPoint | undefined {
+	if(marker){
+		return marker
+	} 
+
+	if(circle){
+		return circle.center
+	}
+
+	if(polygon){
+		return getCenterPolygon(polygon)
+	}
+
+	return undefined
+}
+
 export {
 	getDistanceByPoints,
+	getInfoPoint,
 	getCenterAndRadiusByGeoBox,
 	getGeoBoxByZoomOrRadius,
 	getGeoBox,

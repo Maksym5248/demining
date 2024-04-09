@@ -51,6 +51,7 @@ function getGeoBoxDBFromCircle(circle: ICircleDB): IGeoBoxDB {
 	)
 }
 
+
 function getCenter(data: ICircleDB | IPolygonDB | IPointDB): IPoint {
 	let center: IPointDB;
   
@@ -71,7 +72,8 @@ function getCenter(data: ICircleDB | IPolygonDB | IPointDB): IPoint {
 	return center
 }
 
-function getGeo(mapViewAction: Pick<IMapViewActionDB, "circle" | "polygon" | "marker">): IGeoDB | null {
+
+function getGeoDB(mapViewAction: Pick<IMapViewActionDB, "circle" | "polygon" | "marker">): IGeoDB | null {
 	const { marker, circle, polygon } = mapViewAction;
   
 	if (polygon) {
@@ -106,6 +108,6 @@ function getGeo(mapViewAction: Pick<IMapViewActionDB, "circle" | "polygon" | "ma
 	return null
 }
 
-export const mapDBUtils = {
-	getGeo,
+export {
+	getGeoDB,
 }

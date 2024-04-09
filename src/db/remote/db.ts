@@ -2,7 +2,7 @@ import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
 import { TABLES, TABLES_DIR } from '~/constants';
 import { Auth } from '~/services';
-import { mapDBUtils } from '~/api/map-util';
+import { mapUtils } from '~/utils';
 
 import { DBBase } from './db-base';
 import {
@@ -31,7 +31,7 @@ const getCreateData = () => ({
 
 const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | "updatedAt" | "authorId" | "id" | "geo">) => ({
 	authorId: Auth.uuid() as string,
-	geo: mapDBUtils.getGeo(value),
+	geo: mapUtils.getGeoDB(value),
 });
 
 const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
@@ -40,7 +40,7 @@ const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
 	}
 
 	return {
-		geo: mapDBUtils.getGeo(value as IMapViewActionDB),
+		geo: mapUtils.getGeoDB(value as IMapViewActionDB),
 	};
 };
 

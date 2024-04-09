@@ -2,7 +2,7 @@ import { MAP_SIZE } from '~/constants';
 import { Theme } from '~/styles'
 
 export const MAP_PADDING_TOP = 40;
-export const MAP_PADDING_BOTTOM = 20;
+export const MAP_PADDING_BOTTOM = 60;
 
 const container = Theme.css(`
     display: flex;

@@ -78,7 +78,6 @@ export const MapEditorModal  = observer(({
 				initialCircle={initialCircle}
 				initialMarker={initialMarker}
 				initialPolygon={initialPolygon}
-				initialZoom={initialZoom}
 				mapContainerStyle={mapContainerStyle}
 				onChange={onChange}
 				onChangeGeobox={onChangeGeobox}

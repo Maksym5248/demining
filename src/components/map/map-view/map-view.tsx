@@ -1,25 +1,20 @@
 import { memo, useEffect, useRef, useState } from "react";
 
-import { Spin } from "antd";
-import { GoogleMap, Marker, Circle, Polygon, useLoadScript, Libraries, Polyline } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 
 import { ICircle, IMarker, IPoint, IPolygon } from "~/types/map";
-import { DEFAULT_CENTER, MAP_ZOOM } from "~/constants";
-import { useCurrentLocation, useMapOptions, useValues } from "~/hooks";
-import { CONFIG } from "~/config";
+import { MAP_ZOOM } from "~/constants";
+import { useMapOptions, useValues } from "~/hooks";
 import { mapUtils, mathUtils } from "~/utils";
+import { withMapProvider } from "~/hoc";
+import { MapInfo } from "~/components/map-info";
 
 import { s } from "./map-view.style";
 import { DrawingManager } from "../drawing-manager";
-import { MapInfo } from "../map-info";
 import { Autocomplete } from "../autocomplete";
 import { DrawingType, IMapViewProps } from "../map.types";
 import { usePolygon } from "./usePolygon";
 import { useCircle } from "./useCircle";
-
-const libraries:Libraries = ["places", "drawing", "geometry"];
-
-const getArea = (circle?:ICircle, polygon?: IPolygon) => (circle ||  polygon) ? mathUtils.toFixed(mapUtils.getArea(circle, polygon), 0) : undefined;
 
 const circlesOptions = {
 	fillOpacity: 0.3,
@@ -41,13 +36,10 @@ const polygonsOptions = {
 	clickable: false,
 }
 
-
-
 function Component({
 	initialMarker,
 	initialCircle,
 	initialPolygon,
-	initialZoom,
 	onChange,
 	position,
 	circles,
@@ -73,7 +65,7 @@ function Component({
 	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
 	const [circle, setCircle] = useState<ICircle | undefined>(initialCircle);
 	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
-	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
+	const [zoom, setZoom] = useState<number>(MAP_ZOOM.DEFAULT);
 
 	const _onChange = () => {
 		const newValue = {
@@ -102,7 +94,7 @@ function Component({
 				radius: mathUtils.toFixed(newValue.circle?.radius, 9),
 			} : undefined,
 			zoom: mathUtils.toFixed(newValue.zoom, 9),
-			area: getArea(newValue.circle, newValue.polygon),
+			area: mapUtils.getArea(newValue.circle, newValue.polygon),
 		})
 	}
 
@@ -214,7 +206,7 @@ function Component({
 	}
 
 	const isVisibleMarker = !!marker;
-	const area = getArea(circle, polygon);
+	const area = mapUtils.getArea(circle, polygon);
 
 	return (
 		<div css={s.container}>
@@ -290,30 +282,10 @@ function Component({
 					/>
 				)}
 				<Autocomplete onPlaceChanged={onPlaceChanged} />
-				<MapInfo marker={marker} area={area}/>
+				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
 			</GoogleMap>
 		</div>
 	);
 }
 
-function MapLoader(props: IMapViewProps) {
-	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: CONFIG.GOOGLE_API_KEY,
-		language: "uk",
-		libraries,
-	});
-
-	const position = useCurrentLocation(DEFAULT_CENTER);
-
-	if (loadError) {
-		return <div>Error loading maps</div>;
-	}
-
-	if (!isLoaded || position.isLoading) {
-		return <div css={s.containerLoading}><Spin/></div>;
-	}
-
-	return  <Component position={position.coords} {...props}/>
-}
-
-export const MapView = memo(MapLoader)
+export const MapView = memo(withMapProvider(Component))

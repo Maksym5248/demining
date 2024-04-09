@@ -17,8 +17,10 @@ const Store = types
 			end: types.string
 		})), []),
 	}).actions(self => ({
-		append(res: IMapViewActionDTO[]){
-			res.forEach((el) => {
+		append(res: IMapViewActionDTO | IMapViewActionDTO[]){
+			const v = Array.isArray(res) ? res : [res];
+
+			v.forEach((el) => {
 				const value = createMapView(el);
 
 				self.collectionViewActions.set(value.id, value);
@@ -37,7 +39,7 @@ const fetchAllInGeoBox = asyncAction<Instance<typeof Store>>((box:IGeoBox) => as
 	try {
 		const ranges = mapUtils.getGeohashRangesByGeoBox(box);
 		const adjustedRanges = mapUtils.getAdjustedRanges(ranges, self.loadedGeohashes);
-
+		console.log("adjustedRanges", adjustedRanges)
 		if(adjustedRanges.length === 0) return;	
 
 		flow.start();

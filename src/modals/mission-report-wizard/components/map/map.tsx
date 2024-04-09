@@ -73,7 +73,6 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 								circle={mapView?.circle}
 								marker={mapView?.marker}
 								polygon={mapView?.polygon}
-								zoom={mapView?.zoom}
 								explosiveObjects={explosiveObjects}
 								date={executedAt}
 								isEdit={isEdit}
