@@ -107,11 +107,12 @@ function Component({
 	}
 
 	useEffect(() => {
-		if(!values.get("isInitialized") || isCreating) return;
-		_onChange();
+		if(values.get("isInitialized") && !isCreating) {
+			_onChange();
+		};
 
 		values.set("isInitialized", true)
-	}, [polygon, circle, marker, zoom]);
+	}, [polygon, circle, marker, zoom, isCreating]);
 
 	const _onChangeGeobox = () => {
 		if(!onChangeGeobox || !mapRef.current || !isVisibleInArea) return;
