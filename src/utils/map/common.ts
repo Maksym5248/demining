@@ -1,6 +1,9 @@
+import * as turf from '@turf/turf';
+
 import { ICircle, IPoint, IPolygon, IGeoBox } from "~/types";
 
 import { mathUtils } from "../math";
+import { createArrFromPoint } from './fabric';
 
 /**
  * @returns m2
@@ -125,6 +128,31 @@ function getInfoPoint({ marker, circle, polygon }: {marker?: IPoint, circle?: IC
 	return undefined
 }
 
+function checkOverlapsPolygon(point: IPoint, polygon: IPolygon): boolean {
+	const pointGeoJSON = turf.point([point.lng, point.lat]);
+	const polygonGeoJSON = turf.polygon([polygon.points.map(p => [p.lng, p.lat])]);
+  
+	return turf.booleanPointInPolygon(pointGeoJSON, polygonGeoJSON);
+}
+
+
+function pixelsToMeters(pixels: number, zoom: number): number {
+	const metersPerPixel = 156543.03392 * Math.cos(0) / 2**zoom;
+	return pixels * metersPerPixel;
+}
+
+const getAngle = (point1: IPoint, point2: IPoint, point3: IPoint): number => {
+	const angle1 = turf.bearing(createArrFromPoint(point1), createArrFromPoint(point2));
+	const angle2 = turf.bearing(createArrFromPoint(point2), createArrFromPoint(point3));
+
+	let angle = angle2 - angle1;
+	if (angle < 0) {
+		angle += 360;
+	}
+
+	return angle;
+};
+
 export {
 	getDistanceByPoints,
 	getInfoPoint,
@@ -132,4 +160,7 @@ export {
 	getGeoBoxByZoomOrRadius,
 	getGeoBox,
 	getArea,
+	checkOverlapsPolygon,
+	pixelsToMeters,
+	getAngle
 }

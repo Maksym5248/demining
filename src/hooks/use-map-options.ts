@@ -36,6 +36,15 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		clickable: !isPictureType && !isCreating && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
 	}
 
+	const gridOptions = {
+		fillOpacity: 0,
+		strokeColor: '#A0A0A0',
+		strokeWeight: 1,
+		draggable: false,
+		editable: false,
+		clickable: false,
+	}
+
 	const polylineOptions = {
 		fillOpacity: 0.3,
 		fillColor: '#fff',
@@ -58,5 +67,6 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		circleOptions,
 		polylineOptions,
 		createPolygonOptions,
+		gridOptions,
 	}
 }

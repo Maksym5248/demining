@@ -1,10 +1,10 @@
-import { memo, useMemo, useEffect, useState, useRef } from "react";
+import { memo, useState, useRef } from "react";
 
 import { Button } from "antd";
 import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
-import { useMapOptions } from "~/hooks";
+import { useMapOptions, useFitBounds, useVisibleMap } from "~/hooks";
 import { ICircle, IPoint, IPolygon } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
 import { withMapProvider } from "~/hoc";
@@ -14,8 +14,10 @@ import { getArea } from "~/utils/map/common";
 import { s } from "./map-preview.style";
 import { Icon } from "../icon";
 import { MarkerCallout } from "./marker-callout";
-import { useVisibleMap } from "./useVisibleMap";
+import { PolygonCallout } from "./polygon-callout";
 import { MapInfo } from "../map-info";
+import { usePolygonCallout } from "./use-polygon-callout";
+import { useMarkerCallout } from "./use-marker-callout";
 
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	marker?: IPoint | undefined;
@@ -42,7 +44,7 @@ function Component({
 }: IMapViewProps) {
 
 	const {
-		 mapOptions, polygonOptions, circleOptions
+		 mapOptions, polygonOptions, circleOptions,
 	 } = useMapOptions({ isPictureType: true });
 
 	const mapRef = useRef<google.maps.Map>();
@@ -58,34 +60,24 @@ function Component({
 		setZoom(mapRef.current.getZoom() as number);
 	};
 
-	const markerCallout = useMemo(() =>
-		mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom),
-	[marker, mapRef?.current, isVisibleMap, zoom]);
+	const polygonCallout = usePolygonCallout({ polygon, zoom, isVisibleMap, offset: 20 })
+	const markerCallout = useMarkerCallout({ marker, zoom, mapRef, isVisibleMap})
 
-	useEffect(() => {
-		if(!marker && !markerCallout && !circle && !polygon) return;
-		const bounds = new google.maps.LatLngBounds();
-		
-		if (marker) bounds.extend(marker);
-		if (markerCallout) bounds.extend(markerCallout);
-		if (circle) {
-			const box = mapUtils.getGeoBoxByZoomOrRadius(circle.center, { radius: circle.radius });
-			bounds.extend(box.bottomRight);
-			bounds.extend(box.topLeft);
-		};
-		if (polygon) {
-			polygon.points.forEach((point) => {
-				bounds.extend(point);
-			});
-		}
-		  
-		mapRef?.current?.fitBounds(bounds, 80);
-	}, [marker, polygon, circle, markerCallout, isVisibleMap])
+	useFitBounds({
+		marker,
+		markerCallout,
+		circle,
+		polygon,
+		polygonCallout,
+		mapRef,
+		isVisibleMap
+	})
 
 	const isVisiblePolygon = !!polygon?.points.length;
 	const isVisibleCircle = !!circle?.center && circle?.radius;
 	const isVisibleMarker = !!marker;
 	const isVisibleMarkerCallout = isVisibleMarker && explosiveObjects?.length && date && !!markerCallout;
+	const isVisiblePolygonCallout = isVisiblePolygon;
 
 	const area = getArea(circle, polygon);
 
@@ -99,7 +91,6 @@ function Component({
 				options={mapOptions}
 				onLoad={onLoadMap}
 				{...rest}
-				
 			>
 				<div css={s.panel}>
 					{isEdit && (
@@ -115,7 +106,7 @@ function Component({
 					<Polygon
 					   options={polygonOptions}
 					   paths={polygon?.points}
-					   {...(circle ?? {})}
+					   {...(polygon ?? {})}
 					/>
 				) }
 				{isVisibleCircle && (
@@ -131,6 +122,11 @@ function Component({
 						explosiveObjects={explosiveObjects}
 						marker={marker}
 						callout={markerCallout}
+					/>
+				)}
+				{isVisiblePolygonCallout && (
+					<PolygonCallout 
+						points={polygonCallout}
 					/>
 				)}
 				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>

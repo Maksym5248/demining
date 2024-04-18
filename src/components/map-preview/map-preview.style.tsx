@@ -1,5 +1,8 @@
 import { Theme } from '~/styles'
 
+export const polygonCalloutHeight = 20;
+export const polygonCalloutWidth = 35;
+
 const container = Theme.css(`
 	position: relative;
 `);
@@ -37,6 +40,18 @@ const callout = Theme.css(`
 	zIndex: 99999;
 `);
 
+const calloutPolygon = Theme.css(`
+	min-height: ${polygonCalloutHeight}px;
+	height: ${polygonCalloutHeight}px;
+	width: ${polygonCalloutWidth}px;
+	background: #ffebbb;
+	padding: 0 5px
+	border-radius: 3px;
+	text-align: center;
+	justify-content: center;
+	transform: translate(-50%, -50%);
+`);
+
 const calloutHeader = Theme.css(`
 	position: absolute;
 	top: 0;
@@ -50,6 +65,10 @@ const calloutText = Theme.css(`
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
+`);
+
+const calloutPolygonText = Theme.css(`
+	color: #000;
 `);
 
 const calloutDivider = Theme.css(`
@@ -85,8 +104,10 @@ export const s = {
 	mapContainerStyle,
 	drawingPanel,
 	callout,
+	calloutPolygon,
 	calloutHeader,
 	calloutText,
+	calloutPolygonText,
 	calloutDivider,
 	panel,
 	button

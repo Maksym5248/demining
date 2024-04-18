@@ -110,4 +110,5 @@ function getGeoDB(mapViewAction: Pick<IMapViewActionDB, "circle" | "polygon" | "
 
 export {
 	getGeoDB,
+	getCenter
 }

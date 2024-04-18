@@ -4,7 +4,7 @@ import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps
 
 import { ICircle, IMarker, IPoint, IPolygon } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
-import { useMapOptions, useValues } from "~/hooks";
+import { useMapOptions, useValues, useFitBounds, useVisibleMap } from "~/hooks";
 import { mapUtils, mathUtils } from "~/utils";
 import { withMapProvider } from "~/hoc";
 import { MapInfo } from "~/components/map-info";
@@ -66,6 +66,8 @@ function Component({
 	const [circle, setCircle] = useState<ICircle | undefined>(initialCircle);
 	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
 	const [zoom, setZoom] = useState<number>(MAP_ZOOM.DEFAULT);
+
+	const isVisibleMap = useVisibleMap({ mapRef });
 
 	const _onChange = () => {
 		const newValue = {
@@ -144,6 +146,14 @@ function Component({
 		setPolygon,
 		setCircle,
 	});
+
+	useFitBounds({
+		marker: initialMarker,
+		circle: initialCircle,
+		polygon: initialPolygon,
+		mapRef,
+		isVisibleMap
+	})
 	
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
