@@ -1,7 +1,6 @@
 import { Dayjs } from "dayjs";
 
-import { IExplosiveObjectActionValueParams, IMapViewActionValueParams } from "~/stores";
-import { IExplosiveActionValueParams } from "~/stores/stores/explosive";
+import { IExplosiveObjectActionValueParams, IMapViewActionValueParams, IExplosiveActionValueParams, IAddressValue } from "~/stores";
 
 
 export interface IMissionReportForm {
@@ -29,5 +28,6 @@ export interface IMissionReportForm {
     squadLeaderId: string;
     squadIds: string[];
     address: string;
+    addressDetails: IAddressValue;
     explosiveActions: IExplosiveActionValueParams[];
 }

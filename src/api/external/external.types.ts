@@ -26,3 +26,14 @@ export interface IIpLocation {
 	timezone: string;
 	zip: string;
 }
+
+export interface IGeoapifyAddress {
+    city: string;
+    country:string;
+    district: string;
+    housenumber: string;
+    postcode: string;
+    state: string;
+    street: string;
+	municipality: string;
+}

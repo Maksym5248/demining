@@ -7,6 +7,7 @@ import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
 import { IMapViewActionValue } from "~/stores";
 import { Modal } from "~/services";
 import { IMapEditorSubmit } from "~/modals/map-editor/map-editor.types";
+import { str } from "~/utils";
 
 import { s, MAP_PADDING_TOP, MAP_PADDING_BOTTOM } from "./map.styles";
 
@@ -29,6 +30,7 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 	
 	return (
 		<div id={MAP_VIEW_TAKE_PRINT_CONTAINER} css={s.container}>
+			<Form.Item name="addressDetails"/>
 			<Form.Item
 				name="mapView"
 				rules={[ { validator: validateMapView }]}
@@ -37,6 +39,7 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 					{({ getFieldValue, setFieldValue }) => {
 						const explosiveObjectActions = getFieldValue("explosiveObjectActions") as IExplosiveObjectActionDTOParams[];
 						const executedAt = getFieldValue("executedAt");
+						const addressDetails = getFieldValue("addressDetails");
 						const mapView = getFieldValue("mapView") as IMapViewActionValue;
 
 						const onSubmit = async ({ area, ...value}: IMapEditorSubmit) => {
@@ -46,9 +49,11 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 								setFieldValue("checkedTerritory", area);
 							}
 			
-							if(!value?.marker) return;
-							const address = await ExternalApi.getGeocode(value.marker);
-							setFieldValue("address", address);
+							if(value?.marker) {
+								const address = await ExternalApi.getGeocode(value.marker);
+								setFieldValue("address", str.toAddressString(address));
+								setFieldValue("addressDetails", address);
+							};
 						};
 
 						const onEdit = async () => {
@@ -86,6 +91,7 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 								isEdit={isEdit}
 								onEdit={onEdit}
 								mapContainerStyle={mapContainerStyle}
+								city={addressDetails?.city}
 							/>
 						)
 					}}

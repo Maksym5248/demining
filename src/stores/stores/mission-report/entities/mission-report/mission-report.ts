@@ -17,6 +17,7 @@ import { ExplosiveAction } from '~/stores/stores/explosive';
 import { safeReference } from '../../../../utils';
 import { types } from '../../../../types'
 import { IMissionReportValue } from './mission-report.schema';
+import { Address } from '../address';
 
 
 export type IMissionReport = Instance<typeof MissionReport>
@@ -37,6 +38,7 @@ const Entity = types.model('MissionReport', {
 	destroyedStart:types.maybe(types.dayjs),
 	workEnd: types.dayjs,
 	address: types.string,
+	addressDetails: types.optional(Address, {}),
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).props({

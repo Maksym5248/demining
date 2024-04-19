@@ -7,6 +7,8 @@ import { IMapViewActionValueParams, createMapViewDTO } from '~/stores/stores/map
 import { createExplosiveActionDTO } from '~/stores/stores/explosive';
 import { createExplosiveObjectActionDTO } from '~/stores';
 
+import { IAddressValue, createAddress, createAddressDTO } from '../address';
+
 export interface IMissionReportValueParams {
 	approvedAt: Dayjs;
     approvedById:  string;
@@ -32,6 +34,7 @@ export interface IMissionReportValueParams {
     squadLeaderId: string;
     squadIds: string[];
     address: string;
+	addressDetails: IAddressValue;
 	explosiveActions?: IExplosiveActionDTOParams[];
 };
 
@@ -55,6 +58,7 @@ export interface IMissionReportValue {
     destroyedStart?: Dayjs;
     workEnd: Dayjs;
     address: string;
+	addressDetails: IAddressValue;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 	order?: string;
@@ -95,6 +99,7 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	squadLeaderId: value.squadLeaderId,
 	squadIds: value.squadIds,
 	address: value.address ?? "",
+	addressDetails: createAddressDTO(value?.addressDetails),
 });
 
 export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportValue => ({
@@ -113,6 +118,7 @@ export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMi
 	destroyedStart: value.destroyedStart ? dates.fromServerDate(value.destroyedStart) : undefined,
 	workEnd: dates.fromServerDate(value.workEnd),
 	address: value.address,
+	addressDetails: createAddress(value?.addressDetails),
 	createdAt: dates.fromServerDate(value.createdAt),
 	updatedAt: dates.fromServerDate(value.updatedAt),
 });

@@ -9,7 +9,7 @@ import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE,
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 import { fileUtils } from '~/utils/file';
-import { IEmployee, IMissionReport, IOrder } from '~/stores';
+import { IEmployee, IMissionReport, IOrder, createAddress } from '~/stores';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -59,6 +59,7 @@ const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
 	squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
 	squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
 	address: currentMissionReport?.address,
+	addressDetails: currentMissionReport?.addressDetails,
 	mapView: currentMissionReport?.mapView,
 })
 
@@ -93,6 +94,7 @@ const createCreateValue = (
 	squadLeaderId: firstSquadLeader?.id,
 	squadIds: [],
 	address: "",
+	addressDetails: createAddress(),
 	mapView: {
 		zoom: MAP_ZOOM.DEFAULT
 	},

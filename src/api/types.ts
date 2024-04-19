@@ -19,8 +19,11 @@ import {
 	IDocumentDB,
 	IExplosiveActionDB,
 	IExplosiveDB,
-	IPointDB
+	IPointDB,
+	IAddressDB
 } from "~/db";
+
+export type IAddressDTO = IAddressDB
 
 export type IEmployeeDTO = IEmployeeDB
 export type IEmployeeActionDTO = IEmployeeActionDB
@@ -130,6 +133,7 @@ export interface IMissionReportDTOParams {
     squadIds: string[];
     explosiveActions?: IExplosiveActionDTOParams[];
     address: string;
+    addressDetails: IAddressDTO;
 }
 
 

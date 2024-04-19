@@ -45,11 +45,24 @@ const calloutPolygon = Theme.css(`
 	height: ${polygonCalloutHeight}px;
 	width: ${polygonCalloutWidth}px;
 	background: #ffebbb;
-	padding: 0 5px
-	border-radius: 3px;
+	padding: 0 2px;
+	border-radius: 2px;
 	text-align: center;
 	justify-content: center;
 	transform: translate(-50%, -50%);
+`);
+
+const calloutCity = Theme.css(`
+	position: absolute;
+	left: 8px;
+	top: 50px;
+	min-height: ${polygonCalloutHeight}px;
+	height: ${polygonCalloutHeight}px;
+	background: #ffebbb;
+	padding: 0 10px;
+	border-radius: 2px;
+	text-align: center;
+	justify-content: center;
 `);
 
 const calloutHeader = Theme.css(`
@@ -118,6 +131,7 @@ export const s = {
 	calloutText,
 	calloutPolygonText,
 	calloutDivider,
+	calloutCity,
 	panel,
 	button,
 	activeButton

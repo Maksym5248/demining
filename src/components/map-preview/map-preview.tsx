@@ -1,6 +1,6 @@
 import { memo, useState, useRef } from "react";
 
-import { Button, Tooltip } from "antd";
+import { Button, Tooltip, Typography } from "antd";
 import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
@@ -27,6 +27,7 @@ interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerS
 	date?: Dayjs;
 	explosiveObjects?: string[];
 	position?: IPoint;
+	city?: string;
 	isEdit: boolean;
 	onEdit: () => void;
 }
@@ -40,9 +41,9 @@ function Component({
 	marker,
 	circle,
 	polygon,
+	city,
 	...rest
-}: IMapViewProps) {
-
+}: IMapViewProps) {	
 	const {
 		 mapOptions, polygonOptions, circleOptions, toggleMapType
 	 } = useMapOptions({ isPictureType: true });
@@ -139,6 +140,11 @@ function Component({
 					<PolygonCallout 
 						points={polygonCallout}
 					/>
+				)}
+				{!!city && (
+					<div css={[s.callout, s.calloutCity]}>
+						<Typography.Text css={[s.calloutText, s.calloutPolygonText]}>{city}</Typography.Text>
+					</div>
 				)}
 				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
 			</GoogleMap>

@@ -3,6 +3,16 @@ import { Timestamp } from "firebase/firestore";
 import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
 import { EXPLOSIVE_TYPE } from "~/constants/db/explosive-type";
 
+export interface IAddressDB {
+    city: string | null;
+    country: string  | null;
+    district: string | null;
+    housenumber: string | null;
+    postcode: string | null;
+    state: string | null;
+    street: string | null;
+    municipality: string | null;
+}
 export interface IBaseDB {
     id: string,
     createdAt: Timestamp,
@@ -142,6 +152,7 @@ export interface IMissionReportDB extends IBaseDB {
     destroyedStart: Timestamp | null;
     workEnd: Timestamp;
     address: string;
+    addressDetails?: IAddressDB;
     authorId: string;
 }
 
