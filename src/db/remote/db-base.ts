@@ -105,16 +105,20 @@ export class DBBase<T extends IBaseDB> {
 	
 	getUpdateData: ((value: Partial<T>) => Partial<T>) | undefined = undefined;
 
+	getSearchData: undefined | ((value: Partial<T>) => string[]) = undefined;
+
 	constructor(
 		tableName: string,
 		searchFields: (keyof T)[],
 		getCreateData?: (value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>,
-		getUpdateData?: (value: Partial<T>) => Partial<T>
+		getUpdateData?: (value: Partial<T>) => Partial<T>,
+		getSearchData?: (value: Partial<T>) => string[]
 	){
 		this.tableName = tableName;
 		this.searchFields = searchFields ?? [];
 		this.getCreateData = getCreateData;
 		this.getUpdateData = getUpdateData;
+		this.getSearchData = getSearchData;
 	}
 
 	setRootCollection(rootCollection: string){
@@ -204,6 +208,15 @@ export class DBBase<T extends IBaseDB> {
 			const arr = generateValueStartsWith(String(value[field] ?? ""));
 			_search.push(...arr);
 		});
+
+		if(this.getSearchData){
+			const values = this.getSearchData(value);
+
+			values.forEach((v) => {
+				const arr = generateValueStartsWith(v);
+				_search.push(...arr);
+			});
+		}
 
 		return { _search }
 	}

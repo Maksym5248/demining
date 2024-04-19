@@ -3,6 +3,7 @@ import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 import { TABLES, TABLES_DIR } from '~/constants';
 import { Auth } from '~/services';
 import { mapUtils } from '~/utils';
+import { explosiveObjectTypesData } from '~/data';
 
 import { DBBase } from './db-base';
 import {
@@ -34,6 +35,11 @@ const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | "updatedAt
 	geo: mapUtils.getGeoDB(value),
 });
 
+const getSearchDataExplosiveObject = (value: Partial<IExplosiveObjectDB>) => {
+	const type = explosiveObjectTypesData.find((item) => item.id === value.typeId);
+	return [type?.fullName, type?.name].filter(el => !!el) as string[];
+};
+
 const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
 	if (!value.polygon && !value.circle && !value.marker) {
 		return {};
@@ -51,7 +57,7 @@ class DBRemoteClass {
 
 	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"], getCreateData);
 
-	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"], getCreateData);
+	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"], getCreateData, undefined, getSearchDataExplosiveObject);
 
 	explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ["name"], getCreateData);
 
