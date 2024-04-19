@@ -39,7 +39,7 @@ const fetchAllInGeoBox = asyncAction<Instance<typeof Store>>((box:IGeoBox) => as
 	try {
 		const ranges = mapUtils.getGeohashRangesByGeoBox(box);
 		const adjustedRanges = mapUtils.getAdjustedRanges(ranges, self.loadedGeohashes);
-		console.log("adjustedRanges", adjustedRanges)
+
 		if(adjustedRanges.length === 0) return;	
 
 		flow.start();

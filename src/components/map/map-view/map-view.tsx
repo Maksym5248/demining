@@ -52,7 +52,7 @@ function Component({
 	const [isCreating, setCreating] = useState(false);
 
 	const {
-		mapOptions, polygonOptions, circleOptions, createPolygonOptions
+		mapOptions, polygonOptions, circleOptions, createPolygonOptions, toggleMapType
 	} = useMapOptions({ isPictureType: false, isCreating, drawing});
 
 	const mapRef = useRef<google.maps.Map>();
@@ -236,6 +236,8 @@ function Component({
 				{...rest}
 			>
 				<DrawingManager
+					mapTypeId={mapOptions.mapTypeId}
+					onToggleMapType={toggleMapType}
 				 canVisibleInArea={zoom > 16}
 				  onChange={onChangeDrawing} 
 				  value={drawing}

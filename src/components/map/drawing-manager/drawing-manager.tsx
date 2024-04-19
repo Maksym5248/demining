@@ -15,6 +15,8 @@ interface IDrawingManagerProps {
 	isLoadingVisibleInArea?: boolean;
 	canVisibleInArea?: boolean;
 	onChangeVisibleInArea?: (value: boolean) => void;
+	onToggleMapType?: () => void;
+	mapTypeId?: google.maps.MapTypeId;
 }
 
 export function DrawingManager({
@@ -27,7 +29,9 @@ export function DrawingManager({
 	isActiveStick,
 	isDisabledClean,
 	isVisibleInArea,
-	isLoadingVisibleInArea
+	isLoadingVisibleInArea,
+	onToggleMapType,
+	mapTypeId
 }: IDrawingManagerProps) {
 
 	const _onChange = (e: any) => {
@@ -60,14 +64,19 @@ export function DrawingManager({
 
 	return (
 		<div css={s.container}>
-			<Radio.Group value={value} onChange={_onChange} size="large">
-				<Radio.Button value={DrawingType.MOVE} css={s.button}><Icon.Cursor /></Radio.Button>
-				<Radio.Button value={DrawingType.MARKER} css={s.button}><Icon.Marker /></Radio.Button>
-				<Radio.Button value={DrawingType.CIRCLE} css={s.button}><Icon.Circle /></Radio.Button>
-				<Radio.Button value={DrawingType.POLYGON} css={s.button}><Icon.Polygon /></Radio.Button>
-			</Radio.Group>
-
 			<Button.Group>
+				<Tooltip placement="bottomRight" title="Показати умовні позначення" arrow>
+					<Button
+						size="large"
+						onClick={onToggleMapType}
+						icon={<Icon.TagOutlined /> }
+						disabled={false}
+						css={[
+							s.button,
+							mapTypeId === google.maps.MapTypeId.HYBRID ? s.activeButton : undefined
+						]}
+					/>
+				</Tooltip>
 				<Tooltip placement="bottomRight" title="Показати обстежені ділянки в зоні" arrow>
 					<Button
 						size="large"
@@ -86,6 +95,15 @@ export function DrawingManager({
 					/>
 				</Tooltip>
 			</Button.Group>
+			
+			<Radio.Group value={value} onChange={_onChange} size="large">
+				<Radio.Button value={DrawingType.MOVE} css={s.button}><Icon.Cursor /></Radio.Button>
+				<Radio.Button value={DrawingType.MARKER} css={s.button}><Icon.Marker /></Radio.Button>
+				<Radio.Button value={DrawingType.CIRCLE} css={s.button}><Icon.Circle /></Radio.Button>
+				<Radio.Button value={DrawingType.POLYGON} css={s.button}><Icon.Polygon /></Radio.Button>
+			</Radio.Group>
+
+		
 
 			{!isDisabledClean && (
 				<Tooltip placement="bottomRight" title="Очистити" arrow>

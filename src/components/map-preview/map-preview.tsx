@@ -1,6 +1,6 @@
 import { memo, useState, useRef } from "react";
 
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
@@ -44,7 +44,7 @@ function Component({
 }: IMapViewProps) {
 
 	const {
-		 mapOptions, polygonOptions, circleOptions,
+		 mapOptions, polygonOptions, circleOptions, toggleMapType
 	 } = useMapOptions({ isPictureType: true });
 
 	const mapRef = useRef<google.maps.Map>();
@@ -93,6 +93,17 @@ function Component({
 				{...rest}
 			>
 				<div css={s.panel}>
+					<Tooltip placement="bottomRight" title="Показати умовні позначення" arrow>
+						<Button
+							onClick={toggleMapType}
+							icon={<Icon.TagOutlined /> }
+							disabled={false}
+							css={[
+								s.button,
+								mapOptions.mapTypeId === google.maps.MapTypeId.HYBRID ? s.activeButton : undefined
+							]}
+						/>
+					</Tooltip>
 					{isEdit && (
 						<Button
 							css={s.button}

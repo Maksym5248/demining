@@ -1,12 +1,16 @@
+import { useState } from "react";
+
 import { DrawingType } from "~/components"
 
 export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictureType: boolean, isCreating?: boolean, drawing?: DrawingType }) => {
+	const [mapTypeId, setMapTypeId] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.SATELLITE);
+	
 	const mapOptions = {
 		streetViewControl: false,
 		scaleControl: false,
 		zoomControl: false,
 		fullscreenControl: false,
-		mapTypeId: "satellite",
+		mapTypeId,
 		mapTypeControl: false,
 		disableDoubleClickZoom: !isPictureType,
 		draggable: !isPictureType,
@@ -61,6 +65,10 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		editable: true,
 	}
 
+	const toggleMapType = () => {
+		setMapTypeId(prev => prev === google.maps.MapTypeId.HYBRID ? google.maps.MapTypeId.SATELLITE : google.maps.MapTypeId.HYBRID)
+	}
+
 	return {
 		mapOptions,
 		polygonOptions,
@@ -68,5 +76,6 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		polylineOptions,
 		createPolygonOptions,
 		gridOptions,
+		toggleMapType,
 	}
 }

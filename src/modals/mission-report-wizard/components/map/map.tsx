@@ -63,17 +63,25 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 						
 						};
 
-						const explosiveObjects = explosiveObjectActions.map(el => {
+						const explosiveObjects:Record<string, number> = {};
+						
+						explosiveObjectActions.forEach(( el) => {
 							const item = explosiveObject.collectionActions.get(el?.id ?? "")  || explosiveObject.collection.get(el.explosiveObjectId);
-							return `${item?.fullDisplayName} ${el.quantity} од.`;
-						})
+							const name = item?.fullDisplayName;
+
+							if(explosiveObjects[name]) {
+								explosiveObjects[name] += el.quantity;
+							} else {
+								explosiveObjects[name] = el.quantity;
+							}
+						});
 
 						return (
 							<MapPreview
 								circle={mapView?.circle}
 								marker={mapView?.marker}
 								polygon={mapView?.polygon}
-								explosiveObjects={explosiveObjects}
+								explosiveObjects={Object.keys(explosiveObjects).map(key => `${key} - ${explosiveObjects[key]}`)}
 								date={executedAt}
 								isEdit={isEdit}
 								onEdit={onEdit}

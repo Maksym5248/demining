@@ -86,9 +86,13 @@ const panel = Theme.css(`
 	position: absolute;
 	top: 8px;
 	right: 8px;
+	left: 8px;
 	zIndex: 99999;
 	display: flex;
 	gap: 16px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 `);
 
 
@@ -96,6 +100,11 @@ const mapContainerStyle = {
 	width: '100%',
 	height: '400px',
 }
+
+const activeButton = Theme.css(({ token }) => `
+	border-color: ${token.colorPrimary};
+	color: ${token.colorPrimary};
+`);
 
 export const s = {
 	container,
@@ -110,6 +119,7 @@ export const s = {
 	calloutPolygonText,
 	calloutDivider,
 	panel,
-	button
+	button,
+	activeButton
 }
     
