@@ -1,5 +1,4 @@
 import omit from "lodash/omit";
-import { Timestamp } from "firebase/firestore";
 
 import { DB, IEmployeeActionDB, IMissionReportDB, ILinkedToDocumentDB,  ITransportActionDB, IEquipmentActionDB, IExplosiveObjectActionDB, IMapViewActionDB, IEmployeeDB, ITransportDB, IEquipmentDB, IExplosiveObjectDB, IQuery, IExplosiveActionDB, IExplosiveDB } from '~/db'
 import { CreateValue } from '~/types'
@@ -292,11 +291,11 @@ export const generateActions = async (missionReportId:string, value: CreateValue
 
 const getRemovedActions = <T extends B, B extends { id?: string}>(prev:T[], newB:B[], compareId: keyof B):T[] => prev.filter(t => !newB.find(b => t[compareId] === b[compareId]));
 const getCreateActions = <T extends B, B extends { id?: string}>(prev:T[], newB:B[], compareId: keyof B):B[] => newB.filter(t => !prev.find(b => t[compareId] === b[compareId]));
-const getUpdatedActions = <T extends { id: string, createdAt: Timestamp, updatedAt: Timestamp }, B extends { id?: string}>(prev:T[], newB:B[], removeB:T[]):T[] => {
+const getUpdatedActions = <T extends B, B extends { id?: string}>(prev:T[], newB:B[], removeB:T[], compareId: keyof B):T[] => {
 	const needUpdate = prev
-		.filter(el => !removeB.find(r => r.id === el.id))
-		.filter(t => !!newB.find(b => t.id === b?.id))
-	return needUpdate.map(t => ({...t, ...newB.find(b => t.id === b?.id)})) as T[];
+		.filter(el => !removeB.find(r => r[compareId] === el[compareId]))
+		.filter(t => !!newB.find(b => t[compareId] === b?.[compareId]))
+	return needUpdate.map(t => ({...t, ...newB.find(b => t[compareId] === b?.[compareId])})) as T[];
 };
 
 export const getRemoveList = (newActions: INewActions, missionReportDTO:IMissionReportDTO):IPrevActions =>{
@@ -333,11 +332,11 @@ export const getUpdateList = (newActions: INewActions, missionReportDTO:IMission
 			...missionReportDTO.mapView,
 			...newActions.mapView,
 		},
-		employeesActions: getUpdatedActions(employeeActions, newActions.employeesActions, removeList.employeesActions),
-		transportActions: getUpdatedActions(missionReportDTO.transportActions, newActions.transportActions, removeList.transportActions),
-		equipmentActions: getUpdatedActions(missionReportDTO.equipmentActions, newActions.equipmentActions, removeList.equipmentActions),
-		explosiveObjectActions: getUpdatedActions(missionReportDTO.explosiveObjectActions, newActions.explosiveObjectActions, removeList.explosiveObjectActions),
-		explosiveActions: getUpdatedActions(missionReportDTO.explosiveActions, newActions.explosiveActions, removeList.explosiveActions),
+		employeesActions: getUpdatedActions(employeeActions, newActions.employeesActions, removeList.employeesActions, "employeeId"),
+		transportActions: getUpdatedActions(missionReportDTO.transportActions, newActions.transportActions, removeList.transportActions, "transportId"),
+		equipmentActions: getUpdatedActions(missionReportDTO.equipmentActions, newActions.equipmentActions, removeList.equipmentActions, "equipmentId"),
+		explosiveObjectActions: getUpdatedActions(missionReportDTO.explosiveObjectActions, newActions.explosiveObjectActions, removeList.explosiveObjectActions, "id"),
+		explosiveActions: getUpdatedActions(missionReportDTO.explosiveActions, newActions.explosiveActions, removeList.explosiveActions, "id"),
 	};
 }
 
