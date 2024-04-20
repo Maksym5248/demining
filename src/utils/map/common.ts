@@ -3,7 +3,7 @@ import * as turf from '@turf/turf';
 import { ICircle, IPoint, IPolygon, IGeoBox } from "~/types";
 
 import { mathUtils } from "../math";
-import { createArrFromPoint } from './fabric';
+import { createArrFromPoint, createPointFromArr } from './fabric';
 
 /**
  * @returns m2
@@ -141,17 +141,34 @@ function pixelsToMeters(pixels: number, zoom: number): number {
 	return pixels * metersPerPixel;
 }
 
-const getAngle = (point1: IPoint, point2: IPoint, point3: IPoint): number => {
-	const angle1 = turf.bearing(createArrFromPoint(point1), createArrFromPoint(point2));
-	const angle2 = turf.bearing(createArrFromPoint(point2), createArrFromPoint(point3));
+const opposite = (value:number) => value > 0 ? value - 180 : value + 180
 
-	let angle = angle2 - angle1;
-	if (angle < 0) {
-		angle += 360;
-	}
+const polygonCallout = (polygon: IPolygon, offsetInMeters: number): IPoint[] => {
+	const turfPolygon =  turf.polygon([[...polygon.points.map(createArrFromPoint), createArrFromPoint(polygon.points[0])]]);
 
-	return angle;
-};
+	return polygon?.points.map((point, i) => {
+		const lastIndex = polygon.points.length - 1;
+		const prevIndex = i === 0 ? lastIndex : i - 1;
+		const nextIndex = i === lastIndex ? 0 : i + 1;
+	
+		const turfPoint = turf.point(createArrFromPoint(point));
+	
+		const turfPrev = turf.point(createArrFromPoint(polygon.points[prevIndex]));
+		const turfNext = turf.point(createArrFromPoint(polygon.points[nextIndex]));
+	
+		const bearingPrev = turf.bearing(turfPoint, turfPrev);
+		const bearingNext = turf.bearing(turfPoint, turfNext);
+	
+		const bearing = (bearingPrev + bearingNext) / 2;
+	
+		const destination = turf.destination(turfPoint, offsetInMeters, bearing, { units: 'meters' });
+		const opositeDestination = turf.destination(turfPoint, offsetInMeters, opposite(bearing), { units: 'meters' });
+	
+		return turf.booleanPointInPolygon(destination, turfPolygon)
+			 ? createPointFromArr(opositeDestination.geometry.coordinates)
+			 : createPointFromArr(destination.geometry.coordinates);
+	})
+}
 
 export {
 	getDistanceByPoints,
@@ -162,5 +179,5 @@ export {
 	getArea,
 	checkOverlapsPolygon,
 	pixelsToMeters,
-	getAngle
+	polygonCallout
 }

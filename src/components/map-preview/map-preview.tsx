@@ -62,7 +62,7 @@ function Component({
 	};
 
 	const polygonCallout = usePolygonCallout({ polygon, zoom, isVisibleMap, offset: 20 })
-	const markerCallout = useMarkerCallout({ marker, zoom, mapRef, isVisibleMap})
+	const markerCallout = useMarkerCallout({ marker, zoom, mapRef, polygonCallout, isVisibleMap})
 
 	useFitBounds({
 		marker,
