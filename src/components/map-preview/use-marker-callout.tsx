@@ -20,6 +20,8 @@ export function useMarkerCallout({
 }: IUseMarkerCalloutParams) {
 
 	return useMemo(() => {
+		if(!marker) return undefined;
+
 		const value = mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom) ?? undefined;
 
 		return value ? {

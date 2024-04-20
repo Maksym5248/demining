@@ -79,10 +79,10 @@ function Component({
 		};
 
 		onChange?.({
-			marker: {
+			marker: newValue.marker ?{
 				lat: mathUtils.toFixed(newValue.marker?.lat, 9),
 				lng: mathUtils.toFixed(newValue.marker?.lng, 9),
-			},
+			}: undefined,
 			polygon: newValue.polygon ? {
 				points: newValue.polygon.points.map(el => ({
 					lat: mathUtils.toFixed(el.lat, 9),
