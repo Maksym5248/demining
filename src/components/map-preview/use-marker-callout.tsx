@@ -1,7 +1,7 @@
 import { MutableRefObject, useMemo } from "react";
 
 import { IMarker, IPoint } from "~/types";
-import { mapUtils } from "~/utils";
+import { mapUtils, mathUtils } from "~/utils";
 
 interface IUseMarkerCalloutParams {
 	marker?: IMarker;
@@ -19,6 +19,13 @@ export function useMarkerCallout({
 	isVisibleMap
 }: IUseMarkerCalloutParams) {
 
-	return useMemo(() => mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom) ?? undefined,
-		[marker, mapRef?.current, isVisibleMap, zoom, polygonCallout]);
+	return useMemo(() => {
+		const value = mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom) ?? undefined;
+
+		return value ? {
+			lat: mathUtils.toFixed(value.lat, 9),
+			lng: mathUtils.toFixed(value.lng, 9)
+		} : undefined;
+	},
+	[marker, mapRef?.current, isVisibleMap, zoom, polygonCallout]);
 }
