@@ -202,8 +202,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 		document.fetchTemplatesList.run();
 	}, []);
 
-	const isLoading = isLoadingPreview
-	 || missionReport.fetchItem.inProgress
+	const isLoading = missionReport.fetchItem.inProgress
 	 || employee.fetchListAll.inProgress
 	 || document.fetchTemplatesList.inProgress;
 
@@ -262,53 +261,57 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 				</WizardButtons>
 			}
 		>
-			{isLoading
-				? (<Spin css={s.spin} />)
-				: (
-					<Form
-						name="mission-report-form"
-						onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
-						labelCol={{ span: 8 }}
-						wrapperCol={{ span: 16 }}
-						initialValues={initialValues}
-						disabled={wizard.isView}
-					>
-						{ [
-							<Map key="Map" isEdit={!wizard.isView}/>,
-							<Territory key="Territory"/>,
-							<Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction}/>,
-							<Act key="Act" />,
-							<Documents key="Documents" initialValues={initialValues}/>,
-							<Timer key="Timer" />,
-							<ExplosiveObjectAction key="ExplosiveObjectAction" />,
-							<ExplosiveAction key="ExplosiveAction" />,
-							<Transport 
-								key="Transport"
-								initialValues={initialValues}
-								selectedTransportHumanAction={currentMissionReport?.transportHumans}
-								selectedTransportExplosiveAction={currentMissionReport?.transportExplosiveObject}
+			<>
+				{isLoadingPreview && <Spin fullscreen/>}
+				{isLoading
+					? (<Spin css={s.spin} />)
+					: (
+						<Form
+							name="mission-report-form"
+							onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
+							labelCol={{ span: 8 }}
+							wrapperCol={{ span: 16 }}
+							initialValues={initialValues}
+							disabled={wizard.isView}
+						>
+							{ [
+								<Map key="Map" isEdit={!wizard.isView}/>,
+								<Territory key="Territory"/>,
+								<Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction}/>,
+								<Act key="Act" />,
+								<Documents key="Documents" initialValues={initialValues}/>,
+								<Timer key="Timer" />,
+								<ExplosiveObjectAction key="ExplosiveObjectAction" />,
+								<ExplosiveAction key="ExplosiveAction" />,
+								<Transport 
+									key="Transport"
+									initialValues={initialValues}
+									selectedTransportHumanAction={currentMissionReport?.transportHumans}
+									selectedTransportExplosiveAction={currentMissionReport?.transportExplosiveObject}
 							 />,
-							<Equipment
-								key="Equipment" 
-								initialValues={initialValues}
-								selectedMineDetector={currentMissionReport?.mineDetector}
+								<Equipment
+									key="Equipment" 
+									initialValues={initialValues}
+									selectedMineDetector={currentMissionReport?.mineDetector}
 							  />,
-							<Employees
-								key="Employees" 
-								squadLeads={employee.squadLeads} 
-								workers={employee.workers}
-								selectedSquadLead={currentMissionReport?.squadLeaderAction}
-								selectedWorkers={currentMissionReport?.squadActions}
+								<Employees
+									key="Employees" 
+									squadLeads={employee.squadLeads} 
+									workers={employee.workers}
+									selectedSquadLead={currentMissionReport?.squadLeaderAction}
+									selectedWorkers={currentMissionReport?.squadActions}
 							 />
-						].map((el, i) => (
-							<div  key={i}>
-								{el}
-								<Divider/>
-							</div>
-						))}
-						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
-					</Form>
-				)}
+							].map((el, i) => (
+								<div  key={i}>
+									{el}
+									<Divider/>
+								</div>
+							))}
+							<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
+						</Form>
+					)}
+			</>
+			
 		</Drawer>
 	);
 });

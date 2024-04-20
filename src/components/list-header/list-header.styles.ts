@@ -17,11 +17,17 @@ const search = Theme.css(`
 
 const title = Theme.css(`
     margin-top: 0;
+`);
+
+const buttons = Theme.css(`
+    display: flex;
+    gap: 8px;
 `)
 
 export const s = {
 	container,
 	search,
-	title
+	title,
+	buttons
 }
     

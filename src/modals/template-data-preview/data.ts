@@ -1,0 +1,83 @@
+const missionReportData = {
+	"approvedAt": "«20» квітня 2024 року",
+	"approvedByName": "Володимир КАЧКАН",
+	"approvedByRank": "полковник",
+	"approvedByPosition": "Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій",
+	"actNumber": "10",
+	"executedAt": "«20» квітня 2024 року",
+	"orderSignedAt": "«30» березня 2024 року",
+	"orderNumber": 322,
+	"missionRequestAt": "«20» березня 2024 року",
+	"missionNumber": 23,
+	"address": "Київська область, Кагарлицька міська громада, Кагарлик, Свято-Троїцька вулиця, 14",
+	"lat": 49.863573054,
+	"lng": 30.817526736,
+	"checkedM2": 566,
+	"checkedGA": 0.0566,
+	"uncheckedM2": 400,
+	"uncheckedGA": 0.04,
+	"depthM2": 0.15,
+	"uncheckedReason": "Будівлі",
+	"explosiveObjectsTotal": 14,
+	"explosiveObjects": "AC -  122 – 14 од., I категорії.",
+	"exclusionTime": "з 10 год. 00 хв. по 12 год. 00 хв.",
+	"exclusionDate": "«20» квітня 2024 року",
+	"transportingTime": "з 12 год. 00 хв. по 15 год. 00 хв.",
+	"transportingDate": "«20» квітня 2024 року",
+	"explosiveObjectsTotalTransport": 14,
+	"squadTotal": 5,
+	"humanHours": 50,
+	"transportHuman": "Toyota Hilux 2 н/з КА 7062 Е",
+	"transportExplosiveObjects": "Toyota Land Cruiser 2 н/з КА 6452 Е",
+	"mineDetector": "Minelab F3",
+	"squadLead": "Я.І. Пушкар",
+	"squadPosition": "Сапер\nВодій\nСапер\nСтарший сапер",
+	"squadName": "А.В. Мишко\nІ.І. Кондратюк\nВ.В. Клименко\nР.І. Данчук"
+};
+
+function translateKeyToUkrainian(key: string): string {
+	const translations: { [key: string]: string } = {
+		"approvedAt": "Затверджено",
+		"approvedByName": "Затвердив ім'я",
+		"approvedByRank": "Затвердив (звання)",
+		"approvedByPosition": "Затвердив (посада)",
+		"actNumber": "Номер акту",
+		"executedAt": "Дата виконання",
+		"orderSignedAt": "Дата підписання",
+		"orderNumber": "Номер наказу",
+		"missionRequestAt": "Дата заявки",
+		"missionNumber": "Номер заявки",
+		"address": "Адреса",
+		"lat": "Широта",
+		"lng": "Довгота",
+		"checkedM2": "Перевірено М2",
+		"checkedGA": "Перевірено ГА",
+		"uncheckedM2": "Неперевірено М2",
+		"uncheckedGA": "Неперевірено ГА",
+		"depthM2": "Глибина М2",
+		"uncheckedReason": "Причина неперевіреності",
+		"explosiveObjectsTotal": "Загальна кількість вибухонебезпечних об'єктів",
+		"explosiveObjects": "Вибухонебезпечні об'єкти",
+		"exclusionTime": "Час вилучення",
+		"exclusionDate": "Дата вилучення",
+		"transportingTime": "Час транспортування",
+		"transportingDate": "Дата транспортування",
+		"explosiveObjectsTotalTransport": "Загальна кількість вибухонебезпечних об'єктів для транспортування",
+		"squadTotal": "Загальна кількість групи",
+		"humanHours": "людино/години",
+		"transportHuman": "Транспорт для людей",
+		"transportExplosiveObjects": "Транспорт для вибухонебезпечних об'єктів",
+		"mineDetector": "Міношукач",
+		"squadLead": "Командир групи",
+		"squadPosition": "Посади у групі",
+		"squadName": "Ім'я у групі"
+	};
+
+	return translations[key] || key;
+}
+
+export const missionReportTemplateData = Object.entries(missionReportData).map(([key, value]) => ({
+	key: `{{${key}}}`,
+	value,
+	field: translateKeyToUkrainian(key)
+}));

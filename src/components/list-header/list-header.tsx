@@ -12,9 +12,10 @@ interface ListHeaderProps {
 	onSearch?: (value:string) => void;
 	searchBy: string;
 	setSearchBy:(value:string) => void;
+	onOpenInfo?:() => void;
 }
 
-export function ListHeader({ onCreate, onSearch, title, searchBy, setSearchBy }:ListHeaderProps) {
+export function ListHeader({ onCreate, onSearch, title, searchBy, setSearchBy, onOpenInfo }:ListHeaderProps) {
 	const onClickCreate = (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		onCreate(e);
@@ -25,7 +26,10 @@ export function ListHeader({ onCreate, onSearch, title, searchBy, setSearchBy }:
 			<Title level={4} css={s.title}>{title}</Title>
 			<Space css={s.search} style={{ justifyContent: "space-between" }}>
 				{!!onSearch && <Search onSearch={onSearch} value={searchBy} onChangeValue={setSearchBy}/>}
-				<Button type="primary" icon={<Icon.PlusOutlined />} onClick={onClickCreate}/>
+				<div css={s.buttons}>
+					{!!onOpenInfo && <Button icon={<Icon.InfoCircleOutlined />} onClick={onOpenInfo}/>}
+					<Button type="primary" icon={<Icon.PlusOutlined />} onClick={onClickCreate}/>
+				</div>
 			</Space>
 		</Space>
 	);

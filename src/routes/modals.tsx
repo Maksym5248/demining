@@ -14,7 +14,8 @@ import {
 	TemplateWizardModal,
 	ExplosiveWizardModal,
 	ExplosiveActionWizardModal,
-	MapEditorModal
+	MapEditorModal,
+	TemplateDataPreviewModal
 } from '~/modals';
 import { IModalsMap } from '~/services';
 
@@ -60,6 +61,9 @@ export const modals: IModalsMap = {
 	},
 	[MODALS.DOCX_PREVIEW]: {
 		renderComponent: (props: any) => <DocxPreviewModal {...props} />,
+	},
+	[MODALS.TEMPLATE_DATA_PREVIEW]: {
+		renderComponent: (props: any) => <TemplateDataPreviewModal {...props} />,
 	},
 	[MODALS.MAP_EDITOR]: {
 		renderComponent: (props: any) => <MapEditorModal {...props} />,

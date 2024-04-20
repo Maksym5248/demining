@@ -47,6 +47,10 @@ export const TemplatesListPage  = observer(() => {
 	const onCreate = () => {
 		Modal.show(MODALS.TEMPLATE_WIZARD, { mode: WIZARD_MODE.CREATE })
 	};
+	
+	const onOpenInfo = () => {
+		Modal.show(MODALS.TEMPLATE_DATA_PREVIEW)
+	};
 
 	const onSearch = (value:string) => {
 		search.updateSearchParams(value)
@@ -77,6 +81,7 @@ export const TemplatesListPage  = observer(() => {
 					title={title}
 					onSearch={onSearch}
 					onCreate={onCreate}
+					onOpenInfo={onOpenInfo}
 					{...search}
 				 />
 			}
