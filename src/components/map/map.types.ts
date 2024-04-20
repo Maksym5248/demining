@@ -29,6 +29,7 @@ export interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapCon
 	circles?: ICircle[],
 	isLoadingVisibleInArea?: boolean;
 	onChangeGeobox?: (value: { box: IGeoBox, zoom: number}) => void;
+	minZoomLoadArea?: number;
 }
 
 

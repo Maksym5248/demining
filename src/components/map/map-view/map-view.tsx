@@ -46,6 +46,7 @@ function Component({
 	polygons,
 	onChangeGeobox,
 	isLoadingVisibleInArea,
+	minZoomLoadArea = 16,
 	...rest
 }: IMapViewProps) {
 	const [drawing, setDrawing] = useState(DrawingType.MOVE);
@@ -238,7 +239,7 @@ function Component({
 				<DrawingManager
 					mapTypeId={mapOptions.mapTypeId}
 					onToggleMapType={toggleMapType}
-				 canVisibleInArea={zoom > 16}
+				 canVisibleInArea={zoom > minZoomLoadArea}
 				  onChange={onChangeDrawing} 
 				  value={drawing}
 				  onClear={onClear}

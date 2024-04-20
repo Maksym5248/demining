@@ -31,6 +31,7 @@ export const MapEditorModal  = observer(({
 	const [polygon, setPolygon] = useState(initialPolygon);
 	const [zoom, setZoom] = useState(initialZoom);
 	const [area, setArea] = useState(initialArea);
+	const [isLoadingAllInGeoBox, setLoadingAllInGeoBox] = useState(false);
 
 	const onCancel = () => {
 		hide();
@@ -57,10 +58,14 @@ export const MapEditorModal  = observer(({
 	
 	const fetchAllInGeoBox = useDebounce((box: IGeoBox) => {
 		store.map.fetchAllInGeoBox.run(box);
-	}, [], 2000);
+		setLoadingAllInGeoBox(false)
+	}, [], 1000);
+
+	const minZoomLoadArea = 16;
 
 	const onChangeGeobox = (value: { box: IGeoBox, zoom: number}) => {
-		if(value.zoom < 16) return;
+		if(value.zoom < minZoomLoadArea) return;
+		setLoadingAllInGeoBox(true)
 		fetchAllInGeoBox(value.box);
 	};
 
@@ -83,7 +88,8 @@ export const MapEditorModal  = observer(({
 				onChangeGeobox={onChangeGeobox}
 				polygons={store.map.list.asArray.filter(el => el.id !== id && !!el.polygon).map(el => el.polygon as IPolygon)}
 				circles={store.map.list.asArray.filter(el => el.id !== id && !!el.circle).map(el => el.circle as ICircle)}
-				isLoadingVisibleInArea={store.map.fetchAllInGeoBox.inProgress}
+				isLoadingVisibleInArea={store.map.fetchAllInGeoBox.inProgress || isLoadingAllInGeoBox}
+				minZoomLoadArea={minZoomLoadArea}
 			/>
 		</Modal>
 	);
