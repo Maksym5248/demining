@@ -3,6 +3,8 @@ import { MutableRefObject, useEffect } from "react";
 import { ICircle, IMarker, IPoint, IPolygon } from "~/types";
 import { mapUtils } from "~/utils";
 
+import { useDebounce } from "../common/useDebounce";
+
 interface IUseFitBoundsParams {
 	marker?: IMarker,
 	markerCallout?: IPoint,
@@ -22,11 +24,10 @@ export function useFitBounds({
 	mapRef,
 	isVisibleMap
 }: IUseFitBoundsParams) {
-
-	useEffect(() => {
-		if(!marker && !markerCallout && !circle && !polygon && !polygonCallout) return;
+	
+	const fitBounds = useDebounce(() => {
 		const bounds = new google.maps.LatLngBounds();
-		
+
 		if (marker) bounds.extend(marker);
 		if (markerCallout) bounds.extend(markerCallout);
 		if (circle) {
@@ -39,17 +40,22 @@ export function useFitBounds({
 				bounds.extend(point);
 			});
 		}
-		if (polygonCallout?.length) {
-			polygonCallout.forEach((point) => {
-				bounds.extend(point);
-			});
-		}
+		// if (polygonCallout?.length) {
+		// 	polygonCallout.forEach((point) => {
+		// 		bounds.extend(point);
+		// 	});
+		// }
 		  
 		mapRef?.current?.fitBounds(bounds, {
-			bottom: 0,
-			left: 0,
-			right: 0,
-			top: 20,
+			bottom: 100,
+			left: 30,
+			right: 30,
+			top: 100,
 		});
-	}, [marker, polygon, circle, markerCallout, isVisibleMap, polygonCallout])
+	}, [marker, polygon, circle, markerCallout, isVisibleMap, polygonCallout], 1000)
+
+	useEffect(() => {
+		if(!marker && !markerCallout && !circle && !polygon && !polygonCallout && !isVisibleMap) return;
+		fitBounds();
+	}, [marker, polygon, circle])
 }

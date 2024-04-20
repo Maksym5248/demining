@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Form, Drawer, Input, Spin, message} from 'antd';
+import { Form, Drawer, Input, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { WizardButtons, Select, WizardFooter, UploadFile } from '~/components'
@@ -130,8 +130,9 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
 								options={typeOptions}
 							/>
 						</Form.Item>
-						<UploadFile onChangeFile={onChangeFile} file={file} />
-						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
+						<UploadFile onChangeFile={onChangeFile} file={file}/>
+						<div style={{ height: 16 }}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
 					</Form>
 				)}
 		</Drawer>

@@ -10,9 +10,10 @@ import { ExplosiveObjectAction } from '~/stores/stores/explosive-object';
 import { TransportAction } from '~/stores/stores/transport/entities/transport-action';
 import { EquipmentAction } from '~/stores/stores/equipment/entities/equipment-action';
 import { dates, str } from '~/utils';
-import { EQUIPMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
+import { EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from '~/constants';
 import { MapViewAction } from '~/stores/stores/map';
-import { ExplosiveAction } from '~/stores/stores/explosive';
+import { ExplosiveAction, IExplosiveAction } from '~/stores/stores/explosive';
+import { IPoint } from '~/types';
 
 import { safeReference } from '../../../../utils';
 import { types } from '../../../../types'
@@ -21,6 +22,8 @@ import { Address } from '../address';
 
 
 export type IMissionReport = Instance<typeof MissionReport>
+
+const getLastSign = (arr: any[], i:number) =>  arr.length - 1 === i ? ".": ", ";
 
 const Entity = types.model('MissionReport', {
 	id: types.identifier,
@@ -73,6 +76,7 @@ const Entity = types.model('MissionReport', {
 			depthExamination,
 			uncheckedReason,
 			explosiveObjectActions,
+			explosiveActions,
 			workStart,
 			exclusionStart,
 			transportingStart,
@@ -93,6 +97,8 @@ const Entity = types.model('MissionReport', {
 			: "з ---- по ----";
 
 		const actNumber = `${number}${subNumber ? `/${subNumber}` : ""}`;
+		const explosive = explosiveActions.filter(el => el.type === EXPLOSIVE_TYPE.EXPLOSIVE) as IExplosiveAction[];
+		const detonator = explosiveActions.filter(el => el.type === EXPLOSIVE_TYPE.DETONATOR) as IExplosiveAction[];
 
 		return {
 			approvedAt: getDate(approvedAt),
@@ -106,19 +112,18 @@ const Entity = types.model('MissionReport', {
 			missionRequestAt:  getDate(missionRequest?.signedAt),
 			missionNumber: missionRequest?.number ?? "",
 			address,
-			lat: mapView?.marker?.lat ?? 0,
-			lng: mapView?.marker?.lng ?? 0,
-			checkedM2: checkedTerritory ?? "---",
-			checkedGA: checkedTerritory ? checkedTerritory / 10000 : "---",
-			uncheckedM2: uncheckedTerritory ?? "---",
-			uncheckedGA: uncheckedTerritory ? uncheckedTerritory / 10000 : "---",
-			depthM2: depthExamination ?? "---",
+			lat: mapView?.marker?.lat ? `${mapView?.marker?.lat}°`: "",
+			lng: mapView?.marker?.lng ? `${mapView?.marker?.lng}°`: "",
+			checkedM2: `${checkedTerritory ?? "---"} м2`,
+			checkedGA: `${checkedTerritory ? checkedTerritory / 10000 : "---"} га`,
+			uncheckedM2: `${uncheckedTerritory ?? "---"} м2`,
+			uncheckedGA: `${uncheckedTerritory ? uncheckedTerritory / 10000 : "---"} га`,
+			depthM: depthExamination ?? "---",
 			uncheckedReason: uncheckedReason ?? "---",
 			explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => el.quantity + acc, 0),
-			explosiveObjects: explosiveObjectActions.reduce((acc, el, i) => {
-				const lasSign = explosiveObjectActions.length - 1 === i ? ".": ", ";
-				return `${acc}${el.fullDisplayName} – ${el.quantity} од., ${el?.category} категорії${lasSign}`;
-			},  ""),
+			explosiveObjects: explosiveObjectActions.reduce((acc, el, i) => `${acc}${el.fullDisplayName} - ${el.quantity} од., ${el?.category} категорії${getLastSign(explosiveObjectActions, i)}`,  ""),
+			explosive: explosive.reduce((acc, el, i) => `${acc}${el.name} - ${el.weight} кг.${getLastSign(explosive, i)}`,  ""),
+			detonator: detonator.reduce((acc, el, i) => `${acc}${el.name} - ${el.quantity} од.${getLastSign(detonator, i)}`,  ""),
 			exclusionTime: getTime(exclusionStart, transportingStart ?? destroyedStart ?? workEnd),
 			exclusionDate: getDate(exclusionStart, ""),
 			transportingTime: getTime(transportingStart, destroyedStart ?? workEnd),
@@ -132,6 +137,7 @@ const Entity = types.model('MissionReport', {
 			squadLead: squadLeaderAction?.signName ?? "",
 			squadPosition: squadActions.reduce((prev, el, i) => `${prev}${el.position}${squadActions.length - 1 !== i ? `\n`: ""}`, ""),
 			squadName: squadActions.reduce((prev, el, i) => `${prev}${el.signName}${squadActions.length - 1 !== i ? `\n`: ""}`, ""),
+			polygon: mapView?.polygon?.points.map((el: IPoint, i:number) => ({ lat: `${el.lat}°`, lng: `${el.lng}°`, name: i === 0 ? "СТ" : `ПТ${i}`})) ?? [],
 		}
 	}
 })).views((self) => ({

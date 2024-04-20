@@ -9,6 +9,6 @@ const spin = Theme.css(`
 `)
 
 export const s = {
-	spin
+	spin,
 }
     

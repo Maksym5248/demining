@@ -1,6 +1,6 @@
 const missionReportData = {
 	"approvedAt": "«20» квітня 2024 року",
-	"approvedByName": "Володимир КАЧКАН",
+	"approvedByName": "Володимир БАРАБАН",
 	"approvedByRank": "полковник",
 	"approvedByPosition": "Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій",
 	"actNumber": "10",
@@ -10,16 +10,18 @@ const missionReportData = {
 	"missionRequestAt": "«20» березня 2024 року",
 	"missionNumber": 23,
 	"address": "Київська область, Кагарлицька міська громада, Кагарлик, Свято-Троїцька вулиця, 14",
-	"lat": 49.863573054,
-	"lng": 30.817526736,
-	"checkedM2": 566,
-	"checkedGA": 0.0566,
-	"uncheckedM2": 400,
-	"uncheckedGA": 0.04,
-	"depthM2": 0.15,
+	"lat": "49.863573054°",
+	"lng": "30.817526736°",
+	"checkedM2": "566 м2",
+	"checkedGA": "0.0566 га",
+	"uncheckedM2": "400 м2",
+	"uncheckedGA": "0.04 га",
+	"depthM": 0.15,
 	"uncheckedReason": "Будівлі",
 	"explosiveObjectsTotal": 14,
-	"explosiveObjects": "AC -  122 – 14 од., I категорії.",
+	"explosiveObjects": "AC -  122 - 14 од., I категорії.",
+	"explosive": "Тротил 200/400г - 5 кг..",
+	"detonator": "ЕДП - 7 од..",
 	"exclusionTime": "з 10 год. 00 хв. по 12 год. 00 хв.",
 	"exclusionDate": "«20» квітня 2024 року",
 	"transportingTime": "з 12 год. 00 хв. по 15 год. 00 хв.",
@@ -30,9 +32,14 @@ const missionReportData = {
 	"transportHuman": "Toyota Hilux 2 н/з КА 7062 Е",
 	"transportExplosiveObjects": "Toyota Land Cruiser 2 н/з КА 6452 Е",
 	"mineDetector": "Minelab F3",
-	"squadLead": "Я.І. Пушкар",
+	"squadLead": "Я.І. Кірієнко",
 	"squadPosition": "Сапер\nВодій\nСапер\nСтарший сапер",
-	"squadName": "А.В. Мишко\nІ.І. Кондратюк\nВ.В. Клименко\nР.І. Данчук"
+	"squadName": "А.В. Адамчук\nІ.І. Кондратюк\nВ.В. Клименко\nР.І. Підгайний",
+	"polygon": `
+		"lat": "49.863635726°",
+		"lng": "30.817408244°",
+		"name": "СТ"
+	`
 };
 
 function translateKeyToUkrainian(key: string): string {
@@ -54,7 +61,7 @@ function translateKeyToUkrainian(key: string): string {
 		"checkedGA": "Перевірено ГА",
 		"uncheckedM2": "Неперевірено М2",
 		"uncheckedGA": "Неперевірено ГА",
-		"depthM2": "Глибина М2",
+		"depthM": "Глибина М2",
 		"uncheckedReason": "Причина неперевіреності",
 		"explosiveObjectsTotal": "Загальна кількість вибухонебезпечних об'єктів",
 		"explosiveObjects": "Вибухонебезпечні об'єкти",
@@ -70,7 +77,10 @@ function translateKeyToUkrainian(key: string): string {
 		"mineDetector": "Міношукач",
 		"squadLead": "Командир групи",
 		"squadPosition": "Посади у групі",
-		"squadName": "Ім'я у групі"
+		"squadName": "Ім'я у групі",
+		"explosive": "Вибухові речовини",
+		"detonator": "Засоби підриву",
+		"polygon": "Polygon"
 	};
 
 	return translations[key] || key;
