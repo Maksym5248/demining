@@ -10,7 +10,7 @@ export const explosiveObjectTypesData = [{
 	fullName: "Некерована авіаційна ракета"
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.AS,
-	name: "AC",
+	name: "АС",
 	fullName: "Артилерійський снаряд",
 }, {
 	id: EXPLOSIVE_OBJECT_TYPE.MM,
