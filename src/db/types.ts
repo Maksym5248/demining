@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE } from "~/constants"
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE, MISSION_REQUEST_TYPE } from "~/constants"
 import { EXPLOSIVE_TYPE } from "~/constants/db/explosive-type";
 
 export interface IAddressDB {
@@ -47,14 +47,15 @@ export interface IOrderDB extends IBaseDB {
 
 export interface IMissionRequestDB extends IBaseDB {
     signedAt: Timestamp;
-    number: number;
+    number: string;
     authorId: string;
+    type?: MISSION_REQUEST_TYPE;
 }
 
 export interface IExplosiveObjectDB extends IBaseDB {
     typeId: string;
-    name?: string;
-    caliber?: number;
+    name: string | null;
+    caliber: number | null;
     authorId: string;
 }
 

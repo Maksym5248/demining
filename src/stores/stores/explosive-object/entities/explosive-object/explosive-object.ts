@@ -14,8 +14,8 @@ export type IExplosiveObject = Instance<typeof ExplosiveObject>
 const Entity = types.model('ExplosiveObject', {
 	id: types.identifier,
 	type: types.reference(ExplosiveObjectType),
-	name: types.string,
-	caliber: types.number,
+	name: types.maybe(types.string),
+	caliber: types.maybe(types.number),
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).actions((self) => ({

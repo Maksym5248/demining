@@ -30,7 +30,7 @@ export const routesInfo = {
 		title: "Виїзд",
 	},
 	[ROUTES.MISSION_REQUEST_LIST]: {
-		title: "Заявки",
+		title: "Підстава",
 	},
 	[ROUTES.EMPLOYEES_LIST]: {
 		title: "Особовий склад",

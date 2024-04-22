@@ -3,6 +3,8 @@ import { message } from 'antd';
 
 import { UpdateValue } from '~/types'
 import { Api } from '~/api'
+import { MISSION_REQUEST_TYPE } from '~/constants';
+import { missionRequestType } from '~/data';
 
 import { types } from '../../../../types'
 import { asyncAction } from '../../../../utils';
@@ -13,7 +15,8 @@ export type IMissionRequest = Instance<typeof MissionRequest>
 const Entity = types.model('MissionRequest', {
 	id: types.identifier,
 	signedAt: types.dayjs,
-	number: types.number,
+	number: types.string,
+	type: types.enumeration(Object.values(MISSION_REQUEST_TYPE)),
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs,
 }).actions((self) => ({
@@ -21,8 +24,12 @@ const Entity = types.model('MissionRequest', {
 		Object.assign(self, data);
 	}
 })).views((self) => ({
-	get displayValue(){
-		return `№${self.number} ${self.signedAt.format('DD/MM/YYYY')}`
+	get displayType(){		
+		return missionRequestType.find((el) => el.value === self.type)?.name;
+	},
+})).views((self) => ({
+	get displayValue(){		
+		return `${self.displayType} №${self.number} ${self.signedAt.format('DD/MM/YYYY')}`
 	},
 }));
 

@@ -45,7 +45,7 @@ export const Documents = observer(({ initialValues }: IDocumentsProps) => {
 				/>
 			</Form.Item>
 			<Form.Item
-				label="Заявка"
+				label="Підстава"
 				name="missionRequestId"
 				rules={[{ required: true, message: 'Обов\'язкове поле' }]}
 			>

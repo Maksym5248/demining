@@ -31,6 +31,7 @@ const ListItem = observer(({ item }: { item: IMissionRequest}) => {
 				title={`№${item.number}`}
 				description={
 					<Space css={s.listItemDesc}>
+						<Text type="secondary">{item.displayType}</Text>
 						<Text type="secondary">{item.signedAt.format('DD/MM/YYYY')}</Text>
 					</Space>
 				}
