@@ -26,9 +26,10 @@ service cloud.firestore {
       allow update, delete: if isRootAdmin();
     }
     
-    match /EXPLOSIVE_OBJECT_TYPE/{explosiveObjectTypeId} {
+    match /EXPLOSIVE/{explosiveId} {
       allow read: if request.auth != null && (isOrganization() || isRootAdmin());
-      allow create, update, delete: if isRootAdmin();
+      allow create: if isRootAdmin() || isOrganizationAdmin();
+      allow update, delete: if isRootAdmin();
     }
 
     function isRootAdmin() {

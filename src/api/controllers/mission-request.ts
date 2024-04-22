@@ -1,7 +1,7 @@
 import { DB, IQuery } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'
 
-import { IMissionRequestDTO } from '../types'
+import { IMissionRequestDTO, IMissionRequestSumDTO } from '../types'
 
 const create = (value: CreateValue<IMissionRequestDTO>):Promise<IMissionRequestDTO> => DB.missionRequest.create(value);
 const update = (id:string, value: UpdateValue<IMissionRequestDTO>):Promise<IMissionRequestDTO> => DB.missionRequest.update(id, value);
@@ -20,10 +20,19 @@ const get = async (id:string):Promise<IMissionRequestDTO> => {
 	return res;
 }
 
+const sum = async (query?: IQuery):Promise<IMissionRequestSumDTO> => {
+	const total = await DB.missionReport.count(query);
+
+	return {
+		total,
+	};
+}
+
 export const missionRequest = {
 	create,
 	update,
 	remove,
 	getList,
-	get
+	get,
+	sum
 }

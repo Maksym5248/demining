@@ -1,8 +1,12 @@
 import { Theme } from '~/styles'
 
-const container = Theme.css(`
+const container = Theme.css(({ token }) => (`
 	position: relative;
-`);
+	border-radius: 4px;
+	overflow: hidden;
+	border-radius: ${token.borderRadius}px;
+	margin-bottom: -25px;
+`));
 
 const containerLoading = Theme.css(`
 	display: flex;
@@ -11,17 +15,6 @@ const containerLoading = Theme.css(`
 	height: 100%;
 	justify-content: center;
 	align-items: center;
-`);
-
-const autocomplete = Theme.css(`
-	width: 340px;
-	height: 38px;
-	boxShadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-	outline: none;
-	textOverflow: ellipses;
-	position: absolute;
-	right: 11px;
-	top: 11px;
 `);
 
 const deleteIcon = Theme.css(`
@@ -76,7 +69,6 @@ const mapContainerStyle = {
 export const s = {
 	container,
 	containerLoading,
-	autocomplete,
 	deleteIcon,
 	mapContainerStyle,
 	drawingPanel,

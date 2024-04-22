@@ -18,6 +18,6 @@ export const createUser = (value: IUserDTO): IUserValue => ({
 	email: value?.email ?? "",
 	roles: value?.roles ?? [],
 	organizationId: value?.organizationId ?? "",
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

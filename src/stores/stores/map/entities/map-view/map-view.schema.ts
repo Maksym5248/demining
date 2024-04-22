@@ -7,12 +7,13 @@ import { ICircle, IPoint, IPolygon } from '~/types';
 
 
 
-export interface IMapViewActionValue extends ILinkedToDocumentDB {
+export interface IMapViewActionValue extends Omit<ILinkedToDocumentDB, "executedAt"> {
     id: string;
     marker?: IPoint;
     circle?: ICircle;
 	polygon?: IPolygon;
     zoom: number;
+	executedAt?: Date;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
@@ -27,6 +28,7 @@ export interface IMapViewActionValueParams extends IMapViewActionValue {
 
 
 export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewActionDTOParams  => ({
+	executedAt: value?.executedAt ? dates.toDateServer(value?.executedAt) : null,
 	marker: value?.marker ? {
 		lat: value?.marker?.lat,
 		lng: value?.marker?.lng
@@ -69,6 +71,6 @@ export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => 
 		}))
 	} : undefined,
 	zoom: value.zoom,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

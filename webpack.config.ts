@@ -11,6 +11,7 @@ const config = {
 	output: {
 		path: path.resolve('dist'),
 		filename: 'scripts/[name].[contenthash].js',
+		publicPath: '/',
 	},
 	module: {
 		rules,
@@ -44,7 +45,9 @@ const config = {
 		compress: true,
 		hot: true,
 		liveReload: false,
-		historyApiFallback: true,
+		historyApiFallback: {
+			index: '/',
+		},
 		port: 8080,
 		watchFiles: {
 			paths: ['./src/**/*.(svg|ts|tsx)'],

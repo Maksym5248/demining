@@ -18,6 +18,7 @@ import { OrganizationStore } from './organization';
 import { UserStore } from './user';
 import { DocumentStore } from './document';
 import { MapStore } from './map';
+import { ExplosiveStore } from './explosive';
 
 export type IRootStore = Instance<typeof RootStore>
 
@@ -28,6 +29,7 @@ export const RootStore = types
 		order: types.optional(OrderStore, {}),
 		missionRequest: types.optional(MissionRequestStore, {}),
 		missionReport: types.optional(MissionReportStore, {}),
+		explosive: types.optional(ExplosiveStore, {}),
 		explosiveObject: types.optional(ExplosiveObjectStore, {}),
 		transport: types.optional(TransportStore, {}),
 		equipment: types.optional(EquipmentStore, {}),

@@ -4,7 +4,7 @@ import {
 	IEmployeeDB, 
 	IEmployeeActionDB, 
 	IOrderDB,
-	IMapViewActionActionDB,
+	IMapViewActionDB,
 	IMissionReportDB,
 	IMissionRequestDB,
 	IExplosiveObjectDB,
@@ -24,14 +24,14 @@ export class DBBase<T extends {id: string}> {
 
 	exist = jest.fn(() => Promise.resolve(false))
 
-	create = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "id">) => ({
+	create = jest.fn((value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">) => ({
 		id: "id",
 		...value, 
 		createdAt: new Date(),
 		updatedAt: new Date()
 	}))
 
-	update = jest.fn((id, value: Omit<T, "createdAt" | "updatedAt" | "id">) => {
+	update = jest.fn((id, value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">) => {
 		const newValue = {...value};
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -64,7 +64,7 @@ export const DB = {
 	dropDb: () => jest.fn(),
 	employee: new DBBase<IEmployeeDB>(),
 	employeeAction: new DBBase<IEmployeeActionDB>(),
-	mapViewAction: new DBBase<IMapViewActionActionDB>(),
+	mapViewAction: new DBBase<IMapViewActionDB>(),
 	missionReport: new DBBase<IMissionReportDB>(),
 	missionRequest: new DBBase<IMissionRequestDB>(),
 	order: new DBBase<IOrderDB>(),

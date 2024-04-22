@@ -1,55 +1,46 @@
-import { Button, Popconfirm, Space, Tooltip } from 'antd';
+import { Button, Dropdown, MenuProps, Space, Tooltip } from 'antd';
 
 import { Icon } from '../icon';
 
 interface DrawerExtraProps extends React.PropsWithChildren {
-	onRemove?: () => void;
 	onEdit?: () => void;
 	onView?: () => void;
 	onSave?: () => void;
 	isView?: boolean;
 	isEdit?: boolean;
-	isRemove?: boolean;
 	isSave?: boolean;
+	menu?: MenuProps['items'];
 }
 
 export function WizardButtons({
-	onRemove,
 	onEdit,
 	onView, 
 	onSave, 
 	isView, 
 	isEdit,
-	isRemove,
 	isSave, 
-	children 
+	children,
+	menu
 }: DrawerExtraProps ){
 	
+	const items: MenuProps['items'] = [];
+
+	if(onSave && isSave){
+		items.push({
+			label: 'WORD',
+			key: 'word',
+			icon: <Icon.DownloadOutlined />,
+			onClick: onSave,
+		})
+	}
+
+	if(menu){
+		items.push(...menu);
+	}
+
 	return (
 		<Space>
-			{!!onRemove && isRemove && (
-				<Tooltip placement="bottomRight" title="Видалити" arrow>
-					<Popconfirm
-						title="Видалити"
-						description="Ви впевнені, після цього дані не можливо відновити ?"
-						onConfirm={onRemove}
-						okText="Так"
-						cancelText="Ні"
-					
-					>
-						<Button danger style={{ marginRight: 20}} icon={<Icon.DeleteOutlined /> }/>
-					</Popconfirm>
-				</Tooltip>
-			)}
 			{children}
-
-			{!!onSave && isSave && (
-				<Tooltip placement="bottomRight" title="Зберегти документ" arrow>
-					<Button icon={<Icon.DownloadOutlined/>} onClick={onSave}>
-						Word
-					</Button>
-				</Tooltip>
-			)}
 			{!!onView && isEdit && (
 				<Tooltip placement="bottomRight" title="Переглянути" arrow>
 					<Button icon={<Icon.EyeOutlined /> } onClick={onView}/>
@@ -59,6 +50,11 @@ export function WizardButtons({
 				<Tooltip placement="bottomRight" title="Редагувати" arrow>
 					<Button icon={<Icon.EditOutlined /> } onClick={onEdit}/>
 				</Tooltip>
+			)}
+			{!!items.length && isView && (
+				<Dropdown menu={{ items }} trigger={["click"]}>
+					<Button icon={<Icon.MoreOutlined /> }/>
+				</Dropdown>
 			)}
 		</Space>
 	);

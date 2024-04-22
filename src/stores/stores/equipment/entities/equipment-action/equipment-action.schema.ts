@@ -1,11 +1,12 @@
 import { CreateValue } from '~/types'
-import { data } from '~/utils';
+import { data, dates } from '~/utils';
 import { IEquipmentActionDTO } from '~/api';
 import { DOCUMENT_TYPE, EQUIPMENT_TYPE } from '~/constants';
 
 import { IEquipmentValue, createEquipmentDTO, createEquipment } from '../equipment';
 
 export interface IEquipmentActionValue extends IEquipmentValue {
+	executedAt?: Date;
 	equipmentId: string;
 	documentType: DOCUMENT_TYPE;
     documentId: string;
@@ -13,12 +14,14 @@ export interface IEquipmentActionValue extends IEquipmentValue {
   
 export const createEquipmentActionDTO = (value: CreateValue<IEquipmentActionValue>): CreateValue<IEquipmentActionDTO>  => ({
 	...createEquipmentDTO(value),
+	executedAt: value?.executedAt ? dates.toDateServer(value?.executedAt) : null,
 	equipmentId: value?.equipmentId,
 	documentType: value?.documentType,
 	documentId: value?.documentId,
 });
 
 export const updateEquipmentActionDTO = data.createUpdateDTO<IEquipmentActionValue, IEquipmentActionDTO>(value => ({
+	executedAt: value?.executedAt ? dates.toDateServer(value?.executedAt) : null,
 	name: value?.name ?? "",
 	type: value.type ?? EQUIPMENT_TYPE.MINE_DETECTOR,
 	equipmentId: value?.equipmentId ?? "",

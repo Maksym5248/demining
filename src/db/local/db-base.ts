@@ -71,7 +71,7 @@ export class DBBase<T extends {id: string}> {
 		return !!res
 	}
 
-	async create(value: Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T>{
+	async create(value: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">): Promise<T>{
 		const id = await this.uuid();
 
 		const res = await this.db.insert<T>({
@@ -85,7 +85,7 @@ export class DBBase<T extends {id: string}> {
 		return res[0] as T;
 	}
 
-	async initData(values: Omit<T, "createdAt" | "updatedAt" | "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "id">): Promise<T[]>{
+	async initData(values: Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">[], checkField: keyof Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">): Promise<T[]>{
 		const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])))
 
 		const res = await Promise.all(values
@@ -96,7 +96,7 @@ export class DBBase<T extends {id: string}> {
 		return isArray(res) ? res: null;
 	}
 
-	async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "id">>): Promise<T> {
+	async update(id:string, value: Partial<Omit<T, "createdAt" | "updatedAt" | "authorId"| "id">>): Promise<T> {
 		const newValue = {...value};
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment

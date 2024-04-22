@@ -1,32 +1,44 @@
 import { types, Instance, getRoot } from 'mobx-state-tree';
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
-import { Api, IMissionReportDTO, IMissionReportPreviewDTO } from '~/api'
+import { Api, IMissionReportDTO, IMissionReportPreviewDTO, IMissionReportSumDTO } from '~/api'
 import { createOrder } from '~/stores/stores/order';
 import { createMissionRequest } from '~/stores/stores/mission-request';
 import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview } from './entities';
+import { IMissionReport, IMissionReportValue, IMissionReportValueParams, MissionReport, createMissionReport, createMissionReportDTO, createMissionReportPreview, createMissionReportSum } from './entities';
 import { createEmployeeAction } from '../employee';
 import { createExplosiveObjectAction } from '../explosive-object';
 import { createTransportAction } from '../transport';
 import { createEquipmentAction } from '../equipment';
 import { createMapView } from '../map';
+import { createExplosiveAction } from '../explosive';
+
+const SumMissionReport = types.model('SumMissionReport', {
+	total: types.number,
+});
 
 const Store = types
 	.model('MissionReportStore', {
 		collection: createCollection<IMissionReport, IMissionReportValue>("MissionReports", MissionReport),
 		list: createList<IMissionReport>("IMissionReport", safeReference(MissionReport), { pageSize: 10 }),
 		searchList: createList<IMissionReport>("IMissionSearchList", safeReference(MissionReport), { pageSize: 10 }),
+		sum: types.optional(SumMissionReport, {
+			total: 0,
+		}),
 	}).actions((self) => ({
+		setSum(sum: IMissionReportSumDTO){
+			self.sum = createMissionReportSum(sum);
+		},
 		appendToCollections(res: IMissionReportDTO){
 			const root = getRoot(self) as any;
 
 			root.employee.collectionActions.set(res.approvedByAction?.id, createEmployeeAction(res.approvedByAction));
 			root.employee.collectionActions.set(res.squadLeaderAction?.id, createEmployeeAction(res.squadLeaderAction));
-			root.map.collectionViewActions.set(res.mapView?.id, createMapView(res.mapView));
+			root.map.append(createMapView(res.mapView));
 
 			res.squadActions.forEach(el => {
 				root.employee.collectionActions.set(el?.id, createEmployeeAction(el))
@@ -42,6 +54,10 @@ const Store = types
 	
 			res.equipmentActions.forEach(el => {
 				root.equipment.collectionActions.set(el?.id, createEquipmentAction(el))
+			});
+
+			res.explosiveActions.forEach(el => {
+				root.explosive.collectionActions.set(el?.id, createExplosiveAction(el))
 			});
 	
 			root.order.collection.set(res.order.id, createOrder(res.order));
@@ -67,7 +83,7 @@ const Store = types
 const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IMissionReportValueParams>) => async function addFlow({ flow, self }) {
 	try {
 		flow.start();
-		console.log("sssss", createMissionReportDTO(data))
+
 		const res = await Api.missionReport.create(createMissionReportDTO(data));
  		self.appendToCollections(res);
 		self.list.unshift(res.id);
@@ -171,4 +187,26 @@ const remove = asyncAction<Instance<typeof Store>>((id:string) => async function
 	}
 });
 
-export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchListMore, fetchItem })
+const fetchSum = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
+	try {
+		flow.start();
+
+		const res = await Api.missionReport.sum({
+			where: {
+				executedAt: {
+					">=": dates.toDateServer(startDate),
+					"<=": dates.toDateServer(endDate),
+				},
+			}
+		});
+
+		self.setSum(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const MissionReportStore = Store.props({ create, update, remove, fetchList, fetchListMore, fetchItem, fetchSum })

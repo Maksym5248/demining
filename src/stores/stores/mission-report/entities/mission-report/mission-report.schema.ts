@@ -2,8 +2,12 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates } from '~/utils';
-import { IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO } from '~/api';
+import { IExplosiveActionDTOParams, IExplosiveObjectActionDTOParams, IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO, IMissionReportSumDTO } from '~/api';
 import { IMapViewActionValueParams, createMapViewDTO } from '~/stores/stores/map';
+import { createExplosiveActionDTO } from '~/stores/stores/explosive';
+import { createExplosiveObjectActionDTO } from '~/stores';
+
+import { IAddressValue, createAddress, createAddressDTO } from '../address';
 
 export interface IMissionReportValueParams {
 	approvedAt: Dayjs;
@@ -30,7 +34,13 @@ export interface IMissionReportValueParams {
     squadLeaderId: string;
     squadIds: string[];
     address: string;
+	addressDetails: IAddressValue;
+	explosiveActions?: IExplosiveActionDTOParams[];
 };
+
+export interface IMissionReportSumValue {
+	total: number;
+}
 
 export interface IMissionReportValue {
 	id: string;
@@ -48,6 +58,7 @@ export interface IMissionReportValue {
     destroyedStart?: Dayjs;
     workEnd: Dayjs;
     address: string;
+	addressDetails: IAddressValue;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 	order?: string;
@@ -58,7 +69,8 @@ export interface IMissionReportValue {
 	equipmentActions?: string[];
 	explosiveObjectActions?: string[];
 	squadLeaderAction?: string;
-	squadActions?: string[]
+	squadActions?: string[];
+	explosiveActions?: string[];
 }
   
 export const createMissionReportDTO = (value: CreateValue<IMissionReportValueParams>): CreateValue<IMissionReportDTOParams>  => ({
@@ -82,30 +94,33 @@ export const createMissionReportDTO = (value: CreateValue<IMissionReportValuePar
 	transportExplosiveObjectId: value.transportExplosiveObjectId,
 	transportHumansId: value.transportHumansId,
 	mineDetectorId: value.mineDetectorId,
-	explosiveObjectActions: value.explosiveObjectActions,
+	explosiveObjectActions: value.explosiveObjectActions.map(el => createExplosiveObjectActionDTO(el)),
+	explosiveActions: value.explosiveActions?.map(el => createExplosiveActionDTO(el)) ?? [],
 	squadLeaderId: value.squadLeaderId,
 	squadIds: value.squadIds,
 	address: value.address ?? "",
+	addressDetails: createAddressDTO(value?.addressDetails),
 });
 
 export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportValue => ({
 	id: value.id,
-	approvedAt: dates.create(value.approvedAt),
+	approvedAt: dates.fromServerDate(value.approvedAt),
 	number: value.number,
 	subNumber: value.subNumber ?? undefined,
-	executedAt: dates.create(value.executedAt),
+	executedAt: dates.fromServerDate(value.executedAt),
 	checkedTerritory: value.checkedTerritory ?? undefined,
 	depthExamination: value.depthExamination ?? undefined,
 	uncheckedTerritory: value.uncheckedTerritory ?? undefined,
 	uncheckedReason: value.uncheckedReason ?? undefined,
-	workStart: dates.create(value.workStart),
-	exclusionStart: value.exclusionStart ? dates.create(value.exclusionStart) : undefined,
-	transportingStart: value.transportingStart ? dates.create(value.transportingStart) : undefined,
-	destroyedStart: value.destroyedStart ? dates.create(value.destroyedStart) : undefined,
-	workEnd: dates.create(value.workEnd),
+	workStart: dates.fromServerDate(value.workStart),
+	exclusionStart: value.exclusionStart ? dates.fromServerDate(value.exclusionStart) : undefined,
+	transportingStart: value.transportingStart ? dates.fromServerDate(value.transportingStart) : undefined,
+	destroyedStart: value.destroyedStart ? dates.fromServerDate(value.destroyedStart) : undefined,
+	workEnd: dates.fromServerDate(value.workEnd),
 	address: value.address,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	addressDetails: createAddress(value?.addressDetails),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
 export const createMissionReport = (value: IMissionReportDTO): IMissionReportValue => ({
@@ -119,4 +134,9 @@ export const createMissionReport = (value: IMissionReportDTO): IMissionReportVal
 	squadActions: value.squadActions.map(el => el.id),
 	transportActions: value.transportActions.map(el => el.id),
 	equipmentActions: value.equipmentActions.map(el => el.id),
+	explosiveActions: value.explosiveActions.map(el => el.id),
+});
+
+export const createMissionReportSum = (value: IMissionReportSumDTO): IMissionReportSumValue => ({
+	total: value.total,
 });

@@ -17,8 +17,6 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 	const store = useStore();
 	const _onRemove = () => onRemove?.(index);
 
-	console.log("item", item)
-
 	const explosiveObject = store.explosiveObject.collectionActions.get(item?.id ?? "") || store.explosiveObject.collection.get(item.explosiveObjectId)
   
 	return (

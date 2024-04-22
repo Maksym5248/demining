@@ -1,6 +1,5 @@
-import { CreateValue } from '~/types'
 import { data } from '~/utils';
-import { IExplosiveObjectActionDTO, IExplosiveObjectActionDTOParams } from '~/api';
+import { IExplosiveObjectActionDTO, IExplosiveObjectActionDTOParams, IExplosiveObjectActionSumDTO } from '~/api';
 import { DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 
 import { IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';
@@ -16,10 +15,18 @@ export interface IExplosiveObjectActionValue extends IExplosiveObjectValue {
   isDestroyed: boolean;
 }
 
+export interface IExplosiveObjectActionSumValue {
+	total: number;
+	discovered: number;
+	transported: number;
+	destroyed: number;
+}
+
 export interface IExplosiveObjectActionValueParams extends IExplosiveObjectActionDTOParams {}
 
   
-export const createExplosiveObjectActionDTO = (value: CreateValue<IExplosiveObjectActionValueParams>): IExplosiveObjectActionDTOParams  => ({
+export const createExplosiveObjectActionDTO = (value: IExplosiveObjectActionValueParams): IExplosiveObjectActionDTOParams  => ({
+	id: value?.id,
 	explosiveObjectId: value?.explosiveObjectId,
 	quantity: value.quantity,
 	category: value.category,
@@ -48,3 +55,12 @@ export const createExplosiveObjectAction = (value: IExplosiveObjectActionDTO): I
 	isTransported: value.isTransported,
 	isDestroyed: value.isDestroyed,
 });
+
+
+export const createExplosiveObjectActionSum = (value: IExplosiveObjectActionSumDTO): IExplosiveObjectActionSumValue => ({
+	total: value.total,
+	discovered: value.discovered,
+	transported: value.transported,
+	destroyed: value.destroyed,
+});
+

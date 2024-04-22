@@ -21,6 +21,7 @@ const create = async (value: IOrderDTOParams):Promise<IOrderDTO> => {
 		}),
 		DB.employeeAction.create({
 			...employeeData,
+			executedAt: null,
 			typeInDocument: EMPLOYEE_TYPE.CHIEF,
 			documentType: DOCUMENT_TYPE.ORDER,
 			documentId: orderId,

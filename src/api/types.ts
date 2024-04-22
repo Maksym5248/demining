@@ -13,11 +13,17 @@ import {
 	IEquipmentDB,
 	IEquipmentActionDB,
 	IMissionReportDB,
-	IMapViewActionActionDB,
+	IMapViewActionDB,
 	IUserDB,
 	IOrganizationDB,
-	IDocumentDB
+	IDocumentDB,
+	IExplosiveActionDB,
+	IExplosiveDB,
+	IPointDB,
+	IAddressDB
 } from "~/db";
+
+export type IAddressDTO = IAddressDB
 
 export type IEmployeeDTO = IEmployeeDB
 export type IEmployeeActionDTO = IEmployeeActionDB
@@ -28,15 +34,33 @@ export interface IOrderDTO extends IOrderPreviewDTO {
     signedByAction: IEmployeeActionDTO;
 }
 
-export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | "signedByActionId"> & {
+export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | "id" | "signedByActionId" | "authorId"> & {
 	signedById: string
 }
 
 export type IMissionRequestDTO = IMissionRequestDB
-
+export interface IMissionRequestSumDTO {
+	total: number;
+}
 export interface IExplosiveObjectDTO extends IExplosiveObjectDB {};
 
 export interface IExplosiveObjectActionDTO extends IExplosiveObjectActionDB  {};
+
+export interface IExplosiveObjectActionSumDTO {
+	total: number;
+	discovered: number;
+	transported: number;
+	destroyed: number;
+}
+
+export interface IExplosiveDTO extends IExplosiveDB {};
+
+export interface IExplosiveActionDTO extends IExplosiveActionDB {};
+
+export interface IExplosiveActionSumDTO {
+	explosive: number;
+	detonator: number;
+}
 
 export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
 export interface IExplosiveObjectActionDTOParams {
@@ -54,7 +78,7 @@ export type ITransportActionDTO = ITransportActionDB;
 ;
 export type IEquipmentDTO = IEquipmentDB;
 export type IEquipmentActionDTO = IEquipmentActionDB;
-export type IMapViewActionDTO = IMapViewActionActionDB;
+export type IMapViewActionDTO = Omit<IMapViewActionDB, "geo">;
 export type IDocumentDTO = IDocumentDB;
 
 export interface IMissionReportPreviewDTO extends Omit<IMissionReportDB, "orderId"  | "missionRequestId"> {}
@@ -67,10 +91,21 @@ export interface IMissionReportDTO extends IMissionReportPreviewDTO {
 	"equipmentActions": IEquipmentActionDTO[];
 	"explosiveObjectActions": IExplosiveObjectActionDTO[];
 	"squadLeaderAction": IEmployeeActionDTO;
-	"squadActions": IEmployeeActionDTO[]
+	"squadActions": IEmployeeActionDTO[];
+    "explosiveActions": IExplosiveActionDTO[]
 }
 
-export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt">{}
+export interface IMissionReportSumDTO {
+	total: number;
+}
+
+export interface IMapViewActionDTOParams  extends Omit<IMapViewActionDTO, "id" | "documentId"  | "documentType" | "updatedAt" | "createdAt" | "authorId" | "geo">{}
+export interface IExplosiveActionDTOParams {
+    id?: string;
+    explosiveId: string;
+    weight: number | null; /* in kilograms */
+    quantity: number | null;
+}
 
 export interface IMissionReportDTOParams {
     approvedAt: Timestamp;
@@ -96,7 +131,9 @@ export interface IMissionReportDTOParams {
     explosiveObjectActions: IExplosiveObjectActionDTOParams[];
     squadLeaderId: string;
     squadIds: string[];
+    explosiveActions?: IExplosiveActionDTOParams[];
     address: string;
+    addressDetails: IAddressDTO;
 }
 
 
@@ -140,3 +177,8 @@ export interface IUserOrganizationDTO extends Omit<IOrganizationDB, "membersIds"
 
 export interface ICreateOrganizationDTO extends Pick<IOrganizationDB, "name"> {}
 export interface ICreateOrganizationMembersDTO extends Pick<IOrganizationDB, "membersIds"> {}
+
+export interface IGetAllInRectParams {
+    topLeft: IPointDB;
+    bottomRight: IPointDB;
+}

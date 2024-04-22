@@ -2,10 +2,11 @@ export * from './cache';
 export * from './dates';
 export * from './error';
 export * from './map';
-export * from './routes-info';
+export * from './routes';
 export * from './sleep';
 export * from './string';
 export * from './validation';
 export * from './ui';
 export * from './data';
 export * from "./file"
+export * from "./math"

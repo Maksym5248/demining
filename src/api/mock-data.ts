@@ -72,6 +72,7 @@ export const missionReportInput = {
 	"transportHumansId": "TRANSPORT-5207e63d-cdfa-46ca-bd84-3235dc7986f9",
 	"mineDetectorId": "EQUIPMENT-f4929004-6c13-40d7-9f05-2ba865860673",
 	explosiveObjectActions: [explosiveObjectActionsInput],
+	"explosiveActions": [],
 	"squadLeaderId": "EMPLOYEE-1cb833c1-72bb-42da-ad57-6d2631782b04",
 	"squadIds": squadInput,
 	"address": "місто Київ, Київ, проспект 40-річчя Жовтня, 11",
@@ -327,6 +328,7 @@ export const missionReportDTO = {
 	"missionRequest": missionRequestDTO,
 	"mapView": MRmapViewDTO,
 	"approvedByAction": MRApprovedByActionDTO,
+	"explosiveActions": [],
 	"transportActions": [
 		MRTransportExplosiveDTO,
 		MRTransportHumansDTO

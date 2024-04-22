@@ -1,19 +1,30 @@
 import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
-import { Api, IMissionRequestDTO } from '~/api'
+import { Api, IMissionRequestDTO, IMissionRequestSumDTO } from '~/api'
 import { dates } from '~/utils';
 
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { IMissionRequest, IMissionRequestValue, MissionRequest, createMissionRequest, createMissionRequestDTO } from './entities';
+import { IMissionRequest, IMissionRequestValue, MissionRequest, createMissionRequest, createMissionRequestDTO, createMissionRequestSum } from './entities';
+
+const SumMissionRequest = types.model('SumMissionRequest', {
+	total: types.number,
+});
 
 const Store = types
 	.model('MissionRequestStore', {
 		collection: createCollection<IMissionRequest, IMissionRequestValue>("MissionRequests", MissionRequest),
 		list: createList<IMissionRequest>("MissionRequestsList", safeReference(MissionRequest), { pageSize: 10 }),
 		searchList: createList<IMissionRequest>("ExplosiveObjectsSearchList", safeReference(MissionRequest), { pageSize: 10 }),
+		sum: types.optional(SumMissionRequest, {
+			total: 0,
+		}),
 	}).actions((self) => ({
+		setSum(sum: IMissionRequestSumDTO){
+			self.sum = createMissionRequestSum(sum);
+		},
 		append(res: IMissionRequestDTO[], isSearch: boolean, isMore?:boolean){
 			const list = isSearch ? self.searchList : self.list;
 			if(isSearch && !isMore) self.searchList.clear();
@@ -121,4 +132,26 @@ const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async funct
 	}
 });
 
-export const MissionRequestStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem })
+const fetchSum = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
+	try {
+		flow.start();
+
+		const res = await Api.missionRequest.sum({
+			where: {
+				createdAt: {
+					">=": dates.toDateServer(startDate),
+					"<=": dates.toDateServer(endDate),
+				},
+			}
+		});
+
+		self.setSum(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
+export const MissionRequestStore = Store.props({ create, remove, fetchList, fetchListMore, fetchItem, fetchSum })

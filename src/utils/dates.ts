@@ -1,10 +1,14 @@
 import dayjs, { Dayjs } from 'dayjs';
-import 'dayjs/locale/uk'; // Import Ukrainian locale
+import 'dayjs/locale/uk';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import weekYear from 'dayjs/plugin/weekYear';
 import { Timestamp } from 'firebase/firestore';
 
-dayjs.locale('uk'); // Set Ukrainian as default locale
+dayjs.locale('uk');
 dayjs.extend(customParseFormat);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 
 const genitiveMonths = [
 	'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
@@ -13,10 +17,16 @@ const genitiveMonths = [
 
 const today = ():Dayjs => dayjs(new Date());
 
-const create = (value:Timestamp):Dayjs => {
+const fromServerDate = (value:Timestamp):Dayjs => {
 	const res = dayjs(value.toDate());
 	return res;
 };
+
+const create = (value:number):Dayjs => {
+	const res = dayjs(value);
+	return res;
+};
+
 const toDateServer = (value: Date | Dayjs) => {
 	if(dayjs.isDayjs(value)){
 		return Timestamp.fromDate(value.toDate());
@@ -38,10 +48,23 @@ function formatGenitiveMonth(date: Dayjs) {
 	return genitiveMonths[monthIndex];
 }
 
+
+const startOfDay = () => today().startOf('day');
+const startOfWeek = () => today().startOf('week');
+const startOfMonth = () => today().startOf('month');
+const startOfYear = () => today().startOf('year');
+const endOfDay = () => today().endOf('day');
+
 export const dates = {
 	today,
+	fromServerDate,
 	create,
 	toDate,
 	formatGenitiveMonth,
-	toDateServer
+	toDateServer,
+	startOfDay,
+	startOfWeek,
+	startOfMonth,
+	startOfYear,
+	endOfDay
 };

@@ -14,7 +14,7 @@ export const SettingsPage  = observer(() => {
 
 	const onSignOut = async () => {
 		await store.auth.signInOut.run();
-		navigate(ROUTES.AUTH)
+		navigate(ROUTES.LOGIN)
 	};
 
 	return (

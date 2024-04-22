@@ -31,6 +31,6 @@ export const createTransport = (value: ITransportDTO): ITransportValue => ({
 	name: value.name,
 	number: value.number,
 	type: value.type,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
 });

@@ -2,7 +2,7 @@ import { DB, IQuery } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'
 import { explosiveObjectsData } from '~/data';
 
-import { IExplosiveObjectDTO, IExplosiveObjectDTOParams } from '../types'
+import { IExplosiveObjectDTO, IExplosiveObjectDTOParams, IExplosiveObjectActionSumDTO } from '../types'
 
 const create = async (value: CreateValue<IExplosiveObjectDTOParams>):Promise<IExplosiveObjectDTO> => {
 	const explosiveObject = await DB.explosiveObject.create(value);
@@ -48,11 +48,48 @@ const get = async (id:string):Promise<IExplosiveObjectDTO> => {
 	return res;
 }
 
+const sum = async (query?: IQuery):Promise<IExplosiveObjectActionSumDTO> => {
+	const [
+		total,
+		discovered,
+		transported,
+		destroyed
+	] = await Promise.all([
+		DB.explosiveObjectAction.sum("quantity", query),
+		DB.explosiveObjectAction.sum("quantity", {
+			where: {
+				isDiscovered: true,
+				...(query?.where ?? {})
+			},
+		}),
+		DB.explosiveObjectAction.sum("quantity", {
+			where: {
+				isTransported: true,
+				...(query?.where ?? {})
+			},
+		}),
+		DB.explosiveObjectAction.sum("quantity", {
+			where: {
+				isDestroyed: true,
+				...(query?.where ?? {})
+			},
+		}),
+	]);
+
+	return {
+		total,
+		discovered,
+		transported,
+		destroyed
+	};
+}
+
 export const explosiveObject = {
 	create,
 	update,
 	remove,
 	getList,
 	init,
-	get
+	get,
+	sum
 }

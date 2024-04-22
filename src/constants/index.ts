@@ -4,6 +4,7 @@ export * from './db/employee-type';
 export * from './db/equipment-type';
 export * from './db/explosive-object-category';
 export * from './db/explosive-object-type';
+export * from './db/explosive-type';
 export * from './db/roles';
 export * from './db/transport-type';
 export * from './db/ranks';

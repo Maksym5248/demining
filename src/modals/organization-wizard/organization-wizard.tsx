@@ -53,12 +53,7 @@ export const OrganizationWizardModal  = observer(({ id, isVisible, hide, mode }:
 			placement="right"
 			width={500}
 			onClose={hide}
-			extra={
-				<WizardButtons
-					onRemove={onRemove}
-					{...wizard}
-				/>
-			}
+			extra={<WizardButtons {...wizard} /> }
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)
@@ -84,7 +79,7 @@ export const OrganizationWizardModal  = observer(({ id, isVisible, hide, mode }:
 						>
 							<Input placeholder="Назва організації" />
 						</Form.Item>
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
 					</Form>
 				)}
 		</Drawer>

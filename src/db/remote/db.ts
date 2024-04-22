@@ -1,6 +1,9 @@
 import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
 import { TABLES, TABLES_DIR } from '~/constants';
+import { Auth } from '~/services';
+import { mapUtils } from '~/utils';
+import { explosiveObjectTypesData } from '~/data';
 
 import { DBBase } from './db-base';
 import {
@@ -9,9 +12,11 @@ import {
 	IEmployeeDB,
 	IEquipmentActionDB,
 	IEquipmentDB,
+	IExplosiveActionDB,
+	IExplosiveDB,
 	IExplosiveObjectActionDB,
 	IExplosiveObjectDB,
-	IMapViewActionActionDB,
+	IMapViewActionDB,
 	IMissionReportDB,
 	IMissionRequestDB,
 	IOrderDB,
@@ -21,38 +26,67 @@ import {
 	IUserDB
 } from '../types';
 
+const getCreateData = () => ({
+	authorId: Auth.uuid() as string,
+});
+
+const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | "updatedAt" | "authorId" | "id" | "geo">) => ({
+	authorId: Auth.uuid() as string,
+	geo: mapUtils.getGeoDB(value),
+});
+
+const getSearchDataExplosiveObject = (value: Partial<IExplosiveObjectDB>) => {
+	const type = explosiveObjectTypesData.find((item) => item.id === value.typeId);
+	return [type?.fullName, type?.name].filter(el => !!el) as string[];
+};
+
+const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
+	if (!value.polygon && !value.circle && !value.marker) {
+		return {};
+	}
+
+	return {
+		geo: mapUtils.getGeoDB(value as IMapViewActionDB),
+	};
+};
+
+
 class DBRemoteClass {
 	/** COMMON COLLECTIONS */
 	user = new DBBase<IUserDB>(TABLES.USER, ["email"]);
 
-	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"]);
+	organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ["name"], getCreateData);
 
-	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"]);
+	explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ["name", "caliber"], getCreateData, undefined, getSearchDataExplosiveObject);
+
+	explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ["name"], getCreateData);
 
 	/** ORGANIZATION SUBCOLLECTION */
-	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"]);
+	employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ["firstName", "lastName", "surname", "position"], getCreateData);
 
-	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION);
+	employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION, [], getCreateData);
 
-	mapViewAction = new DBBase<IMapViewActionActionDB>(TABLES.MAP_VIEW_ACTION);
+	mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION, [], getCreateDataMap, getUpdateDataMap);
 
-	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"]);
+	missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ["number", "address"], getCreateData);
 
-	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ["number"]);
+	missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ["number"], getCreateData);
 
-	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"]);
+	order = new DBBase<IOrderDB>(TABLES.ORDER, ["number"], getCreateData);
 
-	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION);
+	explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION, [], getCreateData);
 
-	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"]);
+	explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, [], getCreateData);
 
-	transportAction = new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION);
+	transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ["name", "number"], getCreateData);
 
-	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT, ["name"]);
+	transportAction = new DBBase<ITransportActionDB>(TABLES.TRANSPORT_ACTION, [], getCreateData);
 
-	equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION);
+	equipment = new DBBase<IEquipmentDB>(TABLES.EQUIPMENT, ["name"], getCreateData);
 
-	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ["name"]);
+	equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION, [], getCreateData);
+
+	document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ["name"], getCreateData);
 
 	batch:WriteBatch | null = null;
 
@@ -75,6 +109,7 @@ class DBRemoteClass {
 		this.equipment.setRootCollection(rootCollection);
 		this.equipmentAction.setRootCollection(rootCollection);
 		this.document.setRootCollection(rootCollection);
+		this.explosiveAction.setRootCollection(rootCollection);
 	};
 
 	removeOrganizationId(){
@@ -90,6 +125,7 @@ class DBRemoteClass {
 		this.equipment.removeRootCollection();
 		this.equipmentAction.removeRootCollection();
 		this.document.removeRootCollection();
+		this.explosiveAction.removeRootCollection();
 	};
 
 	private setBatch(batch:WriteBatch | null){
@@ -111,6 +147,7 @@ class DBRemoteClass {
 		this.equipment.setBatch(batch);
 		this.equipmentAction.setBatch(batch);
 		this.document.setBatch(batch);
+		this.explosiveAction.setBatch(batch);
 	};
 
 	batchStart() {

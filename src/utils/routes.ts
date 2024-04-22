@@ -1,4 +1,8 @@
+import { isArray } from 'lodash';
+import { RouteObject } from 'react-router-dom';
+
 import { ROUTES, routesInfo } from "~/constants";
+
 
 const getBasePath = (pathname: string, params: {[key:string]: string | number}) => {
 	let path = pathname;
@@ -52,7 +56,23 @@ const getRoutes = (pathname: string, params: {[key:string]: string | number}) =>
 		}))
 }
 
+export const withRouteWrapper = (route: (RouteObject | RouteObject[]), elements: JSX.Element | JSX.Element[]):RouteObject => {
+	const arr = Array.isArray(elements) ? elements : [elements];
+	const reversedArr = arr.reverse();
+
+	return reversedArr.reduce(
+		(acc, element) => ({
+			element,
+			children: isArray(acc) ? acc : [acc],
+		}),
+		route,
+	) as RouteObject;
+};
+
+
 export const nav = {
+	withAccess: withRouteWrapper,
+	withRedirect: withRouteWrapper,
 	getRouteTitle,
 	getRouteTitleByLocation,
 	getRoutes

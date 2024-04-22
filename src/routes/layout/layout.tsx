@@ -9,7 +9,7 @@ import { CONFIG } from "~/config";
 import { ROUTES } from "~/constants";
 import { useNavigate, useStore } from "~/hooks";
 
-import { nav } from "../../utils/routes-info";
+import { nav } from "../../utils/routes";
 import { s } from './layout.styles';
 
 const { Sider, Content } = Lay;
@@ -33,6 +33,12 @@ export const Layout = observer(() => {
 	const items = useMemo(() => {
 		const arr = [
 			...((isOrganizationAdmin || isOrganizationMember) ? [
+				{
+					key: ROUTES.HOME,
+					icon: <Icon.HomeOutlined />,
+					label: nav.getRouteTitle(ROUTES.HOME),
+					onClick: () => navigate(ROUTES.HOME)
+				},
 				{
 					key: "Documents",
 					icon: <Icon.FileTextOutlined />,
@@ -69,6 +75,12 @@ export const Layout = observer(() => {
 					icon: <Icon.FireOutlined />,
 					label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
 					onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST)
+				},
+				{
+					key: ROUTES.EXPLOSIVE_LIST,
+					icon: <Icon.CodeSandboxOutlined />,
+					label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
+					onClick: () => navigate(ROUTES.EXPLOSIVE_LIST)
 				},
 				{
 					key: ROUTES.EMPLOYEES_LIST,

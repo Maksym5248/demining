@@ -18,13 +18,21 @@ import {
 	WriteBatch,
 	startAfter,
 	getCountFromServer,
+	getAggregateFromServer,
+	sum,
+	QueryFieldFilterConstraint,
+	startAt,
+	endAt
 } from 'firebase/firestore';
+import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
+
+import { IBaseDB } from '../types';
 
 type IWhere = {[field:string]: any};
 type IOrder = {
 	by: string,
-	type: "asc" | 'desc',
+	type?: "asc" | 'desc',
 };
 
 export type IQuery = {
@@ -33,6 +41,8 @@ export type IQuery = {
 	order?: IOrder;
 	limit?: number;
 	startAfter?: string | number | Timestamp;
+	startAt?: string | number | Timestamp;
+	endAt?: string | number | Timestamp;
 };
 
 function generateValueStartsWith(value: string): string[] {
@@ -48,24 +58,41 @@ function generateValueStartsWith(value: string): string[] {
 	return prefixes;
 }
 
-const getWhere = (values: IWhere) => 
-	 Object.keys(values).map(key => {
+const getWhere = (values: IWhere) => {
+	const res:QueryFieldFilterConstraint[] = [];
+
+	Object.keys(values).forEach(key => {
 		const value = values[key];
 
 		if(value?.in && isArray(value.in)){
-			return where(key, "in", value.in) 
+			res.push(where(key, "in", value.in) )
 		}
 
-		if(value["array-contains-any"]){
-			return where(key, "array-contains-any", value["array-contains-any"]) 
+		if(value?.[">="]){
+			res.push(where(key, ">=", value['>=']))
+		}
+
+		if(value?.["<="]){
+			res.push(where(key, "<=", value['<=']))
+		}
+
+		if(!!value && value["array-contains-any"]){
+			res.push(where(key, "array-contains-any", value["array-contains-any"]))
 		}
 		
-		return where(key, "==", value)
+		if(!isObject(value) && !isArray(value)) {
+			res.push(where(key, "==", value))
+		};
 	});
+
+	return res;
+};
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
-export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Timestamp}> {
+type CreateData<T extends IBaseDB> = Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo"> & Partial<Pick<T, "id">>;
+
+export class DBBase<T extends IBaseDB> {
 	tableName: string;
 
 	rootCollection?: string;
@@ -74,9 +101,24 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 
 	searchFields: (keyof T)[];
 
-	constructor(tableName: string, searchFields?: (keyof T)[]){
+	getCreateData: ((value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>) | undefined = undefined;
+	
+	getUpdateData: ((value: Partial<T>) => Partial<T>) | undefined = undefined;
+
+	getSearchData: undefined | ((value: Partial<T>) => string[]) = undefined;
+
+	constructor(
+		tableName: string,
+		searchFields: (keyof T)[],
+		getCreateData?: (value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>,
+		getUpdateData?: (value: Partial<T>) => Partial<T>,
+		getSearchData?: (value: Partial<T>) => string[]
+	){
 		this.tableName = tableName;
 		this.searchFields = searchFields ?? [];
+		this.getCreateData = getCreateData;
+		this.getUpdateData = getUpdateData;
+		this.getSearchData = getSearchData;
 	}
 
 	setRootCollection(rootCollection: string){
@@ -100,15 +142,21 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const newDocumentRef = doc(this.collection);
 		return newDocumentRef.id;
 	}
+	
+	query(args?: Partial<IQuery>){
+		return query(this.collection,
+			...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
+			...(args?.where ? getWhere(args.where) : []),
+			...(args?.order ? [getOrder(args?.order)] : []),
+			...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
+			...(args?.startAt ? [startAt(args?.startAt)] : []),
+			...(args?.endAt ? [endAt(args?.endAt)] : []),
+			...(args?.limit ? [limit(args?.limit)] : []),
+	   );
+	}
 
 	async select(args?: Partial<IQuery>): Promise<T[]> {
-		const q = query(this.collection,
-			 ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
-			 ...(args?.where ? getWhere(args.where) : []),
-			 ...(args?.order ? [getOrder(args?.order)] : []),
-			 ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
-			 ...(args?.limit ? [limit(args?.limit)] : []),
-		);
+		const q = this.query(args);
 
 		const snapshot = await getDocs(q);
 
@@ -154,12 +202,21 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 	}
 
 	private createSearchField(value:Partial<T>){
-		let _search: string[] = [];
+		const _search: string[] = [];
 
 		this.searchFields.forEach((field) => {
 			const arr = generateValueStartsWith(String(value[field] ?? ""));
-			_search = [..._search, ...arr]
+			_search.push(...arr);
 		});
+
+		if(this.getSearchData){
+			const values = this.getSearchData(value);
+
+			values.forEach((v) => {
+				const arr = generateValueStartsWith(v);
+				_search.push(...arr);
+			});
+		}
 
 		return { _search }
 	}
@@ -174,16 +231,19 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return { _search }
 	}
 
-	private getCreateValue(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
+	private getCreateValue(value: CreateData<T>) {
 		const id = value?.id ?? (this.uuid());
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 		const search = this.createSearchField(value as T);
+
+		const createData = this.getCreateData ? this.getCreateData(value) : {};
 	
 		const newValue = {
 			...search,
 			...value,
 			id,
+			...createData,
 			createdAt: timestamp,
 			updatedAt: timestamp,
 		} as T & {
@@ -206,16 +266,19 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		const ref = doc(this.collection, id);
 		const timestamp = serverTimestamp();
 
+		const updateData = this.getUpdateData ? this.getUpdateData(value) : {};
+
 		const updatedValue = {
 			...search,
 			...newValue,
+			...updateData,
 			updatedAt: timestamp
 		} as UpdateData<T>
 
 		return { ref, newValue: updatedValue};
 	}
 
-	async create(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>): Promise<T>{
+	async create(value: CreateData<T>): Promise<T>{
 		const { ref, newValue } = this.getCreateValue(value)
 
 		await setDoc(ref, newValue);
@@ -223,7 +286,7 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		return res
 	}
 
-	batchCreate(value: Omit<T, "createdAt" | "updatedAt" | "id"> & Partial<Pick<T, "id">>) {
+	batchCreate(value: CreateData<T>) {
 		const { ref, newValue } = this.getCreateValue(value)
 		this.batch?.set(ref, newValue);
 	}
@@ -251,10 +314,22 @@ export class DBBase<T extends {id: string, createdAt: Timestamp, updatedAt: Time
 		this.batch?.delete(ref);
 	}
 
-	async count(){
-		const snapshot = await getCountFromServer(this.collection);
+	async count(args?: Partial<IQuery>){
+		const q = this.query(args);
+
+		const snapshot = await getCountFromServer(q);
 		
 		return snapshot.data().count
+	}
+
+	async sum(field: keyof T, args?: Partial<IQuery>){
+		const q = this.query(args);
+
+		const snapshot = await getAggregateFromServer(q, {
+			sum: sum(field as string)
+		});
+		
+		return snapshot.data().sum;
 	}
 
 	async removeBy(args: IWhere) {

@@ -1,0 +1,304 @@
+import { memo, useEffect, useRef, useState } from "react";
+
+import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
+
+import { ICircle, IMarker, IPoint, IPolygon } from "~/types/map";
+import { MAP_ZOOM } from "~/constants";
+import { useMapOptions, useValues, useFitBounds, useVisibleMap } from "~/hooks";
+import { mapUtils, mathUtils } from "~/utils";
+import { withMapProvider } from "~/hoc";
+import { MapInfo } from "~/components/map-info";
+
+import { s } from "./map-view.style";
+import { DrawingManager } from "../drawing-manager";
+import { Autocomplete } from "../autocomplete";
+import { DrawingType, IMapViewProps } from "../map.types";
+import { usePolygon } from "./usePolygon";
+import { useCircle } from "./useCircle";
+
+const circlesOptions = {
+	fillOpacity: 0.3,
+	fillColor: '#FFFF00',
+	strokeColor: '#FFFF00',
+	strokeWeight: 2,
+	draggable: false,
+	editable: false,
+	clickable: false,
+}
+
+const polygonsOptions = {
+	fillOpacity: 0.3,
+	fillColor: '#FFFF00',
+	strokeColor: '#FFFF00',
+	strokeWeight: 2,
+	draggable: false,
+	editable: false,
+	clickable: false,
+}
+
+function Component({
+	initialMarker,
+	initialCircle,
+	initialPolygon,
+	onChange,
+	position,
+	circles,
+	polygons,
+	onChangeGeobox,
+	isLoadingVisibleInArea,
+	minZoomLoadArea = 16,
+	...rest
+}: IMapViewProps) {
+	const [drawing, setDrawing] = useState(DrawingType.MOVE);
+	const [isCreating, setCreating] = useState(false);
+
+	const {
+		mapOptions, polygonOptions, circleOptions, createPolygonOptions, toggleMapType
+	} = useMapOptions({ isPictureType: false, isCreating, drawing});
+
+	const mapRef = useRef<google.maps.Map>();
+
+	const [isActiveStick, setActiveStick] = useState(false);
+	const [isVisibleInArea, setVisibleInArea] = useState(false);
+	const values = useValues();
+
+	const [center, setCenter] = useState<IMarker | undefined>(initialMarker ?? position);
+	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
+	const [circle, setCircle] = useState<ICircle | undefined>(initialCircle);
+	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
+	const [zoom, setZoom] = useState<number>(MAP_ZOOM.DEFAULT);
+
+	const isVisibleMap = useVisibleMap({ mapRef });
+
+	const _onChange = () => {
+		const newValue = {
+			polygon,
+			circle,
+			marker,
+			zoom,
+		};
+
+		onChange?.({
+			marker: newValue.marker ?{
+				lat: mathUtils.toFixed(newValue.marker?.lat, 9),
+				lng: mathUtils.toFixed(newValue.marker?.lng, 9),
+			}: undefined,
+			polygon: newValue.polygon ? {
+				points: newValue.polygon.points.map(el => ({
+					lat: mathUtils.toFixed(el.lat, 9),
+					lng: mathUtils.toFixed(el.lng, 9),
+				}))
+			} : undefined,
+			circle: newValue.circle ? {
+				center:  {
+					lat: mathUtils.toFixed(newValue.circle?.center.lat, 9),
+					lng: mathUtils.toFixed(newValue.circle?.center.lng, 9)
+				},
+				radius: mathUtils.toFixed(newValue.circle?.radius, 9),
+			} : undefined,
+			zoom: mathUtils.toFixed(newValue.zoom, 9),
+			area: mapUtils.getArea(newValue.circle, newValue.polygon),
+		})
+	}
+
+	useEffect(() => {
+		if(values.get("isInitialized") && !isCreating) {
+			_onChange();
+		};
+
+		values.set("isInitialized", true)
+	}, [polygon, circle, marker, zoom, isCreating]);
+
+	const _onChangeGeobox = () => {
+		if(!onChangeGeobox || !mapRef.current || !isVisibleInArea) return;
+		const box = mapUtils.getGeoBox(mapRef.current);
+
+		if(!box) return;
+		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number })
+	}
+
+	const onChangeVisibleInArea = (value:boolean) => {
+		setVisibleInArea(value);
+
+		if(!value || !mapRef.current) return;
+		const box = mapUtils.getGeoBox(mapRef.current);
+
+		if(!box) return;
+		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number})
+	}
+
+	const polygonManager = usePolygon({
+		isCreating,
+		setCreating,
+		drawing,
+		polygon,
+		setPolygon,
+		setCircle,
+		polygons,
+		isActiveStick,
+		mapRef,
+	});
+
+	const circleManager = useCircle({
+		isCreating,
+		setCreating,
+		drawing,
+		circle,
+		setPolygon,
+		setCircle,
+	});
+
+	useFitBounds({
+		marker: initialMarker,
+		circle: initialCircle,
+		polygon: initialPolygon,
+		mapRef,
+		isVisibleMap
+	})
+	
+	const onLoadMap = (map:google.maps.Map) => {
+		mapRef.current = map;
+	}
+
+	const onPlaceChanged = ({ point }: { point: IPoint}) => {	  
+		if (!point) {
+			return;
+		}
+
+		 setMarker(point);
+		 setCenter(point);
+		 mapRef?.current?.setCenter(point);
+	 
+		 const bounds = new window.google.maps.LatLngBounds();
+		 bounds.extend(point);
+		 mapRef?.current?.fitBounds(bounds);
+	}
+
+	const onZoomChanged = () => {
+		if(!mapRef?.current) return;
+		setZoom(mapRef.current.getZoom() as number);
+	};
+
+	const onClear = () => {
+		setMarker(undefined);
+		setCreating(false);
+		circleManager.clear();
+		polygonManager.clear();
+	}
+
+	const onClickMap = (e: google.maps.MapMouseEvent) => {
+		if(!e?.latLng) return;
+
+		const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+
+		if(drawing === DrawingType.MARKER){
+			setMarker(point);
+		}
+
+		if(drawing === DrawingType.CIRCLE){
+			circleManager.onClickMap(e)
+		}
+
+		if(drawing === DrawingType.POLYGON){
+			polygonManager.onClickMap(e)
+		}
+	}
+
+	const onMouseMove = (e: google.maps.MapMouseEvent) => {
+		if(!e?.latLng || !circle?.center) return;
+
+		if(drawing === DrawingType.CIRCLE){
+			circleManager.onMouseMove(e)
+		}
+	}
+
+	const onChangeDrawing = (value: DrawingType) => {
+		setDrawing(value)
+	}
+
+	const isVisibleMarker = !!marker;
+	const area = mapUtils.getArea(circle, polygon);
+
+	return (
+		<div css={s.container}>
+			<GoogleMap
+				mapContainerStyle={s.mapContainerStyle}
+				zoom={zoom}
+				center={center}
+				options={{
+					...mapOptions,
+					draggableCursor: drawing === DrawingType.MOVE ? 'grab' : "crosshair",
+				  }}
+				onZoomChanged={onZoomChanged}
+				onLoad={onLoadMap}
+				onClick={onClickMap}
+				onMouseMove={onMouseMove}
+				onBoundsChanged={_onChangeGeobox}
+				{...rest}
+			>
+				<DrawingManager
+					mapTypeId={mapOptions.mapTypeId}
+					onToggleMapType={toggleMapType}
+				 canVisibleInArea={zoom > minZoomLoadArea}
+				  onChange={onChangeDrawing} 
+				  value={drawing}
+				  onClear={onClear}
+				  isActiveStick={isActiveStick}
+				  isVisibleInArea={isVisibleInArea}
+				  onChangeVisibleInArea={onChangeVisibleInArea}
+				  onChangeStick={setActiveStick}
+				  isDisabledClean={!polygonManager.isVisiblePolygon && !circleManager.isVisibleCircle && !isVisibleMarker && !polygonManager.isVisiblePolyline}
+				  isLoadingVisibleInArea={isLoadingVisibleInArea}
+				  />
+				{isVisibleMarker && <Marker position={marker} />}
+				{circleManager.isVisibleCircle && (
+					<Circle
+					   onLoad={circleManager.onLoadCircle}
+					   options={circleOptions} 
+					   radius={circle?.radius ?? 0}
+					   center={circle?.center ?? { lat: 0, lng: 0 }}
+					   onRadiusChanged={circleManager.onRadiusChanged} 
+					   onDragEnd={circleManager.onDragCircleEnd}
+					/>
+				)}
+				{polygonManager.isVisiblePolygon && (
+					<Polygon
+					   onLoad={polygonManager.onLoadPolygon}
+					   options={polygonOptions} 
+					   path={polygon?.points}
+					   onDragEnd={polygonManager.onDragEndPolygon}
+					   onMouseUp={polygonManager.onMouseUpPolygon}
+					/>
+				)}
+				{isVisibleInArea && !!circles?.length && (circles.map((item, index) => (
+					<Circle
+						key={index}
+						options={circlesOptions}
+						radius={item?.radius ?? 0}
+						center={item?.center ?? { lat: 0, lng: 0 }}
+					/>
+				)))}
+				{isVisibleInArea && !!polygons?.length && (polygons.map((item, index) => (
+					<Polygon
+						key={index}
+						options={polygonsOptions}
+						path={item?.points}
+					/>
+				)))}
+				{polygonManager.isVisiblePolyline && (
+					<Polyline
+						onLoad={polygonManager.onLoadPolyline}
+						path={polygon?.points}
+						options={createPolygonOptions}
+						onDragEnd={polygonManager.onDragEndPolyline}
+						onMouseUp={polygonManager.onMouseUpPolyline}
+					/>
+				)}
+				<Autocomplete onPlaceChanged={onPlaceChanged} />
+				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
+			</GoogleMap>
+		</div>
+	);
+}
+
+export const MapView = memo(withMapProvider(Component))

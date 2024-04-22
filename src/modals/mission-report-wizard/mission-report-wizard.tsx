@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { Form, Drawer, Divider, Spin, message, Button} from 'antd';
+import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
@@ -9,7 +9,7 @@ import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE,
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 import { fileUtils } from '~/utils/file';
-import { IEmployee, IMissionReport, IOrder } from '~/stores';
+import { IEmployee, IMissionReport, IOrder, createAddress } from '~/stores';
 
 import { IMissionReportForm } from './mission-report-wizard.types';
 import { s } from './mission-report-wizard.styles';
@@ -25,6 +25,7 @@ import  {
 	Employees,
 	Map
 } from "./components";
+import { ExplosiveAction } from './components/explosive-action';
 
 interface Props {
   id?: string;
@@ -53,10 +54,12 @@ const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
 	transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
 	transportHumansId: currentMissionReport?.transportHumans?.transportId,
 	mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
-	explosiveObjectActions: currentMissionReport?.explosiveObjectActions.slice() ?? [],
+	explosiveObjectActions: currentMissionReport?.explosiveObjectActions.map(el => el.value) ?? [],
+	explosiveActions: currentMissionReport?.explosiveActions.map(el => el.value) ?? [],
 	squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
 	squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
 	address: currentMissionReport?.address,
+	addressDetails: currentMissionReport?.addressDetails,
 	mapView: currentMissionReport?.mapView,
 })
 
@@ -87,15 +90,24 @@ const createCreateValue = (
 	transportHumansId: undefined,
 	mineDetectorId: undefined,
 	explosiveObjectActions:[],
+	explosiveActions:[],
 	squadLeaderId: firstSquadLeader?.id,
 	squadIds: [],
 	address: "",
+	addressDetails: createAddress(),
 	mapView: {
 		zoom: MAP_ZOOM.DEFAULT
 	},
 })
 
-export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
+const getTitles = ({ isEdit, isCreate}: { isEdit: boolean, isCreate: boolean}) => {
+	if(isCreate) return "Створення акту виконаних робіт";
+	if(isEdit) return "Редагування акту виконаних робіт";
+
+	return "Акт виконаних робіт";
+};
+
+export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: Props) => {
 	const [isLoadingPreview, setLoadingPreview] = useState(false);
 	const [templateId, setTemplateId] = useState();
 
@@ -190,8 +202,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		document.fetchTemplatesList.run();
 	}, []);
 
-	const isLoading = isLoadingPreview
-	 || missionReport.fetchItem.inProgress
+	const isLoading = missionReport.fetchItem.inProgress
 	 || employee.fetchListAll.inProgress
 	 || document.fetchTemplatesList.inProgress;
 
@@ -220,18 +231,25 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 		<Drawer
 			open={isVisible}
 			destroyOnClose
-			title={`${wizard.isView ? "Переглянути": "Створити"} акт виконаних робіт`}
+			title={getTitles(wizard)}
 			placement="right"
 			width={700}
 			onClose={hide}
 			extra={
 				<WizardButtons
-					onRemove={onRemove}
 					onSave={onOpenDocxPreview}
 					{...wizard}
 					isSave={wizard.isSave && !!templateId}
+					menu={[
+						...(wizard.isView ? [{
+							label: 'KML',
+							key: 'KML',
+							icon: <Icon.DownloadOutlined />,
+							onClick: onLoadKmlFile,
+						}]: [])
+					]}
 				>
-					{!wizard.isCreate && (
+					{wizard.isView && (
 						<Select
 							onAdd={onAddTemplate}
 							value={templateId}
@@ -240,60 +258,60 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode }:
 							options={document.missionReportTemplatesList.map((el) => ({ label: el.name, value: el.id }))}
 						/>
 					)}
-					{!wizard.isCreate && (
-						<Button icon={<Icon.DownloadOutlined />} onClick={onLoadKmlFile}>
-							Kml
-						</Button>
-					)}
 				</WizardButtons>
 			}
 		>
-			{isLoading
-				? (<Spin css={s.spin} />)
-				: (
-					<Form
-						name="mission-report-form"
-						onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
-						labelCol={{ span: 8 }}
-						wrapperCol={{ span: 16 }}
-						initialValues={initialValues}
-						disabled={wizard.isView}
-					>
-						{ [
-							<Map key="Map" mode={mode} />,
-							<Territory key="Territory"/>,
-							<Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction}/>,
-							<Act key="Act" />,
-							<Documents key="Documents" initialValues={initialValues}/>,
-							<Timer key="Timer" />,
-							<ExplosiveObjectAction key="ExplosiveObjectAction" />,
-							<Transport 
-								key="Transport"
-								initialValues={initialValues}
-								selectedTransportHumanAction={currentMissionReport?.transportHumans}
-								selectedTransportExplosiveAction={currentMissionReport?.transportExplosiveObject}
+			<>
+				{isLoadingPreview && <Spin fullscreen/>}
+				{isLoading
+					? (<Spin css={s.spin} />)
+					: (
+						<Form
+							name="mission-report-form"
+							onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
+							labelCol={{ span: 8 }}
+							wrapperCol={{ span: 16 }}
+							initialValues={initialValues}
+							disabled={wizard.isView}
+						>
+							{ [
+								<Map key="Map" isEdit={!wizard.isView}/>,
+								<Territory key="Territory"/>,
+								<Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction}/>,
+								<Act key="Act" />,
+								<Documents key="Documents" initialValues={initialValues}/>,
+								<Timer key="Timer" />,
+								<ExplosiveObjectAction key="ExplosiveObjectAction" />,
+								<ExplosiveAction key="ExplosiveAction" />,
+								<Transport 
+									key="Transport"
+									initialValues={initialValues}
+									selectedTransportHumanAction={currentMissionReport?.transportHumans}
+									selectedTransportExplosiveAction={currentMissionReport?.transportExplosiveObject}
 							 />,
-							<Equipment
-								key="Equipment" 
-								initialValues={initialValues}
-								selectedMineDetector={currentMissionReport?.mineDetector}
+								<Equipment
+									key="Equipment" 
+									initialValues={initialValues}
+									selectedMineDetector={currentMissionReport?.mineDetector}
 							  />,
-							<Employees
-								key="Employees" 
-								squadLeads={employee.squadLeads} 
-								workers={employee.workers}
-								selectedSquadLead={currentMissionReport?.squadLeaderAction}
-								selectedWorkers={currentMissionReport?.squadActions}
+								<Employees
+									key="Employees" 
+									squadLeads={employee.squadLeads} 
+									workers={employee.workers}
+									selectedSquadLead={currentMissionReport?.squadLeaderAction}
+									selectedWorkers={currentMissionReport?.squadActions}
 							 />
-						].map((el, i) => (
-							<div  key={i}>
-								{el}
-								<Divider/>
-							</div>
-						))}
-						<WizardFooter {...wizard} onCancel={hide}/>
-					</Form>
-				)}
+							].map((el, i) => (
+								<div  key={i}>
+									{el}
+									<Divider/>
+								</div>
+							))}
+							<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
+						</Form>
+					)}
+			</>
+			
 		</Drawer>
 	);
 });

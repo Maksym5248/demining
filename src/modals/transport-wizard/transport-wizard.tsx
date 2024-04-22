@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { Form, Drawer, Input, Spin} from 'antd';
 import { observer } from 'mobx-react-lite'
 
@@ -31,10 +29,6 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 
 	const transport = store.transport.collection.get(id ?? "");
 
-	useEffect(() => {
-		store.transport.fetchList.run();
-	}, []);
-
 	const isEdit = !!id;
 	const isLoading = !store.transport.fetchList.isLoaded && store.transport.fetchList.inProgress;
 
@@ -53,7 +47,6 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 		hide();
 	};
 
-
 	return (   
 		<Drawer
 			open={isVisible}
@@ -62,12 +55,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 			placement="right"
 			width={500}
 			onClose={hide}
-			extra={
-				<WizardButtons
-					onRemove={onRemove}
-					{...wizard}
-				/>
-			}
+			extra={<WizardButtons {...wizard} /> }
 		>
 			{ isLoading
 				? (<Spin css={s.spin} />)
@@ -106,7 +94,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
 								options={typeOptions}
 							/>
 						</Form.Item>
-						<WizardFooter {...wizard} onCancel={hide}/>
+						<WizardFooter {...wizard} onCancel={hide} onRemove={onRemove}/>
 					</Form>
 				)}
 		</Drawer>

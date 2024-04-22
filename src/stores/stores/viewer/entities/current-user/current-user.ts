@@ -34,4 +34,7 @@ export const CurrentUser = types.model('CurrentUser', {
 	get isAuthorized(){
 		return !!self.isRootAdmin || !!self.isOrganizationAdmin || !!self.isOrganizationMember;
 	},
+	get isWaitingApproved(){
+		return !!self.id && !self.organization;
+	},
 }));

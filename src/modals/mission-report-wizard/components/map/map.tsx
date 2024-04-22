@@ -1,23 +1,23 @@
 import { Form } from "antd";
 
-import { MapView } from "~/components"
+import { MapPreview } from "~/components"
 import { useStore } from "~/hooks";
-import { MAP_SIZE, MAP_VIEW_TAKE_PRINT_CONTAINER, WIZARD_MODE } from "~/constants";
+import { MAP_SIZE, MAP_VIEW_TAKE_PRINT_CONTAINER, MODALS } from "~/constants";
 import { IExplosiveObjectActionDTOParams, ExternalApi } from "~/api";
 import { IMapViewActionValue } from "~/stores";
-import { mathUtils } from "~/utils/math";
+import { Modal } from "~/services";
+import { IMapEditorSubmit } from "~/modals/map-editor/map-editor.types";
+import { str } from "~/utils";
+
+import { s, MAP_PADDING_TOP, MAP_PADDING_BOTTOM } from "./map.styles";
 
 const mapContainerStyle = {
 	width: MAP_SIZE.MEDIUM_WIDTH,
-	height: MAP_SIZE.MEDIUM_HEIGHT,
+	height: MAP_SIZE.MEDIUM_HEIGHT + MAP_PADDING_TOP + MAP_PADDING_BOTTOM,
+	marginTop: -MAP_PADDING_TOP,
 };
 
-interface Props {
-	mode: WIZARD_MODE
-  }
-
-  
-export function Map({ mode }: Props){
+export function Map({ isEdit = false}: { isEdit?: boolean } ){
 	const { explosiveObject } = useStore();
 
 	const validateMapView = (_:any, value: IMapViewActionValue) => {
@@ -29,7 +29,8 @@ export function Map({ mode }: Props){
 	};
 	
 	return (
-		<div id={MAP_VIEW_TAKE_PRINT_CONTAINER}>
+		<div id={MAP_VIEW_TAKE_PRINT_CONTAINER} css={s.container}>
+			<Form.Item name="addressDetails"/>
 			<Form.Item
 				name="mapView"
 				rules={[ { validator: validateMapView }]}
@@ -38,49 +39,59 @@ export function Map({ mode }: Props){
 					{({ getFieldValue, setFieldValue }) => {
 						const explosiveObjectActions = getFieldValue("explosiveObjectActions") as IExplosiveObjectActionDTOParams[];
 						const executedAt = getFieldValue("executedAt");
+						const addressDetails = getFieldValue("addressDetails");
 						const mapView = getFieldValue("mapView") as IMapViewActionValue;
 
-						return (
-							<MapView
-								type={mode === WIZARD_MODE.VIEW  ? "picture": "edit"}
-								initialCircle={mapView?.circle}
-								initialMarker={mapView?.marker}
-								initialPolygon={mapView?.polygon}
-								initialZoom={mapView?.zoom}
-						 		mapContainerStyle={mapContainerStyle}
-								date={executedAt}
-								explosiveObjects={explosiveObjectActions.map(el => {
-									const item = explosiveObject.collectionActions.get(el?.id ?? "")  || explosiveObject.collection.get(el.explosiveObjectId);
-									
-									return `${item.fullDisplayName} ${el.quantity} од.`
-								})}
-								onChange={async (value) => {
-									setFieldValue("mapView", {
-										polygon: value.polygon ? {
-											points: value.polygon.points.map(el => ({
-												lat: mathUtils.toFixed(el.lat, 9),
-												lng: mathUtils.toFixed(el.lng, 9),
-											}))
-										} : undefined,
-										marker: {
-											lat: mathUtils.toFixed(value.marker?.lat, 9),
-											lng: mathUtils.toFixed(value.marker?.lng, 9),
-										},
-										circle: value.circle ? {
-											center:  {
-												lat: mathUtils.toFixed(value.circle?.center.lat, 9),
-											 	lng: mathUtils.toFixed(value.circle?.center.lng, 9)
-											},
-											radius: mathUtils.toFixed(value.circle?.radius, 9),
-										} : undefined,
-										zoom: mathUtils.toFixed(value.zoom, 9)
-									});
+						const onSubmit = async ({ area, ...value}: IMapEditorSubmit) => {
+							setFieldValue("mapView", value);
 
-									if(value?.marker){
-										const address = await ExternalApi.getGeocode(value.marker);
-										setFieldValue("address", address);
-									}
-								}}
+							if(area) {
+								setFieldValue("checkedTerritory", area);
+							}
+			
+							if(value?.marker) {
+								const address = await ExternalApi.getGeocode(value.marker);
+								setFieldValue("address", str.toAddressString(address));
+								setFieldValue("addressDetails", address);
+							};
+						};
+
+						const onEdit = async () => {
+							Modal.show(MODALS.MAP_EDITOR, {
+								initialCircle: mapView?.circle,
+								initialMarker: mapView?.marker,
+								initialPolygon: mapView?.polygon,
+								initialZoom: mapView?.zoom,
+								id: mapView?.id,
+								onSubmit
+							})
+						
+						};
+
+						const explosiveObjects:Record<string, number> = {};
+						
+						explosiveObjectActions.forEach(( el) => {
+							const item = explosiveObject.collectionActions.get(el?.id ?? "")  || explosiveObject.collection.get(el.explosiveObjectId);
+							const name = item?.fullDisplayName;
+
+							if(explosiveObjects[name]) {
+								explosiveObjects[name] += el.quantity;
+							} else {
+								explosiveObjects[name] = el.quantity;
+							}
+						});
+
+						return (
+							<MapPreview
+								circle={mapView?.circle}
+								marker={mapView?.marker}
+								polygon={mapView?.polygon}
+								explosiveObjects={Object.keys(explosiveObjects).map(key => `${key} - ${explosiveObjects[key]}`)}
+								date={executedAt}
+								isEdit={isEdit}
+								onEdit={onEdit}
+								mapContainerStyle={mapContainerStyle}
+								city={addressDetails?.city}
 							/>
 						)
 					}}

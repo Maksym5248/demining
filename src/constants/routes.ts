@@ -1,24 +1,31 @@
 export enum ROUTES {
+	HOME ="/home",
     MISSION_REQUEST_LIST ="/mission-request-list",
     ORDER_LIST ="/order-list",
     MISSION_REPORT_LIST ="/mission-report",
     EMPLOYEES_LIST ="/employees-list",
     EXPLOSIVE_OBJECT_LIST ="/explosive-object-list",
+	EXPLOSIVE_LIST ="/explosive-list",
     TRANSPORT_LIST ="/transport-list",
     EQUIPMENT_LIST ="/equipment-list",
 	SETTINGS = "/settings",
 	TEMPLATES = "/templates",
 
 	ORGANIZATIONS_LIST = "/organization-list",
-	MEMBERS_LIST = "/organization-list/:organizationId/members-list/",
+	MEMBERS_LIST = "/organization-list/:organizationId/members-list",
 	MY_ORGANIZATION = "/my-organization",
 
-	AUTH ="/login",
+	LOGIN ="/login",
 	SIGNUP ="/signup",
 	WAITING_APPROVE ="/waiting-approve",
+
+	NOT_FOUND = "/not-found",
 }
 
 export const routesInfo = {
+	[ROUTES.HOME]: {
+		title: "Домашня",
+	},
 	[ROUTES.MISSION_REPORT_LIST]: {
 		title: "Виїзд",
 	},
@@ -30,6 +37,9 @@ export const routesInfo = {
 	},
 	[ROUTES.ORDER_LIST]: {
 		title: "Накази",
+	},
+	[ROUTES.EXPLOSIVE_LIST]: {
+		title: "ВР та ЗП",
 	},
 	[ROUTES.EXPLOSIVE_OBJECT_LIST]: {
 		title: "ВНП",
@@ -55,7 +65,7 @@ export const routesInfo = {
 	[ROUTES.MY_ORGANIZATION]: {
 		title: "Учасники",
 	},
-	[ROUTES.AUTH]: {
+	[ROUTES.LOGIN]: {
 		title: "Увійти",
 	},
 	[ROUTES.SIGNUP]: {
@@ -63,6 +73,9 @@ export const routesInfo = {
 	},
 	[ROUTES.WAITING_APPROVE]: {
 		title: "Очікування підтвердження",
+	},
+	[ROUTES.NOT_FOUND]: {
+		title: "Сторінку не знайдено",
 	},
 }
 

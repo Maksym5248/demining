@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
 import { dates, data } from '~/utils';
-import { IMissionRequestDTO } from '~/api';
+import { IMissionRequestDTO, IMissionRequestSumDTO } from '~/api';
 
 export interface IMissionRequestValue {
   id: string,
@@ -10,6 +10,10 @@ export interface IMissionRequestValue {
   number: number,
   createdAt: Dayjs,
   updatedAt: Dayjs,
+}
+
+export interface IMissionRequestSumValue {
+	total: number;
 }
   
 export const createMissionRequestDTO = (value: CreateValue<IMissionRequestValue>): CreateValue<IMissionRequestDTO>  => ({
@@ -24,8 +28,12 @@ export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue
 
 export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequestValue => ({
 	id: value.id,
-	signedAt: dates.create(value.signedAt),
+	signedAt: dates.fromServerDate(value.signedAt),
 	number: value.number,
-	createdAt: dates.create(value.createdAt),
-	updatedAt: dates.create(value.updatedAt),
+	createdAt: dates.fromServerDate(value.createdAt),
+	updatedAt: dates.fromServerDate(value.updatedAt),
+});
+
+export const createMissionRequestSum = (value: IMissionRequestSumDTO): IMissionRequestSumValue => ({
+	total: value.total,
 });

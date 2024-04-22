@@ -1,8 +1,9 @@
 import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 
 import { CreateValue } from '~/types'
-import { Api, IExplosiveObjectDTO } from '~/api'
+import { Api, IExplosiveObjectActionSumDTO, IExplosiveObjectDTO } from '~/api'
 import { explosiveObjectTypesData } from '~/data';
 import { dates } from '~/utils';
 
@@ -21,7 +22,15 @@ import {
 	ExplosiveObjectAction,
 	IExplosiveObjectActionValue,
 	IExplosiveObjectAction,
+	createExplosiveObjectActionSum,
 } from './entities';
+
+const SumExplosiveObjectActions = types.model('SumExplosiveObjectActions', {
+	total: types.number,
+	discovered: types.number,
+	transported: types.number,
+	destroyed: types.number,
+});
 
 const Store = types
 	.model('ExplosiveObjectStore', {
@@ -31,11 +40,20 @@ const Store = types
 		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
 		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 10 }),
 		searchList: createList<IExplosiveObject>("ExplosiveObjectsSearchList", safeReference(ExplosiveObject), { pageSize: 10 }),
+		sum: types.optional(SumExplosiveObjectActions, {
+			total: 0,
+			discovered: 0,
+			transported: 0,
+			destroyed: 0
+		}),
 	}).views(self => ({
 		get sortedListTypes(){
 			return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
 		}
 	})).actions(self => ({
+		setSum(sum: IExplosiveObjectActionSumDTO){
+			self.sum = createExplosiveObjectActionSum(sum);
+		},
 		init() {
 			explosiveObjectTypesData.forEach((el) => {
 				const explosiveObjectType = createExplosiveObjectType(el);
@@ -127,6 +145,28 @@ const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async 
 	}
 });
 
+const fetchSum = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
+	try {
+		flow.start();
+
+		const res = await Api.explosiveObject.sum({
+			where: {
+				executedAt: {
+					">=": dates.toDateServer(startDate),
+					"<=": dates.toDateServer(endDate),
+				},
+			}
+		});
+
+		self.setSum(res);
+
+		flow.success();
+	} catch (err) {
+		flow.failed(err as Error);
+		message.error('Виникла помилка');
+	}
+});
+
 const fetchListMore = asyncAction<Instance<typeof Store>>((search) => async function addFlow({ flow, self }) {
 	try {
 		const isSearch = !!search;
@@ -172,5 +212,6 @@ export const ExplosiveObjectStore = Store.props({
 	fetchList,
 	fetchListMore,
 	fetchItem,
-	createExplosiveObjects
+	createExplosiveObjects,
+	fetchSum
 })

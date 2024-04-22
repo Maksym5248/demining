@@ -27,7 +27,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject}) => {
 			]}
 		>
 			<List.Item.Meta
-				title={item.fullDisplayName}
+				title={item?.fullDisplayName}
 				description={
 					<Space css={s.listItemDesc}>
 						<Text type="secondary">{item.type.fullName}</Text>
