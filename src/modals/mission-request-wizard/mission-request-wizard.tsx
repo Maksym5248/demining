@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 
-import { Form, DatePicker, Drawer, InputNumber, Spin} from 'antd';
+import { Form, DatePicker, Drawer, Spin, Input} from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { useStore, useWizard } from '~/hooks'
 import { dates } from '~/utils'
-import { WizardButtons, WizardFooter } from '~/components';
-import { WIZARD_MODE } from '~/constants';
+import { Select, WizardButtons, WizardFooter } from '~/components';
+import { MISSION_REQUEST_TYPE, WIZARD_MODE } from '~/constants';
+import { missionRequestType } from '~/data';
 
 import { s } from './mission-request-wizard.style'
 import { IMissionRequestForm } from './mission-request-wizard.types';
@@ -71,17 +72,27 @@ export const MissionRequestWizardModal  = observer(({ id, isVisible, hide, mode 
 						initialValues={missionRequest
 							? ({ ...missionRequest})
 							: {
+								type: MISSION_REQUEST_TYPE.APPLICATION,
 								number: (store.missionRequest.list.first?.number ?? 0) + 1,
 								signedAt: dates.today(),
 							}
 						}
 					>
 						<Form.Item
+							label="Тип"
+							name="type"
+							rules={[{ required: true, message: 'Обов\'язкове поле' }]}
+						>
+							<Select
+								options={missionRequestType.map(({ name, value }) => ({ label: name, value }))}
+							/>
+						</Form.Item>
+						<Form.Item
 							label="Номер"
 							name="number"
 							rules={[{ required: true }]}
 						>
-							<InputNumber size="middle" min={1} max={100000} />
+							<Input placeholder="Введіть дані" />
 						</Form.Item>
 						<Form.Item
 							label="Дата підписання"
