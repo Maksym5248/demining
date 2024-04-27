@@ -15,6 +15,7 @@ import { Autocomplete } from "../autocomplete";
 import { DrawingType, IMapViewProps } from "../map.types";
 import { usePolygon } from "./usePolygon";
 import { useCircle } from "./useCircle";
+import { MapZoomView } from "../../map-zoom-view";
 
 const circlesOptions = {
 	fillOpacity: 0.3,
@@ -40,6 +41,7 @@ function Component({
 	initialMarker,
 	initialCircle,
 	initialPolygon,
+	initialZoom,
 	onChange,
 	position,
 	circles,
@@ -66,7 +68,7 @@ function Component({
 	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
 	const [circle, setCircle] = useState<ICircle | undefined>(initialCircle);
 	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
-	const [zoom, setZoom] = useState<number>(MAP_ZOOM.DEFAULT);
+	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 
 	const isVisibleMap = useVisibleMap({ mapRef });
 
@@ -178,6 +180,17 @@ function Component({
 		if(!mapRef?.current) return;
 		setZoom(mapRef.current.getZoom() as number);
 	};
+
+	const onChangeZoomView = (value:number) => {
+		if(!mapRef?.current) return;
+		mapRef?.current?.setZoom(value);
+	};
+
+	useEffect(() => {
+		if(initialZoom && isVisibleMap){
+			mapRef?.current?.setZoom(initialZoom);
+		}
+	}, [isVisibleMap]);
 
 	const onClear = () => {
 		setMarker(undefined);
@@ -295,6 +308,7 @@ function Component({
 					/>
 				)}
 				<Autocomplete onPlaceChanged={onPlaceChanged} />
+				<MapZoomView zoom={zoom} onChange={onChangeZoomView}/>
 				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
 			</GoogleMap>
 		</div>

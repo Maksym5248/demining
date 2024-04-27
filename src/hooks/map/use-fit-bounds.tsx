@@ -13,6 +13,7 @@ interface IUseFitBoundsParams {
 	polygonCallout?: IPoint[];
 	mapRef?: MutableRefObject<google.maps.Map | undefined>;
 	isVisibleMap?: boolean;
+	isSkip?: boolean;
 }
 
 export function useFitBounds({
@@ -22,10 +23,13 @@ export function useFitBounds({
 	polygon,
 	polygonCallout,
 	mapRef,
-	isVisibleMap
+	isVisibleMap,
+	isSkip
 }: IUseFitBoundsParams) {
 	
 	const fitBounds = useDebounce(() => {
+		if(isSkip) return;
+
 		const bounds = new google.maps.LatLngBounds();
 
 		if (marker) bounds.extend(marker);

@@ -1,10 +1,10 @@
-import { memo, useState, useRef } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 
 import { Button, Tooltip, Typography } from "antd";
 import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
-import { useMapOptions, useFitBounds, useVisibleMap } from "~/hooks";
+import { useFitBounds, useMapOptions, useVisibleMap } from "~/hooks";
 import { ICircle, IPoint, IPolygon } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
 import { withMapProvider } from "~/hoc";
@@ -18,6 +18,7 @@ import { PolygonCallout } from "./polygon-callout";
 import { MapInfo } from "../map-info";
 import { usePolygonCallout } from "./use-polygon-callout";
 import { useMarkerCallout } from "./use-marker-callout";
+import { MapZoomView } from "../map-zoom-view";
 
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	marker?: IPoint | undefined;
@@ -29,7 +30,9 @@ interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerS
 	position?: IPoint;
 	city?: string;
 	isEdit: boolean;
+	initialZoom?: number;
 	onEdit: () => void;
+	onChange: (value: { zoom: number }) => void;
 }
 
 function Component({
@@ -42,6 +45,8 @@ function Component({
 	circle,
 	polygon,
 	city,
+	onChange,
+	initialZoom,
 	...rest
 }: IMapViewProps) {	
 	const {
@@ -50,7 +55,7 @@ function Component({
 
 	const mapRef = useRef<google.maps.Map>();
 	const isVisibleMap = useVisibleMap({ mapRef });
-	const [zoom, setZoom] = useState<number>(MAP_ZOOM.DEFAULT);
+	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
@@ -58,11 +63,24 @@ function Component({
 
 	const onZoomChanged = () => {
 		if(!mapRef?.current) return;
-		setZoom(mapRef.current.getZoom() as number);
+		const newZoom = mapRef.current.getZoom() as number;
+		setZoom(newZoom);
+		onChange?.({ zoom: newZoom });
+	};
+
+	const onChangeZoomView = (value:number) => {
+		if(!mapRef?.current) return;
+		mapRef?.current?.setZoom(value);
 	};
 
 	const polygonCallout = usePolygonCallout({ polygon, zoom, isVisibleMap, offset: 20 })
-	const markerCallout = useMarkerCallout({ marker, zoom, mapRef, polygonCallout, isVisibleMap})
+	const markerCallout = useMarkerCallout({ marker, zoom, mapRef, polygonCallout, isVisibleMap});
+
+	useEffect(() => {
+		if(initialZoom && isVisibleMap){
+			mapRef?.current?.setZoom(initialZoom);
+		}
+	}, [isVisibleMap]);
 
 	useFitBounds({
 		marker,
@@ -71,7 +89,8 @@ function Component({
 		polygon,
 		polygonCallout,
 		mapRef,
-		isVisibleMap
+		isVisibleMap,
+		isSkip: !!initialZoom
 	})
 
 	const isVisiblePolygon = !!polygon?.points.length;
@@ -145,6 +164,9 @@ function Component({
 					<div css={[s.callout, s.calloutCity]}>
 						<Typography.Text css={[s.calloutText, s.calloutPolygonText]}>{city}</Typography.Text>
 					</div>
+				)}
+				{isEdit && (
+					<MapZoomView zoom={zoom} onChange={onChangeZoomView}/>
 				)}
 				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
 			</GoogleMap>

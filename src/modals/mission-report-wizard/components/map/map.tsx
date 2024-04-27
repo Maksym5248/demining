@@ -42,8 +42,11 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 						const addressDetails = getFieldValue("addressDetails");
 						const mapView = getFieldValue("mapView") as IMapViewActionValue;
 
-						const onSubmit = async ({ area, ...value}: IMapEditorSubmit) => {
-							setFieldValue("mapView", value);
+						const onSubmit = async ({ area, zoom, ...value}: IMapEditorSubmit) => {
+							setFieldValue("mapView", {
+								...value,
+								zoom: mapView?.zoom
+							});
 
 							if(area) {
 								setFieldValue("checkedTerritory", area);
@@ -68,6 +71,13 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 						
 						};
 
+						const onChange = ({ zoom }: { zoom: number }) => {
+							setFieldValue("mapView", {
+								...(mapView || {}),
+								zoom
+							});
+						};
+
 						const explosiveObjects:Record<string, number> = {};
 						
 						explosiveObjectActions.forEach(( el) => {
@@ -86,6 +96,8 @@ export function Map({ isEdit = false}: { isEdit?: boolean } ){
 								circle={mapView?.circle}
 								marker={mapView?.marker}
 								polygon={mapView?.polygon}
+								initialZoom={mapView?.zoom}
+								onChange={onChange}
 								explosiveObjects={Object.keys(explosiveObjects).map(key => `${key} - ${explosiveObjects[key]}`)}
 								date={executedAt}
 								isEdit={isEdit}
