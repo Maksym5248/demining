@@ -188,6 +188,16 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 		hide();
 	};
 
+	const onCopy = async () => {
+		const values = createEditValue(currentMissionReport);
+
+		await missionReport.create.run({
+			...values,
+			squadIds: values.squadIds.filter(el => !!el)
+		});
+		hide();
+	};
+
 	useEffect(() => {
 		if(id){
 			missionReport.fetchItem.run(id)
@@ -246,7 +256,13 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 							key: 'KML',
 							icon: <Icon.DownloadOutlined />,
 							onClick: onLoadKmlFile,
-						}]: [])
+						}]: []),
+						...(wizard.isView && currentMissionReport ? [{
+							label: 'Копіювати',
+							key: 'copy',
+							icon: <Icon.CopyOutlined />,
+							onClick: () => onCopy(),
+						}]: []),
 					]}
 				>
 					{wizard.isView && (

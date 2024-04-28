@@ -14,6 +14,7 @@ import { s } from './mission-reports-list.styles';
 
 const { Text } = Typography;
 
+
 const ListItem = observer(({ item }: { item: IMissionReport}) => {
 	const onOpen = (e:React.SyntheticEvent) => {
 		e.preventDefault();
