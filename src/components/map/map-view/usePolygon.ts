@@ -1,7 +1,7 @@
 import { MutableRefObject, useRef } from "react";
 
 import { mapUtils} from "~/utils";
-import { ICircle, IPoint, IPolygon } from "~/types/map";
+import { ICircle, ILine, IPoint, IPolygon } from "~/types/map";
 
 import { DrawingType } from "../map.types";
 
@@ -12,6 +12,7 @@ interface IUsePolygonParams {
     polygon?: IPolygon;
     setPolygon: (value?: IPolygon | undefined) => void;
 	setCircle: (value?: ICircle) => void;
+	setLine: (value?: ILine | undefined) => void;
 	polygons?: IPolygon[];
 	circles?: ICircle[];
 	isActiveStick: boolean;
@@ -25,6 +26,7 @@ export function usePolygon({
 	polygon,
 	setPolygon,
 	setCircle,
+	setLine,
 	polygons,
 	isActiveStick,
 	mapRef,
@@ -106,6 +108,7 @@ export function usePolygon({
 		if(!isCreating && !polygon?.points.length){
 			setCreating(true);
 			setCircle(undefined);
+			setLine(undefined);
 		}
 		
 		appendPoint(point);

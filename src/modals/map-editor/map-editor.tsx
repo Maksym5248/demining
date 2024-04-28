@@ -4,8 +4,8 @@ import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite'
 
 import { IOnChangeMapView, MapView } from '~/components';
-import { useDebounce, useStore } from '~/hooks';
-import { ICircle, IGeoBox, IPolygon } from '~/types';
+import { useDebounce, useStore, useValues } from '~/hooks';
+import { ICircle, IGeoBox, ILine, IPolygon } from '~/types';
 
 import { MapEditorModalProps } from './map-editor.types';
 
@@ -17,6 +17,7 @@ export const MapEditorModal  = observer(({
 	initialCircle,
 	initialMarker,
 	initialPolygon,
+	initialLine,
 	initialZoom,
 	initialArea,
 	id,
@@ -26,11 +27,17 @@ export const MapEditorModal  = observer(({
 }: MapEditorModalProps) => {
 	const store = useStore();
 
-	const [circle, setCircle] = useState(initialCircle);
-	const [marker, setMarker] = useState(initialMarker);
-	const [polygon, setPolygon] = useState(initialPolygon);
-	const [zoom, setZoom] = useState(initialZoom);
-	const [area, setArea] = useState(initialArea);
+	const values = useValues<IOnChangeMapView>({
+		value: {
+			circle: initialCircle,
+			marker: initialMarker,
+			polygon: initialPolygon,
+			line: initialLine,
+			zoom: initialZoom,
+			area: initialArea,
+		}
+	});
+	
 	const [isLoadingAllInGeoBox, setLoadingAllInGeoBox] = useState(false);
 
 	const onCancel = () => {
@@ -38,21 +45,11 @@ export const MapEditorModal  = observer(({
 	};
 
 	const onChange = (value:IOnChangeMapView) => {
-		setCircle(value.circle);
-		setMarker(value.marker);
-		setPolygon(value.polygon);
-		setZoom(value.zoom);
-		setArea(value.area);
+		values.set("value", value)
 	}
 
 	const onSave = () => {
-		onSubmit?.({
-			marker,
-			polygon,
-			circle,
-			zoom,
-			area,
-		});
+		onSubmit?.(values.get("value"));
 		hide();
 	}
 	
@@ -83,11 +80,14 @@ export const MapEditorModal  = observer(({
 				initialCircle={initialCircle}
 				initialMarker={initialMarker}
 				initialPolygon={initialPolygon}
+				initialLine={initialLine}
+				initialZoom={initialZoom}
 				mapContainerStyle={mapContainerStyle}
 				onChange={onChange}
 				onChangeGeobox={onChangeGeobox}
 				polygons={store.map.list.asArray.filter(el => el.id !== id && !!el.polygon).map(el => el.polygon as IPolygon)}
 				circles={store.map.list.asArray.filter(el => el.id !== id && !!el.circle).map(el => el.circle as ICircle)}
+				lines={store.map.list.asArray.filter(el => el.id !== id && !!el.line).map(el => el.line as ILine)}
 				isLoadingVisibleInArea={store.map.fetchAllInGeoBox.inProgress || isLoadingAllInGeoBox}
 				minZoomLoadArea={minZoomLoadArea}
 			/>

@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 
-import { ICircle, IPoint, IPolygon, IGeoBox } from "~/types";
+import { ICircle, IPoint, IPolygon, IGeoBox, ILine } from "~/types";
 
 import { mathUtils } from "../math";
 import { createArrFromPoint, createPointFromArr } from './fabric';
@@ -52,24 +52,79 @@ function getGeoBox(map: google.maps.Map): IGeoBox | null {
   
 	return geoBox;
 }
-  
+
+function getTotalDistanceLine(line: ILine ): number | undefined {
+	const { points } = line;
+	let totalDistance = 0;
+	for(let i = 0; i < points.length - 1; i+=1) {
+		const point1 = points[i];
+		const point2 = points[i + 1];
+		const distance = getDistanceByPoints(point1, point2);
+		totalDistance += distance;
+	};
+
+	return mathUtils.toFixed(totalDistance, 0);;
+}
+
+function getTotalDistancePolygon(polygon: IPolygon): number {
+	const {points} = polygon;
+	let totalDistance = 0;
+
+	for (let i = 0; i < points.length - 1; i+=1) {
+		const point1 = points[i];
+		const point2 = points[i + 1];
+		const distance = getDistanceByPoints(point1, point2);
+		totalDistance += distance;
+	}
+
+	// Add distance between the last and first points to close the polygon
+	const firstPoint = points[0];
+	const lastPoint = points[points.length - 1];
+	const distance = getDistanceByPoints(lastPoint, firstPoint);
+	totalDistance += distance;
+
+	return mathUtils.toFixed(totalDistance, 0);;
+}
+
+function getTotalDistance({ line, polygon }: {line?: ILine, polygon?:IPolygon }): number | undefined {
+	if(line){
+		return getTotalDistanceLine(line);
+	}
+
+	if(polygon){
+		return getTotalDistancePolygon(polygon);
+		
+	} 
+
+	return undefined;
+}
+
 function getAreaCircle(radius: number): number {
 	return Math.PI * radius**2;
 }
 
-function getAreaPolygon(polygon: IPoint[]): number {
-	const path = polygon.map(point => new google.maps.LatLng(point.lat, point.lng));
+function getAreaPolygon(polygon: IPolygon): number {
+	const path = polygon.points.map(point => new google.maps.LatLng(point.lat, point.lng));
   
 	return google.maps.geometry.spherical.computeArea(path);
 }
 
-const getArea = (circle?:ICircle, polygon?: IPolygon) => {
+function getAreaLine(line: ILine): number {
+	const distance = getTotalDistanceLine(line) ?? 1;
+	return distance * line.width;
+}
+
+const getArea = (circle?:ICircle, polygon?: IPolygon, line?: ILine) => {
 	if(circle){
 		return mathUtils.toFixed(getAreaCircle(circle.radius), 0);
 	}
 
 	if(polygon){
-		return mathUtils.toFixed(getAreaPolygon(polygon.points), 0);
+		return mathUtils.toFixed(getAreaPolygon(polygon), 0);
+	}
+
+	if(line){
+		return mathUtils.toFixed(getAreaLine(line), 0);
 	}
 
 	return undefined;
@@ -112,7 +167,7 @@ function getCenterAndRadiusByGeoBox(geoBox: IGeoBox): ICircle {
 }
 
 
-function getInfoPoint({ marker, circle, polygon }: {marker?: IPoint, circle?: ICircle, polygon?: IPolygon}): IPoint | undefined {
+function getInfoPoint({ marker, circle, polygon, line }: {marker?: IPoint, circle?: ICircle, polygon?: IPolygon, line?: ILine}): IPoint | undefined {
 	if(marker){
 		return marker
 	} 
@@ -123,6 +178,10 @@ function getInfoPoint({ marker, circle, polygon }: {marker?: IPoint, circle?: IC
 
 	if(polygon){
 		return getCenterPolygon(polygon)
+	}
+
+	if(line){
+		return getCenterPolygon(line)
 	}
 
 	return undefined
@@ -170,6 +229,90 @@ const polygonCallout = (polygon: IPolygon, offsetInMeters: number): IPoint[] => 
 	})
 }
 
+const lineCallout = (line: ILine, offsetInMeters: number): IPoint[] => line.points.length > 2
+	 ? polygonCallout(line, offsetInMeters)
+	 : line?.points.map((point) => {
+		const turfPoint = turf.point(createArrFromPoint(point));	
+		const destination = turf.destination(turfPoint, offsetInMeters, 60, { units: 'meters' });
+		return createPointFromArr(destination.geometry.coordinates)
+	})
+
+function generatePolygonFromLines(line: ILine): IPolygon {
+	const { width } = line;
+	const points = [...(line.points ?? [])];
+	const polygonPoints: IPoint[] = [];
+
+	points.forEach((point, i) => {
+		const lastIndex = points.length - 1;
+		const prevIndex = i === 0 ? -1 : i - 1;
+		const nextIndex = i === lastIndex ? -1 : i + 1;
+
+		const turfPoint = turf.point(createArrFromPoint(point));
+
+		if(prevIndex === -1){
+			const turfNext = turf.point(createArrFromPoint(points[nextIndex]));
+			const bearing = turf.bearing(turfPoint, turfNext) - 90;
+			const destination = turf.destination(turfPoint,  width / 2, opposite(bearing), { units: 'meters' });
+			polygonPoints.push(createPointFromArr(destination.geometry.coordinates))
+		} else if(nextIndex === -1){
+			const turfPrev = turf.point(createArrFromPoint(points[prevIndex]));
+			const bearing = turf.bearing(turfPoint, turfPrev) + 90;
+			const destination = turf.destination(turfPoint,  width / 2, opposite(bearing), { units: 'meters' });
+			polygonPoints.push(createPointFromArr(destination.geometry.coordinates))
+		} else {
+			const turfPrev = turf.point(createArrFromPoint(points[prevIndex]));
+			const turfNext = turf.point(createArrFromPoint(points[nextIndex]));
+		
+			const bearingPrev = turf.bearing(turfPoint, turfPrev);
+			const bearingNext = turf.bearing(turfPoint, turfNext);
+		
+			const bearing = (bearingPrev + bearingNext) / 2;
+		
+			const opositeDestination = turf.destination(turfPoint,  width / 2, opposite(bearing), { units: 'meters' });
+	
+			polygonPoints.push(createPointFromArr(opositeDestination.geometry.coordinates))
+		}
+	});
+	
+	points.reverse();
+
+	points.forEach((point, i) => {
+		const lastIndex = points.length - 1;
+		const prevIndex = i === 0 ? -1 : i - 1;
+		const nextIndex = i === lastIndex ? -1 : i + 1;
+	
+		const turfPoint = turf.point(createArrFromPoint(point));
+	
+		if(prevIndex === -1){
+			const turfNext = turf.point(createArrFromPoint(points[nextIndex]));
+			const bearing = turf.bearing(turfPoint, turfNext) + 90;
+			const destination = turf.destination(turfPoint,  width / 2, bearing, { units: 'meters' });
+			polygonPoints.push(createPointFromArr(destination.geometry.coordinates))
+		} else if(nextIndex === -1){
+			const turfPrev = turf.point(createArrFromPoint(points[prevIndex]));
+			const bearing = turf.bearing(turfPoint, turfPrev) - 90;
+			const destination = turf.destination(turfPoint,  width / 2, bearing, { units: 'meters' });
+			polygonPoints.push(createPointFromArr(destination.geometry.coordinates))
+		} else {
+			const turfPrev = turf.point(createArrFromPoint(points[prevIndex]));
+			const turfNext = turf.point(createArrFromPoint(points[nextIndex]));
+		
+			const bearingPrev = turf.bearing(turfPoint, turfPrev);
+			const bearingNext = turf.bearing(turfPoint, turfNext);
+		
+			const bearing = (bearingPrev + bearingNext) / 2;
+		
+			const destination = turf.destination(turfPoint, width / 2, bearing, { units: 'meters' });
+	
+			polygonPoints.push(createPointFromArr(destination.geometry.coordinates))
+		}
+	});
+	
+	return {
+		points: polygonPoints,
+	};
+}
+
 export {
 	getDistanceByPoints,
 	getInfoPoint,
@@ -177,7 +320,10 @@ export {
 	getGeoBoxByZoomOrRadius,
 	getGeoBox,
 	getArea,
+	getTotalDistance,
 	checkOverlapsPolygon,
 	pixelsToMeters,
-	polygonCallout
+	polygonCallout,
+	lineCallout,
+	generatePolygonFromLines
 }

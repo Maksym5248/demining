@@ -1,11 +1,11 @@
 import * as turf from '@turf/turf';
 
-import { IPoint, IPolygon, ILine } from "~/types";
+import { IPoint, IPolygon, ISimpleLine } from "~/types";
 
 import { createArrFromPoint, createPointFromArr } from './fabric';
 import { getDistanceByPoints } from './common';
 
-function getClosestPointOnLine(point: IPoint, line: ILine) {
+function getClosestPointOnLine(point: IPoint, line: ISimpleLine) {
 	const turfLine = turf.lineString([[line.start.lng, line.start.lat], [line.end.lng, line.end.lat]]);
 	const turfPoint = turf.point([point.lng, point.lat]);
 
@@ -14,7 +14,7 @@ function getClosestPointOnLine(point: IPoint, line: ILine) {
 	return createPointFromArr(snapped.geometry.coordinates);
 }
 
-function getClosestDistanceOnLine(point: IPoint, line: ILine) {
+function getClosestDistanceOnLine(point: IPoint, line: ISimpleLine) {
 	const turfLine = turf.lineString([[line.start.lng, line.start.lat], [line.end.lng, line.end.lat]]);
 	const distance = turf.pointToLineDistance(createArrFromPoint(point), turfLine);
 

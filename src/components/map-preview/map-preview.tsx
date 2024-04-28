@@ -1,11 +1,11 @@
 import { memo, useState, useRef, useEffect } from "react";
 
 import { Button, Tooltip, Typography } from "antd";
-import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon } from '@react-google-maps/api';
+import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { Dayjs } from "dayjs";
 
-import { useFitBounds, useMapOptions, useVisibleMap } from "~/hooks";
-import { ICircle, IPoint, IPolygon } from "~/types/map";
+import { useMapOptions, useVisibleMap } from "~/hooks";
+import { ICircle, ILine, IPoint, IPolygon } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
 import { withMapProvider } from "~/hoc";
 import { mapUtils } from "~/utils";
@@ -19,11 +19,13 @@ import { MapInfo } from "../map-info";
 import { usePolygonCallout } from "./use-polygon-callout";
 import { useMarkerCallout } from "./use-marker-callout";
 import { MapZoomView } from "../map-zoom-view";
+import { useLineCallout } from "./use-line-callout";
 
 interface IMapViewProps extends Pick<GoogleMapProps, "children" | "mapContainerStyle"> {
 	marker?: IPoint | undefined;
 	circle?: ICircle | undefined;
 	polygon?: IPolygon | undefined;
+	line?: ILine | undefined;
 	zoom?: number;
 	date?: Dayjs;
 	explosiveObjects?: string[];
@@ -44,13 +46,14 @@ function Component({
 	marker,
 	circle,
 	polygon,
+	line,
 	city,
 	onChange,
 	initialZoom,
 	...rest
 }: IMapViewProps) {	
 	const {
-		 mapOptions, polygonOptions, circleOptions, toggleMapType
+		 mapOptions, polygonOptions, circleOptions, toggleMapType, lineOptions
 	 } = useMapOptions({ isPictureType: true });
 
 	const mapRef = useRef<google.maps.Map>();
@@ -73,6 +76,7 @@ function Component({
 		mapRef?.current?.setZoom(value);
 	};
 
+	const lineCallout = useLineCallout({ line, zoom, isVisibleMap, offset: 20 })
 	const polygonCallout = usePolygonCallout({ polygon, zoom, isVisibleMap, offset: 20 })
 	const markerCallout = useMarkerCallout({ marker, zoom, mapRef, polygonCallout, isVisibleMap});
 
@@ -80,26 +84,19 @@ function Component({
 		if(initialZoom && isVisibleMap){
 			mapRef?.current?.setZoom(initialZoom);
 		}
-	}, [isVisibleMap]);
-
-	useFitBounds({
-		marker,
-		markerCallout,
-		circle,
-		polygon,
-		polygonCallout,
-		mapRef,
-		isVisibleMap,
-		isSkip: !!initialZoom
-	})
+	}, [isVisibleMap, initialZoom]);
 
 	const isVisiblePolygon = !!polygon?.points.length;
+	const isVisibleLine = !!line?.points.length;
 	const isVisibleCircle = !!circle?.center && circle?.radius;
 	const isVisibleMarker = !!marker;
 	const isVisibleMarkerCallout = isVisibleMarker && explosiveObjects?.length && date && !!markerCallout;
 	const isVisiblePolygonCallout = isVisiblePolygon;
+	const isVisibleLineCallout = isVisibleLine;
 
-	const area = getArea(circle, polygon);
+	const area = getArea(circle, polygon, line);
+	const center = mapUtils.getInfoPoint({ marker, circle, polygon, line});
+	const distance = mapUtils.getTotalDistance({ line, polygon });
 
 	return (
 		<div css={s.container}>
@@ -107,7 +104,7 @@ function Component({
 				mapContainerStyle={s.mapContainerStyle}
 				onZoomChanged={onZoomChanged}
 				zoom={MAP_ZOOM.DEFAULT}
-				center={marker ?? position}
+				center={center}
 				options={mapOptions}
 				onLoad={onLoadMap}
 				{...rest}
@@ -160,6 +157,17 @@ function Component({
 						points={polygonCallout}
 					/>
 				)}
+				{isVisibleLine && (
+					<Polyline
+						options={lineOptions}
+						path={line?.points}
+					/>
+				)}
+				{isVisibleLineCallout && (
+					<PolygonCallout 
+						points={lineCallout}
+					/>
+				)}
 				{!!city && (
 					<div css={[s.callout, s.calloutCity]}>
 						<Typography.Text css={[s.calloutText, s.calloutPolygonText]}>{city}</Typography.Text>
@@ -168,7 +176,11 @@ function Component({
 				{isEdit && (
 					<MapZoomView zoom={zoom} onChange={onChangeZoomView}/>
 				)}
-				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
+				<MapInfo 
+					point={center}
+					distance={distance}
+				    area={area}
+				/>
 			</GoogleMap>
 		</div>
 	);

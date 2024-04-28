@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 
 import { mapUtils} from "~/utils";
-import { ICircle, IPolygon } from "~/types/map";
+import { ICircle, ILine, IPolygon } from "~/types/map";
 
 import { DrawingType } from "../map.types";
 
@@ -11,6 +11,7 @@ interface IUseCircleParams {
     drawing:DrawingType,
     circle?: ICircle;
     setPolygon: (value?: IPolygon | undefined) => void;
+	setLine: (value?: ILine | undefined) => void;
 	setCircle: (value?: ICircle  | undefined) => void;
 }
 
@@ -20,6 +21,7 @@ export function useCircle({
 	drawing,
 	circle,
 	setPolygon,
+	setLine,
 	setCircle,
 }: IUseCircleParams) {
 	const circleRef = useRef<google.maps.Circle>();
@@ -63,6 +65,7 @@ export function useCircle({
 		if(drawing === DrawingType.CIRCLE && !isCreating && !circle){
 			setCreating(true);
 			setPolygon(undefined);
+			setLine(undefined);
 			setCircle({
 				center: point,
 				radius: 0,

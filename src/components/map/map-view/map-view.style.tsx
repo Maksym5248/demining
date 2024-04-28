@@ -60,6 +60,22 @@ const calloutDivider = Theme.css(`
 	height: 2px;
 `);
 
+const inputNumberContainer = Theme.css(`
+	position: absolute;
+	bottom: 60px;
+	left: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	zIndex: 99999;
+`);
+
+const inputNumber = Theme.css(`
+	width: 250px;
+	background-color: #fff;
+	border-radius: 4px;
+`);
+
 
 const mapContainerStyle = {
 	width: '100%',
@@ -75,6 +91,8 @@ export const s = {
 	callout,
 	calloutHeader,
 	calloutText,
-	calloutDivider
+	calloutDivider,
+	inputNumberContainer,
+	inputNumber
 }
     

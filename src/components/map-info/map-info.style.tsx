@@ -21,7 +21,7 @@ const content = Theme.css(({ token }) => (`
 	border: 1px solid ${token.colorBorderBg};
 	border-radius: ${token.borderRadius}px;
 	margin: 0 8px 8px 0;
-	gap: 16px;
+	gap: 4px;
 `));
 
 const group = Theme.css(({ token }) => (`
@@ -45,7 +45,7 @@ const divider = Theme.css(({ token }) => (`
 
 const areaItem = Theme.css(({ token }) => (`
 	color: ${token.colorWhite};
-	width: 200px;
+	width: 140px;
 	color: ${token.colorIcon};
 `));
 

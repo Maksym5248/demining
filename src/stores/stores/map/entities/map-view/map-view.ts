@@ -14,6 +14,11 @@ export const Circle = types.model('Circle', {
 	radius: types.number
 });
 
+export const Line = types.model('Line', {
+	points: types.array(Point),
+	width: types.number,
+});
+
 export const Polygon = types.model('Polygon', {
 	points: types.array(Point),
 });
@@ -23,6 +28,7 @@ export const MapViewAction = types.model('MapViewAction', {
 	marker: types.maybe(Point),
 	circle: types.maybe(Circle),
 	polygon: types.maybe(Polygon),
+	line: types.maybe(Line),
 	zoom: types.number,
 	createdAt: types.dayjs,
 	updatedAt: types.dayjs
