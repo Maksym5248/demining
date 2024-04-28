@@ -137,7 +137,7 @@ const Entity = types.model('MissionReport', {
 			squadLead: squadLeaderAction?.signName ?? "",
 			squadPosition: squadActions.reduce((prev, el, i) => `${prev}${el.position}${squadActions.length - 1 !== i ? `\n`: ""}`, ""),
 			squadName: squadActions.reduce((prev, el, i) => `${prev}${el.signName}${squadActions.length - 1 !== i ? `\n`: ""}`, ""),
-			polygon: mapView?.polygon?.points.map((el: IPoint, i:number) => ({ lat: `${el.lat}°`, lng: `${el.lng}°`, name: i === 0 ? "СТ" : `ПТ${i}`})) ?? [],
+			polygon: (mapView?.polygon || mapView?.line)?.points.map((el: IPoint, i:number) => ({ lat: `${el.lat}°`, lng: `${el.lng}°`, name: i === 0 ? "СТ" : `ПТ${i}`})) ?? [],
 		}
 	}
 })).views((self) => ({
