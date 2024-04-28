@@ -3,7 +3,7 @@ import { Dayjs } from 'dayjs';
 import { dates } from '~/utils';
 import { IMapViewActionDTO, IMapViewActionDTOParams } from '~/api';
 import { ILinkedToDocumentDB } from '~/db';
-import { ICircle, IPoint, IPolygon } from '~/types';
+import { ICircle, ILine, IPoint, IPolygon } from '~/types';
 
 
 
@@ -12,6 +12,7 @@ export interface IMapViewActionValue extends Omit<ILinkedToDocumentDB, "executed
     marker?: IPoint;
     circle?: ICircle;
 	polygon?: IPolygon;
+	line?: ILine;
     zoom: number;
 	executedAt?: Date;
     createdAt: Dayjs;
@@ -22,6 +23,7 @@ export interface IMapViewActionValueParams extends IMapViewActionValue {
 	id: string;
     marker: IPoint;
     circle?: ICircle;
+	line?: ILine;
 	polygon?: IPolygon;
     zoom: number;
 };
@@ -39,6 +41,13 @@ export const createMapViewDTO = (value?: IMapViewActionValueParams): IMapViewAct
 			lng: value.circle.center.lng,
 		},
 		radius: value.circle.radius,
+	} : null,
+	line: value?.line ? {
+		points: value?.line?.points.map(el => ({
+			lat: el.lat,
+			lng: el.lng,
+		})),
+		width: value.line.width,
 	} : null,
 	polygon: value?.polygon ? {
 		points: value?.polygon?.points.map(el => ({
@@ -69,6 +78,13 @@ export const createMapView = (value: IMapViewActionDTO): IMapViewActionValue => 
 			lat: el.lat,
 			lng: el.lng,
 		}))
+	} : undefined,
+	line: value?.line ? {
+		points: value?.line?.points.map(el => ({
+			lat: el.lat,
+			lng: el.lng,
+		})),
+		width: value.line.width,
 	} : undefined,
 	zoom: value.zoom,
 	createdAt: dates.fromServerDate(value.createdAt),

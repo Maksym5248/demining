@@ -7,7 +7,7 @@ export function useValues<T>(initialValue = {}) {
 
 	return useMemo(
 		() => ({
-			get: (id: string) => data[id],
+			get: (id?: string) => id ? data[id]: data,
 			includes: (id: string) => !!data[id],
 			update: (key: string, value: Partial<T>) => {
 				data[key] = isObject(value) ? { ...data[key], ...value } : value;

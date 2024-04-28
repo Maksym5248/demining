@@ -123,6 +123,11 @@ export interface ICircleDB {
     radius: number;
 }
 
+export interface ILineDB {
+    points: IPointDB[];
+    width: number;
+}
+
 export interface IPolygonDB {
     points: IPointDB[];
 }
@@ -130,6 +135,7 @@ export interface IPolygonDB {
 export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB  {
     marker: IMarkerDB | null;
     circle: ICircleDB | null;
+    line: ILineDB | null;
     polygon: IPolygonDB | null;
     zoom: number;
     geo: IGeoDB | null;

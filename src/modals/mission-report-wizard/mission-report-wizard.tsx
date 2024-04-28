@@ -34,6 +34,37 @@ interface Props {
   mode: WIZARD_MODE
 }
 
+const removeId = ({id, ...rest}: { id: string }) => rest;
+
+const createCopyValue = (currentMissionReport?: IMissionReport | null) => ({
+	approvedAt: currentMissionReport?.approvedAt,
+	approvedById: currentMissionReport?.approvedByAction?.employeeId,
+	number: currentMissionReport?.number,
+	subNumber: currentMissionReport?.subNumber,
+	executedAt: currentMissionReport?.executedAt,
+	orderId: currentMissionReport?.order?.id,
+	missionRequestId: currentMissionReport?.missionRequest?.id,
+	checkedTerritory: currentMissionReport?.checkedTerritory,
+	depthExamination: currentMissionReport?.depthExamination,
+	uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
+	uncheckedReason: currentMissionReport?.uncheckedReason,
+	workStart: currentMissionReport?.workStart,
+	exclusionStart: currentMissionReport?.exclusionStart,
+	transportingStart: currentMissionReport?.transportingStart,
+	destroyedStart: currentMissionReport?.destroyedStart,
+	workEnd: currentMissionReport?.workEnd,
+	transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
+	transportHumansId: currentMissionReport?.transportHumans?.transportId,
+	mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
+	explosiveObjectActions: currentMissionReport?.explosiveObjectActions.map((el) => el.value).map(removeId) ?? [],
+	explosiveActions: currentMissionReport?.explosiveActions.map((el) => el.value).map(removeId)  ?? [],
+	squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
+	squadIds: currentMissionReport?.squadActions.map(el => el.employeeId) ?? [],
+	address: currentMissionReport?.address,
+	addressDetails: currentMissionReport?.addressDetails,
+	mapView: currentMissionReport?.mapView ? removeId(currentMissionReport?.mapView) : undefined,
+})
+
 const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
 	approvedAt: currentMissionReport?.approvedAt,
 	approvedById: currentMissionReport?.approvedByAction?.employeeId,
@@ -188,6 +219,16 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 		hide();
 	};
 
+	const onCopy = async () => {
+		const values = createCopyValue(currentMissionReport);
+
+		await missionReport.create.run({
+			...values,
+			squadIds: values.squadIds.filter(el => !!el)
+		});
+		hide();
+	};
+
 	useEffect(() => {
 		if(id){
 			missionReport.fetchItem.run(id)
@@ -246,7 +287,13 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 							key: 'KML',
 							icon: <Icon.DownloadOutlined />,
 							onClick: onLoadKmlFile,
-						}]: [])
+						}]: []),
+						...(wizard.isView && currentMissionReport ? [{
+							label: 'Копіювати',
+							key: 'copy',
+							icon: <Icon.CopyOutlined />,
+							onClick: () => onCopy(),
+						}]: []),
 					]}
 				>
 					{wizard.isView && (

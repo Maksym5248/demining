@@ -67,7 +67,6 @@ export function DrawingManager({
 			<Button.Group>
 				<Tooltip placement="bottomRight" title="Показати умовні позначення" arrow>
 					<Button
-						size="large"
 						onClick={onToggleMapType}
 						icon={<Icon.TagOutlined /> }
 						disabled={false}
@@ -79,7 +78,6 @@ export function DrawingManager({
 				</Tooltip>
 				<Tooltip placement="bottomRight" title="Показати обстежені ділянки в зоні" arrow>
 					<Button
-						size="large"
 						loading={isLoadingVisibleInArea && canVisibleInArea}
 						onClick={canVisibleInArea ?_onChangeShowInArea : undefined}
 						css={getClassShowArea()}
@@ -88,7 +86,6 @@ export function DrawingManager({
 				</Tooltip>
 				<Tooltip placement="bottomRight" title="Прилипання" arrow>
 					<Button
-						size="large"
 						onClick={_onChangeStick}
 						css={isActiveStick ? s.activeButton: undefined}
 						icon={<Icon.BuildOutlined /> }
@@ -96,10 +93,11 @@ export function DrawingManager({
 				</Tooltip>
 			</Button.Group>
 			
-			<Radio.Group value={value} onChange={_onChange} size="large">
+			<Radio.Group value={value} onChange={_onChange}>
 				<Radio.Button value={DrawingType.MOVE} css={s.button}><Icon.Cursor /></Radio.Button>
 				<Radio.Button value={DrawingType.MARKER} css={s.button}><Icon.Marker /></Radio.Button>
 				<Radio.Button value={DrawingType.CIRCLE} css={s.button}><Icon.Circle /></Radio.Button>
+				<Radio.Button value={DrawingType.LINE} css={s.button}><Icon.ShareAltOutlined /></Radio.Button>
 				<Radio.Button value={DrawingType.POLYGON} css={s.button}><Icon.Polygon /></Radio.Button>
 			</Radio.Group>
 
@@ -116,7 +114,6 @@ export function DrawingManager({
 				
 					>
 						<Button
-							size="large"
 							danger
 							icon={<Icon.ClearOutlined /> }
 						/>

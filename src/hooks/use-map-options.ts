@@ -56,6 +56,25 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		strokeWeight: 2,
 	}
 
+	const lineOptions = {
+		fillOpacity: 0,
+		fillColor: '#ff0000',
+		strokeColor: '#ff0000',
+		strokeWeight: 2,
+		draggable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
+		editable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
+	}
+
+	const linePolygonOptions = {
+		fillOpacity: 0.3,
+		fillColor: '#A0A0A0',
+		strokeColor: '#A0A0A0',
+		strokeWeight: 2,
+		draggable: false,
+		editable: false,
+		clickable: false
+	}
+
 	const createPolygonOptions = {
 		fillOpacity: 0,
 		fillColor: '#ff0000',
@@ -73,9 +92,11 @@ export const useMapOptions = ({ isPictureType, isCreating, drawing }: { isPictur
 		mapOptions,
 		polygonOptions,
 		circleOptions,
+		lineOptions,
 		polylineOptions,
 		createPolygonOptions,
 		gridOptions,
 		toggleMapType,
+		linePolygonOptions
 	}
 }

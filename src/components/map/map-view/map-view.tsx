@@ -1,10 +1,11 @@
 import { memo, useEffect, useRef, useState } from "react";
 
 import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
+import { InputNumber } from "antd";
 
-import { ICircle, IMarker, IPoint, IPolygon } from "~/types/map";
+import { ICircle, ILine, IMarker, IPoint, IPolygon } from "~/types/map";
 import { MAP_ZOOM } from "~/constants";
-import { useMapOptions, useValues, useFitBounds, useVisibleMap } from "~/hooks";
+import { useMapOptions, useValues, useVisibleMap } from "~/hooks";
 import { mapUtils, mathUtils } from "~/utils";
 import { withMapProvider } from "~/hoc";
 import { MapInfo } from "~/components/map-info";
@@ -16,6 +17,7 @@ import { DrawingType, IMapViewProps } from "../map.types";
 import { usePolygon } from "./usePolygon";
 import { useCircle } from "./useCircle";
 import { MapZoomView } from "../../map-zoom-view";
+import { useLine } from "./useLine";
 
 const circlesOptions = {
 	fillOpacity: 0.3,
@@ -42,10 +44,12 @@ function Component({
 	initialCircle,
 	initialPolygon,
 	initialZoom,
+	initialLine,
 	onChange,
 	position,
 	circles,
 	polygons,
+	lines,
 	onChangeGeobox,
 	isLoadingVisibleInArea,
 	minZoomLoadArea = 16,
@@ -55,7 +59,7 @@ function Component({
 	const [isCreating, setCreating] = useState(false);
 
 	const {
-		mapOptions, polygonOptions, circleOptions, createPolygonOptions, toggleMapType
+		mapOptions, polygonOptions, circleOptions, createPolygonOptions, toggleMapType, lineOptions, linePolygonOptions
 	} = useMapOptions({ isPictureType: false, isCreating, drawing});
 
 	const mapRef = useRef<google.maps.Map>();
@@ -64,52 +68,62 @@ function Component({
 	const [isVisibleInArea, setVisibleInArea] = useState(false);
 	const values = useValues();
 
-	const [center, setCenter] = useState<IMarker | undefined>(initialMarker ?? position);
+	const initialCenter = mapUtils.getInfoPoint({
+		marker: initialMarker,
+		circle: initialCircle,
+		polygon: initialPolygon,
+		line: initialLine
+	});
+
+	const [center, setCenter] = useState<IMarker | undefined>(initialCenter ?? position);
 	const [marker, setMarker] = useState<IMarker | undefined>(initialMarker);
 	const [circle, setCircle] = useState<ICircle | undefined>(initialCircle);
+	const [line, setLine] = useState<ILine | undefined>(initialLine);
 	const [polygon, setPolygon] = useState<IPolygon | undefined>(initialPolygon);
 	const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 
 	const isVisibleMap = useVisibleMap({ mapRef });
 
-	const _onChange = () => {
-		const newValue = {
-			polygon,
-			circle,
-			marker,
-			zoom,
-		};
+	const area = mapUtils.getArea(circle, polygon, line);
 
+	const _onChange = () => {
 		onChange?.({
-			marker: newValue.marker ?{
-				lat: mathUtils.toFixed(newValue.marker?.lat, 9),
-				lng: mathUtils.toFixed(newValue.marker?.lng, 9),
+			marker: marker ?{
+				lat: mathUtils.toFixed(marker?.lat, 9),
+				lng: mathUtils.toFixed(marker?.lng, 9),
 			}: undefined,
-			polygon: newValue.polygon ? {
-				points: newValue.polygon.points.map(el => ({
+			line: !!line && (line?.points?.length ?? 0) >= 2 ? {
+				points: line.points.map(el => ({
+					lat: mathUtils.toFixed(el.lat, 9),
+					lng: mathUtils.toFixed(el.lng, 9),
+				})),
+				width: line.width,
+			} : undefined,
+			polygon: polygon ? {
+				points: polygon.points.map(el => ({
 					lat: mathUtils.toFixed(el.lat, 9),
 					lng: mathUtils.toFixed(el.lng, 9),
 				}))
 			} : undefined,
-			circle: newValue.circle ? {
+			circle: circle ? {
 				center:  {
-					lat: mathUtils.toFixed(newValue.circle?.center.lat, 9),
-					lng: mathUtils.toFixed(newValue.circle?.center.lng, 9)
+					lat: mathUtils.toFixed(circle?.center.lat, 9),
+					lng: mathUtils.toFixed(circle?.center.lng, 9)
 				},
-				radius: mathUtils.toFixed(newValue.circle?.radius, 9),
+				radius: mathUtils.toFixed(circle?.radius, 9),
 			} : undefined,
-			zoom: mathUtils.toFixed(newValue.zoom, 9),
-			area: mapUtils.getArea(newValue.circle, newValue.polygon),
+			zoom: mathUtils.toFixed(zoom, 9),
+			area
 		})
 	}
 
 	useEffect(() => {
-		if(values.get("isInitialized") && !isCreating) {
+		if(values.get("isInitialized") && (!isCreating || drawing === DrawingType.LINE)) {
 			_onChange();
 		};
 
 		values.set("isInitialized", true)
-	}, [polygon, circle, marker, zoom, isCreating]);
+	}, [polygon, circle, marker, zoom, line, isCreating]);
 
 	const _onChangeGeobox = () => {
 		if(!onChangeGeobox || !mapRef.current || !isVisibleInArea) return;
@@ -129,6 +143,19 @@ function Component({
 		onChangeGeobox?.({ box, zoom: mapRef.current.getZoom() as number})
 	}
 
+	const lineManager = useLine({
+		isCreating,
+		setCreating,
+		drawing,
+		line,
+		setPolygon,
+		setCircle,
+		setLine,
+		polygons,
+		isActiveStick,
+		mapRef,
+	});
+	
 	const polygonManager = usePolygon({
 		isCreating,
 		setCreating,
@@ -136,6 +163,7 @@ function Component({
 		polygon,
 		setPolygon,
 		setCircle,
+		setLine,
 		polygons,
 		isActiveStick,
 		mapRef,
@@ -148,15 +176,8 @@ function Component({
 		circle,
 		setPolygon,
 		setCircle,
+		setLine,
 	});
-
-	useFitBounds({
-		marker: initialMarker,
-		circle: initialCircle,
-		polygon: initialPolygon,
-		mapRef,
-		isVisibleMap
-	})
 	
 	const onLoadMap = (map:google.maps.Map) => {
 		mapRef.current = map;
@@ -197,6 +218,7 @@ function Component({
 		setCreating(false);
 		circleManager.clear();
 		polygonManager.clear();
+		lineManager.clear();
 	}
 
 	const onClickMap = (e: google.maps.MapMouseEvent) => {
@@ -210,6 +232,10 @@ function Component({
 
 		if(drawing === DrawingType.CIRCLE){
 			circleManager.onClickMap(e)
+		}
+
+		if(drawing === DrawingType.LINE){
+			lineManager.onClickMap(e)
 		}
 
 		if(drawing === DrawingType.POLYGON){
@@ -230,7 +256,6 @@ function Component({
 	}
 
 	const isVisibleMarker = !!marker;
-	const area = mapUtils.getArea(circle, polygon);
 
 	return (
 		<div css={s.container}>
@@ -260,7 +285,13 @@ function Component({
 				  isVisibleInArea={isVisibleInArea}
 				  onChangeVisibleInArea={onChangeVisibleInArea}
 				  onChangeStick={setActiveStick}
-				  isDisabledClean={!polygonManager.isVisiblePolygon && !circleManager.isVisibleCircle && !isVisibleMarker && !polygonManager.isVisiblePolyline}
+				  isDisabledClean={
+						!polygonManager.isVisiblePolygon
+						&& !circleManager.isVisibleCircle
+						&& !isVisibleMarker 
+						&& !polygonManager.isVisiblePolyline
+						&& !lineManager.isVisiblePolyline
+					}
 				  isLoadingVisibleInArea={isLoadingVisibleInArea}
 				  />
 				{isVisibleMarker && <Marker position={marker} />}
@@ -298,6 +329,13 @@ function Component({
 						path={item?.points}
 					/>
 				)))}
+				{isVisibleInArea && !!lines?.length && (lines.map((item, index) => (
+					<Polygon
+						key={index}
+						options={polygonsOptions}
+						path={item?.points}
+					/>
+				)))}
 				{polygonManager.isVisiblePolyline && (
 					<Polyline
 						onLoad={polygonManager.onLoadPolyline}
@@ -307,9 +345,40 @@ function Component({
 						onMouseUp={polygonManager.onMouseUpPolyline}
 					/>
 				)}
+				{lineManager.isVisiblePolyline && (
+					<Polyline
+						onLoad={lineManager.onLoadPolyline}
+						path={line?.points}
+						options={lineOptions}
+						onDragEnd={lineManager.onDragEndPolyline}
+						onMouseUp={lineManager.onMouseUpPolyline}
+					/>
+				)}
+				{lineManager.isVisiblePolygon && !!line && (
+					<Polygon
+						options={linePolygonOptions}
+						path={mapUtils.generatePolygonFromLines(line)?.points}
+					/>
+				)}
+				{lineManager.isVisiblePolylineInput && (
+					<div css={s.inputNumberContainer}>
+						<InputNumber
+							addonBefore="Ширина" 
+							addonAfter="м" 
+							value={line?.width}
+							onChange={lineManager.onChangeLineWidth}
+							css={s.inputNumber}
+							disabled={false}
+						/>
+					</div>
+				)}
 				<Autocomplete onPlaceChanged={onPlaceChanged} />
 				<MapZoomView zoom={zoom} onChange={onChangeZoomView}/>
-				<MapInfo point={mapUtils.getInfoPoint({ marker, circle, polygon})} area={area}/>
+				<MapInfo 
+					point={mapUtils.getInfoPoint({ marker, circle, polygon, line})}
+					distance={mapUtils.getTotalDistance({ line, polygon })}
+				    area={area}
+				/>
 			</GoogleMap>
 		</div>
 	);

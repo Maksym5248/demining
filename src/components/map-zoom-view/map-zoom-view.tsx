@@ -25,14 +25,12 @@ export function MapZoomView({
 			<Button
 				onClick={onZoomOut}
 				icon={<Icon.PlusOutlined />}
-				disabled={zoom === 1}
 				css={[s.button, s.buttonZoomOut]}
 			/>
 			<Button
 				css={[s.button, s.buttonZoomIn]}
 				icon={<Icon.MinusOutlined />}
 				onClick={onZoomIn}
-				disabled={zoom === 20}
 			/>
 		</div>
 	);
