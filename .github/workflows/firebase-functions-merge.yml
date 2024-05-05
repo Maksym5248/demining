@@ -16,7 +16,6 @@ jobs:
               with:
                   node-version: 18
             - name: Install Firebase CLI
-              working-directory: ./functions
               run: yarn global add firebase-tools
             - name: Install dependencies
               working-directory: ./functions
@@ -26,4 +25,4 @@ jobs:
               with:
                   credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}'
             - name: Deploy to Firebase
-              run: firebase deploy --project dsns-56583 --only functions
+              run: cd ./functions && firebase deploy --project dsns-56583 --only functions
