@@ -18,7 +18,7 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Deploy to Firebase
-              uses: jsryudev/deploy-firebase-functions@v20.0.0
+              uses: jsryudev/deploy-firebase-functions@v18.0.0
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}
                   FIREBASE_PROJECT: dsns-dev-85963
