@@ -19,11 +19,9 @@ jobs:
               run: yarn global add firebase-tools
             - name: Install dependencies
               run: yarn install
-            - name: Login to Firebase
+            - name: Deploy to Firebase
               env:
                   GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}
-              run: firebase login:ci
-            - name: Select Firebase project
-              run: firebase use dsns-dev-85963
-            - name: Deploy Firebase Functions
-              run: firebase deploy --only functions
+              run: |
+                  echo "$GOOGLE_APPLICATION_CREDENTIALS" > service-account.json
+                  npx firebase deploy --project dsns-dev-85963 --only functions
