@@ -17,10 +17,8 @@ jobs:
                   node-version: 18
             - name: Install Firebase CLI
               run: yarn global add firebase-tools
-            - name: Open functions
-              run: cd ./functions
             - name: Install dependencies
-              run: yarn install
+              run: cd ./functions && yarn install
             - name: Create service account
               uses: 'google-github-actions/auth@v2'
               with:
