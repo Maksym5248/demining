@@ -15,10 +15,11 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 18
+            - name: Install Firebase CLI
+              run: yarn global add firebase-tools
             - name: Install dependencies
               run: yarn install
-            - name: Deploy to Firebase
-              uses: jsryudev/deploy-firebase-functions@v18.0.0
+            - name: Deploy Firebase Functions
               env:
-                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}
-                  FIREBASE_PROJECT: dsns-dev-85963
+                  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}
+              run: firebase deploy --project dsns-dev-85963 --only functions # Deploy only functions
