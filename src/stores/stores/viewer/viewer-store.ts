@@ -28,25 +28,6 @@ const Store = types
 		setLoadingUserInfo(value: boolean) {
 			self.isLoadingUserInfo = value;
 		},
-	})).actions((self) => ({
-		async getUserData(id: string, email:string) {
-			try {
-
-				let user = await Api.user.get(id);
-
-				if(!user) {
-					user = await Api.user.create({ id, email });
-				}
-
-				self.setUser(user)
-			} catch(e){
-				Logger.error(e);
-				message.error('Bиникла помилка');
-				self.removeUser();
-			}
-			
-			self.setLoadingUserInfo(false);
-		},
 	}));
 
 
@@ -54,15 +35,25 @@ const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }
 	try {
 		flow.start();
 
-		Auth.onAuthStateChanged((user) => {
-			if(user){
-				Analytics.setUserId(user.uid)
-				self.getUserData(user.uid, user.email as string);
-			}  else {
-				Analytics.setUserId(null)
+		Auth.onAuthStateChanged(async (user) => {
+			try {
+				if(user){
+					Analytics.setUserId(user.uid);
+					await Auth.refreshToken();
+					const res = await Api.user.get(user.uid);
+
+					if(res) self.setUser(res);
+				}  else {
+					Analytics.setUserId(null)
+					self.removeUser();
+				}
+			} catch(e){
+				Logger.error(e);
+				message.error('Bиникла помилка');
 				self.removeUser();
-				self.setLoadingUserInfo(false);
 			}
+
+			self.setLoadingUserInfo(false);
 		})
 
 		flow.success();
