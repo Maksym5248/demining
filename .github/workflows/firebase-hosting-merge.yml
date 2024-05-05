@@ -31,3 +31,4 @@ jobs:
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}'
                   channelId: live
                   projectId: dsns-56583
+                  entryPoint: ./web
