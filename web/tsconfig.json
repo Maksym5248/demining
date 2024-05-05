@@ -19,5 +19,5 @@
         }
     },
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
-    "exclude": ["functions", "node_modules", "**/*.js", "**/*.jsx", "*.js"]
+    "exclude": ["node_modules", "**/*.js", "**/*.jsx", "*.js"]
 }

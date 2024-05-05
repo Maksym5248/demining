@@ -16,11 +16,14 @@ jobs:
               with:
                   node-version: 18
             - name: Create .env file
+              working-directory: ./web
               run: |
                   echo "${{ secrets.ENV_DEV }}" > .env
             - name: Install dependencies
+              working-directory: ./web
               run: yarn install
             - name: Build project
+              working-directory: ./web
               run: yarn build
             - uses: FirebaseExtended/action-hosting-deploy@v0
               with:
@@ -28,3 +31,4 @@ jobs:
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
                   channelId: live
                   projectId: dsns-dev-85963
+                  entryPoint: ./web
