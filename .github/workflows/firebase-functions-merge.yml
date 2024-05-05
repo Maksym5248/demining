@@ -19,6 +19,8 @@ jobs:
               run: yarn global add firebase-tools
             - name: Install dependencies
               run: yarn install
+            - name: Select project
+              run: firebase use dsns-dev-85963
             - name: Deploy Firebase Functions
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
