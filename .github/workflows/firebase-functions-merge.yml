@@ -21,7 +21,10 @@ jobs:
               run: yarn install
             - name: Select project
               run: firebase use dsns-dev-85963
-            - name: Deploy Firebase Functions
+            - name: Authenticate with Firebase
               env:
-                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-              run: firebase deploy --only functions --token "${FIREBASE_TOKEN}"
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }} # Set your Firebase token as a secret
+              run: firebase --interactive login:ci --token "${FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963}" # Authenticate Firebase CLI
+
+            - name: Deploy Firebase Functions
+              run: firebase deploy --only functions # Deploy only functions
