@@ -7,9 +7,10 @@ import { asyncAction } from '../../utils';
 
 const Store = types.model('AuthStore');
 
-const signInWithGoogle = asyncAction<Instance<typeof Store>>(() => async ({ flow }) => {
+const signInWithGoogle = asyncAction<Instance<typeof Store>>(() => async ({ flow, root }) => {
 	try {
 		flow.start();
+		root.viewer.setLoading(true);
 
 		await Auth.signInWithGoogle()
 
@@ -20,9 +21,10 @@ const signInWithGoogle = asyncAction<Instance<typeof Store>>(() => async ({ flow
 	}
 });
 
-const signInOut = asyncAction<Instance<typeof Store>>(() => async ({ flow }) => {
+const signInOut = asyncAction<Instance<typeof Store>>(() => async ({ flow, root }) => {
 	try {
 		flow.start();
+		root.viewer.setLoading(true);
 
 		await Auth.signOut();
 
@@ -33,9 +35,10 @@ const signInOut = asyncAction<Instance<typeof Store>>(() => async ({ flow }) => 
 	}
 });
 
-const signUpWithEmail = asyncAction<Instance<typeof Store>>((email:string, password: string) => async ({ flow }) => {
+const signUpWithEmail = asyncAction<Instance<typeof Store>>((email:string, password: string) => async ({ flow, root }) => {
 	try {
 		flow.start();
+		root.viewer.setLoading(true);
 
 		await Auth.createUserWithEmailAndPassword(email, password);
 
@@ -46,9 +49,10 @@ const signUpWithEmail = asyncAction<Instance<typeof Store>>((email:string, passw
 	}
 });
 
-const signInWithEmail = asyncAction<Instance<typeof Store>>((email:string, password: string) => async ({ flow }) => {
+const signInWithEmail = asyncAction<Instance<typeof Store>>((email:string, password: string) => async ({ flow, root }) => {
 	try {
 		flow.start();
+		root.viewer.setLoadingUserInfo(true);
 
 		await Auth.signInWithEmailAndPassword(email, password);
 
