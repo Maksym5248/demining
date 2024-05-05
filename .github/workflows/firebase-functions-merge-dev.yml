@@ -22,7 +22,7 @@ jobs:
             - name: Login to Firebase
               env:
                   GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}
-              run: firebase login
+              run: firebase login:ci
             - name: Select Firebase project
               run: firebase use dsns-dev-85963
             - name: Deploy Firebase Functions
