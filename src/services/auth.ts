@@ -10,12 +10,17 @@ import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword
 } from "firebase/auth";
+import { httpsCallable, getFunctions } from "firebase/functions";
 
 class AuthClass {
 	googleProvide = new GoogleAuthProvider();
 
 	private get auth(){
 		return getAuth(getApp())
+	}
+
+	private get functions(){
+		return getFunctions(getApp())
 	}
 
 	uuid(){
@@ -40,6 +45,13 @@ class AuthClass {
 	
 	async signInWithEmailAndPassword(email:string, password: string){
 		await signInWithEmailAndPassword(this.auth, email, password);
+	}
+
+	async refreshToken(){
+		const run = httpsCallable(this.functions, 'refreshToken');
+		await run();
+
+		return this.auth?.currentUser?.getIdToken(true);
 	}
 }
 

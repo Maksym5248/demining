@@ -5,7 +5,7 @@ service cloud.firestore {
   
     match /USER/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
-      allow create: if (isUserSelf(userId) && isArrayEmpty("roles")) || isRootAdmin();
+      allow create: if false;
       allow update: if (isUserSelf(userId) && disableUpdateKeys(["roles"])) || isRootAdmin() || (isOrganizationAdmin() && isNoOrganization(userId) && hasOnly(["organizationId", "updatedAt"]));
       allow delete: if isRootAdmin();
     }
@@ -21,44 +21,35 @@ service cloud.firestore {
     }
     
     match /EXPLOSIVE_OBJECT/{explosiveObjectId} {
-    	allow read: if request.auth != null && (isOrganization() || isRootAdmin());
+    	allow read: if isAuth() && (isOrganization() || isRootAdmin());
       allow create: if isRootAdmin() || isOrganizationAdmin();
       allow update, delete: if isRootAdmin();
     }
     
     match /EXPLOSIVE/{explosiveId} {
-      allow read: if request.auth != null && (isOrganization() || isRootAdmin());
+      allow read: if isAuth() && (isOrganization() || isRootAdmin());
       allow create: if isRootAdmin() || isOrganizationAdmin();
       allow update, delete: if isRootAdmin();
     }
 
+    function isAuth() {
+      return request.auth != null;
+    } 
+
     function isRootAdmin() {
-      return 'ROOT_ADMIN' in get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.roles;
+      return request.auth.token.ROOT_ADMIN;
     }
 
     function isOrganizationAdmin() {
-      return 'ORGANIZATION_ADMIN' in get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.roles;
-    }
-
-		function isUserWithNoOrganization(userId) {
-        let userDoc = get(/databases/$(database)/documents/USER/$(userId));
-        return userDoc.data.organizationId == null;
-    }
-    
-    function isUserInAdminsOrganization(userId) {
-      let adminOrgId = get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.organizationId;
-      let userOrgId = get(/databases/$(database)/documents/USER/$(userId)).data.organizationId;
-      return adminOrgId == userOrgId;
+      return request.auth.token.ORGANIZATION_ADMIN;
     }
 
     function isMember(organizationId) {
-      let userOrgId = get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.organizationId;
-      return organizationId == userOrgId;
+      return request.auth.token.organizationId == organizationId;
     }
 
     function isOrganization() {
-      let currentUserid = get(/databases/$(database)/documents/USER/$(request.auth.uid)).data.organizationId;
-      return currentUserid != null;
+      return request.auth.token.organizationId != null;
     }
     
     function isUserSelf(userId) {

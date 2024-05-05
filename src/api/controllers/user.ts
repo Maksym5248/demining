@@ -26,19 +26,6 @@ const getUserOrganization = async (user:IUserDB | null): Promise<IUserOrganizati
 	return organization;
 }
 
-const create = async (value: Pick<ICurrentUserDTO, "id" | "email">):Promise<ICurrentUserDTO> => {
-	const { organizationId, ...user} = await DB.user.create({
-		roles: [],
-		organizationId: null,
-		...value,
-	});
-
-	return {
-		...user,
-		organization: null
-	};
-};
-
 const update = async (id:string, value: UpdateValue<ICurrentUserDTO>):Promise<ICurrentUserDTO> => {
 	const res = await DB.user.update(id, value);
 
@@ -115,7 +102,6 @@ const removeOrganization = () => {
 };
 
 export const user = {
-	create,
 	update,
 	remove,
 	get,
