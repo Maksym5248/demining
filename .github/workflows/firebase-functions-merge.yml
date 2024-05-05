@@ -15,15 +15,10 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 18
-            - name: Install Firebase CLI
-              run: yarn global add firebase-tools
             - name: Install dependencies
               run: yarn install
-            - name: Authenticate with Firebase
+            - name: Deploy to Firebase
+              uses: jsryudev/deploy-firebase-functions@v20.0.0
               env:
-                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }} # Set your Firebase token as a secret
-              run: firebase --interactive login:ci --token "${FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963}" # Authenticate Firebase CLI
-            - name: Select project
-              run: firebase use dsns-dev-85963
-            - name: Deploy Firebase Functions
-              run: firebase deploy --only functions # Deploy only functions
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}
+                  FIREBASE_PROJECT: dsns-dev-85963
