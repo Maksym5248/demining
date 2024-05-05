@@ -17,11 +17,11 @@ jobs:
                   node-version: 18
             - name: Create .env file
               run: |
-                  echo "${{ secrets.ENV_DEV }}" > .env
+                  echo "${{ secrets.ENV_DEV }}" > cd ./web/.env
             - name: Install dependencies
-              run: yarn install
+              run: cd ./web && yarn install
             - name: Build project
-              run: yarn build
+              run: cd ./web && yarn build
             - uses: FirebaseExtended/action-hosting-deploy@v0
               with:
                   repoToken: '${{ secrets.GITHUB_TOKEN }}'
