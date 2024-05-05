@@ -39,7 +39,7 @@ export const LoginPage  = observer(() => {
 		}
 	};
 
-	const isLoading = store.auth.signInWithGoogle.inProgress || store.auth.signInWithGoogle.inProgress;
+	const isLoading = store.auth.signInWithGoogle.inProgress || store.auth.signInWithEmail.inProgress || store.viewer.isLoading;
 
 	return (
 		<div css={s.container}>

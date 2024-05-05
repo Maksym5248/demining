@@ -26,7 +26,7 @@ export const SignupPage  = observer(() => {
 		store.auth.signUpWithEmail.run(values.email, values.password);
 	};
 
-	const isLoading = store.auth.signInWithGoogle.inProgress || store.auth.signInWithGoogle.inProgress;
+	const isLoading = store.auth.signInWithGoogle.inProgress || store.auth.signUpWithEmail.inProgress || store.viewer.isLoading;
 
 	return (
 		<div css={s.container}>

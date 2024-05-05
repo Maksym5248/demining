@@ -10,7 +10,8 @@ import { asyncAction } from '../../utils';
 const Store = types
 	.model('ViewerStore', {
 		user: types.maybeNull(types.maybe(CurrentUser)),
-		isLoadingUserInfo: true
+		isInitialized: false,
+		isLoading: false
 	})
 	.actions((self) => ({
 		setUser(user: ICurrentUserDTO) {
@@ -25,8 +26,11 @@ const Store = types
 			self.user = null;
 			Api.user.removeOrganization();
 		},
-		setLoadingUserInfo(value: boolean) {
-			self.isLoadingUserInfo = value;
+		setInitialized(value: boolean) {
+			self.isInitialized = value;
+		},
+		setLoading(value: boolean) {
+			self.isLoading = value;
 		},
 	}));
 
@@ -53,7 +57,8 @@ const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }
 				self.removeUser();
 			}
 
-			self.setLoadingUserInfo(false);
+			self.setInitialized(true);
+			self.setLoading(false);
 		})
 
 		flow.success();
