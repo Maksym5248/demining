@@ -12,7 +12,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Setup Node.js
-              working-directory: ./functions
               uses: actions/setup-node@v4
               with:
                   node-version: 18
@@ -23,7 +22,6 @@ jobs:
               working-directory: ./functions
               run: yarn install
             - name: Create service account
-              working-directory: ./functions
               uses: 'google-github-actions/auth@v2'
               with:
                   credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}'
