@@ -2,23 +2,17 @@ import {auth, https} from "firebase-functions";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {getAuth} from "firebase-admin/auth";
 import * as logger from "firebase-functions/logger";
-
+import { IUserDB, ROLES } from "shared";
 
 const createUserRef = (uid: string) => (
   getFirestore().collection("USER").doc(uid)
 );
 
-interface IUserData {
-  id: string;
-  roles: string[];
-  organizationId:string | null;
-}
-
-const customUserClaims = async (userData: IUserData) => {
+const customUserClaims = async (userData: IUserDB) => {
   try {
     const customClaims = {
-      ROOT_ADMIN: userData?.roles.includes("ROOT_ADMIN"),
-      ORGANIZATION_ADMIN: userData?.roles.includes("ORGANIZATION_ADMIN"),
+      ROOT_ADMIN: userData?.roles.includes(ROLES.ROOT_ADMIN),
+      ORGANIZATION_ADMIN: userData?.roles.includes(ROLES.ORGANIZATION_ADMIN),
       organizationId: userData?.organizationId,
     };
 
@@ -80,7 +74,7 @@ export const refreshToken = https.onCall(async (data, context) => {
 
   const userRef = createUserRef(uid);
   const res = await userRef.get();
-  const user = res.data() as IUserData;
+  const user = res.data() as IUserDB;
 
   try {
     await customUserClaims(user);

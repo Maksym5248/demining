@@ -6,5 +6,9 @@
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": ["web", "shared", "functions"]
+  "workspaces": ["web", "shared", "functions"],
+  "scripts": {
+    "link:web": "yarn workspace web add shared",
+    "link:functions": "yarn workspace functions add shared"
+  }
 }
