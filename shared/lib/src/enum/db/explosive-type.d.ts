@@ -1,0 +1,4 @@
+export declare enum EXPLOSIVE_TYPE {
+    EXPLOSIVE = "EXPLOSIVE",
+    DETONATOR = "DETONATOR"
+}

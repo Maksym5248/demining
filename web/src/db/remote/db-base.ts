@@ -26,24 +26,7 @@ import {
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
-
-import { IBaseDB } from '../types';
-
-type IWhere = {[field:string]: any};
-type IOrder = {
-	by: string,
-	type?: "asc" | 'desc',
-};
-
-export type IQuery = {
-	search?: string;
-	where?: IWhere;
-	order?: IOrder;
-	limit?: number;
-	startAfter?: string | number | Timestamp;
-	startAt?: string | number | Timestamp;
-	endAt?: string | number | Timestamp;
-};
+import { IBaseDB, IWhere, IQuery, IOrder } from 'shared';
 
 function generateValueStartsWith(value: string): string[] {
 	const prefixes: string[] = [];

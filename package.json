@@ -6,5 +6,5 @@
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": ["web"]
+  "workspaces": ["web", "shared", "functions"]
 }

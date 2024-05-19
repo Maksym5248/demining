@@ -1,4 +1,6 @@
-import { DB, IQuery } from '~/db'
+import { IQuery } from 'shared'
+
+import { DB } from '~/db';
 import { UpdateValue, CreateValue } from '~/types'
 import { ASSET_TYPE } from '~/constants';
 import { AssetStorage } from '~/services';

@@ -1,8 +1,8 @@
 import { Dayjs } from 'dayjs';
+import { ILinkedToDocumentDB } from 'shared';
 
 import { dates } from '~/utils';
 import { IMapViewActionDTO, IMapViewActionDTOParams } from '~/api';
-import { ILinkedToDocumentDB } from '~/db';
 import { ICircle, ILine, IPoint, IPolygon } from '~/types';
 
 

@@ -1,8 +1,9 @@
-export default {
+module.exports = {
   parserOptions: {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
+  ignorePatterns: ['.eslintrc.js'],
   "env": {
     "browser": true,
     "es2021": true,

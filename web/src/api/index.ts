@@ -1,4 +1,17 @@
-import * as controllers from "./controllers";
+import {
+	employee,
+	equipment,
+	explosiveObject,
+	explosive,
+	missionReport,
+	missionRequest,
+	order,
+	transport,
+	user,
+	organization,
+	document,
+	map,
+} from "./controllers";
 
 export * from "./external";
 
@@ -6,10 +19,21 @@ export * from "./types"
 
 
 const createExplosiveObjects = async () => {
-	await controllers.explosiveObject.init();
+	await explosiveObject.init();
 }
 
 export const Api = {
-	...controllers,
+	employee,
+	equipment,
+	explosiveObject,
+	explosive,
+	missionReport,
+	missionRequest,
+	order,
+	transport,
+	user,
+	organization,
+	document,
+	map,
 	createExplosiveObjects
 }

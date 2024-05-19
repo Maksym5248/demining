@@ -1,0 +1,5 @@
+export declare enum MISSION_REQUEST_TYPE {
+    APPLICATION = "APPLICATION",
+    LETTER = "LETTER",
+    CONTRACT = "CONTRACT"
+}

@@ -1,4 +1,18 @@
 import { IDataBase } from 'jsstore';
+import {
+	IEmployeeDB, 
+	IEmployeeActionDB, 
+	IOrderDB,
+	IMapViewActionDB,
+	IMissionReportDB,
+	IMissionRequestDB,
+	IExplosiveObjectDB,
+	IExplosiveObjectActionDB,
+	ITransportDB,
+	ITransportActionDB,
+	IEquipmentDB,
+	IEquipmentActionDB
+} from 'shared';
 
 import { TABLES } from '~/constants';
 import { CONFIG } from '~/config';
@@ -19,20 +33,6 @@ import {
 	schemaTransport,
 	schemaTransportAction
 } from './schema';
-import {
-	IEmployeeDB, 
-	IEmployeeActionDB, 
-	IOrderDB,
-	IMapViewActionDB,
-	IMissionReportDB,
-	IMissionRequestDB,
-	IExplosiveObjectDB,
-	IExplosiveObjectActionDB,
-	ITransportDB,
-	ITransportActionDB,
-	IEquipmentDB,
-	IEquipmentActionDB
-} from '../types';
 
 const getSchema = ():IDataBase => ({
 	name: CONFIG.DB_NAME,

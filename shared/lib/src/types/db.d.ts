@@ -1,11 +1,9 @@
 import { Timestamp } from "firebase/firestore";
-
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE, MISSION_REQUEST_TYPE } from "~/constants"
-import { EXPLOSIVE_TYPE } from "~/constants/db/explosive-type";
-
+import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE, MISSION_REQUEST_TYPE } from "../enum";
+import { EXPLOSIVE_TYPE } from "../enum";
 export interface IAddressDB {
     city: string | null;
-    country: string  | null;
+    country: string | null;
     district: string | null;
     housenumber: string | null;
     postcode: string | null;
@@ -14,16 +12,15 @@ export interface IAddressDB {
     municipality: string | null;
 }
 export interface IBaseDB {
-    id: string,
-    createdAt: Timestamp,
-    updatedAt: Timestamp
+    id: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
     documentId: string;
     executedAt: Timestamp | null;
 }
-
 export interface IEmployeeDB extends IBaseDB {
     type: EMPLOYEE_TYPE;
     firstName: string;
@@ -33,32 +30,27 @@ export interface IEmployeeDB extends IBaseDB {
     position: string;
     authorId: string;
 }
-
 export interface IEmployeeActionDB extends IEmployeeDB, ILinkedToDocumentDB {
     employeeId: string;
     typeInDocument: EMPLOYEE_TYPE;
 }
-
 export interface IOrderDB extends IBaseDB {
     signedAt: Timestamp;
     number: number;
     authorId: string;
 }
-
 export interface IMissionRequestDB extends IBaseDB {
     signedAt: Timestamp;
     number: string;
     authorId: string;
     type?: MISSION_REQUEST_TYPE;
 }
-
 export interface IExplosiveObjectDB extends IBaseDB {
     typeId: string;
     name: string | null;
     caliber: number | null;
     authorId: string;
 }
-
 export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {
     explosiveObjectId: string;
     quantity: number;
@@ -68,71 +60,58 @@ export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToD
     isDestroyed: boolean;
     executedAt: Timestamp;
 }
-
 export interface ITransportDB extends IBaseDB {
     name: string;
     number: string;
     type: TRANSPORT_TYPE;
     authorId: string;
 }
-
 export interface ITransportActionDB extends ITransportDB, ILinkedToDocumentDB {
     transportId: string;
 }
-
 export interface IEquipmentDB extends IBaseDB {
     name: string;
     type: EQUIPMENT_TYPE;
     authorId: string;
 }
-
 export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
     equipmentId: string;
 }
-
 export interface IPointDB {
     lat: number;
     lng: number;
 }
-
-export interface IGeoPointDB extends IPointDB{
+export interface IGeoPointDB extends IPointDB {
     lat: number;
     lng: number;
     hash: string;
 }
-
 export interface IGeoBoxDB {
     topLeft: IGeoPointDB;
     bottomRight: IGeoPointDB;
 }
-
 export interface IGeoBoxHashDB {
     topLeft: string;
     bottomRight: string;
 }
-
 export interface IGeoDB {
     center: IGeoPointDB;
     box: IGeoBoxDB | null;
 }
-
-export interface IMarkerDB extends IPointDB {}
-
+export interface IMarkerDB extends IPointDB {
+}
 export interface ICircleDB {
     center: IPointDB;
     radius: number;
 }
-
 export interface ILineDB {
     points: IPointDB[];
     width: number;
 }
-
 export interface IPolygonDB {
     points: IPointDB[];
 }
-
-export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB  {
+export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB {
     marker: IMarkerDB | null;
     circle: ICircleDB | null;
     line: ILineDB | null;
@@ -141,17 +120,16 @@ export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB  {
     geo: IGeoDB | null;
     authorId: string;
 }
-
 export interface IMissionReportDB extends IBaseDB {
     approvedAt: Timestamp;
     number: number;
-    subNumber: number | null,
+    subNumber: number | null;
     executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | null;
-    depthExamination: number |null;
-    uncheckedTerritory: number |null;
+    depthExamination: number | null;
+    uncheckedTerritory: number | null;
     uncheckedReason: string | null;
     workStart: Timestamp;
     exclusionStart: Timestamp | null;
@@ -162,19 +140,16 @@ export interface IMissionReportDB extends IBaseDB {
     addressDetails?: IAddressDB;
     authorId: string;
 }
-
 export interface IUserDB extends IBaseDB {
     email: string;
     roles: ROLES[];
     organizationId: string | null;
 }
-
 export interface IOrganizationDB extends IBaseDB {
     name: string;
     membersIds: string[];
     authorId: string;
 }
-
 export interface IDocumentDB extends IBaseDB {
     name: string;
     type: ASSET_TYPE;
@@ -182,16 +157,14 @@ export interface IDocumentDB extends IBaseDB {
     mime: MIME_TYPE;
     authorId: string;
 }
-
 export interface IExplosiveDB extends IBaseDB {
     name: string;
     type: EXPLOSIVE_TYPE;
     authorId: string;
 }
-
 export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {
     explosiveId: string;
-    weight: number | null; /* in kilograms */
+    weight: number | null;
     quantity: number | null;
     executedAt: Timestamp;
 }

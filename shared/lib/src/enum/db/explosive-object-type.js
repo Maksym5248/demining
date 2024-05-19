@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EXPLOSIVE_OBJECT_TYPE = void 0;
+var EXPLOSIVE_OBJECT_TYPE;
+(function (EXPLOSIVE_OBJECT_TYPE) {
+    EXPLOSIVE_OBJECT_TYPE["AB"] = "AB";
+    EXPLOSIVE_OBJECT_TYPE["UAM"] = "UAM";
+    EXPLOSIVE_OBJECT_TYPE["AS"] = "AS";
+    EXPLOSIVE_OBJECT_TYPE["MM"] = "MM";
+    EXPLOSIVE_OBJECT_TYPE["MLRS"] = "MLRS";
+    EXPLOSIVE_OBJECT_TYPE["RG"] = "RG";
+    EXPLOSIVE_OBJECT_TYPE["IM"] = "IM";
+    EXPLOSIVE_OBJECT_TYPE["AMMO"] = "AMMO";
+    EXPLOSIVE_OBJECT_TYPE["AGL"] = "AGL";
+    EXPLOSIVE_OBJECT_TYPE["ATGM"] = "ATGM";
+    EXPLOSIVE_OBJECT_TYPE["ZRK"] = "ZRK";
+    EXPLOSIVE_OBJECT_TYPE["CR"] = "CR";
+    EXPLOSIVE_OBJECT_TYPE["BM"] = "BM";
+    EXPLOSIVE_OBJECT_TYPE["UAV"] = "UAV";
+})(EXPLOSIVE_OBJECT_TYPE = exports.EXPLOSIVE_OBJECT_TYPE || (exports.EXPLOSIVE_OBJECT_TYPE = {}));
+//# sourceMappingURL=explosive-object-type.js.map

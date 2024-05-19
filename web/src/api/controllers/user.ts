@@ -1,9 +1,10 @@
 import keyBy from "lodash/keyBy"
 import map from "lodash/map"
 import uniq from "lodash/uniq"
+import { IOrganizationDB, IQuery, IUserDB } from 'shared'
 
 import { UpdateValue } from '~/types'
-import { DB, IOrganizationDB, IQuery, IUserDB } from '~/db';
+import { DB } from '~/db';
 import { AssetStorage } from "~/services";
 
 import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types'

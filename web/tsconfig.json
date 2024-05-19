@@ -12,11 +12,12 @@
         "resolveJsonModule": true,
         "isolatedModules": false,
         "noEmit": true,
+        "composite": true,
         "jsx": "react-jsx",
         "paths": {
             "~/*": ["./src/*"]
         }
     },
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
-    "exclude": ["node_modules", "**/*.jsx"]
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+    "exclude": ["node_modules"]
 }

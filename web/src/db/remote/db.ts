@@ -1,11 +1,4 @@
 import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
-
-import { TABLES, TABLES_DIR } from '~/constants';
-import { Auth } from '~/services';
-import { mapUtils } from '~/utils';
-import { explosiveObjectTypesData } from '~/data';
-
-import { DBBase } from './db-base';
 import {
 	IDocumentDB,
 	IEmployeeActionDB,
@@ -24,7 +17,14 @@ import {
 	ITransportActionDB,
 	ITransportDB,
 	IUserDB
-} from '../types';
+} from 'shared';
+
+import { TABLES, TABLES_DIR } from '~/constants';
+import { Auth } from '~/services';
+import { mapUtils } from '~/utils';
+import { explosiveObjectTypesData } from '~/data';
+
+import { DBBase } from './db-base';
 
 const getCreateData = () => ({
 	authorId: Auth.uuid() as string,
@@ -51,7 +51,7 @@ const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
 };
 
 
-class DBRemoteClass {
+export class DBRemote {
 	/** COMMON COLLECTIONS */
 	user = new DBBase<IUserDB>(TABLES.USER, ["email"]);
 
@@ -160,6 +160,3 @@ class DBRemoteClass {
 		this.setBatch(null);
 	}
 }
-
-
-export const DBRemote= new DBRemoteClass();

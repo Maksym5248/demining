@@ -1,0 +1,4 @@
+export declare enum DOCUMENT_TYPE {
+    ORDER = "ORDER",
+    MISSION_REPORT = "MISSION_REPORT"
+}

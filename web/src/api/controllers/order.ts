@@ -1,4 +1,6 @@
-import { DB, IQuery } from '~/db';
+import { IQuery } from 'shared'
+
+import { DB } from '~/db';
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from "~/constants";
 import { UpdateValue } from '~/types';
 

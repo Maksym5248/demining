@@ -1,4 +1,6 @@
-import { DB, IOrganizationDB, IQuery, IUserDB } from '~/db';
+import { IOrganizationDB, IQuery, IUserDB } from 'shared'
+
+import { DB } from '~/db';
 import { ROLES } from '~/constants';
 
 import { IOrganizationDTO, IUserDTO, ICreateOrganizationDTO } from '../types'

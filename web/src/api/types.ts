@@ -1,6 +1,4 @@
 import { Timestamp } from "firebase/firestore";
-
-import { EXPLOSIVE_OBJECT_CATEGORY } from "~/constants";
 import { 
 	IEmployeeDB,
 	IEmployeeActionDB,
@@ -21,7 +19,9 @@ import {
 	IExplosiveDB,
 	IPointDB,
 	IAddressDB
-} from "~/db";
+} from "shared";
+
+import { EXPLOSIVE_OBJECT_CATEGORY } from "~/constants";
 
 export type IAddressDTO = IAddressDB
 
