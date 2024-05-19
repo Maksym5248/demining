@@ -1,4 +1,8 @@
-module.exports = {
+export default {
+  parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+  },
   "env": {
     "browser": true,
     "es2021": true,
@@ -26,10 +30,6 @@ module.exports = {
       },
   },
   "parser": "@typescript-eslint/parser",
-  parserOptions: {
-      project: './tsconfig.json',
-      tsconfigRootDir: __dirname,
-  },
   "rules": {
     "import/named": 0,
     "import/no-unresolved": 0,
@@ -59,6 +59,7 @@ module.exports = {
     "import/no-cycle": 0,
     "import/prefer-default-export": 0,
     "import/no-extraneous-dependencies": 0,
+    "import/extensions": 0,
     "@typescript-eslint/naming-convention": [
       "error",
       {

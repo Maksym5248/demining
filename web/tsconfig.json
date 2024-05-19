@@ -13,11 +13,10 @@
         "isolatedModules": false,
         "noEmit": true,
         "jsx": "react-jsx",
-        "baseUrl": ".",
         "paths": {
             "~/*": ["./src/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
-    "exclude": ["node_modules", "**/*.js", "**/*.jsx", "*.js"]
+    "exclude": ["node_modules", "**/*.jsx"]
 }
