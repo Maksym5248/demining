@@ -1,9 +1,7 @@
 {
-    "extends": "../tsconfig.packages.json",
+    "extends": "./tsconfig.packages.json",
     "compilerOptions": {
-        "declarationMap": true,
-        "rootDir": "src",
-        "outDir": "dist"
+        "lib": ["esnext"],
     },
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
     "exclude": ["node_modules", "dist"]

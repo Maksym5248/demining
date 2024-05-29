@@ -13,6 +13,6 @@
           "path": "../shared"
         }
     ],
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
     "exclude": ["node_modules", "dist"]
 }
