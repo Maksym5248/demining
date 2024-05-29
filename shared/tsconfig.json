@@ -5,6 +5,6 @@
         "rootDir": "src",
         "outDir": "dist"
     },
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
-    "exclude": ["node_modules", "dist", ".eslintrc.js"]
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
+    "exclude": ["node_modules", "dist"]
 }
