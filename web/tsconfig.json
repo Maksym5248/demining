@@ -16,8 +16,16 @@
         "jsx": "react-jsx",
         "paths": {
             "~/*": ["./src/*"]
-        }
+        },
+
+        "outDir": "dist",
+        "importHelpers": true,
     },
+    "references": [
+        {
+          "path": "../shared"
+        }
+    ],
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
     "exclude": ["node_modules"]
 }

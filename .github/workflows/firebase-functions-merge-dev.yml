@@ -18,7 +18,6 @@ jobs:
             - name: Install Firebase CLI
               run: yarn global add firebase-tools
             - name: Install dependencies
-              working-directory: ./functions
               run: yarn install
             - name: Create service account
               uses: 'google-github-actions/auth@v2'

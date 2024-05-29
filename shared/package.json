@@ -2,15 +2,16 @@
   "name": "shared",
   "version": "1.0.0",
   "type": "module",
-  "main": "lib/src/index.js",
-  "types": "lib/src/index.d.ts",
+  "main": "dist/index",
+  "types": "dist/index",
   "repository": "git@github.com:Maksym5248/dsns.git",
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean": "rm -rf node_modules/ lib/",
-    "build": "tsc"
+    "clean": "rm -rf node_modules/ dist/",
+    "build": "tsc",
+    "postinstall": "yarn build"
   },
   "peerDependencies": {},
   "devDependencies": {

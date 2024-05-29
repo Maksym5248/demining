@@ -3,11 +3,18 @@
         "module": "commonjs",
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "outDir": "lib",
         "sourceMap": true,
         "strict": true,
-        "target": "es2017"
+        "target": "es2017",
+
+        "outDir": "dist",
+        "importHelpers": true,
     },
+    "references": [
+        {
+          "path": "../shared"
+        }
+    ],
     "compileOnSave": true,
     "include": ["src"]
 }

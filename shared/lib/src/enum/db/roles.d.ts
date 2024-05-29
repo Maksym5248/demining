@@ -1,4 +1,0 @@
-export declare enum ROLES {
-    ROOT_ADMIN = "ROOT_ADMIN",
-    ORGANIZATION_ADMIN = "ORGANIZATION_ADMIN"
-}

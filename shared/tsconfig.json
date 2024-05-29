@@ -3,16 +3,20 @@
         "module": "commonjs",
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "outDir": "lib",
         "sourceMap": true,
         "strict": true,
         "target": "es2017",
         "declaration": true,
         "composite": true,
         "paths": {
-            "~/*": ["./src/*"]
-        }
+            "~/*": ["./*"]
+        },
+
+        "moduleResolution": "node",
+        "declarationMap": true,
+        "importHelpers": true,
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    "compileOnSave": true,
     "include": ["src"]
 }
