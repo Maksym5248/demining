@@ -1,14 +1,10 @@
 {
+    "extends": "../tsconfig.packages.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "sourceMap": true,
-        "strict": true,
-        "target": "es2017",
-
         "outDir": "dist",
-        "importHelpers": true,
+        "paths": {
+          "~/*": ["./src/*"]
+        },
     },
     "references": [
         {

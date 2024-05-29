@@ -1,25 +1,12 @@
 {
+    "extends": "../tsconfig.packages.json",
     "compilerOptions": {
-        "target": "es5",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "esModuleInterop": true,
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": false,
-        "noEmit": true,
-        "composite": true,
         "jsx": "react-jsx",
+        "noEmit": true,
+        "lib": ["dom", "dom.iterable", "esnext"],
         "paths": {
             "~/*": ["./src/*"]
         },
-
-        "outDir": "dist",
-        "importHelpers": true,
     },
     "references": [
         {

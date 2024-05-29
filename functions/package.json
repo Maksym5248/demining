@@ -9,7 +9,8 @@
         "shell": "yarn build && firebase functions:shell",
         "start": "yarn shell",
         "deploy": "firebase deploy --only functions",
-        "logs": "firebase functions:log"
+        "logs": "firebase functions:log",
+        "postinstall": "yarn build"
     },
     "engines": {
         "node": "18"

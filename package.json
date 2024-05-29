@@ -10,6 +10,6 @@
   "scripts": {
     "link:web": "yarn workspace web add shared",
     "link:functions": "yarn workspace functions add shared",
-    "postinstall": "cd ./shared && yarn postinstall"
+    "postinstall": "cd ./shared && yarn postinstall && cd ../functions && yarn postinstall"
   }
 }
