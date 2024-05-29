@@ -1,16 +1,16 @@
 {
-    "extends": "../tsconfig.packages.json",
-    "compilerOptions": {
-        "outDir": "dist",
-        "paths": {
-          "~/*": ["./src/*"]
-        },
-    },
-    "references": [
-        {
-          "path": "../shared"
-        }
-    ],
-    "compileOnSave": true,
-    "include": ["src"]
+  "extends": "../tsconfig.packages.json",
+  "compilerOptions": {
+      "outDir": "dist",
+      "paths": {
+        "~/*": ["./src/*"]
+      },
+  },
+  "references": [
+      {
+        "path": "../shared"
+      }
+  ],
+  "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+  "exclude": ["node_modules", "dist"]
 }

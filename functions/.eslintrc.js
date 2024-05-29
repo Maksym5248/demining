@@ -1,7 +1,7 @@
-export default {
+module.exports = {
   root: true,
   env: {
-    es6: true,
+    es2021: true,
     node: true,
   },
   extends: [
@@ -13,11 +13,11 @@ export default {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: ["tsconfig.json", "tsconfig.dev.json"],
-    sourceType: "module",
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
   },
   ignorePatterns: [
-    "/lib/**/*", // Ignore built files.
+    "/dist/**/*", // Ignore built files.
   ],
   plugins: [
     "@typescript-eslint",
