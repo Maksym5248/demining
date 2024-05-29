@@ -1,16 +1,17 @@
 {
-  "extends": "../tsconfig.packages.json",
-  "compilerOptions": {
-      "outDir": "dist",
-      "paths": {
-        "~/*": ["./src/*"]
-      },
-  },
-  "references": [
-      {
-        "path": "../shared"
-      }
-  ],
-  "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
-  "exclude": ["node_modules", "dist"]
+    "extends": "../tsconfig.packages.json",
+    "compilerOptions": {
+        "lib": ["esnext"],
+        "outDir": "dist",
+        "paths": {
+          "~/*": ["./src/*"]
+        },
+    },
+    "references": [
+        {
+          "path": "../shared"
+        }
+    ],
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+    "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['.eslintrc.js'],
   env: {
     es2021: true,
     node: true,
@@ -16,9 +17,6 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: [
-    "/dist/**/*", // Ignore built files.
-  ],
   plugins: [
     "@typescript-eslint",
     "import",
