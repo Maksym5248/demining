@@ -7,7 +7,6 @@
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "clean": "rm -rf node_modules/ dist/",
     "build": "tsc",

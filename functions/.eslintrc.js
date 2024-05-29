@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   root: true,
   ignorePatterns: ['.eslintrc.js'],
   env: {
