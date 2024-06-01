@@ -10,10 +10,7 @@
         {
             "source": "functions",
             "codebase": "default",
-            "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"],
-            "predeploy": [
-                "yarn --cwd \"$RESOURCE_DIR\" run build"
-            ]
+            "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
         }
     ]
 }

@@ -18,7 +18,6 @@ const rules = [
       loader: "ts-loader",
       options: {
         transpileOnly: true,
-        logLevel: "debug"
       }
     },
     exclude: /node_modules/,
@@ -30,13 +29,11 @@ const config = {
   output: {
     path: path.resolve("dist"),
     filename: "index.js",
-    publicPath: "/",
+    libraryTarget: "this"
   },
-  devtool: "inline-source-map",
+  devtool: inDev() ? "inline-source-map" : false,
   target: "node",
-  externals: [nodeExternals({
-    allowlist: ["shared"]
-  })],
+  externals: [nodeExternals()],
   mode: inDev() ? "development" : "production",
   plugins: [
     new webpack.DefinePlugin({
