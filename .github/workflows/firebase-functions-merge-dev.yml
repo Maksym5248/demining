@@ -29,4 +29,5 @@ jobs:
               with:
                   credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
             - name: Deploy to Firebase
-              run: firebase deploy --project dsns-dev-85963 --only functions
+              working-directory: functions
+              run: yarn deploy:functions:dev

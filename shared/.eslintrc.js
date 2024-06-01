@@ -11,16 +11,13 @@ module.exports = {
   },
   extends: [
     'airbnb',
-    'airbnb/hooks',
     'airbnb-typescript',
     'plugin:jsx-a11y/recommended',
-    'plugin:react/recommended',
-    'plugin:react/jsx-runtime',
     'plugin:import/recommended',
     'plugin:import/typescript',
     'prettier',
   ],
-  plugins: ['react', 'jsx-a11y', 'import', '@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint'],
   settings: {
       react: {
           version: 'detect',

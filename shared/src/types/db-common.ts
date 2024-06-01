@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore";
+import { Timestamp } from "@firebase/firestore-types";
 
 export type IWhere = {[field:string]: any};
 export type IOrder = {

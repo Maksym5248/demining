@@ -11,3 +11,4 @@ node_modules/
 tsconfig.tsbuildinfo
 .env
 ui-debug.log
+isolate

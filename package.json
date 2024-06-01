@@ -7,9 +7,17 @@
   "license": "MIT",
   "private": true,
   "workspaces": ["web", "shared", "functions"],
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "link:web": "yarn workspace web add shared",
     "link:functions": "workspace functions add shared",
-    "postinstall": "cd ./shared && yarn postinstall"
+    "postinstall": "cd ./shared && yarn postinstall",
+    "clean": "cd functions && yarn clean && cd ../shared && yarn clean && cd ../web && yarn clean && cd .. && rm -rf node_modules",
+    "build:functions": "cd ./functions && yarn build",
+    "build:web": "cd ./web && yarn build",
+    "reset": "yarn clean && yarn install && yarn build:functions && yarn build:web",
+    "deploy:functions:dev": "cd ./web && yarn deploy:functions:dev",
+    "deploy:functions:prod": "cd ./web && deploy:functions:prod",
+    "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev"
   }
 }

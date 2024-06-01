@@ -1,9 +1,10 @@
 {
-    "extends": "../tsconfig.packages.json",
+    "extends": "shared/tsconfig.packages.json",
     "compilerOptions": {
         "sourceMap": true,
         "lib": ["esnext"],
         "outDir": "./dist",
+        "composite": true,
         "paths": {
           "~/*": ["./src/*"]
         },

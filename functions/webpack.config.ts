@@ -29,7 +29,7 @@ const config = {
   output: {
     path: path.resolve("dist"),
     filename: "index.js",
-    libraryTarget: "this"
+    libraryTarget: "commonjs"
   },
   devtool: inDev() ? "inline-source-map" : false,
   target: "node",
@@ -61,7 +61,7 @@ const config = {
       ".mjs": [".mjs", ".mts"]
     },
     alias: {
-      shared: path.resolve(__dirname, "../shared/src"),
+      // shared: path.resolve(__dirname, "../shared/src/index.ts"),
       "~": path.resolve(__dirname, "src"),
     },
   },

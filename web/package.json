@@ -18,7 +18,8 @@
         "check:prettier": "prettier --write",
         "check:eslint": "eslint --fix",
         "bundle-size": "webpack --config webpack.config.ts --env analyse",
-        "removeUnusedImports": "tslint --config tslint-imports.json --fix --project ."
+        "removeUnusedImports": "tslint --config tslint-imports.json --fix --project .",
+        "clean": "rm -rf node_modules/ dist/"
     },
     "keywords": [],
     "author": {
