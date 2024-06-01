@@ -29,7 +29,7 @@ const config = {
   entry: path.resolve(__dirname, "src/index.ts"),
   output: {
     path: path.resolve("dist"),
-    filename: "scripts/[name].[contenthash].js",
+    filename: "index.js",
     publicPath: "/",
   },
   devtool: "inline-source-map",
