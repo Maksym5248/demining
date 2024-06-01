@@ -19,7 +19,7 @@ import {
 	IExplosiveDB,
 	IPointDB,
 	IAddressDB
-} from "shared";
+} from "@/shared";
 
 import { EXPLOSIVE_OBJECT_CATEGORY } from "~/constants";
 

@@ -12,7 +12,7 @@ import {
 	ITransportActionDB,
 	IEquipmentDB,
 	IEquipmentActionDB
-} from 'shared';
+} from '@/shared';
 
 export class DBBase<T extends {id: string}> {
 	uuid = jest.fn(() => Promise.resolve("id"))

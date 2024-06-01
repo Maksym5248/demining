@@ -1,4 +1,4 @@
-import { IOrganizationDB, IQuery, IUserDB } from 'shared'
+import { IOrganizationDB, IQuery, IUserDB } from '@/shared'
 
 import { DB } from '~/db';
 import { ROLES } from '~/constants';

@@ -1,5 +1,5 @@
 import { geohashForLocation, boundingBoxCoordinates } from 'geofire-common';
-import { ICircleDB, IGeoBoxDB, IGeoDB, IGeoPointDB, IMapViewActionDB, IPointDB, IPolygonDB } from 'shared';
+import { ICircleDB, IGeoBoxDB, IGeoDB, IGeoPointDB, IMapViewActionDB, IPointDB, IPolygonDB } from '@/shared';
 
 import { IPoint } from '~/types';
 

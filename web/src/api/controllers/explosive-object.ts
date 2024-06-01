@@ -1,4 +1,4 @@
-import { IQuery } from 'shared'
+import { IQuery } from '@/shared'
 
 import { DB } from '~/db'
 import { UpdateValue, CreateValue } from '~/types'

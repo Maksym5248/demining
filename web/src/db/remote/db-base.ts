@@ -26,7 +26,7 @@ import {
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
-import { IBaseDB, IWhere, IQuery, IOrder } from 'shared';
+import { IBaseDB, IWhere, IQuery, IOrder } from '@/shared';
 
 function generateValueStartsWith(value: string): string[] {
 	const prefixes: string[] = [];

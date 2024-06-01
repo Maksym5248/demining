@@ -12,7 +12,7 @@ import {
 	ITransportActionDB,
 	IEquipmentDB,
 	IEquipmentActionDB
-} from 'shared';
+} from '@/shared';
 
 import { TABLES } from '~/constants';
 import { CONFIG } from '~/config';

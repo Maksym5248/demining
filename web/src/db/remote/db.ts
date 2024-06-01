@@ -17,7 +17,7 @@ import {
 	ITransportActionDB,
 	ITransportDB,
 	IUserDB
-} from 'shared';
+} from '@/shared';
 
 import { TABLES, TABLES_DIR } from '~/constants';
 import { Auth } from '~/services';
