@@ -3,6 +3,7 @@ import webpack from "webpack";
 import nodeExternals from "webpack-node-externals";
 import TerserPlugin from "terser-webpack-plugin";
 import Dotenv from "dotenv-webpack";
+import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -42,7 +43,7 @@ const config = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
     }),
-    new Dotenv()
+    new Dotenv(),
   ],
   module: {
     rules,
@@ -57,6 +58,9 @@ const config = {
     })],
   },
   resolve: {
+    plugins: [
+      new TsconfigPathsPlugin({ extensions: [".ts", ".tsx", ".js"] }),
+    ],
     extensions: [".ts", ".tsx", ".js"],
     extensionAlias: {
       ".js": [".js", ".ts"],
