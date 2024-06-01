@@ -17,7 +17,7 @@ const genitiveMonths = [
 
 const today = ():Dayjs => dayjs(new Date());
 
-const fromServerDate = (value:Timestamp):Dayjs => {
+const fromServerDate = (value:Omit<Timestamp, "toJSON">):Dayjs => {
 	const res = dayjs(value.toDate());
 	return res;
 };
