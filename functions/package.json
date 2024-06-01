@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "main": ".webpack/main",
     "private": true,
+    "engine": {
+        "node": "18"
+    },
     "scripts": {
         "lint": "eslint --ext .js,.ts .",
         "build": "cross-env NODE_ENV=production webpack",
