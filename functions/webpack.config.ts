@@ -3,7 +3,6 @@ import webpack from "webpack";
 import nodeExternals from "webpack-node-externals";
 import TerserPlugin from "terser-webpack-plugin";
 import Dotenv from "dotenv-webpack";
-import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -49,7 +48,7 @@ const config = {
     rules,
   },
   optimization: {
-    minimize: true,
+    minimize: false,
     minimizer: [new TerserPlugin({
       terserOptions: {
         keep_classnames: true,
@@ -58,9 +57,6 @@ const config = {
     })],
   },
   resolve: {
-    plugins: [
-      new TsconfigPathsPlugin({ extensions: [".ts", ".tsx", ".js"] }),
-    ],
     extensions: [".ts", ".tsx", ".js"],
     extensionAlias: {
       ".js": [".js", ".ts"],
@@ -68,6 +64,7 @@ const config = {
       ".mjs": [".mjs", ".mts"]
     },
     alias: {
+      shared: path.resolve(__dirname, "../shared/src"),
       "~": path.resolve(__dirname, "src"),
     },
   },

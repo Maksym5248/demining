@@ -17,14 +17,17 @@ const config = {
 		rules,
 	},
 	plugins,
-	optimization: inDev()
-		? {}
-		: {
-			minimize: !inDev(),
-			minimizer: [`...`, new CssMinimizerPlugin()],
-			mangleWasmImports: true,
-			splitChunks: { minChunks: Infinity, chunks: 'all' },
-		},
+	// optimization: inDev()
+	// 	? {}
+	// 	: {
+	// 		minimize: !inDev(),
+	// 		minimizer: [`...`, new CssMinimizerPlugin()],
+	// 		mangleWasmImports: true,
+	// 		splitChunks: { minChunks: Infinity, chunks: 'all' },
+	// 	},
+	optimization: {
+		minimize: false,
+	},
 	devtool: inDev() ? 'eval-cheap-module-source-map' : false,
 	target: 'web',
 	mode: inDev() ? 'development' : 'production',
