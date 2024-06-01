@@ -34,7 +34,9 @@ const config = {
   },
   devtool: "inline-source-map",
   target: "node",
-  externals: [nodeExternals()],
+  externals: [nodeExternals({
+    allowlist: ["shared"]
+  })],
   mode: inDev() ? "development" : "production",
   plugins: [
     new webpack.DefinePlugin({
