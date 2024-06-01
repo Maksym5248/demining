@@ -9,3 +9,4 @@ dist/
 # Node.js dependency directory
 node_modules/
 tsconfig.tsbuildinfo
+.env

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index",
   "types": "dist/index",
+  "type": "module",
   "repository": "git@github.com:Maksym5248/dsns.git",
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",

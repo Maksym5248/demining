@@ -1,9 +1,9 @@
 {
     "extends": "../tsconfig.packages.json",
     "compilerOptions": {
+        "sourceMap": true,
         "lib": ["esnext"],
-        "rootDir": "src",
-        "outDir": "dist",
+        "outDir": "./dist",
         "paths": {
           "~/*": ["./src/*"]
         },
@@ -13,6 +13,6 @@
           "path": "../shared"
         }
     ],
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+    "include": ["**/*.ts", "*.ts", "*.js"],
     "exclude": ["node_modules", "dist"]
 }
