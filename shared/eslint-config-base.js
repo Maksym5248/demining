@@ -18,13 +18,12 @@ module.exports = {
 		"eslint-config-base.js"
 	],
 	extends: [
-		'plugin:jsx-a11y/recommended',
+		'eslint:recommended',
 		'plugin:import/recommended',
-		'plugin:import/typescript',
-		'airbnb-base',
-		'airbnb-typescript',
-		'prettier',
+		'plugin:@typescript-eslint/recommended',
+		"plugin:@typescript-eslint/recommended-requiring-type-checking",
 	],
+	parser: "@typescript-eslint/parser",
 	plugins: ['import', '@typescript-eslint'],
 	settings: {
 		'import/resolver': {
@@ -34,26 +33,30 @@ module.exports = {
 			node: true,
 		},
 	},
-	parser: "@typescript-eslint/parser",
-	overrides: [
-		{
-		  files: ["*.js?(x)", "*.ts?(x)"],
-		},
-	  ],
 	rules: {
 		"import/named": 0,
 		"import/no-unresolved": 0,
 		"import/order": [
 			"error",
 			{
-				"pathGroups": [
-					{
-						"pattern": "~/**",
-						"group": "internal"
-					}
-				],
-				"groups": [["builtin"], ["external"], ["internal"], ["parent", "sibling"], ["object"]],
-				"newlines-between": "always"
+			  "pathGroups": [
+				{
+				  "pattern": "react",
+				  "group": "builtin",
+				  "position": "before"
+				},
+				{
+				  "pattern": "~/**",
+				  "group": "internal"
+				}
+			  ],
+			  "alphabetize": {
+				 "order": "asc",
+				 "caseInsensitive": true
+			   },
+			  "pathGroupsExcludedImportTypes": ["react"],
+			  "groups": [["builtin"], ["external"], ["internal"], ["parent", "sibling"], ["object"]],
+			  "newlines-between": "always"
 			}
 		],
 		"import/newline-after-import": "error",
@@ -71,6 +74,7 @@ module.exports = {
 				format: ['PascalCase', 'UPPER_CASE'],
 			},
 		],
+		"@typescript-eslint/no-floating-promises": 0,
 		"no-underscore-dangle": 0,
 		"no-mixed-operators": [
 			"warn",
@@ -91,6 +95,8 @@ module.exports = {
 		"@typescript-eslint/consistent-type-exports": 0,
 		"@typescript-eslint/consistent-type-imports": 0,
 		"no-promise-executor-return": 0,
-		"indent": ["error", "tab"]
+		"indent": ["error", "tab"],
+		"arrow-body-style": 0,
+		"prefer-arrow-callback": 0
 	}
 }

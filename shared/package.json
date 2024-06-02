@@ -1,8 +1,8 @@
 {
   "name": "@/shared",
   "version": "1.0.0",
-  "main": "dist/src/index",
-  "types": "dist/src/index",
+  "main": "dist/index",
+  "types": "dist/index",
   "type": "commonjs",
   "repository": "git@github.com:Maksym5248/dsns.git",
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
@@ -10,10 +10,12 @@
   "private": true,
   "files": [
     "dist",
-    "eslint-config-base.js"
+    "tsconfig-base.json",
+    "eslint-config-base.js",
+    "eslint-config-prettier.js"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules/ dist/ tsconfig.tsbuildinfo",
+    "clean": "rm -rf node_modules/ dist/ ./tsconfig.tsbuildinfo",
     "build": "tsc",
     "postinstall": "yarn build"
   },
@@ -23,16 +25,15 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "8.45.0",
-    "eslint-config-airbnb-base": "15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-prettier": "8.9.0",
     "eslint-import-resolver-typescript": "3.5.5",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-jest": "27.2.3",
     "husky": "^4.3.0",
     "lint-staged": "^14.0.1",
     "jest": "^29.7.0",
+    "typescript": "5.0.4",
+    "eslint-config-prettier": "8.9.0",
     "prettier": "^3.0.3",
-    "typescript": "5.0.4"
+    "eslint-plugin-prettier": "^5.1.3"
   }
 }

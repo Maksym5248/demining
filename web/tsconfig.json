@@ -1,5 +1,5 @@
 {
-    "extends": "@/shared/tsconfig.packages.json",
+    "extends": "@/shared/tsconfig-base.json",
     "compilerOptions": {
         "jsx": "react-jsx",
         "noEmit": true,

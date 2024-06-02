@@ -59,7 +59,6 @@
         "eslint-plugin-react": "7.33.0",
         "eslint-plugin-react-hooks": "4.6.0",
         "eslint-plugin-testing-library": "5.11.0",
-        "eslint-config-airbnb": "19.0.4",
         "file-loader": "^6.2.0",
         "fork-ts-checker-webpack-plugin": "^7.2.13",
         "html-webpack-plugin": "^5.6.0",
@@ -69,7 +68,6 @@
         "lint-staged": "^14.0.1",
         "mini-css-extract-plugin": "^2.7.6",
         "node-loader": "^2.0.0",
-        "prettier": "^3.0.3",
         "react-refresh": "^0.14.0",
         "style-loader": "^3.0.0",
         "terser-webpack-plugin": "^5.3.10",
@@ -80,9 +78,11 @@
         "webpack": "^5.69.1",
         "webpack-bundle-analyzer": "^4.10.1",
         "webpack-cli": "^5.1.4",
-        "webpack-dev-server": "^4.15.1"
+        "webpack-dev-server": "^4.15.1",
+        "prettier": "^3.0.3"
     },
     "dependencies": {
+        "@/shared": "^1.0.0",
         "@ant-design/icons": "^4.3.0",
         "@emotion/css": "^11.11.2",
         "@emotion/eslint-plugin": "^11.11.0",
@@ -116,7 +116,6 @@
         "react-dom": "^18.2.0",
         "react-i18next": "^13.3.1",
         "react-router-dom": "^6.16.0",
-        "@/shared": "^1.0.0",
         "use-places-autocomplete": "^4.0.1",
         "uuid": "^3.3.2",
         "yup": "^1.2.0"

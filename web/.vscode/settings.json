@@ -9,5 +9,6 @@
     "editor.quickSuggestions": {
         "strings": true
     },
-    "cSpell.words": ["Managment", "Скопійовано"]
+    "cSpell.words": ["Managment", "Скопійовано"],
+    "eslint.trace.server": "verbose"
 }
