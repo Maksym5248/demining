@@ -2,9 +2,9 @@
     "extends": "./tsconfig.packages.json",
     "compilerOptions": {
         "declarationMap": true,
-        "rootDir": "src",
+        "rootDir": ".",
         "outDir": "dist"
     },
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
     "exclude": ["node_modules", "dist"]
 }
