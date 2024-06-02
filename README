@@ -1,0 +1,8 @@
+TODO:
+- shared rules for pritter
+- fix huskie and lint-staged
+- fix eslint errors
+- refactroing web code to make items idependent
+- create package shared-client
+- move stores, controllers, client-types, client utils to shared-client
+- move common utils to shared
