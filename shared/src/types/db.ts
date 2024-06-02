@@ -1,14 +1,22 @@
+import { Timestamp as TimestampInternal } from '@firebase/firestore-types';
 
+import {
+    EMPLOYEE_TYPE,
+    DOCUMENT_TYPE,
+    EXPLOSIVE_OBJECT_CATEGORY,
+    TRANSPORT_TYPE,
+    EQUIPMENT_TYPE,
+    ROLES,
+    MIME_TYPE,
+    ASSET_TYPE,
+    MISSION_REQUEST_TYPE,
+    EXPLOSIVE_TYPE,
+} from '../enum';
 
-
-import { Timestamp as TimestampInternal } from "@firebase/firestore-types";
-
-import { EMPLOYEE_TYPE, DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE, EQUIPMENT_TYPE, ROLES, MIME_TYPE, ASSET_TYPE, MISSION_REQUEST_TYPE , EXPLOSIVE_TYPE } from "../enum"
-
-export interface Timestamp extends TimestampInternal {};
+export type Timestamp = TimestampInternal;
 export interface IAddressDB {
     city: string | null;
-    country: string  | null;
+    country: string | null;
     district: string | null;
     housenumber: string | null;
     postcode: string | null;
@@ -17,9 +25,9 @@ export interface IAddressDB {
     municipality: string | null;
 }
 export interface IBaseDB {
-    id: string,
-    createdAt: Timestamp,
-    updatedAt: Timestamp
+    id: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;
@@ -98,7 +106,7 @@ export interface IPointDB {
     lng: number;
 }
 
-export interface IGeoPointDB extends IPointDB{
+export interface IGeoPointDB extends IPointDB {
     lat: number;
     lng: number;
     hash: string;
@@ -119,7 +127,7 @@ export interface IGeoDB {
     box: IGeoBoxDB | null;
 }
 
-export interface IMarkerDB extends IPointDB {}
+export type IMarkerDB = IPointDB;
 
 export interface ICircleDB {
     center: IPointDB;
@@ -135,7 +143,7 @@ export interface IPolygonDB {
     points: IPointDB[];
 }
 
-export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB  {
+export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB {
     marker: IMarkerDB | null;
     circle: ICircleDB | null;
     line: ILineDB | null;
@@ -148,13 +156,13 @@ export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB  {
 export interface IMissionReportDB extends IBaseDB {
     approvedAt: Timestamp;
     number: number;
-    subNumber: number | null,
+    subNumber: number | null;
     executedAt: Timestamp;
     orderId: string;
     missionRequestId: string;
     checkedTerritory: number | null;
-    depthExamination: number |null;
-    uncheckedTerritory: number |null;
+    depthExamination: number | null;
+    uncheckedTerritory: number | null;
     uncheckedReason: string | null;
     workStart: Timestamp;
     exclusionStart: Timestamp | null;
@@ -194,7 +202,7 @@ export interface IExplosiveDB extends IBaseDB {
 
 export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {
     explosiveId: string;
-    weight: number | null; /* in kilograms */
+    weight: number | null /* in kilograms */;
     quantity: number | null;
     executedAt: Timestamp;
 }
