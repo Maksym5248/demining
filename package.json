@@ -9,6 +9,7 @@
   "workspaces": ["web", "shared", "functions"],
   "packageManager": "yarn@1.22.19",
   "scripts": {
+    "lint-staged": "lint-staged",
     "link:web": "yarn workspace web add @/shared",
     "link:functions": "workspace functions add @/shared",
     "postinstall": "cd ./shared && yarn postinstall",
@@ -19,5 +20,9 @@
     "deploy:functions:dev": "cd ./web && yarn deploy:functions:dev",
     "deploy:functions:prod": "cd ./web && deploy:functions:prod",
     "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev"
+  },
+  "devDependencies": {
+    "husky": "^4.3.0",
+    "lint-staged": "^14.0.1"
   }
 }

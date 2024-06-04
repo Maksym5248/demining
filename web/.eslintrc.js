@@ -2,6 +2,10 @@ module.exports = {
   parserOptions: {
     tsconfigRootDir: __dirname,
   },
+  ignorePatterns: [
+    "lint-staged.config.js",
+    ".eslintrc.js"
+  ],
   extends: [
     '@/shared/eslint-config-base.js',
     'plugin:jsx-a11y/recommended',
