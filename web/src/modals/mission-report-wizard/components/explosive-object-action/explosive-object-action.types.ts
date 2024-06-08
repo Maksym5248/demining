@@ -1,5 +1,4 @@
-import { IExplosiveObjectActionValueParams } from '~/stores'
-
+import { IExplosiveObjectActionValueParams } from '~/stores';
 
 export interface ListItemProps {
     item: IExplosiveObjectActionValueParams;

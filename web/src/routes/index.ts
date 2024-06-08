@@ -1,2 +1,2 @@
-export * from "./modals";
-export * from "./root-router";
+export * from './modals';
+export * from './root-router';

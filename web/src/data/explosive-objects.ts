@@ -1,93 +1,59 @@
-import { EXPLOSIVE_OBJECT_TYPE } from "~/constants";
+import { EXPLOSIVE_OBJECT_TYPE } from '~/constants';
 
-export const AC = [
-	23,
-	30,
-	37,
-	45,
-	75,
-	76,
-	85,
-	88,
-	107,
-	115,
-	122,
-	125,
-	152,
-	155,
-	203
-];
+export const AC = [23, 30, 37, 45, 75, 76, 85, 88, 107, 115, 122, 125, 152, 155, 203];
 
-export const MM = [
-	50,
-	81,
-	82,
-	120,
-	160,
-	240
-];
+export const MM = [50, 81, 82, 120, 160, 240];
 
-export const MLRS = [
-	122,
-	220,
-	300,
-];
+export const MLRS = [122, 220, 300];
 
-export const RG = [
-	"Ф1",
-	"РГД-5",
-	"РГ-42",
-	"РГН",
-	"РГО",
-];
+export const RG = ['Ф1', 'РГД-5', 'РГ-42', 'РГН', 'РГО'];
 
 export const IM = [
-	"ТМ-62М",
-	"МОН-50",
-	"МОН-90",
-	"МОН-100",
-	"МОН-200",
-	"ОЗМ-72",
-	"ПМН-1",
-	"ПМН-2",
-	"ПМН-3",
-	"ПМН-4",
-	"ПФМ-1М",
-	"ПФМ-1",
-	"ПОМЗ 2",
-	"ПОМЗ 2М",
-	"МС-1",
-	"МС-2",
-	"МС-3",
-	"МЛ-7",
-	"МЛ-8",
+    'ТМ-62М',
+    'МОН-50',
+    'МОН-90',
+    'МОН-100',
+    'МОН-200',
+    'ОЗМ-72',
+    'ПМН-1',
+    'ПМН-2',
+    'ПМН-3',
+    'ПМН-4',
+    'ПФМ-1М',
+    'ПФМ-1',
+    'ПОМЗ 2',
+    'ПОМЗ 2М',
+    'МС-1',
+    'МС-2',
+    'МС-3',
+    'МЛ-7',
+    'МЛ-8',
 ];
 
 export const explosiveObjectsData = [
-	...AC.map((caliber) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.AS,
-		name: null,
-		caliber
-	})),
-	...MM.map((caliber) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.MM,
-		name: null,
-		caliber
-	})),
-	...MLRS.map((caliber) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.MLRS,
-		name: null,
-		caliber
-	})),
-	...RG.map((name) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.RG,
-		caliber: null,
-		name
-	})),
-	...IM.map((name) => ({
-		typeId: EXPLOSIVE_OBJECT_TYPE.IM,
-		caliber: null,
-		name
-	})),
-]
-
+    ...AC.map((caliber) => ({
+        typeId: EXPLOSIVE_OBJECT_TYPE.AS,
+        name: null,
+        caliber,
+    })),
+    ...MM.map((caliber) => ({
+        typeId: EXPLOSIVE_OBJECT_TYPE.MM,
+        name: null,
+        caliber,
+    })),
+    ...MLRS.map((caliber) => ({
+        typeId: EXPLOSIVE_OBJECT_TYPE.MLRS,
+        name: null,
+        caliber,
+    })),
+    ...RG.map((name) => ({
+        typeId: EXPLOSIVE_OBJECT_TYPE.RG,
+        caliber: null,
+        name,
+    })),
+    ...IM.map((name) => ({
+        typeId: EXPLOSIVE_OBJECT_TYPE.IM,
+        caliber: null,
+        name,
+    })),
+];

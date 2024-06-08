@@ -1,35 +1,35 @@
 import { Instance } from 'mobx-state-tree';
 
-import { types } from '../../../../types'
+import { types } from '../../../../types';
 
-export type IMapViewAction = Instance<typeof MapViewAction>
+export type IMapViewAction = Instance<typeof MapViewAction>;
 
 export const Point = types.model('LatLng', {
-	lat: types.number,
-	lng: types.number,
+    lat: types.number,
+    lng: types.number,
 });
 
 export const Circle = types.model('Circle', {
-	center: Point,
-	radius: types.number
+    center: Point,
+    radius: types.number,
 });
 
 export const Line = types.model('Line', {
-	points: types.array(Point),
-	width: types.number,
+    points: types.array(Point),
+    width: types.number,
 });
 
 export const Polygon = types.model('Polygon', {
-	points: types.array(Point),
+    points: types.array(Point),
 });
 
 export const MapViewAction = types.model('MapViewAction', {
-	id: types.identifier,
-	marker: types.maybe(Point),
-	circle: types.maybe(Circle),
-	polygon: types.maybe(Polygon),
-	line: types.maybe(Line),
-	zoom: types.number,
-	createdAt: types.dayjs,
-	updatedAt: types.dayjs
+    id: types.identifier,
+    marker: types.maybe(Point),
+    circle: types.maybe(Circle),
+    polygon: types.maybe(Polygon),
+    line: types.maybe(Line),
+    zoom: types.number,
+    createdAt: types.dayjs,
+    updatedAt: types.dayjs,
 });

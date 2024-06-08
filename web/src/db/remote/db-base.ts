@@ -1,332 +1,343 @@
-import { 
-	getFirestore, 
-	collection, 
-	CollectionReference,
-	doc, 
-	getDoc, 
-	query, 
-	where,
-	deleteDoc,
-	getDocs, 
-	setDoc,
-	serverTimestamp,
-	Timestamp, 
-	updateDoc, 
-	UpdateData,
-	orderBy,
-	limit,
-	WriteBatch,
-	startAfter,
-	getCountFromServer,
-	getAggregateFromServer,
-	sum,
-	QueryFieldFilterConstraint,
-	startAt,
-	endAt
+import { IBaseDB, IWhere, IQuery, IOrder } from '@/shared';
+import {
+    getFirestore,
+    collection,
+    CollectionReference,
+    doc,
+    getDoc,
+    query,
+    where,
+    deleteDoc,
+    getDocs,
+    setDoc,
+    serverTimestamp,
+    Timestamp,
+    updateDoc,
+    UpdateData,
+    orderBy,
+    limit,
+    WriteBatch,
+    startAfter,
+    getCountFromServer,
+    getAggregateFromServer,
+    sum,
+    QueryFieldFilterConstraint,
+    startAt,
+    endAt,
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
-import { IBaseDB, IWhere, IQuery, IOrder } from '@/shared';
 
 function generateValueStartsWith(value: string): string[] {
-	const prefixes: string[] = [];
-	const arr = value.toLowerCase().split(/\s+/);
+    const prefixes: string[] = [];
+    const arr = value.toLowerCase().split(/\s+/);
 
-	arr.forEach(v => {
-		for (let i = 1; i <= v.length; i+=1) {
-			prefixes.push(v.substring(0, i));
-		}
-	});
+    arr.forEach((v) => {
+        for (let i = 1; i <= v.length; i += 1) {
+            prefixes.push(v.substring(0, i));
+        }
+    });
 
-	return prefixes;
+    return prefixes;
 }
 
 const getWhere = (values: IWhere) => {
-	const res:QueryFieldFilterConstraint[] = [];
+    const res: QueryFieldFilterConstraint[] = [];
 
-	Object.keys(values).forEach(key => {
-		const value = values[key];
+    Object.keys(values).forEach((key) => {
+        const value = values[key];
 
-		if(value?.in && isArray(value.in)){
-			res.push(where(key, "in", value.in) )
-		}
+        if (value?.in && isArray(value.in)) {
+            res.push(where(key, 'in', value.in));
+        }
 
-		if(value?.[">="]){
-			res.push(where(key, ">=", value['>=']))
-		}
+        if (value?.['>=']) {
+            res.push(where(key, '>=', value['>=']));
+        }
 
-		if(value?.["<="]){
-			res.push(where(key, "<=", value['<=']))
-		}
+        if (value?.['<=']) {
+            res.push(where(key, '<=', value['<=']));
+        }
 
-		if(!!value && value["array-contains-any"]){
-			res.push(where(key, "array-contains-any", value["array-contains-any"]))
-		}
-		
-		if(!isObject(value) && !isArray(value)) {
-			res.push(where(key, "==", value))
-		};
-	});
+        if (!!value && value['array-contains-any']) {
+            res.push(where(key, 'array-contains-any', value['array-contains-any']));
+        }
 
-	return res;
+        if (!isObject(value) && !isArray(value)) {
+            res.push(where(key, '==', value));
+        }
+    });
+
+    return res;
 };
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
-type CreateData<T extends IBaseDB> = Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo"> & Partial<Pick<T, "id">>;
+type CreateData<T extends IBaseDB> = Omit<
+    T,
+    'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'
+> &
+    Partial<Pick<T, 'id'>>;
 
 export class DBBase<T extends IBaseDB> {
-	tableName: string;
+    tableName: string;
 
-	rootCollection?: string;
+    rootCollection?: string;
 
-	batch: WriteBatch | null = null;
+    batch: WriteBatch | null = null;
 
-	searchFields: (keyof T)[];
+    searchFields: (keyof T)[];
 
-	getCreateData: ((value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>) | undefined = undefined;
-	
-	getUpdateData: ((value: Partial<T>) => Partial<T>) | undefined = undefined;
+    getCreateData:
+        | ((value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => Partial<T>)
+        | undefined = undefined;
 
-	getSearchData: undefined | ((value: Partial<T>) => string[]) = undefined;
+    getUpdateData: ((value: Partial<T>) => Partial<T>) | undefined = undefined;
 
-	constructor(
-		tableName: string,
-		searchFields: (keyof T)[],
-		getCreateData?: (value: Omit<T, "createdAt" | "updatedAt" | "authorId" | "id" | "geo">) => Partial<T>,
-		getUpdateData?: (value: Partial<T>) => Partial<T>,
-		getSearchData?: (value: Partial<T>) => string[]
-	){
-		this.tableName = tableName;
-		this.searchFields = searchFields ?? [];
-		this.getCreateData = getCreateData;
-		this.getUpdateData = getUpdateData;
-		this.getSearchData = getSearchData;
-	}
+    getSearchData: undefined | ((value: Partial<T>) => string[]) = undefined;
 
-	setRootCollection(rootCollection: string){
-		this.rootCollection = rootCollection;
-	}
+    constructor(
+        tableName: string,
+        searchFields: (keyof T)[],
+        getCreateData?: (
+            value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>,
+        ) => Partial<T>,
+        getUpdateData?: (value: Partial<T>) => Partial<T>,
+        getSearchData?: (value: Partial<T>) => string[],
+    ) {
+        this.tableName = tableName;
+        this.searchFields = searchFields ?? [];
+        this.getCreateData = getCreateData;
+        this.getUpdateData = getUpdateData;
+        this.getSearchData = getSearchData;
+    }
 
-	removeRootCollection(){
-		this.rootCollection = undefined;
-	}
+    setRootCollection(rootCollection: string) {
+        this.rootCollection = rootCollection;
+    }
 
-	setBatch(batch: WriteBatch | null){
-		this.batch = batch;
-	}
+    removeRootCollection() {
+        this.rootCollection = undefined;
+    }
 
-	get collection(){
-		const name = this.rootCollection ? `${this.rootCollection}/${this.tableName}` : this.tableName;
-		return collection(getFirestore(), name) as CollectionReference<T>
-	}
+    setBatch(batch: WriteBatch | null) {
+        this.batch = batch;
+    }
 
-	uuid(){
-		const newDocumentRef = doc(this.collection);
-		return newDocumentRef.id;
-	}
-	
-	query(args?: Partial<IQuery>){
-		return query(this.collection,
-			...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
-			...(args?.where ? getWhere(args.where) : []),
-			...(args?.order ? [getOrder(args?.order)] : []),
-			...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
-			...(args?.startAt ? [startAt(args?.startAt)] : []),
-			...(args?.endAt ? [endAt(args?.endAt)] : []),
-			...(args?.limit ? [limit(args?.limit)] : []),
-	   );
-	}
+    get collection() {
+        const name = this.rootCollection
+            ? `${this.rootCollection}/${this.tableName}`
+            : this.tableName;
+        return collection(getFirestore(), name) as CollectionReference<T>;
+    }
 
-	async select(args?: Partial<IQuery>): Promise<T[]> {
-		const q = this.query(args);
+    uuid() {
+        const newDocumentRef = doc(this.collection);
+        return newDocumentRef.id;
+    }
 
-		const snapshot = await getDocs(q);
+    query(args?: Partial<IQuery>) {
+        return query(
+            this.collection,
+            ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
+            ...(args?.where ? getWhere(args.where) : []),
+            ...(args?.order ? [getOrder(args?.order)] : []),
+            ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
+            ...(args?.startAt ? [startAt(args?.startAt)] : []),
+            ...(args?.endAt ? [endAt(args?.endAt)] : []),
+            ...(args?.limit ? [limit(args?.limit)] : []),
+        );
+    }
 
-		const data = snapshot.docs.map(d => {
-			// @ts-expect-error
-			const { _search, ...newData } = d.data();
-			return newData
-		}) as (T & {
-			createdAt: Timestamp,
-			updatedAt: Timestamp,
-			_search: Record<keyof T, string>
-		})[];
+    async select(args?: Partial<IQuery>): Promise<T[]> {
+        const q = this.query(args);
 
-		return data as T[]
-	}
+        const snapshot = await getDocs(q);
 
-	async get(id:string):Promise<T | null> {
-		const ref = doc(this.collection, id);
+        const data = snapshot.docs.map((d) => {
+            // @ts-expect-error
+            const { _search, ...newData } = d.data();
+            return newData;
+        }) as (T & {
+            createdAt: Timestamp;
+            updatedAt: Timestamp;
+            _search: Record<keyof T, string>;
+        })[];
 
-		const res = await getDoc(ref);
+        return data as T[];
+    }
 
-		if(!res) return null;
-		if(!res?.exists()) return null;
+    async get(id: string): Promise<T | null> {
+        const ref = doc(this.collection, id);
 
-		const data = res.data() as T & {
-				createdAt: Timestamp,
-				updatedAt: Timestamp,
-				_search: Record<keyof T, string>
-		};
+        const res = await getDoc(ref);
 
-		// @ts-expect-error
-		if(data?._search) delete data._search;
-		
-		return data
-	}
+        if (!res) return null;
+        if (!res?.exists()) return null;
 
-	async exist(field:keyof T, value: any):Promise<boolean> {
-		const q = query(this.collection, where(String(field), "==", value));
+        const data = res.data() as T & {
+            createdAt: Timestamp;
+            updatedAt: Timestamp;
+            _search: Record<keyof T, string>;
+        };
 
-		const querySnapshot = await getDocs(q);		  
+        // @ts-expect-error
+        if (data?._search) delete data._search;
 
-		return !querySnapshot.empty
-	}
+        return data;
+    }
 
-	private createSearchField(value:Partial<T>){
-		const _search: string[] = [];
+    async exist(field: keyof T, value: any): Promise<boolean> {
+        const q = query(this.collection, where(String(field), '==', value));
 
-		this.searchFields.forEach((field) => {
-			const arr = generateValueStartsWith(String(value[field] ?? ""));
-			_search.push(...arr);
-		});
+        const querySnapshot = await getDocs(q);
 
-		if(this.getSearchData){
-			const values = this.getSearchData(value);
+        return !querySnapshot.empty;
+    }
 
-			values.forEach((v) => {
-				const arr = generateValueStartsWith(v);
-				_search.push(...arr);
-			});
-		}
+    private createSearchField(value: Partial<T>) {
+        const _search: string[] = [];
 
-		return { _search }
-	}
+        this.searchFields.forEach((field) => {
+            const arr = generateValueStartsWith(String(value[field] ?? ''));
+            _search.push(...arr);
+        });
 
-	private createSearchWhere(search:string){
-		const searchLower = String(search ?? "").toLowerCase().split(/\s+/);
+        if (this.getSearchData) {
+            const values = this.getSearchData(value);
 
-		const _search = {
-			"array-contains-any": searchLower
-		};
+            values.forEach((v) => {
+                const arr = generateValueStartsWith(v);
+                _search.push(...arr);
+            });
+        }
 
-		return { _search }
-	}
+        return { _search };
+    }
 
-	private getCreateValue(value: CreateData<T>) {
-		const id = value?.id ?? (this.uuid());
-		const ref = doc(this.collection, id);
-		const timestamp = serverTimestamp();
-		const search = this.createSearchField(value as T);
+    private createSearchWhere(search: string) {
+        const searchLower = String(search ?? '')
+            .toLowerCase()
+            .split(/\s+/);
 
-		const createData = this.getCreateData ? this.getCreateData(value) : {};
-	
-		const newValue = {
-			...search,
-			...value,
-			id,
-			...createData,
-			createdAt: timestamp,
-			updatedAt: timestamp,
-		} as T & {
-				createdAt: Timestamp,
-				updatedAt: Timestamp,
-				_search: string[]
-			};
-	
-		return { ref, newValue }
-	}
+        const _search = {
+            'array-contains-any': searchLower,
+        };
 
-	private getUpdateValue(id:string, value: Partial<T>) {
-		const newValue = {...value};
-		const search = this.createSearchField(value as T);
+        return { _search };
+    }
 
-		if(newValue?.id) delete newValue.id;
-		if(newValue?.updatedAt) delete newValue.updatedAt;
-		if(newValue?.createdAt) delete newValue.createdAt;
+    private getCreateValue(value: CreateData<T>) {
+        const id = value?.id ?? this.uuid();
+        const ref = doc(this.collection, id);
+        const timestamp = serverTimestamp();
+        const search = this.createSearchField(value as T);
 
-		const ref = doc(this.collection, id);
-		const timestamp = serverTimestamp();
+        const createData = this.getCreateData ? this.getCreateData(value) : {};
 
-		const updateData = this.getUpdateData ? this.getUpdateData(value) : {};
+        const newValue = {
+            ...search,
+            ...value,
+            id,
+            ...createData,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+        } as T & {
+            createdAt: Timestamp;
+            updatedAt: Timestamp;
+            _search: string[];
+        };
 
-		const updatedValue = {
-			...search,
-			...newValue,
-			...updateData,
-			updatedAt: timestamp
-		} as UpdateData<T>
+        return { ref, newValue };
+    }
 
-		return { ref, newValue: updatedValue};
-	}
+    private getUpdateValue(id: string, value: Partial<T>) {
+        const newValue = { ...value };
+        const search = this.createSearchField(value as T);
 
-	async create(value: CreateData<T>): Promise<T>{
-		const { ref, newValue } = this.getCreateValue(value)
+        if (newValue?.id) delete newValue.id;
+        if (newValue?.updatedAt) delete newValue.updatedAt;
+        if (newValue?.createdAt) delete newValue.createdAt;
 
-		await setDoc(ref, newValue);
-		const res = await this.get(newValue.id) as T;
-		return res
-	}
+        const ref = doc(this.collection, id);
+        const timestamp = serverTimestamp();
 
-	batchCreate(value: CreateData<T>) {
-		const { ref, newValue } = this.getCreateValue(value)
-		this.batch?.set(ref, newValue);
-	}
+        const updateData = this.getUpdateData ? this.getUpdateData(value) : {};
 
-	async update(id:string, value: Partial<T>): Promise<T> {
-		const { ref, newValue } = this.getUpdateValue(id, value);
-		await updateDoc(ref, newValue);
-		const res = await this.get(id) as T;
-		return res;
-	}
+        const updatedValue = {
+            ...search,
+            ...newValue,
+            ...updateData,
+            updatedAt: timestamp,
+        } as UpdateData<T>;
 
-	batchUpdate(id:string, value: Partial<T>) {
-		const { ref, newValue } = this.getUpdateValue(id, value)
-		this.batch?.update(ref, newValue);
-	}
+        return { ref, newValue: updatedValue };
+    }
 
-	async remove(id:string) {
-		const ref = doc(this.collection, id);
-		await deleteDoc(ref)
-		return id;
-	}
+    async create(value: CreateData<T>): Promise<T> {
+        const { ref, newValue } = this.getCreateValue(value);
 
-	batchRemove(id:string) {
-		const ref = doc(this.collection, id);
-		this.batch?.delete(ref);
-	}
+        await setDoc(ref, newValue);
+        const res = (await this.get(newValue.id)) as T;
+        return res;
+    }
 
-	async count(args?: Partial<IQuery>){
-		const q = this.query(args);
+    batchCreate(value: CreateData<T>) {
+        const { ref, newValue } = this.getCreateValue(value);
+        this.batch?.set(ref, newValue);
+    }
 
-		const snapshot = await getCountFromServer(q);
-		
-		return snapshot.data().count
-	}
+    async update(id: string, value: Partial<T>): Promise<T> {
+        const { ref, newValue } = this.getUpdateValue(id, value);
+        await updateDoc(ref, newValue);
+        const res = (await this.get(id)) as T;
+        return res;
+    }
 
-	async sum(field: keyof T, args?: Partial<IQuery>){
-		const q = this.query(args);
+    batchUpdate(id: string, value: Partial<T>) {
+        const { ref, newValue } = this.getUpdateValue(id, value);
+        this.batch?.update(ref, newValue);
+    }
 
-		const snapshot = await getAggregateFromServer(q, {
-			sum: sum(field as string)
-		});
-		
-		return snapshot.data().sum;
-	}
+    async remove(id: string) {
+        const ref = doc(this.collection, id);
+        await deleteDoc(ref);
+        return id;
+    }
 
-	async removeBy(args: IWhere) {
-		const q = query(this.collection, ...getWhere(args));
+    batchRemove(id: string) {
+        const ref = doc(this.collection, id);
+        this.batch?.delete(ref);
+    }
 
-		const querySnapshot = await getDocs(q);
-		const deletePromises: Promise<any>[] = [];
-	  
-		querySnapshot.forEach((d) => {
-		  deletePromises.push(deleteDoc(d.ref));
-		});
-	  
-		await Promise.all(deletePromises);
-	}
+    async count(args?: Partial<IQuery>) {
+        const q = this.query(args);
 
+        const snapshot = await getCountFromServer(q);
 
+        return snapshot.data().count;
+    }
+
+    async sum(field: keyof T, args?: Partial<IQuery>) {
+        const q = this.query(args);
+
+        const snapshot = await getAggregateFromServer(q, {
+            sum: sum(field as string),
+        });
+
+        return snapshot.data().sum;
+    }
+
+    async removeBy(args: IWhere) {
+        const q = query(this.collection, ...getWhere(args));
+
+        const querySnapshot = await getDocs(q);
+        const deletePromises: Promise<any>[] = [];
+
+        querySnapshot.forEach((d) => {
+            deletePromises.push(deleteDoc(d.ref));
+        });
+
+        await Promise.all(deletePromises);
+    }
 }

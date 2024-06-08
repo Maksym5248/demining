@@ -1,78 +1,88 @@
-import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
+import { types, Instance } from 'mobx-state-tree';
 
-import { Api, IUserDTO } from '~/api'
+import { Api, IUserDTO } from '~/api';
 import { dates } from '~/utils';
 
-import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 import { createUser, IUser, IUserValue, User } from './entities';
+import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 
 const Store = types
-	.model('UserStore', {
-		collection: createCollection<IUser, IUserValue>("Users", User),
-		listUnassigned: createList<IUser>("UnassignedUserList", safeReference(User), { pageSize: 10 }),
-		searchListUnassigned: createList<IUser>("UnassignedUserSearchList", safeReference(User), { pageSize: 10 }),
-	}).actions((self) => ({
-		append(res: IUserDTO[], isSearch: boolean, isMore?:boolean){
-			const list = isSearch ? self.searchListUnassigned : self.listUnassigned;
-			if(isSearch && !isMore) self.searchListUnassigned.clear();
+    .model('UserStore', {
+        collection: createCollection<IUser, IUserValue>('Users', User),
+        listUnassigned: createList<IUser>('UnassignedUserList', safeReference(User), {
+            pageSize: 10,
+        }),
+        searchListUnassigned: createList<IUser>('UnassignedUserSearchList', safeReference(User), {
+            pageSize: 10,
+        }),
+    })
+    .actions((self) => ({
+        append(res: IUserDTO[], isSearch: boolean, isMore?: boolean) {
+            const list = isSearch ? self.searchListUnassigned : self.listUnassigned;
+            if (isSearch && !isMore) self.searchListUnassigned.clear();
 
-			list.checkMore(res.length);
+            list.checkMore(res.length);
 
-			res.forEach((el) => {
-				const value = createUser(el);
+            res.forEach((el) => {
+                const value = createUser(el);
 
-				self.collection.set(value.id, value);
-				if(!list.includes(value.id)) list.push(value.id);
-			})
-		}
-	}));
+                self.collection.set(value.id, value);
+                if (!list.includes(value.id)) list.push(value.id);
+            });
+        },
+    }));
 
-const fetchListUnassigned = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {
-	const isSearch = !!search;
-	const list = isSearch ? self.searchListUnassigned : self.listUnassigned
+const fetchListUnassigned = asyncAction<Instance<typeof Store>>(
+    (search: string) =>
+        async function fn({ flow, self }) {
+            const isSearch = !!search;
+            const list = isSearch ? self.searchListUnassigned : self.listUnassigned;
 
-	if(!isSearch && list.length) return;
-    
-	try {
-		flow.start();
-		const res = await Api.user.getListUnassignedUsers({
-			search,
-			limit: list.pageSize,
-		});
+            if (!isSearch && list.length) return;
 
-		self.append(res, isSearch);
+            try {
+                flow.start();
+                const res = await Api.user.getListUnassignedUsers({
+                    search,
+                    limit: list.pageSize,
+                });
 
-		flow.success();
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Виникла помилка');
-	}
-});
+                self.append(res, isSearch);
 
-const fetchListUnassignedMore = asyncAction<Instance<typeof Store>>((search: string) => async function fn({ flow, self }) {    
-	try {
-		const isSearch = !!search;
-		const list = isSearch ? self.searchListUnassigned : self.listUnassigned
+                flow.success();
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Виникла помилка');
+            }
+        },
+);
 
-		if(!list.isMorePages) return;
+const fetchListUnassignedMore = asyncAction<Instance<typeof Store>>(
+    (search: string) =>
+        async function fn({ flow, self }) {
+            try {
+                const isSearch = !!search;
+                const list = isSearch ? self.searchListUnassigned : self.listUnassigned;
 
-		flow.start();
+                if (!list.isMorePages) return;
 
-		const res = await Api.user.getListUnassignedUsers({
-			search,
-			limit: list.pageSize,
-			startAfter: dates.toDateServer(list.last.createdAt),
-		});
+                flow.start();
 
-		self.append(res, isSearch, true);
+                const res = await Api.user.getListUnassignedUsers({
+                    search,
+                    limit: list.pageSize,
+                    startAfter: dates.toDateServer(list.last.createdAt),
+                });
 
+                self.append(res, isSearch, true);
 
-		flow.success();
-	} catch (err) {
-		message.error('Виникла помилка');
-		flow.failed(err as Error);
-	}
-});
+                flow.success();
+            } catch (err) {
+                message.error('Виникла помилка');
+                flow.failed(err as Error);
+            }
+        },
+);
 
-export const UserStore = Store.props({ fetchListUnassigned, fetchListUnassignedMore })
+export const UserStore = Store.props({ fetchListUnassigned, fetchListUnassignedMore });

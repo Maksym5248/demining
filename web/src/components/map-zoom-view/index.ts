@@ -1,1 +1,1 @@
-export * from "./map-zoom-view";
+export * from './map-zoom-view';

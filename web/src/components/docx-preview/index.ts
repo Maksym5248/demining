@@ -1,1 +1,1 @@
-export * from "./docx-preview";
+export * from './docx-preview';

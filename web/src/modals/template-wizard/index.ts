@@ -1,1 +1,1 @@
-export * from "./template-wizard";
+export * from './template-wizard';

@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const spin = Theme.css(`
     display: flex;
@@ -6,9 +6,8 @@ const spin = Theme.css(`
     justify-content: center;
     align-items: center;
     height: 300px;
-`)
+`);
 
 export const s = {
-	spin,
-}
-    
+    spin,
+};

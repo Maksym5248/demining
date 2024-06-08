@@ -3,40 +3,38 @@ import EventEmitter from 'events';
 const eventEmitter = new EventEmitter();
 
 export class StorageClass {
+    set = (key: string, value: any) => {
+        localStorage.setItem(key, JSON.stringify(value));
+        eventEmitter.emit(key, value);
+    };
 
-	set = (key: string, value: any) => {
-		localStorage.setItem(key, JSON.stringify(value));
-		eventEmitter.emit(key, value);
-	};
+    get(key: string) {
+        try {
+            const value = localStorage.getItem(key);
+            if (value) {
+                return JSON.parse(value);
+            }
+        } catch (error) {
+            return null;
+        }
 
-	get(key: string){
-		try {
-			const value = localStorage.getItem(key);
-			if(value){
-				return JSON.parse(value)
-			}
-		} catch (error) {
-			return null
-		}
+        return null;
+    }
 
-		return null
-	};
+    remove = (key: string) => {
+        localStorage.removeItem(key);
+        eventEmitter.emit(key, null);
+    };
 
+    onChange = (key: string, callBack: (value: any) => void) => {
+        eventEmitter.on(key, callBack);
 
-	remove = (key: string) => {
-		localStorage.removeItem(key);
-		eventEmitter.emit(key, null);
-	};
+        return () => eventEmitter.removeListener(key, callBack);
+    };
 
-	onChange = (key: string, callBack: (value: any) => void) => {
-		eventEmitter.on(key, callBack);
-
-		return () => eventEmitter.removeListener(key, callBack);
-	};
-
-	removeAllListeners() {
-		eventEmitter.removeAllListeners();
-	}
+    removeAllListeners() {
+        eventEmitter.removeAllListeners();
+    }
 }
 
 export const Storage = new StorageClass();

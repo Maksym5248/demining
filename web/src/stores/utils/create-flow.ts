@@ -1,67 +1,67 @@
-import { types } from 'mobx-state-tree';
 import get from 'lodash/get';
+import { types } from 'mobx-state-tree';
 
-import { error } from '~/utils';
 import { Logger } from '~/services';
+import { error } from '~/utils';
 
 const ErrorModel = types.model({
-	message: '',
-	status: types.maybeNull(types.number),
-	reason: types.maybeNull(types.string),
+    message: '',
+    status: types.maybeNull(types.number),
+    reason: types.maybeNull(types.string),
 });
 
 export const AsyncModel = types
-	.model({
-		inProgress: false,
-		isLoaded: false,
-		error: types.optional(types.maybeNull(ErrorModel), null),
-		hasEverBeenRan: false,
-	})
-	.views((self) => ({
-		get isError() {
-			return Boolean(self.error);
-		},
+    .model({
+        inProgress: false,
+        isLoaded: false,
+        error: types.optional(types.maybeNull(ErrorModel), null),
+        hasEverBeenRan: false,
+    })
+    .views((self) => ({
+        get isError() {
+            return Boolean(self.error);
+        },
 
-		get errorMessage(): string | null {
-			return get(self, 'error.message', null);
-		},
+        get errorMessage(): string | null {
+            return get(self, 'error.message', null);
+        },
 
-		get inProgressAgain() {
-			return self.inProgress && self.hasEverBeenRan;
-		},
+        get inProgressAgain() {
+            return self.inProgress && self.hasEverBeenRan;
+        },
 
-		get canBeRun() {
-			return !self.error && !self.inProgress;
-		},
-	}))
-	.actions((self) => ({
-		start() {
-			self.inProgress = true;
-			self.error = null;
-		},
+        get canBeRun() {
+            return !self.error && !self.inProgress;
+        },
+    }))
+    .actions((self) => ({
+        start() {
+            self.inProgress = true;
+            self.error = null;
+        },
 
-		success() {
-			if (!self.hasEverBeenRan) {
-				self.hasEverBeenRan = true;
-			}
+        success() {
+            if (!self.hasEverBeenRan) {
+                self.hasEverBeenRan = true;
+            }
 
-			if (!self.isLoaded) {
-				self.isLoaded = true;
-			}
+            if (!self.isLoaded) {
+                self.isLoaded = true;
+            }
 
-			self.inProgress = false;
-		},
+            self.inProgress = false;
+        },
 
-		failed(e: Error, throwError?: boolean) {
-			if (!self.hasEverBeenRan) {
-				self.hasEverBeenRan = true;
-			}
+        failed(e: Error, throwError?: boolean) {
+            if (!self.hasEverBeenRan) {
+                self.hasEverBeenRan = true;
+            }
 
-			self.inProgress = false;
-			self.error = error.createError(e);
-			Logger.log(e)
-			if (throwError) {
-				throw e;
-			}
-		},
-	}));
+            self.inProgress = false;
+            self.error = error.createError(e);
+            Logger.log(e);
+            if (throwError) {
+                throw e;
+            }
+        },
+    }));

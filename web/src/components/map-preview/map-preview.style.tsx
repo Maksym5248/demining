@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 export const polygonCalloutHeight = 20;
 export const polygonCalloutWidth = 35;
@@ -108,16 +108,17 @@ const panel = Theme.css(`
 	align-items: center;
 `);
 
-
 const mapContainerStyle = {
-	width: '100%',
-	height: '400px',
-}
+    width: '100%',
+    height: '400px',
+};
 
-const activeButton = Theme.css(({ token }) => `
+const activeButton = Theme.css(
+    ({ token }) => `
 	border-color: ${token.colorPrimary};
 	color: ${token.colorPrimary};
-`);
+`,
+);
 
 const zoomView = Theme.css(`
 	position: absolute;
@@ -138,23 +139,22 @@ const buttonZoomOut = Theme.css(`
 `);
 
 export const s = {
-	container,
-	autocomplete,
-	deleteIcon,
-	mapContainerStyle,
-	drawingPanel,
-	callout,
-	calloutPolygon,
-	calloutHeader,
-	calloutText,
-	calloutPolygonText,
-	calloutDivider,
-	calloutCity,
-	panel,
-	button,
-	activeButton,
-	zoomView,
-	buttonZoomIn,
-	buttonZoomOut
-}
-    
+    container,
+    autocomplete,
+    deleteIcon,
+    mapContainerStyle,
+    drawingPanel,
+    callout,
+    calloutPolygon,
+    calloutHeader,
+    calloutText,
+    calloutPolygonText,
+    calloutDivider,
+    calloutCity,
+    panel,
+    button,
+    activeButton,
+    zoomView,
+    buttonZoomIn,
+    buttonZoomOut,
+};

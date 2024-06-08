@@ -1,1 +1,1 @@
-export * from "./drawing-manager";
+export * from './drawing-manager';

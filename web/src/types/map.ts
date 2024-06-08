@@ -1,18 +1,18 @@
 export interface IPoint {
-    lat: number, 
-	lng: number,
+    lat: number;
+    lng: number;
 }
 
 export interface ISimpleLine {
-    start: IPoint, 
-	end: IPoint,
+    start: IPoint;
+    end: IPoint;
 }
 
-export interface IMarker extends IPoint {}
+export type IMarker = IPoint;
 
 export interface ICircle {
-    center: IPoint,
-    radius: number
+    center: IPoint;
+    radius: number;
 }
 
 export interface ILine {
@@ -21,15 +21,15 @@ export interface ILine {
 }
 
 export interface IPolygon {
-    points: IPoint[],
+    points: IPoint[];
 }
 
 export interface IGeoBox {
-    topLeft: IPoint,
-    bottomRight: IPoint
+    topLeft: IPoint;
+    bottomRight: IPoint;
 }
 
 export interface IGeohashRange {
-    start: string,
-    end: string
+    start: string;
+    end: string;
 }

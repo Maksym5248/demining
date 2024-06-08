@@ -1,10 +1,10 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const modal = Theme.css(`
     display: : flex;
     flex: 1;
     min-height: 100vh;
-`)
+`);
 
 const header = Theme.css(`
     display: flex;
@@ -13,10 +13,9 @@ const header = Theme.css(`
     justify-content: space-between;
     height: 60px;
     border-bottom: solid 1px grey;
-`)
+`);
 
 export const s = {
-	modal,
-	header,
-}
-    
+    modal,
+    header,
+};

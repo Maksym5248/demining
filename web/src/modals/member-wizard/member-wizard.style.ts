@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const spin = Theme.css(`
     display: flex;
@@ -13,7 +13,6 @@ const item = Theme.css(`
 `);
 
 export const s = {
-	spin,
-	item
-}
-    
+    spin,
+    item,
+};

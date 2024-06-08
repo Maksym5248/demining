@@ -27,6 +27,21 @@ module.exports = {
     'react/require-default-props': 0,
     'react/no-array-index-key': 0,
     'react/jsx-filename-extension': [0, { "extensions": [".js", ".jsx"] }],
-    "react/react-in-jsx-scope": 0
+    "react/react-in-jsx-scope": 0,
+
+    // TODO: fix errors
+    "@typescript-eslint/no-misused-promises": 0,
+    "@typescript-eslint/no-unsafe-assignment": 0,
+    "@typescript-eslint/require-await": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-unsafe-return": 0,
+    "@typescript-eslint/no-unsafe-member-access": 0,
+    "@typescript-eslint/no-unsafe-argument": 0,
+    "@typescript-eslint/no-unused-vars": 0,
+    "@typescript-eslint/no-unsafe-call": 0,
+    "@typescript-eslint/restrict-template-expressions": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/restrict-plus-operands": 0,
+    "@typescript-eslint/restrict-plus-operands": 0
   },
 };

@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const container = Theme.css(`
     display: flex;
@@ -28,8 +28,8 @@ const card = Theme.css(`
 `);
 
 export const s = {
-	header,
-	container,
-	mainData,
-	card
-}
+    header,
+    container,
+    mainData,
+    card,
+};

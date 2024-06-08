@@ -1,19 +1,15 @@
-import { IPoint } from "~/types";
+import { IPoint } from '~/types';
 
 const createPointLiteral = (latLng: google.maps.LatLng) => ({
-	lng: latLng?.lng(),
-	lat: latLng?.lat(),
-})
+    lng: latLng?.lng(),
+    lat: latLng?.lat(),
+});
 
 const createPointFromArr = (value: number[]) => ({
-	lat: value[1],
-	lng: value[0]
-})
+    lat: value[1],
+    lng: value[0],
+});
 
 const createArrFromPoint = (point: IPoint) => [point.lng, point.lat];
 
-export {
-	createPointLiteral,
-	createPointFromArr,
-	createArrFromPoint
-}
+export { createPointLiteral, createPointFromArr, createArrFromPoint };

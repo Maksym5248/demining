@@ -1,1 +1,1 @@
-export * from "./waiting-approve";
+export * from './waiting-approve';

@@ -1,4 +1,4 @@
-import { TRANSPORT_TYPE } from "~/constants"
+import { TRANSPORT_TYPE } from '~/constants';
 
 export interface ITransportForm {
     name: string;

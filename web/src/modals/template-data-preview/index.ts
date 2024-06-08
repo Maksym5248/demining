@@ -1,1 +1,1 @@
-export * from "./template-data-preview";
+export * from './template-data-preview';

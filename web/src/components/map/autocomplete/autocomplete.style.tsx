@@ -1,5 +1,4 @@
-import { Theme } from '~/styles'
-
+import { Theme } from '~/styles';
 
 const autocomplete = Theme.css(`
 	width: 340px;
@@ -11,8 +10,6 @@ const autocomplete = Theme.css(`
 	top: 16px;
 `);
 
-
 export const s = {
-	autocomplete,
-}
-    
+    autocomplete,
+};

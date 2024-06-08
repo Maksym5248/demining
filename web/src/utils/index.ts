@@ -8,5 +8,5 @@ export * from './string';
 export * from './validation';
 export * from './ui';
 export * from './data';
-export * from "./file"
-export * from "./math"
+export * from './file';
+export * from './math';

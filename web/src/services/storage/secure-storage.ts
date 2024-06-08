@@ -1,3 +1,3 @@
-import { StorageClass } from "./storage";
+import { StorageClass } from './storage';
 
 export const SecureStorage = new StorageClass();

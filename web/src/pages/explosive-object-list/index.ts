@@ -1,1 +1,1 @@
-export * from "./explosive-object-list";
+export * from './explosive-object-list';

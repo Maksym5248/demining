@@ -1,5 +1,5 @@
 import { MAP_SIZE } from '~/constants';
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 export const MAP_PADDING_TOP = 40;
 export const MAP_PADDING_BOTTOM = 60;
@@ -12,6 +12,5 @@ const container = Theme.css(`
 `);
 
 export const s = {
-	container
-}
-    
+    container,
+};

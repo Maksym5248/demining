@@ -1,7 +1,7 @@
-import { Spin } from "antd";
+import { Spin } from 'antd';
 
-import { s } from "./loading.styles";
+import { s } from './loading.styles';
 
 export function Loading() {
-	return <Spin css={s.spin} />
+    return <Spin css={s.spin} />;
 }

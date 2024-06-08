@@ -1,217 +1,263 @@
-import { types, Instance } from 'mobx-state-tree';
 import { message } from 'antd';
 import { Dayjs } from 'dayjs';
+import { types, Instance } from 'mobx-state-tree';
 
-import { CreateValue } from '~/types'
-import { Api, IExplosiveObjectActionSumDTO, IExplosiveObjectDTO } from '~/api'
+import { Api, IExplosiveObjectActionSumDTO, IExplosiveObjectDTO } from '~/api';
 import { explosiveObjectTypesData } from '~/data';
+import { CreateValue } from '~/types';
 import { dates } from '~/utils';
 
-import { asyncAction, createCollection, createList, safeReference } from '../../utils';
-import { 
-	ExplosiveObject,
-	ExplosiveObjectType,
-	IExplosiveObject,
-	IExplosiveObjectType,
-	IExplosiveObjectValue,
-	IExplosiveObjectTypeValue,
-	IExplosiveObjectValueParams,
-	createExplosiveObject,
-	createExplosiveObjectDTO,
-	createExplosiveObjectType,
-	ExplosiveObjectAction,
-	IExplosiveObjectActionValue,
-	IExplosiveObjectAction,
-	createExplosiveObjectActionSum,
+import {
+    ExplosiveObject,
+    ExplosiveObjectType,
+    IExplosiveObject,
+    IExplosiveObjectType,
+    IExplosiveObjectValue,
+    IExplosiveObjectTypeValue,
+    IExplosiveObjectValueParams,
+    createExplosiveObject,
+    createExplosiveObjectDTO,
+    createExplosiveObjectType,
+    ExplosiveObjectAction,
+    IExplosiveObjectActionValue,
+    IExplosiveObjectAction,
+    createExplosiveObjectActionSum,
 } from './entities';
+import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 
 const SumExplosiveObjectActions = types.model('SumExplosiveObjectActions', {
-	total: types.number,
-	discovered: types.number,
-	transported: types.number,
-	destroyed: types.number,
+    total: types.number,
+    discovered: types.number,
+    transported: types.number,
+    destroyed: types.number,
 });
 
 const Store = types
-	.model('ExplosiveObjectStore', {
-		collectionActions: createCollection<IExplosiveObjectAction, IExplosiveObjectActionValue>("ExplosiveObjectActions", ExplosiveObjectAction),
-		collectionTypes: createCollection<IExplosiveObjectType, IExplosiveObjectTypeValue>("ExplosiveObjectTypes", ExplosiveObjectType),
-		listTypes: createList<IExplosiveObjectType>("ExplosiveObjectTypesList", safeReference(ExplosiveObjectType), { pageSize: 100 }),
-		collection: createCollection<IExplosiveObject, IExplosiveObjectValue>("ExplosiveObjects", ExplosiveObject),
-		list: createList<IExplosiveObject>("ExplosiveObjectsList", safeReference(ExplosiveObject), { pageSize: 10 }),
-		searchList: createList<IExplosiveObject>("ExplosiveObjectsSearchList", safeReference(ExplosiveObject), { pageSize: 10 }),
-		sum: types.optional(SumExplosiveObjectActions, {
-			total: 0,
-			discovered: 0,
-			transported: 0,
-			destroyed: 0
-		}),
-	}).views(self => ({
-		get sortedListTypes(){
-			return self.listTypes.asArray.sort((a, b) => a.fullName.localeCompare(b.fullName, ["uk"], { numeric: true, sensitivity: 'base' }))
-		}
-	})).actions(self => ({
-		setSum(sum: IExplosiveObjectActionSumDTO){
-			self.sum = createExplosiveObjectActionSum(sum);
-		},
-		init() {
-			explosiveObjectTypesData.forEach((el) => {
-				const explosiveObjectType = createExplosiveObjectType(el);
-	
-				if(!self.collectionTypes.has(explosiveObjectType.id)){
-					self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
-					self.listTypes.push(explosiveObjectType.id)
-				}
-			})
-		},
-		append(res: IExplosiveObjectDTO[], isSearch: boolean, isMore?:boolean){
-			const list = isSearch ? self.searchList : self.list;
-			if(isSearch && !isMore) self.searchList.clear();
+    .model('ExplosiveObjectStore', {
+        collectionActions: createCollection<IExplosiveObjectAction, IExplosiveObjectActionValue>(
+            'ExplosiveObjectActions',
+            ExplosiveObjectAction,
+        ),
+        collectionTypes: createCollection<IExplosiveObjectType, IExplosiveObjectTypeValue>(
+            'ExplosiveObjectTypes',
+            ExplosiveObjectType,
+        ),
+        listTypes: createList<IExplosiveObjectType>(
+            'ExplosiveObjectTypesList',
+            safeReference(ExplosiveObjectType),
+            { pageSize: 100 },
+        ),
+        collection: createCollection<IExplosiveObject, IExplosiveObjectValue>(
+            'ExplosiveObjects',
+            ExplosiveObject,
+        ),
+        list: createList<IExplosiveObject>('ExplosiveObjectsList', safeReference(ExplosiveObject), {
+            pageSize: 10,
+        }),
+        searchList: createList<IExplosiveObject>(
+            'ExplosiveObjectsSearchList',
+            safeReference(ExplosiveObject),
+            { pageSize: 10 },
+        ),
+        sum: types.optional(SumExplosiveObjectActions, {
+            total: 0,
+            discovered: 0,
+            transported: 0,
+            destroyed: 0,
+        }),
+    })
+    .views((self) => ({
+        get sortedListTypes() {
+            return self.listTypes.asArray.sort((a, b) =>
+                a.fullName.localeCompare(b.fullName, ['uk'], {
+                    numeric: true,
+                    sensitivity: 'base',
+                }),
+            );
+        },
+    }))
+    .actions((self) => ({
+        setSum(sum: IExplosiveObjectActionSumDTO) {
+            self.sum = createExplosiveObjectActionSum(sum);
+        },
+        init() {
+            explosiveObjectTypesData.forEach((el) => {
+                const explosiveObjectType = createExplosiveObjectType(el);
 
-			list.checkMore(res.length);
+                if (!self.collectionTypes.has(explosiveObjectType.id)) {
+                    self.collectionTypes.set(explosiveObjectType.id, explosiveObjectType);
+                    self.listTypes.push(explosiveObjectType.id);
+                }
+            });
+        },
+        append(res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) {
+            const list = isSearch ? self.searchList : self.list;
+            if (isSearch && !isMore) self.searchList.clear();
 
-			res.forEach((el) => {
-				const value = createExplosiveObject(el);
+            list.checkMore(res.length);
 
-				self.collection.set(value.id, value);
-				if(!list.includes(value.id)) list.push(value.id);
-			})
-		},
-	}));
+            res.forEach((el) => {
+                const value = createExplosiveObject(el);
 
-const create = asyncAction<Instance<typeof Store>>((data: CreateValue<IExplosiveObjectValueParams>) => async function addFlow({ flow, self }) {
-	try {
-		flow.start();
+                self.collection.set(value.id, value);
+                if (!list.includes(value.id)) list.push(value.id);
+            });
+        },
+    }));
 
-		const res = await Api.explosiveObject.create(createExplosiveObjectDTO(data));
-		const value = createExplosiveObject(res);
+const create = asyncAction<Instance<typeof Store>>(
+    (data: CreateValue<IExplosiveObjectValueParams>) =>
+        async function addFlow({ flow, self }) {
+            try {
+                flow.start();
 
-		self.collection.set(res.id, value);
-		self.list.unshift(res.id);
-		flow.success();
-		message.success('Додано успішно');
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Не вдалось додати');
-	}
-});
+                const res = await Api.explosiveObject.create(createExplosiveObjectDTO(data));
+                const value = createExplosiveObject(res);
 
-const remove = asyncAction<Instance<typeof Store>>((id:string) => async function addFlow({ flow, self }) {
-	try {
-		flow.start();
-		await Api.explosiveObject.remove(id);
-		self.list.removeById(id);
-		self.collection.remove(id);
-		flow.success();
-		message.success('Видалено успішно');
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Не вдалось видалити');
-	}
-});
+                self.collection.set(res.id, value);
+                self.list.unshift(res.id);
+                flow.success();
+                message.success('Додано успішно');
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Не вдалось додати');
+            }
+        },
+);
 
-const createExplosiveObjects = asyncAction<Instance<typeof Store>>(() => async function addFlow({ flow }) {
-	try {
-		flow.start();
-		await Api.createExplosiveObjects();
-		flow.success();
-		message.success('Виконано успішно');
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Не вдалось виконати');
-	}
-});
+const remove = asyncAction<Instance<typeof Store>>(
+    (id: string) =>
+        async function addFlow({ flow, self }) {
+            try {
+                flow.start();
+                await Api.explosiveObject.remove(id);
+                self.list.removeById(id);
+                self.collection.remove(id);
+                flow.success();
+                message.success('Видалено успішно');
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Не вдалось видалити');
+            }
+        },
+);
 
-const fetchList = asyncAction<Instance<typeof Store>>((search: string) => async function addFlow({ flow, self }) {
-	try {
-		const isSearch = !!search;
-		const list = isSearch ? self.searchList : self.list
+const createExplosiveObjects = asyncAction<Instance<typeof Store>>(
+    () =>
+        async function addFlow({ flow }) {
+            try {
+                flow.start();
+                await Api.createExplosiveObjects();
+                flow.success();
+                message.success('Виконано успішно');
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Не вдалось виконати');
+            }
+        },
+);
 
-		if(!isSearch && list.length) return;
+const fetchList = asyncAction<Instance<typeof Store>>(
+    (search: string) =>
+        async function addFlow({ flow, self }) {
+            try {
+                const isSearch = !!search;
+                const list = isSearch ? self.searchList : self.list;
 
-		flow.start();
+                if (!isSearch && list.length) return;
 
-		const res = await Api.explosiveObject.getList({
-			search,
-			limit: list.pageSize,
-		});
-		
-		self.append(res, isSearch);
+                flow.start();
 
-		flow.success();
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Виникла помилка');
-	}
-});
+                const res = await Api.explosiveObject.getList({
+                    search,
+                    limit: list.pageSize,
+                });
 
-const fetchSum = asyncAction<Instance<typeof Store>>((startDate: Dayjs, endDate:Dayjs) => async function addFlow({ flow, self }) {
-	try {
-		flow.start();
+                self.append(res, isSearch);
 
-		const res = await Api.explosiveObject.sum({
-			where: {
-				executedAt: {
-					">=": dates.toDateServer(startDate),
-					"<=": dates.toDateServer(endDate),
-				},
-			}
-		});
+                flow.success();
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Виникла помилка');
+            }
+        },
+);
 
-		self.setSum(res);
+const fetchSum = asyncAction<Instance<typeof Store>>(
+    (startDate: Dayjs, endDate: Dayjs) =>
+        async function addFlow({ flow, self }) {
+            try {
+                flow.start();
 
-		flow.success();
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Виникла помилка');
-	}
-});
+                const res = await Api.explosiveObject.sum({
+                    where: {
+                        executedAt: {
+                            '>=': dates.toDateServer(startDate),
+                            '<=': dates.toDateServer(endDate),
+                        },
+                    },
+                });
 
-const fetchListMore = asyncAction<Instance<typeof Store>>((search) => async function addFlow({ flow, self }) {
-	try {
-		const isSearch = !!search;
-		const list = isSearch ? self.searchList : self.list
+                self.setSum(res);
 
-		if(!list.isMorePages) return;
+                flow.success();
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Виникла помилка');
+            }
+        },
+);
 
-		flow.start();
+const fetchListMore = asyncAction<Instance<typeof Store>>(
+    (search) =>
+        async function addFlow({ flow, self }) {
+            try {
+                const isSearch = !!search;
+                const list = isSearch ? self.searchList : self.list;
 
-		const res = await Api.explosiveObject.getList({
-			search,
-			limit: list.pageSize,
-			startAfter: dates.toDateServer(list.last.createdAt),
-		});
+                if (!list.isMorePages) return;
 
-		self.append(res, isSearch, true);
+                flow.start();
 
+                const res = await Api.explosiveObject.getList({
+                    search,
+                    limit: list.pageSize,
+                    startAfter: dates.toDateServer(list.last.createdAt),
+                });
 
-		flow.success();
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Виникла помилка');
-	}
-});
+                self.append(res, isSearch, true);
 
-const fetchItem = asyncAction<Instance<typeof Store>>((id:string) => async function fn({ flow, self }) {    
-	try {
-		flow.start();
-		const res = await Api.explosiveObject.get(id);
+                flow.success();
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Виникла помилка');
+            }
+        },
+);
 
-		self.collection.set(res.id, createExplosiveObject(res));
+const fetchItem = asyncAction<Instance<typeof Store>>(
+    (id: string) =>
+        async function fn({ flow, self }) {
+            try {
+                flow.start();
+                const res = await Api.explosiveObject.get(id);
 
-		flow.success();
-	} catch (err) {
-		flow.failed(err as Error);
-		message.error('Виникла помилка');
-	}
-});
+                self.collection.set(res.id, createExplosiveObject(res));
+
+                flow.success();
+            } catch (err) {
+                flow.failed(err as Error);
+                message.error('Виникла помилка');
+            }
+        },
+);
 
 export const ExplosiveObjectStore = Store.props({
-	create,
-	remove, 
-	fetchList,
-	fetchListMore,
-	fetchItem,
-	createExplosiveObjects,
-	fetchSum
-})
+    create,
+    remove,
+    fetchList,
+    fetchListMore,
+    fetchItem,
+    createExplosiveObjects,
+    fetchSum,
+});

@@ -1,1 +1,1 @@
-export * from "./withMapProvider";
+export * from './withMapProvider';

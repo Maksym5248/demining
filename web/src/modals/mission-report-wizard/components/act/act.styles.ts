@@ -1,8 +1,8 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const first = Theme.css(`
     display: inline-block;
-`)
+`);
 
 const last = Theme.css(`
     display: inline-block;
@@ -14,8 +14,7 @@ const item = Theme.css(`
 `);
 
 export const s = {
-	first,
-	last,
-	item
-}
-    
+    first,
+    last,
+    item,
+};

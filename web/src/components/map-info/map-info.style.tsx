@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const container = Theme.css(`
 	display: flex;
@@ -10,8 +10,8 @@ const container = Theme.css(`
 	flex-direction: column;
 `);
 
-
-const content = Theme.css(({ token }) => (`
+const content = Theme.css(
+    ({ token }) => `
 	padding: 0 8px;
 	display: flex;
 	justify-content: flex-end;
@@ -22,9 +22,11 @@ const content = Theme.css(({ token }) => (`
 	border-radius: ${token.borderRadius}px;
 	margin: 0 8px 8px 0;
 	gap: 4px;
-`));
+`,
+);
 
-const group = Theme.css(({ token }) => (`
+const group = Theme.css(
+    ({ token }) => `
 	display: flex;
 	&:hover {
 		cursor: pointer;
@@ -35,39 +37,47 @@ const group = Theme.css(({ token }) => (`
 	white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-`));
+`,
+);
 
-const divider = Theme.css(({ token }) => (`
+const divider = Theme.css(
+    ({ token }) => `
 	display: flex;
 	flex: 1;
 	background: ${token.colorIcon};
-`));
+`,
+);
 
-const areaItem = Theme.css(({ token }) => (`
+const areaItem = Theme.css(
+    ({ token }) => `
 	color: ${token.colorWhite};
 	width: 140px;
 	color: ${token.colorIcon};
-`));
+`,
+);
 
-const coordsItem = Theme.css(({ token }) => (`
+const coordsItem = Theme.css(
+    ({ token }) => `
 	color: ${token.colorWhite};
 	width: 140px;
 	color: ${token.colorIcon};
-`));
+`,
+);
 
-const hideGoogle = Theme.css(({ token }) => (`
+const hideGoogle = Theme.css(
+    ({ token }) => `
 	height: 22px;
 	width: 100%;
 	background: ${token.colorBorderBg};
-`))
+`,
+);
 
 export const s = {
-	container,
-	content,
-	group,
-	coordsItem,
-	areaItem,
-	hideGoogle,
-	divider
-}
-    
+    container,
+    content,
+    group,
+    coordsItem,
+    areaItem,
+    hideGoogle,
+    divider,
+};

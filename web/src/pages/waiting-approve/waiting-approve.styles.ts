@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const container = Theme.css(`
     height: 100vh;
@@ -11,7 +11,8 @@ const container = Theme.css(`
     column-gap: 30px;
 `);
 
-const content = Theme.css(({ token }) => `
+const content = Theme.css(
+    ({ token }) => `
     min-width: 100px;
     width: 40vh;
     padding: 30px;
@@ -19,7 +20,8 @@ const content = Theme.css(({ token }) => `
     background: ${token.colorBgBase};
     flex-direction: column;
     align-items: center;
-`);
+`,
+);
 
 const title = Theme.css(`
      color: #232836;
@@ -43,9 +45,9 @@ const text = Theme.css(`
 `);
 
 export const s = {
-	container,
-	content,
-	title,
-	text,
-	appIcon,
-}
+    container,
+    content,
+    title,
+    text,
+    appIcon,
+};

@@ -1,101 +1,101 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef } from 'react';
 
-import { mapUtils} from "~/utils";
-import { ICircle, ILine, IPolygon } from "~/types/map";
+import { ICircle, ILine, IPolygon } from '~/types/map';
+import { mapUtils } from '~/utils';
 
-import { DrawingType } from "../map.types";
+import { DrawingType } from '../map.types';
 
 interface IUseCircleParams {
     isCreating: boolean;
     setCreating: (value: boolean) => void;
-    drawing:DrawingType,
+    drawing: DrawingType;
     circle?: ICircle;
     setPolygon: (value?: IPolygon | undefined) => void;
-	setLine: (value?: ILine | undefined) => void;
-	setCircle: (value?: ICircle  | undefined) => void;
+    setLine: (value?: ILine | undefined) => void;
+    setCircle: (value?: ICircle | undefined) => void;
 }
 
 export function useCircle({
-	isCreating,
-	setCreating,
-	drawing,
-	circle,
-	setPolygon,
-	setLine,
-	setCircle,
+    isCreating,
+    setCreating,
+    drawing,
+    circle,
+    setPolygon,
+    setLine,
+    setCircle,
 }: IUseCircleParams) {
-	const circleRef = useRef<google.maps.Circle>();
+    const circleRef = useRef<google.maps.Circle>();
 
-	const onLoadCircle = (newCircleRef: google.maps.Circle) => {
-		circleRef.current = newCircleRef;
-	}
+    const onLoadCircle = (newCircleRef: google.maps.Circle) => {
+        circleRef.current = newCircleRef;
+    };
 
-	const onRadiusChanged = useCallback(() => {
-		if(circleRef.current){
-			const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
-			const circleRadius = circleRef.current?.getRadius();
+    const onRadiusChanged = useCallback(() => {
+        if (circleRef.current) {
+            const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
+            const circleRadius = circleRef.current?.getRadius();
 
-			setCircle({ center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius})
-		}
-	}, []);
-	
-	const onDragCircleEnd = useCallback(() => {
-		if(!circleRef.current) return;
+            setCircle({ center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius });
+        }
+    }, []);
 
-		const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
-		const circleRadius = circleRef.current?.getRadius();
-		const value = { center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius};
+    const onDragCircleEnd = useCallback(() => {
+        if (!circleRef.current) return;
 
-		setCircle(value)
-	}, []);
+        const circleCenter = circleRef.current?.getCenter() as google.maps.LatLng;
+        const circleRadius = circleRef.current?.getRadius();
+        const value = { center: mapUtils.createPointLiteral(circleCenter), radius: circleRadius };
 
-	const clear = () => {
-		setCircle(undefined);
-	}
+        setCircle(value);
+    }, []);
 
-	const onClickMap = (e: google.maps.MapMouseEvent) => {
-		if(!e?.latLng) return;
+    const clear = () => {
+        setCircle(undefined);
+    };
 
-		const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+    const onClickMap = (e: google.maps.MapMouseEvent) => {
+        if (!e?.latLng) return;
 
-		if(drawing === DrawingType.CIRCLE && isCreating){
-			setCreating(false);
-		}
+        const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
 
-		if(drawing === DrawingType.CIRCLE && !isCreating && !circle){
-			setCreating(true);
-			setPolygon(undefined);
-			setLine(undefined);
-			setCircle({
-				center: point,
-				radius: 0,
-			});
-		}
-	}
+        if (drawing === DrawingType.CIRCLE && isCreating) {
+            setCreating(false);
+        }
 
-	const onMouseMove = (e: google.maps.MapMouseEvent) => {
-		if(!e?.latLng || !circle?.center) return;
+        if (drawing === DrawingType.CIRCLE && !isCreating && !circle) {
+            setCreating(true);
+            setPolygon(undefined);
+            setLine(undefined);
+            setCircle({
+                center: point,
+                radius: 0,
+            });
+        }
+    };
 
-		if(drawing === DrawingType.CIRCLE  && isCreating){
-			const currentPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-			const value ={
-				...circle,
-				radius: mapUtils.getDistanceByPoints(circle?.center, currentPosition)
-			};
+    const onMouseMove = (e: google.maps.MapMouseEvent) => {
+        if (!e?.latLng || !circle?.center) return;
 
-			setCircle(value);
-		}
-	}
+        if (drawing === DrawingType.CIRCLE && isCreating) {
+            const currentPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+            const value = {
+                ...circle,
+                radius: mapUtils.getDistanceByPoints(circle?.center, currentPosition),
+            };
 
-	const isVisibleCircle = !!circle?.center && circle?.radius;
+            setCircle(value);
+        }
+    };
 
-	return {
-		isVisibleCircle,
-		onLoadCircle,
-		onRadiusChanged,
-		onDragCircleEnd,
-		clear,
-		onClickMap,
-		onMouseMove,
-	}
+    const isVisibleCircle = !!circle?.center && circle?.radius;
+
+    return {
+        isVisibleCircle,
+        onLoadCircle,
+        onRadiusChanged,
+        onDragCircleEnd,
+        clear,
+        onClickMap,
+        onMouseMove,
+    };
 }

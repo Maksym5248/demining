@@ -1,4 +1,4 @@
-import { IUser } from "~/stores";
+import { IUser } from '~/stores';
 
 export interface IOrganizationForm {
     name: string;

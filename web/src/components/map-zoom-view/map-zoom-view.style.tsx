@@ -1,4 +1,4 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const button = Theme.css(`
 	cursor: pointer;
@@ -24,9 +24,8 @@ const buttonZoomOut = Theme.css(`
 `);
 
 export const s = {
-	button,
-	zoomView,
-	buttonZoomIn,
-	buttonZoomOut
-}
-    
+    button,
+    zoomView,
+    buttonZoomIn,
+    buttonZoomOut,
+};

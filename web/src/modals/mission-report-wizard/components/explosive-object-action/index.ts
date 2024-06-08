@@ -1,2 +1,2 @@
-export * from "./explosive-object-action";
-export * from "./explosive-object-action.types";
+export * from './explosive-object-action';
+export * from './explosive-object-action.types';

@@ -1,1 +1,1 @@
-export * from "./wizard-footer";
+export * from './wizard-footer';

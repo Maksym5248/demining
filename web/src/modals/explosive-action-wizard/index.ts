@@ -1,1 +1,1 @@
-export * from "./explosive-action-wizard";
+export * from './explosive-action-wizard';

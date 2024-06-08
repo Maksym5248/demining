@@ -1,21 +1,21 @@
-import { ICircle, IPolygon, IPoint, ILine } from "~/types";
+import { ICircle, IPolygon, IPoint, ILine } from '~/types';
 
 export interface IMapEditorSubmit {
     circle?: ICircle;
-	marker?: IPoint;
-	polygon?: IPolygon;
-	line?: ILine;
-	zoom?: number;
-	area?: number;
+    marker?: IPoint;
+    polygon?: IPolygon;
+    line?: ILine;
+    zoom?: number;
+    area?: number;
 }
 export interface MapEditorModalProps {
-	id?: string;
+    id?: string;
     initialCircle?: ICircle;
-	initialMarker?: IPoint;
-	initialPolygon?: IPolygon;
-	initialLine?: ILine;
-	initialZoom?: number;
-	initialArea?: number;
+    initialMarker?: IPoint;
+    initialPolygon?: IPolygon;
+    initialLine?: ILine;
+    initialZoom?: number;
+    initialArea?: number;
     isVisible: boolean;
     hide: () => void;
     onSubmit: (value: IMapEditorSubmit) => void;

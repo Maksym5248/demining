@@ -1,12 +1,12 @@
-import { Spin } from "antd";
 import { useLoadScript, Libraries } from '@react-google-maps/api';
+import { Spin } from 'antd';
 
-import { CONFIG } from "~/config";
-import { useCurrentLocation } from "~/hooks";
-import { DEFAULT_CENTER } from "~/constants";
-import { Theme } from "~/styles";
+import { CONFIG } from '~/config';
+import { DEFAULT_CENTER } from '~/constants';
+import { useCurrentLocation } from '~/hooks';
+import { Theme } from '~/styles';
 
-const libraries:Libraries = ["places", "drawing", "geometry"];
+const libraries: Libraries = ['places', 'drawing', 'geometry'];
 
 const containerLoading = Theme.css(`
 	display: flex;
@@ -18,23 +18,27 @@ const containerLoading = Theme.css(`
 `);
 
 export function withMapProvider<T>(WrappedComponent: React.ComponentType<T>) {
-	return function MapProvider(props: T) {
-		const { isLoaded, loadError } = useLoadScript({
-			googleMapsApiKey: CONFIG.GOOGLE_API_KEY,
-			language: "uk",
-			libraries,
-		});
+    return function MapProvider(props: T) {
+        const { isLoaded, loadError } = useLoadScript({
+            googleMapsApiKey: CONFIG.GOOGLE_API_KEY,
+            language: 'uk',
+            libraries,
+        });
 
-		const position = useCurrentLocation(DEFAULT_CENTER);
+        const position = useCurrentLocation(DEFAULT_CENTER);
 
-		if (loadError) {
-			return <div>Error loading maps</div>;
-		}
+        if (loadError) {
+            return <div>Error loading maps</div>;
+        }
 
-		if (!isLoaded || position.isLoading) {
-			return <div css={containerLoading}><Spin/></div>;
-		}
+        if (!isLoaded || position.isLoading) {
+            return (
+                <div css={containerLoading}>
+                    <Spin />
+                </div>
+            );
+        }
 
-		return <WrappedComponent position={position.coords} {...props} />;
-	};
+        return <WrappedComponent position={position.coords} {...props} />;
+    };
 }

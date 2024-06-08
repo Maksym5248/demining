@@ -1,30 +1,28 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 interface IUseVisibleMapParams {
-	mapRef?: MutableRefObject<google.maps.Map | undefined>;
+    mapRef?: MutableRefObject<google.maps.Map | undefined>;
 }
 
-export function useVisibleMap({
-	mapRef,
-}: IUseVisibleMapParams) {
-	const interval = useRef<NodeJS.Timeout>();
-	
-	const [isVisibleMap, setVisibleMap] = useState(false);
+export function useVisibleMap({ mapRef }: IUseVisibleMapParams) {
+    const interval = useRef<NodeJS.Timeout>();
 
-	useEffect(() => {
-		interval.current = setInterval(() => {
-			if(mapRef?.current && mapRef.current.getProjection()){
-				setVisibleMap(true);
-				clearInterval(interval.current);
-			}
-		},  100);
+    const [isVisibleMap, setVisibleMap] = useState(false);
 
-		return () => {
-			if(interval.current){
-				clearInterval(interval.current)
-			}
-		}
-	}, []);
+    useEffect(() => {
+        interval.current = setInterval(() => {
+            if (mapRef?.current && mapRef.current.getProjection()) {
+                setVisibleMap(true);
+                clearInterval(interval.current);
+            }
+        }, 100);
 
-	return isVisibleMap;
+        return () => {
+            if (interval.current) {
+                clearInterval(interval.current);
+            }
+        };
+    }, []);
+
+    return isVisibleMap;
 }

@@ -1,4 +1,4 @@
-import { DOCUMENT_TYPE } from "~/constants"
+import { DOCUMENT_TYPE } from '~/constants';
 
 export interface IDocumentForm {
     name: string;

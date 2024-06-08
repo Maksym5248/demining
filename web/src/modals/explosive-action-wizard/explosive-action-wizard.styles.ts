@@ -1,15 +1,15 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
 const titleContainer = Theme.css(`
     display: flex;
     flex: 1;
     justify-content: center;
     margin: 0 0 24px 0;
-`)
+`);
 
 const first = Theme.css(`
     display: inline-block;
-`)
+`);
 
 const last = Theme.css(`
     display: inline-block;
@@ -22,7 +22,7 @@ const spin = Theme.css(`
     justify-content: center;
     align-items: center;
     height: 300px;
-`)
+`);
 
 const item = Theme.css(`
     margin-bottom: 0px
@@ -39,12 +39,11 @@ const row = Theme.css(`
 `);
 
 export const s = {
-	titleContainer,
-	first,
-	last,
-	spin,
-	item,
-	firstNoMargin,
-	row
-}
-    
+    titleContainer,
+    first,
+    last,
+    spin,
+    item,
+    firstNoMargin,
+    row,
+};

@@ -1,1 +1,1 @@
-export * from "./map-editor";
+export * from './map-editor';

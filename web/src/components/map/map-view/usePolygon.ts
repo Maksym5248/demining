@@ -1,155 +1,167 @@
-import { MutableRefObject, useRef } from "react";
+import { MutableRefObject, useRef } from 'react';
 
-import { mapUtils} from "~/utils";
-import { ICircle, ILine, IPoint, IPolygon } from "~/types/map";
+import { ICircle, ILine, IPoint, IPolygon } from '~/types/map';
+import { mapUtils } from '~/utils';
 
-import { DrawingType } from "../map.types";
+import { DrawingType } from '../map.types';
 
 interface IUsePolygonParams {
     isCreating: boolean;
     setCreating: (value: boolean) => void;
-    drawing:DrawingType,
+    drawing: DrawingType;
     polygon?: IPolygon;
     setPolygon: (value?: IPolygon | undefined) => void;
-	setCircle: (value?: ICircle) => void;
-	setLine: (value?: ILine | undefined) => void;
-	polygons?: IPolygon[];
-	circles?: ICircle[];
-	isActiveStick: boolean;
-	mapRef?: MutableRefObject<google.maps.Map | undefined>;
+    setCircle: (value?: ICircle) => void;
+    setLine: (value?: ILine | undefined) => void;
+    polygons?: IPolygon[];
+    circles?: ICircle[];
+    isActiveStick: boolean;
+    mapRef?: MutableRefObject<google.maps.Map | undefined>;
 }
 
 export function usePolygon({
-	isCreating,
-	setCreating,
-	drawing,
-	polygon,
-	setPolygon,
-	setCircle,
-	setLine,
-	polygons,
-	isActiveStick,
-	mapRef,
+    isCreating,
+    setCreating,
+    drawing,
+    polygon,
+    setPolygon,
+    setCircle,
+    setLine,
+    polygons,
+    isActiveStick,
+    mapRef,
 }: IUsePolygonParams) {
-	const polygonRef = useRef<google.maps.Polygon>();
-	const polylineRef = useRef<google.maps.Polyline>(); // New reference for the polyline
-	
-	const onLoadPolygon = (newPolygonRef: google.maps.Polygon) => {
-		polygonRef.current = newPolygonRef;
-	}
+    const polygonRef = useRef<google.maps.Polygon>();
+    const polylineRef = useRef<google.maps.Polyline>(); // New reference for the polyline
 
-	const onLoadPolyline = (newPolylineRef: google.maps.Polyline) => { // New function to handle the load event of the polyline
-		polylineRef.current = newPolylineRef;
-	}
+    const onLoadPolygon = (newPolygonRef: google.maps.Polygon) => {
+        polygonRef.current = newPolygonRef;
+    };
 
-	const getPoint = (point: IPoint) => {
-		if(!isActiveStick || !mapRef?.current || !polygons?.length) {
-			return point;
-		};
-		
-		const closestPointOnPoint = mapUtils.getClosestPointOnPointForPolygons(point, polygons);
-		const closestPointOnLine = mapUtils.getClosestPointOnLineForPolygons(point, polygons);
+    const onLoadPolyline = (newPolylineRef: google.maps.Polyline) => {
+        // New function to handle the load event of the polyline
+        polylineRef.current = newPolylineRef;
+    };
 
-		const pixelDistanceOnPoint = mapUtils.getDistanceByPointsInPixels(point, closestPointOnPoint, mapRef.current) ?? Infinity;
-		const pixelDistanceOnLine = mapUtils.getDistanceByPointsInPixels(point, closestPointOnLine, mapRef.current) ?? Infinity;
+    const getPoint = (point: IPoint) => {
+        if (!isActiveStick || !mapRef?.current || !polygons?.length) {
+            return point;
+        }
 
-		if(pixelDistanceOnPoint < 30){
-			return closestPointOnPoint
-		}
+        const closestPointOnPoint = mapUtils.getClosestPointOnPointForPolygons(point, polygons);
+        const closestPointOnLine = mapUtils.getClosestPointOnLineForPolygons(point, polygons);
 
-		if(pixelDistanceOnLine < 15){
-			return closestPointOnLine
-		}
+        const pixelDistanceOnPoint =
+            mapUtils.getDistanceByPointsInPixels(point, closestPointOnPoint, mapRef.current) ??
+            Infinity;
+        const pixelDistanceOnLine =
+            mapUtils.getDistanceByPointsInPixels(point, closestPointOnLine, mapRef.current) ??
+            Infinity;
 
-		return point;
-	}
+        if (pixelDistanceOnPoint < 30) {
+            return closestPointOnPoint;
+        }
 
-	const appendPoint = (value: IPoint) => {
-		const point = getPoint(value)
+        if (pixelDistanceOnLine < 15) {
+            return closestPointOnLine;
+        }
 
-		if(polygon?.points.length){
-			setPolygon({ points: [...polygon.points, point] });
-		} else {
-			setPolygon(({ points: [point] }));
-		}
-	}
+        return point;
+    };
 
-	const onDragEndPolygon = () => {
-		if(!polygonRef.current) return;
+    const appendPoint = (value: IPoint) => {
+        const point = getPoint(value);
 
-		const points = polygonRef.current?.getPath();
+        if (polygon?.points.length) {
+            setPolygon({ points: [...polygon.points, point] });
+        } else {
+            setPolygon({ points: [point] });
+        }
+    };
 
-		if(!points.getLength()) return;
+    const onDragEndPolygon = () => {
+        if (!polygonRef.current) return;
 
-		const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
-		setPolygon({ points: value.map(getPoint) });
-	};
+        const points = polygonRef.current?.getPath();
 
-	const onDragEndPolyline = () => {
-		if(!polylineRef.current) return;
+        if (!points.getLength()) return;
 
-		const points = polylineRef.current?.getPath();
+        const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
+        setPolygon({ points: value.map(getPoint) });
+    };
 
-		if(!points.getLength()) return;
+    const onDragEndPolyline = () => {
+        if (!polylineRef.current) return;
 
-		const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
-		setPolygon({ points: value.map(getPoint) });
-	};
+        const points = polylineRef.current?.getPath();
 
-	const clear = () => {
-		setPolygon(undefined);
-	}
+        if (!points.getLength()) return;
 
-	const onClickMap = (e: google.maps.MapMouseEvent) => {
-		if(!e?.latLng || drawing !== DrawingType.POLYGON) return;
+        const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
+        setPolygon({ points: value.map(getPoint) });
+    };
 
-		const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+    const clear = () => {
+        setPolygon(undefined);
+    };
 
-		if(!isCreating && !polygon?.points.length){
-			setCreating(true);
-			setCircle(undefined);
-			setLine(undefined);
-		}
-		
-		appendPoint(point);
-	}
+    const onClickMap = (e: google.maps.MapMouseEvent) => {
+        if (!e?.latLng || drawing !== DrawingType.POLYGON) return;
 
-	const onMouseUpPolygon = () => {
-		if (!polygonRef.current) return;
+        const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
 
-		const path = polygonRef.current.getPath();
-		const points = path.getArray().map((point) => mapUtils.createPointLiteral(point));
+        if (!isCreating && !polygon?.points.length) {
+            setCreating(true);
+            setCircle(undefined);
+            setLine(undefined);
+        }
 
-		setPolygon({ points: points.map(getPoint)});
-	};
+        appendPoint(point);
+    };
 
-	const onMouseUpPolyline = (e: google.maps.MapMouseEvent) => {
-		if(!e?.latLng) return;
+    const onMouseUpPolygon = () => {
+        if (!polygonRef.current) return;
 
-		const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-		const first = polygon?.points[0]
+        const path = polygonRef.current.getPath();
+        const points = path.getArray().map((point) => mapUtils.createPointLiteral(point));
 
-		if(drawing === DrawingType.POLYGON && isCreating && !!polygon?.points.length && first?.lat === point.lat && first?.lng === point.lng){
-			setCreating(false);
-		} else {
-			onDragEndPolyline()
-		}
-	}
+        setPolygon({ points: points.map(getPoint) });
+    };
 
-	const isVisiblePolygon = !!polygon?.points.length && !isCreating;
-	const isVisiblePolyline = polygon?.points.length && isCreating && drawing === DrawingType.POLYGON;
+    const onMouseUpPolyline = (e: google.maps.MapMouseEvent) => {
+        if (!e?.latLng) return;
 
-	return {
-		isVisiblePolygon,
-		isVisiblePolyline,
-		value: polygon,
-		onDragEndPolygon,
-		onDragEndPolyline,
-		onLoadPolygon,
-		onLoadPolyline,
-		onClickMap,
-		clear,
-		onMouseUpPolygon,
-		onMouseUpPolyline
-	};
+        const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+        const first = polygon?.points[0];
+
+        if (
+            drawing === DrawingType.POLYGON &&
+            isCreating &&
+            !!polygon?.points.length &&
+            first?.lat === point.lat &&
+            first?.lng === point.lng
+        ) {
+            setCreating(false);
+        } else {
+            onDragEndPolyline();
+        }
+    };
+
+    const isVisiblePolygon = !!polygon?.points.length && !isCreating;
+    const isVisiblePolyline =
+        polygon?.points.length && isCreating && drawing === DrawingType.POLYGON;
+
+    return {
+        isVisiblePolygon,
+        isVisiblePolyline,
+        value: polygon,
+        onDragEndPolygon,
+        onDragEndPolyline,
+        onLoadPolygon,
+        onLoadPolyline,
+        onClickMap,
+        clear,
+        onMouseUpPolygon,
+        onMouseUpPolyline,
+    };
 }

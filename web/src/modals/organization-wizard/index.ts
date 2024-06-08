@@ -1,1 +1,1 @@
-export * from "./organization-wizard";
+export * from './organization-wizard';

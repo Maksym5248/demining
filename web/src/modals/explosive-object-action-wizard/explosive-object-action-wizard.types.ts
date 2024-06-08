@@ -1,3 +1,3 @@
-import { IExplosiveObjectActionValueParams } from '~/stores'
+import { IExplosiveObjectActionValueParams } from '~/stores';
 
-export type IExplosiveObjectActionForm = IExplosiveObjectActionValueParams
+export type IExplosiveObjectActionForm = IExplosiveObjectActionValueParams;

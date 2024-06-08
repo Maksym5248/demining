@@ -1,3 +1,3 @@
-import { IExplosiveActionValueParams } from "~/stores/stores/explosive";
+import { IExplosiveActionValueParams } from '~/stores/stores/explosive';
 
-export type IExplosiveActionForm = IExplosiveActionValueParams
+export type IExplosiveActionForm = IExplosiveActionValueParams;

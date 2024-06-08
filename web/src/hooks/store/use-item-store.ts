@@ -1,18 +1,18 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import { IUseSelectStore } from "~/types/store";
+import { IUseSelectStore } from '~/types/store';
 
-export function useItemStore<T>(store: IUseSelectStore<T>,id: string) {
-	const item = store.collection.get(id as string);
+export function useItemStore<T>(store: IUseSelectStore<T>, id: string) {
+    const item = store.collection.get(id);
 
-	useEffect(() => {
-		if(!item && id){
-			store.fetchItem.run(id);
-		}
-	}, []);
+    useEffect(() => {
+        if (!item && id) {
+            store.fetchItem.run(id);
+        }
+    }, []);
 
-	return {
-		item,
-		isLoading: store.fetchList.inProgress
-	}
+    return {
+        item,
+        isLoading: store.fetchList.inProgress,
+    };
 }

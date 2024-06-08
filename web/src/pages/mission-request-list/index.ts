@@ -1,1 +1,1 @@
-export * from "./mission-request-list";
+export * from './mission-request-list';

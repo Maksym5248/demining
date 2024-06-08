@@ -1,12 +1,14 @@
-import { Theme } from '~/styles'
+import { Theme } from '~/styles';
 
-const container = Theme.css(({ token }) => (`
+const container = Theme.css(
+    ({ token }) => `
 	position: relative;
 	border-radius: 4px;
 	overflow: hidden;
 	border-radius: ${token.borderRadius}px;
 	margin-bottom: -25px;
-`));
+`,
+);
 
 const containerLoading = Theme.css(`
 	display: flex;
@@ -76,23 +78,21 @@ const inputNumber = Theme.css(`
 	border-radius: 4px;
 `);
 
-
 const mapContainerStyle = {
-	width: '100%',
-	height: '400px',
-}
+    width: '100%',
+    height: '400px',
+};
 
 export const s = {
-	container,
-	containerLoading,
-	deleteIcon,
-	mapContainerStyle,
-	drawingPanel,
-	callout,
-	calloutHeader,
-	calloutText,
-	calloutDivider,
-	inputNumberContainer,
-	inputNumber
-}
-    
+    container,
+    containerLoading,
+    deleteIcon,
+    mapContainerStyle,
+    drawingPanel,
+    callout,
+    calloutHeader,
+    calloutText,
+    calloutDivider,
+    inputNumberContainer,
+    inputNumber,
+};

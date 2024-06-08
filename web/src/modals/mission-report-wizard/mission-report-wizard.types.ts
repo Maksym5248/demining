@@ -1,13 +1,17 @@
-import { Dayjs } from "dayjs";
+import { Dayjs } from 'dayjs';
 
-import { IExplosiveObjectActionValueParams, IMapViewActionValueParams, IExplosiveActionValueParams, IAddressValue } from "~/stores";
-
+import {
+    IExplosiveObjectActionValueParams,
+    IMapViewActionValueParams,
+    IExplosiveActionValueParams,
+    IAddressValue,
+} from '~/stores';
 
 export interface IMissionReportForm {
     approvedAt: Dayjs;
-    approvedById:  string;
+    approvedById: string;
     number: number;
-    subNumber?: number,
+    subNumber?: number;
     executedAt: Dayjs;
     orderId: string;
     missionRequestId: string;
@@ -23,7 +27,7 @@ export interface IMissionReportForm {
     workEnd: Dayjs;
     transportExplosiveObjectId?: string;
     transportHumansId?: string;
-    mineDetectorId?: string,
+    mineDetectorId?: string;
     explosiveObjectActions: IExplosiveObjectActionValueParams[];
     squadLeaderId: string;
     squadIds: string[];
