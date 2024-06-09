@@ -12,7 +12,18 @@ import {
 } from 'firebase/auth';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 
-class AuthClass {
+export interface IAuthService {
+    googleProvide: GoogleAuthProvider;
+    uuid: () => string | undefined;
+    onAuthStateChanged: (fn: NextOrObserver<User>) => void;
+    signInWithGoogle: () => Promise<void>;
+    signOut: () => Promise<void>;
+    createUserWithEmailAndPassword: (email: string, password: string) => Promise<void>;
+    signInWithEmailAndPassword: (email: string, password: string) => Promise<void>;
+    refreshToken: () => Promise<string | undefined>;
+}
+
+class AuthClass implements IAuthService {
     googleProvide = new GoogleAuthProvider();
 
     private get auth() {
@@ -55,4 +66,4 @@ class AuthClass {
     }
 }
 
-export const Auth = new AuthClass();
+export const AuthService = new AuthClass();

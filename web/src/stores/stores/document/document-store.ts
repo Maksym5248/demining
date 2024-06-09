@@ -6,7 +6,7 @@ import { DOCUMENT_TYPE } from '~/constants';
 import { CreateValue } from '~/types';
 import { dates } from '~/utils';
 
-import { IDocument, IDocumentValue, Document, createDocument, createDocumentDTO } from './entities';
+import { IDocument, Document, createDocument, createDocumentDTO, IDocumentValue } from './entities';
 import { asyncAction, createCollection, createList, safeReference } from '../../utils';
 
 const Store = types
@@ -21,9 +21,7 @@ const Store = types
     })
     .views((self) => ({
         get missionReportTemplatesList() {
-            return self.templatesList.asArray.filter(
-                (el) => el.documentType === DOCUMENT_TYPE.MISSION_REPORT,
-            );
+            return self.templatesList.asArray.filter((el) => el.documentType === DOCUMENT_TYPE.MISSION_REPORT);
         },
     }))
     .actions((self) => ({

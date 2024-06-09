@@ -21,19 +21,17 @@ import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
 import { TABLES, TABLES_DIR } from '~/constants';
 import { explosiveObjectTypesData } from '~/data';
-import { Auth } from '~/services';
+import { AuthService } from '~/services';
 import { mapUtils } from '~/utils';
 
 import { DBBase } from './db-base';
 
 const getCreateData = () => ({
-    authorId: Auth.uuid() as string,
+    authorId: AuthService.uuid() as string,
 });
 
-const getCreateDataMap = (
-    value: Omit<IMapViewActionDB, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>,
-) => ({
-    authorId: Auth.uuid() as string,
+const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => ({
+    authorId: AuthService.uuid() as string,
     geo: mapUtils.getGeoDB(value),
 });
 
@@ -69,40 +67,19 @@ export class DBRemote {
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
     /** ORGANIZATION SUBCOLLECTION */
-    employee = new DBBase<IEmployeeDB>(
-        TABLES.EMPLOYEE,
-        ['firstName', 'lastName', 'surname', 'position'],
-        getCreateData,
-    );
+    employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ['firstName', 'lastName', 'surname', 'position'], getCreateData);
 
     employeeAction = new DBBase<IEmployeeActionDB>(TABLES.EMPLOYEE_ACTION, [], getCreateData);
 
-    mapViewAction = new DBBase<IMapViewActionDB>(
-        TABLES.MAP_VIEW_ACTION,
-        [],
-        getCreateDataMap,
-        getUpdateDataMap,
-    );
+    mapViewAction = new DBBase<IMapViewActionDB>(TABLES.MAP_VIEW_ACTION, [], getCreateDataMap, getUpdateDataMap);
 
-    missionReport = new DBBase<IMissionReportDB>(
-        TABLES.MISSION_REPORT,
-        ['number', 'address'],
-        getCreateData,
-    );
+    missionReport = new DBBase<IMissionReportDB>(TABLES.MISSION_REPORT, ['number', 'address'], getCreateData);
 
-    missionRequest = new DBBase<IMissionRequestDB>(
-        TABLES.MISSION_REQUEST,
-        ['number'],
-        getCreateData,
-    );
+    missionRequest = new DBBase<IMissionRequestDB>(TABLES.MISSION_REQUEST, ['number'], getCreateData);
 
     order = new DBBase<IOrderDB>(TABLES.ORDER, ['number'], getCreateData);
 
-    explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(
-        TABLES.EXPLOSIVE_OBJECT_ACTION,
-        [],
-        getCreateData,
-    );
+    explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION, [], getCreateData);
 
     explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, [], getCreateData);
 

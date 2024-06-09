@@ -27,7 +27,7 @@ export const createUserOrganization = (value: IUserOrganizationDTO): IUserOrgani
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
-export const createCurrentUser = (value: ICurrentUserDTO): IUserValue => ({
+export const createUser = (value: ICurrentUserDTO): IUserValue => ({
     id: value.id,
     roles: value?.roles ?? [],
     email: value.email ?? '',
@@ -35,3 +35,21 @@ export const createCurrentUser = (value: ICurrentUserDTO): IUserValue => ({
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
+
+export class UserValue {
+    id: string;
+    roles: ROLES[];
+    email: string;
+    organization: IUserOrganizationValue | null;
+    createdAt: Dayjs;
+    updatedAt: Dayjs;
+
+    constructor(value: IUserValue) {
+        this.id = value.id;
+        this.roles = value.roles;
+        this.email = value.email;
+        this.organization = value.organization;
+        this.createdAt = value.createdAt;
+        this.updatedAt = value.updatedAt;
+    }
+}

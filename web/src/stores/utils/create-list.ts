@@ -4,11 +4,7 @@ interface IListOptions {
     pageSize: number;
 }
 
-export function createList<T>(
-    name: string,
-    Model: IModelType<any, any> | IReferenceType<IModelType<any, any>>,
-    options: IListOptions,
-) {
+export function createList<T>(name: string, Model: IModelType<any, any> | IReferenceType<IModelType<any, any>>, options: IListOptions) {
     const { pageSize } = options;
 
     return types.optional(
@@ -83,13 +79,13 @@ export function createList<T>(
                     self._array.push(...ids);
                 },
 
-                unshift(...ids: string[]) {
-                    ids.forEach((id) => {
-                        self._map.delete(id);
-                    });
+                // remove(...ids: string[]) {
+                //     ids.forEach((id) => {
+                //         self._map.delete(id);
+                //     });
 
-                    self._array.unshift(...ids);
-                },
+                //     self._array.unshift(...ids);
+                // },
 
                 replace(index: number, id: string) {
                     const value = self._array[index];
@@ -103,6 +99,14 @@ export function createList<T>(
                     self._map.delete(value.id);
 
                     self._array.splice(index, 1);
+                },
+
+                unshift(...ids: string[]) {
+                    ids.forEach((id) => {
+                        self._map.set(id, true);
+                    });
+
+                    self._array.unshift(...ids);
                 },
 
                 removeById(id: string) {

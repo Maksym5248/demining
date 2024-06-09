@@ -2,7 +2,7 @@ import { message } from 'antd';
 import { types, Instance } from 'mobx-state-tree';
 
 import { Api, ICurrentUserDTO } from '~/api';
-import { Analytics, Auth, Logger } from '~/services';
+import { Analytics, AuthService, Logger } from '~/services';
 
 import { CurrentUser, createCurrentUser } from './entities';
 import { asyncAction } from '../../utils';
@@ -38,11 +38,11 @@ const initUser = asyncAction<Instance<typeof Store>>(() => async ({ flow, self }
     try {
         flow.start();
 
-        Auth.onAuthStateChanged(async (user) => {
+        AuthService.onAuthStateChanged(async (user) => {
             try {
                 if (user) {
                     Analytics.setUserId(user.uid);
-                    await Auth.refreshToken();
+                    await AuthService.refreshToken();
                     const res = await Api.user.get(user.uid);
 
                     if (res) self.setUser(res);

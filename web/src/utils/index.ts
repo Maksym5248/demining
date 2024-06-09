@@ -4,7 +4,7 @@ export * from './error';
 export * from './map';
 export * from './routes';
 export * from './sleep';
-export * from './string';
+export * from './data-type';
 export * from './validation';
 export * from './ui';
 export * from './data';

@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { types, Instance } from 'mobx-state-tree';
 
-import { Auth } from '~/services';
+import { AuthService } from '~/services';
 
 import { asyncAction } from '../../utils';
 
@@ -12,7 +12,7 @@ const signInWithGoogle = asyncAction<Instance<typeof Store>>(() => async ({ flow
         flow.start();
         root.viewer.setLoading(true);
 
-        await Auth.signInWithGoogle();
+        await AuthService.signInWithGoogle();
 
         flow.success();
     } catch (e) {
@@ -26,7 +26,7 @@ const signInOut = asyncAction<Instance<typeof Store>>(() => async ({ flow, root 
         flow.start();
         root.viewer.setLoading(true);
 
-        await Auth.signOut();
+        await AuthService.signOut();
 
         flow.success();
     } catch (e) {
@@ -35,39 +35,33 @@ const signInOut = asyncAction<Instance<typeof Store>>(() => async ({ flow, root 
     }
 });
 
-const signUpWithEmail = asyncAction<Instance<typeof Store>>(
-    (email: string, password: string) =>
-        async ({ flow, root }) => {
-            try {
-                flow.start();
-                root.viewer.setLoading(true);
+const signUpWithEmail = asyncAction<Instance<typeof Store>>((email: string, password: string) => async ({ flow, root }) => {
+    try {
+        flow.start();
+        root.viewer.setLoading(true);
 
-                await Auth.createUserWithEmailAndPassword(email, password);
+        await AuthService.createUserWithEmailAndPassword(email, password);
 
-                flow.success();
-            } catch (e) {
-                message.error('Не вдалось вийти, спробуйте ще раз');
-                flow.failed(e as Error);
-            }
-        },
-);
+        flow.success();
+    } catch (e) {
+        message.error('Не вдалось вийти, спробуйте ще раз');
+        flow.failed(e as Error);
+    }
+});
 
-const signInWithEmail = asyncAction<Instance<typeof Store>>(
-    (email: string, password: string) =>
-        async ({ flow, root }) => {
-            try {
-                flow.start();
-                root.viewer.setLoadingUserInfo(true);
+const signInWithEmail = asyncAction<Instance<typeof Store>>((email: string, password: string) => async ({ flow, root }) => {
+    try {
+        flow.start();
+        root.viewer.setLoadingUserInfo(true);
 
-                await Auth.signInWithEmailAndPassword(email, password);
+        await AuthService.signInWithEmailAndPassword(email, password);
 
-                flow.success();
-            } catch (e) {
-                message.error('Не вдалось увйти, спробуйте ще раз');
-                flow.failed(e as Error, true);
-            }
-        },
-);
+        flow.success();
+    } catch (e) {
+        message.error('Не вдалось увйти, спробуйте ще раз');
+        flow.failed(e as Error, true);
+    }
+});
 
 export const AuthStore = Store.props({
     signInWithGoogle,
