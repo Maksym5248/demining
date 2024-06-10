@@ -10,6 +10,7 @@ import { EquipmentStore, IEquipmentStore } from './equipment';
 import { ExplosiveStore, IExplosiveStore } from './explosive';
 import { ExplosiveObjectStore } from './explosive-object';
 import { IMapStore, MapStore } from './map';
+import { IMissionRequestStore, MissionRequestStore } from './mission-request';
 import { IViewerStore, ViewerStore } from './viewer';
 
 export interface IRootStore {
@@ -21,6 +22,7 @@ export interface IRootStore {
     explosiveObject: ExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
+    missionRequest: IMissionRequestStore;
     viewer: IViewerStore;
 }
 
@@ -32,6 +34,7 @@ export class RootStore implements IRootStore {
     explosiveObject: ExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
+    missionRequest: IMissionRequestStore;
     viewer: IViewerStore;
 
     isLoaded = false;
@@ -54,6 +57,7 @@ export class RootStore implements IRootStore {
         this.explosiveObject = new ExplosiveObjectStore();
         this.employee = new EmployeeStore();
         this.map = new MapStore();
+        this.missionRequest = new MissionRequestStore();
         this.viewer = new ViewerStore();
     }
 
