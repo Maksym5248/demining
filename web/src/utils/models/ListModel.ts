@@ -3,8 +3,8 @@ import { makeAutoObservable } from 'mobx';
 import { CollectionModel } from './CollectionModel';
 
 export interface IListModel<T extends B, B extends { id: string }> {
-    push: (value: B | B[]) => void;
-    unshift: (value: B | B[]) => void;
+    push: (value: B | B[], isUniqueEnabled: boolean) => void;
+    unshift: (value: B | B[], isUniqueEnabled: boolean) => void;
     set: (arr: B[]) => void;
     clear: () => void;
     checkMore: (length: number) => void;
@@ -52,20 +52,24 @@ export class ListModel<T extends B, B extends { id: string }> implements IListMo
         this.ids = arr.map((item) => item.id);
     }
 
-    push(value: B | B[]) {
+    push(value: B | B[], isUniqueEnabled = false) {
         const newItems = Array.isArray(value) ? value : [value];
         const items = newItems as (B & { id: string })[];
 
-        this.collection.setArr(items);
-        this.ids.push(...items.map((el) => el.id));
+        const data = isUniqueEnabled ? items.filter((el) => !this.ids.includes(el.id)) : items;
+
+        this.collection.setArr(data);
+        this.ids.push(...data.map((el) => el.id));
     }
 
-    unshift(value: B | B[]) {
+    unshift(value: B | B[], isUniqueEnabled = false) {
         const newItems = Array.isArray(value) ? value : [value];
         const items = newItems as (B & { id: string })[];
 
-        this.collection.setArr(items);
-        this.ids.unshift(...items.map((el) => el.id));
+        const data = isUniqueEnabled ? items.filter((el) => !this.ids.includes(el.id)) : items;
+
+        this.collection.setArr(data);
+        this.ids.unshift(...data.map((el) => el.id));
     }
 
     clear() {

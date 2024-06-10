@@ -6,19 +6,32 @@ import { Analytics, AuthService, Crashlytics, SecureStorage, Storage } from '~/s
 import { AuthStore, type IAuthStore } from './auth';
 import { DocumentStore, type IDocumentStore } from './document';
 import { EmployeeStore, type IEmployeeStore } from './employee';
+import { EquipmentStore, IEquipmentStore } from './equipment';
+import { ExplosiveStore, IExplosiveStore } from './explosive';
+import { ExplosiveObjectStore } from './explosive-object';
+import { IMapStore, MapStore } from './map';
 import { IViewerStore, ViewerStore } from './viewer';
 
 export interface IRootStore {
+    isLoaded: boolean;
     auth: IAuthStore;
     document: IDocumentStore;
+    equipment: IEquipmentStore;
+    explosive: IExplosiveStore;
+    explosiveObject: ExplosiveObjectStore;
     employee: IEmployeeStore;
+    map: IMapStore;
     viewer: IViewerStore;
 }
 
 export class RootStore implements IRootStore {
     auth: IAuthStore;
     document: IDocumentStore;
+    equipment: IEquipmentStore;
+    explosive: IExplosiveStore;
+    explosiveObject: ExplosiveObjectStore;
     employee: IEmployeeStore;
+    map: IMapStore;
     viewer: IViewerStore;
 
     isLoaded = false;
@@ -36,7 +49,11 @@ export class RootStore implements IRootStore {
     constructor() {
         this.auth = new AuthStore({ services: this.services });
         this.document = new DocumentStore();
+        this.equipment = new EquipmentStore();
+        this.explosive = new ExplosiveStore();
+        this.explosiveObject = new ExplosiveObjectStore();
         this.employee = new EmployeeStore();
+        this.map = new MapStore();
         this.viewer = new ViewerStore();
     }
 

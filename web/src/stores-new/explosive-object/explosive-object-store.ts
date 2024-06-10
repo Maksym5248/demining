@@ -1,0 +1,168 @@
+import { message } from 'antd';
+import { Dayjs } from 'dayjs';
+
+import { Api, IExplosiveObjectActionSumDTO, IExplosiveObjectDTO } from '~/api';
+import { explosiveObjectTypesData } from '~/data';
+import { CreateValue } from '~/types';
+import { dates } from '~/utils';
+import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
+
+import {
+    ExplosiveObject,
+    ExplosiveObjectType,
+    IExplosiveObject,
+    IExplosiveObjectType,
+    IExplosiveObjectValue,
+    IExplosiveObjectTypeValue,
+    IExplosiveObjectValueParams,
+    createExplosiveObject,
+    createExplosiveObjectDTO,
+    createExplosiveObjectType,
+    IExplosiveObjectActionValue,
+    IExplosiveObjectAction,
+    createExplosiveObjectActionSum,
+    ExplosiveObjectAction,
+} from './entities';
+import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
+
+export interface IExplosiveObjectStore {
+    collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeValue>;
+    collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionValue>;
+    collection: CollectionModel<IExplosiveObject, IExplosiveObjectValue>;
+    listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeValue>;
+    list: ListModel<IExplosiveObject, IExplosiveObjectValue>;
+    searchList: ListModel<IExplosiveObject, IExplosiveObjectValue>;
+    sum: SumExplosiveObjectActions;
+    sortedListTypes: IExplosiveObjectType[];
+    setSum: (sum: IExplosiveObjectActionSumDTO) => void;
+    init: () => void;
+    append: (res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) => void;
+    create: RequestModel<[CreateValue<IExplosiveObjectValueParams>]>;
+    remove: RequestModel<[string]>;
+    createExplosiveObjects: RequestModel;
+    fetchList: RequestModel<[string]>;
+    fetchSum: RequestModel<[Dayjs, Dayjs]>;
+    fetchMoreList: RequestModel;
+    fetchItem: RequestModel<[string]>;
+}
+
+export class ExplosiveObjectStore {
+    collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeValue>({
+        factory: (data: IExplosiveObjectTypeValue) => new ExplosiveObjectType(data),
+    });
+    collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionValue>({
+        factory: (data: IExplosiveObjectActionValue) => new ExplosiveObjectAction(data, { collections: { type: this.collectionTypes } }),
+    });
+    collection = new CollectionModel<IExplosiveObject, IExplosiveObjectValue>({
+        factory: (data: IExplosiveObjectValue) => new ExplosiveObject(data, { collections: { type: this.collectionTypes } }),
+    });
+    listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeValue>({ collection: this.collectionTypes });
+    list = new ListModel<IExplosiveObject, IExplosiveObjectValue>({ collection: this.collection });
+    searchList = new ListModel<IExplosiveObject, IExplosiveObjectValue>({ collection: this.collection });
+    sum = new SumExplosiveObjectActions();
+
+    get sortedListTypes() {
+        return this.listTypes.asArray.sort((a, b) =>
+            a.fullName.localeCompare(b.fullName, ['uk'], {
+                numeric: true,
+                sensitivity: 'base',
+            }),
+        );
+    }
+    setSum(sum: IExplosiveObjectActionSumDTO) {
+        this.sum.set(createExplosiveObjectActionSum(sum));
+    }
+
+    init() {
+        const data = explosiveObjectTypesData.map(createExplosiveObjectType);
+        this.listTypes.push(data, true);
+    }
+    append(res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) {
+        const list = isSearch ? this.searchList : this.list;
+        if (isSearch && !isMore) this.searchList.clear();
+
+        list.checkMore(res.length);
+        list.push(res.map(createExplosiveObject), true);
+    }
+    create = new RequestModel({
+        run: async (data: CreateValue<IExplosiveObjectValueParams>) => {
+            const res = await Api.explosiveObject.create(createExplosiveObjectDTO(data));
+            this.list.unshift(createExplosiveObject(res));
+        },
+        onSuccuss: () => message.success('Додано успішно'),
+        onError: () => message.error('Не вдалось додати'),
+    });
+
+    remove = new RequestModel({
+        run: async (id: string) => {
+            await Api.explosiveObject.remove(id);
+            this.list.removeById(id);
+            this.searchList.removeById(id);
+            this.collection.remove(id);
+        },
+        onSuccuss: () => message.success('Видалено успішно'),
+        onError: () => message.error('Не вдалось видалити'),
+    });
+
+    createExplosiveObjects = new RequestModel({
+        run: () => Api.createExplosiveObjects(),
+        onSuccuss: () => message.success('Виконано успішно'),
+        onError: () => message.error('Не вдалось виконати'),
+    });
+
+    fetchList = new RequestModel({
+        shouldRun: (search: string) => {
+            const isSearch = !!search;
+            const list = isSearch ? this.searchList : this.list;
+
+            return !(!isSearch && list.length);
+        },
+        run: async (search: string) => {
+            const isSearch = !!search;
+            const list = isSearch ? this.searchList : this.list;
+
+            const res = await Api.explosiveObject.getList({
+                search,
+                limit: list.pageSize,
+            });
+
+            this.append(res, isSearch);
+        },
+    });
+
+    fetchSum = new RequestModel({
+        run: async (startDate: Dayjs, endDate: Dayjs) => {
+            const res = await Api.explosiveObject.sum({
+                where: {
+                    executedAt: {
+                        '>=': dates.toDateServer(startDate),
+                        '<=': dates.toDateServer(endDate),
+                    },
+                },
+            });
+
+            this.setSum(res);
+        },
+    });
+
+    fetchMoreList = new RequestModel({
+        shouldRun: () => this.list.isMorePages,
+        run: async () => {
+            const res = await Api.explosiveObject.getList({
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.createdAt),
+            });
+
+            this.list.push(res.map(createExplosiveObject), true);
+        },
+        onError: () => message.error('Виникла помилка'),
+    });
+
+    fetchItem = new RequestModel({
+        run: async (id: string) => {
+            const res = await Api.explosiveObject.get(id);
+            this.collection.set(res.id, createExplosiveObject(res));
+        },
+        onError: () => message.error('Виникла помилка'),
+    });
+}

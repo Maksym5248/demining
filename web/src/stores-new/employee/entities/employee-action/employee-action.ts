@@ -1,25 +1,27 @@
 import { makeAutoObservable } from 'mobx';
 
-import { DOCUMENT_TYPE } from '~/constants';
+import { CollectionModel } from '~/utils/models';
 
 import { EmployeeActionValue, IEmployeeActionValue } from './employee-action.schema';
-import { Employee, IEmployeeParams, IEmployee } from '../employee';
+import { IEmployeeParams, Employee, IEmployee } from '../employee';
+import { IRank, IRankValue } from '../rank';
 
-export interface IEmployeeAction extends IEmployee, IEmployeeActionValue {}
-
-export class EmployeeAction extends Employee implements IEmployeeAction {
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
-    employeeId: string;
+export interface IEmployeeAction extends IEmployeeActionValue {
+    employee: IEmployee;
+}
+export class EmployeeAction extends EmployeeActionValue implements IEmployeeAction {
+    private ranksCollection: CollectionModel<IRank, IRankValue>;
 
     constructor(data: IEmployeeActionValue, params: IEmployeeParams) {
         const employeeAction = new EmployeeActionValue(data);
+        super(employeeAction);
 
-        super(employeeAction, params);
-        this.documentType = employeeAction.documentType;
-        this.documentId = employeeAction.documentId;
-        this.employeeId = employeeAction.employeeId;
+        this.ranksCollection = params.collections.rank;
 
         makeAutoObservable(this);
+    }
+
+    get employee() {
+        return new Employee(this, { collections: { rank: this.ranksCollection } });
     }
 }
