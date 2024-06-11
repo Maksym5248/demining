@@ -16,15 +16,18 @@ export interface ICollectionModel<T, B> {
 
 interface ICollectionModelParams<T extends B, B> {
     factory?: (data: B) => T;
+    model?: new (data: B) => T;
 }
 
 export class CollectionModel<T extends B, B> implements ICollectionModel<T, B> {
     private collection: Record<string, T> = {};
 
+    model?: new (data: B) => T;
     factory: (data: B) => T;
 
-    constructor(params: ICollectionModelParams<T, B>) {
-        this.factory = params?.factory ?? ((data: B) => data as T);
+    constructor({ factory, model }: ICollectionModelParams<T, B>) {
+        const defaultFactory = model ? (data: B) => new model(data) : (data: B) => data as T;
+        this.factory = factory ?? defaultFactory;
         makeAutoObservable(this);
     }
 

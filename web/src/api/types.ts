@@ -34,10 +34,7 @@ export interface IOrderDTO extends IOrderPreviewDTO {
     signedByAction: IEmployeeActionDTO;
 }
 
-export type IOrderDTOParams = Omit<
-    IOrderDB,
-    'updatedAt' | 'createdAt' | 'id' | 'signedByActionId' | 'authorId'
-> & {
+export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | 'id' | 'signedByActionId' | 'authorId'> & {
     signedById: string;
 };
 

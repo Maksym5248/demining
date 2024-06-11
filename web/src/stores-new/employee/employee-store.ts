@@ -7,7 +7,7 @@ import { EMPLOYEE_TYPE } from '~/constants';
 import { ranksData } from '~/data';
 import { CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, IRequestModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, ICollectionModel, IListModel, IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     Rank,
@@ -25,14 +25,14 @@ import {
 } from './entities';
 
 export interface IEmployeeStore {
-    collection: CollectionModel<IEmployee, IEmployeeValue>;
-    list: ListModel<IEmployee, IEmployeeValue>;
-    searchList: ListModel<IEmployee, IEmployeeValue>;
+    collection: ICollectionModel<IEmployee, IEmployeeValue>;
+    list: IListModel<IEmployee, IEmployeeValue>;
+    searchList: IListModel<IEmployee, IEmployeeValue>;
 
-    ranksCollection: CollectionModel<IRank, IRankValue>;
-    ranksList: ListModel<IRank, IRankValue>;
+    ranksCollection: ICollectionModel<IRank, IRankValue>;
+    ranksList: IListModel<IRank, IRankValue>;
 
-    collectionActions: CollectionModel<IEmployeeAction, IEmployeeActionValue>;
+    collectionActions: ICollectionModel<IEmployeeAction, IEmployeeActionValue>;
 
     chiefs: IEmployee[];
     squadLeads: IEmployee[];

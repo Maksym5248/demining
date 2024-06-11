@@ -1,8 +1,18 @@
 TODO:
-- shared rules for pritter
+- shared rules for prittier
 - fix huskie and lint-staged
 - fix eslint errors
-- refactroing web code to make items idependent
+- refactoring web code to make items independent
 - create package shared-client
 - move stores, controllers, client-types, client utils to shared-client
 - move common utils to shared
+
+packages:
+- auth
+- dictionaries (explosive objects, explosive)
+- config
+
+apps:
+- functions
+- web dsns
+- mobile dictionaries (explosive objects, explosive)
