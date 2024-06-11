@@ -3,13 +3,13 @@ import { message } from 'antd';
 import { Api } from '~/api';
 import { Analytics, AuthService, Logger } from '~/services';
 
-import { CurrentUser, ICurrentUser, IUserValue, createUser } from './entities';
+import { CurrentUser, ICurrentUser, ICurrentUserValue, createCurrentUser } from './entities';
 
 export interface IViewerStore {
     user: ICurrentUser | null;
     isInitialized: boolean;
     isLoading: boolean;
-    setUser(user: IUserValue): void;
+    setUser(user: ICurrentUserValue): void;
     removeUser(): void;
     setInitialized(value: boolean): void;
     setLoading(value: boolean): void;
@@ -21,7 +21,7 @@ export class ViewerStore {
     isInitialized = false;
     isLoading = false;
 
-    setUser(user: IUserValue) {
+    setUser(user: ICurrentUserValue) {
         this.user = new CurrentUser(user);
 
         if (user.organization?.id) {
@@ -53,7 +53,7 @@ export class ViewerStore {
                         await AuthService.refreshToken();
                         const res = await Api.user.get(user.uid);
 
-                        if (res) this.setUser(createUser(res));
+                        if (res) this.setUser(createCurrentUser(res));
                     } else {
                         Analytics.setUserId(null);
                         this.removeUser();

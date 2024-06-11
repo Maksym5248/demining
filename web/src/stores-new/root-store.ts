@@ -10,8 +10,12 @@ import { EquipmentStore, IEquipmentStore } from './equipment';
 import { ExplosiveStore, IExplosiveStore } from './explosive';
 import { ExplosiveObjectStore } from './explosive-object';
 import { IMapStore, MapStore } from './map';
+import { IMissionReportStore, MissionReportStore } from './mission-report';
 import { IMissionRequestStore, MissionRequestStore } from './mission-request';
 import { IOrderStore, OrderStore } from './order';
+import { IOrganizationStore, OrganizationStore } from './organization';
+import { ITransportStore, TransportStore } from './transport';
+import { IUserStore, UserStore } from './user';
 import { IViewerStore, ViewerStore } from './viewer';
 
 export interface IRootStore {
@@ -23,8 +27,12 @@ export interface IRootStore {
     explosiveObject: ExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
+    missionReport: IMissionReportStore;
     missionRequest: IMissionRequestStore;
     order: IOrderStore;
+    transport: ITransportStore;
+    user: IUserStore;
+    organization: IOrganizationStore;
     viewer: IViewerStore;
 }
 
@@ -36,8 +44,12 @@ export class RootStore implements IRootStore {
     explosiveObject: ExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
+    missionReport: IMissionReportStore;
     missionRequest: IMissionRequestStore;
     order: IOrderStore;
+    transport: ITransportStore;
+    user: IUserStore;
+    organization: IOrganizationStore;
     viewer: IViewerStore;
 
     isLoaded = false;
@@ -60,8 +72,12 @@ export class RootStore implements IRootStore {
         this.explosiveObject = new ExplosiveObjectStore();
         this.employee = new EmployeeStore();
         this.map = new MapStore();
+        this.missionReport = new MissionReportStore({ stores: this });
         this.missionRequest = new MissionRequestStore();
         this.order = new OrderStore({ stores: this });
+        this.transport = new TransportStore();
+        this.user = new UserStore();
+        this.organization = new OrganizationStore({ stores: this });
         this.viewer = new ViewerStore();
     }
 

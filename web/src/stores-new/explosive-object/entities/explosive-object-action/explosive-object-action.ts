@@ -3,7 +3,8 @@ import { toJS } from 'mobx';
 import { ICollectionModel } from '~/utils/models';
 
 import { ExplosiveObjectActionValue, IExplosiveObjectActionValue } from './explosive-object-action.schema';
-import { ExplosiveObjectType, ExplosiveObjectTypeValue } from '../explosive-object-type';
+import { ExplosiveObject, IExplosiveObject } from '..';
+import { ExplosiveObjectType, ExplosiveObjectTypeValue, IExplosiveObjectType } from '../explosive-object-type';
 
 interface IExplosiveObjectActionParams {
     collections: {
@@ -12,7 +13,8 @@ interface IExplosiveObjectActionParams {
 }
 
 export interface IExplosiveObjectAction extends IExplosiveObjectActionValue {
-    type?: ExplosiveObjectType;
+    type?: IExplosiveObjectType;
+    explosiveObject: IExplosiveObject;
     updateFields(data: Partial<IExplosiveObjectActionValue>): void;
 }
 
@@ -31,6 +33,10 @@ export class ExplosiveObjectAction extends ExplosiveObjectActionValue implements
 
     get type() {
         return this.collectionType.get(this.typeId);
+    }
+
+    get explosiveObject() {
+        return new ExplosiveObject(this, { collections: { type: this.collectionType } });
     }
 
     updateFields(data: Partial<IExplosiveObjectActionValue>) {

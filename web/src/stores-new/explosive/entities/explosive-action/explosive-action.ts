@@ -20,8 +20,7 @@ export class ExplosiveAction extends ExplosiveActionValue {
     }
 
     get explosive() {
-        const { update, ...value } = toJS(this);
-        return new Explosive(value);
+        return new Explosive(this);
     }
 
     updateFields(data: Partial<IExplosiveActionValue>) {

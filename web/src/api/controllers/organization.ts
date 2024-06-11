@@ -14,33 +14,18 @@ const create = async (value: Pick<ICreateOrganizationDTO, 'name'>): Promise<IOrg
     return organization;
 };
 
-const update = async (
-    id: string,
-    value: ICreateOrganizationDTO,
-): Promise<Omit<IOrganizationDTO, 'members'>> => {
+const update = async (id: string, value: ICreateOrganizationDTO): Promise<Omit<IOrganizationDTO, 'members'>> => {
     const res = await DB.organization.update(id, value);
     const { membersIds, ...organization } = res;
     return organization;
 };
 
-const updateMember = async (
-    organizationId: string,
-    userId: string,
-    isAdmin: boolean,
-    isRootAdmin: boolean,
-): Promise<IUserDTO> => {
-    const [organization, user] = await Promise.all([
-        DB.organization.get(organizationId),
-        DB.user.get(userId) as Promise<IUserDTO>,
-    ]);
+const updateMember = async (organizationId: string, userId: string, isAdmin: boolean, isRootAdmin: boolean): Promise<IUserDTO> => {
+    const [organization, user] = await Promise.all([DB.organization.get(organizationId), DB.user.get(userId) as Promise<IUserDTO>]);
 
     const membersIds = organization?.membersIds ?? [];
-    const userRolesWithAdmin = user.roles.includes(ROLES.ORGANIZATION_ADMIN)
-        ? user.roles
-        : [...user.roles, ROLES.ORGANIZATION_ADMIN];
-    const roles = isAdmin
-        ? userRolesWithAdmin
-        : user.roles.filter((el) => el !== ROLES.ORGANIZATION_ADMIN);
+    const userRolesWithAdmin = user.roles.includes(ROLES.ORGANIZATION_ADMIN) ? user.roles : [...user.roles, ROLES.ORGANIZATION_ADMIN];
+    const roles = isAdmin ? userRolesWithAdmin : user.roles.filter((el) => el !== ROLES.ORGANIZATION_ADMIN);
 
     await Promise.all([
         DB.organization.update(organizationId, {

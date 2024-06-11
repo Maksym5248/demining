@@ -91,7 +91,7 @@ export class EmployeeStore implements IEmployeeStore {
     }
 
     init() {
-        this.ranksList.push(ranksData);
+        this.ranksList.push(ranksData.map(createRank));
     }
 
     getById(id: string) {

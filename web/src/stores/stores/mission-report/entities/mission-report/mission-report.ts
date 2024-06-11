@@ -49,10 +49,7 @@ const Entity = types
         order: types.maybe(safeReference(Order)),
         missionRequest: types.maybe(safeReference(MissionRequest)),
         mapView: types.maybe(safeReference(MapViewAction)),
-        explosiveObjectActions: types.optional(
-            types.array(safeReference(ExplosiveObjectAction)),
-            [],
-        ),
+        explosiveObjectActions: types.optional(types.array(safeReference(ExplosiveObjectAction)), []),
         squadLeaderAction: types.maybe(safeReference(EmployeeAction)),
         squadActions: types.optional(types.array(safeReference(EmployeeAction)), []),
         transportActions: types.optional(types.array(safeReference(TransportAction)), []),
@@ -104,12 +101,8 @@ const Entity = types
                     : 'з ---- по ----';
 
             const actNumber = `${number}${subNumber ? `/${subNumber}` : ''}`;
-            const explosive = explosiveActions.filter(
-                (el) => el.type === EXPLOSIVE_TYPE.EXPLOSIVE,
-            ) as IExplosiveAction[];
-            const detonator = explosiveActions.filter(
-                (el) => el.type === EXPLOSIVE_TYPE.DETONATOR,
-            ) as IExplosiveAction[];
+            const explosive = explosiveActions.filter((el) => el.type === EXPLOSIVE_TYPE.EXPLOSIVE) as IExplosiveAction[];
+            const detonator = explosiveActions.filter((el) => el.type === EXPLOSIVE_TYPE.DETONATOR) as IExplosiveAction[];
 
             return {
                 approvedAt: getDate(approvedAt),
@@ -131,58 +124,31 @@ const Entity = types
                 uncheckedGA: `${uncheckedTerritory ? uncheckedTerritory / 10000 : '---'} га`,
                 depthM: depthExamination ?? '---',
                 uncheckedReason: uncheckedReason ?? '---',
-                explosiveObjectsTotal: explosiveObjectActions.reduce(
-                    (acc, el) => el.quantity + acc,
-                    0,
-                ),
+                explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => el.quantity + acc, 0),
                 explosiveObjects: explosiveObjectActions.reduce(
                     (acc, el, i) =>
                         `${acc}${el.fullDisplayName} - ${el.quantity} од., ${el?.category} категорії${getLastSign(explosiveObjectActions, i)}`,
                     '',
                 ),
-                explosive: explosive.reduce(
-                    (acc, el, i) =>
-                        `${acc}${el.name} - ${el.weight} кг.${getLastSign(explosive, i)}`,
-                    '',
-                ),
-                detonator: detonator.reduce(
-                    (acc, el, i) =>
-                        `${acc}${el.name} - ${el.quantity} од.${getLastSign(detonator, i)}`,
-                    '',
-                ),
-                exclusionTime: getTime(
-                    exclusionStart,
-                    transportingStart ?? destroyedStart ?? workEnd,
-                ),
+                explosive: explosive.reduce((acc, el, i) => `${acc}${el.name} - ${el.weight} кг.${getLastSign(explosive, i)}`, ''),
+                detonator: detonator.reduce((acc, el, i) => `${acc}${el.name} - ${el.quantity} од.${getLastSign(detonator, i)}`, ''),
+                exclusionTime: getTime(exclusionStart, transportingStart ?? destroyedStart ?? workEnd),
                 exclusionDate: getDate(exclusionStart, ''),
                 transportingTime: getTime(transportingStart, destroyedStart ?? workEnd),
                 transportingDate: getDate(transportingStart, ''),
-                explosiveObjectsTotalTransport: explosiveObjectActions.reduce(
-                    (acc, el) => (el.isTransported ? el.quantity : 0) + acc,
-                    0,
-                ),
+                explosiveObjectsTotalTransport: explosiveObjectActions.reduce((acc, el) => (el.isTransported ? el.quantity : 0) + acc, 0),
                 squadTotal: squadActions.length + 1,
                 humanHours: (squadActions.length + 1) * (workEnd.hour() - workStart.hour()),
-                transportHuman:
-                    transportActions.find((el) => el.type === TRANSPORT_TYPE.FOR_HUMANS)
-                        ?.fullName ?? '--',
+                transportHuman: transportActions.find((el) => el.type === TRANSPORT_TYPE.FOR_HUMANS)?.fullName ?? '--',
                 transportExplosiveObjects:
-                    transportActions.find((el) => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)
-                        ?.fullName ?? '--',
-                mineDetector:
-                    equipmentActions.find((el) => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.name ??
-                    '--',
+                    transportActions.find((el) => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.fullName ?? '--',
+                mineDetector: equipmentActions.find((el) => el.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.name ?? '--',
                 squadLead: squadLeaderAction?.signName ?? '',
                 squadPosition: squadActions.reduce(
-                    (prev, el, i) =>
-                        `${prev}${el.position}${squadActions.length - 1 !== i ? `\n` : ''}`,
+                    (prev, el, i) => `${prev}${el.position}${squadActions.length - 1 !== i ? `\n` : ''}`,
                     '',
                 ),
-                squadName: squadActions.reduce(
-                    (prev, el, i) =>
-                        `${prev}${el.signName}${squadActions.length - 1 !== i ? `\n` : ''}`,
-                    '',
-                ),
+                squadName: squadActions.reduce((prev, el, i) => `${prev}${el.signName}${squadActions.length - 1 !== i ? `\n` : ''}`, ''),
                 polygon:
                     (mapView?.polygon || mapView?.line)?.points.map((el: IPoint, i: number) => ({
                         lat: `${el.lat}°`,
@@ -198,9 +164,7 @@ const Entity = types
         },
 
         get transportExplosiveObject() {
-            return self?.transportActions?.find(
-                (el) => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS,
-            );
+            return self?.transportActions?.find((el) => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
         },
 
         get transportHumans() {

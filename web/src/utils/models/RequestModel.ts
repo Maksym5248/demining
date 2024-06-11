@@ -12,6 +12,7 @@ export interface IRequestModelParams<Params extends Array<any> = [], Return = vo
     run: (...args: Params) => Promise<Return | void> | Return | void;
     onError?: () => void;
     onSuccuss?: () => void;
+    returnIfLoaded?: boolean;
 }
 
 export class RequestModel<Params extends Array<any> = [], Return = void> implements IRequestModel<Params, Return> {
@@ -21,6 +22,7 @@ export class RequestModel<Params extends Array<any> = [], Return = void> impleme
     private _run: (...args: Params) => Promise<Return | void> | Return | void;
     private _onError?: (e?: Error) => void;
     private _onSuccuss?: (e?: Error) => void;
+    private _returnIfLoaded = false;
 
     constructor(params: IRequestModelParams<Params, Return>) {
         this._shouldRun = params?.shouldRun;
@@ -33,6 +35,7 @@ export class RequestModel<Params extends Array<any> = [], Return = void> impleme
 
     async run(...args: Params): Promise<Return | void> {
         try {
+            if (this._returnIfLoaded && this.requestState.isLoaded) return;
             if (this._shouldRun && !this._shouldRun(...args)) return;
             this.requestState.start();
             await this._run(...args);

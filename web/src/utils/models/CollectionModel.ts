@@ -7,7 +7,7 @@ type ID = string | number;
 export interface ICollectionModel<T, B> {
     get: (id?: ID) => T | undefined;
     set: (id: ID, value: B) => void;
-    update: (id: ID, value: T) => void;
+    update: (id: ID, value: B | T) => void;
     setArr: (arr: (B & { id: string })[]) => void;
     remove: (id: string) => void;
     exist: (id: string) => boolean;

@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
-import { CollectionModel } from './CollectionModel';
+import { ICollectionModel } from './CollectionModel';
 
 export interface IListModel<T extends B, B extends { id: string }> {
-    push: (value: B | B[], isUniqueEnabled: boolean) => void;
-    unshift: (value: B | B[], isUniqueEnabled: boolean) => void;
+    push: (value: B | B[], isUniqueEnabled?: boolean) => void;
+    unshift: (value: B | B[], isUniqueEnabled?: boolean) => void;
     set: (arr: B[]) => void;
     clear: () => void;
     checkMore: (length: number) => void;
@@ -17,11 +17,12 @@ export interface IListModel<T extends B, B extends { id: string }> {
     isMorePages: boolean;
     length: number;
     asArray: T[];
+    last: T;
 }
 
 export interface ListModelParams<T extends B, B extends { id: string }> {
     pageSize?: number;
-    collection: CollectionModel<T, B>;
+    collection: ICollectionModel<T, B>;
 }
 
 export class ListModel<T extends B, B extends { id: string }> implements IListModel<T, B> {
@@ -30,7 +31,7 @@ export class ListModel<T extends B, B extends { id: string }> implements IListMo
     public pageSize = 0;
     public isMorePages = true;
 
-    private collection: CollectionModel<T, B>;
+    private collection: ICollectionModel<T, B>;
 
     constructor(params: ListModelParams<T, B>) {
         this.pageSize = params?.pageSize ?? 10;
@@ -58,7 +59,7 @@ export class ListModel<T extends B, B extends { id: string }> implements IListMo
 
         const data = isUniqueEnabled ? items.filter((el) => !this.ids.includes(el.id)) : items;
 
-        this.collection.setArr(data);
+        this.collection.setArr(items);
         this.ids.push(...data.map((el) => el.id));
     }
 
@@ -68,7 +69,7 @@ export class ListModel<T extends B, B extends { id: string }> implements IListMo
 
         const data = isUniqueEnabled ? items.filter((el) => !this.ids.includes(el.id)) : items;
 
-        this.collection.setArr(data);
+        this.collection.setArr(items);
         this.ids.unshift(...data.map((el) => el.id));
     }
 

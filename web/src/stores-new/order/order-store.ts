@@ -3,12 +3,13 @@ import { message } from 'antd';
 import { Api, IOrderPreviewDTO } from '~/api';
 import { CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, ICollectionModel, ListModel, RequestModel } from '~/utils/models';
 
 import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
 import { IEmployeeStore, createEmployeeAction } from '../employee';
 
 export interface IOrderStore {
+    collection: ICollectionModel<IOrder, IOrderValue>;
     list: ListModel<IOrder, IOrderValue>;
     searchList: ListModel<IOrder, IOrderValue>;
     create: RequestModel<[CreateValue<IOrderValueParams>]>;
@@ -18,16 +19,16 @@ export interface IOrderStore {
     fetchListMore: RequestModel<[string]>;
 }
 
-interface IOrderStoreStores {
+interface IStores {
     employee: IEmployeeStore;
 }
 
 interface IOrderStoreParams {
-    stores: IOrderStoreStores;
+    stores: IStores;
 }
 
 export class OrderStore implements IOrderStore {
-    stores: IOrderStoreStores;
+    stores: IStores;
 
     constructor({ stores }: IOrderStoreParams) {
         this.stores = stores;

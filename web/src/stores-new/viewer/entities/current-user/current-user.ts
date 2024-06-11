@@ -1,8 +1,8 @@
 import { ROLES } from '~/constants';
 
-import { IUserValue, UserValue } from './current-user.schema';
+import { ICurrentUserValue, CurrentUserValue } from './current-user.schema';
 
-export interface ICurrentUser extends IUserValue {
+export interface ICurrentUser extends ICurrentUserValue {
     isRootAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;
@@ -10,8 +10,8 @@ export interface ICurrentUser extends IUserValue {
     isWaitingApproved: boolean;
 }
 
-export class CurrentUser extends UserValue implements ICurrentUser {
-    constructor(value: IUserValue) {
+export class CurrentUser extends CurrentUserValue implements ICurrentUser {
+    constructor(value: ICurrentUserValue) {
         super(value);
     }
 
