@@ -108,7 +108,6 @@
         "mobx": "^6.8.0",
         "mobx-react": "^7.6.0",
         "mobx-react-lite": "^3.4.3",
-        "mobx-state-tree": "^5.1.8",
         "patch-package": "^8.0.0",
         "postinstall-postinstall": "^2.1.0",
         "public-ip": "^6.0.1",

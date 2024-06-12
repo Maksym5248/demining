@@ -1,5 +1,4 @@
 import { message } from 'antd';
-import { types, Instance } from 'mobx-state-tree';
 
 import { Api, IEquipmentDTO } from '~/api';
 import { EQUIPMENT_TYPE } from '~/constants';

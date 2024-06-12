@@ -1,5 +1,3 @@
-import { Instance } from 'mobx-state-tree';
-
 import { IMapViewActionValue, MapViewActionValue } from './map-view.schema';
 
 export type IMapViewAction = IMapViewActionValue;

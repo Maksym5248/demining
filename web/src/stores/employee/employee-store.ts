@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
-import { Instance } from 'mobx-state-tree';
 
 import { Api, IEmployeeDTO } from '~/api';
 import { EMPLOYEE_TYPE } from '~/constants';

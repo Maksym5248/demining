@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
-import { types, Instance } from 'mobx-state-tree';
 
 import { Api, IDocumentDTO } from '~/api';
 import { DOCUMENT_TYPE } from '~/constants';
