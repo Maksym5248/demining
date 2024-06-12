@@ -190,7 +190,6 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 
     const onLoadKmlFile = () => {
         const { polygon, circle, marker } = currentMissionReport?.mapView ?? {};
-        if (!marker) return;
         const kml = mapUtils.generateKML(marker, circle, polygon);
         fileUtils.saveAsUser(new Blob([kml], { type: MIME_TYPE.KML }), currentMissionReport?.docName ?? '', 'kml');
     };

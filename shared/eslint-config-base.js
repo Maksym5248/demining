@@ -35,7 +35,7 @@ module.exports = {
 	},
 	rules: {
 		"import/named": 0,
-		// "import/no-unresolved": 0,
+		"import/no-unresolved": 0,
 		"import/order": [
 			"error",
 			{
