@@ -18,18 +18,11 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
     const _onRemove = () => onRemove?.(index);
 
     const explosiveObject =
-        store.explosiveObject.collectionActions.get(item?.id ?? '') ||
+        store.explosiveObject.collectionActions.get(item?.id ?? '')?.explosiveObject ||
         store.explosiveObject.collection.get(item.explosiveObjectId);
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-remove"
-                    icon={<Icon.DeleteOutlined style={{ color: 'red' }} />}
-                    onClick={_onRemove}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
             <List.Item.Meta
                 title={`${explosiveObject?.fullDisplayName}; Категорія: ${item.category}; ${item.quantity} од.`}
                 description={`Виявлено ${getIcon(item.isDiscovered)}; Транспортовано ${getIcon(item.isTransported)}; Знищено ${getIcon(item.isDestroyed)}: `}
@@ -42,11 +35,7 @@ const ObservedListItem = observer(ListItem);
 
 function Component() {
     return (
-        <Form.Item
-            label="ВНП"
-            name="explosiveObjectActions"
-            rules={[{ required: true, message: "Є обов'язковим полем" }]}
-            css={s.item}>
+        <Form.Item label="ВНП" name="explosiveObjectActions" rules={[{ required: true, message: "Є обов'язковим полем" }]} css={s.item}>
             <Form.Item noStyle shouldUpdate={() => true}>
                 {({ getFieldValue, setFieldValue }) => {
                     const data = getFieldValue('explosiveObjectActions');
@@ -55,28 +44,18 @@ function Component() {
                         <List
                             size="small"
                             pagination={false}
-                            dataSource={data.map(
-                                (el: IExplosiveObjectActionValueParams, i: number) => ({
-                                    ...el,
-                                    index: `${i}`,
-                                }),
-                            )}
-                            renderItem={(
-                                item: IExplosiveObjectActionValueParams & { id: string },
-                                i: number,
-                            ) => (
+                            dataSource={data.map((el: IExplosiveObjectActionValueParams, i: number) => ({
+                                ...el,
+                                index: `${i}`,
+                            }))}
+                            renderItem={(item: IExplosiveObjectActionValueParams & { id: string }, i: number) => (
                                 <ObservedListItem
                                     item={item}
                                     index={i}
                                     onRemove={(index: number) => {
                                         setFieldValue(
                                             'explosiveObjectActions',
-                                            data.filter(
-                                                (
-                                                    el: IExplosiveObjectActionValueParams,
-                                                    c: number,
-                                                ) => c !== index,
-                                            ),
+                                            data.filter((el: IExplosiveObjectActionValueParams, c: number) => c !== index),
                                         );
                                     }}
                                 />
@@ -90,10 +69,7 @@ function Component() {
                                         Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_WIZARD, {
                                             mode: WIZARD_MODE.CREATE,
                                             onSubmit: (value: IExplosiveObjectActionValueParams) =>
-                                                setFieldValue('explosiveObjectActions', [
-                                                    ...data,
-                                                    value,
-                                                ]),
+                                                setFieldValue('explosiveObjectActions', [...data, value]),
                                         });
                                     }}>
                                     Додати

@@ -1,13 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
+import { ErrorInner } from '~/types';
+
 import { RequestStateModel } from './RequestStateModel';
 
-export interface IRequestModel<Params extends Array<any> = [], Return = void> {
+export interface IRequestModel<Params extends Array<any> = undefined[], Return = void> {
     run: (...args: Params) => Promise<Return | void> | Return | void;
     isLoading: boolean;
+    isLoaded: boolean;
+    error: ErrorInner | null;
 }
 
-export interface IRequestModelParams<Params extends Array<any> = [], Return = void> {
+export interface IRequestModelParams<Params extends Array<any> = undefined[], Return = void> {
     shouldRun?: (...args: Params) => boolean;
     run: (...args: Params) => Promise<Return | void> | Return | void;
     onError?: () => void;
@@ -15,7 +19,7 @@ export interface IRequestModelParams<Params extends Array<any> = [], Return = vo
     returnIfLoaded?: boolean;
 }
 
-export class RequestModel<Params extends Array<any> = [], Return = void> implements IRequestModel<Params, Return> {
+export class RequestModel<Params extends Array<any> = undefined[], Return = void> implements IRequestModel<Params, Return> {
     protected requestState = new RequestStateModel<Params>();
 
     private _shouldRun?: (...args: Params) => boolean;
@@ -50,5 +54,13 @@ export class RequestModel<Params extends Array<any> = [], Return = void> impleme
 
     get isLoading() {
         return this.requestState.isLoading;
+    }
+
+    get isLoaded() {
+        return this.requestState.isLoaded;
+    }
+
+    get error() {
+        return this.requestState.error;
     }
 }

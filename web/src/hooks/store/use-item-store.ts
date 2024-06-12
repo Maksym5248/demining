@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { IUseSelectStore } from '~/types/store';
+import { IUseSelectStore } from '~/stores/type';
 
-export function useItemStore<T>(store: IUseSelectStore<T>, id: string) {
+export function useItemStore<T extends B, B extends { id: string }>(store: IUseSelectStore<T, B>, id: string) {
     const item = store.collection.get(id);
 
     useEffect(() => {
@@ -13,6 +13,6 @@ export function useItemStore<T>(store: IUseSelectStore<T>, id: string) {
 
     return {
         item,
-        isLoading: store.fetchList.inProgress,
+        isLoading: store.fetchList.isLoading,
     };
 }

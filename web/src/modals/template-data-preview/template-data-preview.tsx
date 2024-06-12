@@ -23,34 +23,27 @@ const columns = [
     },
 ];
 
-export const TemplateDataPreviewModal = observer(
-    ({ isVisible, hide }: TemplateDataPreviewModalProps) => {
-        const onSave = async () => {
-            hide();
-        };
+export const TemplateDataPreviewModal = observer(({ isVisible, hide }: TemplateDataPreviewModalProps) => {
+    const onSave = async () => {
+        hide();
+    };
 
-        const onCancel = () => {
-            hide();
-        };
+    const onCancel = () => {
+        hide();
+    };
 
-        return (
-            <Modal
-                centered
-                afterClose={hide}
-                title="Поля для створення шаблону"
-                open={isVisible}
-                width={1000}
-                onOk={onSave}
-                onCancel={onCancel}>
-                <div css={s.modal}>
-                    <Table
-                        dataSource={missionReportTemplateData}
-                        columns={columns}
-                        pagination={false}
-                    />
-                    ;
-                </div>
-            </Modal>
-        );
-    },
-);
+    return (
+        <Modal
+            centered
+            afterClose={hide}
+            title="Поля для створення шаблону"
+            open={isVisible}
+            width={1000}
+            onOk={onSave}
+            onCancel={onCancel}>
+            <div css={s.modal}>
+                <Table dataSource={missionReportTemplateData} columns={columns} pagination={false} />;
+            </div>
+        </Modal>
+    );
+});

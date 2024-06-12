@@ -25,14 +25,7 @@ const ListItem = observer(({ item }: { item: ITransport }) => {
     };
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
                 title={item.name}
@@ -62,7 +55,7 @@ export const TransportListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        transport.fetchListMore.run(search.searchValue);
+        transport.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -73,14 +66,12 @@ export const TransportListPage = observer(() => {
 
     return (
         <List
-            loading={transport.fetchList.inProgress}
-            loadingMore={transport.fetchListMore.inProgress}
+            loading={transport.fetchList.isLoading}
+            loadingMore={transport.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

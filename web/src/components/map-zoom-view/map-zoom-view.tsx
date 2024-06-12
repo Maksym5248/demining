@@ -19,16 +19,8 @@ export function MapZoomView({ zoom, onChange }: IMapZoomViewProps) {
 
     return (
         <div css={s.zoomView}>
-            <Button
-                onClick={onZoomOut}
-                icon={<Icon.PlusOutlined />}
-                css={[s.button, s.buttonZoomOut]}
-            />
-            <Button
-                css={[s.button, s.buttonZoomIn]}
-                icon={<Icon.MinusOutlined />}
-                onClick={onZoomIn}
-            />
+            <Button onClick={onZoomOut} icon={<Icon.PlusOutlined />} css={[s.button, s.buttonZoomOut]} />
+            <Button css={[s.button, s.buttonZoomIn]} icon={<Icon.MinusOutlined />} onClick={onZoomIn} />
         </div>
     );
 }

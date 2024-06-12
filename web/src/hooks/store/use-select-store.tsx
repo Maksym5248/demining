@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { IUseSelectStore } from '~/types/store';
+import { IUseSelectStore } from '~/stores/type';
 
 import { useDebounce } from '../common/useDebounce';
 
-export function useSelectStore<T>(store: IUseSelectStore<T>, defaultValue?: string) {
+export function useSelectStore<T extends B, B extends { id: string }>(store: IUseSelectStore<T, B>, defaultValue?: string) {
     const [searchValue, setSearchValue] = useState('');
 
     const initialItem = store.collection.get(defaultValue ?? '');
@@ -15,7 +15,7 @@ export function useSelectStore<T>(store: IUseSelectStore<T>, defaultValue?: stri
     }, []);
 
     const onLoadMore = () => {
-        store.fetchListMore.run(searchValue);
+        store.fetchMoreList.run(searchValue);
     };
 
     const onFocus = () => {
@@ -32,9 +32,9 @@ export function useSelectStore<T>(store: IUseSelectStore<T>, defaultValue?: stri
 
     return {
         onSearch,
-        loadingInput: store.fetchItem.inProgress,
-        loading: store.fetchList.inProgress,
-        loadingMore: store.fetchListMore.inProgress,
+        loadingInput: store.fetchItem.isLoading,
+        loading: store.fetchList.isLoading,
+        loadingMore: store.fetchMoreList.isLoading,
         isReachedEnd: !list.isMorePages,
         onLoadMore,
         onFocus,

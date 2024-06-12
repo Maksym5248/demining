@@ -4,8 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Select as SelectAnt, SelectProps, Space, Spin } from 'antd';
 import { BaseOptionType, DefaultOptionType } from 'antd/es/select';
 
-interface ISelectAsync<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType>
-    extends SelectProps<T, B> {
+interface ISelectAsync<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType> extends SelectProps<T, B> {
     loadingInput?: boolean;
     loadingMore?: boolean;
     isReachedEnd?: boolean;
@@ -62,15 +61,7 @@ function SelectAsync<T, B extends BaseOptionType | DefaultOptionType = DefaultOp
     const additionalProps = onAdd ? { dropdownRender } : {};
 
     return (
-        <SelectAnt
-            showSearch
-            allowClear
-            loading={loadingInput}
-            filterOption={false}
-            placeholder="Вибрати"
-            {...additionalProps}
-            {...rest}
-        />
+        <SelectAnt showSearch allowClear loading={loadingInput} filterOption={false} placeholder="Вибрати" {...additionalProps} {...rest} />
     );
 }
 

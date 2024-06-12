@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { EXPLOSIVE_TYPE, MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IExplosive } from '~/stores/stores/explosive';
+import { IExplosive } from '~/stores/explosive';
 
 import { s } from './explosive-list.styles';
 
@@ -25,14 +25,7 @@ const ListItem = observer(({ item }: { item: IExplosive }) => {
     };
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
                 title={item.name}
@@ -61,7 +54,7 @@ export const ExplosiveListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        explosive.fetchListMore.run(search.searchValue);
+        explosive.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -72,14 +65,12 @@ export const ExplosiveListPage = observer(() => {
 
     return (
         <List
-            loading={explosive.fetchList.inProgress}
-            loadingMore={explosive.fetchListMore.inProgress}
+            loading={explosive.fetchList.isLoading}
+            loadingMore={explosive.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

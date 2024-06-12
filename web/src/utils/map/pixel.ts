@@ -41,11 +41,7 @@ function getPointByPixelOffset(
 /**
  * @returns px
  */
-function getDistanceByPointsInPixels(
-    point1: IPoint,
-    point2: IPoint,
-    map: google.maps.Map,
-): number | null {
+function getDistanceByPointsInPixels(point1: IPoint, point2: IPoint, map: google.maps.Map): number | null {
     const projection = map.getProjection();
 
     if (!projection) {
@@ -53,12 +49,8 @@ function getDistanceByPointsInPixels(
     }
 
     // Convert the LatLng coordinates to pixel coordinates
-    const pixelPoint1 = projection.fromLatLngToPoint(
-        new google.maps.LatLng(point1.lat, point1.lng),
-    );
-    const pixelPoint2 = projection.fromLatLngToPoint(
-        new google.maps.LatLng(point2.lat, point2.lng),
-    );
+    const pixelPoint1 = projection.fromLatLngToPoint(new google.maps.LatLng(point1.lat, point1.lng));
+    const pixelPoint2 = projection.fromLatLngToPoint(new google.maps.LatLng(point2.lat, point2.lng));
 
     if (!pixelPoint1 || !pixelPoint2) {
         return null;

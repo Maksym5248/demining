@@ -24,14 +24,7 @@ const ListItem = observer(({ item }: { item: IEquipment }) => {
     };
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
                 title={item.name}
@@ -60,7 +53,7 @@ export const EquipmentListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        equipment.fetchListMore.run(search.searchValue);
+        equipment.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -71,14 +64,12 @@ export const EquipmentListPage = observer(() => {
 
     return (
         <List
-            loading={equipment.fetchList.inProgress}
-            loadingMore={equipment.fetchListMore.inProgress}
+            loading={equipment.fetchList.isLoading}
+            loadingMore={equipment.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

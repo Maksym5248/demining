@@ -24,10 +24,7 @@ export function WizardFooter({ onCancel, onRemove, isRemove, isView, isEdit }: W
                             onConfirm={onRemove}
                             okText="Так"
                             cancelText="Ні">
-                            <Button
-                                danger
-                                style={{ marginRight: 20 }}
-                                icon={<Icon.DeleteOutlined />}>
+                            <Button danger style={{ marginRight: 20 }} icon={<Icon.DeleteOutlined />}>
                                 Видалити
                             </Button>
                         </Popconfirm>

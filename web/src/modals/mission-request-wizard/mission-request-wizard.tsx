@@ -31,10 +31,10 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
 
     const isEdit = !!id;
     const isLoading =
-        store.missionRequest.fetchList.inProgress ||
-        store.missionRequest.remove.inProgress ||
-        store.missionRequest.create.inProgress ||
-        missionRequest?.update.inProgress;
+        store.missionRequest.fetchList.isLoading ||
+        store.missionRequest.remove.isLoading ||
+        store.missionRequest.create.isLoading ||
+        missionRequest?.update.isLoading;
 
     const onFinishCreate = async (values: IMissionRequestForm) => {
         await store.missionRequest.create.run(values);
@@ -42,12 +42,12 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
     };
 
     const onFinishUpdate = async (values: IMissionRequestForm) => {
-        await missionRequest.update.run(values);
+        await missionRequest?.update.run(values);
         hide();
     };
 
     const onRemove = async () => {
-        await store.missionRequest.remove.run(id);
+        !!id && (await store.missionRequest.remove.run(id));
         hide();
     };
 
@@ -78,10 +78,7 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                                   signedAt: dates.today(),
                               }
                     }>
-                    <Form.Item
-                        label="Тип"
-                        name="type"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={missionRequestType.map(({ name, value }) => ({
                                 label: name,
@@ -92,10 +89,7 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                     <Form.Item label="Номер" name="number" rules={[{ required: true }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <Form.Item
-                        label="Дата підписання"
-                        name="signedAt"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Дата підписання" name="signedAt" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <DatePicker />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />

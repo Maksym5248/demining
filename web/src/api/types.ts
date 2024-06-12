@@ -80,7 +80,7 @@ export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = Omit<IMapViewActionDB, 'geo'>;
 export type IDocumentDTO = IDocumentDB;
 
-export type IMissionReportPreviewDTO = Omit<IMissionReportDB, 'orderId' | 'missionRequestId'>;
+export type IMissionReportPreviewDTO = IMissionReportDB;
 export interface IMissionReportDTO extends IMissionReportPreviewDTO {
     order: IOrderDTO;
     missionRequest: IMissionRequestDTO;
@@ -100,7 +100,7 @@ export interface IMissionReportSumDTO {
 
 export type IMapViewActionDTOParams = Omit<
     IMapViewActionDTO,
-    'id' | 'documentId' | 'documentType' | 'updatedAt' | 'createdAt' | 'authorId' | 'geo'
+    'id' | 'documentId' | 'documentType' | 'updatedAt' | 'createdAt' | 'executedAt' | 'authorId' | 'geo'
 >;
 export interface IExplosiveActionDTOParams {
     id?: string;

@@ -73,11 +73,7 @@ const getWhere = (values: IWhere) => {
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
-type CreateData<T extends IBaseDB> = Omit<
-    T,
-    'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'
-> &
-    Partial<Pick<T, 'id'>>;
+type CreateData<T extends IBaseDB> = Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'> & Partial<Pick<T, 'id'>>;
 
 export class DBBase<T extends IBaseDB> {
     tableName: string;
@@ -88,9 +84,7 @@ export class DBBase<T extends IBaseDB> {
 
     searchFields: (keyof T)[];
 
-    getCreateData:
-        | ((value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => Partial<T>)
-        | undefined = undefined;
+    getCreateData: ((value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => Partial<T>) | undefined = undefined;
 
     getUpdateData: ((value: Partial<T>) => Partial<T>) | undefined = undefined;
 
@@ -99,9 +93,7 @@ export class DBBase<T extends IBaseDB> {
     constructor(
         tableName: string,
         searchFields: (keyof T)[],
-        getCreateData?: (
-            value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>,
-        ) => Partial<T>,
+        getCreateData?: (value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => Partial<T>,
         getUpdateData?: (value: Partial<T>) => Partial<T>,
         getSearchData?: (value: Partial<T>) => string[],
     ) {
@@ -125,9 +117,7 @@ export class DBBase<T extends IBaseDB> {
     }
 
     get collection() {
-        const name = this.rootCollection
-            ? `${this.rootCollection}/${this.tableName}`
-            : this.tableName;
+        const name = this.rootCollection ? `${this.rootCollection}/${this.tableName}` : this.tableName;
         return collection(getFirestore(), name) as CollectionReference<T>;
     }
 

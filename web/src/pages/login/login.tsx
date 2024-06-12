@@ -41,10 +41,7 @@ export const LoginPage = observer(() => {
         }
     };
 
-    const isLoading =
-        store.auth.signInWithGoogle.inProgress ||
-        store.auth.signInWithEmail.inProgress ||
-        store.viewer.isLoading;
+    const isLoading = store.auth.signInWithGoogle.isLoading || store.auth.signInWithEmail.isLoading || store.viewer.isLoading;
 
     return (
         <div css={s.container}>
@@ -69,21 +66,11 @@ export const LoginPage = observer(() => {
                             { required: true, message: 'Введіть пароль' },
                             { min: 6, message: 'Мінімальна кількість символів для пароля 6' },
                         ]}>
-                        <Input.Password
-                            prefix={<Icon.LockOutlined />}
-                            size="large"
-                            type="password"
-                            placeholder="Пароль"
-                        />
+                        <Input.Password prefix={<Icon.LockOutlined />} size="large" type="password" placeholder="Пароль" />
                     </Form.Item>
 
                     <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            size="large"
-                            className="login-form-button"
-                            css={s.button}>
+                        <Button type="primary" htmlType="submit" size="large" className="login-form-button" css={s.button}>
                             Увійти
                         </Button>
                     </Form.Item>
@@ -92,12 +79,7 @@ export const LoginPage = observer(() => {
                     </Typography.Paragraph>
                 </Form>
                 <Divider>Або</Divider>
-                <Button
-                    type="primary"
-                    size="large"
-                    icon={<GoogleOutlined />}
-                    onClick={handleGoogleSignIn}
-                    css={s.buttonGoogle}>
+                <Button type="primary" size="large" icon={<GoogleOutlined />} onClick={handleGoogleSignIn} css={s.buttonGoogle}>
                     Увійти з google
                 </Button>
             </div>

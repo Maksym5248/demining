@@ -16,22 +16,14 @@ interface IEmployeesProps {
     selectedWorkers?: IEmployeeAction[];
 }
 
-export function Employees({
-    squadLeads,
-    workers,
-    selectedSquadLead,
-    selectedWorkers,
-}: IEmployeesProps) {
+export function Employees({ squadLeads, workers, selectedSquadLead, selectedWorkers }: IEmployeesProps) {
     const onAdd = useCallback(() => {
         Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE });
     }, []);
 
     return (
         <>
-            <Form.Item
-                label="Керівник розрахунку"
-                name="squadLeaderId"
-                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+            <Form.Item label="Керівник розрахунку" name="squadLeaderId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                 <Form.Item noStyle shouldUpdate={() => true}>
                     {({ getFieldValue }) => {
                         const squadIds = getFieldValue('squadIds');
@@ -43,7 +35,7 @@ export function Employees({
                                         .filter((el) => !squadIds.includes(el.id))
                                         .map((el) => ({ label: el.fullName, value: el.id })),
                                     {
-                                        label: selectedSquadLead?.fullName,
+                                        label: selectedSquadLead?.employee.fullName,
                                         value: selectedSquadLead?.employeeId,
                                     },
                                 )}
@@ -54,10 +46,7 @@ export function Employees({
                     }}
                 </Form.Item>
             </Form.Item>
-            <Form.Item
-                label="Розрахунок"
-                name="squadIds"
-                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+            <Form.Item label="Розрахунок" name="squadIds" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                 <Form.List name="squadIds">
                     {(fields, { add, remove }) => (
                         <>
@@ -68,9 +57,7 @@ export function Employees({
                                         const squadLeaderId = getFieldValue('squadLeaderId');
 
                                         const currentSelectedId = squadIds[name];
-                                        const selected = selectedWorkers?.find(
-                                            (el) => el.employeeId === currentSelectedId,
-                                        );
+                                        const selected = selectedWorkers?.find((el) => el.employeeId === currentSelectedId);
 
                                         return (
                                             <Form.Item name={name} {...restField}>
@@ -78,17 +65,13 @@ export function Employees({
                                                     options={select.append(
                                                         workers
                                                             .filter((el) => el.id !== squadLeaderId)
-                                                            .filter(
-                                                                (el) =>
-                                                                    el.id === currentSelectedId ||
-                                                                    !squadIds.includes(el.id),
-                                                            )
+                                                            .filter((el) => el.id === currentSelectedId || !squadIds.includes(el.id))
                                                             .map((el) => ({
                                                                 label: el?.fullName,
                                                                 value: el.id,
                                                             })),
                                                         {
-                                                            label: selected?.fullName,
+                                                            label: selected?.employee.fullName,
                                                             value: selected?.employeeId,
                                                         },
                                                     )}
@@ -116,18 +99,11 @@ export function Employees({
                                     const squadIds = getFieldValue('squadIds');
                                     const squadLeaderId = getFieldValue('squadLeaderId');
 
-                                    const freeWorkers = workers.filter(
-                                        (el) =>
-                                            !(el.id === squadLeaderId || squadIds.includes(el.id)),
-                                    );
+                                    const freeWorkers = workers.filter((el) => !(el.id === squadLeaderId || squadIds.includes(el.id)));
 
                                     return (
                                         !!freeWorkers.length && (
-                                            <Button
-                                                type="dashed"
-                                                onClick={() => add()}
-                                                block
-                                                icon={<PlusOutlined />}>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                                                 Додати
                                             </Button>
                                         )

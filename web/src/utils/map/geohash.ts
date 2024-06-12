@@ -25,13 +25,8 @@ function adjustRange(newRange: IGeohashRange, oldRange: IGeohashRange): IGeohash
     return newRange;
 }
 
-function getAdjustedRanges(
-    newRanges: IGeohashRange[],
-    oldRanges: IGeohashRange[],
-): IGeohashRange[] {
-    const rangesToLoad = newRanges.filter(
-        (newR) => !oldRanges.some((oldR) => rangeIsSubset(newR, oldR)),
-    );
+function getAdjustedRanges(newRanges: IGeohashRange[], oldRanges: IGeohashRange[]): IGeohashRange[] {
+    const rangesToLoad = newRanges.filter((newR) => !oldRanges.some((oldR) => rangeIsSubset(newR, oldR)));
 
     if (!rangesToLoad.length) return [];
 

@@ -22,10 +22,7 @@ function getRadiusByZoom(center: IPoint, zoom: number): number {
  *
  * @param param2 { radius: m2 }
  */
-function getGeoBoxByZoomOrRadius(
-    center: IPoint,
-    { zoom, radius }: { zoom?: number; radius?: number },
-): IGeoBox {
+function getGeoBoxByZoomOrRadius(center: IPoint, { zoom, radius }: { zoom?: number; radius?: number }): IGeoBox {
     // distance in meters
     const distance = radius ?? getRadiusByZoom(center, zoom as number);
 
@@ -89,13 +86,7 @@ function getTotalDistancePolygon(polygon: IPolygon): number {
     return mathUtils.toFixed(totalDistance, 0);
 }
 
-function getTotalDistance({
-    line,
-    polygon,
-}: {
-    line?: ILine;
-    polygon?: IPolygon;
-}): number | undefined {
+function getTotalDistance({ line, polygon }: { line?: ILine; polygon?: IPolygon }): number | undefined {
     if (line) {
         return getTotalDistanceLine(line);
     }
@@ -138,10 +129,7 @@ const getArea = (circle?: ICircle, polygon?: IPolygon, line?: ILine) => {
     return undefined;
 };
 
-function haversineDistance(
-    point1: { lat: number; lng: number },
-    point2: { lat: number; lng: number },
-): number {
+function haversineDistance(point1: { lat: number; lng: number }, point2: { lat: number; lng: number }): number {
     const R = 6371e3; // Radius of the Earth in meters
     const lat1Rad = (point1.lat * Math.PI) / 180;
     const lat2Rad = (point2.lat * Math.PI) / 180;
@@ -222,9 +210,7 @@ function pixelsToMeters(pixels: number, zoom: number): number {
 const opposite = (value: number) => (value > 0 ? value - 180 : value + 180);
 
 const polygonCallout = (polygon: IPolygon, offsetInMeters: number): IPoint[] => {
-    const turfPolygon = turf.polygon([
-        [...polygon.points.map(createArrFromPoint), createArrFromPoint(polygon.points[0])],
-    ]);
+    const turfPolygon = turf.polygon([[...polygon.points.map(createArrFromPoint), createArrFromPoint(polygon.points[0])]]);
 
     return polygon?.points.map((point, i) => {
         const lastIndex = polygon.points.length - 1;

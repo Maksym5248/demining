@@ -8,11 +8,12 @@ TODO:
 - move common utils to shared
 
 packages:
-- auth
-- dictionaries (explosive objects, explosive)
-- config
+- shared
+- shared/client 
+- shared/web
 
 apps:
 - functions
-- web dsns
-- mobile dictionaries (explosive objects, explosive)
+- web dsns (how to connect dictionaries ?? should we create different web app for dictionaries)
+- mobile dictionaries (explosive objects, explosive, furmulas, some common practice, mine detectors)
+- mobile app dsns (for documents)

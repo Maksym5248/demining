@@ -7,9 +7,7 @@ import { SEARCH_PARAMS } from '~/constants';
 export const useSearch = (initialValue?: string) => {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [searchBy, setSearchBy] = useState(
-        searchParams.get(SEARCH_PARAMS.SEARCH_BY) ?? initialValue ?? '',
-    );
+    const [searchBy, setSearchBy] = useState(searchParams.get(SEARCH_PARAMS.SEARCH_BY) ?? initialValue ?? '');
     const [searchValue, setSearchValue] = useState(searchBy);
 
     const onChangeSearch = (text: string) => {

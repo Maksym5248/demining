@@ -1,9 +1,5 @@
 import { createContext } from 'react';
 
-import { Instance } from 'mobx-state-tree';
+import { type IRootStore } from '~/stores';
 
-import { RootStore } from '~/stores';
-
-export const RootStoreContext: React.Context<Instance<typeof RootStore>> = createContext<Instance<typeof RootStore>>(
-    null as unknown as Instance<typeof RootStore>,
-);
+export const RootStoreContext: React.Context<IRootStore> = createContext<IRootStore>(null as unknown as IRootStore);

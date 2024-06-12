@@ -16,14 +16,9 @@ export function PolygonCallout({ points }: IMarkerCalloutProps) {
                 const calloutText = index === 0 ? 'СТ' : `ТП${index}`;
 
                 return (
-                    <OverlayViewF
-                        key={calloutText}
-                        position={point}
-                        mapPaneName={OVERLAY_MOUSE_TARGET}>
+                    <OverlayViewF key={calloutText} position={point} mapPaneName={OVERLAY_MOUSE_TARGET}>
                         <div css={[s.callout, s.calloutPolygon]}>
-                            <Typography.Text css={[s.calloutText, s.calloutPolygonText]}>
-                                {calloutText}
-                            </Typography.Text>
+                            <Typography.Text css={[s.calloutText, s.calloutPolygonText]}>{calloutText}</Typography.Text>
                         </div>
                     </OverlayViewF>
                 );

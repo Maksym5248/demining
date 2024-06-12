@@ -11,12 +11,7 @@ interface IIcon {
 
 function SvgPolygon() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            width="1em"
-            height="1em"
-            fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor">
             <polygon points="0,4 0,12 8,16 16,12 16,4 8,0 " />
         </svg>
     );
@@ -24,12 +19,7 @@ function SvgPolygon() {
 
 function SvgCircle() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            width="1em"
-            height="1em"
-            fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor">
             <circle cx="8" cy="8" r="8" />
         </svg>
     );
@@ -37,12 +27,7 @@ function SvgCircle() {
 
 function SvgCursor() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 32 32"
-            width="1em"
-            height="1em"
-            fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="1em" height="1em" fill="currentColor">
             <path
                 d="M25,7c-0.4,0-0.8,0.1-1.1,0.2C23.5,5.9,22.4,5,21,5c-0.4,0-0.8,0.1-1.1,0.2C19.5,3.9,18.4,3,17,3s-2.5,0.9-2.9,2.2
 				C13.8,5.1,13.4,5,13,5c-1.7,0-3,1.3-3,3v9.2l-1.1-1.9c-0.4-0.7-1.1-1.2-1.9-1.4c-0.8-0.2-1.6,0-2.3,0.4c-1.1,0.8-1.6,2.2-1.1,3.5
@@ -58,12 +43,7 @@ function SvgCursor() {
 
 function SvgMarker() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 438.536 438.536"
-            width="1em"
-            height="1em"
-            fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 438.536 438.536" width="1em" height="1em" fill="currentColor">
             <path
                 d="M322.621,42.825C294.073,14.272,259.619,0,219.268,0c-40.353,0-74.803,14.275-103.353,42.825
 		c-28.549,28.549-42.825,63-42.825,103.353c0,20.749,3.14,37.782,9.419,51.106l104.21,220.986

@@ -4,32 +4,14 @@ import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
-import {
-    MAP_ZOOM,
-    WIZARD_MODE,
-    MODALS,
-    MAP_VIEW_TAKE_PRINT_CONTAINER,
-    MAP_SIZE,
-    MIME_TYPE,
-} from '~/constants';
+import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE, MIME_TYPE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { Modal, Image, Crashlytics, Template } from '~/services';
-import { IEmployee, IMissionReport, IOrder, createAddress } from '~/stores';
+import { IEmployee, IMissionReport, IMissionRequest, IOrder, createAddress } from '~/stores';
 import { dates, mapUtils } from '~/utils';
 import { fileUtils } from '~/utils/file';
 
-import {
-    ExplosiveObjectAction,
-    Timer,
-    Transport,
-    Equipment,
-    Approved,
-    Documents,
-    Act,
-    Territory,
-    Employees,
-    Map,
-} from './components';
+import { ExplosiveObjectAction, Timer, Transport, Equipment, Approved, Documents, Act, Territory, Employees, Map } from './components';
 import { ExplosiveAction } from './components/explosive-action';
 import { s } from './mission-report-wizard.styles';
 import { IMissionReportForm } from './mission-report-wizard.types';
@@ -45,14 +27,14 @@ function removeId<T extends { id: string }>({ id, ...rest }: T) {
     return rest;
 }
 
-const createCopyValue = (currentMissionReport?: IMissionReport | null) => ({
+const createCopyValue = (currentMissionReport: IMissionReport) => ({
     approvedAt: currentMissionReport?.approvedAt,
     approvedById: currentMissionReport?.approvedByAction?.employeeId,
-    number: currentMissionReport?.number,
+    number: currentMissionReport.number,
     subNumber: currentMissionReport?.subNumber,
     executedAt: currentMissionReport?.executedAt,
-    orderId: currentMissionReport?.order?.id,
-    missionRequestId: currentMissionReport?.missionRequest?.id,
+    orderId: currentMissionReport.orderId,
+    missionRequestId: currentMissionReport.missionRequestId,
     checkedTerritory: currentMissionReport?.checkedTerritory,
     depthExamination: currentMissionReport?.depthExamination,
     uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
@@ -65,15 +47,13 @@ const createCopyValue = (currentMissionReport?: IMissionReport | null) => ({
     transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
     transportHumansId: currentMissionReport?.transportHumans?.transportId,
     mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
-    explosiveObjectActions:
-        currentMissionReport?.explosiveObjectActions.map((el) => el.value).map(removeId) ?? [],
-    explosiveActions:
-        currentMissionReport?.explosiveActions.map((el) => el.value).map(removeId) ?? [],
+    explosiveObjectActions: currentMissionReport?.explosiveObjectActions.map((el) => el.value).map(removeId) ?? [],
+    explosiveActions: currentMissionReport?.explosiveActions.map((el) => el.value).map(removeId) ?? [],
     squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
     squadIds: currentMissionReport?.squadActions.map((el) => el.employeeId) ?? [],
     address: currentMissionReport?.address,
     addressDetails: currentMissionReport?.addressDetails,
-    mapView: currentMissionReport?.mapView ? removeId(currentMissionReport?.mapView) : undefined,
+    mapView: removeId(currentMissionReport.mapView),
 });
 
 const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
@@ -96,8 +76,7 @@ const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
     transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
     transportHumansId: currentMissionReport?.transportHumans?.transportId,
     mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
-    explosiveObjectActions:
-        currentMissionReport?.explosiveObjectActions.map((el) => el.value) ?? [],
+    explosiveObjectActions: currentMissionReport?.explosiveObjectActions.map((el) => el.value) ?? [],
     explosiveActions: currentMissionReport?.explosiveActions.map((el) => el.value) ?? [],
     squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
     squadIds: currentMissionReport?.squadActions.map((el) => el.employeeId) ?? [],
@@ -110,14 +89,12 @@ const createCreateValue = (
     chiefFirst?: IEmployee,
     firstMissionReport?: IMissionReport,
     firstOrder?: IOrder,
-    firstMissionRequest?: IOrder,
+    firstMissionRequest?: IMissionRequest,
     firstSquadLeader?: IEmployee,
 ) => ({
     approvedAt: dates.today(),
     approvedById: chiefFirst?.id,
-    number: firstMissionReport?.subNumber
-        ? firstMissionReport?.number
-        : (firstMissionReport?.number ?? 0) + 1,
+    number: firstMissionReport?.subNumber ? firstMissionReport?.number : (firstMissionReport?.number ?? 0) + 1,
     subNumber: firstMissionReport?.subNumber ? (firstMissionReport?.subNumber ?? 0) + 1 : undefined,
     executedAt: dates.today(),
     orderId: firstOrder?.id,
@@ -152,251 +129,240 @@ const getTitles = ({ isEdit, isCreate }: { isEdit: boolean; isCreate: boolean })
     return 'Акт виконаних робіт';
 };
 
-export const MissionReportWizardModal = observer(
-    ({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: Props) => {
-        const [isLoadingPreview, setLoadingPreview] = useState(false);
-        const [templateId, setTemplateId] = useState();
+export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: Props) => {
+    const [isLoadingPreview, setLoadingPreview] = useState(false);
+    const [templateId, setTemplateId] = useState();
 
-        const { order, missionRequest, employee, missionReport, document } = useStore();
+    const { order, missionRequest, employee, missionReport, document } = useStore();
 
-        const wizard = useWizard({ id, mode });
+    const wizard = useWizard({ id, mode });
 
-        const currentMissionReport = id ? missionReport.collection.get(id) : null;
+    const currentMissionReport = id ? missionReport.collection.get(id) : null;
 
-        const onOpenDocxPreview = async () => {
-            try {
-                setLoadingPreview(true);
+    const onOpenDocxPreview = async () => {
+        try {
+            setLoadingPreview(true);
 
-                if (!currentMissionReport) throw new Error('there is no mission report');
-                if (!templateId) throw new Error('there is no selected template');
+            if (!currentMissionReport) throw new Error('there is no mission report');
+            if (!templateId) throw new Error('there is no selected template');
 
-                const image = await Image.takeMapImage(`#${MAP_VIEW_TAKE_PRINT_CONTAINER}`);
+            const image = await Image.takeMapImage(`#${MAP_VIEW_TAKE_PRINT_CONTAINER}`);
 
-                const imageData = {
-                    _type: 'image',
-                    source: fileUtils.b64toBlob(image),
-                    format: 'image/jpeg',
-                    altText: 'image',
-                    width: MAP_SIZE.MEDIUM_WIDTH,
-                    height: MAP_SIZE.MEDIUM_HEIGHT,
-                };
+            const imageData = {
+                _type: 'image',
+                source: fileUtils.b64toBlob(image),
+                format: 'image/jpeg',
+                altText: 'image',
+                width: MAP_SIZE.MEDIUM_WIDTH,
+                height: MAP_SIZE.MEDIUM_HEIGHT,
+            };
 
-                const data = {
-                    ...currentMissionReport.data,
-                    image: imageData,
-                };
+            const data = {
+                ...currentMissionReport.data,
+                image: imageData,
+            };
 
-                const currentDocument = document.collection.get(templateId);
+            const currentDocument = document.collection.get(templateId);
 
-                if (!currentDocument) throw new Error('there is no selected document');
+            if (!currentDocument) throw new Error('there is no selected document');
 
-                const template = await currentDocument.load.run();
+            const template = await currentDocument.load.run();
 
-                const value = await Template.generateFile(template, data);
+            if (!template) return;
 
-                const name = `${currentMissionReport.executedAt.format('YYYY.MM.DD')} ${data.actNumber}`;
+            const value = await Template.generateFile(template, data);
 
-                const file = fileUtils.blobToFile(value, {
-                    name,
-                    type: 'docx',
-                });
+            const name = `${currentMissionReport.executedAt.format('YYYY.MM.DD')} ${data.actNumber}`;
 
-                Modal.show(MODALS.DOCX_PREVIEW, { file, name });
-            } catch (e) {
-                Crashlytics.error('MissionReportWizardModal - onOpenDocxPreview: ', e);
-                message.error('Bиникла помилка');
-            } finally {
-                setLoadingPreview(false);
-            }
-        };
-
-        const onLoadKmlFile = () => {
-            const { polygon, circle, marker } = currentMissionReport?.mapView ?? {};
-
-            const kml = mapUtils.generateKML(marker, circle, polygon);
-            fileUtils.saveAsUser(
-                new Blob([kml], { type: MIME_TYPE.KML }),
-                currentMissionReport?.docName ?? '',
-                'kml',
-            );
-        };
-
-        const onFinishCreate = async (values: IMissionReportForm) => {
-            await missionReport.create.run({
-                ...values,
-                squadIds: values.squadIds.filter((el) => !!el),
+            const file = fileUtils.blobToFile(value, {
+                name,
+                type: 'docx',
             });
-            hide();
-        };
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const onFinishUpdate = async (values: IMissionReportForm) => {
-            await missionReport.update.run(id, {
-                ...values,
-                squadIds: values.squadIds.filter((el) => !!el),
-            });
-            hide();
-        };
+            Modal.show(MODALS.DOCX_PREVIEW, { file, name });
+        } catch (e) {
+            Crashlytics.error('MissionReportWizardModal - onOpenDocxPreview: ', e);
+            message.error('Bиникла помилка');
+        } finally {
+            setLoadingPreview(false);
+        }
+    };
 
-        const onCopy = async () => {
-            const values = createCopyValue(currentMissionReport);
+    const onLoadKmlFile = () => {
+        const { polygon, circle, marker } = currentMissionReport?.mapView ?? {};
+        if (!marker) return;
+        const kml = mapUtils.generateKML(marker, circle, polygon);
+        fileUtils.saveAsUser(new Blob([kml], { type: MIME_TYPE.KML }), currentMissionReport?.docName ?? '', 'kml');
+    };
 
-            await missionReport.create.run({
-                ...values,
-                squadIds: values.squadIds.filter((el) => !!el),
-            });
-            hide();
-        };
+    const onFinishCreate = async (values: IMissionReportForm) => {
+        await missionReport.create.run({
+            ...values,
+            squadIds: values.squadIds.filter((el) => !!el),
+        });
+        hide();
+    };
 
-        useEffect(() => {
-            if (id) {
-                missionReport.fetchItem.run(id);
-            }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onFinishUpdate = async (values: IMissionReportForm) => {
+        if (!id) return;
 
-            if (wizard.isCreate) {
-                order.fetchList.run();
-                missionRequest.fetchList.run();
-            }
+        await missionReport.update.run(id, {
+            ...values,
+            squadIds: values.squadIds.filter((el) => !!el),
+        });
+        hide();
+    };
 
-            employee.fetchListAll.run();
-            document.fetchTemplatesList.run();
-        }, []);
+    const onCopy = async () => {
+        if (!currentMissionReport) return;
 
-        const isLoading =
-            missionReport.fetchItem.inProgress ||
-            employee.fetchListAll.inProgress ||
-            document.fetchTemplatesList.inProgress;
+        const values = createCopyValue(currentMissionReport);
 
-        const initialValues: Partial<IMissionReportForm> = useMemo(
-            () =>
-                wizard.isEdit || wizard.isView
-                    ? createEditValue(currentMissionReport)
-                    : createCreateValue(
-                          employee.chiefFirst,
-                          missionReport.list.first,
-                          order.list.first,
-                          missionRequest.list.first,
-                          employee.squadLeadFirst,
-                      ),
-            [isLoading],
-        );
+        await missionReport.create.run({
+            ...values,
+            squadIds: values.squadIds.filter((el) => !!el),
+        });
+        hide();
+    };
 
-        const onRemove = () => {
-            missionReport.remove.run(id);
-            hide();
-        };
+    useEffect(() => {
+        if (id) {
+            missionReport.fetchItem.run(id);
+        }
 
-        const onAddTemplate = () => {
-            Modal.show(MODALS.TEMPLATE_WIZARD, { mode: WIZARD_MODE.CREATE });
-        };
+        if (wizard.isCreate) {
+            order.fetchList.run();
+            missionRequest.fetchList.run();
+        }
 
-        return (
-            <Drawer
-                open={isVisible}
-                destroyOnClose
-                title={getTitles(wizard)}
-                placement="right"
-                width={700}
-                onClose={hide}
-                extra={
-                    <WizardButtons
-                        onSave={onOpenDocxPreview}
-                        {...wizard}
-                        isSave={wizard.isSave && !!templateId}
-                        menu={[
-                            ...(wizard.isView
-                                ? [
-                                      {
-                                          label: 'KML',
-                                          key: 'KML',
-                                          icon: <Icon.DownloadOutlined />,
-                                          onClick: onLoadKmlFile,
-                                      },
-                                  ]
-                                : []),
-                            ...(wizard.isView && currentMissionReport
-                                ? [
-                                      {
-                                          label: 'Копіювати',
-                                          key: 'copy',
-                                          icon: <Icon.CopyOutlined />,
-                                          onClick: () => onCopy(),
-                                      },
-                                  ]
-                                : []),
-                        ]}>
-                        {wizard.isView && (
-                            <Select
-                                onAdd={onAddTemplate}
-                                value={templateId}
-                                onChange={setTemplateId}
-                                placeholder="Виберіть шаблон"
-                                options={document.missionReportTemplatesList.map((el) => ({
-                                    label: el.name,
-                                    value: el.id,
-                                }))}
-                            />
-                        )}
-                    </WizardButtons>
-                }>
-                <>
-                    {isLoadingPreview && <Spin fullscreen />}
-                    {isLoading ? (
-                        <Spin css={s.spin} />
-                    ) : (
-                        <Form
-                            name="mission-report-form"
-                            onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 16 }}
-                            initialValues={initialValues}
-                            disabled={wizard.isView}>
-                            {[
-                                <Map key="Map" isEdit={!wizard.isView} />,
-                                <Territory key="Territory" />,
-                                <Approved
-                                    key="Approved"
-                                    data={employee.chiefs}
-                                    selectedEmployee={currentMissionReport?.approvedByAction}
-                                />,
-                                <Act key="Act" />,
-                                <Documents key="Documents" initialValues={initialValues} />,
-                                <Timer key="Timer" />,
-                                <ExplosiveObjectAction key="ExplosiveObjectAction" />,
-                                <ExplosiveAction key="ExplosiveAction" />,
-                                <Transport
-                                    key="Transport"
-                                    initialValues={initialValues}
-                                    selectedTransportHumanAction={
-                                        currentMissionReport?.transportHumans
-                                    }
-                                    selectedTransportExplosiveAction={
-                                        currentMissionReport?.transportExplosiveObject
-                                    }
-                                />,
-                                <Equipment
-                                    key="Equipment"
-                                    initialValues={initialValues}
-                                    selectedMineDetector={currentMissionReport?.mineDetector}
-                                />,
-                                <Employees
-                                    key="Employees"
-                                    squadLeads={employee.squadLeads}
-                                    workers={employee.workers}
-                                    selectedSquadLead={currentMissionReport?.squadLeaderAction}
-                                    selectedWorkers={currentMissionReport?.squadActions}
-                                />,
-                            ].map((el, i) => (
-                                <div key={i}>
-                                    {el}
-                                    <Divider />
-                                </div>
-                            ))}
-                            <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
-                        </Form>
+        employee.fetchListAll.run();
+        document.fetchTemplatesList.run();
+    }, []);
+
+    const isLoading = missionReport.fetchItem.isLoading || employee.fetchListAll.isLoading || document.fetchTemplatesList.isLoading;
+
+    const initialValues: Partial<IMissionReportForm> = useMemo(
+        () =>
+            wizard.isEdit || wizard.isView
+                ? createEditValue(currentMissionReport)
+                : createCreateValue(
+                      employee.chiefFirst,
+                      missionReport.list.first,
+                      order.list.first,
+                      missionRequest.list.first,
+                      employee.squadLeadFirst,
+                  ),
+        [isLoading],
+    );
+
+    const onRemove = () => {
+        !!id && missionReport.remove.run(id);
+        hide();
+    };
+
+    const onAddTemplate = () => {
+        Modal.show(MODALS.TEMPLATE_WIZARD, { mode: WIZARD_MODE.CREATE });
+    };
+
+    return (
+        <Drawer
+            open={isVisible}
+            destroyOnClose
+            title={getTitles(wizard)}
+            placement="right"
+            width={700}
+            onClose={hide}
+            extra={
+                <WizardButtons
+                    onSave={onOpenDocxPreview}
+                    {...wizard}
+                    isSave={wizard.isSave && !!templateId}
+                    menu={[
+                        ...(wizard.isView
+                            ? [
+                                  {
+                                      label: 'KML',
+                                      key: 'KML',
+                                      icon: <Icon.DownloadOutlined />,
+                                      onClick: onLoadKmlFile,
+                                  },
+                              ]
+                            : []),
+                        ...(wizard.isView && currentMissionReport
+                            ? [
+                                  {
+                                      label: 'Копіювати',
+                                      key: 'copy',
+                                      icon: <Icon.CopyOutlined />,
+                                      onClick: () => onCopy(),
+                                  },
+                              ]
+                            : []),
+                    ]}>
+                    {wizard.isView && (
+                        <Select
+                            onAdd={onAddTemplate}
+                            value={templateId}
+                            onChange={setTemplateId}
+                            placeholder="Виберіть шаблон"
+                            options={document.missionReportTemplatesList.map((el) => ({
+                                label: el.name,
+                                value: el.id,
+                            }))}
+                        />
                     )}
-                </>
-            </Drawer>
-        );
-    },
-);
+                </WizardButtons>
+            }>
+            <>
+                {isLoadingPreview && <Spin fullscreen />}
+                {isLoading ? (
+                    <Spin css={s.spin} />
+                ) : (
+                    <Form
+                        name="mission-report-form"
+                        onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        initialValues={initialValues}
+                        disabled={wizard.isView}>
+                        {[
+                            <Map key="Map" isEdit={!wizard.isView} />,
+                            <Territory key="Territory" />,
+                            <Approved key="Approved" data={employee.chiefs} selectedEmployee={currentMissionReport?.approvedByAction} />,
+                            <Act key="Act" />,
+                            <Documents key="Documents" initialValues={initialValues} />,
+                            <Timer key="Timer" />,
+                            <ExplosiveObjectAction key="ExplosiveObjectAction" />,
+                            <ExplosiveAction key="ExplosiveAction" />,
+                            <Transport
+                                key="Transport"
+                                initialValues={initialValues}
+                                selectedTransportHumanAction={currentMissionReport?.transportHumans}
+                                selectedTransportExplosiveAction={currentMissionReport?.transportExplosiveObject}
+                            />,
+                            <Equipment
+                                key="Equipment"
+                                initialValues={initialValues}
+                                selectedMineDetector={currentMissionReport?.mineDetector}
+                            />,
+                            <Employees
+                                key="Employees"
+                                squadLeads={employee.squadLeads}
+                                workers={employee.workers}
+                                selectedSquadLead={currentMissionReport?.squadLeaderAction}
+                                selectedWorkers={currentMissionReport?.squadActions}
+                            />,
+                        ].map((el, i) => (
+                            <div key={i}>
+                                {el}
+                                <Divider />
+                            </div>
+                        ))}
+                        <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    </Form>
+                )}
+            </>
+        </Drawer>
+    );
+});

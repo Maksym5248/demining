@@ -43,10 +43,10 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
 
     const isEdit = !!id;
     const isLoading =
-        store.document.fetchTemplatesList.inProgress ||
-        store.document.create.inProgress ||
-        document?.update?.inProgress ||
-        document?.load?.inProgress;
+        store.document.fetchTemplatesList.isLoading ||
+        store.document.create.isLoading ||
+        document?.update?.isLoading ||
+        document?.load?.isLoading;
 
     const onFinishCreate = async (values: IDocumentForm) => {
         if (!file) {
@@ -58,6 +58,7 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
             type: ASSET_TYPE.DOCUMENT,
             mime: MIME_TYPE.DOCX,
         };
+        if (!file) return;
 
         await store.document.create.run(data, file);
         hide();
@@ -70,18 +71,20 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
             mime: MIME_TYPE.DOCX,
         };
 
-        await document.update.run(data, file);
+        if (!file) return;
+
+        await document?.update.run(data, file);
         hide();
     };
 
     const onOpenDocument = async () => {
-        const loadedFile = await document.load.run();
+        const loadedFile = await document?.load.run();
 
-        Modal.show(MODALS.DOCX_PREVIEW, { file: file || loadedFile, name: document.name });
+        Modal.show(MODALS.DOCX_PREVIEW, { file: file || loadedFile, name: document?.name });
     };
 
     const onRemove = async () => {
-        store.document.remove.run(id);
+        !!id && store.document.remove.run(id);
         hide();
     };
 
@@ -107,19 +110,11 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={
-                        document ? { ...document } : { documentType: DOCUMENT_TYPE.MISSION_REPORT }
-                    }>
-                    <Form.Item
-                        label="Назва"
-                        name="name"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    initialValues={document ? { ...document } : { documentType: DOCUMENT_TYPE.MISSION_REPORT }}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <Form.Item
-                        label="Тип"
-                        name="documentType"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Тип" name="documentType" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>
                     <UploadFile onChangeFile={onChangeFile} file={file} />

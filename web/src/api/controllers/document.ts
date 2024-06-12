@@ -25,11 +25,7 @@ const create = async (value: CreateValue<IDocumentDTO>, file: File): Promise<IDo
     return res;
 };
 
-const update = async (
-    id: string,
-    value: UpdateValue<IDocumentDTO>,
-    file?: File,
-): Promise<IDocumentDTO> => {
+const update = async (id: string, value: UpdateValue<IDocumentDTO>, file?: File): Promise<IDocumentDTO> => {
     const res = await DB.document.update(id, value);
 
     if (file) {

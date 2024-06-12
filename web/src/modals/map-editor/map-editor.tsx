@@ -72,14 +72,7 @@ export const MapEditorModal = observer(
         };
 
         return (
-            <Modal
-                centered
-                afterClose={hide}
-                title="Карта"
-                open={isVisible}
-                width="80%"
-                onOk={onSave}
-                onCancel={onCancel}>
+            <Modal centered afterClose={hide} title="Карта" open={isVisible} width="80%" onOk={onSave} onCancel={onCancel}>
                 <MapView
                     initialCircle={initialCircle}
                     initialMarker={initialMarker}
@@ -89,18 +82,10 @@ export const MapEditorModal = observer(
                     mapContainerStyle={mapContainerStyle}
                     onChange={onChange}
                     onChangeGeobox={onChangeGeobox}
-                    polygons={store.map.list.asArray
-                        .filter((el) => el.id !== id && !!el.polygon)
-                        .map((el) => el.polygon as IPolygon)}
-                    circles={store.map.list.asArray
-                        .filter((el) => el.id !== id && !!el.circle)
-                        .map((el) => el.circle as ICircle)}
-                    lines={store.map.list.asArray
-                        .filter((el) => el.id !== id && !!el.line)
-                        .map((el) => el.line as ILine)}
-                    isLoadingVisibleInArea={
-                        store.map.fetchAllInGeoBox.inProgress || isLoadingAllInGeoBox
-                    }
+                    polygons={store.map.list.asArray.filter((el) => el.id !== id && !!el.polygon).map((el) => el.polygon as IPolygon)}
+                    circles={store.map.list.asArray.filter((el) => el.id !== id && !!el.circle).map((el) => el.circle as ICircle)}
+                    lines={store.map.list.asArray.filter((el) => el.id !== id && !!el.line).map((el) => el.line as ILine)}
+                    isLoadingVisibleInArea={store.map.fetchAllInGeoBox.isLoading || isLoadingAllInGeoBox}
                     minZoomLoadArea={minZoomLoadArea}
                 />
             </Modal>

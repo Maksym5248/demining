@@ -28,7 +28,7 @@ export const OrganizationWizardModal = observer(({ id, isVisible, hide, mode }: 
     }, []);
 
     const isEdit = !!id;
-    const isLoading = !organization.fetchList.isLoaded && organization.fetchList.inProgress;
+    const isLoading = !organization.fetchList.isLoaded && organization.fetchList.isLoading;
 
     const onFinishCreate = async (values: IOrganizationForm) => {
         await organization.create.run(values);
@@ -36,12 +36,12 @@ export const OrganizationWizardModal = observer(({ id, isVisible, hide, mode }: 
     };
 
     const onFinishUpdate = async (values: IOrganizationForm) => {
-        await currentOrganization.update.run(values);
+        await currentOrganization?.update.run(values);
         hide();
     };
 
     const onRemove = async () => {
-        await organization.remove.run(id);
+        !!id && (await organization.remove.run(id));
         hide();
     };
 
@@ -71,10 +71,7 @@ export const OrganizationWizardModal = observer(({ id, isVisible, hide, mode }: 
                                   membersIds: [],
                               }
                     }>
-                    <Form.Item
-                        label="Назва"
-                        name="name"
-                        rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
                         <Input placeholder="Назва організації" />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />

@@ -20,12 +20,7 @@ import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 import { DB } from '~/db';
 import { CreateValue } from '~/types';
 
-import {
-    IMissionReportDTO,
-    IMissionReportDTOParams,
-    IMissionReportPreviewDTO,
-    IMissionReportSumDTO,
-} from '../types';
+import { IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO, IMissionReportSumDTO } from '../types';
 
 interface IItemId {
     id: string;
@@ -73,13 +68,11 @@ const batchUpdateActions = async (actions: IPrevActions) => {
 };
 
 export const get = async (id: string): Promise<IMissionReportDTO> => {
-    const res = await DB.missionReport.get(id);
+    const missionReport = await DB.missionReport.get(id);
 
-    if (!res) {
+    if (!missionReport) {
         throw new Error('there is no missionReport');
     }
-
-    const { missionRequestId, orderId, ...missionReport } = res;
 
     const query = {
         where: {
@@ -99,8 +92,8 @@ export const get = async (id: string): Promise<IMissionReportDTO> => {
         signedByActionOrderArr,
         explosiveActions,
     ] = await Promise.all([
-        DB.missionRequest.get(missionRequestId),
-        DB.order.get(orderId),
+        DB.missionRequest.get(missionReport.missionRequestId),
+        DB.order.get(missionReport.orderId),
         DB.mapViewAction.select({
             where: {
                 documentId: id,
@@ -114,7 +107,7 @@ export const get = async (id: string): Promise<IMissionReportDTO> => {
         DB.equipmentAction.select(query),
         DB.employeeAction.select({
             where: {
-                documentId: orderId,
+                documentId: missionReport.orderId,
                 documentType: DOCUMENT_TYPE.ORDER,
             },
             limit: 1,
@@ -125,12 +118,8 @@ export const get = async (id: string): Promise<IMissionReportDTO> => {
     const [signedByActionOrder] = signedByActionOrderArr;
     const [mapViewAction] = mapViewActionArr;
 
-    const approvedByAction = employeesAction.find(
-        (el) => el.typeInDocument === EMPLOYEE_TYPE.CHIEF,
-    );
-    const squadLeaderAction = employeesAction.find(
-        (el) => el.typeInDocument === EMPLOYEE_TYPE.SQUAD_LEAD,
-    );
+    const approvedByAction = employeesAction.find((el) => el.typeInDocument === EMPLOYEE_TYPE.CHIEF);
+    const squadLeaderAction = employeesAction.find((el) => el.typeInDocument === EMPLOYEE_TYPE.SQUAD_LEAD);
     const squadActions = employeesAction.filter((el) => el.typeInDocument === EMPLOYEE_TYPE.WORKER);
 
     if (!order) throw new Error('there is no order');
@@ -167,7 +156,7 @@ const getList = async (query?: IQuery): Promise<IMissionReportPreviewDTO[]> => {
         ...(query ?? {}),
     });
 
-    return list.map(({ missionRequestId, orderId, ...rest }) => rest);
+    return list;
 };
 
 const remove = async (id: string) => {
@@ -199,10 +188,7 @@ interface INewActions {
     equipmentActions: (Omit<IEquipmentActionDB, 'id' | 'createdAt' | 'updatedAt' | 'authorId'> & {
         id?: string;
     })[];
-    explosiveObjectActions: (Omit<
-        IExplosiveObjectActionDB,
-        'id' | 'createdAt' | 'updatedAt' | 'authorId'
-    > & { id?: string })[];
+    explosiveObjectActions: (Omit<IExplosiveObjectActionDB, 'id' | 'createdAt' | 'updatedAt' | 'authorId'> & { id?: string })[];
     explosiveActions: (Omit<IExplosiveActionDB, 'id' | 'createdAt' | 'updatedAt' | 'authorId'> & {
         id?: string;
     })[];
@@ -235,10 +221,7 @@ export interface ICreateList {
     explosiveIds: string[];
 }
 
-export const generateActions = async (
-    missionReportId: string,
-    value: CreateValue<IMissionReportDTOParams>,
-): Promise<INewActions> => {
+export const generateActions = async (missionReportId: string, value: CreateValue<IMissionReportDTOParams>): Promise<INewActions> => {
     const {
         approvedById,
         mapView: mapViewValue,
@@ -253,14 +236,10 @@ export const generateActions = async (
     } = value;
 
     const employeesIds = [approvedById, squadLeaderId, ...squadIds].filter((el) => !!el) ?? [];
-    const transportIds = [transportHumansId, transportExplosiveObjectId].filter(
-        (el) => !!el,
-    ) as string[];
-    const explosiveObjectIds =
-        explosiveObjectActionsValue.map((el) => el.explosiveObjectId).filter((el) => !!el) ?? [];
+    const transportIds = [transportHumansId, transportExplosiveObjectId].filter((el) => !!el) as string[];
+    const explosiveObjectIds = explosiveObjectActionsValue.map((el) => el.explosiveObjectId).filter((el) => !!el) ?? [];
     const equipmentIds = ([mineDetectorId].filter((el) => !!el) as string[]) ?? [];
-    const explosiveIds =
-        explosiveActionsValue?.map((el) => el.explosiveId).filter((el) => !!el) ?? [];
+    const explosiveIds = explosiveActionsValue?.map((el) => el.explosiveId).filter((el) => !!el) ?? [];
 
     const [employees, transports, explosiveObjects, equipments, explosives] = await Promise.all([
         employeesIds.length
@@ -320,36 +299,21 @@ export const generateActions = async (
         employees,
     );
     const squadActions = squadIds.map((id) =>
-        createAction<IEmployeeActionDB, IEmployeeDB>(
-            id,
-            { employeeId: id, typeInDocument: EMPLOYEE_TYPE.WORKER },
-            employees,
-        ),
+        createAction<IEmployeeActionDB, IEmployeeDB>(id, { employeeId: id, typeInDocument: EMPLOYEE_TYPE.WORKER }, employees),
     );
 
-    const employeesActions =
-        [approvedByAction, squadLeaderAction, ...squadActions].filter((el) => !!el) ?? [];
+    const employeesActions = [approvedByAction, squadLeaderAction, ...squadActions].filter((el) => !!el) ?? [];
 
-    const equipmentActions = equipmentIds.map((id) =>
-        createAction<IEquipmentActionDB, IEquipmentDB>(id, { equipmentId: id }, equipments),
-    );
+    const equipmentActions = equipmentIds.map((id) => createAction<IEquipmentActionDB, IEquipmentDB>(id, { equipmentId: id }, equipments));
 
-    const transportActions = transportIds.map((id) =>
-        createAction<ITransportActionDB, ITransportDB>(id, { transportId: id }, transports),
-    );
+    const transportActions = transportIds.map((id) => createAction<ITransportActionDB, ITransportDB>(id, { transportId: id }, transports));
 
     const explosiveObjectActions = explosiveObjectActionsValue.map((el) =>
-        createAction<IExplosiveObjectActionDB, IExplosiveObjectDB>(
-            el.explosiveObjectId,
-            el,
-            explosiveObjects,
-        ),
+        createAction<IExplosiveObjectActionDB, IExplosiveObjectDB>(el.explosiveObjectId, el, explosiveObjects),
     );
 
     const explosiveActions =
-        explosiveActionsValue?.map((el) =>
-            createAction<IExplosiveActionDB, IExplosiveDB>(el.explosiveId, el, explosives),
-        ) ?? [];
+        explosiveActionsValue?.map((el) => createAction<IExplosiveActionDB, IExplosiveDB>(el.explosiveId, el, explosives)) ?? [];
 
     return {
         mapView,
@@ -361,22 +325,11 @@ export const generateActions = async (
     };
 };
 
-const getRemovedActions = <T extends B, B extends { id?: string }>(
-    prev: T[],
-    newB: B[],
-    compareId: keyof B,
-): T[] => prev.filter((t) => !newB.find((b) => t[compareId] === b[compareId]));
-const getCreateActions = <T extends B, B extends { id?: string }>(
-    prev: T[],
-    newB: B[],
-    compareId: keyof B,
-): B[] => newB.filter((t) => !prev.find((b) => t[compareId] === b[compareId]));
-const getUpdatedActions = <T extends B, B extends { id?: string }>(
-    prev: T[],
-    newB: B[],
-    removeB: T[],
-    compareId: keyof B,
-): T[] => {
+const getRemovedActions = <T extends B, B extends { id?: string }>(prev: T[], newB: B[], compareId: keyof B): T[] =>
+    prev.filter((t) => !newB.find((b) => t[compareId] === b[compareId]));
+const getCreateActions = <T extends B, B extends { id?: string }>(prev: T[], newB: B[], compareId: keyof B): B[] =>
+    newB.filter((t) => !prev.find((b) => t[compareId] === b[compareId]));
+const getUpdatedActions = <T extends B, B extends { id?: string }>(prev: T[], newB: B[], removeB: T[], compareId: keyof B): T[] => {
     const needUpdate = prev
         .filter((el) => !removeB.find((r) => r[compareId] === el[compareId]))
         .filter((t) => !!newB.find((b) => t[compareId] === b?.[compareId]));
@@ -386,10 +339,7 @@ const getUpdatedActions = <T extends B, B extends { id?: string }>(
     })) as T[];
 };
 
-export const getRemoveList = (
-    newActions: INewActions,
-    missionReportDTO: IMissionReportDTO,
-): IPrevActions => {
+export const getRemoveList = (newActions: INewActions, missionReportDTO: IMissionReportDTO): IPrevActions => {
     const employeeActions = [
         ...missionReportDTO.squadActions,
         missionReportDTO.approvedByAction,
@@ -398,38 +348,15 @@ export const getRemoveList = (
 
     return {
         mapView: newActions?.mapView ? undefined : missionReportDTO.mapView,
-        employeesActions: getRemovedActions(
-            employeeActions,
-            newActions.employeesActions,
-            'employeeId',
-        ),
-        transportActions: getRemovedActions(
-            missionReportDTO.transportActions,
-            newActions.transportActions,
-            'transportId',
-        ),
-        equipmentActions: getRemovedActions(
-            missionReportDTO.equipmentActions,
-            newActions.equipmentActions,
-            'equipmentId',
-        ),
-        explosiveObjectActions: getRemovedActions(
-            missionReportDTO.explosiveObjectActions,
-            newActions.explosiveObjectActions,
-            'id',
-        ),
-        explosiveActions: getRemovedActions(
-            missionReportDTO.explosiveActions,
-            newActions.explosiveActions,
-            'id',
-        ),
+        employeesActions: getRemovedActions(employeeActions, newActions.employeesActions, 'employeeId'),
+        transportActions: getRemovedActions(missionReportDTO.transportActions, newActions.transportActions, 'transportId'),
+        equipmentActions: getRemovedActions(missionReportDTO.equipmentActions, newActions.equipmentActions, 'equipmentId'),
+        explosiveObjectActions: getRemovedActions(missionReportDTO.explosiveObjectActions, newActions.explosiveObjectActions, 'id'),
+        explosiveActions: getRemovedActions(missionReportDTO.explosiveActions, newActions.explosiveActions, 'id'),
     };
 };
 
-export const getCreateList = (
-    newActions: INewActions,
-    missionReportDTO: IMissionReportDTO,
-): INewActions => {
+export const getCreateList = (newActions: INewActions, missionReportDTO: IMissionReportDTO): INewActions => {
     const employeeActions = [
         ...missionReportDTO.squadActions,
         missionReportDTO.approvedByAction,
@@ -437,41 +364,16 @@ export const getCreateList = (
     ].filter((el) => !!el);
 
     return {
-        mapView:
-            newActions?.mapView && !missionReportDTO.mapView ? undefined : missionReportDTO.mapView,
-        employeesActions: getCreateActions(
-            employeeActions,
-            newActions.employeesActions,
-            'employeeId',
-        ),
-        transportActions: getCreateActions(
-            missionReportDTO.transportActions,
-            newActions.transportActions,
-            'transportId',
-        ),
-        equipmentActions: getCreateActions(
-            missionReportDTO.equipmentActions,
-            newActions.equipmentActions,
-            'equipmentId',
-        ),
-        explosiveObjectActions: getCreateActions(
-            missionReportDTO.explosiveObjectActions,
-            newActions.explosiveObjectActions,
-            'id',
-        ),
-        explosiveActions: getCreateActions(
-            missionReportDTO.explosiveActions,
-            newActions.explosiveActions,
-            'id',
-        ),
+        mapView: newActions?.mapView && !missionReportDTO.mapView ? undefined : missionReportDTO.mapView,
+        employeesActions: getCreateActions(employeeActions, newActions.employeesActions, 'employeeId'),
+        transportActions: getCreateActions(missionReportDTO.transportActions, newActions.transportActions, 'transportId'),
+        equipmentActions: getCreateActions(missionReportDTO.equipmentActions, newActions.equipmentActions, 'equipmentId'),
+        explosiveObjectActions: getCreateActions(missionReportDTO.explosiveObjectActions, newActions.explosiveObjectActions, 'id'),
+        explosiveActions: getCreateActions(missionReportDTO.explosiveActions, newActions.explosiveActions, 'id'),
     };
 };
 
-export const getUpdateList = (
-    newActions: INewActions,
-    missionReportDTO: IMissionReportDTO,
-    removeList: IPrevActions,
-): IPrevActions => {
+export const getUpdateList = (newActions: INewActions, missionReportDTO: IMissionReportDTO, removeList: IPrevActions): IPrevActions => {
     const employeeActions = [
         ...missionReportDTO.squadActions,
         missionReportDTO.approvedByAction,
@@ -483,12 +385,7 @@ export const getUpdateList = (
             ...missionReportDTO.mapView,
             ...newActions.mapView,
         },
-        employeesActions: getUpdatedActions(
-            employeeActions,
-            newActions.employeesActions,
-            removeList.employeesActions,
-            'employeeId',
-        ),
+        employeesActions: getUpdatedActions(employeeActions, newActions.employeesActions, removeList.employeesActions, 'employeeId'),
         transportActions: getUpdatedActions(
             missionReportDTO.transportActions,
             newActions.transportActions,
@@ -556,18 +453,13 @@ export const update = async (
     return res;
 };
 
-export const updateController = async (
-    id: string,
-    value: CreateValue<IMissionReportDTOParams>,
-): Promise<IMissionReportDTO> => {
+export const updateController = async (id: string, value: CreateValue<IMissionReportDTOParams>): Promise<IMissionReportDTO> => {
     const missionReportDTO = await get(id);
     await update(value, missionReportDTO);
     return get(missionReportDTO.id);
 };
 
-export const create = async (
-    value: CreateValue<IMissionReportDTOParams>,
-): Promise<IMissionReportDTO> => {
+export const create = async (value: CreateValue<IMissionReportDTOParams>): Promise<IMissionReportDTO> => {
     const {
         approvedById,
         mapView,
@@ -581,10 +473,7 @@ export const create = async (
         ...rest
     } = value;
 
-    const missionReportData: Omit<
-        IMissionReportDB,
-        'createdAt' | 'updatedAt' | 'authorId' | 'authorId'
-    > = {
+    const missionReportData: Omit<IMissionReportDB, 'createdAt' | 'updatedAt' | 'authorId' | 'authorId'> = {
         id: DB.missionReport.uuid(),
         ...rest,
     };

@@ -58,10 +58,7 @@ function getClosestPointOnLineForPolygons(point: IPoint, polygons: IPolygon[] = 
 
         if (!currentClosestPoint) return;
 
-        const distance = turf.distance(
-            turf.point(createArrFromPoint(point)),
-            turf.point(createArrFromPoint(currentClosestPoint)),
-        );
+        const distance = turf.distance(turf.point(createArrFromPoint(point)), turf.point(createArrFromPoint(currentClosestPoint)));
 
         if (distance < minDistance) {
             minDistance = distance;

@@ -64,8 +64,7 @@ export function useFitBounds({
     );
 
     useEffect(() => {
-        if (!marker && !markerCallout && !circle && !polygon && !polygonCallout && !isVisibleMap)
-            return;
+        if (!marker && !markerCallout && !circle && !polygon && !polygonCallout && !isVisibleMap) return;
         fitBounds();
     }, [marker, polygon, circle]);
 }

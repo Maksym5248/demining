@@ -2,8 +2,7 @@ const missionReportData = {
     approvedAt: '«20» квітня 2024 року',
     approvedByName: 'Володимир БАРАБАН',
     approvedByRank: 'полковник',
-    approvedByPosition:
-        'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
+    approvedByPosition: 'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
     actNumber: '10',
     executedAt: '«20» квітня 2024 року',
     orderSignedAt: '«30» березня 2024 року',
@@ -70,8 +69,7 @@ function translateKeyToUkrainian(key: string): string {
         exclusionDate: 'Дата вилучення',
         transportingTime: 'Час транспортування',
         transportingDate: 'Дата транспортування',
-        explosiveObjectsTotalTransport:
-            "Загальна кількість вибухонебезпечних об'єктів для транспортування",
+        explosiveObjectsTotalTransport: "Загальна кількість вибухонебезпечних об'єктів для транспортування",
         squadTotal: 'Загальна кількість групи',
         humanHours: 'людино/години',
         transportHuman: 'Транспорт для людей',

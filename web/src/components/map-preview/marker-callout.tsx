@@ -29,9 +29,7 @@ export function MarkerCallout({ date, explosiveObjects, marker, callout }: IMark
                         ))}
                     </div>
                     <Divider css={s.calloutDivider} />
-                    <Typography.Text css={s.calloutText}>
-                        {date?.format('DD.MM.YYYY')}
-                    </Typography.Text>
+                    <Typography.Text css={s.calloutText}>{date?.format('DD.MM.YYYY')}</Typography.Text>
                 </div>
             </OverlayViewF>
             <Polyline options={polylineOptions} path={[marker, callout]} />

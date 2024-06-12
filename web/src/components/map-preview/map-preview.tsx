@@ -1,13 +1,6 @@
 import { memo, useState, useRef, useEffect } from 'react';
 
-import {
-    GoogleMap,
-    GoogleMapProps,
-    Marker,
-    Circle,
-    Polygon,
-    Polyline,
-} from '@react-google-maps/api';
+import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { Button, Tooltip, Typography } from 'antd';
 import { Dayjs } from 'dayjs';
 
@@ -59,9 +52,7 @@ function Component({
     initialZoom,
     ...rest
 }: IMapViewProps) {
-    const { mapOptions, polygonOptions, circleOptions, toggleMapType, lineOptions } = useMapOptions(
-        { isPictureType: true },
-    );
+    const { mapOptions, polygonOptions, circleOptions, toggleMapType, lineOptions } = useMapOptions({ isPictureType: true });
 
     const mapRef = useRef<google.maps.Map>();
     const isVisibleMap = useVisibleMap({ mapRef });
@@ -97,8 +88,7 @@ function Component({
     const isVisibleLine = !!line?.points.length;
     const isVisibleCircle = !!circle?.center && circle?.radius;
     const isVisibleMarker = !!marker;
-    const isVisibleMarkerCallout =
-        isVisibleMarker && explosiveObjects?.length && date && !!markerCallout;
+    const isVisibleMarkerCallout = isVisibleMarker && explosiveObjects?.length && date && !!markerCallout;
     const isVisiblePolygonCallout = isVisiblePolygon;
     const isVisibleLineCallout = isVisibleLine;
 
@@ -122,44 +112,24 @@ function Component({
                             onClick={toggleMapType}
                             icon={<Icon.TagOutlined />}
                             disabled={false}
-                            css={[
-                                s.button,
-                                mapOptions.mapTypeId === google.maps.MapTypeId.HYBRID
-                                    ? s.activeButton
-                                    : undefined,
-                            ]}
+                            css={[s.button, mapOptions.mapTypeId === google.maps.MapTypeId.HYBRID ? s.activeButton : undefined]}
                         />
                     </Tooltip>
-                    {isEdit && (
-                        <Button css={s.button} onClick={onEdit} icon={<Icon.EditOutlined />} />
-                    )}
+                    {isEdit && <Button css={s.button} onClick={onEdit} icon={<Icon.EditOutlined />} />}
                 </div>
 
-                {isVisiblePolygon && (
-                    <Polygon
-                        options={polygonOptions}
-                        paths={polygon?.points}
-                        {...(polygon ?? {})}
-                    />
-                )}
+                {isVisiblePolygon && <Polygon options={polygonOptions} paths={polygon?.points} {...(polygon ?? {})} />}
                 {isVisibleCircle && <Circle options={circleOptions} {...(circle ?? {})} />}
                 {isVisibleMarker && <Marker position={marker} />}
                 {isVisibleMarkerCallout && (
-                    <MarkerCallout
-                        date={date}
-                        explosiveObjects={explosiveObjects}
-                        marker={marker}
-                        callout={markerCallout}
-                    />
+                    <MarkerCallout date={date} explosiveObjects={explosiveObjects} marker={marker} callout={markerCallout} />
                 )}
                 {isVisiblePolygonCallout && <PolygonCallout points={polygonCallout} />}
                 {isVisibleLine && <Polyline options={lineOptions} path={line?.points} />}
                 {isVisibleLineCallout && <PolygonCallout points={lineCallout} />}
                 {!!city && (
                     <div css={[s.callout, s.calloutCity]}>
-                        <Typography.Text css={[s.calloutText, s.calloutPolygonText]}>
-                            {city}
-                        </Typography.Text>
+                        <Typography.Text css={[s.calloutText, s.calloutPolygonText]}>{city}</Typography.Text>
                     </div>
                 )}
                 {isEdit && <MapZoomView zoom={zoom} onChange={onChangeZoomView} />}

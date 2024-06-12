@@ -18,6 +18,8 @@ export interface IListModel<T extends B, B extends { id: string }> {
     length: number;
     asArray: T[];
     last: T;
+    first: T;
+    pages: number;
 }
 
 export interface ListModelParams<T extends B, B extends { id: string }> {

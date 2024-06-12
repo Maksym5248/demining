@@ -24,14 +24,11 @@ export function Approved({ data, selectedEmployee }: ApprovedProps) {
                 rules={[{ required: true, message: "Дата затвердження є обов'язковим полем" }]}>
                 <DatePicker />
             </Form.Item>
-            <Form.Item
-                label="Затвердив"
-                name="approvedById"
-                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+            <Form.Item label="Затвердив" name="approvedById" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                 <Select
                     options={select.append(
                         data.map((el) => ({ label: el.fullName, value: el.id })),
-                        { label: selectedEmployee?.fullName, value: selectedEmployee?.employeeId },
+                        { label: selectedEmployee?.employee.fullName, value: selectedEmployee?.employeeId },
                     )}
                     onAdd={onAddEmployee}
                 />

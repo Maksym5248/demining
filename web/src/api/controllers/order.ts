@@ -37,10 +37,7 @@ const create = async (value: IOrderDTOParams): Promise<IOrderDTO> => {
     };
 };
 
-const update = async (
-    id: string,
-    { signedById, ...value }: UpdateValue<IOrderDTOParams>,
-): Promise<IOrderDTO> => {
+const update = async (id: string, { signedById, ...value }: UpdateValue<IOrderDTOParams>): Promise<IOrderDTO> => {
     const [order, signedByArr] = await Promise.all([
         DB.order.update(id, value),
         DB.employeeAction.select({

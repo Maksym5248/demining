@@ -11,18 +11,11 @@ interface IUseMarkerCalloutParams {
     polygonCallout: IPoint[];
 }
 
-export function useMarkerCallout({
-    marker,
-    zoom,
-    mapRef,
-    polygonCallout,
-    isVisibleMap,
-}: IUseMarkerCalloutParams) {
+export function useMarkerCallout({ marker, zoom, mapRef, polygonCallout, isVisibleMap }: IUseMarkerCalloutParams) {
     return useMemo(() => {
         if (!marker) return undefined;
 
-        const value =
-            mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom) ?? undefined;
+        const value = mapUtils.getPointByPixelOffset(marker, 150, -150, mapRef?.current, zoom) ?? undefined;
 
         return value
             ? {

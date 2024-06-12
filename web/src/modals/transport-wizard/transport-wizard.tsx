@@ -33,7 +33,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     const transport = store.transport.collection.get(id ?? '');
 
     const isEdit = !!id;
-    const isLoading = !store.transport.fetchList.isLoaded && store.transport.fetchList.inProgress;
+    const isLoading = !store.transport.fetchList.isLoaded && store.transport.fetchList.isLoading;
 
     const onFinishCreate = async (values: ITransportForm) => {
         await store.transport.create.run(values);
@@ -41,12 +41,12 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     };
 
     const onFinishUpdate = async (values: ITransportForm) => {
-        await transport.update.run(values);
+        await transport?.update.run(values);
         hide();
     };
 
     const onRemove = async () => {
-        store.transport.remove.run(id);
+        !!id && store.transport.remove.run(id);
         hide();
     };
 
@@ -68,15 +68,8 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={
-                        transport
-                            ? { ...transport }
-                            : { type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS }
-                    }>
-                    <Form.Item
-                        label="Назва"
-                        name="name"
-                        rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    initialValues={transport ? { ...transport } : { type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS }}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item
@@ -85,10 +78,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <Form.Item
-                        label="Тип"
-                        name="type"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />

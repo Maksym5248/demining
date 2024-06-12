@@ -21,21 +21,13 @@ const ListItem = observer(({ item }: { item: IEmployee }) => {
     };
 
     return (
-        <List.Item
-            key={item.id}
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item key={item.id} actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.UserOutlined />}
                 title={str.getFullName(item)}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{str.toUpperFirst(item.rank.fullName)}</Text>
+                        <Text type="secondary">{str.toUpperFirst(item?.rank?.fullName ?? '')}</Text>
                         <Text type="secondary">{str.toUpperFirst(item.position)}</Text>
                     </Space>
                 }
@@ -59,7 +51,7 @@ export const EmployeesListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        employee.fetchListMore.run(search.searchValue);
+        employee.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -70,14 +62,12 @@ export const EmployeesListPage = observer(() => {
 
     return (
         <List
-            loading={employee.fetchList.inProgress}
-            loadingMore={employee.fetchListMore.inProgress}
+            loading={employee.fetchList.isLoading}
+            loadingMore={employee.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

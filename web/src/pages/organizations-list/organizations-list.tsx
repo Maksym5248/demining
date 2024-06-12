@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, ROUTES, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useNavigate, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IOrganization } from '~/stores/stores/organization/entities/organization';
+import { IOrganization } from '~/stores/organization/entities/organization';
 
 const ListItem = observer(({ item }: { item: IOrganization }) => {
     const navigate = useNavigate();
@@ -25,16 +25,8 @@ const ListItem = observer(({ item }: { item: IOrganization }) => {
         <List.Item
             key={item.id}
             actions={[
-                <Button
-                    key="list-members"
-                    icon={<Icon.TeamOutlined type="danger" />}
-                    onClick={onOpenUsers}
-                />,
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
+                <Button key="list-members" icon={<Icon.TeamOutlined type="danger" />} onClick={onOpenUsers} />,
+                <Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />,
             ]}>
             <List.Item.Meta avatar={<Icon.UserOutlined />} title={item.name} />
         </List.Item>
@@ -56,7 +48,7 @@ export const OrganizationsListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        organization.fetchListMore.run(search.searchValue);
+        organization.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -67,14 +59,12 @@ export const OrganizationsListPage = observer(() => {
 
     return (
         <List
-            loading={organization.fetchList.inProgress}
-            loadingMore={organization.fetchListMore.inProgress}
+            loading={organization.fetchList.isLoading}
+            loadingMore={organization.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

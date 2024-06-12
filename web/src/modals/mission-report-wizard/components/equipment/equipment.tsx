@@ -23,10 +23,7 @@ export const Equipment = observer(({ initialValues, selectedMineDetector }: Equi
     const onAdd = () => Modal.show(MODALS.EQUIPMENT_WIZARD, { mode: WIZARD_MODE.CREATE });
 
     return (
-        <Form.Item
-            label="Міношукач"
-            name="mineDetectorId"
-            rules={[{ required: true, message: "Обов'язкове поле" }]}>
+        <Form.Item label="Міношукач" name="mineDetectorId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
             <SelectAsync
                 {...props}
                 onAdd={onAdd}

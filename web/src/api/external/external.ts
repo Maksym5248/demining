@@ -26,16 +26,7 @@ class ExternalApiClass {
         );
         const data = await res.json();
 
-        return pick(data?.results[0], [
-            'city',
-            'country',
-            'district',
-            'housenumber',
-            'postcode',
-            'state',
-            'street',
-            'municipality',
-        ]);
+        return pick(data?.results[0], ['city', 'country', 'district', 'housenumber', 'postcode', 'state', 'street', 'municipality']);
     }
 }
 

@@ -1,11 +1,6 @@
 import { Dayjs } from 'dayjs';
 
-import {
-    IExplosiveObjectActionValueParams,
-    IMapViewActionValueParams,
-    IExplosiveActionValueParams,
-    IAddressValue,
-} from '~/stores';
+import { IExplosiveObjectActionValueParams, IMapViewActionValueParams, IExplosiveActionValueParams, IAddressValue } from '~/stores';
 
 export interface IMissionReportForm {
     approvedAt: Dayjs;
@@ -19,7 +14,7 @@ export interface IMissionReportForm {
     depthExamination?: number;
     uncheckedTerritory?: number;
     uncheckedReason?: string;
-    mapView: Partial<IMapViewActionValueParams>;
+    mapView: IMapViewActionValueParams;
     workStart: Dayjs;
     exclusionStart?: Dayjs;
     transportingStart?: Dayjs;

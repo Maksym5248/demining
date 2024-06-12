@@ -11,9 +11,7 @@ export const useMapOptions = ({
     isCreating?: boolean;
     drawing?: DrawingType;
 }) => {
-    const [mapTypeId, setMapTypeId] = useState<google.maps.MapTypeId>(
-        google.maps.MapTypeId.SATELLITE,
-    );
+    const [mapTypeId, setMapTypeId] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.SATELLITE);
 
     const mapOptions = {
         streetViewControl: false,
@@ -37,11 +35,7 @@ export const useMapOptions = ({
         strokeWeight: 2,
         draggable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
         editable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
-        clickable:
-            !isPictureType &&
-            !isCreating &&
-            drawing !== DrawingType.MOVE &&
-            drawing !== DrawingType.MARKER,
+        clickable: !isPictureType && !isCreating && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
     };
 
     const polygonOptions = {
@@ -51,11 +45,7 @@ export const useMapOptions = ({
         strokeWeight: 2,
         draggable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
         editable: !isPictureType && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
-        clickable:
-            !isPictureType &&
-            !isCreating &&
-            drawing !== DrawingType.MOVE &&
-            drawing !== DrawingType.MARKER,
+        clickable: !isPictureType && !isCreating && drawing !== DrawingType.MOVE && drawing !== DrawingType.MARKER,
     };
 
     const gridOptions = {
@@ -103,11 +93,7 @@ export const useMapOptions = ({
     };
 
     const toggleMapType = () => {
-        setMapTypeId((prev) =>
-            prev === google.maps.MapTypeId.HYBRID
-                ? google.maps.MapTypeId.SATELLITE
-                : google.maps.MapTypeId.HYBRID,
-        );
+        setMapTypeId((prev) => (prev === google.maps.MapTypeId.HYBRID ? google.maps.MapTypeId.SATELLITE : google.maps.MapTypeId.HYBRID));
     };
 
     return {

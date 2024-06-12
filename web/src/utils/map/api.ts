@@ -1,12 +1,4 @@
-import {
-    ICircleDB,
-    IGeoBoxDB,
-    IGeoDB,
-    IGeoPointDB,
-    IMapViewActionDB,
-    IPointDB,
-    IPolygonDB,
-} from '@/shared';
+import { ICircleDB, IGeoBoxDB, IGeoDB, IGeoPointDB, IMapViewActionDB, IPointDB, IPolygonDB } from '@/shared';
 import { geohashForLocation, boundingBoxCoordinates } from 'geofire-common';
 
 import { IPoint } from '~/types';
@@ -50,10 +42,7 @@ function getGeoBoxDBFromCircle(circle: ICircleDB): IGeoBoxDB {
 
     const boundingBox = boundingBoxCoordinates([center.lat, center.lng], radius);
 
-    return getGeoBoxDB(
-        { lat: boundingBox[0][0], lng: boundingBox[0][1] },
-        { lat: boundingBox[1][0], lng: boundingBox[1][1] },
-    );
+    return getGeoBoxDB({ lat: boundingBox[0][0], lng: boundingBox[0][1] }, { lat: boundingBox[1][0], lng: boundingBox[1][1] });
 }
 
 function getCenter(data: ICircleDB | IPolygonDB | IPointDB): IPoint {
@@ -76,9 +65,7 @@ function getCenter(data: ICircleDB | IPolygonDB | IPointDB): IPoint {
     return center;
 }
 
-function getGeoDB(
-    mapViewAction: Pick<IMapViewActionDB, 'circle' | 'polygon' | 'marker'>,
-): IGeoDB | null {
+function getGeoDB(mapViewAction: Pick<IMapViewActionDB, 'circle' | 'polygon' | 'marker'>): IGeoDB | null {
     const { marker, circle, polygon } = mapViewAction;
 
     if (polygon) {

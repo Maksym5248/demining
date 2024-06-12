@@ -7,7 +7,7 @@ import { ThemeProvider, ModalProvider } from '~/containers';
 import { RootStoreContext } from '~/context';
 import { RootRouter, modals } from '~/routes';
 import { LogLevel, Logger } from '~/services';
-import { createStore } from '~/stores';
+import { RootStore } from '~/stores';
 
 import './index.css';
 
@@ -15,7 +15,7 @@ import { CONFIG } from './config';
 
 Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
 
-const { store } = createStore();
+const store = new RootStore();
 
 export function App() {
     useEffect(() => {

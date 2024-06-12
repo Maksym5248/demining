@@ -44,12 +44,12 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     };
 
     const onFinishUpdate = async (values: IEmployeeForm) => {
-        await employee.update.run(values);
+        await employee?.update.run(values);
         hide();
     };
 
     const onRemove = () => {
-        store.employee.remove.run(id);
+        !!id && store.employee.remove.run(id);
         hide();
     };
 
@@ -75,30 +75,21 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         ? { ...employee, rank: employee.rank?.id }
                         : {
                               type: employeeTypesData[0]?.type,
-                              rank: store.employee.ranksList.first?.id,
+                              rankId: store.employee.ranksList.first?.id,
                           }
                 }>
-                <Form.Item
-                    label="Прізвище"
-                    name="lastName"
-                    rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                <Form.Item label="Прізвище" name="lastName" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                     <Input placeholder="Введіть дані" />
                 </Form.Item>
-                <Form.Item
-                    label="Ім'я"
-                    name="firstName"
-                    rules={[{ required: true, message: "Ім'я є обов'язковим полем" }]}>
+                <Form.Item label="Ім'я" name="firstName" rules={[{ required: true, message: "Ім'я є обов'язковим полем" }]}>
                     <Input placeholder="Введіть дані" />
                 </Form.Item>
-                <Form.Item
-                    label="По-батькові"
-                    name="surname"
-                    rules={[{ required: true, message: "По-батькові є обов'язковим полем" }]}>
+                <Form.Item label="По-батькові" name="surname" rules={[{ required: true, message: "По-батькові є обов'язковим полем" }]}>
                     <Input placeholder="Введіть дані" />
                 </Form.Item>
                 <Form.Item
                     label="Спеціальне звання"
-                    name="rank"
+                    name="rankId"
                     rules={[{ required: true, message: "Спеціальне звання є обов'язковим полем" }]}>
                     <Select>
                         {ranks.map((el) => (
@@ -108,16 +99,10 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         ))}
                     </Select>
                 </Form.Item>
-                <Form.Item
-                    label="Посада"
-                    name="position"
-                    rules={[{ required: true, message: "Посада є обов'язковим полем" }]}>
+                <Form.Item label="Посада" name="position" rules={[{ required: true, message: "Посада є обов'язковим полем" }]}>
                     <Input.TextArea placeholder="Введіть дані" />
                 </Form.Item>
-                <Form.Item
-                    label="Тип посади"
-                    name="type"
-                    rules={[{ required: true, message: "Тип посади є обов'язковим полем" }]}>
+                <Form.Item label="Тип посади" name="type" rules={[{ required: true, message: "Тип посади є обов'язковим полем" }]}>
                     <Select>
                         {employeeTypesData.map((el) => (
                             <Option value={el.type} key={el.type}>

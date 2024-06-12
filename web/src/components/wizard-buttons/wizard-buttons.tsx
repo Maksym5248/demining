@@ -12,16 +12,7 @@ interface DrawerExtraProps extends React.PropsWithChildren {
     menu?: MenuProps['items'];
 }
 
-export function WizardButtons({
-    onEdit,
-    onView,
-    onSave,
-    isView,
-    isEdit,
-    isSave,
-    children,
-    menu,
-}: DrawerExtraProps) {
+export function WizardButtons({ onEdit, onView, onSave, isView, isEdit, isSave, children, menu }: DrawerExtraProps) {
     const items: MenuProps['items'] = [];
 
     if (onSave && isSave) {

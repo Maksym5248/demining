@@ -51,12 +51,8 @@ export function usePolygon({
         const closestPointOnPoint = mapUtils.getClosestPointOnPointForPolygons(point, polygons);
         const closestPointOnLine = mapUtils.getClosestPointOnLineForPolygons(point, polygons);
 
-        const pixelDistanceOnPoint =
-            mapUtils.getDistanceByPointsInPixels(point, closestPointOnPoint, mapRef.current) ??
-            Infinity;
-        const pixelDistanceOnLine =
-            mapUtils.getDistanceByPointsInPixels(point, closestPointOnLine, mapRef.current) ??
-            Infinity;
+        const pixelDistanceOnPoint = mapUtils.getDistanceByPointsInPixels(point, closestPointOnPoint, mapRef.current) ?? Infinity;
+        const pixelDistanceOnLine = mapUtils.getDistanceByPointsInPixels(point, closestPointOnLine, mapRef.current) ?? Infinity;
 
         if (pixelDistanceOnPoint < 30) {
             return closestPointOnPoint;
@@ -148,8 +144,7 @@ export function usePolygon({
     };
 
     const isVisiblePolygon = !!polygon?.points.length && !isCreating;
-    const isVisiblePolyline =
-        polygon?.points.length && isCreating && drawing === DrawingType.POLYGON;
+    const isVisiblePolyline = polygon?.points.length && isCreating && drawing === DrawingType.POLYGON;
 
     return {
         isVisiblePolygon,

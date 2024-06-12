@@ -19,16 +19,7 @@ interface IUseLineParams {
     mapRef?: MutableRefObject<google.maps.Map | undefined>;
 }
 
-export function useLine({
-    isCreating,
-    setCreating,
-    drawing,
-    line,
-    defaultWidth = 1,
-    setPolygon,
-    setCircle,
-    setLine,
-}: IUseLineParams) {
+export function useLine({ isCreating, setCreating, drawing, line, defaultWidth = 1, setPolygon, setCircle, setLine }: IUseLineParams) {
     const polylineRef = useRef<google.maps.Polyline>();
 
     const onLoadPolyline = (newPolylineRef: google.maps.Polyline) => {

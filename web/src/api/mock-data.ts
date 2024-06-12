@@ -1,12 +1,6 @@
 import omit from 'lodash/omit';
 
-import {
-    DOCUMENT_TYPE,
-    EMPLOYEE_TYPE,
-    EQUIPMENT_TYPE,
-    EXPLOSIVE_OBJECT_CATEGORY,
-    TRANSPORT_TYPE,
-} from '~/constants';
+import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE } from '~/constants';
 import { dates } from '~/utils';
 
 export const explosiveObjectActionsInput = {
@@ -94,8 +88,7 @@ const orderSignedByActionDTO = {
     surname: 'Юрійович',
     rankId: 'COLONEL',
     typeInDocument: EMPLOYEE_TYPE.CHIEF,
-    position:
-        'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
+    position: 'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
     createdAt: dates.toDateServer(new Date('2024-02-04T17:18:55.826Z')),
     updatedAt: dates.toDateServer(new Date('2024-02-04T17:18:55.826Z')),
     documentType: DOCUMENT_TYPE.ORDER,
@@ -153,8 +146,7 @@ const MRApprovedByActionDTO = {
     surname: 'Юрійович',
     rankId: 'COLONEL',
     typeInDocument: EMPLOYEE_TYPE.CHIEF,
-    position:
-        'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
+    position: 'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
     id: 'EMPLOYEE_ACTION-e063662d-560d-4311-a90e-d64f8e4b3dcd',
     createdAt: dates.toDateServer(new Date('2024-02-04T17:18:11.934Z')),
     updatedAt: dates.toDateServer(new Date('2024-02-11T14:03:15.344Z')),
@@ -341,12 +333,7 @@ export const missionReportDTO = {
     equipmentActions: [MRMineDetectorActionDTO],
     explosiveObjectActions: [MRExplosiveObjectActionDTO],
     squadLeaderAction: MRsquadLeaderActionDTO,
-    squadActions: [
-        MREmployeeActionDTO1,
-        MREmployeeActionDTO2,
-        MREmployeeActionDTO3,
-        MREmployeeActionDTO4,
-    ],
+    squadActions: [MREmployeeActionDTO1, MREmployeeActionDTO2, MREmployeeActionDTO3, MREmployeeActionDTO4],
 };
 
 export const missionReportDB = {

@@ -1,20 +1,20 @@
-import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE } from '~/constants';
+import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE, MISSION_REQUEST_TYPE } from '~/constants';
+import { dates } from '~/utils';
 
 export const mockEmployees = [
     {
         firstName: 'Андрій',
         lastName: 'Кочан',
         surname: 'Юрійович',
-        rank: RANKS.COLONEL,
+        rankId: RANKS.COLONEL,
         type: EMPLOYEE_TYPE.CHIEF,
-        position:
-            'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
+        position: 'Начальник Мобільного рятувального центру швидкого реагування Державної служби України з надзвичайних ситуацій',
     },
     {
         firstName: 'Максим',
         lastName: 'Костін',
         surname: 'Юрійович',
-        rank: RANKS.SENIOR_LIEUTENANT,
+        rankId: RANKS.SENIOR_LIEUTENANT,
         type: EMPLOYEE_TYPE.SQUAD_LEAD,
         position: 'Начальник відділення',
     },
@@ -22,7 +22,7 @@ export const mockEmployees = [
         firstName: 'Ян',
         lastName: 'Пушкар',
         surname: 'Іванович',
-        rank: RANKS.SENIOR_LIEUTENANT,
+        rankId: RANKS.SENIOR_LIEUTENANT,
         type: EMPLOYEE_TYPE.SQUAD_LEAD,
         position: 'Начальник відділення',
     },
@@ -30,7 +30,7 @@ export const mockEmployees = [
         firstName: 'Руслан',
         lastName: 'Данчук',
         surname: 'Іванович',
-        rank: RANKS.MASTER_SERGEANT,
+        rankId: RANKS.MASTER_SERGEANT,
         type: EMPLOYEE_TYPE.WORKER,
         position: 'Старший сапер',
     },
@@ -38,7 +38,7 @@ export const mockEmployees = [
         firstName: 'Віталій',
         lastName: 'Клименко',
         surname: 'Васильович',
-        rank: RANKS.MASTER_SERGEANT,
+        rankId: RANKS.MASTER_SERGEANT,
         type: EMPLOYEE_TYPE.WORKER,
         position: 'Cапер',
     },
@@ -46,7 +46,7 @@ export const mockEmployees = [
         firstName: 'Ігор',
         lastName: 'Кондратюк',
         surname: 'Ігорович',
-        rank: RANKS.SERGEANT,
+        rankId: RANKS.SERGEANT,
         type: EMPLOYEE_TYPE.WORKER,
         position: 'Водій',
     },
@@ -54,24 +54,29 @@ export const mockEmployees = [
 
 export const mockMissionRequest = [
     {
-        number: 1,
-        signedAt: new Date(),
+        number: '1',
+        signedAt: dates.create(Date.now()).subtract(5, 'day'),
+        type: MISSION_REQUEST_TYPE.APPLICATION,
     },
     {
-        number: 2,
-        signedAt: new Date(),
+        number: '2',
+        signedAt: dates.create(Date.now()).subtract(4, 'day'),
+        type: MISSION_REQUEST_TYPE.APPLICATION,
     },
     {
-        number: 3,
-        signedAt: new Date(),
+        number: '3',
+        signedAt: dates.create(Date.now()).subtract(3, 'day'),
+        type: MISSION_REQUEST_TYPE.APPLICATION,
     },
     {
-        number: 4,
-        signedAt: new Date(),
+        number: '4',
+        signedAt: dates.create(Date.now()).subtract(2, 'day'),
+        type: MISSION_REQUEST_TYPE.CONTRACT,
     },
     {
-        number: 5,
-        signedAt: new Date(),
+        number: '5',
+        signedAt: dates.create(Date.now()).subtract(1, 'day'),
+        type: MISSION_REQUEST_TYPE.LETTER,
     },
 ];
 

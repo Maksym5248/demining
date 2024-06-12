@@ -15,22 +15,13 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
     const store = useStore();
     const _onRemove = () => onRemove?.(index);
 
-    const explosive =
-        store.explosive.collectionActions.get(item?.id ?? '') ||
-        store.explosive.collection.get(item.explosiveId);
+    const explosive = store.explosive.collectionActions.get(item?.id ?? '') || store.explosive.collection.get(item.explosiveId);
 
     const weight = item?.weight ? `${item?.weight}кг;` : null;
     const quantity = item?.quantity ? `${item?.quantity} од.;` : null;
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-remove"
-                    icon={<Icon.DeleteOutlined style={{ color: 'red' }} />}
-                    onClick={_onRemove}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
             <List.Item.Meta title={`${explosive?.name}; ${item?.weight ? weight : quantity} `} />
         </List.Item>
     );
@@ -53,20 +44,14 @@ function Component() {
                                 ...el,
                                 index: `${i}`,
                             }))}
-                            renderItem={(
-                                item: IExplosiveActionValueParams & { id: string },
-                                i: number,
-                            ) => (
+                            renderItem={(item: IExplosiveActionValueParams & { id: string }, i: number) => (
                                 <ObservedListItem
                                     item={item}
                                     index={i}
                                     onRemove={(index: number) => {
                                         setFieldValue(
                                             'explosiveActions',
-                                            data.filter(
-                                                (el: IExplosiveActionValueParams, c: number) =>
-                                                    c !== index,
-                                            ),
+                                            data.filter((el: IExplosiveActionValueParams, c: number) => c !== index),
                                         );
                                     }}
                                 />

@@ -4,24 +4,15 @@ import { explosiveObjectsData } from '~/data';
 import { DB } from '~/db';
 import { UpdateValue, CreateValue } from '~/types';
 
-import {
-    IExplosiveObjectDTO,
-    IExplosiveObjectDTOParams,
-    IExplosiveObjectActionSumDTO,
-} from '../types';
+import { IExplosiveObjectDTO, IExplosiveObjectDTOParams, IExplosiveObjectActionSumDTO } from '../types';
 
-const create = async (
-    value: CreateValue<IExplosiveObjectDTOParams>,
-): Promise<IExplosiveObjectDTO> => {
+const create = async (value: CreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
     const explosiveObject = await DB.explosiveObject.create(value);
     if (!explosiveObject) throw new Error('there is explosive object');
     return explosiveObject;
 };
 
-const update = async (
-    id: string,
-    value: UpdateValue<IExplosiveObjectDTOParams>,
-): Promise<IExplosiveObjectDTO> => {
+const update = async (id: string, value: UpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
     const explosiveObject = await DB.explosiveObject.update(id, value);
 
     if (!explosiveObject) throw new Error('there is explosive object');

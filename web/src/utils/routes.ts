@@ -53,10 +53,7 @@ const getRoutes = (pathname: string, params: { [key: string]: string | number })
         }));
 };
 
-export const withRouteWrapper = (
-    route: RouteObject | RouteObject[],
-    elements: JSX.Element | JSX.Element[],
-): RouteObject => {
+export const withRouteWrapper = (route: RouteObject | RouteObject[], elements: JSX.Element | JSX.Element[]): RouteObject => {
     const arr = Array.isArray(elements) ? elements : [elements];
     const reversedArr = arr.reverse();
 

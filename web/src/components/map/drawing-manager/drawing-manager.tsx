@@ -69,10 +69,7 @@ export function DrawingManager({
                         onClick={onToggleMapType}
                         icon={<Icon.TagOutlined />}
                         disabled={false}
-                        css={[
-                            s.button,
-                            mapTypeId === google.maps.MapTypeId.HYBRID ? s.activeButton : undefined,
-                        ]}
+                        css={[s.button, mapTypeId === google.maps.MapTypeId.HYBRID ? s.activeButton : undefined]}
                     />
                 </Tooltip>
                 <Tooltip placement="bottomRight" title="Показати обстежені ділянки в зоні" arrow>
@@ -84,11 +81,7 @@ export function DrawingManager({
                     />
                 </Tooltip>
                 <Tooltip placement="bottomRight" title="Прилипання" arrow>
-                    <Button
-                        onClick={_onChangeStick}
-                        css={isActiveStick ? s.activeButton : undefined}
-                        icon={<Icon.BuildOutlined />}
-                    />
+                    <Button onClick={_onChangeStick} css={isActiveStick ? s.activeButton : undefined} icon={<Icon.BuildOutlined />} />
                 </Tooltip>
             </Button.Group>
 

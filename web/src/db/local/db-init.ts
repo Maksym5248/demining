@@ -24,8 +24,7 @@ class DBInitClass {
         window.indexedDB
             .databases()
             .then((r) => {
-                for (let i = 0; i < r.length; i += 1)
-                    window.indexedDB.deleteDatabase(r[i].name as string);
+                for (let i = 0; i < r.length; i += 1) window.indexedDB.deleteDatabase(r[i].name as string);
             })
             .then(() => {
                 alert('All data cleared.');

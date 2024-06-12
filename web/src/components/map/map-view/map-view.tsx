@@ -58,15 +58,8 @@ function Component({
     const [drawing, setDrawing] = useState(DrawingType.MOVE);
     const [isCreating, setCreating] = useState(false);
 
-    const {
-        mapOptions,
-        polygonOptions,
-        circleOptions,
-        createPolygonOptions,
-        toggleMapType,
-        lineOptions,
-        linePolygonOptions,
-    } = useMapOptions({ isPictureType: false, isCreating, drawing });
+    const { mapOptions, polygonOptions, circleOptions, createPolygonOptions, toggleMapType, lineOptions, linePolygonOptions } =
+        useMapOptions({ isPictureType: false, isCreating, drawing });
 
     const mapRef = useRef<google.maps.Map>();
 
@@ -340,14 +333,10 @@ function Component({
                     ))}
                 {isVisibleInArea &&
                     !!polygons?.length &&
-                    polygons.map((item, index) => (
-                        <Polygon key={index} options={polygonsOptions} path={item?.points} />
-                    ))}
+                    polygons.map((item, index) => <Polygon key={index} options={polygonsOptions} path={item?.points} />)}
                 {isVisibleInArea &&
                     !!lines?.length &&
-                    lines.map((item, index) => (
-                        <Polygon key={index} options={polygonsOptions} path={item?.points} />
-                    ))}
+                    lines.map((item, index) => <Polygon key={index} options={polygonsOptions} path={item?.points} />)}
                 {polygonManager.isVisiblePolyline && (
                     <Polyline
                         onLoad={polygonManager.onLoadPolyline}
@@ -367,10 +356,7 @@ function Component({
                     />
                 )}
                 {lineManager.isVisiblePolygon && !!line && (
-                    <Polygon
-                        options={linePolygonOptions}
-                        path={mapUtils.generatePolygonFromLines(line)?.points}
-                    />
+                    <Polygon options={linePolygonOptions} path={mapUtils.generatePolygonFromLines(line)?.points} />
                 )}
                 {lineManager.isVisiblePolylineInput && (
                     <div css={s.inputNumberContainer}>

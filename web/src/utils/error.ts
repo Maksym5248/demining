@@ -1,7 +1,6 @@
 import get from 'lodash/get';
 
-const getMessage = (e: Error) =>
-    get(e, 'response.data.message') || get(e, 'message') || 'errors.unexpected_error';
+const getMessage = (e: Error) => get(e, 'response.data.message') || get(e, 'message') || 'errors.unexpected_error';
 
 const createError = (e: Error) => ({
     message: getMessage(e),

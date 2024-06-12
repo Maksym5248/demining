@@ -27,10 +27,7 @@ const getUserOrganization = async (user: IUserDB | null): Promise<IUserOrganizat
     return organization;
 };
 
-const update = async (
-    id: string,
-    value: UpdateValue<ICurrentUserDTO>,
-): Promise<ICurrentUserDTO> => {
+const update = async (id: string, value: UpdateValue<ICurrentUserDTO>): Promise<ICurrentUserDTO> => {
     const res = await DB.user.update(id, value);
 
     const organization = await getUserOrganization(res);

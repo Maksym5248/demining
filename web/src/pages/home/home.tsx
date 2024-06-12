@@ -46,26 +46,16 @@ export const HomePage = observer(() => {
     }, [startDate, endDate]);
 
     const isLoading =
-        store.explosiveObject.fetchSum.inProgress ||
-        store.explosive.fetchSum.inProgress ||
-        store.missionReport.fetchSum.inProgress ||
-        store.missionRequest.fetchSum.inProgress;
+        store.explosiveObject.fetchSum.isLoading ||
+        store.explosive.fetchSum.isLoading ||
+        store.missionReport.fetchSum.isLoading ||
+        store.missionRequest.fetchSum.isLoading;
 
     return (
         <div css={s.container}>
             <div css={s.header}>
-                <Radio.Group
-                    options={options}
-                    onChange={onChange}
-                    value={startDate.valueOf()}
-                    optionType="button"
-                    buttonStyle="solid"
-                />
-                <RangePicker
-                    value={[startDate, endDate]}
-                    format="YYYY-MM-DD"
-                    onChange={onSelectDates}
-                />
+                <Radio.Group options={options} onChange={onChange} value={startDate.valueOf()} optionType="button" buttonStyle="solid" />
+                <RangePicker value={[startDate, endDate]} format="YYYY-MM-DD" onChange={onSelectDates} />
             </div>
             <div css={s.mainData}>
                 <Card title={`ВНП: ${store.explosiveObject.sum.total}`} css={s.card}>

@@ -11,9 +11,7 @@ const append = (options: Option[], newOption: Partial<Option> | Partial<Option>[
 
     if (!arrFiltered?.length) return options;
 
-    const optionsValue = options.filter(
-        (el) => !arrFiltered.find((item) => el.value === item.value),
-    );
+    const optionsValue = options.filter((el) => !arrFiltered.find((item) => el.value === item.value));
 
     return [...arrFiltered, ...optionsValue];
 };

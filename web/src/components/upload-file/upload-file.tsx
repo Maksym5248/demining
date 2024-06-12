@@ -23,9 +23,7 @@ export function UploadFile({ file, onChangeFile }: SelectTemplateProps) {
             <p className="ant-upload-drag-icon">
                 <Icon.InboxOutlined />
             </p>
-            <p className="ant-upload-text">
-                Натисніть або перетягніть файл у цю область, щоб завантажити
-            </p>
+            <p className="ant-upload-text">Натисніть або перетягніть файл у цю область, щоб завантажити</p>
             <p className="ant-upload-hint">Вибрати шаблон</p>
         </Dragger>
     );

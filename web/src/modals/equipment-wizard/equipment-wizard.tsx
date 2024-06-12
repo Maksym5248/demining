@@ -42,7 +42,7 @@ export const EquipmentWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     };
 
     const onRemove = () => {
-        store.equipment.remove.run(id);
+        !!id && store.equipment.remove.run(id);
         hide();
     };
 
@@ -65,16 +65,10 @@ export const EquipmentWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
                     initialValues={item ? { ...item } : { type: EQUIPMENT_TYPE.MINE_DETECTOR }}>
-                    <Form.Item
-                        label="Назва"
-                        name="name"
-                        rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <Form.Item
-                        label="Тип"
-                        name="type"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />

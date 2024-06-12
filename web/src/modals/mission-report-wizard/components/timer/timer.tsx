@@ -12,9 +12,7 @@ const getLastDate = (times: Dayjs[]) => {
         return initial;
     }
 
-    return rest
-        .filter((el) => !!el)
-        .reduce((acc: Dayjs, c: Dayjs) => (acc.isAfter(c) ? acc : c), initial);
+    return rest.filter((el) => !!el).reduce((acc: Dayjs, c: Dayjs) => (acc.isAfter(c) ? acc : c), initial);
 };
 
 const generateArrayOfMinutes = () => new Array(12).fill(1).map((el, i) => i * 5);
@@ -49,10 +47,7 @@ export function Timer() {
 
                 return (
                     <>
-                        <Form.Item
-                            label="Початок"
-                            name="workStart"
-                            rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Form.Item label="Початок" name="workStart" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                             <TimePicker format="HH:mm" minuteStep={5} placeholder="Година" />
                         </Form.Item>
                         <Form.Item label="Виявлення" name="exclusionStart">
@@ -63,8 +58,7 @@ export function Timer() {
                                 hideDisabledOptions
                                 disabledTime={() => ({
                                     disabledHours: () => getDisabledHours(workStart),
-                                    disabledMinutes: (selectedHour: number) =>
-                                        getDisabledMinutes(selectedHour, workStart),
+                                    disabledMinutes: (selectedHour: number) => getDisabledMinutes(selectedHour, workStart),
                                 })}
                             />
                         </Form.Item>
@@ -75,10 +69,8 @@ export function Timer() {
                                 hideDisabledOptions
                                 placeholder="Година"
                                 disabledTime={() => ({
-                                    disabledHours: () =>
-                                        getDisabledHours(workStart, exclusionStart),
-                                    disabledMinutes: (selectedHour: number) =>
-                                        getDisabledMinutes(selectedHour, workStart, exclusionStart),
+                                    disabledHours: () => getDisabledHours(workStart, exclusionStart),
+                                    disabledMinutes: (selectedHour: number) => getDisabledMinutes(selectedHour, workStart, exclusionStart),
                                 })}
                             />
                         </Form.Item>
@@ -89,47 +81,22 @@ export function Timer() {
                                 hideDisabledOptions
                                 placeholder="Година"
                                 disabledTime={() => ({
-                                    disabledHours: () =>
-                                        getDisabledHours(
-                                            workStart,
-                                            exclusionStart,
-                                            transportingStart,
-                                        ),
+                                    disabledHours: () => getDisabledHours(workStart, exclusionStart, transportingStart),
                                     disabledMinutes: (selectedHour: number) =>
-                                        getDisabledMinutes(
-                                            selectedHour,
-                                            workStart,
-                                            exclusionStart,
-                                            transportingStart,
-                                        ),
+                                        getDisabledMinutes(selectedHour, workStart, exclusionStart, transportingStart),
                                 })}
                             />
                         </Form.Item>
-                        <Form.Item
-                            label="Завершення"
-                            name="workEnd"
-                            rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Form.Item label="Завершення" name="workEnd" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                             <TimePicker
                                 format="HH:mm"
                                 minuteStep={5}
                                 hideDisabledOptions
                                 placeholder="Година"
                                 disabledTime={() => ({
-                                    disabledHours: () =>
-                                        getDisabledHours(
-                                            workStart,
-                                            exclusionStart,
-                                            transportingStart,
-                                            destroyedStart,
-                                        ),
+                                    disabledHours: () => getDisabledHours(workStart, exclusionStart, transportingStart, destroyedStart),
                                     disabledMinutes: (selectedHour: number) =>
-                                        getDisabledMinutes(
-                                            selectedHour,
-                                            workStart,
-                                            exclusionStart,
-                                            transportingStart,
-                                            destroyedStart,
-                                        ),
+                                        getDisabledMinutes(selectedHour, workStart, exclusionStart, transportingStart, destroyedStart),
                                 })}
                             />
                         </Form.Item>

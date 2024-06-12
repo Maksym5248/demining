@@ -19,10 +19,7 @@ export const Documents = observer(({ initialValues }: IDocumentsProps) => {
     const { order, missionRequest } = useStore();
 
     const { initialItem: orderItem, ...orderProps } = useSelectStore(order, initialValues.orderId);
-    const { initialItem: missionRequestItem, ...missionRequestProps } = useSelectStore(
-        missionRequest,
-        initialValues.missionRequestId,
-    );
+    const { initialItem: missionRequestItem, ...missionRequestProps } = useSelectStore(missionRequest, initialValues.missionRequestId);
 
     const onAddOrder = useCallback(() => {
         Modal.show(MODALS.ORDER_WIZARD, { mode: WIZARD_MODE.CREATE });
@@ -34,10 +31,7 @@ export const Documents = observer(({ initialValues }: IDocumentsProps) => {
 
     return (
         <>
-            <Form.Item
-                label="Наказ"
-                name="orderId"
-                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+            <Form.Item label="Наказ" name="orderId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                 <SelectAsync
                     {...orderProps}
                     onAdd={onAddOrder}
@@ -47,10 +41,7 @@ export const Documents = observer(({ initialValues }: IDocumentsProps) => {
                     )}
                 />
             </Form.Item>
-            <Form.Item
-                label="Підстава"
-                name="missionRequestId"
-                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+            <Form.Item label="Підстава" name="missionRequestId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                 <SelectAsync
                     {...missionRequestProps}
                     onAdd={onAddMissionRequest}

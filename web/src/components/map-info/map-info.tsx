@@ -31,40 +31,17 @@ export function MapInfo({ point, area, distance }: IMapInfoProps) {
     return (
         <div css={s.container}>
             <div css={s.content}>
-                <div
-                    css={s.group}
-                    onClick={onCopyDistance}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={onCopyDistance}>
-                    <Typography.Text css={s.areaItem}>
-                        Довжина: {distance ? `${distance}  м` : '-'}
-                    </Typography.Text>
+                <div css={s.group} onClick={onCopyDistance} role="button" tabIndex={0} onKeyDown={onCopyDistance}>
+                    <Typography.Text css={s.areaItem}>Довжина: {distance ? `${distance}  м` : '-'}</Typography.Text>
                 </div>
                 <Divider type="vertical" css={s.divider} />
-                <div
-                    css={s.group}
-                    onClick={onCopyArea}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={onCopyArea}>
-                    <Typography.Text css={s.areaItem}>
-                        Площа: {area ? `${area}  м2` : '-'}
-                    </Typography.Text>
+                <div css={s.group} onClick={onCopyArea} role="button" tabIndex={0} onKeyDown={onCopyArea}>
+                    <Typography.Text css={s.areaItem}>Площа: {area ? `${area}  м2` : '-'}</Typography.Text>
                 </div>
                 <Divider type="vertical" css={s.divider} />
-                <div
-                    css={s.group}
-                    onClick={onCopyCoords}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={onCopyCoords}>
-                    <Typography.Text css={s.coordsItem}>
-                        Lat: {mathUtils.toFixed(point?.lat, 9) ?? '-'}
-                    </Typography.Text>
-                    <Typography.Text css={s.coordsItem}>
-                        Lng: {mathUtils.toFixed(point?.lng, 9) ?? '-'}
-                    </Typography.Text>
+                <div css={s.group} onClick={onCopyCoords} role="button" tabIndex={0} onKeyDown={onCopyCoords}>
+                    <Typography.Text css={s.coordsItem}>Lat: {mathUtils.toFixed(point?.lat, 9) ?? '-'}</Typography.Text>
+                    <Typography.Text css={s.coordsItem}>Lng: {mathUtils.toFixed(point?.lng, 9) ?? '-'}</Typography.Text>
                 </div>
             </div>
             <div css={s.hideGoogle} />

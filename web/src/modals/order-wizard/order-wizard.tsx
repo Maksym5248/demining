@@ -33,7 +33,7 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
     }, []);
 
     const isEdit = !!id;
-    const isLoading = order?.fetchItem.inProgress;
+    const isLoading = order?.fetchItem.isLoading;
     const onAdd = () => Modal.show(MODALS.EMPLOYEES_WIZARD, { mode: WIZARD_MODE.CREATE });
 
     const onFinishCreate = async (values: IOrderForm) => {
@@ -42,12 +42,12 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
     };
 
     const onFinishUpdate = async (values: IOrderForm) => {
-        await currentOrder.update.run(values);
+        await currentOrder?.update.run(values);
         hide();
     };
 
     const onRemove = () => {
-        order.remove.run(id);
+        !!id && order.remove.run(id);
     };
 
     return (
@@ -76,31 +76,23 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                               }
                             : {
                                   number: (order.list.first?.number ?? 0) + 1,
-                                  signedById:
-                                      order.list.first?.signedByAction?.employeeId ||
-                                      employeeChiefFirst?.id,
+                                  signedById: order.list.first?.signedByAction?.employeeId || employeeChiefFirst?.id,
                                   signedAt: dates.today(),
                               }
                     }>
                     <Form.Item label="Номер" name="number" rules={[{ required: true }]}>
                         <InputNumber size="middle" min={1} max={100000} />
                     </Form.Item>
-                    <Form.Item
-                        label="Дата підписання"
-                        name="signedAt"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Дата підписання" name="signedAt" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <DatePicker />
                     </Form.Item>
-                    <Form.Item
-                        label="Підписав"
-                        name="signedById"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Підписав" name="signedById" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             onAdd={onAdd}
                             options={select.append(
                                 chiefs.map((el) => ({ label: el.fullName, value: el.id })),
                                 {
-                                    label: currentOrder?.signedByAction?.fullName,
+                                    label: currentOrder?.signedByAction?.employee.fullName,
                                     value: currentOrder?.signedByAction?.employeeId,
                                 },
                             )}

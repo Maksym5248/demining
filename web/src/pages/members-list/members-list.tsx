@@ -21,15 +21,7 @@ const ListItem = observer(({ item, organizationId }: { item: IUser; organization
     };
 
     return (
-        <List.Item
-            key={item.id}
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item key={item.id} actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.UserOutlined />}
                 title={item.email}
@@ -71,9 +63,7 @@ export const MembersListPage = observer(() => {
 
     return (
         <List
-            loading={
-                currentOrganization?.fetchMembers.inProgress || organization.fetchItem.inProgress
-            }
+            loading={currentOrganization?.fetchMembers.isLoading || organization.fetchItem.isLoading}
             dataSource={currentOrganization?.members.asArray}
             isReachedEnd
             header={

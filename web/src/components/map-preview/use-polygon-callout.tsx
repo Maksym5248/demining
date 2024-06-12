@@ -10,12 +10,7 @@ interface IUsePolygonCalloutParams {
     offset: number; // px
 }
 
-export function usePolygonCallout({
-    polygon,
-    zoom,
-    isVisibleMap,
-    offset,
-}: IUsePolygonCalloutParams) {
+export function usePolygonCallout({ polygon, zoom, isVisibleMap, offset }: IUsePolygonCalloutParams) {
     const center = useMemo(() => (polygon ? mapUtils.getCenter(polygon) : null), [polygon]);
 
     const callout = useMemo(() => {

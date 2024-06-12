@@ -5,6 +5,6 @@ export interface IEmployeeForm {
     type: EMPLOYEE_TYPE;
     lastName: string;
     position: string;
-    rank: string;
+    rankId: string;
     surname: string;
 }

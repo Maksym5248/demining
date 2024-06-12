@@ -25,9 +25,7 @@ export class AssetStorageBase {
 
     getFileRef = (id: string) => {
         const storage = getStorage(getApp());
-        const dirPath = this.rootCollection
-            ? `${this.rootCollection}/${this.assetType}`
-            : `${this.assetType}`;
+        const dirPath = this.rootCollection ? `${this.rootCollection}/${this.assetType}` : `${this.assetType}`;
 
         return ref(storage, `${dirPath}/${id}`);
     };

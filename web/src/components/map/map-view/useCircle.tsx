@@ -15,15 +15,7 @@ interface IUseCircleParams {
     setCircle: (value?: ICircle | undefined) => void;
 }
 
-export function useCircle({
-    isCreating,
-    setCreating,
-    drawing,
-    circle,
-    setPolygon,
-    setLine,
-    setCircle,
-}: IUseCircleParams) {
+export function useCircle({ isCreating, setCreating, drawing, circle, setPolygon, setLine, setCircle }: IUseCircleParams) {
     const circleRef = useRef<google.maps.Circle>();
 
     const onLoadCircle = (newCircleRef: google.maps.Circle) => {

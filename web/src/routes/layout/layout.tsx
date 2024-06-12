@@ -163,13 +163,7 @@ export const Layout = observer(() => {
                     bottom: 0,
                 }}>
                 <div className="demo-logo-vertical" />
-                <Menu
-                    theme="dark"
-                    defaultSelectedKeys={defaultSelectedKeys}
-                    defaultOpenKeys={['Documents']}
-                    mode="inline"
-                    items={items}
-                />
+                <Menu theme="dark" defaultSelectedKeys={defaultSelectedKeys} defaultOpenKeys={['Documents']} mode="inline" items={items} />
             </Sider>
             <Lay
                 style={{

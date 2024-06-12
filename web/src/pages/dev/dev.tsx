@@ -41,7 +41,7 @@ export const DevPage = observer(() => {
             </Space>
 
             <div css={s.content}>
-                {store.explosiveObject.createExplosiveObjects.inProgress ? (
+                {store.explosiveObject.createExplosiveObjects.isLoading ? (
                     <Loading />
                 ) : (
                     <>

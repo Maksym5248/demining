@@ -4,15 +4,11 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Select as SelectAnt, SelectProps, Space } from 'antd';
 import { BaseOptionType, DefaultOptionType } from 'antd/es/select';
 
-interface ISelect<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType>
-    extends SelectProps<T, B> {
+interface ISelect<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType> extends SelectProps<T, B> {
     onAdd?: () => void;
 }
 
-function Select<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType>({
-    onAdd,
-    ...rest
-}: ISelect<T, B>) {
+function Select<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType>({ onAdd, ...rest }: ISelect<T, B>) {
     const filterOption = useCallback((input: string, option: B | undefined) => {
         const itemValue = String(option?.label)?.toLowerCase().trim();
         const searchValue = input.toLowerCase().trim();
@@ -37,16 +33,7 @@ function Select<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionT
 
     const addtitionalProps = onAdd ? { dropdownRender } : {};
 
-    return (
-        <SelectAnt
-            showSearch
-            allowClear
-            filterOption={filterOption}
-            placeholder="Вибрати"
-            {...addtitionalProps}
-            {...rest}
-        />
-    );
+    return <SelectAnt showSearch allowClear filterOption={filterOption} placeholder="Вибрати" {...addtitionalProps} {...rest} />;
 }
 
 Select.Option = SelectAnt.Option;

@@ -41,12 +41,12 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     };
 
     const onFinishUpdate = async (values: IExplosiveForm) => {
-        await item.update.run(values);
+        await item?.update.run(values);
         hide();
     };
 
     const onRemove = async () => {
-        store.explosive.remove.run(id);
+        !!id && store.explosive.remove.run(id);
         hide();
     };
 
@@ -69,16 +69,10 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
                     initialValues={item ? { ...item } : { type: EXPLOSIVE_TYPE.EXPLOSIVE }}>
-                    <Form.Item
-                        label="Тип"
-                        name="type"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>
-                    <Form.Item
-                        label="Назва"
-                        name="name"
-                        rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />

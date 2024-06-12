@@ -20,19 +20,12 @@ const ListItem = observer(({ item }: { item: IExplosiveObject }) => {
     };
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 title={item?.fullDisplayName}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{item.type.fullName}</Text>
+                        <Text type="secondary">{item?.type?.fullName}</Text>
                     </Space>
                 }
             />
@@ -55,7 +48,7 @@ export const ExplosiveObjectListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        explosiveObject.fetchListMore.run(search.searchValue);
+        explosiveObject.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -66,14 +59,12 @@ export const ExplosiveObjectListPage = observer(() => {
 
     return (
         <List
-            loading={explosiveObject.fetchList.inProgress}
-            loadingMore={explosiveObject.fetchListMore.inProgress}
+            loading={explosiveObject.fetchList.isLoading}
+            loadingMore={explosiveObject.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

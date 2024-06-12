@@ -21,11 +21,7 @@ export function Territory() {
             <Form.Item label="Причина" name="uncheckedReason">
                 <Input size="middle" />
             </Form.Item>
-            <Form.Item
-                label="Адреса"
-                name="address"
-                rules={[{ required: true, message: "Є обов'язковим полем" }]}
-                css={s.item}>
+            <Form.Item label="Адреса" name="address" rules={[{ required: true, message: "Є обов'язковим полем" }]} css={s.item}>
                 <Input.TextArea size="middle" />
             </Form.Item>
         </>

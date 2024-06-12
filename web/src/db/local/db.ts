@@ -64,10 +64,7 @@ export const DB = {
     missionRequest: new DBBase<IMissionRequestDB>(DBInit.getDB(), TABLES.MISSION_REQUEST),
     order: new DBBase<IOrderDB>(DBInit.getDB(), TABLES.ORDER),
     explosiveObject: new DBBase<IExplosiveObjectDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT),
-    explosiveObjectAction: new DBBase<IExplosiveObjectActionDB>(
-        DBInit.getDB(),
-        TABLES.EXPLOSIVE_OBJECT_ACTION,
-    ),
+    explosiveObjectAction: new DBBase<IExplosiveObjectActionDB>(DBInit.getDB(), TABLES.EXPLOSIVE_OBJECT_ACTION),
     transport: new DBBase<ITransportDB>(DBInit.getDB(), TABLES.TRANSPORT),
     transportAction: new DBBase<ITransportActionDB>(DBInit.getDB(), TABLES.TRANSPORT_ACTION),
     equipment: new DBBase<IEquipmentDB>(DBInit.getDB(), TABLES.EQUIPMENT),

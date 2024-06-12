@@ -20,14 +20,7 @@ const ListItem = observer(({ item }: { item: IMissionRequest }) => {
     };
 
     return (
-        <List.Item
-            actions={[
-                <Button
-                    key="list-edit"
-                    icon={<Icon.EyeOutlined type="danger" />}
-                    onClick={onOpen}
-                />,
-            ]}>
+        <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
                 title={`№${item.number}`}
@@ -57,7 +50,7 @@ export const MissionRequestListPage = observer(() => {
     };
 
     const onLoadMore = () => {
-        missionRequest.fetchListMore.run(search.searchValue);
+        missionRequest.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
@@ -68,14 +61,12 @@ export const MissionRequestListPage = observer(() => {
 
     return (
         <List
-            loading={missionRequest.fetchList.inProgress}
-            loadingMore={missionRequest.fetchListMore.inProgress}
+            loading={missionRequest.fetchList.isLoading}
+            loadingMore={missionRequest.fetchMoreList.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );

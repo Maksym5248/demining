@@ -5,14 +5,8 @@ import { s } from './act.styles';
 export function Act() {
     return (
         <>
-            <Form.Item
-                label="Номер акту"
-                rules={[{ required: true, message: "Обов'язкове поле" }]}
-                css={s.item}>
-                <Form.Item
-                    name="number"
-                    rules={[{ required: true, message: "Обов'язкове поле" }]}
-                    css={s.first}>
+            <Form.Item label="Номер акту" rules={[{ required: true, message: "Обов'язкове поле" }]} css={s.item}>
+                <Form.Item name="number" rules={[{ required: true, message: "Обов'язкове поле" }]} css={s.first}>
                     <InputNumber size="middle" min={1} max={100000} />
                 </Form.Item>
                 <Form.Item name="subNumber" css={s.last}>

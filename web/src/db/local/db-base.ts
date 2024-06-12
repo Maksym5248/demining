@@ -86,22 +86,15 @@ export class DBBase<T extends { id: string }> {
         values: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>[],
         checkField: keyof Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>,
     ): Promise<T[]> {
-        const filteredValues = await Promise.all(
-            values.map((value) => this.exist(checkField, value[checkField])),
-        );
+        const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])));
 
-        const res = await Promise.all(
-            values.filter((value, i) => !filteredValues[i]).map((value) => this.create(value)),
-        );
+        const res = await Promise.all(values.filter((value, i) => !filteredValues[i]).map((value) => this.create(value)));
 
         // @ts-ignore
         return isArray(res) ? res : null;
     }
 
-    async update(
-        id: string,
-        value: Partial<Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>>,
-    ): Promise<T> {
+    async update(id: string, value: Partial<Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>>): Promise<T> {
         const newValue = { ...value };
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

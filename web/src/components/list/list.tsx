@@ -5,14 +5,7 @@ interface IList<T> extends ListProps<T> {
     isReachedEnd?: boolean;
     onLoadMore?: () => void;
 }
-export function List<T extends { id: string }>({
-    loading,
-    loadingMore,
-    isReachedEnd,
-    onLoadMore,
-    dataSource,
-    ...props
-}: IList<T>) {
+export function List<T extends { id: string }>({ loading, loadingMore, isReachedEnd, onLoadMore, dataSource, ...props }: IList<T>) {
     let loadMore = null;
 
     if (!!onLoadMore && !loading && !isReachedEnd && !loadingMore && !!dataSource?.length) {
@@ -35,16 +28,7 @@ export function List<T extends { id: string }>({
         );
     }
 
-    return (
-        <ListAnt
-            rowKey="id"
-            itemLayout="horizontal"
-            loading={loading}
-            loadMore={loadMore}
-            dataSource={dataSource}
-            {...props}
-        />
-    );
+    return <ListAnt rowKey="id" itemLayout="horizontal" loading={loading} loadMore={loadMore} dataSource={dataSource} {...props} />;
 }
 
 List.Item = ListAnt.Item;

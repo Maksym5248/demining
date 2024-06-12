@@ -21,8 +21,7 @@ const ListItem = observer(({ item }: { item: IDocument }) => {
     };
 
     return (
-        <List.Item
-            actions={[<Button key="list-view" icon={<Icon.EyeOutlined />} onClick={onOpen} />]}>
+        <List.Item actions={[<Button key="list-view" icon={<Icon.EyeOutlined />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
                 title={item.name}
@@ -68,20 +67,12 @@ export const TemplatesListPage = observer(() => {
         <List
             rowKey="id"
             itemLayout="horizontal"
-            loading={document.fetchTemplatesList.inProgress}
-            loadingMore={document.fetchTemplatesListMore.inProgress}
+            loading={document.fetchTemplatesList.isLoading}
+            loadingMore={document.fetchTemplatesListMore.isLoading}
             isReachedEnd={!list.isMorePages}
             dataSource={list.asArray}
             onLoadMore={onLoadMore}
-            header={
-                <ListHeader
-                    title={title}
-                    onSearch={onSearch}
-                    onCreate={onCreate}
-                    onOpenInfo={onOpenInfo}
-                    {...search}
-                />
-            }
+            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} onOpenInfo={onOpenInfo} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />
     );
