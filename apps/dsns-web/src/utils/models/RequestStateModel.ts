@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { Runnable, LoadingState, ErrorInner } from '~/types';
+import { type Runnable, LoadingState, type ErrorInner } from '~/types';
 
 export interface IRequestStateModel<T = void> extends Runnable<T> {
     error: ErrorInner | null;

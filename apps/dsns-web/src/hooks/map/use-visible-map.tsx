@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { type MutableRefObject, useEffect, useRef, useState } from 'react';
 
 interface IUseVisibleMapParams {
     mapRef?: MutableRefObject<google.maps.Map | undefined>;

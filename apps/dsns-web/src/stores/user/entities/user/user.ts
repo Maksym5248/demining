@@ -1,6 +1,6 @@
 import { ROLES } from '~/constants';
 
-import { IUserValue, UserValue } from './user.schema';
+import { type IUserValue, UserValue } from './user.schema';
 
 export interface IUser extends IUserValue {
     isRootAdmin: boolean;

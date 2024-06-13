@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { theme } from 'antd';
-import { AliasToken } from 'antd/es/theme/interface/alias';
-import { SeedToken } from 'antd/es/theme/interface/seeds';
+import { type AliasToken } from 'antd/es/theme/interface/alias';
+import { type SeedToken } from 'antd/es/theme/interface/seeds';
 import isString from 'lodash/isString';
 
 const { getDesignToken } = theme;

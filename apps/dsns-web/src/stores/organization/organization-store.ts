@@ -1,10 +1,16 @@
 import { message } from 'antd';
 
-import { Api, ICreateOrganizationDTO, IOrganizationDTO } from '~/api';
+import { Api, type ICreateOrganizationDTO, type IOrganizationDTO } from '~/api';
 import { dates } from '~/utils';
-import { CollectionModel, ICollectionModel, IListModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/utils/models';
 
-import { IOrganization, IOrganizationValue, Organization, createOrganization, createOrganizationDTO } from './entities/organization';
+import {
+    type IOrganization,
+    type IOrganizationValue,
+    Organization,
+    createOrganization,
+    createOrganizationDTO,
+} from './entities/organization';
 import { type IUserStore } from '../user';
 import { type IViewerStore } from '../viewer';
 

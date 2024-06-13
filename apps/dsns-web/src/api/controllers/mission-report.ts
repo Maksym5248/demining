@@ -1,27 +1,27 @@
 import {
-    IEmployeeActionDB,
-    IMissionReportDB,
-    ILinkedToDocumentDB,
-    ITransportActionDB,
-    IEquipmentActionDB,
-    IExplosiveObjectActionDB,
-    IMapViewActionDB,
-    IEmployeeDB,
-    ITransportDB,
-    IEquipmentDB,
-    IExplosiveObjectDB,
-    IQuery,
-    IExplosiveActionDB,
-    IExplosiveDB,
+    type IEmployeeActionDB,
+    type IMissionReportDB,
+    type ILinkedToDocumentDB,
+    type ITransportActionDB,
+    type IEquipmentActionDB,
+    type IExplosiveObjectActionDB,
+    type IMapViewActionDB,
+    type IEmployeeDB,
+    type ITransportDB,
+    type IEquipmentDB,
+    type IExplosiveObjectDB,
+    type IQuery,
+    type IExplosiveActionDB,
+    type IExplosiveDB,
 } from '@/shared';
 import omit from 'lodash/omit';
 
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 import { DB } from '~/db';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { removeFields } from '~/utils';
 
-import { IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO, IMissionReportSumDTO } from '../types';
+import { type IMissionReportDTO, type IMissionReportDTOParams, type IMissionReportPreviewDTO, type IMissionReportSumDTO } from '../types';
 
 interface IItemId {
     id: string;

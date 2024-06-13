@@ -4,13 +4,13 @@ import { Form, DatePicker, Drawer, Spin, Input } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { Select, WizardButtons, WizardFooter } from '~/components';
-import { MISSION_REQUEST_TYPE, WIZARD_MODE } from '~/constants';
+import { MISSION_REQUEST_TYPE, type WIZARD_MODE } from '~/constants';
 import { missionRequestType } from '~/data';
 import { useStore, useWizard } from '~/hooks';
 import { dates } from '~/utils';
 
 import { s } from './mission-request-wizard.style';
-import { IMissionRequestForm } from './mission-request-wizard.types';
+import { type IMissionRequestForm } from './mission-request-wizard.types';
 
 interface Props {
     id?: string;

@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { WIZARD_MODE, MODALS } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IMissionReport } from '~/stores';
+import { type IMissionReport } from '~/stores';
 import { str } from '~/utils';
 
 import { s } from './mission-reports-list.styles';

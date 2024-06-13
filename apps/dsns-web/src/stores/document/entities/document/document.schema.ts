@@ -1,8 +1,8 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IDocumentDTO } from '~/api';
+import { type IDocumentDTO } from '~/api';
 import { DOCUMENT_TYPE, ASSET_TYPE, MIME_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IDocumentValue {

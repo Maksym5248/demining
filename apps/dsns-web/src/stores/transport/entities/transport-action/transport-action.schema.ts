@@ -1,9 +1,9 @@
-import { ITransportActionDTO } from '~/api';
+import { type ITransportActionDTO } from '~/api';
 import { DOCUMENT_TYPE, TRANSPORT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
-import { ITransportValue, TransportValue } from '../transport/transport.schema';
+import { type ITransportValue, TransportValue } from '../transport/transport.schema';
 
 export interface ITransportActionValue extends ITransportValue {
     executedAt?: Date;

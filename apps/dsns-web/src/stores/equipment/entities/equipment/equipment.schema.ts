@@ -1,8 +1,8 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IEquipmentDTO } from '~/api';
+import { type IEquipmentDTO } from '~/api';
 import { EQUIPMENT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IEquipmentValue {

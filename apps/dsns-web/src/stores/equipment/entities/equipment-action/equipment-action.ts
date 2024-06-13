@@ -1,5 +1,5 @@
-import { EquipmentActionValue, IEquipmentActionValue } from './equipment-action.schema';
-import { Equipment, IEquipment } from '../equipment/equipment';
+import { EquipmentActionValue, type IEquipmentActionValue } from './equipment-action.schema';
+import { Equipment, type IEquipment } from '../equipment/equipment';
 
 export interface IEquipmentAction extends IEquipmentActionValue {
     updateFields: (data: Partial<IEquipmentActionValue>) => void;

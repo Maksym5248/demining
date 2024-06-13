@@ -1,8 +1,8 @@
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
-import { IAuthService } from '~/services';
-import { IRequestModel, RequestModel } from '~/utils/models';
+import { type IAuthService } from '~/services';
+import { type IRequestModel, RequestModel } from '~/utils/models';
 
 export interface IAuthStore {
     signInWithGoogle: IRequestModel;

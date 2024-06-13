@@ -1,27 +1,27 @@
 import {
-    IEmployeeDB,
-    IEmployeeActionDB,
-    IOrderDB,
-    IMissionRequestDB,
-    IExplosiveObjectDB,
-    IExplosiveObjectActionDB,
-    ITransportDB,
-    ITransportActionDB,
-    IEquipmentDB,
-    IEquipmentActionDB,
-    IMissionReportDB,
-    IMapViewActionDB,
-    IUserDB,
-    IOrganizationDB,
-    IDocumentDB,
-    IExplosiveActionDB,
-    IExplosiveDB,
-    IPointDB,
-    IAddressDB,
+    type IEmployeeDB,
+    type IEmployeeActionDB,
+    type IOrderDB,
+    type IMissionRequestDB,
+    type IExplosiveObjectDB,
+    type IExplosiveObjectActionDB,
+    type ITransportDB,
+    type ITransportActionDB,
+    type IEquipmentDB,
+    type IEquipmentActionDB,
+    type IMissionReportDB,
+    type IMapViewActionDB,
+    type IUserDB,
+    type IOrganizationDB,
+    type IDocumentDB,
+    type IExplosiveActionDB,
+    type IExplosiveDB,
+    type IPointDB,
+    type IAddressDB,
 } from '@/shared';
-import { Timestamp } from 'firebase/firestore';
+import { type Timestamp } from 'firebase/firestore';
 
-import { EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
+import { type EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 
 export type IAddressDTO = IAddressDB;
 

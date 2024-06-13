@@ -1,6 +1,6 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { ICreateOrganizationDTO, ICreateOrganizationMembersDTO, IOrganizationDTO } from '~/api';
+import { type ICreateOrganizationDTO, type ICreateOrganizationMembersDTO, type IOrganizationDTO } from '~/api';
 import { dates } from '~/utils';
 
 export interface IOrganizationValue {

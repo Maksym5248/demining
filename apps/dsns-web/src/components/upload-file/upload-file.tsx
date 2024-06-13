@@ -1,5 +1,5 @@
 import { Upload } from 'antd';
-import { RcFile } from 'antd/es/upload';
+import { type RcFile } from 'antd/es/upload';
 
 import { MIME_TYPE } from '~/constants';
 

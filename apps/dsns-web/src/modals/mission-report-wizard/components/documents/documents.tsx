@@ -9,7 +9,7 @@ import { useStore, useSelectStore } from '~/hooks';
 import { Modal } from '~/services';
 import { select } from '~/utils';
 
-import { IMissionReportForm } from '../../mission-report-wizard.types';
+import { type IMissionReportForm } from '../../mission-report-wizard.types';
 
 interface IDocumentsProps {
     initialValues: Pick<Partial<IMissionReportForm>, 'orderId' | 'missionRequestId'>;

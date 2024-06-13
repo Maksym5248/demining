@@ -1,4 +1,4 @@
-import { Button, Dropdown, MenuProps, Space, Tooltip } from 'antd';
+import { Button, Dropdown, type MenuProps, Space, Tooltip } from 'antd';
 
 import { Icon } from '../icon';
 

@@ -2,12 +2,12 @@ import { Form, Select, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { WizardButtons, WizardFooter } from '~/components';
-import { EQUIPMENT_TYPE, WIZARD_MODE } from '~/constants';
+import { EQUIPMENT_TYPE, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { useItemStore } from '~/hooks/store/use-item-store';
 
 import { s } from './equipment-wizard.style';
-import { IEquipmentForm } from './equipment-wizard.types';
+import { type IEquipmentForm } from './equipment-wizard.types';
 
 interface Props {
     id?: string;

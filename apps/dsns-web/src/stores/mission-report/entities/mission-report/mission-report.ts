@@ -1,19 +1,19 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 import { toLower } from 'lodash';
 
 import { EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from '~/constants';
-import { IPoint } from '~/types';
+import { type IPoint } from '~/types';
 import { dates, str } from '~/utils';
 
-import { IMissionReportValue, MissionReportValue } from './mission-report.schema';
-import { IEmployeeAction, type IEmployeeStore } from '../../../employee';
-import { IEquipmentAction, type IEquipmentStore } from '../../../equipment';
-import { IExplosiveAction, type IExplosiveStore } from '../../../explosive';
-import { IExplosiveObjectAction, type IExplosiveObjectStore } from '../../../explosive-object';
-import { IMapViewAction, type IMapStore, IMapViewActionValue } from '../../../map';
-import { IMissionRequest, type IMissionRequestStore } from '../../../mission-request';
-import { IOrder, type IOrderStore } from '../../../order';
-import { ITransportAction, type ITransportStore } from '../../../transport';
+import { type IMissionReportValue, MissionReportValue } from './mission-report.schema';
+import { type IEmployeeAction, type IEmployeeStore } from '../../../employee';
+import { type IEquipmentAction, type IEquipmentStore } from '../../../equipment';
+import { type IExplosiveAction, type IExplosiveStore } from '../../../explosive';
+import { type IExplosiveObjectAction, type IExplosiveObjectStore } from '../../../explosive-object';
+import { type IMapViewAction, type IMapStore, type IMapViewActionValue } from '../../../map';
+import { type IMissionRequest, type IMissionRequestStore } from '../../../mission-request';
+import { type IOrder, type IOrderStore } from '../../../order';
+import { type ITransportAction, type ITransportStore } from '../../../transport';
 
 const getLastSign = (arr: any[], i: number) => (arr.length - 1 === i ? '.' : ', ');
 

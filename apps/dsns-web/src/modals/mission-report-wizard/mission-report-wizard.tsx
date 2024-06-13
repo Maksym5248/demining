@@ -7,14 +7,14 @@ import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE, MIME_TYPE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { Modal, Image, Crashlytics, Template } from '~/services';
-import { IEmployee, IMissionReport, IMissionRequest, IOrder, createAddress } from '~/stores';
+import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from '~/stores';
 import { dates, mapUtils, removeFields } from '~/utils';
 import { fileUtils } from '~/utils/file';
 
 import { ExplosiveObjectAction, Timer, Transport, Equipment, Approved, Documents, Act, Territory, Employees, Map } from './components';
 import { ExplosiveAction } from './components/explosive-action';
 import { s } from './mission-report-wizard.styles';
-import { IMissionReportForm } from './mission-report-wizard.types';
+import { type IMissionReportForm } from './mission-report-wizard.types';
 
 interface Props {
     id?: string;

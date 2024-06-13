@@ -1,6 +1,6 @@
 import { RANKS } from '~/constants';
 
-import { IRank } from './rank';
+import { type IRank } from './rank';
 
 export interface IRankValue {
     id: string;

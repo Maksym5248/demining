@@ -2,11 +2,11 @@ import { Form, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
-import { TRANSPORT_TYPE, WIZARD_MODE } from '~/constants';
+import { TRANSPORT_TYPE, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
 import { s } from './transport-wizard.style';
-import { ITransportForm } from './transport-wizard.types';
+import { type ITransportForm } from './transport-wizard.types';
 
 interface Props {
     id?: string;

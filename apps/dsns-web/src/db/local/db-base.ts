@@ -1,4 +1,4 @@
-import { Connection, ISelectQuery, IWhereQuery, IWhereQueryOption } from 'jsstore';
+import { type Connection, type ISelectQuery, type IWhereQuery, type IWhereQueryOption } from 'jsstore';
 import isArray from 'lodash/isArray';
 import uuid from 'uuid/v4';
 

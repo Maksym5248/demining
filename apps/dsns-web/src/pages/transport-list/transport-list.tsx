@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, TRANSPORT_TYPE, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { ITransport } from '~/stores';
+import { type ITransport } from '~/stores';
 
 import { s } from './transport-list.styles';
 

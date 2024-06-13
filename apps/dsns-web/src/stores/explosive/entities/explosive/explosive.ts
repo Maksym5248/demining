@@ -1,10 +1,10 @@
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 import { RequestModel } from '~/utils/models';
 
-import { IExplosiveValue, updateExplosiveDTO, createExplosive, ExplosiveValue } from './explosive.schema';
+import { type IExplosiveValue, updateExplosiveDTO, createExplosive, ExplosiveValue } from './explosive.schema';
 
 export interface IExplosive extends IExplosiveValue {
     update: RequestModel<[UpdateValue<IExplosiveValue>]>;

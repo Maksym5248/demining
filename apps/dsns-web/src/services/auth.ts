@@ -2,8 +2,8 @@ import { getApp } from 'firebase/app';
 import {
     getAuth,
     onAuthStateChanged,
-    NextOrObserver,
-    User,
+    type NextOrObserver,
+    type User,
     GoogleAuthProvider,
     signInWithPopup,
     signOut,

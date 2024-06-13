@@ -1,12 +1,12 @@
 import { message } from 'antd';
 
-import { Api, IOrderPreviewDTO } from '~/api';
-import { CreateValue } from '~/types';
+import { Api, type IOrderPreviewDTO } from '~/api';
+import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, ICollectionModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, type ICollectionModel, ListModel, RequestModel } from '~/utils/models';
 
-import { IOrder, IOrderValue, IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
-import { IEmployeeStore, createEmployeeAction } from '../employee';
+import { type IOrder, type IOrderValue, type IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
+import { type IEmployeeStore, createEmployeeAction } from '../employee';
 
 export interface IOrderStore {
     collection: ICollectionModel<IOrder, IOrderValue>;

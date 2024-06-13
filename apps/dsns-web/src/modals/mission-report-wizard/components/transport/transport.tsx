@@ -7,10 +7,10 @@ import { SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useSelectStore } from '~/hooks';
 import { Modal } from '~/services';
-import { ITransportAction } from '~/stores';
+import { type ITransportAction } from '~/stores';
 import { select } from '~/utils';
 
-import { IMissionReportForm } from '../../mission-report-wizard.types';
+import { type IMissionReportForm } from '../../mission-report-wizard.types';
 
 interface TransportProps {
     initialValues: Pick<Partial<IMissionReportForm>, 'transportExplosiveObjectId' | 'transportHumansId'>;

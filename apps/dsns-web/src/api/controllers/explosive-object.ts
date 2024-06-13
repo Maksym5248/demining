@@ -1,10 +1,10 @@
-import { IQuery } from '@/shared';
+import { type IQuery } from '@/shared';
 
 import { explosiveObjectsData } from '~/data';
 import { DB } from '~/db';
-import { UpdateValue, CreateValue } from '~/types';
+import { type UpdateValue, type CreateValue } from '~/types';
 
-import { IExplosiveObjectDTO, IExplosiveObjectDTOParams, IExplosiveObjectActionSumDTO } from '../types';
+import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams, type IExplosiveObjectActionSumDTO } from '../types';
 
 const create = async (value: CreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
     const explosiveObject = await DB.explosiveObject.create(value);

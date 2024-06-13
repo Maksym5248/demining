@@ -1,23 +1,23 @@
 import {
-    IDocumentDB,
-    IEmployeeActionDB,
-    IEmployeeDB,
-    IEquipmentActionDB,
-    IEquipmentDB,
-    IExplosiveActionDB,
-    IExplosiveDB,
-    IExplosiveObjectActionDB,
-    IExplosiveObjectDB,
-    IMapViewActionDB,
-    IMissionReportDB,
-    IMissionRequestDB,
-    IOrderDB,
-    IOrganizationDB,
-    ITransportActionDB,
-    ITransportDB,
-    IUserDB,
+    type IDocumentDB,
+    type IEmployeeActionDB,
+    type IEmployeeDB,
+    type IEquipmentActionDB,
+    type IEquipmentDB,
+    type IExplosiveActionDB,
+    type IExplosiveDB,
+    type IExplosiveObjectActionDB,
+    type IExplosiveObjectDB,
+    type IMapViewActionDB,
+    type IMissionReportDB,
+    type IMissionRequestDB,
+    type IOrderDB,
+    type IOrganizationDB,
+    type ITransportActionDB,
+    type ITransportDB,
+    type IUserDB,
 } from '@/shared';
-import { WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
+import { type WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
 import { TABLES, TABLES_DIR } from '~/constants';
 import { explosiveObjectTypesData } from '~/data';

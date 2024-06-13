@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, EQUIPMENT_TYPE, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IEquipment } from '~/stores';
+import { type IEquipment } from '~/stores';
 
 import { s } from './equipment-list.styles';
 

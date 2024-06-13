@@ -1,8 +1,8 @@
-import { IExplosiveActionDTO, IExplosiveActionDTOParams, IExplosiveActionSumDTO } from '~/api';
-import { DOCUMENT_TYPE } from '~/constants';
+import { type IExplosiveActionDTO, type IExplosiveActionDTOParams, type IExplosiveActionSumDTO } from '~/api';
+import { type DOCUMENT_TYPE } from '~/constants';
 
 import { Explosive } from '../explosive';
-import { IExplosiveValue, createExplosive } from '../explosive/explosive.schema';
+import { type IExplosiveValue, createExplosive } from '../explosive/explosive.schema';
 
 export interface IExplosiveActionValue extends IExplosiveValue {
     documentType: DOCUMENT_TYPE;

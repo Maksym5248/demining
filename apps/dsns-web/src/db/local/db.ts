@@ -1,18 +1,18 @@
 import {
-    IEmployeeDB,
-    IEmployeeActionDB,
-    IOrderDB,
-    IMapViewActionDB,
-    IMissionReportDB,
-    IMissionRequestDB,
-    IExplosiveObjectDB,
-    IExplosiveObjectActionDB,
-    ITransportDB,
-    ITransportActionDB,
-    IEquipmentDB,
-    IEquipmentActionDB,
+    type IEmployeeDB,
+    type IEmployeeActionDB,
+    type IOrderDB,
+    type IMapViewActionDB,
+    type IMissionReportDB,
+    type IMissionRequestDB,
+    type IExplosiveObjectDB,
+    type IExplosiveObjectActionDB,
+    type ITransportDB,
+    type ITransportActionDB,
+    type IEquipmentDB,
+    type IEquipmentActionDB,
 } from '@/shared';
-import { IDataBase } from 'jsstore';
+import { type IDataBase } from 'jsstore';
 
 import { CONFIG } from '~/config';
 import { TABLES } from '~/constants';

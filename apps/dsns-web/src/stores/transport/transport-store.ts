@@ -1,16 +1,16 @@
 import { message } from 'antd';
 
-import { Api, ITransportDTO } from '~/api';
+import { Api, type ITransportDTO } from '~/api';
 import { TRANSPORT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, ICollectionModel, IListModel, IRequestModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
-    ITransport,
-    ITransportAction,
-    ITransportActionValue,
-    ITransportValue,
+    type ITransport,
+    type ITransportAction,
+    type ITransportActionValue,
+    type ITransportValue,
     Transport,
     TransportAction,
     createTransport,

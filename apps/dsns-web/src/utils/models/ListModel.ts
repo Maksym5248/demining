@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { ICollectionModel } from './CollectionModel';
+import { type ICollectionModel } from './CollectionModel';
 
 export interface IListModel<T extends B, B extends { id: string }> {
     push: (value: B | B[], isUniqueEnabled?: boolean) => void;

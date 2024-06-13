@@ -1,10 +1,10 @@
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 import { RequestModel } from '~/utils/models';
 
-import { IEquipmentValue, updateEquipmentDTO, createEquipment, EquipmentValue } from './equipment.schema';
+import { type IEquipmentValue, updateEquipmentDTO, createEquipment, EquipmentValue } from './equipment.schema';
 
 export interface IEquipment extends IEquipmentValue {
     updateFields: (data: Partial<IEquipmentValue>) => void;

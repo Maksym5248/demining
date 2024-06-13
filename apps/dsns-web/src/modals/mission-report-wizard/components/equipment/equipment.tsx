@@ -5,10 +5,10 @@ import { SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useSelectStore } from '~/hooks';
 import { Modal } from '~/services';
-import { IEquipmentAction } from '~/stores';
+import { type IEquipmentAction } from '~/stores';
 import { select } from '~/utils';
 
-import { IMissionReportForm } from '../../mission-report-wizard.types';
+import { type IMissionReportForm } from '../../mission-report-wizard.types';
 
 interface EquipmentProps {
     initialValues: Pick<Partial<IMissionReportForm>, 'mineDetectorId'>;

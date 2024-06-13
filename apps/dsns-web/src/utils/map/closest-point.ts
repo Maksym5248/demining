@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 
-import { IPoint, IPolygon, ISimpleLine } from '~/types';
+import { type IPoint, type IPolygon, type ISimpleLine } from '~/types';
 
 import { getDistanceByPoints } from './common';
 import { createArrFromPoint, createPointFromArr } from './fabric';

@@ -1,12 +1,12 @@
-import { IQuery } from '@/shared';
+import { type IQuery } from '@/shared';
 
 import { ASSET_TYPE } from '~/constants';
 import { DB } from '~/db';
 import { AssetStorage } from '~/services';
-import { UpdateValue, CreateValue } from '~/types';
+import { type UpdateValue, type CreateValue } from '~/types';
 import { fileUtils } from '~/utils';
 
-import { IDocumentDTO } from '../types';
+import { type IDocumentDTO } from '../types';
 
 const create = async (value: CreateValue<IDocumentDTO>, file: File): Promise<IDocumentDTO> => {
     let res: IDocumentDTO | null = null;

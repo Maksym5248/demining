@@ -5,10 +5,10 @@ import { Select, SelectAsync } from '~/components';
 import { EXPLOSIVE_OBJECT_CATEGORY, MODALS, WIZARD_MODE } from '~/constants';
 import { useSelectStore, useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { IExplosiveObjectTypeValue } from '~/stores';
+import { type IExplosiveObjectTypeValue } from '~/stores';
 import { removeFields } from '~/utils';
 
-import { IExplosiveObjectActionForm } from './explosive-object-action-wizard.types';
+import { type IExplosiveObjectActionForm } from './explosive-object-action-wizard.types';
 
 const optionsExplosiveObjectCategory = [
     {

@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { EXPLOSIVE_TYPE, MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IExplosive } from '~/stores/explosive';
+import { type IExplosive } from '~/stores/explosive';
 
 import { s } from './explosive-list.styles';
 

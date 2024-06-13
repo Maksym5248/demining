@@ -17,7 +17,7 @@ import {
     MapEditorModal,
     TemplateDataPreviewModal,
 } from '~/modals';
-import { IModalsMap } from '~/services';
+import { type IModalsMap } from '~/services';
 
 export const modals: IModalsMap = {
     [MODALS.MISSION_REPORT_WIZARD]: {

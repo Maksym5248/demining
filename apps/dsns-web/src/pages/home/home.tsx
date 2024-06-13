@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { Card, Radio, RadioChangeEvent, Spin, DatePicker } from 'antd';
-import { Dayjs } from 'dayjs';
+import { Card, Radio, type RadioChangeEvent, Spin, DatePicker } from 'antd';
+import { type Dayjs } from 'dayjs';
 import { observer } from 'mobx-react';
 
 import { useStore } from '~/hooks';

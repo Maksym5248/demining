@@ -1,6 +1,6 @@
 import { geohashQueryBounds } from 'geofire-common';
 
-import { IGeoBox, IGeohashRange } from '~/types';
+import { type IGeoBox, type IGeohashRange } from '~/types';
 
 import { getCenterAndRadiusByGeoBox } from './common';
 

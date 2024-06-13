@@ -1,7 +1,7 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IUserDTO } from '~/api';
-import { ROLES } from '~/constants';
+import { type IUserDTO } from '~/api';
+import { type ROLES } from '~/constants';
 import { dates } from '~/utils';
 
 export interface IUserValue {

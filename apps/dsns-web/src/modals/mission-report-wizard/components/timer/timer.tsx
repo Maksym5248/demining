@@ -1,5 +1,5 @@
 import { Form, TimePicker } from 'antd';
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
 const getLastDate = (times: Dayjs[]) => {
     const [initial, ...rest] = times;

@@ -6,10 +6,10 @@ import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { IExplosiveObjectActionValueParams } from '~/stores';
+import { type IExplosiveObjectActionValueParams } from '~/stores';
 
 import { s } from './explosive-object-action.styles';
-import { ListItemProps } from './explosive-object-action.types';
+import { type ListItemProps } from './explosive-object-action.types';
 
 const getIcon = (isDone: boolean) => (isDone ? '+' : '-');
 

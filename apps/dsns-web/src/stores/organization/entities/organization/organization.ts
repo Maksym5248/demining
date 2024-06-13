@@ -1,17 +1,17 @@
 import { message } from 'antd';
 
-import { Api, ICreateOrganizationDTO } from '~/api';
-import { IListModel, IRequestModel, ListModel, RequestModel } from '~/utils/models';
+import { Api, type ICreateOrganizationDTO } from '~/api';
+import { type IListModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
-    IUpdateOrganizationParams,
-    IOrganizationValue,
+    type IUpdateOrganizationParams,
+    type IOrganizationValue,
     OrganizationValue,
     createOrganization,
     createOrganizationDTO,
 } from './organization.schema';
-import { IUser, IUserStore, IUserValue, createUser } from '../../../user';
-import { IViewerStore } from '../../../viewer';
+import { type IUser, type IUserStore, type IUserValue, createUser } from '../../../user';
+import { type IViewerStore } from '../../../viewer';
 
 export interface IOrganization extends IOrganizationValue {
     members: IListModel<IUser, IUserValue>;

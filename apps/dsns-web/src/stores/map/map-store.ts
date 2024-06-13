@@ -1,11 +1,11 @@
 import { message } from 'antd';
 
-import { Api, IMapViewActionDTO } from '~/api';
-import { IGeoBox, IGeohashRange } from '~/types';
+import { Api, type IMapViewActionDTO } from '~/api';
+import { type IGeoBox, type IGeohashRange } from '~/types';
 import { mapUtils } from '~/utils';
-import { CollectionModel, ICollectionModel, IListModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/utils/models';
 
-import { IMapViewAction, IMapViewActionValue, MapViewAction, createMapView } from './entities';
+import { type IMapViewAction, type IMapViewActionValue, MapViewAction, createMapView } from './entities';
 
 interface IGeohashes {
     start: string;

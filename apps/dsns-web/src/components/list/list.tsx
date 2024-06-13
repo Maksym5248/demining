@@ -1,4 +1,4 @@
-import { Button, List as ListAnt, ListProps, Spin } from 'antd';
+import { Button, List as ListAnt, type ListProps, Spin } from 'antd';
 
 interface IList<T> extends ListProps<T> {
     loadingMore?: boolean;

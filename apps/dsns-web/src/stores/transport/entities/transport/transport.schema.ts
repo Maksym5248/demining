@@ -1,8 +1,8 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { ITransportDTO } from '~/api';
+import { type ITransportDTO } from '~/api';
 import { TRANSPORT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface ITransportValue {

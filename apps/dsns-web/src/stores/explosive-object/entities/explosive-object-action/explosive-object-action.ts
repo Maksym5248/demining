@@ -1,8 +1,8 @@
-import { ICollectionModel } from '~/utils/models';
+import { type ICollectionModel } from '~/utils/models';
 
-import { ExplosiveObjectActionValue, IExplosiveObjectActionValue } from './explosive-object-action.schema';
-import { ExplosiveObject, IExplosiveObject } from '..';
-import { ExplosiveObjectType, ExplosiveObjectTypeValue, IExplosiveObjectType } from '../explosive-object-type';
+import { ExplosiveObjectActionValue, type IExplosiveObjectActionValue } from './explosive-object-action.schema';
+import { ExplosiveObject, type IExplosiveObject } from '..';
+import { type ExplosiveObjectType, type ExplosiveObjectTypeValue, type IExplosiveObjectType } from '../explosive-object-type';
 
 interface IExplosiveObjectActionParams {
     collections: {

@@ -1,4 +1,4 @@
-import { AddressValue, IAddressValue } from './address.schema';
+import { AddressValue, type IAddressValue } from './address.schema';
 
 export type IAddress = IAddressValue;
 

@@ -1,18 +1,18 @@
 import {
-    IEmployeeDB,
-    IEmployeeActionDB,
-    IOrderDB,
-    IMapViewActionDB,
-    IMissionReportDB,
-    IMissionRequestDB,
-    IExplosiveObjectDB,
-    IExplosiveObjectActionDB,
-    ITransportDB,
-    ITransportActionDB,
-    IEquipmentDB,
-    IEquipmentActionDB,
+    type IEmployeeDB,
+    type IEmployeeActionDB,
+    type IOrderDB,
+    type IMapViewActionDB,
+    type IMissionReportDB,
+    type IMissionRequestDB,
+    type IExplosiveObjectDB,
+    type IExplosiveObjectActionDB,
+    type ITransportDB,
+    type ITransportActionDB,
+    type IEquipmentDB,
+    type IEquipmentActionDB,
 } from '@/shared';
-import { IWhereQueryOption } from 'jsstore';
+import { type IWhereQueryOption } from 'jsstore';
 
 export class DBBase<T extends { id: string }> {
     uuid = jest.fn(() => Promise.resolve('id'));

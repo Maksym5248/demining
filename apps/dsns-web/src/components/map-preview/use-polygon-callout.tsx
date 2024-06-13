@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { IPolygon } from '~/types';
+import { type IPolygon } from '~/types';
 import { mapUtils } from '~/utils';
 
 interface IUsePolygonCalloutParams {

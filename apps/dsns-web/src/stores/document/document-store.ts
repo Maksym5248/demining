@@ -1,13 +1,13 @@
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
-import { Api, IDocumentDTO } from '~/api';
+import { Api, type IDocumentDTO } from '~/api';
 import { DOCUMENT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, IRequestModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
-import { IDocument, Document, createDocument, createDocumentDTO, IDocumentValue } from './entities';
+import { type IDocument, Document, createDocument, createDocumentDTO, type IDocumentValue } from './entities';
 
 export interface IDocumentStore {
     collection: CollectionModel<IDocument, IDocumentValue>;

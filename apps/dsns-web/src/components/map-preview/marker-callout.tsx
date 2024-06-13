@@ -1,9 +1,9 @@
 import { OVERLAY_MOUSE_TARGET, Polyline, OverlayViewF } from '@react-google-maps/api';
 import { Divider, Typography } from 'antd';
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
 import { useMapOptions } from '~/hooks';
-import { IPoint } from '~/types';
+import { type IPoint } from '~/types';
 
 import { s } from './map-preview.style';
 

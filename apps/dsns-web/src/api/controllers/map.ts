@@ -1,7 +1,7 @@
 import { DB } from '~/db';
-import { IGeohashRange } from '~/types';
+import { type IGeohashRange } from '~/types';
 
-import { IMapViewActionDTO } from '../types';
+import { type IMapViewActionDTO } from '../types';
 
 const getByGeohashRanges = async (ranges: IGeohashRange[]): Promise<IMapViewActionDTO[]> => {
     const promises = ranges.map((b) =>

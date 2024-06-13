@@ -1,6 +1,6 @@
-import { MutableRefObject, useRef } from 'react';
+import { type MutableRefObject, useRef } from 'react';
 
-import { ICircle, ILine, IPoint, IPolygon } from '~/types/map';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '~/types/map';
 import { mapUtils } from '~/utils';
 
 import { DrawingType } from '../map.types';

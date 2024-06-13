@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IDocument } from '~/stores';
+import { type IDocument } from '~/stores';
 import { str } from '~/utils';
 
 import { s } from './templates-list.styles';

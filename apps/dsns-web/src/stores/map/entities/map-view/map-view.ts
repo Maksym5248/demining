@@ -1,4 +1,4 @@
-import { IMapViewActionValue, MapViewActionValue } from './map-view.schema';
+import { type IMapViewActionValue, MapViewActionValue } from './map-view.schema';
 
 export type IMapViewAction = IMapViewActionValue;
 

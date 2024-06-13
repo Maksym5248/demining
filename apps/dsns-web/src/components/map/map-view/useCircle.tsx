@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { ICircle, ILine, IPolygon } from '~/types/map';
+import { type ICircle, type ILine, type IPolygon } from '~/types/map';
 import { mapUtils } from '~/utils';
 
 import { DrawingType } from '../map.types';

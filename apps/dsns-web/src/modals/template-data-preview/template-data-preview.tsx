@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { missionReportTemplateData } from './data';
 import { s } from './template-data-preview.style';
-import { TemplateDataPreviewModalProps } from './template-data-preview.types';
+import { type TemplateDataPreviewModalProps } from './template-data-preview.types';
 
 const columns = [
     {

@@ -1,9 +1,9 @@
-import { IQuery } from '@/shared';
+import { type IQuery } from '@/shared';
 
 import { DB } from '~/db';
-import { UpdateValue, CreateValue } from '~/types';
+import { type UpdateValue, type CreateValue } from '~/types';
 
-import { IEquipmentDTO } from '../types';
+import { type IEquipmentDTO } from '../types';
 
 const create = (value: CreateValue<IEquipmentDTO>): Promise<IEquipmentDTO> => DB.equipment.create(value);
 const update = (id: string, value: UpdateValue<IEquipmentDTO>): Promise<IEquipmentDTO> => DB.equipment.update(id, value);

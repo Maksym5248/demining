@@ -1,4 +1,4 @@
-import { EMPLOYEE_TYPE } from '~/constants';
+import { type EMPLOYEE_TYPE } from '~/constants';
 
 export interface IEmployeeForm {
     firstName: string;

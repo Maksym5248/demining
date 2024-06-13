@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { Api } from '~/api';
 import { Analytics, AuthService, Logger } from '~/services';
 
-import { CurrentUser, ICurrentUser, ICurrentUserValue, createCurrentUser } from './entities';
+import { CurrentUser, type ICurrentUser, type ICurrentUserValue, createCurrentUser } from './entities';
 
 export interface IViewerStore {
     user: ICurrentUser | null;

@@ -1,4 +1,4 @@
-import { ExplosiveObjectTypeValue, IExplosiveObjectTypeValue } from './explosive-object-type.schema';
+import { ExplosiveObjectTypeValue, type IExplosiveObjectTypeValue } from './explosive-object-type.schema';
 
 export interface IExplosiveObjectType extends IExplosiveObjectTypeValue {
     displayName: string;

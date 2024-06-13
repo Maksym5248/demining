@@ -1,6 +1,6 @@
-import { MutableRefObject, useEffect } from 'react';
+import { type MutableRefObject, useEffect } from 'react';
 
-import { ICircle, IMarker, IPoint, IPolygon } from '~/types';
+import { type ICircle, type IMarker, type IPoint, type IPolygon } from '~/types';
 import { mapUtils } from '~/utils';
 
 import { useDebounce } from '../common/useDebounce';

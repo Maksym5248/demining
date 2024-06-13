@@ -1,10 +1,10 @@
-import { IQuery } from '@/shared';
+import { type IQuery } from '@/shared';
 
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 import { DB } from '~/db';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 
-import { IOrderDTO, IOrderDTOParams, IOrderPreviewDTO } from '../types';
+import { type IOrderDTO, type IOrderDTOParams, type IOrderPreviewDTO } from '../types';
 
 const create = async (value: IOrderDTOParams): Promise<IOrderDTO> => {
     const employee = await DB.employee.get(value.signedById);

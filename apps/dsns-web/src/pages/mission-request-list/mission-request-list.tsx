@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IMissionRequest } from '~/stores';
+import { type IMissionRequest } from '~/stores';
 
 import { s } from './mission-request-list.styles';
 

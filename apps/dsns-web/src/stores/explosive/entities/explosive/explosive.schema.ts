@@ -1,8 +1,8 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IExplosiveDTO } from '~/api';
+import { type IExplosiveDTO } from '~/api';
 import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IExplosiveValue {

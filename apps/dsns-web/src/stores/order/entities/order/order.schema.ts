@@ -1,7 +1,7 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IOrderDTO, IOrderDTOParams, IOrderPreviewDTO } from '~/api';
-import { CreateValue } from '~/types';
+import { type IOrderDTO, type IOrderDTOParams, type IOrderPreviewDTO } from '~/api';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IOrderValue {

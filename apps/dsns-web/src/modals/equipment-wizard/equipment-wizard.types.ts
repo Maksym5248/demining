@@ -1,4 +1,4 @@
-import { EQUIPMENT_TYPE } from '~/constants';
+import { type EQUIPMENT_TYPE } from '~/constants';
 
 export interface IEquipmentForm {
     name: string;

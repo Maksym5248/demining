@@ -1,10 +1,10 @@
 import { message } from 'antd';
 
-import { Api, IUserDTO } from '~/api';
+import { Api, type IUserDTO } from '~/api';
 import { dates } from '~/utils';
 import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
 
-import { createUser, IUser, IUserValue, User } from './entities';
+import { createUser, type IUser, type IUserValue, User } from './entities';
 
 export interface IUserStore {
     collection: CollectionModel<IUser, IUserValue>;

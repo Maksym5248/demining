@@ -1,4 +1,4 @@
-import { ExplosiveActionValue, IExplosiveActionValue } from './explosive-action.schema';
+import { ExplosiveActionValue, type IExplosiveActionValue } from './explosive-action.schema';
 import { Explosive } from '../explosive';
 
 export interface IExplosiveAction extends IExplosiveActionValue {

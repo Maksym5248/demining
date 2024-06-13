@@ -1,4 +1,4 @@
-import { IAddressDTO } from '~/api';
+import { type IAddressDTO } from '~/api';
 
 export interface IAddressValue {
     city?: string;

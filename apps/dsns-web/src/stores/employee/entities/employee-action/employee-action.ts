@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
-import { CollectionModel } from '~/utils/models';
+import { type CollectionModel } from '~/utils/models';
 
-import { EmployeeActionValue, IEmployeeActionValue } from './employee-action.schema';
-import { IEmployeeParams, Employee, IEmployee } from '../employee';
-import { IRank, IRankValue } from '../rank';
+import { EmployeeActionValue, type IEmployeeActionValue } from './employee-action.schema';
+import { type IEmployeeParams, Employee, type IEmployee } from '../employee';
+import { type IRank, type IRankValue } from '../rank';
 
 export interface IEmployeeAction extends IEmployeeActionValue {
     employee: IEmployee;

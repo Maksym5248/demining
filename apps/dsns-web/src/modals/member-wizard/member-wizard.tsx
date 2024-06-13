@@ -4,11 +4,11 @@ import { Form, Drawer, Spin, Switch } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { Select, WizardButtons, WizardFooter } from '~/components';
-import { WIZARD_MODE } from '~/constants';
+import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
 import { s } from './member-wizard.style';
-import { IMemberForm } from './member-wizard.types';
+import { type IMemberForm } from './member-wizard.types';
 
 interface Props {
     id?: string;

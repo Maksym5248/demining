@@ -6,10 +6,10 @@ import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { IExplosiveActionValueParams } from '~/stores';
+import { type IExplosiveActionValueParams } from '~/stores';
 
 import { s } from './explosive-action.styles';
-import { ListItemProps } from './explosive-action.types';
+import { type ListItemProps } from './explosive-action.types';
 
 function ListItem({ item, index, onRemove }: ListItemProps) {
     const store = useStore();

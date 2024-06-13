@@ -1,20 +1,20 @@
 import { message } from 'antd';
 
-import { Api, IEquipmentDTO } from '~/api';
+import { Api, type IEquipmentDTO } from '~/api';
 import { EQUIPMENT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
 import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
-    IEquipment,
-    IEquipmentValue,
+    type IEquipment,
+    type IEquipmentValue,
     Equipment,
     createEquipment,
     createEquipmentDTO,
     EquipmentAction,
-    IEquipmentActionValue,
-    IEquipmentAction,
+    type IEquipmentActionValue,
+    type IEquipmentAction,
 } from './entities';
 
 export interface IEquipmentStore {

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from 'react';
+import { type ChangeEvent, useEffect } from 'react';
 
 import { Input } from 'antd';
 

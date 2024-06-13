@@ -10,7 +10,7 @@ import { Modal } from '~/services';
 import { dates, select } from '~/utils';
 
 import { s } from './order-wizard.style';
-import { IOrderForm } from './order-wizard.types';
+import { type IOrderForm } from './order-wizard.types';
 
 interface Props {
     id?: string;

@@ -1,8 +1,8 @@
-import { IBaseDB, IWhere, IQuery, IOrder } from '@/shared';
+import { type IBaseDB, type IWhere, type IQuery, type IOrder } from '@/shared';
 import {
     getFirestore,
     collection,
-    CollectionReference,
+    type CollectionReference,
     doc,
     getDoc,
     query,
@@ -11,17 +11,17 @@ import {
     getDocs,
     setDoc,
     serverTimestamp,
-    Timestamp,
+    type Timestamp,
     updateDoc,
-    UpdateData,
+    type UpdateData,
     orderBy,
     limit,
-    WriteBatch,
+    type WriteBatch,
     startAfter,
     getCountFromServer,
     getAggregateFromServer,
     sum,
-    QueryFieldFilterConstraint,
+    type QueryFieldFilterConstraint,
     startAt,
     endAt,
 } from 'firebase/firestore';

@@ -2,10 +2,10 @@ import { Form, Input, Select, Drawer } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { WizardButtons, WizardFooter } from '~/components';
-import { EMPLOYEE_TYPE, WIZARD_MODE } from '~/constants';
+import { EMPLOYEE_TYPE, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
-import { IEmployeeForm } from './employees-wizard.types';
+import { type IEmployeeForm } from './employees-wizard.types';
 
 const { Option } = Select;
 

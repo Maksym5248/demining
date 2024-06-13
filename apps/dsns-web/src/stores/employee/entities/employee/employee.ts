@@ -1,12 +1,12 @@
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 import { str } from '~/utils';
-import { CollectionModel, RequestModel } from '~/utils/models';
+import { type CollectionModel, RequestModel } from '~/utils/models';
 
-import { createEmployee, updateEmployeeDTO, IEmployeeValue, EmployeeValue } from './employee.schema';
-import { IRank, IRankValue } from '../rank';
+import { createEmployee, updateEmployeeDTO, type IEmployeeValue, EmployeeValue } from './employee.schema';
+import { type IRank, type IRankValue } from '../rank';
 
 export interface IEmployee extends IEmployeeValue {
     rank?: IRank;

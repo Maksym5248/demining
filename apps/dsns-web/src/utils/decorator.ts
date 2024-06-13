@@ -1,4 +1,4 @@
-import { Runnable } from '~/types';
+import { type Runnable } from '~/types';
 
 export type Indexable = Record<string, unknown>;
 

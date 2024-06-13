@@ -1,10 +1,10 @@
-import { IOrganizationDB, IQuery, IUserDB } from '@/shared';
+import { type IOrganizationDB, type IQuery, type IUserDB } from '@/shared';
 
 import { ROLES } from '~/constants';
 import { DB } from '~/db';
 import { removeFields } from '~/utils';
 
-import { IOrganizationDTO, IUserDTO, ICreateOrganizationDTO } from '../types';
+import { type IOrganizationDTO, type IUserDTO, type ICreateOrganizationDTO } from '../types';
 
 const create = async (value: Pick<ICreateOrganizationDTO, 'name'>): Promise<IOrganizationDTO> => {
     const res = await DB.organization.create({

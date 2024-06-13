@@ -1,7 +1,7 @@
 import { isArray } from 'lodash';
-import { RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router-dom';
 
-import { ROUTES, routesInfo } from '~/constants';
+import { type ROUTES, routesInfo } from '~/constants';
 
 const getBasePath = (pathname: string, params: { [key: string]: string | number }) => {
     let path = pathname;

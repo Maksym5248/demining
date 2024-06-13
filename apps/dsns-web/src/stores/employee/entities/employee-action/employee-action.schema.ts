@@ -1,7 +1,7 @@
-import { IEmployeeActionDTO } from '~/api';
-import { DOCUMENT_TYPE } from '~/constants';
+import { type IEmployeeActionDTO } from '~/api';
+import { type DOCUMENT_TYPE } from '~/constants';
 
-import { EmployeeValue, IEmployeeValue, createEmployee } from '../employee';
+import { EmployeeValue, type IEmployeeValue, createEmployee } from '../employee';
 
 export interface IEmployeeActionValue extends IEmployeeValue {
     executedAt?: Date;

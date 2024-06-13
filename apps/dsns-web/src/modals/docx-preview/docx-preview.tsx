@@ -7,7 +7,7 @@ import { Crashlytics } from '~/services';
 import { fileUtils } from '~/utils/file';
 
 import { s } from './docx-preview.style';
-import { DocxPreviewModalProps } from './docx-preview.types';
+import { type DocxPreviewModalProps } from './docx-preview.types';
 
 export const DocxPreviewModal = observer(({ file, name, isVisible, hide }: DocxPreviewModalProps) => {
     const onSave = async () => {

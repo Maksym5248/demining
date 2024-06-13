@@ -6,7 +6,7 @@ import { Button, Form } from 'antd';
 import { Select } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { Modal } from '~/services';
-import { IEmployee, IEmployeeAction } from '~/stores';
+import { type IEmployee, type IEmployeeAction } from '~/stores';
 import { select } from '~/utils';
 
 interface IEmployeesProps {

@@ -1,7 +1,15 @@
-import { ICircleDB, IGeoBoxDB, IGeoDB, IGeoPointDB, IMapViewActionDB, IPointDB, IPolygonDB } from '@/shared';
+import {
+    type ICircleDB,
+    type IGeoBoxDB,
+    type IGeoDB,
+    type IGeoPointDB,
+    type IMapViewActionDB,
+    type IPointDB,
+    type IPolygonDB,
+} from '@/shared';
 import { geohashForLocation, boundingBoxCoordinates } from 'geofire-common';
 
-import { IPoint } from '~/types';
+import { type IPoint } from '~/types';
 
 function getGeoPoint(point: IPointDB): IGeoPointDB {
     const hash = geohashForLocation([point.lat, point.lng]);

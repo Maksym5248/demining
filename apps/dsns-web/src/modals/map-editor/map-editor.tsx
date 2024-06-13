@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
 
-import { IOnChangeMapView, MapView } from '~/components';
+import { type IOnChangeMapView, MapView } from '~/components';
 import { useDebounce, useStore, useValues } from '~/hooks';
-import { ICircle, IGeoBox, ILine, IPolygon } from '~/types';
+import { type ICircle, type IGeoBox, type ILine, type IPolygon } from '~/types';
 
-import { MapEditorModalProps } from './map-editor.types';
+import { type MapEditorModalProps } from './map-editor.types';
 
 const mapContainerStyle = {
     height: '75vh',

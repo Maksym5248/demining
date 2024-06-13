@@ -1,4 +1,4 @@
-import { useLoadScript, Libraries } from '@react-google-maps/api';
+import { useLoadScript, type Libraries } from '@react-google-maps/api';
 import { Spin } from 'antd';
 
 import { CONFIG } from '~/config';

@@ -1,10 +1,10 @@
-import { IQuery } from '@/shared';
+import { type IQuery } from '@/shared';
 
 import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
 import { DB } from '~/db';
-import { UpdateValue, CreateValue } from '~/types';
+import { type UpdateValue, type CreateValue } from '~/types';
 
-import { IExplosiveDTO } from '../types';
+import { type IExplosiveDTO } from '../types';
 
 const create = async (value: CreateValue<IExplosiveDTO>): Promise<IExplosiveDTO> => {
     const explosive = await DB.explosive.create(value);

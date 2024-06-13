@@ -1,4 +1,4 @@
-import { IUser } from '~/stores';
+import { type IUser } from '~/stores';
 
 export interface IMemberForm {
     id: string;

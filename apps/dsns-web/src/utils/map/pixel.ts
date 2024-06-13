@@ -1,4 +1,4 @@
-import { IPoint } from '~/types';
+import { type IPoint } from '~/types';
 
 import { createPointLiteral } from './fabric';
 

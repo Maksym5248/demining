@@ -8,7 +8,7 @@ import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useAsyncEffect } from '~/hooks';
 import { Modal } from '~/services';
-import { IUser } from '~/stores';
+import { type IUser } from '~/stores';
 
 import { s } from './members-list.styles';
 

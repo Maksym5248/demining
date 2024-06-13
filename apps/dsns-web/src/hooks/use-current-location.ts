@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { ExternalApi } from '~/api';
 import { useAsyncEffect } from '~/hooks';
-import { IPoint } from '~/types';
+import { type IPoint } from '~/types';
 
 export const useCurrentLocation = (defaultValue?: IPoint) => {
     const [coords, setCoords] = useState<IPoint | undefined>(defaultValue);

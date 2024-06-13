@@ -1,8 +1,8 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IEmployeeDTO } from '~/api';
+import { type IEmployeeDTO } from '~/api';
 import { EMPLOYEE_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IEmployeeValue {

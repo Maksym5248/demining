@@ -1,17 +1,17 @@
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
-import { ICollectionModel, RequestModel } from '~/utils/models';
+import { type UpdateValue } from '~/types';
+import { type ICollectionModel, RequestModel } from '~/utils/models';
 
 import {
-    IExplosiveObjectValueParams,
+    type IExplosiveObjectValueParams,
     ExplosiveObjectValue,
     updateExplosiveObjectDTO,
     createExplosiveObject,
-    IExplosiveObjectValue,
+    type IExplosiveObjectValue,
 } from './explosive-object.schema';
-import { ExplosiveObjectType, ExplosiveObjectTypeValue } from '../explosive-object-type';
+import { type ExplosiveObjectType, type ExplosiveObjectTypeValue } from '../explosive-object-type';
 
 interface IExplosiveObjectParams {
     collections: {

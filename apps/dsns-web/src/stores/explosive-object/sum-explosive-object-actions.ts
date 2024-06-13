@@ -1,4 +1,4 @@
-import { IExplosiveObjectActionSumValue } from './entities';
+import { type IExplosiveObjectActionSumValue } from './entities';
 
 export class SumExplosiveObjectActions {
     total = 0;

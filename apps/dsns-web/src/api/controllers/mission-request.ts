@@ -1,9 +1,9 @@
-import { IQuery } from '@/shared';
+import { type IQuery } from '@/shared';
 
 import { DB } from '~/db';
-import { UpdateValue, CreateValue } from '~/types';
+import { type UpdateValue, type CreateValue } from '~/types';
 
-import { IMissionRequestDTO, IMissionRequestSumDTO } from '../types';
+import { type IMissionRequestDTO, type IMissionRequestSumDTO } from '../types';
 
 const create = (value: CreateValue<IMissionRequestDTO>): Promise<IMissionRequestDTO> => DB.missionRequest.create(value);
 const update = (id: string, value: UpdateValue<IMissionRequestDTO>): Promise<IMissionRequestDTO> => DB.missionRequest.update(id, value);

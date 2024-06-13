@@ -1,7 +1,7 @@
-import { ROLES } from '@/shared';
-import { Dayjs } from 'dayjs';
+import { type ROLES } from '@/shared';
+import { type Dayjs } from 'dayjs';
 
-import { ICurrentUserDTO, IUserOrganizationDTO } from '~/api';
+import { type ICurrentUserDTO, type IUserOrganizationDTO } from '~/api';
 import { dates } from '~/utils';
 
 export interface ICurrentUserOrganizationValue {

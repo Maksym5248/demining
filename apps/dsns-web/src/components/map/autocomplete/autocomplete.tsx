@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { Autocomplete as AutocompleteGoogle } from '@react-google-maps/api';
 import { Input } from 'antd';
 
-import { IPoint } from '~/types/map';
+import { type IPoint } from '~/types/map';
 import { mapUtils } from '~/utils';
 
 import { s } from './autocomplete.style';

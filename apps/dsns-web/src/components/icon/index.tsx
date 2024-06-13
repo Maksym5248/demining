@@ -1,6 +1,6 @@
 import * as Icons from '@ant-design/icons';
 import CustomIcon from '@ant-design/icons';
-import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import { type AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

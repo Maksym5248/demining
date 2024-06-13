@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { ErrorInner } from '~/types';
+import { type ErrorInner } from '~/types';
 
 import { RequestStateModel } from './RequestStateModel';
 

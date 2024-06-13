@@ -1,14 +1,14 @@
-import { IOrganizationDB, IQuery, IUserDB } from '@/shared';
+import { type IOrganizationDB, type IQuery, type IUserDB } from '@/shared';
 import keyBy from 'lodash/keyBy';
 import map from 'lodash/map';
 import uniq from 'lodash/uniq';
 
 import { DB } from '~/db';
 import { AssetStorage } from '~/services';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 import { removeFields } from '~/utils';
 
-import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types';
+import { type ICurrentUserDTO, type IUserDTO, type IUserOrganizationDTO } from '../types';
 
 const getIds = <T>(arr: T[], key: string) => uniq(map(arr, key).filter((el) => !!el)) as string[];
 

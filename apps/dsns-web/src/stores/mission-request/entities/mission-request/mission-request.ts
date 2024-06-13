@@ -2,10 +2,10 @@ import { message } from 'antd';
 
 import { Api } from '~/api';
 import { missionRequestType } from '~/data';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 import { RequestModel } from '~/utils/models';
 
-import { IMissionRequestValue, updateMissionRequestDTO, createMissionRequest, MissionRequestValue } from './mission-request.schema';
+import { type IMissionRequestValue, updateMissionRequestDTO, createMissionRequest, MissionRequestValue } from './mission-request.schema';
 
 export interface IMissionRequest extends IMissionRequestValue {
     update: RequestModel<[UpdateValue<IMissionRequestValue>]>;

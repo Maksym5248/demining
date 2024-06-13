@@ -1,7 +1,7 @@
 import { getApp } from 'firebase/app';
 import { getStorage, ref, uploadBytes, deleteObject, getBlob } from 'firebase/storage';
 
-import { ASSET_TYPE } from '~/constants';
+import { type ASSET_TYPE } from '~/constants';
 import { Cache } from '~/utils';
 
 export class AssetStorageBase {

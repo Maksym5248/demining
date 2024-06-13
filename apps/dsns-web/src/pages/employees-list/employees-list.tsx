@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IEmployee } from '~/stores';
+import { type IEmployee } from '~/stores';
 import { str } from '~/utils';
 
 import { s } from './employees-list.styles';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { IUseSelectStore } from '~/stores/type';
+import { type IUseSelectStore } from '~/stores/type';
 
 import { useDebounce } from '../common/useDebounce';
 

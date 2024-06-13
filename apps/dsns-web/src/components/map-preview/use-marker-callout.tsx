@@ -1,6 +1,6 @@
-import { MutableRefObject, useMemo } from 'react';
+import { type MutableRefObject, useMemo } from 'react';
 
-import { IMarker, IPoint } from '~/types';
+import { type IMarker, type IPoint } from '~/types';
 import { mapUtils, mathUtils } from '~/utils';
 
 interface IUseMarkerCalloutParams {

@@ -1,6 +1,6 @@
 import { ROLES } from '~/constants';
 
-import { ICurrentUserValue, CurrentUserValue } from './current-user.schema';
+import { type ICurrentUserValue, CurrentUserValue } from './current-user.schema';
 
 export interface ICurrentUser extends ICurrentUserValue {
     isRootAdmin: boolean;

@@ -2,11 +2,11 @@ import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
+import { type UpdateValue } from '~/types';
 import { fileUtils } from '~/utils/file';
-import { IRequestModel, RequestModel } from '~/utils/models';
+import { type IRequestModel, RequestModel } from '~/utils/models';
 
-import { DocumentValue, IDocumentValue, createDocument, updateDocumentDTO } from './document.schema';
+import { DocumentValue, type IDocumentValue, createDocument, updateDocumentDTO } from './document.schema';
 
 export interface IDocument extends IDocumentValue {
     updateFields(data: Partial<IDocumentValue>): void;

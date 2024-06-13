@@ -1,10 +1,10 @@
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
-import { IRequestModel, RequestModel } from '~/utils/models';
+import { type UpdateValue } from '~/types';
+import { type IRequestModel, RequestModel } from '~/utils/models';
 
-import { ITransportValue, updateTransportDTO, createTransport, TransportValue } from './transport.schema';
+import { type ITransportValue, updateTransportDTO, createTransport, TransportValue } from './transport.schema';
 
 export interface ITransport extends ITransportValue {
     updateFields(data: Partial<ITransportValue>): void;

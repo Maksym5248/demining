@@ -1,4 +1,4 @@
-import { Connection, IDataBase } from 'jsstore';
+import { Connection, type IDataBase } from 'jsstore';
 
 // This will ensure that we are using only one instance.
 // Otherwise due to multiple instance multiple worker will be created.

@@ -1,4 +1,4 @@
-import { NavigateOptions, useNavigate as useNavigateLib } from 'react-router-dom';
+import { type NavigateOptions, useNavigate as useNavigateLib } from 'react-router-dom';
 
 import { Analytics } from '~/services';
 

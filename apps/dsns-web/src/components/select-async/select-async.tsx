@@ -1,8 +1,8 @@
-import { JSXElementConstructor, ReactElement, useCallback } from 'react';
+import { type JSXElementConstructor, type ReactElement, useCallback } from 'react';
 
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Select as SelectAnt, SelectProps, Space, Spin } from 'antd';
-import { BaseOptionType, DefaultOptionType } from 'antd/es/select';
+import { Button, Divider, Select as SelectAnt, type SelectProps, Space, Spin } from 'antd';
+import { type BaseOptionType, type DefaultOptionType } from 'antd/es/select';
 
 interface ISelectAsync<T, B extends BaseOptionType | DefaultOptionType = DefaultOptionType> extends SelectProps<T, B> {
     loadingInput?: boolean;

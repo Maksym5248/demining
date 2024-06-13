@@ -1,26 +1,26 @@
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
-import { Api, IEmployeeDTO } from '~/api';
+import { Api, type IEmployeeDTO } from '~/api';
 import { EMPLOYEE_TYPE } from '~/constants';
 import { ranksData } from '~/data';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, ICollectionModel, IListModel, IRequestModel, ListModel, RequestModel } from '~/utils/models';
+import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     Rank,
-    IRank,
-    IRankValue,
+    type IRank,
+    type IRankValue,
     Employee,
-    IEmployee,
-    IEmployeeValue,
+    type IEmployee,
+    type IEmployeeValue,
     createEmployee,
     createEmployeeDTO,
     createRank,
     EmployeeAction,
-    IEmployeeAction,
-    IEmployeeActionValue,
+    type IEmployeeAction,
+    type IEmployeeActionValue,
 } from './entities';
 
 export interface IEmployeeStore {

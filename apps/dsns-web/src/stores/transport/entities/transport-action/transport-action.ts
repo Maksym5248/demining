@@ -1,5 +1,5 @@
-import { ITransportActionValue, TransportActionValue } from './transport-action.schema';
-import { ITransport, Transport } from '../transport/transport';
+import { type ITransportActionValue, TransportActionValue } from './transport-action.schema';
+import { type ITransport, Transport } from '../transport/transport';
 
 export interface ITransportAction extends ITransportActionValue {
     updateFields(data: Partial<ITransportActionValue>): void;

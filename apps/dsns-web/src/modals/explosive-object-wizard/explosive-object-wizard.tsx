@@ -2,12 +2,12 @@ import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
-import { WIZARD_MODE } from '~/constants';
+import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { select } from '~/utils';
 
 import { s } from './explosive-object-wizard.style';
-import { IExplosiveObjectForm } from './explosive-object-wizard.types';
+import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
 interface Props {
     id?: string;

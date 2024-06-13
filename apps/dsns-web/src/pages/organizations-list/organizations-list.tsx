@@ -7,7 +7,7 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, ROUTES, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useNavigate, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { IOrganization } from '~/stores/organization/entities/organization';
+import { type IOrganization } from '~/stores/organization/entities/organization';
 
 const ListItem = observer(({ item }: { item: IOrganization }) => {
     const navigate = useNavigate();

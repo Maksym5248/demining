@@ -2,11 +2,11 @@ import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api } from '~/api';
-import { UpdateValue } from '~/types';
-import { ICollectionModel, IRequestModel, RequestModel } from '~/utils/models';
+import { type UpdateValue } from '~/types';
+import { type ICollectionModel, type IRequestModel, RequestModel } from '~/utils/models';
 
-import { IOrderValue, IOrderValueParams, OrderValue, createOrder, updateOrderDTO } from './order.schema';
-import { IEmployeeAction, IEmployeeActionValue } from '../../../employee';
+import { type IOrderValue, type IOrderValueParams, OrderValue, createOrder, updateOrderDTO } from './order.schema';
+import { type IEmployeeAction, type IEmployeeActionValue } from '../../../employee';
 
 export interface IOrder extends IOrderValue {
     updateFields(data: Partial<IOrderValue>): void;

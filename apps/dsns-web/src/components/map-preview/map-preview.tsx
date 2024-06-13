@@ -1,13 +1,13 @@
 import { memo, useState, useRef, useEffect } from 'react';
 
-import { GoogleMap, GoogleMapProps, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
+import { GoogleMap, type GoogleMapProps, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { Button, Tooltip, Typography } from 'antd';
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
 import { useMapOptions, useVisibleMap } from '~/hooks';
-import { ICircle, ILine, IPoint, IPolygon } from '~/types/map';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '~/types/map';
 import { mapUtils } from '~/utils';
 import { getArea } from '~/utils/map/common';
 

@@ -5,10 +5,10 @@ import { SelectAsync } from '~/components';
 import { EXPLOSIVE_TYPE, MODALS, WIZARD_MODE } from '~/constants';
 import { useSelectStore, useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { IExplosiveActionValue } from '~/stores';
+import { type IExplosiveActionValue } from '~/stores';
 import { removeFields } from '~/utils';
 
-import { IExplosiveActionForm } from './explosive-action-wizard.types';
+import { type IExplosiveActionForm } from './explosive-action-wizard.types';
 
 interface Props {
     id?: string;

@@ -1,8 +1,8 @@
-import { DOCUMENT_TYPE, ILinkedToDocumentDB } from '@/shared';
-import { Dayjs } from 'dayjs';
+import { type DOCUMENT_TYPE, type ILinkedToDocumentDB } from '@/shared';
+import { type Dayjs } from 'dayjs';
 
-import { IMapViewActionDTO, IMapViewActionDTOParams } from '~/api';
-import { ICircle, ILine, IPoint, IPolygon } from '~/types';
+import { type IMapViewActionDTO, type IMapViewActionDTOParams } from '~/api';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '~/types';
 import { dates } from '~/utils';
 
 export interface IMapViewActionValue extends Omit<ILinkedToDocumentDB, 'executedAt'> {

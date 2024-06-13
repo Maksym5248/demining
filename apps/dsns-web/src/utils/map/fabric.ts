@@ -1,4 +1,4 @@
-import { IPoint } from '~/types';
+import { type IPoint } from '~/types';
 
 const createPointLiteral = (latLng: google.maps.LatLng) => ({
     lng: latLng?.lng(),

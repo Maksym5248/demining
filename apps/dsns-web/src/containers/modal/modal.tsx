@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Modal, IModalsMapInternal, IModalsMap, IModalTypeInternal } from '~/services';
+import { Modal, type IModalsMapInternal, type IModalsMap, type IModalTypeInternal } from '~/services';
 
 interface IModalProviderProps {
     modals: IModalsMap;

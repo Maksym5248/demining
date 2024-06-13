@@ -1,11 +1,11 @@
-import { Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 
-import { IEquipmentActionDTO } from '~/api';
+import { type IEquipmentActionDTO } from '~/api';
 import { DOCUMENT_TYPE, EQUIPMENT_TYPE } from '~/constants';
-import { CreateValue } from '~/types';
+import { type CreateValue } from '~/types';
 import { data, dates } from '~/utils';
 
-import { IEquipmentValue, createEquipmentDTO, createEquipment } from '../equipment';
+import { type IEquipmentValue, createEquipmentDTO, createEquipment } from '../equipment';
 
 export interface IEquipmentActionValue extends IEquipmentValue {
     executedAt?: Date;

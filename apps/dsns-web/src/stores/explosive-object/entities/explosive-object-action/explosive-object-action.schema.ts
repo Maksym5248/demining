@@ -1,8 +1,8 @@
-import { IExplosiveObjectActionDTO, IExplosiveObjectActionDTOParams, IExplosiveObjectActionSumDTO } from '~/api';
-import { DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
+import { type IExplosiveObjectActionDTO, type IExplosiveObjectActionDTOParams, type IExplosiveObjectActionSumDTO } from '~/api';
+import { type DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 import { data } from '~/utils';
 
-import { ExplosiveObjectValue, IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';
+import { ExplosiveObjectValue, type IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';
 
 export interface IExplosiveObjectActionValue extends IExplosiveObjectValue {
     explosiveObjectId: string;

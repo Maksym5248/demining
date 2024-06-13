@@ -1,4 +1,4 @@
-import { IRankValue, RankValue } from './rank.schema';
+import { type IRankValue, RankValue } from './rank.schema';
 
 export type IRank = IRankValue;
 

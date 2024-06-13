@@ -86,8 +86,11 @@ module.exports = {
 		"indent": ["error", "tab"],
 		"arrow-body-style": 0,
 		"prefer-arrow-callback": 0,
-		// "@typescript-eslint/consistent-type-exports": 0,
-		// "@typescript-eslint/consistent-type-imports": 0,
+		"@typescript-eslint/consistent-type-exports": 2,
+		"@typescript-eslint/consistent-type-imports": ["error", {
+			prefer: 'type-imports',
+			fixStyle: 'inline-type-imports',
+		}],
 		"@typescript-eslint/no-floating-promises": 0,
 		"@typescript-eslint/no-unused-vars": "error",
 		"@typescript-eslint/naming-convention": [
