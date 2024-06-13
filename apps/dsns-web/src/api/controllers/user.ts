@@ -6,6 +6,7 @@ import uniq from 'lodash/uniq';
 import { DB } from '~/db';
 import { AssetStorage } from '~/services';
 import { UpdateValue } from '~/types';
+import { removeFields } from '~/utils';
 
 import { ICurrentUserDTO, IUserDTO, IUserOrganizationDTO } from '../types';
 
@@ -22,19 +23,19 @@ const getUserOrganization = async (user: IUserDB | null): Promise<IUserOrganizat
         return null;
     }
 
-    const { membersIds, ...organization } = res;
+    removeFields(res, 'membersIds');
 
-    return organization;
+    return res;
 };
 
 const update = async (id: string, value: UpdateValue<ICurrentUserDTO>): Promise<ICurrentUserDTO> => {
     const res = await DB.user.update(id, value);
 
     const organization = await getUserOrganization(res);
-    const { organizationId, ...user } = res;
+    removeFields(res, 'organizationId');
 
     return {
-        ...user,
+        ...res,
         organization,
     };
 };
@@ -83,10 +84,11 @@ const get = async (id: string): Promise<ICurrentUserDTO | null> => {
     if (!res) return null;
 
     const organization = await getUserOrganization(res);
-    const { organizationId, ...user } = res;
+
+    removeFields(res, 'organizationId');
 
     return {
-        ...user,
+        ...res,
         organization,
     };
 };

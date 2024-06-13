@@ -29,7 +29,6 @@ interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerS
     zoom?: number;
     date?: Dayjs;
     explosiveObjects?: string[];
-    position?: IPoint;
     city?: string;
     isEdit: boolean;
     initialZoom?: number;
@@ -40,7 +39,6 @@ interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerS
 function Component({
     date,
     explosiveObjects,
-    position,
     isEdit,
     onEdit,
     marker,

@@ -142,11 +142,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const list = isSearch ? this.searchList : this.list;
 
             const res = await Api.explosiveObject.getList({
-                limit: this.list.pageSize,
+                limit: list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.createdAt),
             });
 
-            this.list.push(res.map(createExplosiveObject), true);
+            list.push(res.map(createExplosiveObject), true);
         },
         onError: () => message.error('Виникла помилка'),
     });

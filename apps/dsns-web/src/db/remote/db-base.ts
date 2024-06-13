@@ -28,6 +28,8 @@ import {
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
 
+import { removeFields } from '~/utils';
+
 function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];
     const arr = value.toLowerCase().split(/\s+/);
@@ -145,8 +147,8 @@ export class DBBase<T extends IBaseDB> {
         const snapshot = await getDocs(q);
 
         const data = snapshot.docs.map((d) => {
-            // @ts-expect-error
-            const { _search, ...newData } = d.data();
+            const newData = d.data();
+            removeFields(newData, '_search');
             return newData;
         }) as (T & {
             createdAt: Timestamp;

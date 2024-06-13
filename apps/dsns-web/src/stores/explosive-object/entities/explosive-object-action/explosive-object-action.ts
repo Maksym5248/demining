@@ -1,5 +1,3 @@
-import { toJS } from 'mobx';
-
 import { ICollectionModel } from '~/utils/models';
 
 import { ExplosiveObjectActionValue, IExplosiveObjectActionValue } from './explosive-object-action.schema';
@@ -28,8 +26,7 @@ export class ExplosiveObjectAction extends ExplosiveObjectActionValue implements
     }
 
     get value() {
-        const { type, ...value } = toJS(this);
-        return value;
+        return new ExplosiveObjectActionValue(this);
     }
 
     get type() {

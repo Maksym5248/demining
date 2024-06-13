@@ -10,7 +10,7 @@ import {
     createOrganization,
     createOrganizationDTO,
 } from './organization.schema';
-import { IUser, IUserStore, IUserValue, User, createUser } from '../../../user';
+import { IUser, IUserStore, IUserValue, createUser } from '../../../user';
 import { IViewerStore } from '../../../viewer';
 
 export interface IOrganization extends IOrganizationValue {

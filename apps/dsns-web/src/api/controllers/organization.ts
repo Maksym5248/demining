@@ -2,22 +2,25 @@ import { IOrganizationDB, IQuery, IUserDB } from '@/shared';
 
 import { ROLES } from '~/constants';
 import { DB } from '~/db';
+import { removeFields } from '~/utils';
 
 import { IOrganizationDTO, IUserDTO, ICreateOrganizationDTO } from '../types';
 
 const create = async (value: Pick<ICreateOrganizationDTO, 'name'>): Promise<IOrganizationDTO> => {
-    const { membersIds, ...organization } = await DB.organization.create({
+    const res = await DB.organization.create({
         ...value,
         membersIds: [],
     });
 
-    return organization;
+    removeFields(res, 'membersIds');
+
+    return res;
 };
 
 const update = async (id: string, value: ICreateOrganizationDTO): Promise<Omit<IOrganizationDTO, 'members'>> => {
     const res = await DB.organization.update(id, value);
-    const { membersIds, ...organization } = res;
-    return organization;
+    removeFields(res, 'membersIds');
+    return res;
 };
 
 const updateMember = async (organizationId: string, userId: string, isAdmin: boolean, isRootAdmin: boolean): Promise<IUserDTO> => {
@@ -67,7 +70,10 @@ const getList = async (query?: IQuery): Promise<IOrganizationDTO[]> => {
         },
         ...(query ?? {}),
     });
-    return organizations.map(({ membersIds, ...restOrganization }) => restOrganization);
+    return organizations.map((organization) => {
+        removeFields(organization, 'membersIds');
+        return organization;
+    });
 };
 
 const get = async (id: string): Promise<IOrganizationDTO | null> => {
@@ -75,9 +81,9 @@ const get = async (id: string): Promise<IOrganizationDTO | null> => {
 
     if (!res) throw new Error('There is no organization with id');
 
-    const { membersIds, ...organization } = res;
+    removeFields(res, 'membersIds');
 
-    return organization;
+    return res;
 };
 
 const getOrganizationMembers = async (id: string): Promise<IUserDTO[]> => {

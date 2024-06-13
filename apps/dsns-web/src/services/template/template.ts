@@ -1,7 +1,6 @@
 import { TemplateHandler, ImagePlugin, LinkPlugin, LoopPlugin, TextPlugin, RawXmlPlugin } from 'easy-template-x';
 
 import { MIME_TYPE } from '~/constants';
-import { IPoint } from '~/types';
 import { fileUtils } from '~/utils/file';
 
 const handler = new TemplateHandler({

@@ -1,7 +1,6 @@
 import { Dayjs } from 'dayjs';
 
 import {
-    IExplosiveActionDTOParams,
     IExplosiveObjectActionDTOParams,
     IMissionReportDTO,
     IMissionReportDTOParams,

@@ -8,7 +8,7 @@ import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE,
 import { useStore, useWizard } from '~/hooks';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 import { IEmployee, IMissionReport, IMissionRequest, IOrder, createAddress } from '~/stores';
-import { dates, mapUtils } from '~/utils';
+import { dates, mapUtils, removeFields } from '~/utils';
 import { fileUtils } from '~/utils/file';
 
 import { ExplosiveObjectAction, Timer, Transport, Equipment, Approved, Documents, Act, Territory, Employees, Map } from './components';
@@ -23,8 +23,8 @@ interface Props {
     mode: WIZARD_MODE;
 }
 
-function removeId<T extends { id: string }>({ id, ...rest }: T) {
-    return rest;
+function removeId<T extends { id?: string }>(item: T) {
+    return removeFields(item, 'id');
 }
 
 const createCopyValue = (currentMissionReport: IMissionReport) => ({

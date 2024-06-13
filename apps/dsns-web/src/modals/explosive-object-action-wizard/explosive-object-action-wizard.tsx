@@ -6,6 +6,7 @@ import { EXPLOSIVE_OBJECT_CATEGORY, MODALS, WIZARD_MODE } from '~/constants';
 import { useSelectStore, useStore } from '~/hooks';
 import { Modal } from '~/services';
 import { IExplosiveObjectTypeValue } from '~/stores';
+import { removeFields } from '~/utils';
 
 import { IExplosiveObjectActionForm } from './explosive-object-action-wizard.types';
 
@@ -30,7 +31,9 @@ interface Props {
 
 export const ExplosiveObjectActionWizardModal = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
     const { explosiveObject } = useStore();
-    const { initialItem, ...explosiveObjectProps } = useSelectStore(explosiveObject);
+    const explosiveObjectProps = useSelectStore(explosiveObject);
+
+    removeFields(explosiveObjectProps, 'initialItem');
 
     const onFinish = async (values: IExplosiveObjectActionForm) => {
         onSubmit?.(values);

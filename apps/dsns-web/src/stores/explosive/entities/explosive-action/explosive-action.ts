@@ -1,5 +1,3 @@
-import { toJS } from 'mobx';
-
 import { ExplosiveActionValue, IExplosiveActionValue } from './explosive-action.schema';
 import { Explosive } from '../explosive';
 
@@ -15,8 +13,7 @@ export class ExplosiveAction extends ExplosiveActionValue {
     }
 
     get value() {
-        const { update, ...value } = toJS(this);
-        return value;
+        return new ExplosiveActionValue(this);
     }
 
     get explosive() {

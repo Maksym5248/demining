@@ -61,20 +61,10 @@ module.exports = {
 		],
 		"import/newline-after-import": "error",
 		"import/no-default-export": "error",
+		"import/prefer-default-export": 0,
 		"import/no-self-import": "error",
 		"import/no-useless-path-segments": "error",
-		"import/no-cycle": 0,
-		"import/prefer-default-export": 0,
-		"import/no-extraneous-dependencies": 0,
 		"import/extensions": 0,
-		"@typescript-eslint/naming-convention": [
-			"error",
-			{
-				selector: 'typeLike',
-				format: ['PascalCase', 'UPPER_CASE'],
-			},
-		],
-		"@typescript-eslint/no-floating-promises": 0,
 		"no-underscore-dangle": 0,
 		"no-mixed-operators": [
 			"warn",
@@ -90,13 +80,22 @@ module.exports = {
 		],
 		"no-unused-expressions": 0,
 		"no-param-reassign": 0,
-		"no-nested-ternary": 2,
+		"no-nested-ternary": "error",
 		"class-methods-use-this": 0,
-		"@typescript-eslint/consistent-type-exports": 0,
-		"@typescript-eslint/consistent-type-imports": 0,
 		"no-promise-executor-return": 0,
 		"indent": ["error", "tab"],
 		"arrow-body-style": 0,
-		"prefer-arrow-callback": 0
+		"prefer-arrow-callback": 0,
+		// "@typescript-eslint/consistent-type-exports": 0,
+		// "@typescript-eslint/consistent-type-imports": 0,
+		"@typescript-eslint/no-floating-promises": 0,
+		"@typescript-eslint/no-unused-vars": "error",
+		"@typescript-eslint/naming-convention": [
+			"error",
+			{
+				selector: 'typeLike',
+				format: ['PascalCase', 'UPPER_CASE'],
+			},
+		],
 	}
 }

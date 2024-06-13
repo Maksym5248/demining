@@ -28,6 +28,7 @@ export interface IBaseDB {
     id: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
+    _search?: string[];
 }
 export interface ILinkedToDocumentDB {
     documentType: DOCUMENT_TYPE;

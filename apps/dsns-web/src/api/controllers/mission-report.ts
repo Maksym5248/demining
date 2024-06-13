@@ -19,6 +19,7 @@ import omit from 'lodash/omit';
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 import { DB } from '~/db';
 import { CreateValue } from '~/types';
+import { removeFields } from '~/utils';
 
 import { IMissionReportDTO, IMissionReportDTOParams, IMissionReportPreviewDTO, IMissionReportSumDTO } from '../types';
 
@@ -417,18 +418,19 @@ export const update = async (
     value: CreateValue<IMissionReportDTOParams>,
     missionReportDTO: IMissionReportDTO,
 ): Promise<IMissionReportDB> => {
-    const {
-        approvedById,
-        mapView,
-        transportExplosiveObjectId,
-        transportHumansId,
-        mineDetectorId,
-        squadLeaderId,
-        squadIds,
-        explosiveObjectActions,
-        explosiveActions,
-        ...rest
-    } = value;
+    const newValue = { ...value };
+
+    removeFields(newValue, [
+        'approvedById',
+        'mapView',
+        'transportExplosiveObjectId',
+        'transportHumansId',
+        'mineDetectorId',
+        'squadLeaderId',
+        'squadIds',
+        'explosiveObjectActions',
+        'explosiveActions',
+    ]);
 
     const actions = await generateActions(missionReportDTO.id, value);
 
@@ -441,7 +443,7 @@ export const update = async (
     batchRemoveActions(removeList);
     batchCreateActions(createList);
     batchUpdateActions(updateList);
-    DB.missionReport.batchUpdate(missionReportDTO.id, rest);
+    DB.missionReport.batchUpdate(missionReportDTO.id, newValue);
     await DB.batchCommit();
 
     const res = await DB.missionReport.get(missionReportDTO.id);
@@ -460,22 +462,23 @@ export const updateController = async (id: string, value: CreateValue<IMissionRe
 };
 
 export const create = async (value: CreateValue<IMissionReportDTOParams>): Promise<IMissionReportDTO> => {
-    const {
-        approvedById,
-        mapView,
-        transportExplosiveObjectId,
-        transportHumansId,
-        mineDetectorId,
-        explosiveObjectActions,
-        squadLeaderId,
-        squadIds,
-        explosiveActions,
-        ...rest
-    } = value;
+    const newValue = { ...value };
+
+    removeFields(newValue, [
+        'approvedById',
+        'mapView',
+        'transportExplosiveObjectId',
+        'transportHumansId',
+        'mineDetectorId',
+        'squadLeaderId',
+        'squadIds',
+        'explosiveObjectActions',
+        'explosiveActions',
+    ]);
 
     const missionReportData: Omit<IMissionReportDB, 'createdAt' | 'updatedAt' | 'authorId' | 'authorId'> = {
         id: DB.missionReport.uuid(),
-        ...rest,
+        ...newValue,
     };
 
     const actions = await generateActions(missionReportData.id, value);
