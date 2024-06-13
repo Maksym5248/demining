@@ -16,8 +16,9 @@
   "packageManager": "yarn@1.22.19",
   "scripts": {
     "lint-staged": "lint-staged",
-    "link:web": "yarn workspace dsns-web add @/shared && yarn workspace dsns-web add @/shared-client",
+    "link:web": "yarn workspace dsns-web add ./packages/shared && yarn workspace dsns-web add ./packages/shared-client",
     "link:functions": "workspace functions add @/shared",
+    "link:ammo-mobile": "yarn workspace ammo-mobile add ./packages/shared && yarn workspace ammo-mobile add ./packages/shared-client",
     "postinstall": "cd ./packages/shared && yarn postinstall && cd ../shared-client && yarn postinstall",
     "clean": "cd ./apps/functions && yarn clean && cd ../../packages/shared && yarn clean && cd ../../apps/dsns-web && yarn clean && cd ../../ && rm -rf node_modules",
     "build:functions": "cd ./apps/functions && yarn build",

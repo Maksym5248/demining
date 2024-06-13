@@ -1,17 +1,17 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
+    "extends": "@/shared/tsconfig-base.json",
+    "compilerOptions": {
+        "jsx": "react-native",
+        "noEmit": true,
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "paths": {
+            "~/*": ["./src/*"]
+        }
+    },
+    "references": [
+        {
+            "path": "../../packages/shared"
+        }
+    ],
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
