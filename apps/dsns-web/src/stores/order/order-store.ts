@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IOrderPreviewDTO } from '~/api';
 import { type CreateValue } from '~/types';
@@ -32,6 +33,8 @@ export class OrderStore implements IOrderStore {
 
     constructor({ stores }: IOrderStoreParams) {
         this.stores = stores;
+
+        makeAutoObservable(this);
     }
 
     private getCollections = () => ({
@@ -65,8 +68,8 @@ export class OrderStore implements IOrderStore {
             this.stores.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
             this.list.unshift(createOrder(res));
         },
-        onSuccuss: message.error('Додано успішно'),
-        onError: message.error('Не вдалось додати'),
+        onSuccuss: () => message.success('Додано успішно'),
+        onError: () => message.error('Не вдалось додати'),
     });
 
     remove = new RequestModel({
@@ -76,8 +79,8 @@ export class OrderStore implements IOrderStore {
             this.searchList.removeById(id);
             this.collection.remove(id);
         },
-        onSuccuss: message.error('Видалено успішно'),
-        onError: message.error('Не вдалось видалити'),
+        onSuccuss: () => message.success('Видалено успішно'),
+        onError: () => message.error('Не вдалось видалити'),
     });
 
     fetchItem = new RequestModel({
@@ -86,7 +89,7 @@ export class OrderStore implements IOrderStore {
             this.stores.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
             this.collection.set(res.id, createOrder(res));
         },
-        onError: message.error('Виникла помилка'),
+        onError: () => message.error('Виникла помилка'),
     });
 
     fetchList = new RequestModel({
@@ -107,7 +110,7 @@ export class OrderStore implements IOrderStore {
 
             this.append(res, isSearch);
         },
-        onError: message.error('Виникла помилка'),
+        onError: () => message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
@@ -129,6 +132,6 @@ export class OrderStore implements IOrderStore {
 
             this.append(res, isSearch, true);
         },
-        onError: message.error('Виникла помилка'),
+        onError: () => message.error('Виникла помилка'),
     });
 }

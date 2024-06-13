@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { type Dayjs } from 'dayjs';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IMissionRequestDTO, type IMissionRequestSumDTO } from '~/api';
 import { type CreateValue } from '~/types';
@@ -37,6 +38,10 @@ export class MissionRequestStore implements IMissionRequestStore {
     list = new ListModel<IMissionRequest, IMissionRequestValue>({ collection: this.collection });
     searchList = new ListModel<IMissionRequest, IMissionRequestValue>({ collection: this.collection });
     sum = { total: 0 };
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     setSum(sum: IMissionRequestSumDTO) {
         this.sum = createMissionRequestSum(sum);

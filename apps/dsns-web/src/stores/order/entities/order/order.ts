@@ -48,7 +48,7 @@ export class Order extends OrderValue implements IOrder {
             const res = await Api.order.update(this.id, updateOrderDTO(data));
             this.updateFields(createOrder(res));
         },
-        onSuccuss: message.error('Збережено успішно'),
-        onError: message.error('Не вдалось додати'),
+        onSuccuss: () => message.success('Збережено успішно'),
+        onError: () => message.error('Не вдалось додати'),
     });
 }

@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IUserDTO } from '~/api';
 import { dates } from '~/utils';
@@ -18,6 +19,10 @@ export class UserStore implements IUserStore {
     collection = new CollectionModel<IUser, IUserValue>({ model: User });
     listUnassigned = new ListModel<IUser, IUserValue>(this);
     searchListUnassigned = new ListModel<IUser, IUserValue>(this);
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     append(res: IUserDTO[], isSearch: boolean, isMore?: boolean) {
         const list = isSearch ? this.searchListUnassigned : this.listUnassigned;

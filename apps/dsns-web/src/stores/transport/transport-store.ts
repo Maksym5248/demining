@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type ITransportDTO } from '~/api';
 import { TRANSPORT_TYPE } from '~/constants';
@@ -45,6 +46,10 @@ export class TransportStore implements ITransportStore {
 
     list = new ListModel<ITransport, ITransportValue>({ collection: this.collection });
     searchList = new ListModel<ITransport, ITransportValue>({ collection: this.collection });
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     append(res: ITransportDTO[], isSearch: boolean, isMore?: boolean) {
         const list = isSearch ? this.searchList : this.list;

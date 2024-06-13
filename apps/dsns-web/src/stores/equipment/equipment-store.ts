@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IEquipmentDTO } from '~/api';
 import { EQUIPMENT_TYPE } from '~/constants';
@@ -41,6 +42,10 @@ export class EquipmentStore implements IEquipmentStore {
     });
     list = new ListModel<IEquipment, IEquipmentValue>({ collection: this.collection });
     searchList = new ListModel<IEquipment, IEquipmentValue>({ collection: this.collection });
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     get listMineDetectors() {
         return this.list.asArray.filter((el) => el.type === EQUIPMENT_TYPE.MINE_DETECTOR);

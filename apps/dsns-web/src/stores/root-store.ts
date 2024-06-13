@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { makeAutoObservable } from 'mobx';
 
 import { FIREBASE_CONFIG } from '~/config';
 import { DB } from '~/db';
@@ -85,6 +86,8 @@ export class RootStore implements IRootStore {
         this.user = new UserStore();
         this.organization = new OrganizationStore({ stores: this });
         this.viewer = new ViewerStore();
+
+        makeAutoObservable(this);
     }
 
     setLoaded(value: boolean) {

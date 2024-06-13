@@ -176,6 +176,6 @@ const renderLoader = () => (
 
 export const RootRouter = observer(() => {
     const store = useStore();
-
+    console.log('store.isInitialized, store.isInitialized');
     return store.isInitialized ? <RouterProvider router={router} fallbackElement={renderLoader()} /> : renderLoader();
 });

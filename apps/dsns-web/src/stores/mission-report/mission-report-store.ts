@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { type Dayjs } from 'dayjs';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IMissionReportDTO, type IMissionReportPreviewDTO, type IMissionReportSumDTO } from '~/api';
 import { createMissionRequest, type IMissionRequestStore } from '~/stores/mission-request';
@@ -76,6 +77,8 @@ export class MissionReportStore implements IMissionReportStore {
 
     constructor(params: MissionReportParams) {
         this.stores = params.stores;
+
+        makeAutoObservable(this);
     }
 
     setSum(sum: IMissionReportSumDTO) {

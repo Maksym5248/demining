@@ -1,6 +1,9 @@
+import { type Dayjs } from 'dayjs';
+import { makeAutoObservable } from 'mobx';
+
 import { ROLES } from '~/constants';
 
-import { type ICurrentUserValue, CurrentUserValue } from './current-user.schema';
+import { type ICurrentUserValue, type ICurrentUserOrganizationValue } from './current-user.schema';
 
 export interface ICurrentUser extends ICurrentUserValue {
     isRootAdmin: boolean;
@@ -10,9 +13,23 @@ export interface ICurrentUser extends ICurrentUserValue {
     isWaitingApproved: boolean;
 }
 
-export class CurrentUser extends CurrentUserValue implements ICurrentUser {
+export class CurrentUser implements ICurrentUser {
+    id: string;
+    roles: ROLES[];
+    email: string;
+    organization: ICurrentUserOrganizationValue | null;
+    createdAt: Dayjs;
+    updatedAt: Dayjs;
+
     constructor(value: ICurrentUserValue) {
-        super(value);
+        this.id = value.id;
+        this.roles = value.roles;
+        this.email = value.email;
+        this.organization = value.organization;
+        this.createdAt = value.createdAt;
+        this.updatedAt = value.updatedAt;
+
+        makeAutoObservable(this);
     }
 
     get isRootAdmin() {

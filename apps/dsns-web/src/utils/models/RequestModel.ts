@@ -46,6 +46,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
             this._onSuccuss?.();
             this.requestState.success();
         } catch (e) {
+            console.log('TEST: ERROR', e);
             this._onError?.(e as Error);
             this.requestState.failure(e as Error);
             throw e;

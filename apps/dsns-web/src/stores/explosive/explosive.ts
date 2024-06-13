@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { type Dayjs } from 'dayjs';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IExplosiveActionSumDTO, type IExplosiveDTO } from '~/api';
 import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
@@ -48,6 +49,10 @@ export class ExplosiveStore implements IExplosiveStore {
     list = new ListModel<IExplosive, IExplosiveValue>({ collection: this.collection });
     searchList = new ListModel<IExplosive, IExplosiveValue>({ collection: this.collection });
     sum: SumExplosiveActions = new SumExplosiveActions();
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     setSum(sum: IExplosiveActionSumDTO) {
         this.sum = createExplosiveActionSum(sum);

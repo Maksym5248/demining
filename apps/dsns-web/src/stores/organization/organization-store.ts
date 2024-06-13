@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type ICreateOrganizationDTO, type IOrganizationDTO } from '~/api';
 import { dates } from '~/utils';
@@ -47,6 +48,7 @@ export class OrganizationStore implements IOrganizationStore {
         this.collection = new CollectionModel<IOrganization, IOrganizationValue>({ factory: (data) => new Organization(data, this) });
         this.list = new ListModel<IOrganization, IOrganizationValue>(this);
         this.searchList = new ListModel<IOrganization, IOrganizationValue>(this);
+        makeAutoObservable(this);
     }
 
     append(res: IOrganizationDTO[], isSearch: boolean, isMore?: boolean) {

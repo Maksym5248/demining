@@ -31,19 +31,10 @@ export class Document extends DocumentValue implements IDocument {
 
     update = new RequestModel({
         run: async (data: UpdateValue<IDocumentValue>, file: File) => {
-            try {
-                const res = await Api.document.update(this.id, updateDocumentDTO(data), file);
-
-                this.updateFields(createDocument(res));
-
-                message.success({
-                    type: 'success',
-                    content: 'Збережено успішно',
-                });
-            } catch (err) {
-                message.error('Не вдалось додати');
-            }
+            const res = await Api.document.update(this.id, updateDocumentDTO(data), file);
+            this.updateFields(createDocument(res));
         },
+        onSuccuss: () => message.success('Збережено успішно'),
         onError: () => message.error('Не вдалось увійти, спробуйте ще раз'),
     });
 }

@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { makeAutoObservable } from 'mobx';
 
 import { Api, type IMapViewActionDTO } from '~/api';
 import { type IGeoBox, type IGeohashRange } from '~/types';
@@ -27,6 +28,10 @@ export class MapStore implements IMapStore {
     });
     list = new ListModel<IMapViewAction, IMapViewActionValue>({ collection: this.collection });
     loadedGeohashes: IGeohashes[] = [];
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     append(res: IMapViewActionDTO | IMapViewActionDTO[]) {
         const value = Array.isArray(res) ? res : [res];
