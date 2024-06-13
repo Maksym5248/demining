@@ -9,7 +9,7 @@ module.exports = {
   extends: [
     '@/shared/eslint-config-base.js',
     '@/shared-client/eslint-config-client.js',
-    'plugin:react-native/all',
+    // 'plugin:react-native/all',
     '@/shared/eslint-config-prettier'
   ],
   plugins: ["react-native"],
