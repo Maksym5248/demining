@@ -9,6 +9,7 @@
   "workspaces": [
     "packages/shared",
     "packages/shared-client",
+    "apps/ammo-mobile",
     "apps/dsns-web",
     "apps/functions"
   ],
