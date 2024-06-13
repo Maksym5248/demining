@@ -8,15 +8,16 @@
   "private": true,
   "workspaces": [
     "packages/shared",
+    "packages/shared-client",
     "apps/dsns-web",
     "apps/functions"
   ],
   "packageManager": "yarn@1.22.19",
   "scripts": {
     "lint-staged": "lint-staged",
-    "link:web": "yarn workspace dsns-web add @/shared",
+    "link:web": "yarn workspace dsns-web add @/shared && yarn workspace dsns-web add @/shared-client",
     "link:functions": "workspace functions add @/shared",
-    "postinstall": "cd ./packages/shared && yarn postinstall",
+    "postinstall": "cd ./packages/shared && yarn postinstall && cd ../shared-client && yarn postinstall",
     "clean": "cd ./apps/functions && yarn clean && cd ../../packages/shared && yarn clean && cd ../../apps/dsns-web && yarn clean && cd ../../ && rm -rf node_modules",
     "build:functions": "cd ./apps/functions && yarn build",
     "build:web": "cd ./apps/dsns-web && yarn build",
