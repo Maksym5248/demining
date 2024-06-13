@@ -1,0 +1,18 @@
+{
+    "extends": "@/shared/tsconfig-base.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "noEmit": true,
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "paths": {
+            "~/*": ["./src/*"]
+        }
+    },
+    "references": [
+        {
+            "path": "../../packages/shared"
+        }
+    ],
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+    "exclude": ["node_modules"]
+}

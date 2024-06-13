@@ -1,0 +1,21 @@
+.git
+.husky
+node_modules
+
+# tests
+**/.cache
+**/__snapshots__
+**/__fixtures__
+
+package-lock.json
+
+# Uncomment if needed
+# dist
+# out
+# .next
+# .vercel
+# pnpm-lock.yaml
+# yarn.lock
+# **/coverage
+# vendor
+# storybook-static

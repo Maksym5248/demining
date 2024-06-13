@@ -1,0 +1,19 @@
+{
+    "extends": "@/shared/tsconfig-base.json",
+    "compilerOptions": {
+        "sourceMap": true,
+        "lib": ["esnext"],
+        "outDir": "./dist",
+        "composite": true,
+        "paths": {
+          "~/*": ["./src/*"]
+        },
+    },
+    "references": [
+        {
+          "path": "../../packages/shared"
+        }
+    ],
+    "include": ["**/*.ts", "*.ts", "*.js"],
+    "exclude": ["node_modules", "dist"]
+}

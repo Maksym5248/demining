@@ -6,18 +6,28 @@
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": ["web", "shared", "functions"],
+  "workspaces": [
+    "packages/shared",
+    "packages/shared-client",
+    "apps/dsns-web",
+    "apps/functions"
+  ],
   "packageManager": "yarn@1.22.19",
   "scripts": {
-    "link:web": "yarn workspace web add @/shared",
+    "lint-staged": "lint-staged",
+    "link:web": "yarn workspace dsns-web add @/shared && yarn workspace dsns-web add @/shared-client",
     "link:functions": "workspace functions add @/shared",
-    "postinstall": "cd ./shared && yarn postinstall",
-    "clean": "cd functions && yarn clean && cd ../shared && yarn clean && cd ../web && yarn clean && cd .. && rm -rf node_modules",
-    "build:functions": "cd ./functions && yarn build",
-    "build:web": "cd ./web && yarn build",
+    "postinstall": "cd ./packages/shared && yarn postinstall && cd ../shared-client && yarn postinstall",
+    "clean": "cd ./apps/functions && yarn clean && cd ../../packages/shared && yarn clean && cd ../../apps/dsns-web && yarn clean && cd ../../ && rm -rf node_modules",
+    "build:functions": "cd ./apps/functions && yarn build",
+    "build:web": "cd ./apps/dsns-web && yarn build",
     "reset": "yarn clean && yarn install && yarn build:functions && yarn build:web",
-    "deploy:functions:dev": "cd ./web && yarn deploy:functions:dev",
-    "deploy:functions:prod": "cd ./web && deploy:functions:prod",
+    "deploy:functions:dev": "cd ./apps/dsns-web && yarn deploy:functions:dev",
+    "deploy:functions:prod": "cd ./apps/dsns-web && deploy:functions:prod",
     "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev"
+  },
+  "devDependencies": {
+    "husky": "^4.3.0",
+    "lint-staged": "^14.0.1"
   }
 }

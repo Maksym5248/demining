@@ -10299,11 +10299,6 @@ mobx-react@^7.6.0:
   dependencies:
     mobx-react-lite "^3.4.0"
 
-mobx-state-tree@^5.1.8:
-  version "5.4.2"
-  resolved "https://registry.npmjs.org/mobx-state-tree/-/mobx-state-tree-5.4.2.tgz#351bb49c9d08d2482688357cccc59ce51d773615"
-  integrity sha512-SGXAh2KCBQbWVcxeQbZEr5pchTgcfNZmGVRL2a2Me+pSMH98bZWXD6EOuuijbTGbc0hOoOsbab3JdwJyr+fW7Q==
-
 mobx@^6.8.0:
   version "6.12.3"
   resolved "https://registry.npmjs.org/mobx/-/mobx-6.12.3.tgz#b6a0fde4268116be602d50bffb32f1b90a8fb077"

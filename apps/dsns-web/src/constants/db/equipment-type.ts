@@ -1,0 +1,3 @@
+export enum EQUIPMENT_TYPE {
+    MINE_DETECTOR = 'MINE_DETECTOR',
+}
