@@ -1,4 +1,4 @@
-import { RANKS } from '~/constants';
+import { RANKS } from '@/shared';
 
 import { type IRank } from './rank';
 

@@ -1,9 +1,8 @@
+import { str } from '@/shared';
+import { type CollectionModel, RequestModel, type UpdateValue } from '@/shared-client';
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { type UpdateValue } from '~/types';
-import { str } from '~/utils';
-import { type CollectionModel, RequestModel } from '~/utils/models';
 
 import { createEmployee, updateEmployeeDTO, type IEmployeeValue, EmployeeValue } from './employee.schema';
 import { type IRank, type IRankValue } from '../rank';

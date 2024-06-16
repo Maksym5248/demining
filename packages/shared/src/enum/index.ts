@@ -10,3 +10,4 @@ export * from './db/roles';
 export * from './db/transport-type';
 export * from './db/ranks';
 export * from './file';
+export * from './tables';

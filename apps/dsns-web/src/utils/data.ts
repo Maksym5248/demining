@@ -1,6 +1,5 @@
+import { type UpdateValue, type CreateValue } from '@/shared-client';
 import isUndefined from 'lodash/isUndefined';
-
-import { type UpdateValue, type CreateValue } from '~/types';
 
 const createUpdateDTO =
     <T, B>(createFunction: (v: Partial<T>) => CreateValue<B>) =>

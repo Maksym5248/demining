@@ -14,11 +14,11 @@ import {
     type IExplosiveActionDB,
     type IExplosiveDB,
 } from '@/shared';
+import { type CreateValue } from '@/shared-client';
 import omit from 'lodash/omit';
 
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 import { DB } from '~/db';
-import { type CreateValue } from '~/types';
 import { removeFields } from '~/utils';
 
 import { type IMissionReportDTO, type IMissionReportDTOParams, type IMissionReportPreviewDTO, type IMissionReportSumDTO } from '../types';

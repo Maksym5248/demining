@@ -1,7 +1,7 @@
 import { type IQuery } from '@/shared';
+import { type UpdateValue, type CreateValue } from '@/shared-client';
 
 import { DB } from '~/db';
-import { type UpdateValue, type CreateValue } from '~/types';
 
 import { type IMissionRequestDTO, type IMissionRequestSumDTO } from '../types';
 

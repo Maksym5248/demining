@@ -1,8 +1,6 @@
+import { type IRequestModel, type IAuth, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
-
-import { type IAuthService } from '~/services';
-import { type IRequestModel, RequestModel } from '~/utils/models';
 
 export interface IAuthStore {
     signInWithGoogle: IRequestModel;
@@ -12,13 +10,13 @@ export interface IAuthStore {
 }
 export interface IAuthStoreParams {
     services: {
-        auth: IAuthService;
+        auth: IAuth;
     };
 }
 
 export class AuthStore implements IAuthStore {
     services: {
-        auth: IAuthService;
+        auth: IAuth;
     };
 
     signInWithGoogle = new RequestModel({

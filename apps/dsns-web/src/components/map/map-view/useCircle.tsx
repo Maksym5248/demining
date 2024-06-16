@@ -1,9 +1,10 @@
 import { useCallback, useRef } from 'react';
 
-import { type ICircle, type ILine, type IPolygon } from '~/types/map';
 import { mapUtils } from '~/utils';
 
 import { DrawingType } from '../map.types';
+
+import { type ICircle, type ILine, type IPolygon } from '@/shared-client/map';
 
 interface IUseCircleParams {
     isCreating: boolean;

@@ -7,9 +7,8 @@ import {
     type IPointDB,
     type IPolygonDB,
 } from '@/shared';
+import { type IPoint } from '@/shared-client';
 import { geohashForLocation, boundingBoxCoordinates } from 'geofire-common';
-
-import { type IPoint } from '~/types';
 
 function getGeoPoint(point: IPointDB): IGeoPointDB {
     const hash = geohashForLocation([point.lat, point.lng]);

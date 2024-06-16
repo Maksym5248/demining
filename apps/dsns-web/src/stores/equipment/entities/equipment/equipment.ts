@@ -1,8 +1,8 @@
+import { type UpdateValue } from '@/shared-client';
+import { RequestModel } from '@/shared-client';
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { type UpdateValue } from '~/types';
-import { RequestModel } from '~/utils/models';
 
 import { type IEquipmentValue, updateEquipmentDTO, createEquipment, EquipmentValue } from './equipment.schema';
 

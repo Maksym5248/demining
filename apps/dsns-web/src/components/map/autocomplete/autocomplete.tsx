@@ -3,10 +3,11 @@ import { useRef } from 'react';
 import { Autocomplete as AutocompleteGoogle } from '@react-google-maps/api';
 import { Input } from 'antd';
 
-import { type IPoint } from '~/types/map';
 import { mapUtils } from '~/utils';
 
 import { s } from './autocomplete.style';
+
+import { type IPoint } from '@/shared-client/map';
 
 interface IAutocompleteProps {
     onPlaceChanged: (value: { point: IPoint }) => void;

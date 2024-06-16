@@ -1,8 +1,7 @@
+import { type UpdateValue, type ICollectionModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { type UpdateValue } from '~/types';
-import { type ICollectionModel, RequestModel } from '~/utils/models';
 
 import {
     type IExplosiveObjectValueParams,

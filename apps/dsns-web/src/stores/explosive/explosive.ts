@@ -1,12 +1,19 @@
+import { EXPLOSIVE_TYPE } from '@/shared';
+import {
+    type IRequestModel,
+    type CreateValue,
+    type ICollectionModel,
+    type IListModel,
+    CollectionModel,
+    ListModel,
+    RequestModel,
+} from '@/shared-client';
 import { message } from 'antd';
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IExplosiveActionSumDTO, type IExplosiveDTO } from '~/api';
-import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
-import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     type IExplosive,
@@ -22,21 +29,21 @@ import {
 import { SumExplosiveActions } from './sum-explosive-actions';
 
 export interface IExplosiveStore {
-    collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionValue>;
-    collection: CollectionModel<IExplosive, IExplosiveValue>;
-    list: ListModel<IExplosive, IExplosiveValue>;
-    searchList: ListModel<IExplosive, IExplosiveValue>;
+    collectionActions: ICollectionModel<IExplosiveAction, IExplosiveActionValue>;
+    collection: ICollectionModel<IExplosive, IExplosiveValue>;
+    list: IListModel<IExplosive, IExplosiveValue>;
+    searchList: IListModel<IExplosive, IExplosiveValue>;
     sum: SumExplosiveActions;
     setSum(sum: IExplosiveActionSumDTO): void;
     append(res: IExplosiveDTO[], isSearch: boolean, isMore?: boolean): void;
     explosiveList: IExplosive[];
     detonatorList: IExplosive[];
-    create: RequestModel<[CreateValue<IExplosiveValue>]>;
-    remove: RequestModel<[string]>;
-    fetchList: RequestModel<[string]>;
-    fetchMoreList: RequestModel<[string]>;
-    fetchItem: RequestModel<[string]>;
-    fetchSum: RequestModel<[Dayjs, Dayjs]>;
+    create: IRequestModel<[CreateValue<IExplosiveValue>]>;
+    remove: IRequestModel<[string]>;
+    fetchList: IRequestModel<[string]>;
+    fetchMoreList: IRequestModel<[string]>;
+    fetchItem: IRequestModel<[string]>;
+    fetchSum: IRequestModel<[Dayjs, Dayjs]>;
 }
 
 export class ExplosiveStore implements IExplosiveStore {

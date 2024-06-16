@@ -1,8 +1,7 @@
+import { type UpdateValue, type IRequestModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 
 import { Api } from '~/api';
-import { type UpdateValue } from '~/types';
-import { type IRequestModel, RequestModel } from '~/utils/models';
 
 import { type ITransportValue, updateTransportDTO, createTransport, TransportValue } from './transport.schema';
 

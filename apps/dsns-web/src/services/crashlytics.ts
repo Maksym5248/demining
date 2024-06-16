@@ -1,12 +1,12 @@
+import { type ICrashlytics, type ILogger } from '@/shared-client';
 import * as Sentry from '@sentry/react';
 
 import { CONFIG } from '~/config';
 
-import { Logger } from './logger';
-
 type Primitive = number | string | boolean | bigint | symbol | null | undefined;
 
-class CrashlyticsClass {
+export class CrashlyticsClass implements ICrashlytics {
+    constructor(private logger: ILogger) {}
     init() {
         if (!CONFIG.IS_DEBUG) {
             Sentry.init({
@@ -33,7 +33,7 @@ class CrashlyticsClass {
             });
         }
 
-        Logger.error(e?.message);
+        this.logger.error(e?.message);
     };
 
     addBreadcrumb = (breadcrumb: Sentry.Breadcrumb) => {
@@ -54,5 +54,3 @@ class CrashlyticsClass {
         }
     };
 }
-
-export const Crashlytics = new CrashlyticsClass();

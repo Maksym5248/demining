@@ -1,9 +1,10 @@
 import { type MutableRefObject, useRef } from 'react';
 
-import { type ICircle, type ILine, type IPoint, type IPolygon } from '~/types/map';
 import { mapUtils } from '~/utils';
 
 import { DrawingType } from '../map.types';
+
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '@/shared-client/map';
 
 interface IUsePolygonParams {
     isCreating: boolean;

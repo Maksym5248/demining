@@ -1,14 +1,12 @@
+import { type IAnalyticsEventParams, type IAnalytics, type ILogger, type ICrashlytics } from '@/shared-client';
 import { getAnalytics, logEvent, setUserId } from 'firebase/analytics';
 import { getApp } from 'firebase/app';
 
-import { Crashlytics } from './crashlytics';
-import { Logger } from './logger';
-
-interface EventParams {
-    [key: string]: any;
-}
-
-class AnalyticsClass {
+export class AnalyticsClass implements IAnalytics {
+    constructor(
+        private logger: ILogger,
+        private crashlytics: ICrashlytics,
+    ) {}
     init() {
         this.event('INITIALIZATION APP');
     }
@@ -17,29 +15,27 @@ class AnalyticsClass {
         return getAnalytics(getApp());
     }
 
-    page(name: string, params?: EventParams) {
+    page(name: string, params?: IAnalyticsEventParams) {
         logEvent(this.analytics, `PAGE - ${name}`, params);
-        Crashlytics.setTag('PAGE', name);
-        Logger.log(`ANALYTICS - Page: ${name}`);
+        this.crashlytics.setTag('PAGE', name);
+        this.logger.log(`ANALYTICS - Page: ${name}`);
     }
 
-    modal(name: string, params?: EventParams) {
+    modal(name: string, params?: IAnalyticsEventParams) {
         logEvent(this.analytics, `MODAL - ${name}`, params);
-        Crashlytics.setTag('MODAL', name);
-        Logger.log(`ANALYTICS - Modal: ${name}`);
+        this.crashlytics.setTag('MODAL', name);
+        this.logger.log(`ANALYTICS - Modal: ${name}`);
     }
 
-    event(name: string, params?: EventParams) {
+    event(name: string, params?: IAnalyticsEventParams) {
         logEvent(this.analytics, `EVENT - ${name}`, params);
-        Crashlytics.addBreadcrumb({ type: 'event', message: name, data: params });
-        Logger.log(`ANALYTICS - Event: ${name}`);
+        this.crashlytics.addBreadcrumb({ type: 'event', message: name, data: params });
+        this.logger.log(`ANALYTICS - Event: ${name}`);
     }
 
     setUserId = (uid: string | null) => {
         setUserId(this.analytics, uid);
-        Crashlytics.setUser(uid ? { id: uid } : null);
-        Logger.log(`ANALYTICS: User ID: ${uid}`);
+        this.crashlytics.setUser(uid ? { id: uid } : null);
+        this.logger.log(`ANALYTICS: User ID: ${uid}`);
     };
 }
-
-export const Analytics = new AnalyticsClass();

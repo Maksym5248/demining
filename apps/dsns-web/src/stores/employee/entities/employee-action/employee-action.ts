@@ -1,6 +1,5 @@
+import { type CollectionModel } from '@/shared-client';
 import { makeAutoObservable } from 'mobx';
-
-import { type CollectionModel } from '~/utils/models';
 
 import { EmployeeActionValue, type IEmployeeActionValue } from './employee-action.schema';
 import { type IEmployeeParams, Employee, type IEmployee } from '../employee';

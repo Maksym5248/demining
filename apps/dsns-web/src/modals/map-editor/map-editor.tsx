@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { type ICircle, type IGeoBox, type ILine, type IPolygon } from '@/shared-client';
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { type IOnChangeMapView, MapView } from '~/components';
 import { useDebounce, useStore, useValues } from '~/hooks';
-import { type ICircle, type IGeoBox, type ILine, type IPolygon } from '~/types';
 
 import { type MapEditorModalProps } from './map-editor.types';
 

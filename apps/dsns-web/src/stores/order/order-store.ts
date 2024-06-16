@@ -1,10 +1,9 @@
+import { type CreateValue, CollectionModel, type ICollectionModel, ListModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IOrderPreviewDTO } from '~/api';
-import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, type ICollectionModel, ListModel, RequestModel } from '~/utils/models';
 
 import { type IOrder, type IOrderValue, type IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
 import { type IEmployeeStore, createEmployeeAction } from '../employee';

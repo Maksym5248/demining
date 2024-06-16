@@ -11,6 +11,9 @@
     "references": [
         {
             "path": "../../packages/shared"
+        },
+        {
+            "path": "../../packages/shared-client"
         }
     ],
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],

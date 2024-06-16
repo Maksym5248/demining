@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 
 import { FIREBASE_CONFIG } from '~/config';
 import { DB } from '~/db';
-import { Analytics, AuthService, Crashlytics, Logger, SecureStorage, Storage } from '~/services';
+import { Analytics, Auth, Crashlytics, Logger, Message, SecureStorage, Storage } from '~/services';
 
 import { AuthStore, type IAuthStore } from './auth';
 import { DocumentStore, type IDocumentStore } from './document';
@@ -62,12 +62,13 @@ export class RootStore implements IRootStore {
 
     private get services() {
         return {
-            auth: AuthService,
+            auth: Auth,
             secureStorage: SecureStorage,
             storage: Storage,
             analytics: Analytics,
             crashlytics: Crashlytics,
             logger: Logger,
+            message: Message,
         };
     }
 

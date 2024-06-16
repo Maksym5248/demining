@@ -1,10 +1,17 @@
+import {
+    type IGeoBox,
+    type IGeohashRange,
+    CollectionModel,
+    type ICollectionModel,
+    type IListModel,
+    ListModel,
+    RequestModel,
+} from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IMapViewActionDTO } from '~/api';
-import { type IGeoBox, type IGeohashRange } from '~/types';
 import { mapUtils } from '~/utils';
-import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/utils/models';
 
 import { type IMapViewAction, type IMapViewActionValue, MapViewAction, createMapView } from './entities';
 

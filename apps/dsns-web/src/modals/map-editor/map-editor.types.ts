@@ -1,4 +1,4 @@
-import { type ICircle, type IPolygon, type IPoint, type ILine } from '~/types';
+import { type ICircle, type IPolygon, type IPoint, type ILine } from '@/shared-client';
 
 export interface IMapEditorSubmit {
     circle?: ICircle;

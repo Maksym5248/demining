@@ -1,5 +1,6 @@
+import { type IMetaData } from '@/shared-client';
+
 import { type MIME_TYPE } from '~/constants';
-import { type IMetaData } from '~/types';
 
 async function fileToBlob(template: File, type: MIME_TYPE) {
     const arrayBuffer = await template.arrayBuffer();

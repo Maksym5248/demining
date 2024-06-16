@@ -1,8 +1,8 @@
+import { DOCUMENT_TYPE, EQUIPMENT_TYPE } from '@/shared';
+import { type CreateValue } from '@/shared-client';
 import { type Dayjs } from 'dayjs';
 
 import { type IEquipmentActionDTO } from '~/api';
-import { DOCUMENT_TYPE, EQUIPMENT_TYPE } from '~/constants';
-import { type CreateValue } from '~/types';
 import { data, dates } from '~/utils';
 
 import { type IEquipmentValue, createEquipmentDTO, createEquipment } from '../equipment';

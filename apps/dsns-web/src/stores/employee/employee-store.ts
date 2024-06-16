@@ -1,12 +1,19 @@
+import { EMPLOYEE_TYPE } from '@/shared';
+import {
+    type CreateValue,
+    type IRequestModel,
+    RequestModel,
+    type ICollectionModel,
+    type IListModel,
+    CollectionModel,
+    ListModel,
+} from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IEmployeeDTO } from '~/api';
-import { EMPLOYEE_TYPE } from '~/constants';
 import { ranksData } from '~/data';
-import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     Rank,

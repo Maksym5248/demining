@@ -7,7 +7,6 @@ import { MapInfo } from '~/components/map-info';
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
 import { useMapOptions, useValues, useVisibleMap } from '~/hooks';
-import { type ICircle, type ILine, type IMarker, type IPoint, type IPolygon } from '~/types/map';
 import { mapUtils, mathUtils } from '~/utils';
 
 import { s } from './map-view.style';
@@ -18,6 +17,8 @@ import { MapZoomView } from '../../map-zoom-view';
 import { Autocomplete } from '../autocomplete';
 import { DrawingManager } from '../drawing-manager';
 import { DrawingType, type IMapViewProps } from '../map.types';
+
+import { type ICircle, type ILine, type IMarker, type IPoint, type IPolygon } from '@/shared-client/map';
 
 const circlesOptions = {
     fillOpacity: 0.3,

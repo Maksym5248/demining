@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
 
+import { LogLevel } from '@/shared-client';
 import { ConfigProvider } from 'antd';
 import uk from 'antd/lib/locale/uk_UA';
 
 import { ThemeProvider, ModalProvider } from '~/containers';
 import { RootStoreContext } from '~/context';
 import { RootRouter, modals } from '~/routes';
-import { LogLevel, Logger } from '~/services';
+import { Logger } from '~/services';
 import { RootStore } from '~/stores';
 
-import './index.css';
-
 import { CONFIG } from './config';
+
+import './index.css';
 
 Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
 

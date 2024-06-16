@@ -1,11 +1,18 @@
+import {
+    type CreateValue,
+    CollectionModel,
+    type ICollectionModel,
+    type IListModel,
+    type IRequestModel,
+    ListModel,
+    RequestModel,
+} from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type ITransportDTO } from '~/api';
 import { TRANSPORT_TYPE } from '~/constants';
-import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     type ITransport,

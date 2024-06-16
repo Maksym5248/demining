@@ -1,8 +1,8 @@
 import { type IQuery } from '@/shared';
+import { type UpdateValue, type CreateValue } from '@/shared-client';
 
 import { EXPLOSIVE_TYPE } from '~/constants/db/explosive-type';
 import { DB } from '~/db';
-import { type UpdateValue, type CreateValue } from '~/types';
 
 import { type IExplosiveDTO } from '../types';
 

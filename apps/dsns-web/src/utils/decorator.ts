@@ -1,4 +1,4 @@
-import { type Runnable } from '~/types';
+import { type Runnable } from '@/shared-client';
 
 export type Indexable = Record<string, unknown>;
 

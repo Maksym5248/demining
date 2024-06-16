@@ -1,4 +1,4 @@
-import { type IGeohashRange } from '~/types';
+import { type IGeohashRange } from '@/shared-client';
 
 import { getAdjustedRanges } from '../geohash';
 

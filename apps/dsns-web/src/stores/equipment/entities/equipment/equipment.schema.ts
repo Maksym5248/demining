@@ -1,8 +1,8 @@
+import { EQUIPMENT_TYPE } from '@/shared';
+import { type CreateValue } from '@/shared-client';
 import { type Dayjs } from 'dayjs';
 
 import { type IEquipmentDTO } from '~/api';
-import { EQUIPMENT_TYPE } from '~/constants';
-import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IEquipmentValue {

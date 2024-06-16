@@ -1,5 +1,6 @@
+import { type IGeohashRange } from '@/shared-client';
+
 import { DB } from '~/db';
-import { type IGeohashRange } from '~/types';
 
 import { type IMapViewActionDTO } from '../types';
 

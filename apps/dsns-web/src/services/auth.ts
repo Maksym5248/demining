@@ -1,9 +1,8 @@
+import { type IAuthUser, type IAuth } from '@/shared-client';
 import { getApp } from 'firebase/app';
 import {
     getAuth,
     onAuthStateChanged,
-    type NextOrObserver,
-    type User,
     GoogleAuthProvider,
     signInWithPopup,
     signOut,
@@ -12,18 +11,7 @@ import {
 } from 'firebase/auth';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 
-export interface IAuthService {
-    googleProvide: GoogleAuthProvider;
-    uuid: () => string | undefined;
-    onAuthStateChanged: (fn: NextOrObserver<User>) => void;
-    signInWithGoogle: () => Promise<void>;
-    signOut: () => Promise<void>;
-    createUserWithEmailAndPassword: (email: string, password: string) => Promise<void>;
-    signInWithEmailAndPassword: (email: string, password: string) => Promise<void>;
-    refreshToken: () => Promise<string | undefined>;
-}
-
-class AuthClass implements IAuthService {
+export class AuthClass implements IAuth {
     googleProvide = new GoogleAuthProvider();
 
     private get auth() {
@@ -38,7 +26,7 @@ class AuthClass implements IAuthService {
         return this.auth.currentUser?.uid;
     }
 
-    onAuthStateChanged(fn: NextOrObserver<User>) {
+    onAuthStateChanged(fn: (user: IAuthUser | null) => void) {
         onAuthStateChanged(this.auth, fn);
     }
 
@@ -65,5 +53,3 @@ class AuthClass implements IAuthService {
         return this.auth?.currentUser?.getIdToken(true);
     }
 }
-
-export const AuthService = new AuthClass();

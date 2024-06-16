@@ -1,7 +1,7 @@
+import { type CreateValue } from '@/shared-client';
 import { type Dayjs } from 'dayjs';
 
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api';
-import { type CreateValue } from '~/types';
 import { dates, data } from '~/utils';
 
 export interface IExplosiveObjectValue {

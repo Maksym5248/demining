@@ -7,7 +7,6 @@ import { type Dayjs } from 'dayjs';
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
 import { useMapOptions, useVisibleMap } from '~/hooks';
-import { type ICircle, type ILine, type IPoint, type IPolygon } from '~/types/map';
 import { mapUtils } from '~/utils';
 import { getArea } from '~/utils/map/common';
 
@@ -20,6 +19,8 @@ import { usePolygonCallout } from './use-polygon-callout';
 import { Icon } from '../icon';
 import { MapInfo } from '../map-info';
 import { MapZoomView } from '../map-zoom-view';
+
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '@/shared-client/map';
 
 interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
     marker?: IPoint | undefined;

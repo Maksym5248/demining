@@ -1,10 +1,9 @@
+import { type UpdateValue, type IRequestModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api } from '~/api';
-import { type UpdateValue } from '~/types';
 import { fileUtils } from '~/utils/file';
-import { type IRequestModel, RequestModel } from '~/utils/models';
 
 import { DocumentValue, type IDocumentValue, createDocument, updateDocumentDTO } from './document.schema';
 

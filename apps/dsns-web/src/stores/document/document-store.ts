@@ -1,18 +1,25 @@
+import { DOCUMENT_TYPE } from '@/shared';
+import {
+    type CreateValue,
+    type IRequestModel,
+    RequestModel,
+    type ICollectionModel,
+    type IListModel,
+    CollectionModel,
+    ListModel,
+} from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IDocumentDTO } from '~/api';
-import { DOCUMENT_TYPE } from '~/constants';
-import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import { type IDocument, Document, createDocument, createDocumentDTO, type IDocumentValue } from './entities';
 
 export interface IDocumentStore {
-    collection: CollectionModel<IDocument, IDocumentValue>;
-    templatesList: ListModel<IDocument, IDocumentValue>;
-    templatesSearchList: ListModel<IDocument, IDocumentValue>;
+    collection: ICollectionModel<IDocument, IDocumentValue>;
+    templatesList: IListModel<IDocument, IDocumentValue>;
+    templatesSearchList: IListModel<IDocument, IDocumentValue>;
     missionReportTemplatesList: IDocument[];
     appendTemplates: (res: IDocumentDTO[], isSearch: boolean, isMore?: boolean) => void;
     create: IRequestModel<[CreateValue<IDocumentValue>, File]>;

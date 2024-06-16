@@ -1,11 +1,11 @@
 import { type IOrganizationDB, type IQuery, type IUserDB } from '@/shared';
+import { type UpdateValue } from '@/shared-client';
 import keyBy from 'lodash/keyBy';
 import map from 'lodash/map';
 import uniq from 'lodash/uniq';
 
 import { DB } from '~/db';
 import { AssetStorage } from '~/services';
-import { type UpdateValue } from '~/types';
 import { removeFields } from '~/utils';
 
 import { type ICurrentUserDTO, type IUserDTO, type IUserOrganizationDTO } from '../types';

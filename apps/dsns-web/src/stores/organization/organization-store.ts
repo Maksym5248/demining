@@ -1,9 +1,9 @@
+import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type ICreateOrganizationDTO, type IOrganizationDTO } from '~/api';
 import { dates } from '~/utils';
-import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     type IOrganization,

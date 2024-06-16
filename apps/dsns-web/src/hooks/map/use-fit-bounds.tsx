@@ -1,6 +1,7 @@
 import { type MutableRefObject, useEffect } from 'react';
 
-import { type ICircle, type IMarker, type IPoint, type IPolygon } from '~/types';
+import { type ICircle, type IMarker, type IPoint, type IPolygon } from '@/shared-client';
+
 import { mapUtils } from '~/utils';
 
 import { useDebounce } from '../common/useDebounce';

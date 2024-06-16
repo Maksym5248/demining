@@ -1,6 +1,5 @@
+import { type ICircle, type IPoint, type IPolygon } from '@/shared-client';
 import { isArray } from 'lodash';
-
-import { type ICircle, type IPoint, type IPolygon } from '~/types';
 
 function generatePoints(points?: IPoint | IPoint[]): string {
     if (!points) return '';

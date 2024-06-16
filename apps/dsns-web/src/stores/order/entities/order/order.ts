@@ -1,9 +1,8 @@
+import { type UpdateValue, type ICollectionModel, type IRequestModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api } from '~/api';
-import { type UpdateValue } from '~/types';
-import { type ICollectionModel, type IRequestModel, RequestModel } from '~/utils/models';
 
 import { type IOrderValue, type IOrderValueParams, OrderValue, createOrder, updateOrderDTO } from './order.schema';
 import { type IEmployeeAction, type IEmployeeActionValue } from '../../../employee';

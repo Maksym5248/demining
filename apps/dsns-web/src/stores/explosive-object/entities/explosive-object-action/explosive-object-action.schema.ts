@@ -1,5 +1,6 @@
+import { type DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '@/shared';
+
 import { type IExplosiveObjectActionDTO, type IExplosiveObjectActionDTOParams, type IExplosiveObjectActionSumDTO } from '~/api';
-import { type DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from '~/constants';
 import { data } from '~/utils';
 
 import { ExplosiveObjectValue, type IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';

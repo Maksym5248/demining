@@ -1,8 +1,8 @@
 import { type IQuery } from '@/shared';
+import { type UpdateValue } from '@/shared-client';
 
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from '~/constants';
 import { DB } from '~/db';
-import { type UpdateValue } from '~/types';
 
 import { type IOrderDTO, type IOrderDTOParams, type IOrderPreviewDTO } from '../types';
 

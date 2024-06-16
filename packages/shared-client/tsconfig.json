@@ -3,7 +3,10 @@
     "compilerOptions": {
         "declarationMap": true,
         "rootDir": "src",
-        "outDir": "dist"
+        "outDir": "dist",
+        "paths": {
+            "~/*": ["./src/*"]
+        }
     },
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
     "exclude": ["node_modules", "dist"]

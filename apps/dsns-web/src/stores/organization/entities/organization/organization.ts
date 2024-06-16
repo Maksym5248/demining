@@ -1,7 +1,7 @@
+import { type IListModel, type IRequestModel, ListModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 
 import { Api, type ICreateOrganizationDTO } from '~/api';
-import { type IListModel, type IRequestModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     type IUpdateOrganizationParams,

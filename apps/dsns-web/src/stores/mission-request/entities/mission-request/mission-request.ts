@@ -1,9 +1,9 @@
+import { type UpdateValue } from '@/shared-client';
+import { RequestModel } from '@/shared-client';
 import { message } from 'antd';
 
 import { Api } from '~/api';
 import { missionRequestType } from '~/data';
-import { type UpdateValue } from '~/types';
-import { RequestModel } from '~/utils/models';
 
 import { type IMissionRequestValue, updateMissionRequestDTO, createMissionRequest, MissionRequestValue } from './mission-request.schema';
 

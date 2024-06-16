@@ -1,9 +1,9 @@
 import { type IQuery } from '@/shared';
+import { type UpdateValue, type CreateValue } from '@/shared-client';
 
 import { ASSET_TYPE } from '~/constants';
 import { DB } from '~/db';
 import { AssetStorage } from '~/services';
-import { type UpdateValue, type CreateValue } from '~/types';
 import { fileUtils } from '~/utils';
 
 import { type IDocumentDTO } from '../types';

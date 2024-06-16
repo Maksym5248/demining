@@ -1,6 +1,9 @@
 import html2canvas from 'html2canvas';
 
-class ImageClass {
+export interface IImage {
+    takeMapImage(selector: string): Promise<string>;
+}
+export class ImageClass implements IImage {
     async takeMapImage(selector: string) {
         const canvas = await html2canvas(document.querySelector(selector) as HTMLElement, {
             backgroundColor: null,
@@ -12,5 +15,3 @@ class ImageClass {
         return image;
     }
 }
-
-export const Image = new ImageClass();

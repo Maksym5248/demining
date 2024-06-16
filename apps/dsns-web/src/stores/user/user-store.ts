@@ -1,9 +1,9 @@
+import { CollectionModel, ListModel, RequestModel } from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IUserDTO } from '~/api';
 import { dates } from '~/utils';
-import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
 
 import { createUser, type IUser, type IUserValue, User } from './entities';
 

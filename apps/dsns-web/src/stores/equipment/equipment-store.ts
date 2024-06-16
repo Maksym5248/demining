@@ -1,11 +1,18 @@
+import { EQUIPMENT_TYPE } from '@/shared';
+import {
+    type ICollectionModel,
+    type CreateValue,
+    type IListModel,
+    type IRequestModel,
+    CollectionModel,
+    ListModel,
+    RequestModel,
+} from '@/shared-client';
 import { message } from 'antd';
 import { makeAutoObservable } from 'mobx';
 
 import { Api, type IEquipmentDTO } from '~/api';
-import { EQUIPMENT_TYPE } from '~/constants';
-import { type CreateValue } from '~/types';
 import { dates } from '~/utils';
-import { CollectionModel, ListModel, RequestModel } from '~/utils/models';
 
 import {
     type IEquipment,
@@ -19,18 +26,18 @@ import {
 } from './entities';
 
 export interface IEquipmentStore {
-    collectionActions: CollectionModel<IEquipmentAction, IEquipmentActionValue>;
-    collection: CollectionModel<IEquipment, IEquipmentValue>;
-    list: ListModel<IEquipment, IEquipmentValue>;
-    searchList: ListModel<IEquipment, IEquipmentValue>;
+    collectionActions: ICollectionModel<IEquipmentAction, IEquipmentActionValue>;
+    collection: ICollectionModel<IEquipment, IEquipmentValue>;
+    list: IListModel<IEquipment, IEquipmentValue>;
+    searchList: IListModel<IEquipment, IEquipmentValue>;
     listMineDetectors: IEquipment[];
     firstMineDetector: IEquipment | undefined;
     append(res: IEquipmentDTO[], isSearch: boolean, isMore?: boolean): void;
-    create: RequestModel<[CreateValue<IEquipmentValue>]>;
-    remove: RequestModel<[string]>;
-    fetchList: RequestModel<[search?: string]>;
-    fetchMoreList: RequestModel<[search?: string]>;
-    fetchItem: RequestModel<[string]>;
+    create: IRequestModel<[CreateValue<IEquipmentValue>]>;
+    remove: IRequestModel<[string]>;
+    fetchList: IRequestModel<[search?: string]>;
+    fetchMoreList: IRequestModel<[search?: string]>;
+    fetchItem: IRequestModel<[string]>;
 }
 
 export class EquipmentStore implements IEquipmentStore {

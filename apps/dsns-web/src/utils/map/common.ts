@@ -1,6 +1,5 @@
+import { type ICircle, type IPoint, type IPolygon, type IGeoBox, type ILine } from '@/shared-client';
 import * as turf from '@turf/turf';
-
-import { type ICircle, type IPoint, type IPolygon, type IGeoBox, type ILine } from '~/types';
 
 import { createArrFromPoint, createPointFromArr } from './fabric';
 import { mathUtils } from '../math';

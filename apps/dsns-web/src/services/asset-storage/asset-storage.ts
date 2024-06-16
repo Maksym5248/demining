@@ -1,8 +1,10 @@
+import { type IAssetStorage } from '@/shared-client';
+
 import { ASSET_TYPE, ASSET_DIR } from '~/constants';
 
 import { AssetStorageBase } from './asset-base';
 
-class AssetStorageClass {
+export class AssetStorageClass implements IAssetStorage {
     document = new AssetStorageBase(ASSET_TYPE.DOCUMENT);
 
     setOrganizationId(organizationId: string) {
@@ -15,5 +17,3 @@ class AssetStorageClass {
         this.document.removeRootCollect();
     }
 }
-
-export const AssetStorage = new AssetStorageClass();

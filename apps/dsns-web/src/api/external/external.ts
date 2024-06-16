@@ -1,9 +1,9 @@
+import { type IPoint } from '@/shared-client';
 import axios from 'axios';
 import { pick } from 'lodash';
 import { publicIpv4 } from 'public-ip';
 
 import { CONFIG } from '~/config';
-import { type IPoint } from '~/types';
 
 import { type IIpLocation, type IGeoapifyAddress } from './external.types';
 
