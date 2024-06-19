@@ -1,12 +1,14 @@
+import { removeFields } from '@/shared/common';
+import { EXPLOSIVE_OBJECT_CATEGORY } from '@/shared/db';
+import { useSelectStore } from '@/shared-client/common';
+import { type IExplosiveObjectTypeValue } from '@/shared-client/stores';
 import { Button, Form, Space, InputNumber, Drawer, Switch } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { Select, SelectAsync } from '~/components';
-import { EXPLOSIVE_OBJECT_CATEGORY, MODALS, WIZARD_MODE } from '~/constants';
-import { useSelectStore, useStore } from '~/hooks';
+import { MODALS, WIZARD_MODE } from '~/constants';
+import { useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { type IExplosiveObjectTypeValue } from '~/stores';
-import { removeFields } from '~/utils';
 
 import { type IExplosiveObjectActionForm } from './explosive-object-action-wizard.types';
 

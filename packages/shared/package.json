@@ -10,11 +10,12 @@
   "private": true,
   "files": [
     "dist",
-    "tsconfig-base.json",
-    "eslint-config-base.js",
-    "eslint-config-prettier.js"
+    "dist/enum",
+    "dist/types",
+    "config/tsconfig-base.json",
+    "config/eslint-config-base.js",
+    "config/eslint-config-prettier.js"
   ],
-  
   "scripts": {
     "clean:build": "rm -rf dist/ ./tsconfig.tsbuildinfo",
     "clean": "rm -rf node_modules/ && yarn clean:build",
@@ -22,7 +23,9 @@
     "postinstall": "yarn clean:build && yarn build"
   },
   "peerDependencies": {
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "lodash": "^4.17.21",
+    "geofire-common": "^6.0.0"
   },
   "devDependencies": {
     "@firebase/firestore-types": "^2.2.0",

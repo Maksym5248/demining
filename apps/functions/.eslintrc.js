@@ -6,5 +6,8 @@ module.exports = {
     node: true,
     browser: false,
   },
-  extends: ['@/shared/eslint-config-base.js', '@/shared/eslint-config-prettier'],
+  extends: [
+    '@/shared/config/eslint-config-base.js',
+    '@/shared/config/eslint-config-prettier'
+  ],
 };

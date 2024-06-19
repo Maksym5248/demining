@@ -1,11 +1,10 @@
-import { type Dayjs } from 'dayjs';
-
 import {
     type IExplosiveObjectActionValueParams,
     type IMapViewActionValueParams,
     type IExplosiveActionValueParams,
     type IAddressValue,
-} from '~/stores';
+} from '@/shared-client/stores';
+import { type Dayjs } from 'dayjs';
 
 export interface IMissionReportForm {
     approvedAt: Dayjs;

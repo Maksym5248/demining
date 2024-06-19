@@ -1,3 +1,4 @@
+import { TABLES, TABLES_DIR, explosiveObjectTypesData, mapUtils } from '@/shared/db';
 import {
     type IDocumentDB,
     type IEmployeeActionDB,
@@ -16,22 +17,20 @@ import {
     type ITransportActionDB,
     type ITransportDB,
     type IUserDB,
-} from '@/shared';
+} from '@/shared/db';
+import { type IDB } from '@/shared-client/common';
 import { type WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
 
-import { TABLES, TABLES_DIR } from '~/constants';
-import { explosiveObjectTypesData } from '~/data';
-import { AuthService } from '~/services';
-import { mapUtils } from '~/utils';
+import { Auth } from '~/services';
 
 import { DBBase } from './db-base';
 
 const getCreateData = () => ({
-    authorId: AuthService.uuid() as string,
+    authorId: Auth.uuid() as string,
 });
 
 const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => ({
-    authorId: AuthService.uuid() as string,
+    authorId: Auth.uuid() as string,
     geo: mapUtils.getGeoDB(value),
 });
 
@@ -46,11 +45,11 @@ const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
     }
 
     return {
-        geo: mapUtils.getGeoDB(value as IMapViewActionDB),
+        geo: mapUtils.getGeoDB(value),
     };
 };
 
-export class DBRemote {
+export class DBRemote implements IDB {
     /** COMMON COLLECTIONS */
     user = new DBBase<IUserDB>(TABLES.USER, ['email']);
 

@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
-import { type ILine } from '@/shared-client';
-
-import { mapUtils } from '~/utils';
+import { type ILine } from '@/shared-client/map';
+import { mapUtils } from '@/shared-client/map';
 
 interface IUsePolygonCalloutParams {
     line?: ILine;
@@ -12,7 +11,7 @@ interface IUsePolygonCalloutParams {
 }
 
 export function useLineCallout({ line, zoom, isVisibleMap, offset }: IUsePolygonCalloutParams) {
-    const center = useMemo(() => (line ? mapUtils.getCenter(line) : null), [line]);
+    const center = useMemo(() => (line ? mapUtils.getCenter({ line }) : null), [line]);
 
     const callout = useMemo(() => {
         if (!line?.points.length || !center) return [];

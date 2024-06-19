@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
+import { type IEmployee, type IEmployeeAction } from '@/shared-client/stores';
 import { CloseOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 
 import { Select } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { Modal } from '~/services';
-import { type IEmployee, type IEmployeeAction } from '~/stores';
 import { select } from '~/utils';
 
 interface IEmployeesProps {

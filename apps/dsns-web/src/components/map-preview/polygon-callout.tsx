@@ -1,4 +1,4 @@
-import { type IPoint } from '@/shared-client';
+import { type IPoint } from '@/shared-client/map';
 import { OVERLAY_MOUSE_TARGET, OverlayViewF } from '@react-google-maps/api';
 import { Typography } from 'antd';
 

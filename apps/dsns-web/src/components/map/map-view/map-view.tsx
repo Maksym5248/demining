@@ -1,13 +1,14 @@
 import { memo, useEffect, useRef, useState } from 'react';
 
+import { mathUtils, useValues } from '@/shared-client/common';
+import { mapUtils, type ICircle, type ILine, type IMarker, type IPoint, type IPolygon, useVisibleMap } from '@/shared-client/map';
 import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { InputNumber } from 'antd';
 
 import { MapInfo } from '~/components/map-info';
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
-import { useMapOptions, useValues, useVisibleMap } from '~/hooks';
-import { mapUtils, mathUtils } from '~/utils';
+import { useMapOptions } from '~/hooks';
 
 import { s } from './map-view.style';
 import { useCircle } from './useCircle';
@@ -17,8 +18,6 @@ import { MapZoomView } from '../../map-zoom-view';
 import { Autocomplete } from '../autocomplete';
 import { DrawingManager } from '../drawing-manager';
 import { DrawingType, type IMapViewProps } from '../map.types';
-
-import { type ICircle, type ILine, type IMarker, type IPoint, type IPolygon } from '@/shared-client/map';
 
 const circlesOptions = {
     fillOpacity: 0.3,
@@ -68,7 +67,7 @@ function Component({
     const [isVisibleInArea, setVisibleInArea] = useState(false);
     const values = useValues();
 
-    const initialCenter = mapUtils.getInfoPoint({
+    const initialCenter = mapUtils.getCenter({
         marker: initialMarker,
         circle: initialCircle,
         polygon: initialPolygon,
@@ -374,7 +373,7 @@ function Component({
                 <Autocomplete onPlaceChanged={onPlaceChanged} />
                 <MapZoomView zoom={zoom} onChange={onChangeZoomView} />
                 <MapInfo
-                    point={mapUtils.getInfoPoint({ marker, circle, polygon, line })}
+                    point={mapUtils.getCenter({ marker, circle, polygon, line })}
                     distance={mapUtils.getTotalDistance({ line, polygon })}
                     area={area}
                 />

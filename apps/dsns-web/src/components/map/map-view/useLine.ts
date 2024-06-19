@@ -1,10 +1,9 @@
 import { type MutableRefObject, useRef } from 'react';
 
-import { mapUtils } from '~/utils';
+import { mapUtils } from '@/shared-client/map';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '@/shared-client/map';
 
 import { DrawingType } from '../map.types';
-
-import { type ICircle, type ILine, type IPoint, type IPolygon } from '@/shared-client/map';
 
 interface IUseLineParams {
     isCreating: boolean;

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import { str } from '@/shared/common';
+import { type IEmployee } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
@@ -7,8 +9,6 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { type IEmployee } from '~/stores';
-import { str } from '~/utils';
 
 import { s } from './employees-list.styles';
 

@@ -1,15 +1,17 @@
 import { useEffect, useState, useMemo } from 'react';
 
+import { removeFields } from '@/shared/common';
+import { MIME_TYPE } from '@/shared/db';
+import { dates, fileUtils } from '@/shared-client/common';
+import { mapUtils } from '@/shared-client/map';
+import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from '@/shared-client/stores';
 import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
-import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE, MIME_TYPE } from '~/constants';
+import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { Modal, Image, Crashlytics, Template } from '~/services';
-import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from '~/stores';
-import { dates, mapUtils, removeFields } from '~/utils';
-import { fileUtils } from '~/utils/file';
 
 import { ExplosiveObjectAction, Timer, Transport, Equipment, Approved, Documents, Act, Territory, Employees, Map } from './components';
 import { ExplosiveAction } from './components/explosive-action';
@@ -85,7 +87,7 @@ const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
     mapView: currentMissionReport?.mapView,
 });
 
-const createCreateValue = (
+const createICreateValue = (
     chiefFirst?: IEmployee,
     firstMissionReport?: IMissionReport,
     firstOrder?: IOrder,
@@ -245,7 +247,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
         () =>
             wizard.isEdit || wizard.isView
                 ? createEditValue(currentMissionReport)
-                : createCreateValue(
+                : createICreateValue(
                       employee.chiefFirst,
                       missionReport.list.first,
                       order.list.first,

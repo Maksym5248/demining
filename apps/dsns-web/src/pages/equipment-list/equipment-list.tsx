@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 
+import { EQUIPMENT_TYPE } from '@/shared/db';
+import { type IEquipment } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { Icon, List, ListHeader } from '~/components';
-import { MODALS, EQUIPMENT_TYPE, WIZARD_MODE } from '~/constants';
+import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { type IEquipment } from '~/stores';
 
 import { s } from './equipment-list.styles';
 

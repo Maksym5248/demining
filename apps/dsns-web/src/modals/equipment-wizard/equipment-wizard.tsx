@@ -1,10 +1,11 @@
+import { EQUIPMENT_TYPE } from '@/shared/db';
+import { useItemStore } from '@/shared-client/common';
 import { Form, Select, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { WizardButtons, WizardFooter } from '~/components';
-import { EQUIPMENT_TYPE, type WIZARD_MODE } from '~/constants';
+import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
-import { useItemStore } from '~/hooks/store/use-item-store';
 
 import { s } from './equipment-wizard.style';
 import { type IEquipmentForm } from './equipment-wizard.types';

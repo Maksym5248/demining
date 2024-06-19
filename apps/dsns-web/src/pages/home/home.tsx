@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import { dates } from '@/shared-client/common';
 import { Card, Radio, type RadioChangeEvent, Spin, DatePicker } from 'antd';
 import { type Dayjs } from 'dayjs';
 import { observer } from 'mobx-react';
 
 import { useStore } from '~/hooks';
-import { dates } from '~/utils';
 
 import { s } from './home.styles';
 

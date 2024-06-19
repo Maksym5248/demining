@@ -1,10 +1,10 @@
+import { MIME_TYPE } from '@/shared/db';
+import { fileUtils } from '@/shared-client/common';
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { DocxPreview } from '~/components';
-import { MIME_TYPE } from '~/constants';
 import { Crashlytics } from '~/services';
-import { fileUtils } from '~/utils/file';
 
 import { s } from './docx-preview.style';
 import { type DocxPreviewModalProps } from './docx-preview.types';

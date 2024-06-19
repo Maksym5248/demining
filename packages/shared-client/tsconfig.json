@@ -1,13 +1,20 @@
 {
-    "extends": "@/shared/tsconfig-base.json",
+    "extends": "@/shared/config/tsconfig-base.json",
     "compilerOptions": {
         "declarationMap": true,
-        "rootDir": "src",
+        "rootDir": ".",
         "outDir": "dist",
+        "jsx": "react-jsx",
+        "composite": true,
         "paths": {
-            "~/*": ["./src/*"]
+            "~/*": ["./*"]
         }
     },
+    "references": [
+        {
+            "path": "../shared"
+        }
+    ],
     "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
     "exclude": ["node_modules", "dist"]
 }

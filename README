@@ -17,3 +17,11 @@ apps:
 - web dsns (how to connect dictionaries ?? should we create different web app for dictionaries)
 - mobile dictionaries (explosive objects, explosive, furmulas, some common practice, mine detectors)
 - mobile app dsns (for documents)
+
+
+Refactoring
+
+- map
+- form to useFormik
+- validation yup
+- map utils

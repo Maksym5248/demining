@@ -11,11 +11,11 @@ import {
     type ITransportActionDB,
     type IEquipmentDB,
     type IEquipmentActionDB,
-} from '@/shared';
+} from '@/shared/db';
+import { TABLES } from '@/shared/db';
 import { type IDataBase } from 'jsstore';
 
 import { CONFIG } from '~/config';
-import { TABLES } from '~/constants';
 
 import { DBBase } from './db-base';
 import { DBInit } from './db-init';

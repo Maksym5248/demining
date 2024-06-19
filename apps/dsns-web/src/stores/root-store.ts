@@ -1,31 +1,47 @@
+import {
+    type IDocumentStore,
+    type IAuthStore,
+    type IEquipmentStore,
+    type IExplosiveStore,
+    type IEmployeeStore,
+    type IMapStore,
+    type IMissionReportStore,
+    type IMissionRequestStore,
+    type IOrderStore,
+    type ITransportStore,
+    type IUserStore,
+    type IOrganizationStore,
+    type IViewerStore,
+    type IExplosiveObjectStore,
+    AuthStore,
+    DocumentStore,
+    EquipmentStore,
+    ExplosiveStore,
+    ExplosiveObjectStore,
+    EmployeeStore,
+    MapStore,
+    MissionReportStore,
+    MissionRequestStore,
+    OrderStore,
+    TransportStore,
+    UserStore,
+    OrganizationStore,
+    ViewerStore,
+} from '@/shared-client/stores';
 import { initializeApp } from 'firebase/app';
 import { makeAutoObservable } from 'mobx';
 
+import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';
 import { DB } from '~/db';
 import { Analytics, Auth, Crashlytics, Logger, Message, SecureStorage, Storage } from '~/services';
-
-import { AuthStore, type IAuthStore } from './auth';
-import { DocumentStore, type IDocumentStore } from './document';
-import { EmployeeStore, type IEmployeeStore } from './employee';
-import { EquipmentStore, type IEquipmentStore } from './equipment';
-import { ExplosiveStore, type IExplosiveStore } from './explosive';
-import { ExplosiveObjectStore } from './explosive-object';
-import { type IMapStore, MapStore } from './map';
-import { type IMissionReportStore, MissionReportStore } from './mission-report';
-import { type IMissionRequestStore, MissionRequestStore } from './mission-request';
-import { type IOrderStore, OrderStore } from './order';
-import { type IOrganizationStore, OrganizationStore } from './organization';
-import { type ITransportStore, TransportStore } from './transport';
-import { type IUserStore, UserStore } from './user';
-import { type IViewerStore, ViewerStore } from './viewer';
 
 export interface IRootStore {
     auth: IAuthStore;
     document: IDocumentStore;
     equipment: IEquipmentStore;
     explosive: IExplosiveStore;
-    explosiveObject: ExplosiveObjectStore;
+    explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
     missionReport: IMissionReportStore;
@@ -47,7 +63,7 @@ export class RootStore implements IRootStore {
     document: IDocumentStore;
     equipment: IEquipmentStore;
     explosive: IExplosiveStore;
-    explosiveObject: ExplosiveObjectStore;
+    explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
     missionReport: IMissionReportStore;
@@ -60,7 +76,26 @@ export class RootStore implements IRootStore {
 
     isLoaded = false;
 
-    private get services() {
+    get stores() {
+        return {
+            auth: this.auth,
+            document: this.document,
+            equipment: this.equipment,
+            explosive: this.explosive,
+            explosiveObject: this.explosiveObject,
+            employee: this.employee,
+            map: this.map,
+            missionReport: this.missionReport,
+            missionRequest: this.missionRequest,
+            order: this.order,
+            transport: this.transport,
+            user: this.user,
+            organization: this.organization,
+            viewer: this.viewer,
+        };
+    }
+
+    get services() {
         return {
             auth: Auth,
             secureStorage: SecureStorage,
@@ -72,21 +107,25 @@ export class RootStore implements IRootStore {
         };
     }
 
+    get api() {
+        return Api;
+    }
+
     constructor() {
-        this.auth = new AuthStore({ services: this.services });
-        this.document = new DocumentStore();
-        this.equipment = new EquipmentStore();
-        this.explosive = new ExplosiveStore();
-        this.explosiveObject = new ExplosiveObjectStore();
-        this.employee = new EmployeeStore();
-        this.map = new MapStore();
-        this.missionReport = new MissionReportStore({ stores: this });
-        this.missionRequest = new MissionRequestStore();
-        this.order = new OrderStore({ stores: this });
-        this.transport = new TransportStore();
-        this.user = new UserStore();
-        this.organization = new OrganizationStore({ stores: this });
-        this.viewer = new ViewerStore();
+        this.auth = new AuthStore(this);
+        this.document = new DocumentStore(this);
+        this.equipment = new EquipmentStore(this);
+        this.explosive = new ExplosiveStore(this);
+        this.explosiveObject = new ExplosiveObjectStore(this);
+        this.employee = new EmployeeStore(this);
+        this.map = new MapStore(this);
+        this.missionReport = new MissionReportStore(this);
+        this.missionRequest = new MissionRequestStore(this);
+        this.order = new OrderStore(this);
+        this.transport = new TransportStore(this);
+        this.user = new UserStore(this);
+        this.organization = new OrganizationStore(this);
+        this.viewer = new ViewerStore(this);
 
         makeAutoObservable(this);
     }

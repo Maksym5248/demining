@@ -7,10 +7,10 @@ module.exports = {
     ".eslintrc.js"
   ],
   extends: [
-    '@/shared/eslint-config-base.js',
-    '@/shared-client/eslint-config-client.js',
+    '@/shared/config/eslint-config-base.js',
+    '@/shared-client/config/eslint-config-client.js',
     // 'plugin:react-native/all',
-    '@/shared/eslint-config-prettier'
+    '@/shared/config/eslint-config-prettier'
   ],
   plugins: ["react-native"],
   env: {

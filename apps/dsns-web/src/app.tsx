@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { LogLevel } from '@/shared-client';
+import { LogLevel } from '@/shared-client/services';
 import { ConfigProvider } from 'antd';
 import uk from 'antd/lib/locale/uk_UA';
 

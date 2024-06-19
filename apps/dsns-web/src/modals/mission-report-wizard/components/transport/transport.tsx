@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
 
+import { useSelectStore } from '@/shared-client/common';
+import { type ITransportAction } from '@/shared-client/stores';
 import { Form } from 'antd';
 import { observer } from 'mobx-react';
 
 import { SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
-import { useStore, useSelectStore } from '~/hooks';
+import { useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { type ITransportAction } from '~/stores';
 import { select } from '~/utils';
 
 import { type IMissionReportForm } from '../../mission-report-wizard.types';

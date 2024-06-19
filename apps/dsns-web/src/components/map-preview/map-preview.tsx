@@ -1,14 +1,14 @@
 import { memo, useState, useRef, useEffect } from 'react';
 
+import { mapUtils, useVisibleMap } from '@/shared-client/map';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from '@/shared-client/map';
 import { GoogleMap, type GoogleMapProps, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { Button, Tooltip, Typography } from 'antd';
 import { type Dayjs } from 'dayjs';
 
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
-import { useMapOptions, useVisibleMap } from '~/hooks';
-import { mapUtils } from '~/utils';
-import { getArea } from '~/utils/map/common';
+import { useMapOptions } from '~/hooks';
 
 import { s } from './map-preview.style';
 import { MarkerCallout } from './marker-callout';
@@ -19,8 +19,6 @@ import { usePolygonCallout } from './use-polygon-callout';
 import { Icon } from '../icon';
 import { MapInfo } from '../map-info';
 import { MapZoomView } from '../map-zoom-view';
-
-import { type ICircle, type ILine, type IPoint, type IPolygon } from '@/shared-client/map';
 
 interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
     marker?: IPoint | undefined;
@@ -91,8 +89,8 @@ function Component({
     const isVisiblePolygonCallout = isVisiblePolygon;
     const isVisibleLineCallout = isVisibleLine;
 
-    const area = getArea(circle, polygon, line);
-    const center = mapUtils.getInfoPoint({ marker, circle, polygon, line });
+    const area = mapUtils.getArea(circle, polygon, line);
+    const center = mapUtils.getCenter({ marker, circle, polygon, line });
     const distance = mapUtils.getTotalDistance({ line, polygon });
 
     return (

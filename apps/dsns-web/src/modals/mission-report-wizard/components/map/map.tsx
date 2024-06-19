@@ -1,13 +1,14 @@
+import { str } from '@/shared/common';
+import { type IExplosiveObjectActionDTOParams } from '@/shared-client/api';
+import { type IMapViewActionValue } from '@/shared-client/stores';
 import { Form } from 'antd';
 
-import { type IExplosiveObjectActionDTOParams, ExternalApi } from '~/api';
+import { ExternalApi } from '~/api';
 import { MapPreview } from '~/components';
 import { MAP_SIZE, MAP_VIEW_TAKE_PRINT_CONTAINER, MODALS } from '~/constants';
 import { useStore } from '~/hooks';
 import { type IMapEditorSubmit } from '~/modals/map-editor/map-editor.types';
 import { Modal } from '~/services';
-import { type IMapViewActionValue } from '~/stores';
-import { str } from '~/utils';
 
 import { s, MAP_PADDING_TOP, MAP_PADDING_BOTTOM } from './map.styles';
 

@@ -1,4 +1,4 @@
-import { type EXPLOSIVE_TYPE } from '~/constants';
+import { type EXPLOSIVE_TYPE } from '@/shared/db';
 
 export interface IExplosiveForm {
     name: string;

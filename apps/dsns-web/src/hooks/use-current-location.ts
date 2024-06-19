@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { type IPoint } from '@/shared-client';
+import { useAsyncEffect } from '@/shared-client/common';
+import { type IPoint } from '@/shared-client/map';
 
 import { ExternalApi } from '~/api';
-import { useAsyncEffect } from '~/hooks';
 
 export const useCurrentLocation = (defaultValue?: IPoint) => {
     const [coords, setCoords] = useState<IPoint | undefined>(defaultValue);

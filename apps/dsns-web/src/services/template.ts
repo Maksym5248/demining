@@ -1,7 +1,6 @@
+import { MIME_TYPE } from '@/shared/db';
+import { fileUtils } from '@/shared-client/common';
 import { TemplateHandler, ImagePlugin, LinkPlugin, LoopPlugin, TextPlugin, RawXmlPlugin } from 'easy-template-x';
-
-import { MIME_TYPE } from '~/constants';
-import { fileUtils } from '~/utils/file';
 
 const handler = new TemplateHandler({
     plugins: [new LoopPlugin(), new RawXmlPlugin(), new ImagePlugin(), new LinkPlugin(), new TextPlugin()],

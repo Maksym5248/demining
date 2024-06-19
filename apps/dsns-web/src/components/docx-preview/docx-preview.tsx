@@ -1,9 +1,8 @@
+import { MIME_TYPE } from '@/shared/db';
+import { fileUtils, useAsyncEffect } from '@/shared-client/common';
 import * as docx from 'docx-preview';
 
-import { MIME_TYPE } from '~/constants';
-import { useAsyncEffect } from '~/hooks';
 import { Crashlytics } from '~/services';
-import { fileUtils } from '~/utils/file';
 
 interface DocxPreviewProps {
     file: File | null;

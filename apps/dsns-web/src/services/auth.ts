@@ -1,4 +1,4 @@
-import { type IAuthUser, type IAuth } from '@/shared-client';
+import { type IAuthUser, type IAuth } from '@/shared-client/services';
 import { getApp } from 'firebase/app';
 import {
     getAuth,
@@ -8,6 +8,8 @@ import {
     signOut,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    type NextOrObserver,
+    type User,
 } from 'firebase/auth';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 
@@ -27,7 +29,7 @@ export class AuthClass implements IAuth {
     }
 
     onAuthStateChanged(fn: (user: IAuthUser | null) => void) {
-        onAuthStateChanged(this.auth, fn);
+        onAuthStateChanged(this.auth, fn as NextOrObserver<User>);
     }
 
     async signInWithGoogle() {

@@ -1,4 +1,6 @@
-import { type IBaseDB, type IWhere, type IQuery, type IOrder } from '@/shared';
+import { removeFields } from '@/shared/common';
+import { type IBaseDB } from '@/shared/db';
+import { type IWhere, type IQuery, type IOrder, type IDBBase, type ICreateData } from '@/shared-client/common';
 import {
     getFirestore,
     collection,
@@ -27,8 +29,6 @@ import {
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
-
-import { removeFields } from '~/utils';
 
 function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];
@@ -75,9 +75,7 @@ const getWhere = (values: IWhere) => {
 
 const getOrder = (value: IOrder) => orderBy(value.by, value.type);
 
-type CreateData<T extends IBaseDB> = Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'> & Partial<Pick<T, 'id'>>;
-
-export class DBBase<T extends IBaseDB> {
+export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     tableName: string;
 
     rootCollection?: string;
@@ -219,7 +217,7 @@ export class DBBase<T extends IBaseDB> {
         return { _search };
     }
 
-    private getCreateValue(value: CreateData<T>) {
+    private getICreateValue(value: ICreateData<T>) {
         const id = value?.id ?? this.uuid();
         const ref = doc(this.collection, id);
         const timestamp = serverTimestamp();
@@ -266,16 +264,16 @@ export class DBBase<T extends IBaseDB> {
         return { ref, newValue: updatedValue };
     }
 
-    async create(value: CreateData<T>): Promise<T> {
-        const { ref, newValue } = this.getCreateValue(value);
+    async create(value: ICreateData<T>): Promise<T> {
+        const { ref, newValue } = this.getICreateValue(value);
 
         await setDoc(ref, newValue);
         const res = (await this.get(newValue.id)) as T;
         return res;
     }
 
-    batchCreate(value: CreateData<T>) {
-        const { ref, newValue } = this.getCreateValue(value);
+    batchCreate(value: ICreateData<T>) {
+        const { ref, newValue } = this.getICreateValue(value);
         this.batch?.set(ref, newValue);
     }
 

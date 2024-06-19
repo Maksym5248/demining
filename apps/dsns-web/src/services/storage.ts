@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import { type IStorage } from '@/shared-client';
+import { type IStorage } from '@/shared-client/services';
 
 const eventEmitter = new EventEmitter();
 

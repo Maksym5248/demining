@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { dates } from '@/shared-client/common';
 import { Form, DatePicker, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
@@ -7,7 +8,7 @@ import { WizardButtons, Select, WizardFooter } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { Modal } from '~/services';
-import { dates, select } from '~/utils';
+import { select } from '~/utils';
 
 import { s } from './order-wizard.style';
 import { type IOrderForm } from './order-wizard.types';

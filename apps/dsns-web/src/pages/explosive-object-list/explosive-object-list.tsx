@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import { type IExplosiveObject } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
@@ -7,7 +8,6 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { type IExplosiveObject } from '~/stores';
 
 import { s } from './explosive-object-list.styles';
 

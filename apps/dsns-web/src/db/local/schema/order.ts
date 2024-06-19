@@ -1,6 +1,5 @@
+import { TABLES } from '@/shared/db';
 import { DATA_TYPE } from 'jsstore';
-
-import { TABLES } from '~/constants';
 
 export const schemaOrder = {
     name: TABLES.ORDER,

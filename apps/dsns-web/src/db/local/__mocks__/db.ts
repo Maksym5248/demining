@@ -11,7 +11,7 @@ import {
     type ITransportActionDB,
     type IEquipmentDB,
     type IEquipmentActionDB,
-} from '@/shared';
+} from '@/shared/db';
 import { type IWhereQueryOption } from 'jsstore';
 
 export class DBBase<T extends { id: string }> {

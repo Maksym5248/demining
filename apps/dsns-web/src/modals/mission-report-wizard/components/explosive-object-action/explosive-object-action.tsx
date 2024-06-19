@@ -1,3 +1,4 @@
+import { type IExplosiveObjectActionValueParams } from '@/shared-client/stores';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import { observer } from 'mobx-react';
@@ -6,7 +7,6 @@ import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore } from '~/hooks';
 import { Modal } from '~/services';
-import { type IExplosiveObjectActionValueParams } from '~/stores';
 
 import { s } from './explosive-object-action.styles';
 import { type ListItemProps } from './explosive-object-action.types';

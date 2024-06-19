@@ -1,6 +1,5 @@
+import { TABLES } from '@/shared/db';
 import { DATA_TYPE } from 'jsstore';
-
-import { TABLES } from '~/constants';
 
 export const schemaMapViewAction = {
     name: TABLES.MAP_VIEW_ACTION,

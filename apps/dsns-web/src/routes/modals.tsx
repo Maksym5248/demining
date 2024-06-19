@@ -1,3 +1,5 @@
+import { type IModalsMap } from '@/shared-client/services';
+
 import { MODALS } from '~/constants';
 import {
     EmployeesWizardModal,
@@ -17,7 +19,6 @@ import {
     MapEditorModal,
     TemplateDataPreviewModal,
 } from '~/modals';
-import { type IModalsMap } from '~/services';
 
 export const modals: IModalsMap = {
     [MODALS.MISSION_REPORT_WIZARD]: {

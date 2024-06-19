@@ -1,8 +1,7 @@
 import { type ChangeEvent, useEffect } from 'react';
 
+import { useDebounce, useValues } from '@/shared-client/common';
 import { Input } from 'antd';
-
-import { useDebounce, useValues } from '~/hooks';
 
 import { s } from './search.styles';
 

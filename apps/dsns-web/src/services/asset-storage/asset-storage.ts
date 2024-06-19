@@ -1,6 +1,5 @@
-import { type IAssetStorage } from '@/shared-client';
-
-import { ASSET_TYPE, ASSET_DIR } from '~/constants';
+import { ASSET_DIR, ASSET_TYPE } from '@/shared/db';
+import { type IAssetStorage } from '@/shared-client/services';
 
 import { AssetStorageBase } from './asset-base';
 

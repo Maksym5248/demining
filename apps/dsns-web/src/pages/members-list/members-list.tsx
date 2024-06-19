@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
+import { useAsyncEffect } from '@/shared-client/common';
+import { type IUser } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
-import { useStore, useRouteTitle, useAsyncEffect } from '~/hooks';
+import { useStore, useRouteTitle } from '~/hooks';
 import { Modal } from '~/services';
-import { type IUser } from '~/stores';
 
 import { s } from './members-list.styles';
 

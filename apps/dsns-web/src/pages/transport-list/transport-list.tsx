@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 
+import { TRANSPORT_TYPE } from '@/shared/db';
+import { type ITransport } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 
 import { Icon, List, ListHeader } from '~/components';
-import { MODALS, TRANSPORT_TYPE, WIZARD_MODE } from '~/constants';
+import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { type ITransport } from '~/stores';
 
 import { s } from './transport-list.styles';
 

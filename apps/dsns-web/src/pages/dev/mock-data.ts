@@ -1,5 +1,5 @@
-import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE, MISSION_REQUEST_TYPE } from '~/constants';
-import { dates } from '~/utils';
+import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE, MISSION_REQUEST_TYPE } from '@/shared/db';
+import { dates } from '@/shared-client/common';
 
 export const mockEmployees = [
     {

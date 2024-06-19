@@ -10,7 +10,7 @@
   "private": true,
   "files": [
     "dist",
-    "eslint-config-client.js"
+    "config/eslint-config-client.js"
   ],
   "scripts": {
     "clean:build": "rm -rf dist/ ./tsconfig.tsbuildinfo",
@@ -18,7 +18,22 @@
     "build": "tsc",
     "postinstall": "yarn clean:build && yarn build"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@/shared": "^1.0.0",
+    "mobx": "^6.8.0",
+    "mobx-react": "^7.6.0",
+    "mobx-react-lite": "^3.4.3",
+    "axios": "^1.6.5",
+    "dayjs": "^1.11.10",
+    "yup": "^1.2.0",
+    "uuid": "^3.3.2",
+    "formik": "^2.4.5"
+  },
+  "dependencies": {
+    "@turf/helpers": "^6.5.0",
+    "@turf/turf": "^6.5.0",
+    "geofire-common": "^6.0.0"
+  },
   "devDependencies": {
     "@/shared": "^1.0.0",
     "husky": "^4.3.0",
@@ -27,6 +42,7 @@
     "typescript": "~5.3.3",
     "prettier": "^3.0.3",
     "eslint": "8.45.0",
+    "dayjs": "^1.11.10",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "7.33.0",
     "eslint-plugin-react-hooks": "4.6.0",

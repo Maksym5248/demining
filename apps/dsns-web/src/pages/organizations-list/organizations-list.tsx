@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import { type IOrganization } from '@/shared-client/stores';
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
 
@@ -7,7 +8,6 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, ROUTES, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useNavigate, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-import { type IOrganization } from '~/stores/organization/entities/organization';
 
 const ListItem = observer(({ item }: { item: IOrganization }) => {
     const navigate = useNavigate();

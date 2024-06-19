@@ -1,4 +1,4 @@
-import { type IMessageService } from '@/shared-client';
+import { type IMessageService } from '@/shared-client/services';
 import { message as antd } from 'antd';
 
 export class MessageService implements IMessageService {
