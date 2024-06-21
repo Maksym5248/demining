@@ -1,8 +1,9 @@
 import { type IEquipmentAPI } from '~/api';
+import { customMakeAutoObservable } from '~/common';
+import { type IMessage } from '~/services';
 
 import { EquipmentActionValue, type IEquipmentActionValue } from './equipment-action.schema';
 import { Equipment, type IEquipment } from '../equipment/equipment';
-import { IMessage } from '~/services';
 
 export interface IEquipmentAction extends IEquipmentActionValue {
     updateFields: (data: Partial<IEquipmentActionValue>) => void;
@@ -30,6 +31,8 @@ export class EquipmentAction extends EquipmentActionValue {
         super(data);
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IEquipmentActionValue>) {

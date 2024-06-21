@@ -2,11 +2,12 @@ import { str } from 'shared-my/common';
 
 import { type IEmployeeAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable } from '~/common/utils/mobx';
 import { type CollectionModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { createEmployee, updateEmployeeDTO, type IEmployeeValue, EmployeeValue } from './employee.schema';
 import { type IRank, type IRankValue } from '../rank';
-import { IMessage } from '~/services';
 
 export interface IEmployee extends IEmployeeValue {
     rank?: IRank;
@@ -41,9 +42,12 @@ export class Employee extends EmployeeValue implements IEmployee {
 
     constructor(data: IEmployeeValue, params: IEmployeeParams) {
         super(data);
+
         this.collections = params.collections;
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     get rank() {
@@ -68,6 +72,6 @@ export class Employee extends EmployeeValue implements IEmployee {
             this.updateFields(createEmployee(res));
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
-        onError: () =>this.services.message.error('Не вдалось додати'),
+        onError: () => this.services.message.error('Не вдалось додати'),
     });
 }

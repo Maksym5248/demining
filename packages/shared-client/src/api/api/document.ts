@@ -1,10 +1,10 @@
+import { type IDocumentDB, ASSET_TYPE } from 'shared-my/db';
+
 import { type IDBBase, type IQuery, type IUpdateValue, type ICreateValue } from '~/common';
 import { fileUtils } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import { type IDocumentDTO } from '../dto';
-
-import { type IDocumentDB, ASSET_TYPE } from 'shared-my/db';
 
 export interface IDocumentAPI {
     create: (value: ICreateValue<IDocumentDTO>, file: File) => Promise<IDocumentDTO>;

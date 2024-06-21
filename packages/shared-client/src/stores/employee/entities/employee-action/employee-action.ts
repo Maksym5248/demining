@@ -1,12 +1,11 @@
-import { makeAutoObservable } from 'mobx';
-
 import { type IEmployeeAPI } from '~/api';
+import { customMakeAutoObservable } from '~/common';
 import { type CollectionModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { EmployeeActionValue, type IEmployeeActionValue } from './employee-action.schema';
 import { type IEmployeeParams, Employee, type IEmployee } from '../employee';
 import { type IRank, type IRankValue } from '../rank';
-import { IMessage } from '~/services';
 
 export interface IEmployeeAction extends IEmployeeActionValue {
     employee: IEmployee;
@@ -30,14 +29,13 @@ export class EmployeeAction extends EmployeeActionValue implements IEmployeeActi
     services: IServices;
 
     constructor(data: IEmployeeActionValue, params: IEmployeeParams) {
-        const employeeAction = new EmployeeActionValue(data);
-        super(employeeAction);
+        super(data);
 
         this.collections = params.collections;
         this.api = params.api;
         this.services = params.services;
 
-        makeAutoObservable(this);
+        customMakeAutoObservable(this);
     }
 
     get employee() {

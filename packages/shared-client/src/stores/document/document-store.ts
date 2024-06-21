@@ -1,12 +1,12 @@
-import { DOCUMENT_TYPE } from 'shared-my/db';
 import { makeAutoObservable } from 'mobx';
+import { DOCUMENT_TYPE } from 'shared-my/db';
 
 import { type IDocumentAPI, type IDocumentDTO } from '~/api';
 import { type ICreateValue, dates } from '~/common';
 import { CollectionModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { type IDocument, Document, createDocument, createDocumentDTO, type IDocumentValue } from './entities';
-import { IMessage } from '~/services';
 
 export interface IDocumentStore {
     collection: CollectionModel<IDocument, IDocumentValue>;
@@ -39,10 +39,10 @@ export class DocumentStore implements IDocumentStore {
     templatesList = new ListModel<IDocument, IDocumentValue>({ collection: this.collection });
     templatesSearchList = new ListModel<IDocument, IDocumentValue>({ collection: this.collection });
 
-    constructor({ api, services }: { api: IApi, services: IServices }) {
+    constructor({ api, services }: { api: IApi; services: IServices }) {
         this.api = api;
         this.services = services;
-        
+
         makeAutoObservable(this);
     }
 

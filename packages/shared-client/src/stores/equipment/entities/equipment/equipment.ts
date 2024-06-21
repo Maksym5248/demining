@@ -1,9 +1,9 @@
 import { type IEquipmentAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable, type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { type IEquipmentValue, updateEquipmentDTO, createEquipment, EquipmentValue } from './equipment.schema';
-import { IMessage } from '~/services';
 
 export interface IEquipment extends IEquipmentValue {
     updateFields: (data: Partial<IEquipmentValue>) => void;
@@ -23,15 +23,16 @@ interface IEquipmentParams {
     services: IServices;
 }
 
-
 export class Equipment extends EquipmentValue {
     api: IApi;
     services: IServices;
-    
+
     constructor(value: IEquipmentValue, params: IEquipmentParams) {
         super(value);
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IEquipmentValue>) {

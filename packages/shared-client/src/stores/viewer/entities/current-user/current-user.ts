@@ -1,6 +1,7 @@
-import { ROLES } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
-import { makeAutoObservable } from 'mobx';
+import { ROLES } from 'shared-my/db';
+
+import { customMakeAutoObservable } from '~/common';
 
 import { type ICurrentUserValue, type ICurrentUserOrganizationValue } from './current-user.schema';
 
@@ -28,7 +29,7 @@ export class CurrentUser implements ICurrentUser {
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
 
-        makeAutoObservable(this);
+        customMakeAutoObservable(this);
     }
 
     get isRootAdmin() {

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { RequestModel, type IRequestModel } from '~/models';
-import { IMessage, type IAuth } from '~/services';
+import { type IMessage, type IAuth } from '~/services';
 
 export interface IAuthStore {
     signInWithGoogle: IRequestModel;

@@ -1,11 +1,9 @@
-import { makeAutoObservable } from 'mobx';
-
 import { type IDocumentAPI } from '~/api';
-import { type IUpdateValue, fileUtils } from '~/common';
+import { type IUpdateValue, fileUtils, customMakeAutoObservable } from '~/common';
 import { type IRequestModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { DocumentValue, type IDocumentValue, createDocument, updateDocumentDTO } from './document.schema';
-import { IMessage } from '~/services';
 
 export interface IDocument extends IDocumentValue {
     updateFields(data: Partial<IDocumentValue>): void;
@@ -25,12 +23,12 @@ export class Document extends DocumentValue implements IDocument {
     api: IApi;
     services: IServices;
 
-    constructor(data: IDocumentValue, { api, services }: { api: Pick<IApi, 'document'>, services: IServices }) {
+    constructor(data: IDocumentValue, { api, services }: { api: Pick<IApi, 'document'>; services: IServices }) {
         super(data);
         this.api = api;
         this.services = services;
 
-        makeAutoObservable(this);
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IDocumentValue>) {

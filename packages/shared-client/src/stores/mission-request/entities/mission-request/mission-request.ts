@@ -1,11 +1,11 @@
 import { missionRequestType } from 'shared-my/db';
 
 import { type IMissionRequestAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable, type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { type IMissionRequestValue, updateMissionRequestDTO, createMissionRequest, MissionRequestValue } from './mission-request.schema';
-import { IMessage } from '~/services';
 
 export interface IMissionRequest extends IMissionRequestValue {
     update: RequestModel<[IUpdateValue<IMissionRequestValue>]>;
@@ -25,10 +25,12 @@ export class MissionRequest extends MissionRequestValue implements IMissionReque
     api: IApi;
     services: IServices;
 
-    constructor(value: IMissionRequestValue, params: { api: IApi, services: IServices }) {
+    constructor(value: IMissionRequestValue, params: { api: IApi; services: IServices }) {
         super(value);
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IMissionRequestValue>) {

@@ -1,6 +1,7 @@
 import { type IExplosiveObjectAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable, type IUpdateValue } from '~/common';
 import { type ICollectionModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type IExplosiveObjectValueParams,
@@ -10,7 +11,6 @@ import {
     type IExplosiveObjectValue,
 } from './explosive-object.schema';
 import { type ExplosiveObjectType, type ExplosiveObjectTypeValue } from '../explosive-object-type';
-import { IMessage } from '~/services';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -48,6 +48,8 @@ export class ExplosiveObject extends ExplosiveObjectValue implements IExplosiveO
         this.collections = collections;
         this.api = api;
         this.services = services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: IUpdateValue<IExplosiveObjectValueParams>) {

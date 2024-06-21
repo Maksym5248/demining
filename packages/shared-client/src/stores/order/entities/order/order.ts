@@ -1,12 +1,10 @@
-import { makeAutoObservable } from 'mobx';
-
 import { type IOrderAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable, type IUpdateValue } from '~/common';
 import { type ICollectionModel, type IRequestModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { type IOrderValue, type IOrderValueParams, OrderValue, createOrder, updateOrderDTO } from './order.schema';
 import { type IEmployeeAction, type IEmployeeActionValue } from '../../../employee';
-import { IMessage } from '~/services';
 
 export interface IOrder extends IOrderValue {
     updateFields(data: Partial<IOrderValue>): void;
@@ -44,8 +42,8 @@ export class Order extends OrderValue implements IOrder {
         this.collections = collections;
         this.api = api;
         this.services = services;
-        
-        makeAutoObservable(this);
+
+        customMakeAutoObservable(this);
     }
 
     get signedByAction() {

@@ -1,9 +1,9 @@
 import { type ITransportAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable, type IUpdateValue } from '~/common';
 import { type IRequestModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { type ITransportValue, updateTransportDTO, createTransport, TransportValue } from './transport.schema';
-import { IMessage } from '~/services';
 
 export interface ITransport extends ITransportValue {
     updateFields(data: Partial<ITransportValue>): void;
@@ -19,15 +19,16 @@ interface IServices {
     message: IMessage;
 }
 
-
 export class Transport extends TransportValue implements ITransport {
     api: IApi;
     services: IServices;
 
-    constructor(value: ITransportValue, { api, services }: { api: IApi, services: IServices }) {
+    constructor(value: ITransportValue, { api, services }: { api: IApi; services: IServices }) {
         super(value);
         this.api = api;
         this.services = services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<ITransportValue>) {

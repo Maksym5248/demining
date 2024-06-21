@@ -1,5 +1,7 @@
 import { ROLES } from 'shared-my/db';
 
+import { customMakeAutoObservable } from '~/common';
+
 import { type IUserValue, UserValue } from './user.schema';
 
 export interface IUser extends IUserValue {
@@ -11,6 +13,8 @@ export interface IUser extends IUserValue {
 export class User extends UserValue implements IUser {
     constructor(value: IUserValue) {
         super(value);
+
+        customMakeAutoObservable(this);
     }
 
     get isRootAdmin() {

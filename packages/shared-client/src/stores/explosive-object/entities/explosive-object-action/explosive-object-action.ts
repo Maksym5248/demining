@@ -1,10 +1,11 @@
 import { type IExplosiveObjectAPI } from '~/api';
+import { customMakeAutoObservable } from '~/common';
 import { type ICollectionModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { ExplosiveObjectActionValue, type IExplosiveObjectActionValue } from './explosive-object-action.schema';
 import { ExplosiveObject, type IExplosiveObject } from '..';
 import { type ExplosiveObjectType, type ExplosiveObjectTypeValue, type IExplosiveObjectType } from '../explosive-object-type';
-import { IMessage } from '~/services';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -40,6 +41,8 @@ export class ExplosiveObjectAction extends ExplosiveObjectActionValue implements
         this.collections = collections;
         this.api = api;
         this.services = services;
+
+        customMakeAutoObservable(this);
     }
 
     get value() {

@@ -1,11 +1,12 @@
-import { EXPLOSIVE_TYPE } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_TYPE } from 'shared-my/db';
 
 import { type IExplosiveAPI, type IExplosiveActionSumDTO, type IExplosiveDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type IExplosive,
@@ -19,7 +20,6 @@ import {
     createExplosiveActionSum,
 } from './entities';
 import { SumExplosiveActions } from './sum-explosive-actions';
-import { IMessage } from '~/services';
 
 export interface IExplosiveStore {
     collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionValue>;
@@ -61,7 +61,7 @@ export class ExplosiveStore implements IExplosiveStore {
     searchList = new ListModel<IExplosive, IExplosiveValue>({ collection: this.collection });
     sum: SumExplosiveActions = new SumExplosiveActions();
 
-    constructor(params: { api: IApi, services: IServices }) {
+    constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
 

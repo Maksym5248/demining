@@ -1,9 +1,9 @@
-import { str } from 'shared-my/common';
-import { EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
 import { toLower } from 'lodash';
+import { str } from 'shared-my/common';
+import { EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my/db';
 
-import { dates } from '~/common';
+import { customMakeAutoObservable, dates } from '~/common';
 import { type IPoint } from '~/map';
 
 import { type IMissionReportValue, MissionReportValue } from './mission-report.schema';
@@ -93,6 +93,8 @@ export class MissionReport extends MissionReportValue implements IMissionReport 
     constructor(value: IMissionReportValue, { stores }: MissionReportParams) {
         super(value);
         this.stores = stores;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IMissionReportValue>) {

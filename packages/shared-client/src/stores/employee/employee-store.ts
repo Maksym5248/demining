@@ -1,9 +1,10 @@
-import { EMPLOYEE_TYPE, ranksData } from 'shared-my/db';
 import { makeAutoObservable } from 'mobx';
+import { EMPLOYEE_TYPE, ranksData } from 'shared-my/db';
 
 import { type IEmployeeAPI, type IEmployeeDTO } from '~/api';
 import { type ICreateValue, dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     Rank,
@@ -19,7 +20,6 @@ import {
     type IEmployeeAction,
     type IEmployeeActionValue,
 } from './entities';
-import { IMessage } from '~/services';
 
 export interface IEmployeeStore {
     collection: ICollectionModel<IEmployee, IEmployeeValue>;
@@ -57,7 +57,6 @@ interface IServices {
     message: IMessage;
 }
 
-
 export class EmployeeStore implements IEmployeeStore {
     api: IApi;
     services: IServices;
@@ -76,7 +75,7 @@ export class EmployeeStore implements IEmployeeStore {
         factory: (data: IEmployeeActionValue) => new EmployeeAction(data, { collections: { rank: this.ranksCollection }, ...this }),
     });
 
-    constructor({ api, services }: { api: IApi, services: IServices}) {
+    constructor({ api, services }: { api: IApi; services: IServices }) {
         this.api = api;
         this.services = services;
 

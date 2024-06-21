@@ -1,10 +1,9 @@
-
 import { type IExplosiveAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
+import { customMakeAutoObservable, type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import { type IExplosiveValue, updateExplosiveDTO, createExplosive, ExplosiveValue } from './explosive.schema';
-import { IMessage } from '~/services';
 
 export interface IExplosive extends IExplosiveValue {
     update: RequestModel<[IUpdateValue<IExplosiveValue>]>;
@@ -22,10 +21,12 @@ export class Explosive extends ExplosiveValue implements IExplosive {
     api: IApi;
     services: IServices;
 
-    constructor(data: IExplosiveValue, params: { api: IApi, services: IServices }) {
+    constructor(data: IExplosiveValue, params: { api: IApi; services: IServices }) {
         super(data);
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IExplosiveValue>) {

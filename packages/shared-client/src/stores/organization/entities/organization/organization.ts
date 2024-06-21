@@ -1,5 +1,7 @@
 import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
+import { customMakeAutoObservable } from '~/common';
 import { type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type IUpdateOrganizationParams,
@@ -10,7 +12,6 @@ import {
 } from './organization.schema';
 import { type IUser, type IUserStore, type IUserValue, createUser } from '../../../user';
 import { type IViewerStore } from '../../../viewer';
-import { IMessage } from '~/services';
 
 export interface IOrganization extends IOrganizationValue {
     members: IListModel<IUser, IUserValue>;
@@ -40,12 +41,11 @@ interface IOrganizationParams {
     services: IServices;
 }
 
-
 export class Organization extends OrganizationValue implements IOrganization {
     stores: IStores;
     api: IApi;
     services: IServices;
-    
+
     members: IListModel<IUser, IUserValue>;
 
     constructor(value: IOrganizationValue, { stores, api, services }: IOrganizationParams) {
@@ -56,6 +56,8 @@ export class Organization extends OrganizationValue implements IOrganization {
         this.services = services;
 
         this.members = new ListModel<IUser, IUserValue>({ collection: this.stores.user.collection });
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<IOrganizationValue>) {

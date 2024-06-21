@@ -1,8 +1,9 @@
 import { type IExplosiveAPI } from '~/api';
+import { customMakeAutoObservable } from '~/common';
+import { type IMessage } from '~/services';
 
 import { ExplosiveActionValue, type IExplosiveActionValue } from './explosive-action.schema';
 import { Explosive } from '../explosive';
-import { IMessage } from '~/services';
 
 export interface IExplosiveAction extends IExplosiveActionValue {
     explosive: Explosive;
@@ -21,10 +22,12 @@ export class ExplosiveAction extends ExplosiveActionValue {
     api: IApi;
     services: IServices;
 
-    constructor(data: IExplosiveActionValue, params: { api: IApi, services: IServices }) {
+    constructor(data: IExplosiveActionValue, params: { api: IApi; services: IServices }) {
         super(data);
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     get value() {

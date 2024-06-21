@@ -1,8 +1,9 @@
 import { type ITransportAPI } from '~/api';
+import { customMakeAutoObservable } from '~/common';
+import { type IMessage } from '~/services';
 
 import { type ITransportActionValue, TransportActionValue } from './transport-action.schema';
 import { type ITransport, Transport } from '../transport/transport';
-import { IMessage } from '~/services';
 
 export interface ITransportAction extends ITransportActionValue {
     updateFields(data: Partial<ITransportActionValue>): void;
@@ -28,6 +29,8 @@ export class TransportAction extends TransportActionValue {
 
         this.api = params.api;
         this.services = params.services;
+
+        customMakeAutoObservable(this);
     }
 
     updateFields(data: Partial<ITransportActionValue>) {
