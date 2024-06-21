@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { useAsyncEffect } from '@/shared-client/common';
-import { type IUser } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
+import { useAsyncEffect } from 'shared-my-client/common';
+import { type IUser } from 'shared-my-client/stores';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

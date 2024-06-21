@@ -1,3 +1,4 @@
+import { type IWhereQueryOption } from 'jsstore';
 import {
     type IEmployeeDB,
     type IEmployeeActionDB,
@@ -11,8 +12,7 @@ import {
     type ITransportActionDB,
     type IEquipmentDB,
     type IEquipmentActionDB,
-} from '@/shared/db';
-import { type IWhereQueryOption } from 'jsstore';
+} from 'shared-my/db';
 
 export class DBBase<T extends { id: string }> {
     uuid = jest.fn(() => Promise.resolve('id'));

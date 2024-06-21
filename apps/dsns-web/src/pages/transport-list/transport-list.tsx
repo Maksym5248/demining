@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { TRANSPORT_TYPE } from '@/shared/db';
-import { type ITransport } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
+import { TRANSPORT_TYPE } from 'shared-my/db';
+import { type ITransport } from 'shared-my-client/stores';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

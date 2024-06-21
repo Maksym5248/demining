@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: ["./eslint-config-base.js", "./eslint-config-prettier.js"],
+  extends: ["./config/eslint-config-base.js", "./config/eslint-config-prettier.js"],
 }

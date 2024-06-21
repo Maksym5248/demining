@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { removeFields } from '@/shared/common';
-import { MIME_TYPE } from '@/shared/db';
-import { dates, fileUtils } from '@/shared-client/common';
-import { mapUtils } from '@/shared-client/map';
-import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from '@/shared-client/stores';
 import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { removeFields } from 'shared-my/common';
+import { MIME_TYPE } from 'shared-my/db';
+import { dates, fileUtils } from 'shared-my-client/common';
+import { mapUtils } from 'shared-my-client/map';
+import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from 'shared-my-client/stores';
 
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';

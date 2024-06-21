@@ -1,6 +1,6 @@
-import { type IAnalyticsEventParams, type IAnalytics, type ILogger, type ICrashlytics } from '@/shared-client/services';
 import { getAnalytics, logEvent, setUserId } from 'firebase/analytics';
 import { getApp } from 'firebase/app';
+import { type IAnalyticsEventParams, type IAnalytics, type ILogger, type ICrashlytics } from 'shared-my-client/services';
 
 export class AnalyticsClass implements IAnalytics {
     constructor(

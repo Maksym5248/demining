@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { type IModalsMapInternal, type IModalTypeInternal, type IModalsMap } from '@/shared-client/services';
+import { type IModalsMapInternal, type IModalTypeInternal, type IModalsMap } from 'shared-my-client/services';
 
 import { Modal } from '~/services';
 

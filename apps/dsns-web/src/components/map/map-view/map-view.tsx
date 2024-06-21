@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef, useState } from 'react';
 
-import { mathUtils, useValues } from '@/shared-client/common';
-import { mapUtils, type ICircle, type ILine, type IMarker, type IPoint, type IPolygon, useVisibleMap } from '@/shared-client/map';
 import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { InputNumber } from 'antd';
+import { mathUtils, useValues } from 'shared-my-client/common';
+import { mapUtils, type ICircle, type ILine, type IMarker, type IPoint, type IPolygon, useVisibleMap } from 'shared-my-client/map';
 
 import { MapInfo } from '~/components/map-info';
 import { MAP_ZOOM } from '~/constants';

@@ -1,33 +1,45 @@
 {
-  "name": "@/shared-client",
+  "name": "shared-my-client",
   "version": "1.0.0",
-  "main": "dist/index",
-  "types": "dist/index",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "commonjs",
   "repository": "git@github.com:Maksym5248/dsns.git",
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
   "files": [
-    "dist",
-    "config/eslint-config-client.js"
+    "dist/*",
+    "config/*"
   ],
+  "exports": {
+    "./api": "./dist/api/index.js",
+    "./common": "./dist/common/index.js",
+    "./map": "./dist/map/index.js",
+    "./models": "./dist/models/index.js",
+    "./services": "./dist/services/index.js",
+    "./stores": "./dist/stores/index.js",
+    "./theme": "./dist/theme/index.js",
+    "./tsconfig-base": "./config/eslint-config-client.js"
+  },
   "scripts": {
     "clean:build": "rm -rf dist/ ./tsconfig.tsbuildinfo",
     "clean": "rm -rf node_modules/ && yarn clean:build",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "postinstall": "yarn clean:build && yarn build"
   },
   "peerDependencies": {
-    "@/shared": "^1.0.0",
+    "shared-my": "*",
+    "axios": "^1.6.5",
+    "dayjs": "^1.11.10",
+    "formik": "^2.4.5",
     "mobx": "^6.8.0",
     "mobx-react": "^7.6.0",
     "mobx-react-lite": "^3.4.3",
-    "axios": "^1.6.5",
-    "dayjs": "^1.11.10",
-    "yup": "^1.2.0",
     "uuid": "^3.3.2",
-    "formik": "^2.4.5"
+    "yup": "^1.2.0",
+    "typescript": "~5.3.3",
+    "lodash": "^4.17.21"
   },
   "dependencies": {
     "@turf/helpers": "^6.5.0",
@@ -35,17 +47,16 @@
     "geofire-common": "^6.0.0"
   },
   "devDependencies": {
-    "@/shared": "^1.0.0",
-    "husky": "^4.3.0",
-    "lint-staged": "^14.0.1",
-    "jest": "^29.7.0",
-    "typescript": "~5.3.3",
-    "prettier": "^3.0.3",
-    "eslint": "8.45.0",
     "dayjs": "^1.11.10",
+    "eslint": "8.45.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "7.33.0",
     "eslint-plugin-react-hooks": "4.6.0",
-    "eslint-plugin-testing-library": "5.11.0"
+    "eslint-plugin-testing-library": "5.11.0",
+    "husky": "^4.3.0",
+    "jest": "^29.7.0",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "tsc-alias": "1.8.10"
   }
 }

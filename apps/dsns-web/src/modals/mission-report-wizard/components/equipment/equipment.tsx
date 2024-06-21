@@ -1,7 +1,7 @@
-import { useSelectStore } from '@/shared-client/common';
-import { type IEquipmentAction } from '@/shared-client/stores';
 import { Form } from 'antd';
 import { observer } from 'mobx-react';
+import { useSelectStore } from 'shared-my-client/common';
+import { type IEquipmentAction } from 'shared-my-client/stores';
 
 import { SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

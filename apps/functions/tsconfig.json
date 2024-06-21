@@ -1,6 +1,6 @@
 {
-    "extends": "@/shared/config/tsconfig-base.json",
-    "compilerOptions": {
+  "extends": "../../node_modules/shared-my/config/tsconfig-base.json",
+  "compilerOptions": {
         "sourceMap": true,
         "lib": ["esnext"],
         "outDir": "./dist",

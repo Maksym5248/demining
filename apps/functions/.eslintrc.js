@@ -7,7 +7,7 @@ module.exports = {
     browser: false,
   },
   extends: [
-    '@/shared/config/eslint-config-base.js',
-    '@/shared/config/eslint-config-prettier'
+    "../../node_modules/shared-my/config/eslint-config-base.js",
+    "../../node_modules/shared-my/config/eslint-config-prettier.js"
   ],
 };

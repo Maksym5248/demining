@@ -1,6 +1,6 @@
-import { EMPLOYEE_TYPE } from '@/shared/db';
 import { Form, Input, Select, Drawer } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { EMPLOYEE_TYPE } from 'shared-my/db';
 
 import { WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';

@@ -1,5 +1,5 @@
-import { TABLES } from '@/shared/db';
 import { DATA_TYPE } from 'jsstore';
+import { TABLES } from 'shared-my/db';
 
 import { schemaExplosiveObject } from './explosive-object';
 

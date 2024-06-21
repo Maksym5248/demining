@@ -1,4 +1,4 @@
-import { IUserDB, ROLES } from '@/shared';
+import { IUserDB, ROLES } from 'shared-my';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { auth, https } from 'firebase-functions';

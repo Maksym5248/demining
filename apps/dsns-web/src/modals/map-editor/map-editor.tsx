@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { useDebounce, useValues } from '@/shared-client/common';
-import { type ICircle, type IGeoBox, type ILine, type IPolygon } from '@/shared-client/map';
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { useDebounce, useValues } from 'shared-my-client/common';
+import { type ICircle, type IGeoBox, type ILine, type IPolygon } from 'shared-my-client/map';
 
 import { type IOnChangeMapView, MapView } from '~/components';
 import { useStore } from '~/hooks';

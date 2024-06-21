@@ -80,8 +80,8 @@
         "prettier": "^3.0.3"
     },
     "dependencies": {
-        "@/shared": "^1.0.0",
-        "@/shared-client": "^1.0.0",
+        "shared-my": "*",
+        "shared-my-client": "*",
         "@ant-design/icons": "^4.3.0",
         "@emotion/css": "^11.11.2",
         "@emotion/eslint-plugin": "^11.11.0",

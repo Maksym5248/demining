@@ -1,5 +1,5 @@
 {
-    "extends": "@/shared/tsconfig-base.json",
+    "extends": "../../node_modules/shared-my/config/tsconfig-base.json",
     "compilerOptions": {
         "jsx": "react-native",
         "noEmit": true,

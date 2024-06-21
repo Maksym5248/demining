@@ -1,3 +1,4 @@
+import { type IDataBase } from 'jsstore';
 import {
     type IEmployeeDB,
     type IEmployeeActionDB,
@@ -11,9 +12,8 @@ import {
     type ITransportActionDB,
     type IEquipmentDB,
     type IEquipmentActionDB,
-} from '@/shared/db';
-import { TABLES } from '@/shared/db';
-import { type IDataBase } from 'jsstore';
+} from 'shared-my/db';
+import { TABLES } from 'shared-my/db';
 
 import { CONFIG } from '~/config';
 

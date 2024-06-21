@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
-import { useSelectStore } from '@/shared-client/common';
 import { Form } from 'antd';
 import { observer } from 'mobx-react';
+import { useSelectStore } from 'shared-my-client/common';
 
 import { SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

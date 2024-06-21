@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { useSelectStore } from '@/shared-client/common';
-import { type ITransportAction } from '@/shared-client/stores';
 import { Form } from 'antd';
 import { observer } from 'mobx-react';
+import { useSelectStore } from 'shared-my-client/common';
+import { type ITransportAction } from 'shared-my-client/stores';
 
 import { SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

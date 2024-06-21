@@ -1,4 +1,4 @@
-import { type DOCUMENT_TYPE } from '@/shared/db';
+import { type DOCUMENT_TYPE } from 'shared-my/db';
 
 export interface IDocumentForm {
     name: string;

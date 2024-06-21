@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { useAsyncEffect } from '@/shared-client/common';
-import { type IPoint } from '@/shared-client/map';
+import { useAsyncEffect } from 'shared-my-client/common';
+import { type IPoint } from 'shared-my-client/map';
 
 import { ExternalApi } from '~/api';
 

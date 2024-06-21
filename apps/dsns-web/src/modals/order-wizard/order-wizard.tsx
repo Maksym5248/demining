@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { dates } from '@/shared-client/common';
 import { Form, DatePicker, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { dates } from 'shared-my-client/common';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 
-import { type IOrder } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
+import { type IOrder } from 'shared-my-client/stores';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

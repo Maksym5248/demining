@@ -1,13 +1,15 @@
 {
-    "extends": "@/shared/config/tsconfig-base.json",
+    "extends": "../../node_modules/shared-my/config/tsconfig-base.json",
     "compilerOptions": {
         "declarationMap": true,
-        "rootDir": ".",
-        "outDir": "dist",
         "jsx": "react-jsx",
         "composite": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "baseUrl": ".",
         "paths": {
-            "~/*": ["./*"]
+            "~/*": ["./src/*"],
+            "shared-my/*": ["../shared/src/*"],
         }
     },
     "references": [
@@ -15,6 +17,6 @@
             "path": "../shared"
         }
     ],
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
-    "exclude": ["node_modules", "dist"]
+    "include": ["src"],
+    "exclude": ["node_modules", "dist", "config"]
 }

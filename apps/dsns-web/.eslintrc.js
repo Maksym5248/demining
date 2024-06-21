@@ -7,8 +7,8 @@ module.exports = {
     ".eslintrc.js"
   ],
   extends: [
-    '@/shared/config/eslint-config-base.js',
-    '@/shared-client/config/eslint-config-client.js',
-    '@/shared/config/eslint-config-prettier'
+    "../../node_modules/shared-my/config/eslint-config-base.js",
+    '../../node_modules/shared-my-client/config/eslint-config-client.js',
+    "../../node_modules/shared-my/config/eslint-config-prettier.js"
   ],
 };

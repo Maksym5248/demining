@@ -4,10 +4,12 @@
         "declarationMap": true,
         "composite": true,
         "outDir": "dist",
+        "rootDir": "src",
+        "baseUrl": ".",
         "paths": {
-            "~/*": ["./*"]
+            "~/*": ["./src/*"],
         }
     },
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
-    "exclude": ["node_modules", "dist", "./config/tsconfig-base.json"]
+    "include": ["src"],
+    "exclude": ["node_modules", "dist", "config"]
 }

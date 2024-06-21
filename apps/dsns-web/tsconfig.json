@@ -1,12 +1,14 @@
 {
-    "extends": "@/shared/config/tsconfig-base.json",
+    "extends": "../../node_modules/shared-my/config/tsconfig-base.json",
     "compilerOptions": {
         "jsx": "react-jsx",
         "noEmit": true,
         "lib": ["dom", "dom.iterable", "esnext"],
         "composite": true,
         "paths": {
-            "~/*": ["./src/*"]
+            "~/*": ["./src/*"],
+            "shared-my/*": ["../../packages/shared/src/*"],
+            "shared-my-client/*": ["../../packages/shared-client/src/*"]
         }
     },
     "references": [

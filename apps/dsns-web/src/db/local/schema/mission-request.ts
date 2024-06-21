@@ -1,5 +1,5 @@
-import { TABLES } from '@/shared/db';
 import { DATA_TYPE } from 'jsstore';
+import { TABLES } from 'shared-my/db';
 
 export const schemaMissionRequest = {
     name: TABLES.MISSION_REQUEST,

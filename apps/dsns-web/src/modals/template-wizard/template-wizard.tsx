@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { ASSET_TYPE, DOCUMENT_TYPE, MIME_TYPE } from '@/shared/db';
 import { Form, Drawer, Input, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { ASSET_TYPE, DOCUMENT_TYPE, MIME_TYPE } from 'shared-my/db';
 
 import { WizardButtons, Select, WizardFooter, UploadFile } from '~/components';
 import { MODALS, type WIZARD_MODE } from '~/constants';

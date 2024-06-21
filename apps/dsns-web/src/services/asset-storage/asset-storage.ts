@@ -1,5 +1,5 @@
-import { ASSET_DIR, ASSET_TYPE } from '@/shared/db';
-import { type IAssetStorage } from '@/shared-client/services';
+import { ASSET_DIR, ASSET_TYPE } from 'shared-my/db';
+import { type IAssetStorage } from 'shared-my-client/services';
 
 import { AssetStorageBase } from './asset-base';
 

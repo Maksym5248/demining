@@ -1,6 +1,3 @@
-import { removeFields } from '@/shared/common';
-import { type IBaseDB } from '@/shared/db';
-import { type IWhere, type IQuery, type IOrder, type IDBBase, type ICreateData } from '@/shared-client/common';
 import {
     getFirestore,
     collection,
@@ -29,6 +26,9 @@ import {
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
+import { removeFields } from 'shared-my/common';
+import { type IBaseDB } from 'shared-my/db';
+import { type IWhere, type IQuery, type IOrder, type IDBBase, type ICreateData } from 'shared-my-client/common';
 
 function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];

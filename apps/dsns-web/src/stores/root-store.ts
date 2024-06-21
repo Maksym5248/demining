@@ -1,3 +1,5 @@
+import { initializeApp } from 'firebase/app';
+import { makeAutoObservable } from 'mobx';
 import {
     type IDocumentStore,
     type IAuthStore,
@@ -27,9 +29,7 @@ import {
     UserStore,
     OrganizationStore,
     ViewerStore,
-} from '@/shared-client/stores';
-import { initializeApp } from 'firebase/app';
-import { makeAutoObservable } from 'mobx';
+} from 'shared-my-client/stores';
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';

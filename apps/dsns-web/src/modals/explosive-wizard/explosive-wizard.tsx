@@ -1,7 +1,7 @@
-import { EXPLOSIVE_TYPE } from '@/shared/db';
-import { useItemStore } from '@/shared-client/common';
 import { Form, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { EXPLOSIVE_TYPE } from 'shared-my/db';
+import { useItemStore } from 'shared-my-client/common';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';

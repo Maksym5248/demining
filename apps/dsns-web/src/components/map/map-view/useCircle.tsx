@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 
-import { type ICircle, type ILine, type IPolygon } from '@/shared-client/map';
-import { mapUtils } from '@/shared-client/map';
+import { type ICircle, type ILine, type IPolygon } from 'shared-my-client/map';
+import { mapUtils } from 'shared-my-client/map';
 
 import { DrawingType } from '../map.types';
 

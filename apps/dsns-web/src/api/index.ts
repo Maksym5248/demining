@@ -12,7 +12,7 @@ import {
     DocumentAPI,
     MapAPI,
     ExternalApi as ExternalApiClass,
-} from '@/shared-client/api';
+} from 'shared-my-client/api';
 
 import { CONFIG } from '~/config';
 import { DB } from '~/db';

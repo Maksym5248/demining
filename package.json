@@ -15,21 +15,28 @@
   ],
   "packageManager": "yarn@1.22.19",
   "scripts": {
+    "watch": "lerna watch -- lerna run build --since",
     "lint-staged": "lint-staged",
     "link:web": "yarn workspace dsns-web add ./packages/shared && yarn workspace dsns-web add ./packages/shared-client",
-    "link:functions": "workspace functions add @/shared",
+    "link:functions": "workspace functions add shared-my",
     "link:ammo-mobile": "yarn workspace ammo-mobile add ./packages/shared && yarn workspace ammo-mobile add ./packages/shared-client",
-    "postinstall": "cd ./packages/shared && yarn postinstall && cd ../shared-client && yarn postinstall",
-    "clean": "cd ./apps/functions && yarn clean && cd ../../packages/shared && yarn clean && cd ../../apps/dsns-web && yarn clean && cd ../../ && rm -rf node_modules",
-    "build:functions": "cd ./apps/functions && yarn build",
-    "build:web": "cd ./apps/dsns-web && yarn build",
+    "postinstall": "lerna run postinstall --scope=shared-my && lerna run postinstall --scope=shared-my-client",
+    "clean:all": "lerna run watch && lerna run clean",
+    "clean": "rm -rf node_modules",
+    "build:shared": "lerna run build --scope=shared-my",
+    "build:shared-client": "lerna run build --scope=shared-my-client",
+    "build:packages": "yarn build:shared && yarn build:shared-client",
+    "build:functions": "lerna run build --scope=functions",
+    "build:web": "lerna run build --scope=dsns-web",
     "reset": "yarn clean && yarn install && yarn build:functions && yarn build:web",
-    "deploy:functions:dev": "cd ./apps/dsns-web && yarn deploy:functions:dev",
+    "deploy:functions:dev": "lerna run  cd ./apps/dsns-web && yarn deploy:functions:dev",
     "deploy:functions:prod": "cd ./apps/dsns-web && deploy:functions:prod",
     "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev"
   },
   "devDependencies": {
     "husky": "^4.3.0",
+    "lerna": "^8.1.3",
     "lint-staged": "^14.0.1"
-  }
+  },
+  "dependencies": {}
 }

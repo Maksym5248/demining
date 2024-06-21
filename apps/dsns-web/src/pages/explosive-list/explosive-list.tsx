@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { EXPLOSIVE_TYPE } from '@/shared/db';
-import { type IExplosive } from '@/shared-client/stores';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
+import { EXPLOSIVE_TYPE } from 'shared-my/db';
+import { type IExplosive } from 'shared-my-client/stores';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

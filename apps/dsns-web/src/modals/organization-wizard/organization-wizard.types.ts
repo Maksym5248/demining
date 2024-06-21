@@ -1,4 +1,4 @@
-import { type IUser } from '@/shared-client/stores';
+import { type IUser } from 'shared-my-client/stores';
 
 export interface IOrganizationForm {
     name: string;

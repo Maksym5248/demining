@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { MISSION_REQUEST_TYPE, missionRequestType } from '@/shared/db';
-import { dates } from '@/shared-client/common';
 import { Form, DatePicker, Drawer, Spin, Input } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { MISSION_REQUEST_TYPE, missionRequestType } from 'shared-my/db';
+import { dates } from 'shared-my-client/common';
 
 import { Select, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
