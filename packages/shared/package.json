@@ -27,7 +27,7 @@
     "clean:build": "rm -rf dist/ ./tsconfig.tsbuildinfo",
     "clean": "rm -rf node_modules/ && yarn clean:build",
     "build": "tsc && tsc-alias",
-    "postinstall": "yarn clean:build && yarn build"
+    "watch": "concurrently -k -n \"TSC,ALIAS\" -c \"bgBlue.bold,bgMagenta.bold\" \"tsc --watch\" \"tsc-alias -w\""
   },
   "peerDependencies": {
     "typescript": "~5.3.3",

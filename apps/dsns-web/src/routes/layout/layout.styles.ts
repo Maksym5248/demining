@@ -1,5 +1,7 @@
 import { Theme } from '~/styles';
 
+export const HEADER_HEIGHT = 64;
+
 const content = Theme.css(
     ({ token }) => `
     height: 100%;
@@ -17,7 +19,42 @@ const breadcrumb = Theme.css(
 `,
 );
 
+const logo = Theme.css(`
+    width: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`);
+
+const appIcon = Theme.css(`
+    height: ${HEADER_HEIGHT - 16}px;
+    fill: #FFF;
+`);
+
+const appName = Theme.css(`
+    margin-left: 16px;
+    color: #FFF;
+`);
+
+const header = Theme.css(`
+    position: sticky;
+    top: 0;
+    height: ${HEADER_HEIGHT}px;
+    zIndex: 1;
+    display: flex;
+    align-items: space-between;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+`);
+
 export const s = {
+    logo,
+    header,
+    appIcon,
     content,
     breadcrumb,
+    appName,
 };

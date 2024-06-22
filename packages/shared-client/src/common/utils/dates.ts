@@ -45,6 +45,10 @@ const toDateServer = (value: Date | Dayjs) => {
     return Timestamp.fromDate(value);
 };
 
+const isDateServer = (value: any | Timestamp) => {
+    return value instanceof Timestamp;
+};
+
 const toDate = (value: Date | Dayjs): Date => {
     if (dayjs.isDayjs(value)) {
         return value.toDate();
@@ -71,6 +75,7 @@ export const dates = {
     toDate,
     formatGenitiveMonth,
     toDateServer,
+    isDateServer,
     startOfDay,
     startOfWeek,
     startOfMonth,

@@ -5,6 +5,7 @@ export const CONFIG = {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY as string,
     SENTRY: process.env.SENTRY as string,
     APP_NAME: 'dsns',
+    APP_NAME_TRANSLATION: 'ДСНС',
     GEO_APIFY_KEY: process.env.GEO_APIFY_KEY as string,
 };
 

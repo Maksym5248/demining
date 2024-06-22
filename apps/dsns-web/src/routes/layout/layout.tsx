@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { Layout as Lay, Menu, Breadcrumb } from 'antd';
+import { Layout as Lay, Menu, Breadcrumb, Typography, Button, Dropdown } from 'antd';
+import { Header } from 'antd/es/layout/layout';
 import { observer } from 'mobx-react-lite';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
 
@@ -9,7 +10,8 @@ import { CONFIG } from '~/config';
 import { ROUTES } from '~/constants';
 import { useNavigate, useStore } from '~/hooks';
 
-import { s } from './layout.styles';
+import { HEADER_HEIGHT, s } from './layout.styles';
+import AppIcon from '../../../assets/icon.svg';
 import { nav } from '../../utils/routes';
 
 const { Sider, Content } = Lay;
@@ -29,6 +31,11 @@ export const Layout = observer(() => {
     }));
 
     const { isRootAdmin, isOrganizationAdmin, isOrganizationMember } = store.viewer.user ?? {};
+
+    const onSignOut = async () => {
+        await store.auth.signInOut.run();
+        navigate(ROUTES.LOGIN);
+    };
 
     const items = useMemo(() => {
         const arr = [
@@ -123,22 +130,24 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            {
-                key: '5',
-                icon: <Icon.SettingOutlined />,
-                label: 'Налаштування',
-                onClick: () => navigate(ROUTES.SETTINGS),
-            },
-        ];
+            // {
+            //     key: '5',
+            //     icon: <Icon.SettingOutlined />,
+            //     label: 'Налаштування',
+            //     onClick: () => navigate(ROUTES.SETTINGS),
+            // },
 
-        if (CONFIG.IS_DEV) {
-            arr.push({
-                key: '999',
-                icon: <Icon.DeploymentUnitOutlined />,
-                label: 'DEV',
-                onClick: () => navigate('dev'),
-            });
-        }
+            ...(CONFIG.IS_DEV
+                ? [
+                      {
+                          key: '999',
+                          icon: <Icon.DeploymentUnitOutlined />,
+                          label: 'DEV',
+                          onClick: () => navigate('dev'),
+                      },
+                  ]
+                : []),
+        ];
 
         return arr;
     }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember]);
@@ -149,33 +158,62 @@ export const Layout = observer(() => {
     }, []);
 
     return (
-        <Lay hasSider>
-            <Sider
-                collapsible
-                collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
-                style={{
-                    overflow: 'auto',
-                    height: '100vh',
-                    position: 'fixed',
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                }}>
-                <div className="demo-logo-vertical" />
-                <Menu theme="dark" defaultSelectedKeys={defaultSelectedKeys} defaultOpenKeys={['Documents']} mode="inline" items={items} />
-            </Sider>
-            <Lay
-                style={{
-                    marginLeft: collapsed ? 74 : 200,
-                    display: 'flex',
-                    flex: 1,
-                    height: '100vh',
-                }}>
-                <Breadcrumb css={s.breadcrumb} items={itemsBreadcrumb} />
-                <Content css={s.content}>
-                    <Outlet />
-                </Content>
+        <Lay>
+            <Header css={s.header}>
+                <div css={s.logo}>
+                    <AppIcon css={s.appIcon} />
+                    <Typography.Title level={2} css={s.appName} style={{ color: '#FFF' }}>
+                        {CONFIG.APP_NAME_TRANSLATION}
+                    </Typography.Title>
+                </div>
+                <Dropdown
+                    menu={{
+                        items: [
+                            {
+                                label: 'Вийти',
+                                key: 'logout',
+                                icon: <Icon.LogoutOutlined />,
+                                onClick: onSignOut,
+                            },
+                        ],
+                    }}
+                    trigger={['click']}>
+                    <Button shape="circle" icon={<Icon.UserOutlined />} />
+                </Dropdown>
+            </Header>
+            <Lay>
+                <Sider
+                    collapsible
+                    collapsed={collapsed}
+                    onCollapse={(value) => setCollapsed(value)}
+                    style={{
+                        overflow: 'auto',
+                        height: '100vh',
+                        position: 'fixed',
+                        left: 0,
+                        top: HEADER_HEIGHT,
+                        bottom: 0,
+                    }}>
+                    <div className="demo-logo-vertical" />
+                    <Menu
+                        theme="dark"
+                        defaultSelectedKeys={defaultSelectedKeys}
+                        defaultOpenKeys={['Documents']}
+                        mode="inline"
+                        items={items}
+                    />
+                </Sider>
+                <Lay
+                    style={{
+                        marginLeft: collapsed ? 74 : 200,
+                        display: 'flex',
+                        flex: 1,
+                    }}>
+                    <Breadcrumb css={s.breadcrumb} items={itemsBreadcrumb} />
+                    <Content css={s.content}>
+                        <Outlet />
+                    </Content>
+                </Lay>
             </Lay>
         </Lay>
     );

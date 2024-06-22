@@ -1,5 +1,6 @@
 import { geohashForLocation, boundingBoxCoordinates } from 'geofire-common';
-import { ICircleDB, IGeoBoxDB, IGeoDB, IGeoPointDB, IMapViewActionDB, IPointDB, IPolygonDB } from '..';
+
+import { type ICircleDB, type IGeoBoxDB, type IGeoDB, type IGeoPointDB, type IMapViewActionDB, type IPointDB, type IPolygonDB } from '..';
 
 function getGeoPoint(point: IPointDB): IGeoPointDB {
     const hash = geohashForLocation([point.lat, point.lng]);
