@@ -4,7 +4,7 @@ import { type IOrderDTO, type IOrderDTOParams, type IOrderPreviewDTO } from '~/a
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
-export interface IOrderValue {
+export interface IOrderData {
     id: string;
     signedAt: Dayjs;
     signedByActionId?: string;
@@ -13,7 +13,7 @@ export interface IOrderValue {
     updatedAt: Dayjs;
 }
 
-export interface IOrderValueParams {
+export interface IOrderDataParams {
     id: string;
     signedAt: Dayjs;
     signedById: string;
@@ -22,19 +22,19 @@ export interface IOrderValueParams {
     updatedAt: Dayjs;
 }
 
-export const createOrderDTO = (order: ICreateValue<IOrderValueParams>): ICreateValue<IOrderDTOParams> => ({
+export const createOrderDTO = (order: ICreateValue<IOrderDataParams>): ICreateValue<IOrderDTOParams> => ({
     signedAt: dates.toDateServer(order.signedAt),
     signedById: order.signedById,
     number: order.number,
 });
 
-export const updateOrderDTO = data.createUpdateDTO<IOrderValueParams, IOrderDTOParams>((value) => ({
+export const updateOrderDTO = data.createUpdateDTO<IOrderDataParams, IOrderDTOParams>((value) => ({
     signedAt: dates.toDateServer(value?.signedAt ?? new Date()),
     signedById: value?.signedById ?? '',
     number: value?.number ?? 0,
 }));
 
-export const createOrderPreview = (order: IOrderPreviewDTO): IOrderValue => ({
+export const createOrderPreview = (order: IOrderPreviewDTO): IOrderData => ({
     id: order.id,
     signedAt: dates.fromServerDate(order.signedAt),
     number: order.number,
@@ -42,25 +42,7 @@ export const createOrderPreview = (order: IOrderPreviewDTO): IOrderValue => ({
     updatedAt: dates.fromServerDate(order.updatedAt),
 });
 
-export const createOrder = (order: IOrderDTO): IOrderValue => ({
+export const createOrder = (order: IOrderDTO): IOrderData => ({
     ...createOrderPreview(order),
     signedByActionId: order?.signedByAction.id,
 });
-
-export class OrderValue implements IOrderValue {
-    id: string;
-    signedAt: Dayjs;
-    signedByActionId?: string;
-    number: number;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
-
-    constructor(value: IOrderValue) {
-        this.id = value.id;
-        this.signedAt = value.signedAt;
-        this.signedByActionId = value.signedByActionId;
-        this.number = value.number;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
-}

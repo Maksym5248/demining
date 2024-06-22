@@ -24,11 +24,11 @@ const ListItem = observer(({ item }: { item: IMissionReport }) => {
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
-                title={item.number}
+                title={item.data.number}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{str.toUpperFirst(item.address)}</Text>
-                        <Text type="secondary">{item.executedAt.format('DD.MM.YYYY')}</Text>
+                        <Text type="secondary">{str.toUpperFirst(item.data.address)}</Text>
+                        <Text type="secondary">{item.data.executedAt.format('DD.MM.YYYY')}</Text>
                     </Space>
                 }
             />

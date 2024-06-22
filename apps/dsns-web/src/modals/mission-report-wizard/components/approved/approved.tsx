@@ -27,8 +27,8 @@ export function Approved({ data, selectedEmployee }: ApprovedProps) {
             <Form.Item label="Затвердив" name="approvedById" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                 <Select
                     options={select.append(
-                        data.map((el) => ({ label: el.fullName, value: el.id })),
-                        { label: selectedEmployee?.employee.fullName, value: selectedEmployee?.employeeId },
+                        data.map((el) => ({ label: el.fullName, value: el.data.id })),
+                        { label: selectedEmployee?.employee.fullName, value: selectedEmployee?.data.employeeId },
                     )}
                     onAdd={onAddEmployee}
                 />

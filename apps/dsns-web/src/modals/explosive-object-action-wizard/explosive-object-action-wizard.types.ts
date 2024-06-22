@@ -1,3 +1,3 @@
-import { type IExplosiveObjectActionValueParams } from 'shared-my-client/stores';
+import { type IExplosiveObjectActionDataParams } from 'shared-my-client/stores';
 
-export type IExplosiveObjectActionForm = IExplosiveObjectActionValueParams;
+export type IExplosiveObjectActionForm = IExplosiveObjectActionDataParams;

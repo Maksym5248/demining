@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { type IUseSelectStore } from '../../types';
 import { useDebounce } from '../common/use-debounce';
 
-export function useSelectStore<T extends B, B extends { id: string }>(store: IUseSelectStore<T, B>, defaultValue?: string) {
+export function useSelectStore<T extends { data: B }, B extends { id: string }>(store: IUseSelectStore<T, B>, defaultValue?: string) {
     const [searchValue, setSearchValue] = useState('');
 
     const initialItem = store.collection.get(defaultValue ?? '');

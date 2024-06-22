@@ -74,7 +74,7 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                             ? { ...missionRequest }
                             : {
                                   type: MISSION_REQUEST_TYPE.APPLICATION,
-                                  number: (store.missionRequest.list.first?.number ?? 0) + 1,
+                                  number: (store.missionRequest.list.first?.data.number ?? 0) + 1,
                                   signedAt: dates.today(),
                               }
                     }>

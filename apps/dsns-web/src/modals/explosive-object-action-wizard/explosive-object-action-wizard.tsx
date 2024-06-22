@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { removeFields } from 'shared-my/common';
 import { EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my/db';
 import { useSelectStore } from 'shared-my-client/common';
-import { type IExplosiveObjectTypeValue } from 'shared-my-client/stores';
+import { type IExplosiveObjectTypeData } from 'shared-my-client/stores';
 
 import { Select, SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -27,7 +27,7 @@ interface Props {
     id?: string;
     isVisible: boolean;
     hide: () => void;
-    initialValue: IExplosiveObjectTypeValue;
+    initialValue: IExplosiveObjectTypeData;
     onSubmit: (value: IExplosiveObjectActionForm) => void;
 }
 
@@ -69,7 +69,7 @@ export const ExplosiveObjectActionWizardModal = observer(({ isVisible, hide, onS
                         onAdd={onAddExplosiveObject}
                         options={explosiveObjectProps.list.map((el) => ({
                             label: el?.fullDisplayName,
-                            value: el.id,
+                            value: el.data.id,
                         }))}
                     />
                 </Form.Item>

@@ -1,4 +1,6 @@
-import { customMakeAutoObservable, type ErrorInner } from '~/common';
+import { makeAutoObservable } from 'mobx';
+
+import { type ErrorInner } from '~/common';
 
 import { RequestStateModel } from './RequestStateModel';
 
@@ -32,7 +34,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
         this._onError = params?.onError;
         this._onSuccuss = params?.onSuccuss;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
     async run(...args: Params): Promise<Return | void> {

@@ -2,9 +2,9 @@ import { type DOCUMENT_TYPE } from 'shared-my/db';
 
 import { type IExplosiveActionDTO, type IExplosiveActionDTOParams, type IExplosiveActionSumDTO } from '~/api';
 
-import { type IExplosiveValue, createExplosive, ExplosiveValue } from '../explosive/explosive.schema';
+import { type IExplosiveData, createExplosive } from '../explosive/explosive.schema';
 
-export interface IExplosiveActionValue extends IExplosiveValue {
+export interface IExplosiveActionData extends IExplosiveData {
     documentType: DOCUMENT_TYPE;
     documentId: string;
     explosiveId: string;
@@ -12,7 +12,7 @@ export interface IExplosiveActionValue extends IExplosiveValue {
     weight?: number;
 }
 
-export interface IExplosiveActionValueParams {
+export interface IExplosiveActionDataParams {
     id?: string;
     explosiveId: string;
     weight?: number /* in kilograms */;
@@ -24,14 +24,14 @@ export interface IExplosiveActionSumValue {
     detonator: number;
 }
 
-export const createExplosiveActionDTO = (value: IExplosiveActionValueParams): IExplosiveActionDTOParams => ({
+export const createExplosiveActionDTO = (value: IExplosiveActionDataParams): IExplosiveActionDTOParams => ({
     id: value?.id,
     explosiveId: value?.explosiveId,
     quantity: value?.quantity ?? null,
     weight: value?.weight ?? null,
 });
 
-export const createExplosiveAction = (value: IExplosiveActionDTO): IExplosiveActionValue => ({
+export const createExplosiveAction = (value: IExplosiveActionDTO): IExplosiveActionData => ({
     ...createExplosive(value),
     documentType: value?.documentType,
     documentId: value?.documentId,
@@ -44,20 +44,3 @@ export const createExplosiveActionSum = (value: IExplosiveActionSumDTO): IExplos
     explosive: value.explosive,
     detonator: value.detonator,
 });
-
-export class ExplosiveActionValue extends ExplosiveValue implements IExplosiveActionValue {
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
-    explosiveId: string;
-    quantity?: number;
-    weight?: number;
-
-    constructor(value: IExplosiveActionValue) {
-        super(value);
-        this.documentType = value.documentType;
-        this.documentId = value.documentId;
-        this.explosiveId = value.explosiveId;
-        this.quantity = value.quantity;
-        this.weight = value.weight;
-    }
-}

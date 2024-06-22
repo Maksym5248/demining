@@ -73,10 +73,10 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                 disabled={wizard.isView}
                 initialValues={
                     employee
-                        ? { ...employee, rank: employee.rank?.id }
+                        ? { ...employee.data }
                         : {
                               type: employeeTypesData[0]?.type,
-                              rankId: store.employee.ranksList.first?.id,
+                              rankId: store.employee.ranksList.first?.data.id,
                           }
                 }>
                 <Form.Item label="Прізвище" name="lastName" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
@@ -94,8 +94,8 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     rules={[{ required: true, message: "Спеціальне звання є обов'язковим полем" }]}>
                     <Select>
                         {ranks.map((el) => (
-                            <Option value={el.id} key={el.id}>
-                                {el.fullName}
+                            <Option value={el.data.id} key={el.data.id}>
+                                {el.data.fullName}
                             </Option>
                         ))}
                     </Select>

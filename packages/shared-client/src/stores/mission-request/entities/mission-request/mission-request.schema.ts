@@ -5,7 +5,7 @@ import { type IMissionRequestDTO, type IMissionRequestSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
-export interface IMissionRequestValue {
+export interface IMissionRequestData {
     id: string;
     signedAt: Dayjs;
     number: string;
@@ -18,19 +18,19 @@ export interface IMissionRequestSumValue {
     total: number;
 }
 
-export const createMissionRequestDTO = (value: ICreateValue<IMissionRequestValue>): ICreateValue<IMissionRequestDTO> => ({
+export const createMissionRequestDTO = (value: ICreateValue<IMissionRequestData>): ICreateValue<IMissionRequestDTO> => ({
     signedAt: dates.toDateServer(value.signedAt),
     number: value.number,
     type: value.type ?? MISSION_REQUEST_TYPE.APPLICATION,
 });
 
-export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestValue, IMissionRequestDTO>((value) => ({
+export const updateMissionRequestDTO = data.createUpdateDTO<IMissionRequestData, IMissionRequestDTO>((value) => ({
     signedAt: dates.toDateServer(value?.signedAt ?? new Date()),
     number: String(value?.number) ?? '',
     type: value.type ?? MISSION_REQUEST_TYPE.APPLICATION,
 }));
 
-export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequestValue => ({
+export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequestData => ({
     id: value.id,
     signedAt: dates.fromServerDate(value.signedAt),
     number: String(value?.number) ?? '',
@@ -42,21 +42,3 @@ export const createMissionRequest = (value: IMissionRequestDTO): IMissionRequest
 export const createMissionRequestSum = (value: IMissionRequestSumDTO): IMissionRequestSumValue => ({
     total: value.total,
 });
-
-export class MissionRequestValue implements IMissionRequestValue {
-    id: string;
-    signedAt: Dayjs;
-    number: string;
-    type: MISSION_REQUEST_TYPE;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
-
-    constructor(value: IMissionRequestValue) {
-        this.id = value.id;
-        this.signedAt = value.signedAt;
-        this.number = value.number;
-        this.type = value.type;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
-}

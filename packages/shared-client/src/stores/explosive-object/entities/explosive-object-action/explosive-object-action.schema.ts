@@ -1,10 +1,11 @@
-import { type IExplosiveObjectActionDTO, type IExplosiveObjectActionDTOParams, type IExplosiveObjectActionSumDTO } from '~/api';
 import { type DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my/db';
+
+import { type IExplosiveObjectActionDTO, type IExplosiveObjectActionDTOParams, type IExplosiveObjectActionSumDTO } from '~/api';
 import { data } from '~/common';
 
-import { ExplosiveObjectValue, type IExplosiveObjectValue, createExplosiveObject } from '../explosive-object';
+import { type IExplosiveObjectData, createExplosiveObject } from '../explosive-object';
 
-export interface IExplosiveObjectActionValue extends IExplosiveObjectValue {
+export interface IExplosiveObjectActionData extends IExplosiveObjectData {
     explosiveObjectId: string;
     documentType: DOCUMENT_TYPE;
     documentId: string;
@@ -22,9 +23,9 @@ export interface IExplosiveObjectActionSumValue {
     destroyed: number;
 }
 
-export type IExplosiveObjectActionValueParams = IExplosiveObjectActionDTOParams;
+export type IExplosiveObjectActionDataParams = IExplosiveObjectActionDTOParams;
 
-export const createExplosiveObjectActionDTO = (value: IExplosiveObjectActionValueParams): IExplosiveObjectActionDTOParams => ({
+export const createExplosiveObjectActionDTO = (value: IExplosiveObjectActionDataParams): IExplosiveObjectActionDTOParams => ({
     id: value?.id,
     explosiveObjectId: value?.explosiveObjectId,
     quantity: value.quantity,
@@ -34,7 +35,7 @@ export const createExplosiveObjectActionDTO = (value: IExplosiveObjectActionValu
     isDestroyed: value.isDestroyed,
 });
 
-export const updateExplosiveObjectActionDTO = data.createUpdateDTO<IExplosiveObjectActionValueParams, IExplosiveObjectActionDTOParams>(
+export const updateExplosiveObjectActionDTO = data.createUpdateDTO<IExplosiveObjectActionDataParams, IExplosiveObjectActionDTOParams>(
     (value) => ({
         explosiveObjectId: value?.explosiveObjectId ?? '',
         quantity: value?.quantity ?? 0,
@@ -45,7 +46,7 @@ export const updateExplosiveObjectActionDTO = data.createUpdateDTO<IExplosiveObj
     }),
 );
 
-export const createExplosiveObjectAction = (value: IExplosiveObjectActionDTO): IExplosiveObjectActionValue => ({
+export const createExplosiveObjectAction = (value: IExplosiveObjectActionDTO): IExplosiveObjectActionData => ({
     ...createExplosiveObject(value),
     explosiveObjectId: value.explosiveObjectId,
     documentType: value.documentType,
@@ -63,26 +64,3 @@ export const createExplosiveObjectActionSum = (value: IExplosiveObjectActionSumD
     transported: value.transported,
     destroyed: value.destroyed,
 });
-
-export class ExplosiveObjectActionValue extends ExplosiveObjectValue implements IExplosiveObjectActionValue {
-    explosiveObjectId: string;
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
-    quantity: number;
-    category: EXPLOSIVE_OBJECT_CATEGORY;
-    isDiscovered: boolean;
-    isTransported: boolean;
-    isDestroyed: boolean;
-
-    constructor(value: IExplosiveObjectActionValue) {
-        super(value);
-        this.explosiveObjectId = value.explosiveObjectId;
-        this.documentType = value.documentType;
-        this.documentId = value.documentId;
-        this.quantity = value.quantity;
-        this.category = value.category;
-        this.isDiscovered = value.isDiscovered;
-        this.isTransported = value.isTransported;
-        this.isDestroyed = value.isDestroyed;
-    }
-}

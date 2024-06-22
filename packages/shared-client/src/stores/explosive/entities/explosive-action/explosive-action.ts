@@ -1,14 +1,15 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IExplosiveAPI } from '~/api';
-import { customMakeAutoObservable } from '~/common';
 import { type IMessage } from '~/services';
 
-import { ExplosiveActionValue, type IExplosiveActionValue } from './explosive-action.schema';
+import { type IExplosiveActionData } from './explosive-action.schema';
 import { Explosive } from '../explosive';
 
-export interface IExplosiveAction extends IExplosiveActionValue {
+export interface IExplosiveAction {
+    data: IExplosiveActionData;
     explosive: Explosive;
-    value: IExplosiveActionValue;
-    updateFields(data: Partial<IExplosiveActionValue>): void;
+    updateFields(data: Partial<IExplosiveActionData>): void;
 }
 
 interface IApi {
@@ -18,27 +19,24 @@ interface IApi {
 interface IServices {
     message: IMessage;
 }
-export class ExplosiveAction extends ExplosiveActionValue {
+export class ExplosiveAction implements IExplosiveAction {
     api: IApi;
     services: IServices;
+    data: IExplosiveActionData;
 
-    constructor(data: IExplosiveActionValue, params: { api: IApi; services: IServices }) {
-        super(data);
+    constructor(data: IExplosiveActionData, params: { api: IApi; services: IServices }) {
+        this.data = data;
         this.api = params.api;
         this.services = params.services;
 
-        customMakeAutoObservable(this);
-    }
-
-    get value() {
-        return new ExplosiveActionValue(this);
+        makeAutoObservable(this);
     }
 
     get explosive() {
-        return new Explosive(this, this);
+        return new Explosive(this.data, this);
     }
 
-    updateFields(data: Partial<IExplosiveActionValue>) {
+    updateFields(data: Partial<IExplosiveActionData>) {
         Object.assign(this, data);
     }
 }

@@ -3,9 +3,9 @@ import { makeAutoObservable } from 'mobx';
 import { type IMapAPI, type IMapViewActionDTO } from '~/api';
 import { type IGeoBox, type IGeohashRange, mapUtils } from '~/map';
 import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
-import { type IMapViewAction, type IMapViewActionValue, MapViewAction, createMapView } from './entities';
-import { IMessage } from '~/services';
+import { type IMapViewAction, type IMapViewActionData, MapViewAction, createMapView } from './entities';
 
 interface IApi {
     map: IMapAPI;
@@ -20,8 +20,8 @@ interface IGeohashes {
 }
 
 export interface IMapStore {
-    collection: ICollectionModel<IMapViewAction, IMapViewActionValue>;
-    list: IListModel<IMapViewAction, IMapViewActionValue>;
+    collection: ICollectionModel<IMapViewAction, IMapViewActionData>;
+    list: IListModel<IMapViewAction, IMapViewActionData>;
     loadedGeohashes: IGeohashes[];
     append: (res: IMapViewActionDTO | IMapViewActionDTO[]) => void;
     addLoadedGeohash: (geohash: IGeohashRange) => void;
@@ -31,16 +31,16 @@ export interface IMapStore {
 export class MapStore implements IMapStore {
     api: IApi;
     services: IServices;
-    collection = new CollectionModel<IMapViewAction, IMapViewActionValue>({
-        factory: (data: IMapViewActionValue) => new MapViewAction(data),
+    collection = new CollectionModel<IMapViewAction, IMapViewActionData>({
+        factory: (data: IMapViewActionData) => new MapViewAction(data),
     });
-    list = new ListModel<IMapViewAction, IMapViewActionValue>({ collection: this.collection });
+    list = new ListModel<IMapViewAction, IMapViewActionData>({ collection: this.collection });
     loadedGeohashes: IGeohashes[] = [];
 
-    constructor(params: { api: IApi, services: IServices}) {
+    constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
-        
+
         makeAutoObservable(this);
     }
 

@@ -1,24 +1,27 @@
 import { type Dayjs } from 'dayjs';
 import { toLower } from 'lodash';
+import { makeAutoObservable } from 'mobx';
 import { str } from 'shared-my/common';
 import { EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my/db';
 
-import { customMakeAutoObservable, dates } from '~/common';
+import { dates } from '~/common';
 import { type IPoint } from '~/map';
 
-import { type IMissionReportValue, MissionReportValue } from './mission-report.schema';
+import { type IMissionReportData } from './mission-report.schema';
 import { type IEmployeeAction, type IEmployeeStore } from '../../../employee';
 import { type IEquipmentAction, type IEquipmentStore } from '../../../equipment';
 import { type IExplosiveAction, type IExplosiveStore } from '../../../explosive';
 import { type IExplosiveObjectAction, type IExplosiveObjectStore } from '../../../explosive-object';
-import { type IMapViewAction, type IMapStore, type IMapViewActionValue } from '../../../map';
+import { type IMapViewAction, type IMapStore } from '../../../map';
 import { type IMissionRequest, type IMissionRequestStore } from '../../../mission-request';
 import { type IOrder, type IOrderStore } from '../../../order';
 import { type ITransportAction, type ITransportStore } from '../../../transport';
 
 const getLastSign = (arr: any[], i: number) => (arr.length - 1 === i ? '.' : ', ');
 
-export interface IMissionReport extends IMissionReportValue {
+export interface IMissionReport {
+    id: string;
+    data: IMissionReportData;
     equipmentActions: IEquipmentAction[];
     order: IOrder;
     missionRequest: IMissionRequest;
@@ -33,7 +36,7 @@ export interface IMissionReport extends IMissionReportValue {
     transportExplosiveObject?: ITransportAction;
     transportHumans?: ITransportAction;
     mineDetector?: IEquipmentAction;
-    data: {
+    printData: {
         approvedAt: string;
         approvedByName: string;
         approvedByRank: string;
@@ -87,106 +90,116 @@ interface MissionReportParams {
     stores: Stores;
 }
 
-export class MissionReport extends MissionReportValue implements IMissionReport {
+export class MissionReport implements IMissionReport {
     stores: Stores;
+    data: IMissionReportData;
 
-    constructor(value: IMissionReportValue, { stores }: MissionReportParams) {
-        super(value);
+    constructor(data: IMissionReportData, { stores }: MissionReportParams) {
+        this.data = data;
+
         this.stores = stores;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
-    updateFields(data: Partial<IMissionReportValue>) {
+    get id() {
+        return this.data.id;
+    }
+
+    updateFields(data: Partial<IMissionReportData>) {
         Object.assign(self, data);
     }
 
     get equipmentActions() {
-        return this.equipmentActionsIds?.map((id) => this.stores.equipment.collectionActions.get(id) as IEquipmentAction) ?? [];
+        return this.data.equipmentActionsIds?.map((id) => this.stores.equipment.collectionActions.get(id) as IEquipmentAction) ?? [];
     }
 
     get order() {
-        return this.stores.order.collection.get(this.orderId) as IOrder;
+        return this.stores.order.collection.get(this.data.orderId) as IOrder;
     }
 
     get missionRequest() {
-        return this.stores.missionRequest.collection.get(this.missionRequestId) as IMissionRequest;
+        return this.stores.missionRequest.collection.get(this.data.missionRequestId) as IMissionRequest;
     }
 
     get mapView() {
-        return this.stores.map.collection.get(this.mapViewId) as IMapViewActionValue;
+        return this.stores.map.collection.get(this.data.mapViewId) as IMapViewAction;
     }
 
     get approvedByAction() {
-        return this.stores.employee.collectionActions.get(this.approvedByActionId) as IEmployeeAction;
+        return this.stores.employee.collectionActions.get(this.data.approvedByActionId) as IEmployeeAction;
     }
 
     get transportActions() {
-        return this.transportActionsIds?.map((id) => this.stores.transport.collectionActions.get(id) as ITransportAction) ?? [];
+        return this.data.transportActionsIds?.map((id) => this.stores.transport.collectionActions.get(id) as ITransportAction) ?? [];
     }
 
     get squadLeaderAction() {
-        return this.stores.employee.collectionActions.get(this.squadLeaderActionId) as IEmployeeAction;
+        return this.stores.employee.collectionActions.get(this.data.squadLeaderActionId) as IEmployeeAction;
     }
 
     get squadActions() {
-        return this.squadActionsIds?.map((id) => this.stores.employee.collectionActions.get(id) as IEmployeeAction) ?? [];
+        return this.data.squadActionsIds?.map((id) => this.stores.employee.collectionActions.get(id) as IEmployeeAction) ?? [];
     }
 
     get explosiveObjectActions() {
         return (
-            this.explosiveObjectActionsIds?.map((id) => this.stores.explosiveObject.collectionActions.get(id) as IExplosiveObjectAction) ??
-            []
+            this.data.explosiveObjectActionsIds?.map(
+                (id) => this.stores.explosiveObject.collectionActions.get(id) as IExplosiveObjectAction,
+            ) ?? []
         );
     }
 
     get explosiveActions() {
-        return this.explosiveActionsIds?.map((id) => this.stores.explosive.collectionActions.get(id) as IExplosiveAction) ?? [];
+        return this.data.explosiveActionsIds?.map((id) => this.stores.explosive.collectionActions.get(id) as IExplosiveAction) ?? [];
     }
 
     get docName() {
-        return `${this.executedAt.format('YYYY.MM.DD')} ${this.number}${this.subNumber ? `/${this.subNumber}` : ''}`;
+        return `${this.data.executedAt.format('YYYY.MM.DD')} ${this.data.number}${this.data.subNumber ? `/${this.data.subNumber}` : ''}`;
     }
 
     get transportExplosiveObject() {
-        return this.transportActions?.find((el) => el?.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
+        return this.transportActions?.find((el) => el?.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
     }
 
     get transportHumans() {
-        return this.transportActions?.find((el) => el?.type === TRANSPORT_TYPE.FOR_HUMANS);
+        return this.transportActions?.find((el) => el?.data.type === TRANSPORT_TYPE.FOR_HUMANS);
     }
 
     get mineDetector() {
-        return this?.equipmentActions?.find((el) => el?.type === EQUIPMENT_TYPE.MINE_DETECTOR);
+        return this?.equipmentActions?.find((el) => el?.data.type === EQUIPMENT_TYPE.MINE_DETECTOR);
     }
 
-    get data() {
+    get printData() {
         const {
-            approvedAt,
             approvedByAction,
-            number,
-            subNumber,
-            executedAt,
             order,
             missionRequest,
-            address,
             mapView,
-            checkedTerritory,
-            uncheckedTerritory,
-            depthExamination,
-            uncheckedReason,
             explosiveObjectActions,
             explosiveActions,
-            workStart,
-            exclusionStart,
-            transportingStart,
-            destroyedStart,
-            workEnd,
             squadActions,
             squadLeaderAction,
             transportActions,
             equipmentActions,
         } = this;
+
+        const {
+            approvedAt,
+            number,
+            subNumber,
+            executedAt,
+            address,
+            checkedTerritory,
+            uncheckedTerritory,
+            depthExamination,
+            uncheckedReason,
+            workStart,
+            exclusionStart,
+            transportingStart,
+            destroyedStart,
+            workEnd,
+        } = this.data;
 
         const getDate = (date?: Dayjs, empty?: string) =>
             date
@@ -199,51 +212,59 @@ export class MissionReport extends MissionReportValue implements IMissionReport 
                 : 'з ---- по ----';
 
         const actNumber = `${number}${subNumber ? `/${subNumber}` : ''}`;
-        const explosive = explosiveActions.filter((el) => el?.type === EXPLOSIVE_TYPE.EXPLOSIVE);
-        const detonator = explosiveActions.filter((el) => el?.type === EXPLOSIVE_TYPE.DETONATOR);
+        const explosive = explosiveActions.filter((el) => el?.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
+        const detonator = explosiveActions.filter((el) => el?.data.type === EXPLOSIVE_TYPE.DETONATOR);
 
         return {
             approvedAt: getDate(approvedAt),
-            approvedByName: `${str.toUpperFirst(approvedByAction?.firstName ?? '')} ${str.toUpper(approvedByAction?.lastName ?? '')}`,
-            approvedByRank: this.approvedByAction?.employee?.rank?.fullName ?? '',
-            approvedByPosition: approvedByAction?.position ?? '',
+            approvedByName: `${str.toUpperFirst(approvedByAction?.data.firstName ?? '')} ${str.toUpper(approvedByAction?.data.lastName ?? '')}`,
+            approvedByRank: this.approvedByAction?.employee?.rank?.data.fullName ?? '',
+            approvedByPosition: approvedByAction?.data.position ?? '',
             actNumber,
             executedAt: getDate(executedAt),
-            orderSignedAt: getDate(order?.signedAt),
-            orderNumber: String(order?.number) ?? '',
-            missionRequestAt: getDate(missionRequest?.signedAt),
-            missionNumber: missionRequest?.number ?? '',
+            orderSignedAt: getDate(order?.data.signedAt),
+            orderNumber: String(order?.data.number) ?? '',
+            missionRequestAt: getDate(missionRequest?.data.signedAt),
+            missionNumber: missionRequest?.data.number ?? '',
             address,
-            lat: mapView?.marker?.lat ? `${mapView?.marker?.lat}°` : '',
-            lng: mapView?.marker?.lng ? `${mapView?.marker?.lng}°` : '',
+            lat: mapView?.data.marker?.lat ? `${mapView?.data.marker?.lat}°` : '',
+            lng: mapView?.data.marker?.lng ? `${mapView?.data.marker?.lng}°` : '',
             checkedM2: `${checkedTerritory ?? '---'} м2`,
             checkedGA: `${checkedTerritory ? checkedTerritory / 10000 : '---'} га`,
             uncheckedM2: `${uncheckedTerritory ?? '---'} м2`,
             uncheckedGA: `${uncheckedTerritory ? uncheckedTerritory / 10000 : '---'} га`,
             depthM: String(depthExamination) ?? '---',
             uncheckedReason: uncheckedReason ?? '---',
-            explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => (el?.quantity ?? 0) + acc, 0),
+            explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => (el?.data.quantity ?? 0) + acc, 0),
             explosiveObjects: explosiveObjectActions.reduce(
                 (acc, el, i) =>
-                    `${acc}${el?.explosiveObject.fullDisplayName} - ${el?.quantity} од., ${el?.category} категорії${getLastSign(explosiveObjectActions, i)}`,
+                    `${acc}${el?.explosiveObject.fullDisplayName} - ${el?.data.quantity} од., ${el?.data.category} категорії${getLastSign(explosiveObjectActions, i)}`,
                 '',
             ),
-            explosive: explosive.reduce((acc, el, i) => `${acc}${el?.name} - ${el?.weight} кг.${getLastSign(explosive, i)}`, ''),
-            detonator: detonator.reduce((acc, el, i) => `${acc}${el?.name} - ${el?.quantity} од.${getLastSign(detonator, i)}`, ''),
+            explosive: explosive.reduce((acc, el, i) => `${acc}${el?.data.name} - ${el?.data.weight} кг.${getLastSign(explosive, i)}`, ''),
+            detonator: detonator.reduce(
+                (acc, el, i) => `${acc}${el?.data.name} - ${el?.data.quantity} од.${getLastSign(detonator, i)}`,
+                '',
+            ),
             exclusionTime: getTime(exclusionStart, transportingStart ?? destroyedStart ?? workEnd),
             exclusionDate: getDate(exclusionStart, ''),
             transportingTime: getTime(transportingStart, destroyedStart ?? workEnd),
             transportingDate: getDate(transportingStart, ''),
-            explosiveObjectsTotalTransport: explosiveObjectActions.reduce((acc, el) => (el?.isTransported ? el.quantity : 0) + acc, 0),
+            explosiveObjectsTotalTransport: explosiveObjectActions.reduce(
+                (acc, el) => (el?.data.isTransported ? el.data.quantity : 0) + acc,
+                0,
+            ),
             squadTotal: squadActions.length + 1,
             humanHours: (squadActions.length + 1) * (workEnd.hour() - workStart.hour()),
-            transportHuman: transportActions.find((el) => el?.transport.type === TRANSPORT_TYPE.FOR_HUMANS)?.transport?.fullName ?? '--',
+            transportHuman:
+                transportActions.find((el) => el?.transport.data.type === TRANSPORT_TYPE.FOR_HUMANS)?.transport?.fullName ?? '--',
             transportExplosiveObjects:
-                transportActions.find((el) => el?.transport.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.transport?.fullName ?? '--',
-            mineDetector: equipmentActions.find((el) => el?.equipment.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.name ?? '--',
+                transportActions.find((el) => el?.transport.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.transport?.fullName ??
+                '--',
+            mineDetector: equipmentActions.find((el) => el?.equipment.data.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.data.name ?? '--',
             squadLead: squadLeaderAction?.employee.signName ?? '',
             squadPosition: squadActions.reduce(
-                (prev, el, i) => `${prev}${el?.employee.position}${squadActions.length - 1 !== i ? `\n` : ''}`,
+                (prev, el, i) => `${prev}${el?.employee.data.position}${squadActions.length - 1 !== i ? `\n` : ''}`,
                 '',
             ),
             squadName: squadActions.reduce(
@@ -251,7 +272,7 @@ export class MissionReport extends MissionReportValue implements IMissionReport 
                 '',
             ),
             polygon:
-                (mapView?.polygon || mapView?.line)?.points.map((el: IPoint, i: number) => ({
+                (mapView?.data.polygon || mapView?.data.line)?.points.map((el: IPoint, i: number) => ({
                     lat: `${el.lat}°`,
                     lng: `${el.lng}°`,
                     name: i === 0 ? 'СТ' : `ПТ${i}`,

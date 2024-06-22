@@ -32,11 +32,11 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
                             <Select
                                 options={select.append(
                                     squadLeads
-                                        .filter((el) => !squadIds.includes(el.id))
-                                        .map((el) => ({ label: el.fullName, value: el.id })),
+                                        .filter((el) => !squadIds.includes(el.data.id))
+                                        .map((el) => ({ label: el.fullName, value: el.data.id })),
                                     {
                                         label: selectedSquadLead?.employee.fullName,
-                                        value: selectedSquadLead?.employeeId,
+                                        value: selectedSquadLead?.data.employeeId,
                                     },
                                 )}
                                 value={getFieldValue('squadLeaderId')}
@@ -57,22 +57,24 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
                                         const squadLeaderId = getFieldValue('squadLeaderId');
 
                                         const currentSelectedId = squadIds[name];
-                                        const selected = selectedWorkers?.find((el) => el.employeeId === currentSelectedId);
+                                        const selected = selectedWorkers?.find((el) => el.data.employeeId === currentSelectedId);
 
                                         return (
                                             <Form.Item name={name} {...restField}>
                                                 <Select
                                                     options={select.append(
                                                         workers
-                                                            .filter((el) => el.id !== squadLeaderId)
-                                                            .filter((el) => el.id === currentSelectedId || !squadIds.includes(el.id))
+                                                            .filter((el) => el.data.id !== squadLeaderId)
+                                                            .filter(
+                                                                (el) => el.data.id === currentSelectedId || !squadIds.includes(el.data.id),
+                                                            )
                                                             .map((el) => ({
                                                                 label: el?.fullName,
-                                                                value: el.id,
+                                                                value: el.data.id,
                                                             })),
                                                         {
                                                             label: selected?.employee.fullName,
-                                                            value: selected?.employeeId,
+                                                            value: selected?.data.employeeId,
                                                         },
                                                     )}
                                                     value={currentSelectedId}
@@ -99,7 +101,9 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
                                     const squadIds = getFieldValue('squadIds');
                                     const squadLeaderId = getFieldValue('squadLeaderId');
 
-                                    const freeWorkers = workers.filter((el) => !(el.id === squadLeaderId || squadIds.includes(el.id)));
+                                    const freeWorkers = workers.filter(
+                                        (el) => !(el.data.id === squadLeaderId || squadIds.includes(el.data.id)),
+                                    );
 
                                     return (
                                         !!freeWorkers.length && (

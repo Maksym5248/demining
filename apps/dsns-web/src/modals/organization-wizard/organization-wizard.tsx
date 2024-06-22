@@ -65,7 +65,7 @@ export const OrganizationWizardModal = observer(({ id, isVisible, hide, mode }: 
                     disabled={wizard.isView}
                     initialValues={
                         currentOrganization
-                            ? { ...currentOrganization }
+                            ? { ...currentOrganization.data }
                             : {
                                   name: '',
                                   membersIds: [],

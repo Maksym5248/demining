@@ -3,14 +3,14 @@ import { makeAutoObservable } from 'mobx';
 import { type IUserAPI, type IUserDTO } from '~/api';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
-import { createUser, type IUser, type IUserValue, User } from './entities';
-import { IMessage } from '~/services';
+import { createUser, type IUser, type IUserData, User } from './entities';
 
 export interface IUserStore {
-    collection: CollectionModel<IUser, IUserValue>;
-    listUnassigned: ListModel<IUser, IUserValue>;
-    searchListUnassigned: ListModel<IUser, IUserValue>;
+    collection: CollectionModel<IUser, IUserData>;
+    listUnassigned: ListModel<IUser, IUserData>;
+    searchListUnassigned: ListModel<IUser, IUserData>;
     fetchListUnassigned: RequestModel<[search?: string]>;
     fetchListUnassignedMore: RequestModel<[search?: string]>;
 }
@@ -27,14 +27,14 @@ export class UserStore implements IUserStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IUser, IUserValue>({ model: User });
-    listUnassigned = new ListModel<IUser, IUserValue>(this);
-    searchListUnassigned = new ListModel<IUser, IUserValue>(this);
+    collection = new CollectionModel<IUser, IUserData>({ model: User });
+    listUnassigned = new ListModel<IUser, IUserData>(this);
+    searchListUnassigned = new ListModel<IUser, IUserData>(this);
 
-    constructor(params: { api: IApi, services: IServices }) {
+    constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
-        
+
         makeAutoObservable(this);
     }
 
@@ -82,7 +82,7 @@ export class UserStore implements IUserStore {
             const res = await this.api.user.getListUnassignedUsers({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

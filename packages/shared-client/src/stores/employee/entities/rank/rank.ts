@@ -1,9 +1,13 @@
-import { type IRankValue, RankValue } from './rank.schema';
+import { type IRankData } from './rank.schema';
 
-export type IRank = IRankValue;
+export interface IRank {
+    data: IRankData;
+}
 
-export class Rank extends RankValue implements IRank {
-    constructor(data: IRank) {
-        super(data);
+export class Rank implements IRank {
+    data: IRankData;
+
+    constructor(data: IRankData) {
+        this.data = data;
     }
 }

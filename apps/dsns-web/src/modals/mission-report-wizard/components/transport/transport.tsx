@@ -42,16 +42,16 @@ export const Transport = observer(({ selectedTransportHumanAction, selectedTrans
                     options={select.append(
                         transport.transportExplosiveObjectList.map((el) => ({
                             label: el.fullName,
-                            value: el.id,
+                            value: el.data.id,
                         })),
                         [
                             {
                                 label: selectedTransportExplosiveAction?.transport.fullName,
-                                value: selectedTransportExplosiveAction?.transportId,
+                                value: selectedTransportExplosiveAction?.data.transportId,
                             },
                             {
                                 label: explosiveObjectItem?.fullName,
-                                value: explosiveObjectItem?.id,
+                                value: explosiveObjectItem?.data.id,
                             },
                         ].filter((el) => !!el.value),
                     )}
@@ -64,14 +64,14 @@ export const Transport = observer(({ selectedTransportHumanAction, selectedTrans
                     options={select.append(
                         transport.transportHumansList.map((el) => ({
                             label: el.fullName,
-                            value: el.id,
+                            value: el.data.id,
                         })),
                         [
                             {
                                 label: selectedTransportHumanAction?.transport.fullName,
-                                value: selectedTransportHumanAction?.transportId,
+                                value: selectedTransportHumanAction?.data.transportId,
                             },
-                            { label: humansItem?.fullName, value: humansItem?.id },
+                            { label: humansItem?.fullName, value: humansItem?.data.id },
                         ].filter((el) => !!el.value),
                     )}
                 />

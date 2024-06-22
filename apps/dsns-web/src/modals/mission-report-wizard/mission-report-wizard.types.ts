@@ -1,10 +1,19 @@
 import { type Dayjs } from 'dayjs';
 import {
-    type IExplosiveObjectActionValueParams,
-    type IMapViewActionValueParams,
-    type IExplosiveActionValueParams,
-    type IAddressValue,
+    type IExplosiveObjectActionDataParams,
+    type IMapViewActionDataParams,
+    type IExplosiveActionDataParams,
+    type IAddressData,
 } from 'shared-my-client/stores';
+
+import { type WIZARD_MODE } from '~/constants';
+
+export interface IMissionReportProps {
+    id?: string;
+    isVisible: boolean;
+    hide: () => void;
+    mode: WIZARD_MODE;
+}
 
 export interface IMissionReportForm {
     approvedAt: Dayjs;
@@ -18,7 +27,7 @@ export interface IMissionReportForm {
     depthExamination?: number;
     uncheckedTerritory?: number;
     uncheckedReason?: string;
-    mapView: IMapViewActionValueParams;
+    mapView: IMapViewActionDataParams;
     workStart: Dayjs;
     exclusionStart?: Dayjs;
     transportingStart?: Dayjs;
@@ -27,10 +36,10 @@ export interface IMissionReportForm {
     transportExplosiveObjectId?: string;
     transportHumansId?: string;
     mineDetectorId?: string;
-    explosiveObjectActions: IExplosiveObjectActionValueParams[];
+    explosiveObjectActions: IExplosiveObjectActionDataParams[];
     squadLeaderId: string;
     squadIds: string[];
     address: string;
-    addressDetails: IAddressValue;
-    explosiveActions: IExplosiveActionValueParams[];
+    addressDetails: IAddressData;
+    explosiveActions: IExplosiveActionDataParams[];
 }

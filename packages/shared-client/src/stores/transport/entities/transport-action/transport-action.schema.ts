@@ -1,18 +1,19 @@
-import { type ITransportActionDTO } from '~/api';
 import { DOCUMENT_TYPE, TRANSPORT_TYPE } from 'shared-my/db';
+
+import { type ITransportActionDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
-import { type ITransportValue, TransportValue } from '../transport/transport.schema';
+import { type ITransportData } from '../transport/transport.schema';
 
-export interface ITransportActionValue extends ITransportValue {
+export interface ITransportActionData extends ITransportData {
     executedAt?: Date;
     transportId: string;
     documentType: DOCUMENT_TYPE;
     documentId: string;
 }
 
-export const createTransportActionDTO = (value: ICreateValue<ITransportActionValue>): ICreateValue<ITransportActionDTO> => ({
+export const createTransportActionDTO = (value: ICreateValue<ITransportActionData>): ICreateValue<ITransportActionDTO> => ({
     name: value.name,
     number: value.number,
     type: value.type,
@@ -22,7 +23,7 @@ export const createTransportActionDTO = (value: ICreateValue<ITransportActionVal
     documentId: value.documentId,
 });
 
-export const updateTransportActionDTO = data.createUpdateDTO<ITransportActionValue, ITransportActionDTO>((value) => ({
+export const updateTransportActionDTO = data.createUpdateDTO<ITransportActionData, ITransportActionDTO>((value) => ({
     name: value?.name ?? '',
     number: value?.number ?? '',
     type: value?.type ?? TRANSPORT_TYPE.FOR_HUMANS,
@@ -32,7 +33,7 @@ export const updateTransportActionDTO = data.createUpdateDTO<ITransportActionVal
     documentId: value?.documentId ?? '',
 }));
 
-export const createTransportAction = (value: ITransportActionDTO): ITransportActionValue => ({
+export const createTransportAction = (value: ITransportActionDTO): ITransportActionData => ({
     id: value.id,
     name: value.name,
     number: value.number,
@@ -43,19 +44,3 @@ export const createTransportAction = (value: ITransportActionDTO): ITransportAct
     documentType: value?.documentType ?? DOCUMENT_TYPE.ORDER,
     documentId: value?.documentId ?? '',
 });
-
-export class TransportActionValue extends TransportValue {
-    executedAt?: Date;
-    transportId: string;
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
-
-    constructor(value: ITransportActionValue) {
-        super(value);
-
-        this.executedAt = value.executedAt;
-        this.transportId = value.transportId;
-        this.documentType = value.documentType;
-        this.documentId = value.documentId;
-    }
-}

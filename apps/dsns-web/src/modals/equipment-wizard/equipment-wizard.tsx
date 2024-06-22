@@ -65,7 +65,7 @@ export const EquipmentWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item } : { type: EQUIPMENT_TYPE.MINE_DETECTOR }}>
+                    initialValues={item ? { ...item.data } : { type: EQUIPMENT_TYPE.MINE_DETECTOR }}>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

@@ -10,8 +10,8 @@ import { type IMessage } from '~/services';
 
 import {
     type IExplosive,
-    type IExplosiveValue,
-    type IExplosiveActionValue,
+    type IExplosiveData,
+    type IExplosiveActionData,
     type IExplosiveAction,
     createExplosive,
     createExplosiveDTO,
@@ -22,16 +22,16 @@ import {
 import { SumExplosiveActions } from './sum-explosive-actions';
 
 export interface IExplosiveStore {
-    collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionValue>;
-    collection: CollectionModel<IExplosive, IExplosiveValue>;
-    list: ListModel<IExplosive, IExplosiveValue>;
-    searchList: ListModel<IExplosive, IExplosiveValue>;
+    collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionData>;
+    collection: CollectionModel<IExplosive, IExplosiveData>;
+    list: ListModel<IExplosive, IExplosiveData>;
+    searchList: ListModel<IExplosive, IExplosiveData>;
     sum: SumExplosiveActions;
     setSum(sum: IExplosiveActionSumDTO): void;
     append(res: IExplosiveDTO[], isSearch: boolean, isMore?: boolean): void;
     explosiveList: IExplosive[];
     detonatorList: IExplosive[];
-    create: RequestModel<[ICreateValue<IExplosiveValue>]>;
+    create: RequestModel<[ICreateValue<IExplosiveData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[string]>;
     fetchMoreList: RequestModel<[string]>;
@@ -51,14 +51,14 @@ export class ExplosiveStore implements IExplosiveStore {
     api: IApi;
     services: IServices;
 
-    collectionActions = new CollectionModel<IExplosiveAction, IExplosiveActionValue>({
-        factory: (data: IExplosiveActionValue) => new ExplosiveAction(data, this),
+    collectionActions = new CollectionModel<IExplosiveAction, IExplosiveActionData>({
+        factory: (data: IExplosiveActionData) => new ExplosiveAction(data, this),
     });
-    collection = new CollectionModel<IExplosive, IExplosiveValue>({
-        factory: (data: IExplosiveValue) => new Explosive(data, this),
+    collection = new CollectionModel<IExplosive, IExplosiveData>({
+        factory: (data: IExplosiveData) => new Explosive(data, this),
     });
-    list = new ListModel<IExplosive, IExplosiveValue>({ collection: this.collection });
-    searchList = new ListModel<IExplosive, IExplosiveValue>({ collection: this.collection });
+    list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
+    searchList = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
     sum: SumExplosiveActions = new SumExplosiveActions();
 
     constructor(params: { api: IApi; services: IServices }) {
@@ -81,15 +81,15 @@ export class ExplosiveStore implements IExplosiveStore {
     }
 
     get explosiveList() {
-        return this.list.asArray.filter((el) => el.type === EXPLOSIVE_TYPE.EXPLOSIVE);
+        return this.list.asArray.filter((el) => el.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
     }
 
     get detonatorList() {
-        return this.list.asArray.filter((el) => el.type === EXPLOSIVE_TYPE.DETONATOR);
+        return this.list.asArray.filter((el) => el.data.type === EXPLOSIVE_TYPE.DETONATOR);
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IExplosiveValue>) => {
+        run: async (data: ICreateValue<IExplosiveData>) => {
             const res = await this.api.explosive.create(createExplosiveDTO(data));
 
             this.list.unshift(createExplosive(res));
@@ -147,7 +147,7 @@ export class ExplosiveStore implements IExplosiveStore {
             const res = await this.api.explosive.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

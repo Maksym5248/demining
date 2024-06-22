@@ -29,13 +29,13 @@ export const Equipment = observer(({ initialValues, selectedMineDetector }: Equi
                 {...props}
                 onAdd={onAdd}
                 options={select.append(
-                    equipment.listMineDetectors.map((el) => ({ label: el.name, value: el.id })),
+                    equipment.listMineDetectors.map((el) => ({ label: el.data.name, value: el.data.id })),
                     [
                         {
-                            label: selectedMineDetector?.name,
-                            value: selectedMineDetector?.equipmentId,
+                            label: selectedMineDetector?.data.name,
+                            value: selectedMineDetector?.data.equipmentId,
                         },
-                        { label: initialItem?.name, value: initialItem?.id },
+                        { label: initialItem?.data.name, value: initialItem?.data.id },
                     ].filter((el) => !!el.value),
                 )}
             />

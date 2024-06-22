@@ -59,12 +59,16 @@ function generatePolygons(polygons?: IPolygon | IPolygon[]): string {
     return kml;
 }
 
-export function generateKML(points?: IPoint | IPoint[], circles?: ICircle | ICircle[], polygons?: IPolygon | IPolygon[]): string {
+export function generateKML(params?: {
+    points?: IPoint | IPoint[];
+    circles?: ICircle | ICircle[];
+    polygons?: IPolygon | IPolygon[];
+}): string {
     let kml = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2">\n<Document>\n';
 
-    const pointsKml = generatePoints(points);
-    const circlesKml = generateCircles(circles);
-    const polygonsKml = generatePolygons(polygons);
+    const pointsKml = generatePoints(params?.points);
+    const circlesKml = generateCircles(params?.circles);
+    const polygonsKml = generatePolygons(params?.polygons);
 
     kml += pointsKml + circlesKml + polygonsKml;
 

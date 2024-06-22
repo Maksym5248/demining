@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import { observer } from 'mobx-react';
-import { type IExplosiveActionValueParams } from 'shared-my-client/stores';
+import { type IExplosiveActionDataParams } from 'shared-my-client/stores';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -22,7 +22,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 
     return (
         <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
-            <List.Item.Meta title={`${explosive?.name}; ${item?.weight ? weight : quantity} `} />
+            <List.Item.Meta title={`${explosive?.data.name}; ${item?.weight ? weight : quantity} `} />
         </List.Item>
     );
 }
@@ -40,18 +40,18 @@ function Component() {
                         <List
                             size="small"
                             pagination={false}
-                            dataSource={data.map((el: IExplosiveActionValueParams, i: number) => ({
+                            dataSource={data.map((el: IExplosiveActionDataParams, i: number) => ({
                                 ...el,
                                 index: `${i}`,
                             }))}
-                            renderItem={(item: IExplosiveActionValueParams & { id: string }, i: number) => (
+                            renderItem={(item: IExplosiveActionDataParams & { id: string }, i: number) => (
                                 <ObservedListItem
                                     item={item}
                                     index={i}
                                     onRemove={(index: number) => {
                                         setFieldValue(
                                             'explosiveActions',
-                                            data.filter((el: IExplosiveActionValueParams, c: number) => c !== index),
+                                            data.filter((el: IExplosiveActionDataParams, c: number) => c !== index),
                                         );
                                     }}
                                 />
@@ -64,7 +64,7 @@ function Component() {
                                     onClick={() => {
                                         Modal.show(MODALS.EXPLOSIVE_ACTION_WIZARD, {
                                             mode: WIZARD_MODE.CREATE,
-                                            onSubmit: (value: IExplosiveActionValueParams) =>
+                                            onSubmit: (value: IExplosiveActionDataParams) =>
                                                 setFieldValue('explosiveActions', [...data, value]),
                                         });
                                     }}>

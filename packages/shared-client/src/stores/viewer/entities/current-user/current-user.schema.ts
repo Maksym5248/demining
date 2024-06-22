@@ -1,5 +1,5 @@
-import { type ROLES } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
+import { type ROLES } from 'shared-my/db';
 
 import { type ICurrentUserDTO, type IUserOrganizationDTO } from '~/api';
 import { dates } from '~/common';
@@ -11,7 +11,7 @@ export interface ICurrentUserOrganizationValue {
     updatedAt: Dayjs;
 }
 
-export interface ICurrentUserValue {
+export interface ICurrentUserData {
     id: string;
     roles: ROLES[];
     email: string;
@@ -27,7 +27,7 @@ export const createCurrentUserOrganization = (value: IUserOrganizationDTO): ICur
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
-export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserValue => ({
+export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => ({
     id: value.id,
     roles: value?.roles ?? [],
     email: value.email ?? '',

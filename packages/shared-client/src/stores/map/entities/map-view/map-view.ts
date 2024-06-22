@@ -1,13 +1,22 @@
-import { customMakeAutoObservable } from '~/common';
+import { makeAutoObservable } from 'mobx';
 
-import { type IMapViewActionValue, MapViewActionValue } from './map-view.schema';
+import { type IMapViewActionData } from './map-view.schema';
 
-export type IMapViewAction = IMapViewActionValue;
+export interface IMapViewAction {
+    id: string;
+    data: IMapViewActionData;
+}
 
-export class MapViewAction extends MapViewActionValue implements IMapViewAction {
-    constructor(value: IMapViewActionValue) {
-        super(value);
+export class MapViewAction implements IMapViewAction {
+    data: IMapViewActionData;
 
-        customMakeAutoObservable(this);
+    constructor(data: IMapViewActionData) {
+        this.data = data;
+
+        makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 }

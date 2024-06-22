@@ -1,12 +1,14 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IEquipmentAPI } from '~/api';
-import { customMakeAutoObservable } from '~/common';
 import { type IMessage } from '~/services';
 
-import { EquipmentActionValue, type IEquipmentActionValue } from './equipment-action.schema';
+import { type IEquipmentActionData } from './equipment-action.schema';
 import { Equipment, type IEquipment } from '../equipment/equipment';
 
-export interface IEquipmentAction extends IEquipmentActionValue {
-    updateFields: (data: Partial<IEquipmentActionValue>) => void;
+export interface IEquipmentAction {
+    data: IEquipmentActionData;
+    updateFields: (data: Partial<IEquipmentActionData>) => void;
     equipment: IEquipment;
 }
 
@@ -23,23 +25,24 @@ interface IEquipmentActionParams {
     services: IServices;
 }
 
-export class EquipmentAction extends EquipmentActionValue {
+export class EquipmentAction implements IEquipmentAction {
     api: IApi;
     services: IServices;
+    data: IEquipmentActionData;
 
-    constructor(data: IEquipmentActionValue, params: IEquipmentActionParams) {
-        super(data);
+    constructor(data: IEquipmentActionData, params: IEquipmentActionParams) {
+        this.data = data;
         this.api = params.api;
         this.services = params.services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
-    updateFields(data: Partial<IEquipmentActionValue>) {
+    updateFields(data: Partial<IEquipmentActionData>) {
         Object.assign(this, data);
     }
 
     get equipment() {
-        return new Equipment(this, this);
+        return new Equipment(this.data, this);
     }
 }

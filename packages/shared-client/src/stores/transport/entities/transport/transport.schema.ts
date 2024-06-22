@@ -1,11 +1,11 @@
-import { TRANSPORT_TYPE } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
+import { TRANSPORT_TYPE } from 'shared-my/db';
 
 import { type ITransportDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
-export interface ITransportValue {
+export interface ITransportData {
     id: string;
     name: string;
     number: string;
@@ -14,19 +14,19 @@ export interface ITransportValue {
     updatedAt: Dayjs;
 }
 
-export const createTransportDTO = (value: ICreateValue<ITransportValue>): ICreateValue<ITransportDTO> => ({
+export const createTransportDTO = (value: ICreateValue<ITransportData>): ICreateValue<ITransportDTO> => ({
     name: value.name,
     number: value.number,
     type: value.type,
 });
 
-export const updateTransportDTO = data.createUpdateDTO<ITransportValue, ITransportDTO>((value) => ({
+export const updateTransportDTO = data.createUpdateDTO<ITransportData, ITransportDTO>((value) => ({
     name: value?.name ?? '',
     number: value?.number ?? '',
     type: value?.type ?? TRANSPORT_TYPE.FOR_HUMANS,
 }));
 
-export const createTransport = (value: ITransportDTO): ITransportValue => ({
+export const createTransport = (value: ITransportDTO): ITransportData => ({
     id: value.id,
     name: value.name,
     number: value.number,
@@ -34,21 +34,3 @@ export const createTransport = (value: ITransportDTO): ITransportValue => ({
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
-
-export class TransportValue {
-    id: string;
-    name: string;
-    number: string;
-    type: TRANSPORT_TYPE;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
-
-    constructor(value: ITransportValue) {
-        this.id = value.id;
-        this.name = value.name;
-        this.number = value.number;
-        this.type = value.type;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
-}

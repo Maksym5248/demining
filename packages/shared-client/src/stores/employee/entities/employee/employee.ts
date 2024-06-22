@@ -1,20 +1,22 @@
+import { makeAutoObservable } from 'mobx';
 import { str } from 'shared-my/common';
 
 import { type IEmployeeAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { customMakeAutoObservable } from '~/common/utils/mobx';
-import { type CollectionModel, RequestModel } from '~/models';
+import { RequestModel, type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { createEmployee, updateEmployeeDTO, type IEmployeeValue, EmployeeValue } from './employee.schema';
-import { type IRank, type IRankValue } from '../rank';
+import { createEmployee, updateEmployeeDTO, type IEmployeeData } from './employee.schema';
+import { type IRank, type IRankData } from '../rank';
 
-export interface IEmployee extends IEmployeeValue {
+export interface IEmployee {
+    id: string;
+    data: IEmployeeData;
     rank?: IRank;
     fullName: string;
     signName: string;
-    updateFields: (data: Partial<IEmployeeValue>) => void;
-    update: RequestModel<[IUpdateValue<IEmployeeValue>]>;
+    updateFields: (data: Partial<IEmployeeData>) => void;
+    update: RequestModel<[IUpdateValue<IEmployeeData>]>;
 }
 
 interface IApi {
@@ -26,7 +28,7 @@ interface IServices {
 }
 
 interface ICollections {
-    rank: CollectionModel<IRank, IRankValue>;
+    rank: ICollectionModel<IRank, IRankData>;
 }
 
 export interface IEmployeeParams {
@@ -35,40 +37,46 @@ export interface IEmployeeParams {
     services: IServices;
 }
 
-export class Employee extends EmployeeValue implements IEmployee {
+export class Employee implements IEmployee {
     private api: IApi;
     private collections: ICollections;
     private services: IServices;
 
-    constructor(data: IEmployeeValue, params: IEmployeeParams) {
-        super(data);
+    data: IEmployeeData;
+
+    constructor(data: IEmployeeData, params: IEmployeeParams) {
+        this.data = data;
 
         this.collections = params.collections;
         this.api = params.api;
         this.services = params.services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     get rank() {
-        return this.collections.rank.get(this.rankId);
+        return this.collections.rank.get(this.data.rankId);
     }
 
     get fullName() {
-        return `${this.rank?.shortName} ${str.toUpperFirst(this.lastName)} ${str.toUpper(this.firstName[0])}. ${str.toUpper(this.surname[0])}.`;
+        return `${this.rank?.data.shortName} ${str.toUpperFirst(this.data.lastName)} ${str.toUpper(this.data.firstName[0])}. ${str.toUpper(this.data.surname[0])}.`;
     }
 
     get signName() {
-        return `${str.toUpper(this.firstName[0])}.${str.toUpper(this.surname[0])}. ${str.toUpperFirst(this.lastName)}`;
+        return `${str.toUpper(this.data.firstName[0])}.${str.toUpper(this.data.surname[0])}. ${str.toUpperFirst(this.data.lastName)}`;
     }
 
-    updateFields(data: Partial<IEmployeeValue>) {
+    updateFields(data: Partial<IEmployeeData>) {
         Object.assign(this, data);
     }
 
     update = new RequestModel({
-        run: async (data: IUpdateValue<IEmployeeValue>) => {
-            const res = await this.api.employee.update(this.id, updateEmployeeDTO(data));
+        run: async (data: IUpdateValue<IEmployeeData>) => {
+            const res = await this.api.employee.update(this.data.id, updateEmployeeDTO(data));
             this.updateFields(createEmployee(res));
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),

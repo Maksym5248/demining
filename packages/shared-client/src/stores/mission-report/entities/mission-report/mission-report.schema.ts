@@ -9,13 +9,13 @@ import {
 } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
-import { type IExplosiveActionValueParams, createExplosiveActionDTO } from '~/stores/explosive';
-import { type IMapViewActionValueParams, createMapViewDTO } from '~/stores/map';
-
-import { type IAddressValue, createAddress, createAddressDTO } from '../address';
 import { createExplosiveObjectActionDTO } from '~/stores';
+import { type IExplosiveActionDataParams, createExplosiveActionDTO } from '~/stores/explosive';
+import { type IMapViewActionDataParams, createMapViewDTO } from '~/stores/map';
 
-export interface IMissionReportValueParams {
+import { type IAddressData, createAddress, createAddressDTO } from '../address';
+
+export interface IMissionReportDataParams {
     approvedAt: Dayjs;
     approvedById: string;
     number: number;
@@ -27,7 +27,7 @@ export interface IMissionReportValueParams {
     depthExamination?: number;
     uncheckedTerritory?: number;
     uncheckedReason?: string;
-    mapView: IMapViewActionValueParams;
+    mapView: IMapViewActionDataParams;
     workStart: Dayjs;
     exclusionStart?: Dayjs;
     transportingStart?: Dayjs;
@@ -40,15 +40,15 @@ export interface IMissionReportValueParams {
     squadLeaderId: string;
     squadIds: string[];
     address: string;
-    addressDetails: IAddressValue;
-    explosiveActions?: IExplosiveActionValueParams[];
+    addressDetails: IAddressData;
+    explosiveActions?: IExplosiveActionDataParams[];
 }
 
 export interface IMissionReportSumValue {
     total: number;
 }
 
-export interface IMissionReportValue {
+export interface IMissionReportData {
     id: string;
     approvedAt: Dayjs;
     number: number;
@@ -64,7 +64,7 @@ export interface IMissionReportValue {
     destroyedStart?: Dayjs;
     workEnd: Dayjs;
     address: string;
-    addressDetails: IAddressValue;
+    addressDetails: IAddressData;
     createdAt: Dayjs;
     updatedAt: Dayjs;
     orderId: string;
@@ -79,7 +79,7 @@ export interface IMissionReportValue {
     explosiveActionsIds?: string[];
 }
 
-export const createMissionReportDTO = (value: ICreateValue<IMissionReportValueParams>): ICreateValue<IMissionReportDTOParams> => ({
+export const createMissionReportDTO = (value: ICreateValue<IMissionReportDataParams>): ICreateValue<IMissionReportDTOParams> => ({
     approvedAt: dates.toDateServer(value.approvedAt),
     approvedById: value.approvedById,
     number: value.number,
@@ -108,7 +108,7 @@ export const createMissionReportDTO = (value: ICreateValue<IMissionReportValuePa
     addressDetails: createAddressDTO(value?.addressDetails),
 });
 
-export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportValue => ({
+export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportData => ({
     id: value.id,
     approvedAt: dates.fromServerDate(value.approvedAt),
     number: value.number,
@@ -131,7 +131,7 @@ export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMi
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
-export const createMissionReport = (value: IMissionReportDTO): IMissionReportValue => ({
+export const createMissionReport = (value: IMissionReportDTO): IMissionReportData => ({
     ...createMissionReportPreview(value),
     approvedByActionId: value.approvedByAction.id,
     orderId: value.order.id,
@@ -148,65 +148,3 @@ export const createMissionReport = (value: IMissionReportDTO): IMissionReportVal
 export const createMissionReportSum = (value: IMissionReportSumDTO): IMissionReportSumValue => ({
     total: value.total,
 });
-
-export class MissionReportValue implements IMissionReportValue {
-    id: string;
-    approvedAt: Dayjs;
-    number: number;
-    subNumber?: number;
-    executedAt: Dayjs;
-    checkedTerritory?: number;
-    depthExamination?: number;
-    uncheckedTerritory?: number;
-    uncheckedReason?: string;
-    workStart: Dayjs;
-    exclusionStart?: Dayjs;
-    transportingStart?: Dayjs;
-    destroyedStart?: Dayjs;
-    workEnd: Dayjs;
-    address: string;
-    addressDetails: IAddressValue;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
-    orderId: string;
-    missionRequestId: string;
-    approvedByActionId?: string;
-    mapViewId?: string;
-    transportActionsIds?: string[];
-    equipmentActionsIds?: string[];
-    explosiveObjectActionsIds?: string[];
-    squadLeaderActionId?: string;
-    squadActionsIds?: string[];
-    explosiveActionsIds?: string[];
-
-    constructor(value: IMissionReportValue) {
-        this.id = value.id;
-        this.approvedAt = value.approvedAt;
-        this.number = value.number;
-        this.subNumber = value.subNumber;
-        this.executedAt = value.executedAt;
-        this.checkedTerritory = value.checkedTerritory;
-        this.depthExamination = value.depthExamination;
-        this.uncheckedTerritory = value.uncheckedTerritory;
-        this.uncheckedReason = value.uncheckedReason;
-        this.workStart = value.workStart;
-        this.exclusionStart = value.exclusionStart;
-        this.transportingStart = value.transportingStart;
-        this.destroyedStart = value.destroyedStart;
-        this.workEnd = value.workEnd;
-        this.address = value.address;
-        this.addressDetails = value.addressDetails;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-        this.orderId = value.orderId;
-        this.missionRequestId = value.missionRequestId;
-        this.approvedByActionId = value.approvedByActionId;
-        this.mapViewId = value.mapViewId;
-        this.transportActionsIds = value.transportActionsIds;
-        this.equipmentActionsIds = value.equipmentActionsIds;
-        this.explosiveObjectActionsIds = value.explosiveObjectActionsIds;
-        this.squadLeaderActionId = value.squadLeaderActionId;
-        this.squadActionsIds = value.squadActionsIds;
-        this.explosiveActionsIds = value.explosiveActionsIds;
-    }
-}

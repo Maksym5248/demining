@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 import { type ICollectionModel } from './CollectionModel';
 
-export interface IListModel<T extends B, B extends { id: string }> {
+export interface IListModel<T extends { data: B }, B extends { id: string }> {
     push: (value: B | B[], isUniqueEnabled?: boolean) => void;
     unshift: (value: B | B[], isUniqueEnabled?: boolean) => void;
     set: (arr: B[]) => void;
@@ -22,12 +22,12 @@ export interface IListModel<T extends B, B extends { id: string }> {
     pages: number;
 }
 
-export interface ListModelParams<T extends B, B extends { id: string }> {
+export interface ListModelParams<T extends { data: B }, B extends { id: string }> {
     pageSize?: number;
     collection: ICollectionModel<T, B>;
 }
 
-export class ListModel<T extends B, B extends { id: string }> implements IListModel<T, B> {
+export class ListModel<T extends { data: B }, B extends { id: string }> implements IListModel<T, B> {
     private ids: string[] = [];
 
     public pageSize = 0;

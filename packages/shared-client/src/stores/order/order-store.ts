@@ -4,16 +4,16 @@ import { type IOrderAPI, type IOrderPreviewDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
-import { type IOrder, type IOrderValue, type IOrderValueParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
+import { type IOrder, type IOrderData, type IOrderDataParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
 import { type IEmployeeStore, createEmployeeAction } from '../employee';
-import { IMessage } from '~/services';
 
 export interface IOrderStore {
-    collection: ICollectionModel<IOrder, IOrderValue>;
-    list: ListModel<IOrder, IOrderValue>;
-    searchList: ListModel<IOrder, IOrderValue>;
-    create: RequestModel<[ICreateValue<IOrderValueParams>]>;
+    collection: ICollectionModel<IOrder, IOrderData>;
+    list: ListModel<IOrder, IOrderData>;
+    searchList: ListModel<IOrder, IOrderData>;
+    create: RequestModel<[ICreateValue<IOrderDataParams>]>;
     remove: RequestModel<[string]>;
     fetchItem: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -57,15 +57,15 @@ export class OrderStore implements IOrderStore {
         };
     }
 
-    collection = new CollectionModel<IOrder, IOrderValue>({
-        factory: (data: IOrderValue) => new Order(data, this),
+    collection = new CollectionModel<IOrder, IOrderData>({
+        factory: (data: IOrderData) => new Order(data, this),
     });
 
-    list = new ListModel<IOrder, IOrderValue>({
+    list = new ListModel<IOrder, IOrderData>({
         collection: this.collection,
     });
 
-    searchList = new ListModel<IOrder, IOrderValue>({
+    searchList = new ListModel<IOrder, IOrderData>({
         collection: this.collection,
     });
 
@@ -78,7 +78,7 @@ export class OrderStore implements IOrderStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IOrderValueParams>) => {
+        run: async (data: ICreateValue<IOrderDataParams>) => {
             const res = await this.api.order.create(createOrderDTO(data));
 
             this.stores.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
@@ -143,7 +143,7 @@ export class OrderStore implements IOrderStore {
             const res = await this.api.order.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

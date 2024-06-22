@@ -73,11 +73,11 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                         currentOrder
                             ? {
                                   ...currentOrder,
-                                  signedById: currentOrder?.signedByAction?.employeeId,
+                                  signedById: currentOrder?.signedByAction?.data.employeeId,
                               }
                             : {
-                                  number: (order.list.first?.number ?? 0) + 1,
-                                  signedById: order.list.first?.signedByAction?.employeeId || employeeChiefFirst?.id,
+                                  number: (order.list.first?.data.number ?? 0) + 1,
+                                  signedById: order.list.first?.signedByAction?.data.employeeId || employeeChiefFirst?.data.id,
                                   signedAt: dates.today(),
                               }
                     }>
@@ -91,10 +91,10 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                         <Select
                             onAdd={onAdd}
                             options={select.append(
-                                chiefs.map((el) => ({ label: el.fullName, value: el.id })),
+                                chiefs.map((el) => ({ label: el.fullName, value: el.data.id })),
                                 {
                                     label: currentOrder?.signedByAction?.employee.fullName,
-                                    value: currentOrder?.signedByAction?.employeeId,
+                                    value: currentOrder?.signedByAction?.data.employeeId,
                                 },
                             )}
                         />

@@ -28,7 +28,7 @@ const ListItem = observer(({ item }: { item: IOrganization }) => {
                 <Button key="list-members" icon={<Icon.TeamOutlined type="danger" />} onClick={onOpenUsers} />,
                 <Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />,
             ]}>
-            <List.Item.Meta avatar={<Icon.UserOutlined />} title={item.name} />
+            <List.Item.Meta avatar={<Icon.UserOutlined />} title={item.data.name} />
         </List.Item>
     );
 });

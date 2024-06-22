@@ -25,7 +25,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject }) => {
                 title={item?.fullDisplayName}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{item?.type?.fullName}</Text>
+                        <Text type="secondary">{item?.type?.data.fullName}</Text>
                     </Space>
                 }
             />

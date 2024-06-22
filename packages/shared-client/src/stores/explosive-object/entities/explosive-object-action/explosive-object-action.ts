@@ -1,11 +1,12 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IExplosiveObjectAPI } from '~/api';
-import { customMakeAutoObservable } from '~/common';
 import { type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { ExplosiveObjectActionValue, type IExplosiveObjectActionValue } from './explosive-object-action.schema';
+import { type IExplosiveObjectActionData } from './explosive-object-action.schema';
 import { ExplosiveObject, type IExplosiveObject } from '..';
-import { type ExplosiveObjectType, type ExplosiveObjectTypeValue, type IExplosiveObjectType } from '../explosive-object-type';
+import { type IExplosiveObjectTypeData, type IExplosiveObjectType } from '../explosive-object-type';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -14,50 +15,47 @@ interface IApi {
 interface IServices {
     message: IMessage;
 }
+
+interface ICollections {
+    type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+}
 interface IExplosiveObjectActionParams {
-    collections: {
-        type: ICollectionModel<ExplosiveObjectType, ExplosiveObjectTypeValue>;
-    };
+    collections: ICollections;
     api: IApi;
     services: IServices;
 }
 
-export interface IExplosiveObjectAction extends IExplosiveObjectActionValue {
+export interface IExplosiveObjectAction {
+    data: IExplosiveObjectActionData;
     type?: IExplosiveObjectType;
-    value: IExplosiveObjectActionValue;
     explosiveObject: IExplosiveObject;
-    updateFields(data: Partial<IExplosiveObjectActionValue>): void;
+    updateFields(data: Partial<IExplosiveObjectActionData>): void;
 }
 
-export class ExplosiveObjectAction extends ExplosiveObjectActionValue implements IExplosiveObjectAction {
+export class ExplosiveObjectAction implements IExplosiveObjectAction {
     api: IApi;
-    collections: {
-        type: ICollectionModel<ExplosiveObjectType, ExplosiveObjectTypeValue>;
-    };
+    collections: ICollections;
     services: IServices;
+    data: IExplosiveObjectActionData;
 
-    constructor(value: IExplosiveObjectActionValue, { collections, api, services }: IExplosiveObjectActionParams) {
-        super(value);
+    constructor(value: IExplosiveObjectActionData, { collections, api, services }: IExplosiveObjectActionParams) {
+        this.data = value;
         this.collections = collections;
         this.api = api;
         this.services = services;
 
-        customMakeAutoObservable(this);
-    }
-
-    get value() {
-        return new ExplosiveObjectActionValue(this);
+        makeAutoObservable(this);
     }
 
     get type() {
-        return this.collections.type.get(this.typeId);
+        return this.collections.type.get(this.data.typeId);
     }
 
     get explosiveObject() {
-        return new ExplosiveObject(this, this);
+        return new ExplosiveObject(this.data, this);
     }
 
-    updateFields(data: Partial<IExplosiveObjectActionValue>) {
+    updateFields(data: Partial<IExplosiveObjectActionData>) {
         Object.assign(self, data);
     }
 }

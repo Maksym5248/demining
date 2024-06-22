@@ -1,13 +1,17 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IEquipmentAPI } from '~/api';
-import { customMakeAutoObservable, type IUpdateValue } from '~/common';
+import { type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type IEquipmentValue, updateEquipmentDTO, createEquipment, EquipmentValue } from './equipment.schema';
+import { type IEquipmentData, updateEquipmentDTO, createEquipment } from './equipment.schema';
 
-export interface IEquipment extends IEquipmentValue {
-    updateFields: (data: Partial<IEquipmentValue>) => void;
-    update: RequestModel<[IUpdateValue<IEquipmentValue>]>;
+export interface IEquipment {
+    id: string;
+    data: IEquipmentData;
+    updateFields: (data: Partial<IEquipmentData>) => void;
+    update: RequestModel<[IUpdateValue<IEquipmentData>]>;
 }
 
 interface IApi {
@@ -23,25 +27,30 @@ interface IEquipmentParams {
     services: IServices;
 }
 
-export class Equipment extends EquipmentValue {
+export class Equipment implements IEquipment {
     api: IApi;
     services: IServices;
+    data: IEquipmentData;
 
-    constructor(value: IEquipmentValue, params: IEquipmentParams) {
-        super(value);
+    constructor(data: IEquipmentData, params: IEquipmentParams) {
+        this.data = data;
         this.api = params.api;
         this.services = params.services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
-    updateFields(data: Partial<IEquipmentValue>) {
+    get id() {
+        return this.data.id;
+    }
+
+    updateFields(data: Partial<IEquipmentData>) {
         Object.assign(this, data);
     }
 
     update = new RequestModel({
-        run: async (data: IUpdateValue<IEquipmentValue>) => {
-            const res = await this.api.equipment.update(this.id, updateEquipmentDTO(data));
+        run: async (data: IUpdateValue<IEquipmentData>) => {
+            const res = await this.api.equipment.update(this.data.id, updateEquipmentDTO(data));
             this.updateFields(createEquipment(res));
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),

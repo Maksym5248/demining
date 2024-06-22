@@ -1,7 +1,7 @@
 import { Form } from 'antd';
 import { str } from 'shared-my/common';
 import { type IExplosiveObjectActionDTOParams } from 'shared-my-client/api';
-import { type IMapViewActionValue } from 'shared-my-client/stores';
+import { type IMapViewActionData } from 'shared-my-client/stores';
 
 import { ExternalApi } from '~/api';
 import { MapPreview } from '~/components';
@@ -21,7 +21,7 @@ const mapContainerStyle = {
 export function Map({ isEdit = false }: { isEdit?: boolean }) {
     const { explosiveObject } = useStore();
 
-    const validateMapView = (_: any, value: IMapViewActionValue) => {
+    const validateMapView = (_: any, value: IMapViewActionData) => {
         if (!value.marker || !value.zoom) {
             return Promise.reject(new Error("Є обов'язковим полем"));
         }
@@ -38,7 +38,7 @@ export function Map({ isEdit = false }: { isEdit?: boolean }) {
                         const explosiveObjectActions = getFieldValue('explosiveObjectActions') as IExplosiveObjectActionDTOParams[];
                         const executedAt = getFieldValue('executedAt');
                         const addressDetails = getFieldValue('addressDetails');
-                        const mapView = getFieldValue('mapView') as IMapViewActionValue;
+                        const mapView = getFieldValue('mapView') as IMapViewActionData;
 
                         const onSubmit = async ({ area, ...value }: IMapEditorSubmit) => {
                             setFieldValue('mapView', { ...value });

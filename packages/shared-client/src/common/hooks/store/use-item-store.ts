@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { type IUseSelectStore } from '../../types';
 
-export function useItemStore<T extends B, B extends { id: string }>(store: IUseSelectStore<T, B>, id: string) {
+export function useItemStore<T extends { data: B }, B extends { id: string }>(store: IUseSelectStore<T, B>, id: string) {
     const item = store.collection.get(id);
 
     useEffect(() => {

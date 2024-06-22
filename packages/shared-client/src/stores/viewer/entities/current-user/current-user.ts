@@ -1,11 +1,10 @@
-import { type Dayjs } from 'dayjs';
+import { makeAutoObservable } from 'mobx';
 import { ROLES } from 'shared-my/db';
 
-import { customMakeAutoObservable } from '~/common';
+import { type ICurrentUserData } from './current-user.schema';
 
-import { type ICurrentUserValue, type ICurrentUserOrganizationValue } from './current-user.schema';
-
-export interface ICurrentUser extends ICurrentUserValue {
+export interface ICurrentUser {
+    data: ICurrentUserData;
     isRootAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;
@@ -14,37 +13,27 @@ export interface ICurrentUser extends ICurrentUserValue {
 }
 
 export class CurrentUser implements ICurrentUser {
-    id: string;
-    roles: ROLES[];
-    email: string;
-    organization: ICurrentUserOrganizationValue | null;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
+    data: ICurrentUserData;
 
-    constructor(value: ICurrentUserValue) {
-        this.id = value.id;
-        this.roles = value.roles;
-        this.email = value.email;
-        this.organization = value.organization;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
+    constructor(data: ICurrentUserData) {
+        this.data = data;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
     get isRootAdmin() {
-        return this.roles.includes(ROLES.ROOT_ADMIN);
+        return this.data.roles.includes(ROLES.ROOT_ADMIN);
     }
     get isOrganizationAdmin() {
-        return this.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.organization;
+        return this.data.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.data.organization;
     }
     get isOrganizationMember() {
-        return !!this.organization;
+        return !!this.data.organization;
     }
     get isAuthorized() {
         return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember;
     }
     get isWaitingApproved() {
-        return !!this.id && !this.organization;
+        return !!this.data.id && !this.data.organization;
     }
 }

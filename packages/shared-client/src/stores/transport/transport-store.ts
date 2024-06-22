@@ -1,22 +1,22 @@
-import { TRANSPORT_TYPE } from 'shared-my/db';
 import { makeAutoObservable } from 'mobx';
+import { TRANSPORT_TYPE } from 'shared-my/db';
 
 import { type ITransportAPI, type ITransportDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type ITransport,
     type ITransportAction,
-    type ITransportActionValue,
-    type ITransportValue,
+    type ITransportActionData,
+    type ITransportData,
     Transport,
     TransportAction,
     createTransport,
     createTransportDTO,
 } from './entities';
-import { IMessage } from '~/services';
 
 interface IApi {
     transport: ITransportAPI;
@@ -27,17 +27,17 @@ interface IServices {
 }
 
 export interface ITransportStore {
-    collectionActions: ICollectionModel<ITransportAction, ITransportActionValue>;
-    collection: ICollectionModel<ITransport, ITransportValue>;
-    list: IListModel<ITransport, ITransportValue>;
-    searchList: IListModel<ITransport, ITransportValue>;
+    collectionActions: ICollectionModel<ITransportAction, ITransportActionData>;
+    collection: ICollectionModel<ITransport, ITransportData>;
+    list: IListModel<ITransport, ITransportData>;
+    searchList: IListModel<ITransport, ITransportData>;
     append(res: ITransportDTO[], isSearch: boolean, isMore?: boolean): void;
     transportExplosiveObjectList: ITransport[];
     transportHumansList: ITransport[];
     transportExplosiveObjectFirst: ITransport;
     transportHumansFirst: ITransport;
-    getList(search: string): IListModel<ITransport, ITransportValue>;
-    create: IRequestModel<[ICreateValue<ITransportValue>]>;
+    getList(search: string): IListModel<ITransport, ITransportData>;
+    create: IRequestModel<[ICreateValue<ITransportData>]>;
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel<[search: string]>;
     fetchMoreList: IRequestModel<[search: string]>;
@@ -47,18 +47,18 @@ export class TransportStore implements ITransportStore {
     api: IApi;
     services: IServices;
 
-    collectionActions = new CollectionModel<ITransportAction, ITransportActionValue>({
-        factory: (data: ITransportActionValue) => new TransportAction(data, this),
+    collectionActions = new CollectionModel<ITransportAction, ITransportActionData>({
+        factory: (data: ITransportActionData) => new TransportAction(data, this),
     });
 
-    collection = new CollectionModel<ITransport, ITransportValue>({
-        factory: (data: ITransportValue) => new Transport(data, this),
+    collection = new CollectionModel<ITransport, ITransportData>({
+        factory: (data: ITransportData) => new Transport(data, this),
     });
 
-    list = new ListModel<ITransport, ITransportValue>({ collection: this.collection });
-    searchList = new ListModel<ITransport, ITransportValue>({ collection: this.collection });
+    list = new ListModel<ITransport, ITransportData>({ collection: this.collection });
+    searchList = new ListModel<ITransport, ITransportData>({ collection: this.collection });
 
-    constructor(params: { api: IApi, services: IServices }) {
+    constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
 
@@ -74,10 +74,10 @@ export class TransportStore implements ITransportStore {
     }
 
     get transportExplosiveObjectList() {
-        return this.list.asArray.filter((el) => el.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
+        return this.list.asArray.filter((el) => el.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
     }
     get transportHumansList() {
-        return this.list.asArray.filter((el) => el.type === TRANSPORT_TYPE.FOR_HUMANS);
+        return this.list.asArray.filter((el) => el.data.type === TRANSPORT_TYPE.FOR_HUMANS);
     }
 
     get transportExplosiveObjectFirst() {
@@ -92,7 +92,7 @@ export class TransportStore implements ITransportStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<ITransportValue>) => {
+        run: async (data: ICreateValue<ITransportData>) => {
             const res = await this.api.transport.create(createTransportDTO(data));
             const value = createTransport(res);
 
@@ -147,7 +147,7 @@ export class TransportStore implements ITransportStore {
             const res = await this.api.transport.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

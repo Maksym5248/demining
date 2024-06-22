@@ -5,13 +5,14 @@ import { type IMissionReportAPI, type IMissionReportDTO, type IMissionReportPrev
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 import { createMissionRequest, type IMissionRequestStore } from '~/stores/mission-request';
 import { createOrder, type IOrderStore } from '~/stores/order';
 
 import {
     type IMissionReport,
-    type IMissionReportValue,
-    type IMissionReportValueParams,
+    type IMissionReportData,
+    type IMissionReportDataParams,
     MissionReport,
     createMissionReport,
     createMissionReportDTO,
@@ -24,24 +25,23 @@ import { type IExplosiveStore, createExplosiveAction } from '../explosive';
 import { type IExplosiveObjectStore, createExplosiveObjectAction } from '../explosive-object';
 import { type IMapStore } from '../map';
 import { type ITransportStore, createTransportAction } from '../transport';
-import { IMessage } from '~/services';
 
 interface IServices {
     message: IMessage;
 }
 
 export interface IMissionReportStore {
-    collection: CollectionModel<IMissionReport, IMissionReportValue>;
-    list: ListModel<IMissionReport, IMissionReportValue>;
-    searchList: ListModel<IMissionReport, IMissionReportValue>;
+    collection: CollectionModel<IMissionReport, IMissionReportData>;
+    list: ListModel<IMissionReport, IMissionReportData>;
+    searchList: ListModel<IMissionReport, IMissionReportData>;
     sum: {
         total: number;
     };
     setSum: (sum: IMissionReportSumDTO) => void;
     appendToCollections: (data: IMissionReportDTO) => void;
     append: (res: IMissionReportPreviewDTO[], isSearch: boolean, isMore?: boolean) => void;
-    create: RequestModel<[ICreateValue<IMissionReportValueParams>]>;
-    update: RequestModel<[string, ICreateValue<IMissionReportValueParams>]>;
+    create: RequestModel<[ICreateValue<IMissionReportDataParams>]>;
+    update: RequestModel<[string, ICreateValue<IMissionReportDataParams>]>;
     fetchList: RequestModel<[search?: string]>;
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
@@ -75,13 +75,13 @@ export class MissionReportStore implements IMissionReportStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IMissionReport, IMissionReportValue>({
-        factory: (data: IMissionReportValue) => new MissionReport(data, this),
+    collection = new CollectionModel<IMissionReport, IMissionReportData>({
+        factory: (data: IMissionReportData) => new MissionReport(data, this),
     });
 
-    list = new ListModel<IMissionReport, IMissionReportValue>({ collection: this.collection });
+    list = new ListModel<IMissionReport, IMissionReportData>({ collection: this.collection });
 
-    searchList = new ListModel<IMissionReport, IMissionReportValue>({
+    searchList = new ListModel<IMissionReport, IMissionReportData>({
         collection: this.collection,
     });
 
@@ -123,7 +123,7 @@ export class MissionReportStore implements IMissionReportStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IMissionReportValueParams>) => {
+        run: async (data: ICreateValue<IMissionReportDataParams>) => {
             const res = await this.api.missionReport.create(createMissionReportDTO(data));
             this.appendToCollections(res);
             this.list.unshift(createMissionReport(res));
@@ -133,7 +133,7 @@ export class MissionReportStore implements IMissionReportStore {
     });
 
     update = new RequestModel({
-        run: async (id: string, data: ICreateValue<IMissionReportValueParams>) => {
+        run: async (id: string, data: ICreateValue<IMissionReportDataParams>) => {
             const res = await this.api.missionReport.update(id, createMissionReportDTO(data));
             this.appendToCollections(res);
         },
@@ -176,7 +176,7 @@ export class MissionReportStore implements IMissionReportStore {
             const res = await this.api.missionReport.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

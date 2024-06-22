@@ -69,7 +69,7 @@ export const TransportWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={transport ? { ...transport } : { type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS }}>
+                    initialValues={transport ? { ...transport.data } : { type: TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS }}>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

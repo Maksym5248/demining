@@ -23,10 +23,10 @@ const ListItem = observer(({ item }: { item: IOrder }) => {
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
-                title={`№${item.number}`}
+                title={`№${item.data.number}`}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{item.signedAt.format('DD/MM/YYYY')}</Text>
+                        <Text type="secondary">{item.data.signedAt.format('DD/MM/YYYY')}</Text>
                     </Space>
                 }
             />

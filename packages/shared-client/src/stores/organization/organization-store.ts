@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import { type IOrganizationAPI, type ICreateOrganizationDTO, type IOrganizationDTO } from '~/api';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type IOrganization,
@@ -13,7 +14,6 @@ import {
 } from './entities/organization';
 import { type IUserStore } from '../user';
 import { type IViewerStore } from '../viewer';
-import { IMessage } from '~/services';
 
 interface IApi {
     organization: IOrganizationAPI;
@@ -129,7 +129,7 @@ export class OrganizationStore implements IOrganizationStore {
             const res = await this.api.organization.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

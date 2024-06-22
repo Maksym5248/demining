@@ -1,13 +1,17 @@
-import { customMakeAutoObservable } from '~/common';
+import { makeAutoObservable } from 'mobx';
 
-import { AddressValue, type IAddressValue } from './address.schema';
+import { type IAddressData } from './address.schema';
 
-export type IAddress = IAddressValue;
+export interface IAddress {
+    data: IAddressData;
+}
 
-export class Address extends AddressValue {
-    constructor(value: IAddressValue) {
-        super(value);
+export class Address {
+    data: IAddressData;
 
-        customMakeAutoObservable(this);
+    constructor(data: IAddressData) {
+        this.data = data;
+
+        makeAutoObservable(this);
     }
 }

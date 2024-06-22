@@ -1,31 +1,31 @@
-import { path } from 'shared-my/common';
 import { get, has, remove, set, makeAutoObservable } from 'mobx';
+import { path } from 'shared-my/common';
 
 type ID = string | number;
 
 export interface ICollectionModel<T, B> {
     get: (id?: ID) => T | undefined;
     set: (id: ID, value: B) => void;
-    update: (id: ID, value: B | T) => void;
+    update: (id: ID, value: B) => void;
     setArr: (arr: (B & { id: string })[]) => void;
     remove: (id: string) => void;
     exist: (id: string) => boolean;
     findBy(path: string, value: unknown): T | undefined;
 }
 
-interface ICollectionModelParams<T extends B, B> {
+interface ICollectionModelParams<T extends { data: B }, B> {
     factory?: (data: B) => T;
     model?: new (data: B) => T;
 }
 
-export class CollectionModel<T extends B, B> implements ICollectionModel<T, B> {
+export class CollectionModel<T extends { data: B }, B> implements ICollectionModel<T, B> {
     private collection: Record<string, T> = {};
 
     model?: new (data: B) => T;
     factory: (data: B) => T;
 
     constructor({ factory, model }: ICollectionModelParams<T, B>) {
-        const defaultFactory = model ? (data: B) => new model(data) : (data: B) => data as T;
+        const defaultFactory = model ? (data: B) => new model(data) : (data: B) => data as unknown as T;
         this.factory = factory ?? defaultFactory;
         makeAutoObservable(this);
     }
@@ -53,7 +53,7 @@ export class CollectionModel<T extends B, B> implements ICollectionModel<T, B> {
         const stringId = String(id);
 
         const item = get(this.collection, stringId);
-        Object.assign(item, value);
+        Object.assign(item.data, value);
     }
 
     get(id?: ID): T | undefined {

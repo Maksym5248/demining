@@ -13,13 +13,13 @@ import {
     ExplosiveObjectType,
     type IExplosiveObject,
     type IExplosiveObjectType,
-    type IExplosiveObjectValue,
-    type IExplosiveObjectTypeValue,
-    type IExplosiveObjectValueParams,
+    type IExplosiveObjectData,
+    type IExplosiveObjectTypeData,
+    type IExplosiveObjectDataParams,
     createExplosiveObject,
     createExplosiveObjectDTO,
     createExplosiveObjectType,
-    type IExplosiveObjectActionValue,
+    type IExplosiveObjectActionData,
     type IExplosiveObjectAction,
     createExplosiveObjectActionSum,
     ExplosiveObjectAction,
@@ -35,18 +35,18 @@ interface IServices {
 }
 
 export interface IExplosiveObjectStore {
-    collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeValue>;
-    collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionValue>;
-    collection: CollectionModel<IExplosiveObject, IExplosiveObjectValue>;
-    listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeValue>;
-    list: ListModel<IExplosiveObject, IExplosiveObjectValue>;
-    searchList: ListModel<IExplosiveObject, IExplosiveObjectValue>;
+    collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
+    collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
+    listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    list: ListModel<IExplosiveObject, IExplosiveObjectData>;
+    searchList: ListModel<IExplosiveObject, IExplosiveObjectData>;
     sum: SumExplosiveObjectActions;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
     init: () => void;
     append: (res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) => void;
-    create: RequestModel<[ICreateValue<IExplosiveObjectValueParams>]>;
+    create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
     createExplosiveObjects: RequestModel;
     fetchList: RequestModel<[search?: string]>;
@@ -59,21 +59,21 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
 
-    collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeValue>({
-        factory: (data: IExplosiveObjectTypeValue) => new ExplosiveObjectType(data),
+    collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
+        factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
     });
-    collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionValue>({
-        factory: (data: IExplosiveObjectActionValue) =>
+    collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>({
+        factory: (data: IExplosiveObjectActionData) =>
             new ExplosiveObjectAction(data, { collections: { type: this.collectionTypes }, ...this }),
     });
-    collection = new CollectionModel<IExplosiveObject, IExplosiveObjectValue>({
-        factory: (data: IExplosiveObjectValue) => new ExplosiveObject(data, { collections: { type: this.collectionTypes }, ...this }),
+    collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
+        factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, { collections: { type: this.collectionTypes }, ...this }),
     });
-    listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeValue>({
+    listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         collection: this.collectionTypes,
     });
-    list = new ListModel<IExplosiveObject, IExplosiveObjectValue>({ collection: this.collection });
-    searchList = new ListModel<IExplosiveObject, IExplosiveObjectValue>({
+    list = new ListModel<IExplosiveObject, IExplosiveObjectData>({ collection: this.collection });
+    searchList = new ListModel<IExplosiveObject, IExplosiveObjectData>({
         collection: this.collection,
     });
     sum = new SumExplosiveObjectActions();
@@ -87,7 +87,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     get sortedListTypes() {
         return this.listTypes.asArray.sort((a, b) =>
-            a.fullName.localeCompare(b.fullName, ['uk'], {
+            a.data.fullName.localeCompare(b.data.fullName, ['uk'], {
                 numeric: true,
                 sensitivity: 'base',
             }),
@@ -109,7 +109,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         list.push(res.map(createExplosiveObject), true);
     }
     create = new RequestModel({
-        run: async (data: ICreateValue<IExplosiveObjectValueParams>) => {
+        run: async (data: ICreateValue<IExplosiveObjectDataParams>) => {
             const res = await this.api.explosiveObject.create(createExplosiveObjectDTO(data));
             this.list.unshift(createExplosiveObject(res));
         },
@@ -167,7 +167,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
             const res = await this.api.explosiveObject.getList({
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(this.list.last.createdAt),
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
             list.push(res.map(createExplosiveObject), true);

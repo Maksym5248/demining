@@ -1,6 +1,6 @@
 import { type IAddressDTO } from '~/api';
 
-export interface IAddressValue {
+export interface IAddressData {
     city?: string;
     country?: string;
     district?: string;
@@ -11,7 +11,7 @@ export interface IAddressValue {
     municipality?: string;
 }
 
-export const createAddressDTO = (value?: IAddressValue): IAddressDTO => ({
+export const createAddressDTO = (value?: IAddressData): IAddressDTO => ({
     city: value?.city ?? null,
     country: value?.country ?? null,
     district: value?.district ?? null,
@@ -22,7 +22,7 @@ export const createAddressDTO = (value?: IAddressValue): IAddressDTO => ({
     municipality: value?.municipality ?? null,
 });
 
-export const createAddress = (value?: IAddressDTO): IAddressValue => ({
+export const createAddress = (value?: IAddressDTO): IAddressData => ({
     city: value?.city ?? undefined,
     country: value?.country ?? undefined,
     district: value?.district ?? undefined,
@@ -32,25 +32,3 @@ export const createAddress = (value?: IAddressDTO): IAddressValue => ({
     street: value?.street ?? undefined,
     municipality: value?.street ?? undefined,
 });
-
-export class AddressValue {
-    constructor(value: IAddressValue) {
-        this.city = value.city;
-        this.country = value.country;
-        this.district = value.district;
-        this.housenumber = value.housenumber;
-        this.postcode = value.postcode;
-        this.state = value.state;
-        this.street = value.street;
-        this.municipality = value.municipality;
-    }
-
-    city?: string;
-    country?: string;
-    district?: string;
-    housenumber?: string;
-    postcode?: string;
-    state?: string;
-    street?: string;
-    municipality?: string;
-}

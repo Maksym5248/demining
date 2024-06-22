@@ -1,12 +1,16 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IExplosiveAPI } from '~/api';
-import { customMakeAutoObservable, type IUpdateValue } from '~/common';
+import { type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type IExplosiveValue, updateExplosiveDTO, createExplosive, ExplosiveValue } from './explosive.schema';
+import { type IExplosiveData, updateExplosiveDTO, createExplosive } from './explosive.schema';
 
-export interface IExplosive extends IExplosiveValue {
-    update: RequestModel<[IUpdateValue<IExplosiveValue>]>;
+export interface IExplosive {
+    id: string;
+    data: IExplosiveData;
+    update: RequestModel<[IUpdateValue<IExplosiveData>]>;
 }
 
 interface IApi {
@@ -17,25 +21,29 @@ interface IServices {
     message: IMessage;
 }
 
-export class Explosive extends ExplosiveValue implements IExplosive {
+export class Explosive implements IExplosive {
     api: IApi;
     services: IServices;
-
-    constructor(data: IExplosiveValue, params: { api: IApi; services: IServices }) {
-        super(data);
+    data: IExplosiveData;
+    constructor(data: IExplosiveData, params: { api: IApi; services: IServices }) {
+        this.data = data;
         this.api = params.api;
         this.services = params.services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
-    updateFields(data: Partial<IExplosiveValue>) {
+    get id() {
+        return this.data.id;
+    }
+
+    updateFields(data: Partial<IExplosiveData>) {
         Object.assign(this, data);
     }
 
     update = new RequestModel({
-        run: async (data: IUpdateValue<IExplosiveValue>) => {
-            const res = await this.api.explosive.update(this.id, updateExplosiveDTO(data));
+        run: async (data: IUpdateValue<IExplosiveData>) => {
+            const res = await this.api.explosive.update(this.data.id, updateExplosiveDTO(data));
 
             this.updateFields(createExplosive(res));
         },

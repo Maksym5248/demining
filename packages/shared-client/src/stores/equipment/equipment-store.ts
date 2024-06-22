@@ -1,32 +1,32 @@
-import { EQUIPMENT_TYPE } from 'shared-my/db';
 import { makeAutoObservable } from 'mobx';
+import { EQUIPMENT_TYPE } from 'shared-my/db';
 
 import { type IEquipmentAPI, type IEquipmentDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type IEquipment,
-    type IEquipmentValue,
+    type IEquipmentData,
     Equipment,
     createEquipment,
     createEquipmentDTO,
     EquipmentAction,
-    type IEquipmentActionValue,
+    type IEquipmentActionData,
     type IEquipmentAction,
 } from './entities';
-import { IMessage } from '~/services';
 
 export interface IEquipmentStore {
-    collectionActions: CollectionModel<IEquipmentAction, IEquipmentActionValue>;
-    collection: CollectionModel<IEquipment, IEquipmentValue>;
-    list: ListModel<IEquipment, IEquipmentValue>;
-    searchList: ListModel<IEquipment, IEquipmentValue>;
+    collectionActions: CollectionModel<IEquipmentAction, IEquipmentActionData>;
+    collection: CollectionModel<IEquipment, IEquipmentData>;
+    list: ListModel<IEquipment, IEquipmentData>;
+    searchList: ListModel<IEquipment, IEquipmentData>;
     listMineDetectors: IEquipment[];
     firstMineDetector: IEquipment | undefined;
     append(res: IEquipmentDTO[], isSearch: boolean, isMore?: boolean): void;
-    create: RequestModel<[ICreateValue<IEquipmentValue>]>;
+    create: RequestModel<[ICreateValue<IEquipmentData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
     fetchMoreList: RequestModel<[search?: string]>;
@@ -45,23 +45,23 @@ export class EquipmentStore implements IEquipmentStore {
     api: IApi;
     services: IServices;
 
-    collectionActions = new CollectionModel<IEquipmentAction, IEquipmentActionValue>({
-        factory: (data: IEquipmentActionValue) => new EquipmentAction(data, this),
+    collectionActions = new CollectionModel<IEquipmentAction, IEquipmentActionData>({
+        factory: (data: IEquipmentActionData) => new EquipmentAction(data, this),
     });
-    collection = new CollectionModel<IEquipment, IEquipmentValue>({
-        factory: (data: IEquipmentValue) => new Equipment(data, this),
+    collection = new CollectionModel<IEquipment, IEquipmentData>({
+        factory: (data: IEquipmentData) => new Equipment(data, this),
     });
-    list = new ListModel<IEquipment, IEquipmentValue>({ collection: this.collection });
-    searchList = new ListModel<IEquipment, IEquipmentValue>({ collection: this.collection });
+    list = new ListModel<IEquipment, IEquipmentData>({ collection: this.collection });
+    searchList = new ListModel<IEquipment, IEquipmentData>({ collection: this.collection });
 
-    constructor(params: { api: IApi, services: IServices }) {
+    constructor(params: { api: IApi; services: IServices }) {
         makeAutoObservable(this);
         this.api = params.api;
         this.services = params.services;
     }
 
     get listMineDetectors() {
-        return this.list.asArray.filter((el) => el.type === EQUIPMENT_TYPE.MINE_DETECTOR);
+        return this.list.asArray.filter((el) => el.data.type === EQUIPMENT_TYPE.MINE_DETECTOR);
     }
 
     get firstMineDetector() {
@@ -77,7 +77,7 @@ export class EquipmentStore implements IEquipmentStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IEquipmentValue>) => {
+        run: async (data: ICreateValue<IEquipmentData>) => {
             const res = await this.api.equipment.create(createEquipmentDTO(data));
             this.list.unshift(createEquipment(res));
         },
@@ -132,7 +132,7 @@ export class EquipmentStore implements IEquipmentStore {
             const res = await this.api.equipment.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

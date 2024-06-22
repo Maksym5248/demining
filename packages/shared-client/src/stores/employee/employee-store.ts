@@ -9,27 +9,27 @@ import { type IMessage } from '~/services';
 import {
     Rank,
     type IRank,
-    type IRankValue,
+    type IRankData,
     Employee,
     type IEmployee,
-    type IEmployeeValue,
+    type IEmployeeData,
     createEmployee,
     createEmployeeDTO,
     createRank,
     EmployeeAction,
     type IEmployeeAction,
-    type IEmployeeActionValue,
+    type IEmployeeActionData,
 } from './entities';
 
 export interface IEmployeeStore {
-    collection: ICollectionModel<IEmployee, IEmployeeValue>;
-    list: IListModel<IEmployee, IEmployeeValue>;
-    searchList: IListModel<IEmployee, IEmployeeValue>;
+    collection: ICollectionModel<IEmployee, IEmployeeData>;
+    list: IListModel<IEmployee, IEmployeeData>;
+    searchList: IListModel<IEmployee, IEmployeeData>;
 
-    ranksCollection: ICollectionModel<IRank, IRankValue>;
-    ranksList: IListModel<IRank, IRankValue>;
+    ranksCollection: ICollectionModel<IRank, IRankData>;
+    ranksList: IListModel<IRank, IRankData>;
 
-    collectionActions: ICollectionModel<IEmployeeAction, IEmployeeActionValue>;
+    collectionActions: ICollectionModel<IEmployeeAction, IEmployeeActionData>;
 
     chiefs: IEmployee[];
     squadLeads: IEmployee[];
@@ -41,7 +41,7 @@ export interface IEmployeeStore {
     getById: (id: string) => IEmployee | undefined;
     append: (res: IEmployeeDTO[], isSearch: boolean, isMore?: boolean) => void;
     setAll: (res: IEmployeeDTO[]) => void;
-    create: IRequestModel<[ICreateValue<IEmployeeValue>]>;
+    create: IRequestModel<[ICreateValue<IEmployeeData>]>;
     remove: IRequestModel<[string]>;
     fetchListAll: IRequestModel;
     fetchList: IRequestModel<[search: string]>;
@@ -61,18 +61,18 @@ export class EmployeeStore implements IEmployeeStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IEmployee, IEmployeeValue>({
-        factory: (data: IEmployeeValue) => new Employee(data, { collections: { rank: this.ranksCollection }, ...this }),
+    collection = new CollectionModel<IEmployee, IEmployeeData>({
+        factory: (data: IEmployeeData) => new Employee(data, { collections: { rank: this.ranksCollection }, ...this }),
     });
-    list = new ListModel<IEmployee, IEmployeeValue>({ collection: this.collection });
-    searchList = new ListModel<IEmployee, IEmployeeValue>({ collection: this.collection });
-    ranksCollection = new CollectionModel<IRank, IRankValue>({
-        factory: (data: IRankValue) => new Rank(data),
+    list = new ListModel<IEmployee, IEmployeeData>({ collection: this.collection });
+    searchList = new ListModel<IEmployee, IEmployeeData>({ collection: this.collection });
+    ranksCollection = new CollectionModel<IRank, IRankData>({
+        factory: (data: IRankData) => new Rank(data),
     });
-    ranksList = new ListModel<IRank, IRankValue>({ collection: this.ranksCollection });
+    ranksList = new ListModel<IRank, IRankData>({ collection: this.ranksCollection });
 
-    collectionActions = new CollectionModel<IEmployeeAction, IEmployeeActionValue>({
-        factory: (data: IEmployeeActionValue) => new EmployeeAction(data, { collections: { rank: this.ranksCollection }, ...this }),
+    collectionActions = new CollectionModel<IEmployeeAction, IEmployeeActionData>({
+        factory: (data: IEmployeeActionData) => new EmployeeAction(data, { collections: { rank: this.ranksCollection }, ...this }),
     });
 
     constructor({ api, services }: { api: IApi; services: IServices }) {
@@ -83,15 +83,15 @@ export class EmployeeStore implements IEmployeeStore {
     }
 
     get chiefs() {
-        return this.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.CHIEF);
+        return this.list.asArray.filter((el) => el.data.type === EMPLOYEE_TYPE.CHIEF);
     }
 
     get squadLeads() {
-        return this.list.asArray.filter((el) => el.type === EMPLOYEE_TYPE.SQUAD_LEAD);
+        return this.list.asArray.filter((el) => el.data.type === EMPLOYEE_TYPE.SQUAD_LEAD);
     }
 
     get workers() {
-        return this.list.asArray.filter((el) => el.type !== EMPLOYEE_TYPE.CHIEF);
+        return this.list.asArray.filter((el) => el.data.type !== EMPLOYEE_TYPE.CHIEF);
     }
 
     get chiefFirst() {
@@ -124,7 +124,7 @@ export class EmployeeStore implements IEmployeeStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IEmployeeValue>) => {
+        run: async (data: ICreateValue<IEmployeeData>) => {
             const res = await this.api.employee.create(createEmployeeDTO(data));
             this.list.unshift(createEmployee(res));
         },
@@ -183,7 +183,7 @@ export class EmployeeStore implements IEmployeeStore {
             const res = await this.api.employee.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

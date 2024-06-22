@@ -17,18 +17,18 @@ const { Text } = Typography;
 const ListItem = observer(({ item }: { item: IEmployee }) => {
     const onOpen = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        Modal.show(MODALS.EMPLOYEES_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW });
+        Modal.show(MODALS.EMPLOYEES_WIZARD, { id: item.data.id, mode: WIZARD_MODE.VIEW });
     };
 
     return (
-        <List.Item key={item.id} actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
+        <List.Item key={item.data.id} actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.UserOutlined />}
-                title={str.getFullName(item)}
+                title={str.getFullName(item.data)}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{str.toUpperFirst(item?.rank?.fullName ?? '')}</Text>
-                        <Text type="secondary">{str.toUpperFirst(item.position)}</Text>
+                        <Text type="secondary">{str.toUpperFirst(item?.rank?.data.fullName ?? '')}</Text>
+                        <Text type="secondary">{str.toUpperFirst(item.data.position)}</Text>
                     </Space>
                 }
             />

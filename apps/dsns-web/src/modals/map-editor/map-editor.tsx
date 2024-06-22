@@ -83,9 +83,11 @@ export const MapEditorModal = observer(
                     mapContainerStyle={mapContainerStyle}
                     onChange={onChange}
                     onChangeGeobox={onChangeGeobox}
-                    polygons={store.map.list.asArray.filter((el) => el.id !== id && !!el.polygon).map((el) => el.polygon as IPolygon)}
-                    circles={store.map.list.asArray.filter((el) => el.id !== id && !!el.circle).map((el) => el.circle as ICircle)}
-                    lines={store.map.list.asArray.filter((el) => el.id !== id && !!el.line).map((el) => el.line as ILine)}
+                    polygons={store.map.list.asArray
+                        .filter((el) => el.id !== id && !!el.data.polygon)
+                        .map((el) => el.data.polygon as IPolygon)}
+                    circles={store.map.list.asArray.filter((el) => el.id !== id && !!el.data.circle).map((el) => el.data.circle as ICircle)}
+                    lines={store.map.list.asArray.filter((el) => el.id !== id && !!el.data.line).map((el) => el.data.line as ILine)}
                     isLoadingVisibleInArea={store.map.fetchAllInGeoBox.isLoading || isLoadingAllInGeoBox}
                     minZoomLoadArea={minZoomLoadArea}
                 />

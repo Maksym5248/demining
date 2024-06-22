@@ -26,17 +26,3 @@ export const createOrganizationDTO = (value: ICreateOrganizationDTO): ICreateOrg
 export const createMembersDTO = (value: string[]): ICreateOrganizationMembersDTO => ({
     membersIds: value ?? [],
 });
-
-export class OrganizationValue {
-    public id: string;
-    public name: string;
-    public createdAt: Dayjs;
-    public updatedAt: Dayjs;
-
-    constructor(value: IOrganizationValue) {
-        this.id = value.id;
-        this.name = value.name;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
-}

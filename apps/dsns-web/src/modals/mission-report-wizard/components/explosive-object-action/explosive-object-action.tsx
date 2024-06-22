@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import { observer } from 'mobx-react';
-import { type IExplosiveObjectActionValueParams } from 'shared-my-client/stores';
+import { type IExplosiveObjectActionDataParams } from 'shared-my-client/stores';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -44,18 +44,18 @@ function Component() {
                         <List
                             size="small"
                             pagination={false}
-                            dataSource={data.map((el: IExplosiveObjectActionValueParams, i: number) => ({
+                            dataSource={data.map((el: IExplosiveObjectActionDataParams, i: number) => ({
                                 ...el,
                                 index: `${i}`,
                             }))}
-                            renderItem={(item: IExplosiveObjectActionValueParams & { id: string }, i: number) => (
+                            renderItem={(item: IExplosiveObjectActionDataParams & { id: string }, i: number) => (
                                 <ObservedListItem
                                     item={item}
                                     index={i}
                                     onRemove={(index: number) => {
                                         setFieldValue(
                                             'explosiveObjectActions',
-                                            data.filter((el: IExplosiveObjectActionValueParams, c: number) => c !== index),
+                                            data.filter((el: IExplosiveObjectActionDataParams, c: number) => c !== index),
                                         );
                                     }}
                                 />
@@ -68,7 +68,7 @@ function Component() {
                                     onClick={() => {
                                         Modal.show(MODALS.EXPLOSIVE_OBJECT_ACTION_WIZARD, {
                                             mode: WIZARD_MODE.CREATE,
-                                            onSubmit: (value: IExplosiveObjectActionValueParams) =>
+                                            onSubmit: (value: IExplosiveObjectActionDataParams) =>
                                                 setFieldValue('explosiveObjectActions', [...data, value]),
                                         });
                                     }}>

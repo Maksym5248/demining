@@ -5,25 +5,25 @@ import { type IMissionRequestAPI, type IMissionRequestDTO, type IMissionRequestS
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
 
 import {
     type IMissionRequest,
-    type IMissionRequestValue,
+    type IMissionRequestData,
     MissionRequest,
     createMissionRequest,
     createMissionRequestDTO,
     createMissionRequestSum,
 } from './entities';
-import { IMessage } from '~/services';
 
 export interface IMissionRequestStore {
-    collection: CollectionModel<IMissionRequest, IMissionRequestValue>;
-    list: ListModel<IMissionRequest, IMissionRequestValue>;
-    searchList: ListModel<IMissionRequest, IMissionRequestValue>;
+    collection: CollectionModel<IMissionRequest, IMissionRequestData>;
+    list: ListModel<IMissionRequest, IMissionRequestData>;
+    searchList: ListModel<IMissionRequest, IMissionRequestData>;
     sum: { total: number };
     setSum: (sum: IMissionRequestSumDTO) => void;
     append: (res: IMissionRequestDTO[], isSearch: boolean, isMore?: boolean) => void;
-    create: RequestModel<[ICreateValue<IMissionRequestValue>]>;
+    create: RequestModel<[ICreateValue<IMissionRequestData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
     fetchMoreList: RequestModel<[search?: string]>;
@@ -43,16 +43,16 @@ export class MissionRequestStore implements IMissionRequestStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IMissionRequest, IMissionRequestValue>({
-        factory: (data: IMissionRequestValue) => new MissionRequest(data, this),
+    collection = new CollectionModel<IMissionRequest, IMissionRequestData>({
+        factory: (data: IMissionRequestData) => new MissionRequest(data, this),
     });
-    list = new ListModel<IMissionRequest, IMissionRequestValue>({ collection: this.collection });
-    searchList = new ListModel<IMissionRequest, IMissionRequestValue>({
+    list = new ListModel<IMissionRequest, IMissionRequestData>({ collection: this.collection });
+    searchList = new ListModel<IMissionRequest, IMissionRequestData>({
         collection: this.collection,
     });
     sum = { total: 0 };
 
-    constructor(params: { api: IApi, services: IServices }) {
+    constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
 
@@ -72,7 +72,7 @@ export class MissionRequestStore implements IMissionRequestStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IMissionRequestValue>) => {
+        run: async (data: ICreateValue<IMissionRequestData>) => {
             const res = await this.api.missionRequest.create(createMissionRequestDTO(data));
             this.list.unshift(createMissionRequest(res));
         },
@@ -126,7 +126,7 @@ export class MissionRequestStore implements IMissionRequestStore {
             const res = await this.api.missionRequest.getList({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.append(res, isSearch, true);

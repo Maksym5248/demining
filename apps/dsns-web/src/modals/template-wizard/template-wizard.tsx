@@ -81,7 +81,7 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
     const onOpenDocument = async () => {
         const loadedFile = await document?.load.run();
 
-        Modal.show(MODALS.DOCX_PREVIEW, { file: file || loadedFile, name: document?.name });
+        Modal.show(MODALS.DOCX_PREVIEW, { file: file || loadedFile, name: document?.data.name });
     };
 
     const onRemove = async () => {
@@ -111,7 +111,7 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={document ? { ...document } : { documentType: DOCUMENT_TYPE.MISSION_REPORT }}>
+                    initialValues={document ? { ...document.data } : { documentType: DOCUMENT_TYPE.MISSION_REPORT }}>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

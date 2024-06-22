@@ -1,15 +1,15 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IUserAPI } from '~/api';
-import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, IMessage } from '~/services';
+import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
-import { CurrentUser, type ICurrentUser, type ICurrentUserValue, createCurrentUser } from './entities';
+import { CurrentUser, type ICurrentUser, type ICurrentUserData, createCurrentUser } from './entities';
 
 export interface IViewerStore {
     user: ICurrentUser | null;
     isInitialized: boolean;
     isLoading: boolean;
-    setUser(user: ICurrentUserValue): void;
+    setUser(user: ICurrentUserData): void;
     removeUser(): void;
     setInitialized(value: boolean): void;
     setLoading(value: boolean): void;
@@ -21,11 +21,11 @@ interface IApi {
 }
 
 interface IServices {
-        analytics: IAnalytics;
-        auth: IAuth;
-        logger: ILogger;
-        message: IMessage;
-};
+    analytics: IAnalytics;
+    auth: IAuth;
+    logger: ILogger;
+    message: IMessage;
+}
 
 interface IViewerStoreParams {
     api: IApi;
@@ -45,7 +45,7 @@ export class ViewerStore implements IViewerStore {
         makeAutoObservable(this);
     }
 
-    setUser(user: ICurrentUserValue) {
+    setUser(user: ICurrentUserData) {
         this.user = new CurrentUser(user);
 
         if (user.organization?.id) {

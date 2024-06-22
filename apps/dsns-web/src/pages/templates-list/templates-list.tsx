@@ -24,10 +24,10 @@ const ListItem = observer(({ item }: { item: IDocument }) => {
         <List.Item actions={[<Button key="list-view" icon={<Icon.EyeOutlined />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
-                title={item.name}
+                title={item.data.name}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{str.getValue(item.documentType)}</Text>
+                        <Text type="secondary">{str.getValue(item.data.documentType)}</Text>
                     </Space>
                 }
             />

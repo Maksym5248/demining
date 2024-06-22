@@ -1,11 +1,11 @@
-import { EQUIPMENT_TYPE } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
+import { EQUIPMENT_TYPE } from 'shared-my/db';
 
 import { type IEquipmentDTO } from '~/api';
 import { dates, data } from '~/common';
 import { type ICreateValue } from '~/common';
 
-export interface IEquipmentValue {
+export interface IEquipmentData {
     id: string;
     name: string;
     type: EQUIPMENT_TYPE;
@@ -13,36 +13,20 @@ export interface IEquipmentValue {
     updatedAt: Dayjs;
 }
 
-export const createEquipmentDTO = (value: ICreateValue<IEquipmentValue>): ICreateValue<IEquipmentDTO> => ({
+export const createEquipmentDTO = (value: ICreateValue<IEquipmentData>): ICreateValue<IEquipmentDTO> => ({
     name: value.name,
     type: value.type,
 });
 
-export const updateEquipmentDTO = data.createUpdateDTO<IEquipmentValue, IEquipmentDTO>((value) => ({
+export const updateEquipmentDTO = data.createUpdateDTO<IEquipmentData, IEquipmentDTO>((value) => ({
     name: value?.name ?? '',
     type: value.type ?? EQUIPMENT_TYPE.MINE_DETECTOR,
 }));
 
-export const createEquipment = (value: IEquipmentDTO): IEquipmentValue => ({
+export const createEquipment = (value: IEquipmentDTO): IEquipmentData => ({
     id: value.id,
     name: value.name,
     type: value.type,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
-
-export class EquipmentValue implements IEquipmentValue {
-    id: string;
-    name: string;
-    type: EQUIPMENT_TYPE;
-    createdAt: Dayjs;
-    updatedAt: Dayjs;
-
-    constructor(value: IEquipmentValue) {
-        this.id = value.id;
-        this.name = value.name;
-        this.type = value.type;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
-}

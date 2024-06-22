@@ -1,10 +1,10 @@
-import { type ROLES } from 'shared-my/db';
 import { type Dayjs } from 'dayjs';
+import { type ROLES } from 'shared-my/db';
 
 import { type IUserDTO } from '~/api';
 import { dates } from '~/common';
 
-export interface IUserValue {
+export interface IUserData {
     id: string;
     email: string;
     roles: ROLES[];
@@ -13,7 +13,7 @@ export interface IUserValue {
     updatedAt: Dayjs;
 }
 
-export const createUser = (value: IUserDTO): IUserValue => ({
+export const createUser = (value: IUserDTO): IUserData => ({
     id: value.id,
     email: value?.email ?? '',
     roles: value?.roles ?? [],
@@ -21,21 +21,3 @@ export const createUser = (value: IUserDTO): IUserValue => ({
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
-
-export class UserValue implements IUserValue {
-    public id: string;
-    public email: string;
-    public roles: ROLES[];
-    public organizationId: string;
-    public createdAt: Dayjs;
-    public updatedAt: Dayjs;
-
-    constructor(value: IUserValue) {
-        this.id = value.id;
-        this.email = value.email;
-        this.roles = value.roles;
-        this.organizationId = value.organizationId;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
-}

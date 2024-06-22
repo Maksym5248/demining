@@ -1,13 +1,17 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type ITransportAPI } from '~/api';
-import { customMakeAutoObservable, type IUpdateValue } from '~/common';
+import { type IUpdateValue } from '~/common';
 import { type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type ITransportValue, updateTransportDTO, createTransport, TransportValue } from './transport.schema';
+import { type ITransportData, updateTransportDTO, createTransport } from './transport.schema';
 
-export interface ITransport extends ITransportValue {
-    updateFields(data: Partial<ITransportValue>): void;
-    update: IRequestModel<[IUpdateValue<ITransportValue>]>;
+export interface ITransport {
+    id: string;
+    data: ITransportData;
+    updateFields(data: Partial<ITransportData>): void;
+    update: IRequestModel<[IUpdateValue<ITransportData>]>;
     fullName: string;
 }
 
@@ -19,28 +23,34 @@ interface IServices {
     message: IMessage;
 }
 
-export class Transport extends TransportValue implements ITransport {
+export class Transport implements ITransport {
     api: IApi;
     services: IServices;
+    data: ITransportData;
 
-    constructor(value: ITransportValue, { api, services }: { api: IApi; services: IServices }) {
-        super(value);
+    constructor(data: ITransportData, { api, services }: { api: IApi; services: IServices }) {
+        this.data = data;
+
         this.api = api;
         this.services = services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
-    updateFields(data: Partial<ITransportValue>) {
+    get id() {
+        return this.data.id;
+    }
+
+    updateFields(data: Partial<ITransportData>) {
         Object.assign(this, data);
     }
     get fullName() {
-        return `${this.name} н/з ${this.number}`;
+        return `${this.data.name} н/з ${this.data.number}`;
     }
 
     update = new RequestModel({
-        run: async (data: IUpdateValue<ITransportValue>) => {
-            const res = await this.api.transport.update(this.id, updateTransportDTO(data));
+        run: async (data: IUpdateValue<ITransportData>) => {
+            const res = await this.api.transport.update(this.data.id, updateTransportDTO(data));
 
             this.updateFields(createTransport(res));
         },

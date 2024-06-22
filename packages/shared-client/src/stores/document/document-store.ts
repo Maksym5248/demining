@@ -6,15 +6,15 @@ import { type ICreateValue, dates } from '~/common';
 import { CollectionModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type IDocument, Document, createDocument, createDocumentDTO, type IDocumentValue } from './entities';
+import { type IDocument, Document, createDocument, createDocumentDTO, type IDocumentData } from './entities';
 
 export interface IDocumentStore {
-    collection: CollectionModel<IDocument, IDocumentValue>;
-    templatesList: ListModel<IDocument, IDocumentValue>;
-    templatesSearchList: ListModel<IDocument, IDocumentValue>;
+    collection: CollectionModel<IDocument, IDocumentData>;
+    templatesList: ListModel<IDocument, IDocumentData>;
+    templatesSearchList: ListModel<IDocument, IDocumentData>;
     missionReportTemplatesList: IDocument[];
     appendTemplates: (res: IDocumentDTO[], isSearch: boolean, isMore?: boolean) => void;
-    create: IRequestModel<[ICreateValue<IDocumentValue>, File]>;
+    create: IRequestModel<[ICreateValue<IDocumentData>, File]>;
     remove: IRequestModel<[string]>;
     fetchTemplateItem: IRequestModel<[string]>;
     fetchTemplatesList: IRequestModel<[search?: string]>;
@@ -30,14 +30,14 @@ interface IServices {
 }
 
 export class DocumentStore implements IDocumentStore {
-    api: Pick<IApi, 'document'>;
+    api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IDocument, IDocumentValue>({
-        factory: (data: IDocumentValue) => new Document(data, this),
+    collection = new CollectionModel<IDocument, IDocumentData>({
+        factory: (data: IDocumentData) => new Document(data, this),
     });
-    templatesList = new ListModel<IDocument, IDocumentValue>({ collection: this.collection });
-    templatesSearchList = new ListModel<IDocument, IDocumentValue>({ collection: this.collection });
+    templatesList = new ListModel<IDocument, IDocumentData>({ collection: this.collection });
+    templatesSearchList = new ListModel<IDocument, IDocumentData>({ collection: this.collection });
 
     constructor({ api, services }: { api: IApi; services: IServices }) {
         this.api = api;
@@ -47,7 +47,7 @@ export class DocumentStore implements IDocumentStore {
     }
 
     get missionReportTemplatesList() {
-        return this.templatesList.asArray.filter((el) => el.documentType === DOCUMENT_TYPE.MISSION_REPORT);
+        return this.templatesList.asArray.filter((el) => el.data.documentType === DOCUMENT_TYPE.MISSION_REPORT);
     }
 
     appendTemplates(res: IDocumentDTO[], isSearch: boolean, isMore?: boolean) {
@@ -59,7 +59,7 @@ export class DocumentStore implements IDocumentStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IDocumentValue>, file: File) => {
+        run: async (data: ICreateValue<IDocumentData>, file: File) => {
             const res = await this.api.document.create(createDocumentDTO(data), file);
             this.templatesList.unshift(createDocument(res));
         },
@@ -119,7 +119,7 @@ export class DocumentStore implements IDocumentStore {
             const value = await this.api.document.getListTemplates({
                 search,
                 limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.createdAt),
+                startAfter: dates.toDateServer(list.last.data.createdAt),
             });
 
             this.appendTemplates(value, isSearch, true);

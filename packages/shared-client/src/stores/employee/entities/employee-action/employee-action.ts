@@ -1,13 +1,15 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IEmployeeAPI } from '~/api';
-import { customMakeAutoObservable } from '~/common';
-import { type CollectionModel } from '~/models';
+import { type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { EmployeeActionValue, type IEmployeeActionValue } from './employee-action.schema';
+import { type IEmployeeActionData } from './employee-action.schema';
 import { type IEmployeeParams, Employee, type IEmployee } from '../employee';
-import { type IRank, type IRankValue } from '../rank';
+import { type IRank, type IRankData } from '../rank';
 
-export interface IEmployeeAction extends IEmployeeActionValue {
+export interface IEmployeeAction {
+    data: IEmployeeActionData;
     employee: IEmployee;
 }
 
@@ -20,25 +22,26 @@ interface IServices {
 }
 
 interface ICollections {
-    rank: CollectionModel<IRank, IRankValue>;
+    rank: ICollectionModel<IRank, IRankData>;
 }
 
-export class EmployeeAction extends EmployeeActionValue implements IEmployeeAction {
-    api: Pick<IApi, 'employee'>;
+export class EmployeeAction implements IEmployeeAction {
+    api: IApi;
     collections: ICollections;
     services: IServices;
+    data: IEmployeeActionData;
 
-    constructor(data: IEmployeeActionValue, params: IEmployeeParams) {
-        super(data);
+    constructor(data: IEmployeeActionData, params: IEmployeeParams) {
+        this.data = data;
 
         this.collections = params.collections;
         this.api = params.api;
         this.services = params.services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
     get employee() {
-        return new Employee(this, this);
+        return new Employee(this.data, this);
     }
 }

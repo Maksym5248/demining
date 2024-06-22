@@ -1,23 +1,26 @@
-import { customMakeAutoObservable } from '~/common';
+import { makeAutoObservable } from 'mobx';
 
-import { ExplosiveObjectTypeValue, type IExplosiveObjectTypeValue } from './explosive-object-type.schema';
+import { type IExplosiveObjectTypeData } from './explosive-object-type.schema';
 
-export interface IExplosiveObjectType extends IExplosiveObjectTypeValue {
+export interface IExplosiveObjectType {
+    data: IExplosiveObjectTypeData;
     displayName: string;
-    updateFields(data: Partial<IExplosiveObjectTypeValue>): void;
+    updateFields(data: Partial<IExplosiveObjectTypeData>): void;
 }
 
-export class ExplosiveObjectType extends ExplosiveObjectTypeValue {
-    constructor(value: IExplosiveObjectTypeValue) {
-        super(value);
-        customMakeAutoObservable(this);
+export class ExplosiveObjectType {
+    data: IExplosiveObjectTypeData;
+
+    constructor(data: IExplosiveObjectTypeData) {
+        this.data = data;
+        makeAutoObservable(this);
     }
 
     get displayName() {
-        return `${this.name} (${this.fullName})`;
+        return `${this.data.name} (${this.data.fullName})`;
     }
 
-    updateFields(data: Partial<IExplosiveObjectTypeValue>) {
+    updateFields(data: Partial<IExplosiveObjectTypeData>) {
         Object.assign(this, data);
     }
 }

@@ -60,9 +60,9 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosiveObject
-                            ? { ...currentExplosiveObject }
+                            ? { ...currentExplosiveObject.data }
                             : {
-                                  typeId: firstType?.id,
+                                  typeId: firstType?.data.id,
                               }
                     }>
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
@@ -70,11 +70,11 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             options={select.append(
                                 explosiveObject.sortedListTypes.map((el) => ({
                                     label: el.displayName,
-                                    value: el.id,
+                                    value: el.data.id,
                                 })),
                                 {
                                     label: currentExplosiveObject?.type?.displayName,
-                                    value: currentExplosiveObject?.type?.id,
+                                    value: currentExplosiveObject?.type?.data.id,
                                 },
                             )}
                         />

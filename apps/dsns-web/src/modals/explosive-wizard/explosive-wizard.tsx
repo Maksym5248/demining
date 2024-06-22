@@ -69,7 +69,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item } : { type: EXPLOSIVE_TYPE.EXPLOSIVE }}>
+                    initialValues={item ? { ...item.data } : { type: EXPLOSIVE_TYPE.EXPLOSIVE }}>
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>

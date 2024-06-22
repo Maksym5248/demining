@@ -1,12 +1,12 @@
-import { type IExplosiveObjectActionValueParams } from 'shared-my-client/stores';
+import { type IExplosiveObjectActionDataParams } from 'shared-my-client/stores';
 
 export interface ListItemProps {
-    item: IExplosiveObjectActionValueParams;
+    item: IExplosiveObjectActionDataParams;
     index: number;
     onRemove: (index: number) => void;
 }
 
 export interface IExplosiveObjectActionListProps {
-    onUpdate: (data: IExplosiveObjectActionValueParams[]) => void;
-    data: IExplosiveObjectActionValueParams[];
+    onUpdate: (data: IExplosiveObjectActionDataParams[]) => void;
+    data: IExplosiveObjectActionDataParams[];
 }

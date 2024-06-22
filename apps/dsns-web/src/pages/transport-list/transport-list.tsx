@@ -29,11 +29,11 @@ const ListItem = observer(({ item }: { item: ITransport }) => {
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.FileTextOutlined />}
-                title={item.name}
+                title={item.data.name}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{types[item.type]}</Text>
-                        <Text type="secondary">{item.number}</Text>
+                        <Text type="secondary">{types[item.data.type]}</Text>
+                        <Text type="secondary">{item.data.number}</Text>
                     </Space>
                 }
             />

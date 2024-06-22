@@ -37,8 +37,8 @@ export const Documents = observer(({ initialValues }: IDocumentsProps) => {
                     {...orderProps}
                     onAdd={onAddOrder}
                     options={select.append(
-                        orderProps.list.map((el) => ({ label: el?.displayValue, value: el.id })),
-                        { label: orderItem?.displayValue, value: orderItem?.id },
+                        orderProps.list.map((el) => ({ label: el?.displayValue, value: el.data.id })),
+                        { label: orderItem?.displayValue, value: orderItem?.data.id },
                     )}
                 />
             </Form.Item>
@@ -49,11 +49,11 @@ export const Documents = observer(({ initialValues }: IDocumentsProps) => {
                     options={select.append(
                         missionRequestProps.list.map((el) => ({
                             label: el.displayValue,
-                            value: el.id,
+                            value: el.data.id,
                         })),
                         {
                             label: missionRequestItem?.displayValue,
-                            value: missionRequestItem?.id,
+                            value: missionRequestItem?.data.id,
                         },
                     )}
                 />

@@ -2,127 +2,20 @@ import { useEffect, useState, useMemo } from 'react';
 
 import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { removeFields } from 'shared-my/common';
 import { MIME_TYPE } from 'shared-my/db';
-import { dates, fileUtils } from 'shared-my-client/common';
+import { fileUtils } from 'shared-my-client/common';
 import { mapUtils } from 'shared-my-client/map';
-import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from 'shared-my-client/stores';
 
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
-import { MAP_ZOOM, WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
+import { WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 
 import { ExplosiveObjectAction, Timer, Transport, Equipment, Approved, Documents, Act, Territory, Employees, Map } from './components';
 import { ExplosiveAction } from './components/explosive-action';
 import { s } from './mission-report-wizard.styles';
-import { type IMissionReportForm } from './mission-report-wizard.types';
-
-interface Props {
-    id?: string;
-    isVisible: boolean;
-    hide: () => void;
-    mode: WIZARD_MODE;
-}
-
-function removeId<T extends { id?: string }>(item: T) {
-    return removeFields(item, 'id');
-}
-
-const createCopyValue = (currentMissionReport: IMissionReport) => ({
-    approvedAt: currentMissionReport?.approvedAt,
-    approvedById: currentMissionReport?.approvedByAction?.employeeId,
-    number: currentMissionReport.number,
-    subNumber: currentMissionReport?.subNumber,
-    executedAt: currentMissionReport?.executedAt,
-    orderId: currentMissionReport.orderId,
-    missionRequestId: currentMissionReport.missionRequestId,
-    checkedTerritory: currentMissionReport?.checkedTerritory,
-    depthExamination: currentMissionReport?.depthExamination,
-    uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
-    uncheckedReason: currentMissionReport?.uncheckedReason,
-    workStart: currentMissionReport?.workStart,
-    exclusionStart: currentMissionReport?.exclusionStart,
-    transportingStart: currentMissionReport?.transportingStart,
-    destroyedStart: currentMissionReport?.destroyedStart,
-    workEnd: currentMissionReport?.workEnd,
-    transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
-    transportHumansId: currentMissionReport?.transportHumans?.transportId,
-    mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
-    explosiveObjectActions: currentMissionReport?.explosiveObjectActions.map((el) => el.value).map(removeId) ?? [],
-    explosiveActions: currentMissionReport?.explosiveActions.map((el) => el.value).map(removeId) ?? [],
-    squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
-    squadIds: currentMissionReport?.squadActions.map((el) => el.employeeId) ?? [],
-    address: currentMissionReport?.address,
-    addressDetails: currentMissionReport?.addressDetails,
-    mapView: removeId(currentMissionReport.mapView),
-});
-
-const createEditValue = (currentMissionReport?: IMissionReport | null) => ({
-    approvedAt: currentMissionReport?.approvedAt,
-    approvedById: currentMissionReport?.approvedByAction?.employeeId,
-    number: currentMissionReport?.number,
-    subNumber: currentMissionReport?.subNumber,
-    executedAt: currentMissionReport?.executedAt,
-    orderId: currentMissionReport?.order?.id,
-    missionRequestId: currentMissionReport?.missionRequest?.id,
-    checkedTerritory: currentMissionReport?.checkedTerritory,
-    depthExamination: currentMissionReport?.depthExamination,
-    uncheckedTerritory: currentMissionReport?.uncheckedTerritory,
-    uncheckedReason: currentMissionReport?.uncheckedReason,
-    workStart: currentMissionReport?.workStart,
-    exclusionStart: currentMissionReport?.exclusionStart,
-    transportingStart: currentMissionReport?.transportingStart,
-    destroyedStart: currentMissionReport?.destroyedStart,
-    workEnd: currentMissionReport?.workEnd,
-    transportExplosiveObjectId: currentMissionReport?.transportExplosiveObject?.transportId,
-    transportHumansId: currentMissionReport?.transportHumans?.transportId,
-    mineDetectorId: currentMissionReport?.mineDetector?.equipmentId,
-    explosiveObjectActions: currentMissionReport?.explosiveObjectActions.map((el) => el.value) ?? [],
-    explosiveActions: currentMissionReport?.explosiveActions.map((el) => el.value) ?? [],
-    squadLeaderId: currentMissionReport?.squadLeaderAction?.employeeId,
-    squadIds: currentMissionReport?.squadActions.map((el) => el.employeeId) ?? [],
-    address: currentMissionReport?.address,
-    addressDetails: currentMissionReport?.addressDetails,
-    mapView: currentMissionReport?.mapView,
-});
-
-const createICreateValue = (
-    chiefFirst?: IEmployee,
-    firstMissionReport?: IMissionReport,
-    firstOrder?: IOrder,
-    firstMissionRequest?: IMissionRequest,
-    firstSquadLeader?: IEmployee,
-) => ({
-    approvedAt: dates.today(),
-    approvedById: chiefFirst?.id,
-    number: firstMissionReport?.subNumber ? firstMissionReport?.number : (firstMissionReport?.number ?? 0) + 1,
-    subNumber: firstMissionReport?.subNumber ? (firstMissionReport?.subNumber ?? 0) + 1 : undefined,
-    executedAt: dates.today(),
-    orderId: firstOrder?.id,
-    missionRequestId: firstMissionRequest?.id,
-    checkedTerritory: undefined,
-    depthExamination: undefined,
-    uncheckedTerritory: undefined,
-    uncheckedReason: undefined,
-    workStart: undefined,
-    exclusionStart: undefined,
-    transportingStart: undefined,
-    destroyedStart: undefined,
-    workEnd: undefined,
-    transportExplosiveObjectId: undefined,
-    transportHumansId: undefined,
-    mineDetectorId: undefined,
-    explosiveObjectActions: [],
-    explosiveActions: [],
-    squadLeaderId: firstSquadLeader?.id,
-    squadIds: [],
-    address: '',
-    addressDetails: createAddress(),
-    mapView: {
-        zoom: MAP_ZOOM.DEFAULT,
-    },
-});
+import { type IMissionReportProps, type IMissionReportForm } from './mission-report-wizard.types';
+import { createCopyValue, createCreateValue, createEditValue } from './mission-report-wizard.utils';
 
 const getTitles = ({ isEdit, isCreate }: { isEdit: boolean; isCreate: boolean }) => {
     if (isCreate) return 'Створення акту виконаних робіт';
@@ -131,7 +24,7 @@ const getTitles = ({ isEdit, isCreate }: { isEdit: boolean; isCreate: boolean })
     return 'Акт виконаних робіт';
 };
 
-export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: Props) => {
+export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: IMissionReportProps) => {
     const [isLoadingPreview, setLoadingPreview] = useState(false);
     const [templateId, setTemplateId] = useState();
 
@@ -159,8 +52,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
                 height: MAP_SIZE.MEDIUM_HEIGHT,
             };
 
-            const data = {
-                ...currentMissionReport.data,
+            const docxData = {
+                ...currentMissionReport.printData,
                 image: imageData,
             };
 
@@ -172,9 +65,9 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 
             if (!template) return;
 
-            const value = await Template.generateFile(template, data);
+            const value = await Template.generateFile(template, docxData);
 
-            const name = `${currentMissionReport.executedAt.format('YYYY.MM.DD')} ${data.actNumber}`;
+            const name = `${currentMissionReport.data?.executedAt.format('YYYY.MM.DD')} ${currentMissionReport?.printData.actNumber}`;
 
             const file = fileUtils.blobToFile(value, {
                 name,
@@ -191,8 +84,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
     };
 
     const onLoadKmlFile = () => {
-        const { polygon, circle, marker } = currentMissionReport?.mapView ?? {};
-        const kml = mapUtils.generateKML(marker, circle, polygon);
+        const { polygon, circle, marker } = currentMissionReport?.mapView.data ?? {};
+        const kml = mapUtils.generateKML({ points: marker, circles: circle, polygons: polygon });
         fileUtils.saveAsUser(new Blob([kml], { type: MIME_TYPE.KML }), currentMissionReport?.docName ?? '', 'kml');
     };
 
@@ -247,7 +140,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
         () =>
             wizard.isEdit || wizard.isView
                 ? createEditValue(currentMissionReport)
-                : createICreateValue(
+                : createCreateValue(
                       employee.chiefFirst,
                       missionReport.list.first,
                       order.list.first,
@@ -308,8 +201,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
                             onChange={setTemplateId}
                             placeholder="Виберіть шаблон"
                             options={document.missionReportTemplatesList.map((el) => ({
-                                label: el.name,
-                                value: el.id,
+                                label: el.data.name,
+                                value: el.data.id,
                             }))}
                         />
                     )}

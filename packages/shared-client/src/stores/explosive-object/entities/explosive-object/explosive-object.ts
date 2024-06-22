@@ -1,16 +1,17 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IExplosiveObjectAPI } from '~/api';
-import { customMakeAutoObservable, type IUpdateValue } from '~/common';
+import { type IUpdateValue } from '~/common';
 import { type ICollectionModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import {
-    type IExplosiveObjectValueParams,
-    ExplosiveObjectValue,
+    type IExplosiveObjectDataParams,
     updateExplosiveObjectDTO,
     createExplosiveObject,
-    type IExplosiveObjectValue,
+    type IExplosiveObjectData,
 } from './explosive-object.schema';
-import { type ExplosiveObjectType, type ExplosiveObjectTypeValue } from '../explosive-object-type';
+import { type IExplosiveObjectType, type ExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -20,57 +21,63 @@ interface IServices {
     message: IMessage;
 }
 
+interface ICollections {
+    type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+}
+
 interface IExplosiveObjectParams {
-    collections: {
-        type: ICollectionModel<ExplosiveObjectType, ExplosiveObjectTypeValue>;
-    };
+    collections: ICollections;
     api: IApi;
     services: IServices;
 }
 
-export interface IExplosiveObject extends IExplosiveObjectValue {
+export interface IExplosiveObject {
+    id: string;
+    data: IExplosiveObjectData;
     type?: ExplosiveObjectType;
     displayName: string;
     fullDisplayName: string;
-    update: RequestModel<[IUpdateValue<IExplosiveObjectValueParams>]>;
+    update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
 }
 
-export class ExplosiveObject extends ExplosiveObjectValue implements IExplosiveObject {
+export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
+    collections: ICollections;
+    data: IExplosiveObjectData;
 
-    collections: {
-        type: ICollectionModel<ExplosiveObjectType, ExplosiveObjectTypeValue>;
-    };
-
-    constructor(data: IExplosiveObjectValueParams, { collections, api, services }: IExplosiveObjectParams) {
-        super(data);
+    constructor(data: IExplosiveObjectData, { collections, api, services }: IExplosiveObjectParams) {
+        this.data = data;
         this.collections = collections;
         this.api = api;
         this.services = services;
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
     }
 
-    updateFields(data: IUpdateValue<IExplosiveObjectValueParams>) {
+    get id() {
+        return this.data.id;
+    }
+
+    updateFields(data: IUpdateValue<IExplosiveObjectDataParams>) {
         Object.assign(self, data);
     }
 
     get type() {
-        return this.collections.type.get(this.typeId);
+        return this.collections.type.get(this.data.typeId);
     }
 
     get displayName() {
-        return `${self.name ?? ''}${self.name && this.caliber ? '  -  ' : ''}${this.caliber ? this.caliber : ''}`;
+        return `${self.name ?? ''}${self.name && this.data.caliber ? '  -  ' : ''}${this.data.caliber ? this.data.caliber : ''}`;
     }
 
     get fullDisplayName() {
-        return `${this.type?.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
+        return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
     }
 
     update = new RequestModel({
-        run: async (data: IUpdateValue<IExplosiveObjectValueParams>) => {
-            const res = await this.api.explosiveObject.update(this.id, updateExplosiveObjectDTO(data));
+        run: async (data: IUpdateValue<IExplosiveObjectDataParams>) => {
+            const res = await this.api.explosiveObject.update(this.data.id, updateExplosiveObjectDTO(data));
 
             this.updateFields(createExplosiveObject(res));
         },

@@ -1,20 +1,17 @@
+import { makeAutoObservable } from 'mobx';
+
 import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
-import { customMakeAutoObservable } from '~/common';
 import { type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import {
-    type IUpdateOrganizationParams,
-    type IOrganizationValue,
-    OrganizationValue,
-    createOrganization,
-    createOrganizationDTO,
-} from './organization.schema';
-import { type IUser, type IUserStore, type IUserValue, createUser } from '../../../user';
+import { type IUpdateOrganizationParams, type IOrganizationValue, createOrganization, createOrganizationDTO } from './organization.schema';
+import { type IUser, type IUserStore, type IUserData, createUser } from '../../../user';
 import { type IViewerStore } from '../../../viewer';
 
-export interface IOrganization extends IOrganizationValue {
-    members: IListModel<IUser, IUserValue>;
+export interface IOrganization {
+    id: string;
+    data: IOrganizationValue;
+    members: IListModel<IUser, IUserData>;
     update: IRequestModel<[ICreateOrganizationDTO]>;
     createMember: IRequestModel<[string, boolean]>;
     removeMember: IRequestModel<[string]>;
@@ -41,23 +38,28 @@ interface IOrganizationParams {
     services: IServices;
 }
 
-export class Organization extends OrganizationValue implements IOrganization {
+export class Organization implements IOrganization {
     stores: IStores;
     api: IApi;
     services: IServices;
+    data: IOrganizationValue;
 
-    members: IListModel<IUser, IUserValue>;
+    members: IListModel<IUser, IUserData>;
 
     constructor(value: IOrganizationValue, { stores, api, services }: IOrganizationParams) {
-        super(value);
+        this.data = value;
 
         this.stores = stores;
         this.api = api;
         this.services = services;
 
-        this.members = new ListModel<IUser, IUserValue>({ collection: this.stores.user.collection });
+        this.members = new ListModel<IUser, IUserData>({ collection: this.stores.user.collection });
 
-        customMakeAutoObservable(this);
+        makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     updateFields(data: Partial<IOrganizationValue>) {
@@ -66,7 +68,7 @@ export class Organization extends OrganizationValue implements IOrganization {
 
     update = new RequestModel({
         run: async (data: IUpdateOrganizationParams) => {
-            const res = await this.api.organization.update(this.id, createOrganizationDTO(data));
+            const res = await this.api.organization.update(this.data.id, createOrganizationDTO(data));
 
             this.updateFields(createOrganization(res));
         },
@@ -76,7 +78,7 @@ export class Organization extends OrganizationValue implements IOrganization {
 
     createMember = new RequestModel({
         run: async (userId: string, isAdmin: boolean) => {
-            const res = await this.api.organization.updateMember(this.id, userId, isAdmin, !!this.stores.viewer.user?.isRootAdmin);
+            const res = await this.api.organization.updateMember(this.data.id, userId, isAdmin, !!this.stores.viewer.user?.isRootAdmin);
 
             this.members.push(createUser(res), true);
         },
@@ -86,7 +88,7 @@ export class Organization extends OrganizationValue implements IOrganization {
 
     updateMember = new RequestModel({
         run: async (userId: string, isAdmin: boolean) => {
-            const res = await this.api.organization.updateMember(this.id, userId, isAdmin, !!this.stores.viewer.user?.isRootAdmin);
+            const res = await this.api.organization.updateMember(this.data.id, userId, isAdmin, !!this.stores.viewer.user?.isRootAdmin);
             const member = createUser(res);
 
             this.stores.user.collection.update(member.id, member);
@@ -97,7 +99,7 @@ export class Organization extends OrganizationValue implements IOrganization {
 
     removeMember = new RequestModel({
         run: async (userId: string) => {
-            await this.api.organization.removeMember(this.id, userId);
+            await this.api.organization.removeMember(this.data.id, userId);
 
             this.members.removeById(userId);
             this.stores.user.collection.remove(userId);
@@ -109,7 +111,7 @@ export class Organization extends OrganizationValue implements IOrganization {
     fetchMembers = new RequestModel({
         returnIfLoaded: true,
         run: async () => {
-            const res = await this.api.organization.getMembers(this.id);
+            const res = await this.api.organization.getMembers(this.data.id);
 
             this.members.push(res.map(createUser));
         },

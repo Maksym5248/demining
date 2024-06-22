@@ -25,7 +25,7 @@ const ListItem = observer(({ item, organizationId }: { item: IUser; organization
         <List.Item key={item.id} actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.UserOutlined />}
-                title={item.email}
+                title={item.data.email}
                 description={
                     <Space css={s.listItemDesc}>
                         <Text type="secondary">{item.isOrganizationAdmin ? 'Адмін' : ''}</Text>
@@ -51,8 +51,8 @@ export const MembersListPage = observer(() => {
 
     useAsyncEffect(async () => {
         if (!currentOrganization) {
-            await organization.fetchItem.run(viewer.user?.organization?.id ?? '');
-            setId(viewer.user?.organization?.id ?? '');
+            await organization.fetchItem.run(viewer.user?.data.organization?.id ?? '');
+            setId(viewer.user?.data.organization?.id ?? '');
         }
     }, []);
 
