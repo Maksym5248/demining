@@ -36,7 +36,6 @@
     "mobx": "^6.8.0",
     "mobx-react": "^7.6.0",
     "mobx-react-lite": "^3.4.3",
-    "firebase": "10.10.0",
     "uuid": "^3.3.2",
     "yup": "^1.2.0",
     "typescript": "~5.3.3",
@@ -45,7 +44,8 @@
   "dependencies": {
     "@turf/helpers": "^6.5.0",
     "@turf/turf": "^6.5.0",
-    "geofire-common": "^6.0.0"
+    "geofire-common": "^6.0.0",
+    "firebase": "10.10.0"
   },
   "devDependencies": {
     "dayjs": "^1.11.10",

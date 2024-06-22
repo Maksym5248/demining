@@ -6,13 +6,21 @@
   "author": "Max Kostin <max.kostin.dev@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/shared",
-    "packages/shared-client",
-    "apps/ammo-mobile",
-    "apps/dsns-web",
-    "apps/functions"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/shared",
+      "packages/shared-client",
+      "apps/ammo-mobile",
+      "apps/dsns-web",
+      "apps/functions"
+    ],
+    "nohoist": [
+      "**/firebase",
+      "**/firebase/**",
+      "**/firebase-admin",
+      "**/firebase-admin/**"
+    ]
+  },
   "packageManager": "yarn@1.22.19",
   "scripts": {
     "watch": "concurrently \"lerna run watch --parallel --scope=\"shared-my*\"\"",
