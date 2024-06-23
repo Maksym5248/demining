@@ -1,5 +1,5 @@
 {
     "logLevel": "debug",
-    "workspaceRoot": "../",
+    "workspaceRoot": "../../",
     "packageManager": "yarn"
 }

@@ -8,6 +8,8 @@ name: Deploy to Firebase Hosting on merge main
             - main
         paths:
           - 'apps/dsns-web/**'
+          - 'packages/shared/**'
+          - 'packages/shared-client/**'
 jobs:
     build_and_deploy:
         runs-on: ubuntu-latest
