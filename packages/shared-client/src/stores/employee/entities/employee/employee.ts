@@ -71,7 +71,7 @@ export class Employee implements IEmployee {
     }
 
     updateFields(data: Partial<IEmployeeData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     update = new RequestModel({

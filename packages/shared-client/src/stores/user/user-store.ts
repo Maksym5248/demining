@@ -64,7 +64,6 @@ export class UserStore implements IUserStore {
 
             this.append(res, isSearch);
         },
-        onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
@@ -87,7 +86,6 @@ export class UserStore implements IUserStore {
 
             this.append(res, isSearch, true);
         },
-        onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Виникла помилка'),
     });
 }

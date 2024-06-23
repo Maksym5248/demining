@@ -38,7 +38,7 @@ export class Explosive implements IExplosive {
     }
 
     updateFields(data: Partial<IExplosiveData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     update = new RequestModel({

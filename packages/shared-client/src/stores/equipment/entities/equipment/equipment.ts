@@ -45,7 +45,7 @@ export class Equipment implements IEquipment {
     }
 
     updateFields(data: Partial<IEquipmentData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     update = new RequestModel({

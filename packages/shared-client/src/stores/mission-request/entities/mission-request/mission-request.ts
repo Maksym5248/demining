@@ -42,7 +42,7 @@ export class MissionRequest implements IMissionRequest {
     }
 
     updateFields(data: Partial<IMissionRequestData>) {
-        Object.assign(self, data);
+        Object.assign(this.data, data);
     }
 
     get displayType() {

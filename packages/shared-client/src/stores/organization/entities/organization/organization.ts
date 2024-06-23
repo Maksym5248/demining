@@ -63,7 +63,7 @@ export class Organization implements IOrganization {
     }
 
     updateFields(data: Partial<IOrganizationValue>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     update = new RequestModel({

@@ -21,6 +21,6 @@ export class ExplosiveObjectType {
     }
 
     updateFields(data: Partial<IExplosiveObjectTypeData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 }

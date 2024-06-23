@@ -49,6 +49,7 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
 
     const onRemove = () => {
         !!id && order.remove.run(id);
+        hide();
     };
 
     return (

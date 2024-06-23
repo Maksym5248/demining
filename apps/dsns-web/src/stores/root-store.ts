@@ -119,13 +119,13 @@ export class RootStore implements IRootStore {
         this.explosiveObject = new ExplosiveObjectStore(this);
         this.employee = new EmployeeStore(this);
         this.map = new MapStore(this);
-        this.missionReport = new MissionReportStore(this);
         this.missionRequest = new MissionRequestStore(this);
         this.order = new OrderStore(this);
         this.transport = new TransportStore(this);
         this.user = new UserStore(this);
         this.organization = new OrganizationStore(this);
         this.viewer = new ViewerStore(this);
+        this.missionReport = new MissionReportStore(this);
 
         makeAutoObservable(this);
     }

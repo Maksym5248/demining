@@ -1,14 +1,16 @@
+import { type Timestamp } from '@firebase/firestore-types';
 import dayjs, { type Dayjs } from 'dayjs';
 import 'dayjs/locale/uk';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import weekYear from 'dayjs/plugin/weekYear';
-import { Timestamp } from 'firebase/firestore';
 
 dayjs.locale('uk');
 dayjs.extend(customParseFormat);
 dayjs.extend(weekOfYear);
 dayjs.extend(weekYear);
+
+let timestamp: typeof Timestamp;
 
 const genitiveMonths = [
     'січня',
@@ -39,14 +41,12 @@ const create = (value: number): Dayjs => {
 
 const toDateServer = (value: Date | Dayjs) => {
     if (dayjs.isDayjs(value)) {
-        return Timestamp.fromDate(value.toDate());
+        // @ts-ignore
+        return timestamp?.fromDate(value.toDate());
     }
 
-    return Timestamp.fromDate(value);
-};
-
-const isDateServer = (value: any | Timestamp) => {
-    return value instanceof Timestamp;
+    // @ts-ignore
+    return timestamp?.fromDate(value);
 };
 
 const toDate = (value: Date | Dayjs): Date => {
@@ -69,13 +69,15 @@ const startOfYear = () => today().startOf('year');
 const endOfDay = () => today().endOf('day');
 
 export const dates = {
+    init: (t: typeof Timestamp) => {
+        timestamp = t;
+    },
     today,
     fromServerDate,
     create,
     toDate,
     formatGenitiveMonth,
     toDateServer,
-    isDateServer,
     startOfDay,
     startOfWeek,
     startOfMonth,

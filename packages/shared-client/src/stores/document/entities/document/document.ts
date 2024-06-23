@@ -42,7 +42,7 @@ export class Document implements IDocument {
     }
 
     updateFields(data: Partial<IDocumentData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     load = new RequestModel({

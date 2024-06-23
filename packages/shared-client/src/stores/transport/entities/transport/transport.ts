@@ -42,7 +42,7 @@ export class Transport implements ITransport {
     }
 
     updateFields(data: Partial<ITransportData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
     get fullName() {
         return `${this.data.name} н/з ${this.data.number}`;

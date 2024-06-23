@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 
 import { ConfigProvider } from 'antd';
 import uk from 'antd/lib/locale/uk_UA';
+import { Timestamp } from 'firebase/firestore';
+import { dates } from 'shared-my-client/common';
 import { LogLevel } from 'shared-my-client/services';
 
 import { ThemeProvider, ModalProvider } from '~/containers';
@@ -15,7 +17,7 @@ import { CONFIG } from './config';
 import './index.css';
 
 Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
-
+dates.init(Timestamp);
 const store = new RootStore();
 
 export function App() {

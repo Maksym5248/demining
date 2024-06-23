@@ -130,13 +130,6 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            // {
-            //     key: '5',
-            //     icon: <Icon.SettingOutlined />,
-            //     label: 'Налаштування',
-            //     onClick: () => navigate(ROUTES.SETTINGS),
-            // },
-
             ...(CONFIG.IS_DEV
                 ? [
                       {
@@ -162,13 +155,17 @@ export const Layout = observer(() => {
             <Header css={s.header}>
                 <div css={s.logo}>
                     <AppIcon css={s.appIcon} />
-                    <Typography.Title level={2} css={s.appName} style={{ color: '#FFF' }}>
+                    <Typography.Title level={5} css={s.appName} style={{ color: '#FFF' }}>
                         {CONFIG.APP_NAME_TRANSLATION}
                     </Typography.Title>
                 </div>
                 <Dropdown
                     menu={{
                         items: [
+                            {
+                                label: store.viewer.user?.data.email,
+                                key: 'email',
+                            },
                             {
                                 label: 'Вийти',
                                 key: 'logout',

@@ -98,7 +98,6 @@ export class MissionReport implements IMissionReport {
         this.data = data;
 
         this.stores = stores;
-
         makeAutoObservable(this);
     }
 
@@ -107,7 +106,7 @@ export class MissionReport implements IMissionReport {
     }
 
     updateFields(data: Partial<IMissionReportData>) {
-        Object.assign(self, data);
+        Object.assign(this.data, data);
     }
 
     get equipmentActions() {

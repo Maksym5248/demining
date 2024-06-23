@@ -60,7 +60,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     updateFields(data: IUpdateValue<IExplosiveObjectDataParams>) {
-        Object.assign(self, data);
+        Object.assign(this.data, data);
     }
 
     get type() {
@@ -68,7 +68,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get displayName() {
-        return `${self.name ?? ''}${self.name && this.data.caliber ? '  -  ' : ''}${this.data.caliber ? this.data.caliber : ''}`;
+        return `${this.data.name ?? ''}${this.data.name && this.data.caliber ? '  -  ' : ''}${this.data.caliber ? this.data.caliber : ''}`;
     }
 
     get fullDisplayName() {

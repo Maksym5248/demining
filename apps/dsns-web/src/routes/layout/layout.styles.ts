@@ -26,6 +26,13 @@ const logo = Theme.css(`
     align-items: center;
 `);
 
+const user = Theme.css(`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+`);
+
 const appIcon = Theme.css(`
     height: ${HEADER_HEIGHT - 16}px;
     fill: #FFF;
@@ -57,4 +64,5 @@ export const s = {
     content,
     breadcrumb,
     appName,
+    user,
 };

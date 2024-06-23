@@ -44,10 +44,11 @@
   "dependencies": {
     "@turf/helpers": "^6.5.0",
     "@turf/turf": "^6.5.0",
-    "geofire-common": "^6.0.0",
-    "firebase": "10.10.0"
+    "geofire-common": "^6.0.0"
   },
   "devDependencies": {
+    "@firebase/firestore-types": "2.2.0",
+    "@firebase/auth-types": "0.12.2",
     "dayjs": "^1.11.10",
     "eslint": "8.45.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",

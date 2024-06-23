@@ -39,7 +39,7 @@ export class EquipmentAction implements IEquipmentAction {
     }
 
     updateFields(data: Partial<IEquipmentActionData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     get equipment() {

@@ -64,7 +64,7 @@ export class Order implements IOrder {
     }
 
     updateFields(data: Partial<IOrderData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     update = new RequestModel({

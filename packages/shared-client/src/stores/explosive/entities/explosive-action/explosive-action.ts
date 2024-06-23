@@ -37,6 +37,6 @@ export class ExplosiveAction implements IExplosiveAction {
     }
 
     updateFields(data: Partial<IExplosiveActionData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 }

@@ -36,7 +36,7 @@ export class TransportAction implements ITransportAction {
     }
 
     updateFields(data: Partial<ITransportActionData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     get transport() {

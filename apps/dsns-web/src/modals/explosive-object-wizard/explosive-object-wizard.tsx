@@ -38,6 +38,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
 
     const onRemove = () => {
         !!id && explosiveObject.remove.run(id);
+        hide();
     };
 
     return (

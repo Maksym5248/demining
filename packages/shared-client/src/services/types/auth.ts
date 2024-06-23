@@ -1,4 +1,4 @@
-import { type User, type GoogleAuthProvider } from 'firebase/auth';
+import { type User, type GoogleAuthProvider } from '@firebase/auth-types';
 
 export type IAuthUser = User;
 export interface IAuth {

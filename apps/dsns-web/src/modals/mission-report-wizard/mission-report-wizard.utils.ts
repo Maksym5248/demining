@@ -63,7 +63,7 @@ export const createEditValue = (currentMissionReport?: IMissionReport | null) =>
     squadIds: currentMissionReport?.squadActions.map((el) => el.data?.employeeId) ?? [],
     address: currentMissionReport?.data?.address,
     addressDetails: currentMissionReport?.data?.addressDetails,
-    mapView: currentMissionReport?.mapView.data,
+    mapView: currentMissionReport?.mapView?.data,
 });
 
 export const createCreateValue = (
