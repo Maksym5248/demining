@@ -41,6 +41,10 @@ export class AuthStore implements IAuthStore {
         onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });
 
+    // TODO: remove this method
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    test() {}
+
     constructor(params: IAuthStoreParams) {
         this.services = params.services;
 
