@@ -1,4 +1,0 @@
-export enum ERRORS {
-    HAS_RELATIONS = "HAS_RELATIONS",
-    ALREADY_EXIST = "ALREADY_EXIST"
-}

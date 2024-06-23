@@ -1,0 +1,51 @@
+{
+    "name": "functions",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "private": true,
+    "engines": {
+        "node": "18"
+    },
+    "files": ["dist"],
+    "scripts": {
+        "lint": "eslint --ext .js,.ts .",
+        "build": "cross-env NODE_ENV=production webpack",
+        "build:watch": "tsc --watch",
+        "serve": "yarn build && firebase emulators:start --only functions",
+        "shell": "yarn build && firebase functions:shell",
+        "start": "yarn shell",
+        "deploy": "firebase deploy --only functions",
+        "logs": "firebase functions:log",
+        "test": "jest --watchAll=true --coverage",
+        "clean": "rm -rf node_modules/ dist/",
+        "_isolate": "yarn isolate",
+        "deploy:functions:dev": "yarn isolate && firebase deploy --project dsns-dev-85963 --only functions",
+        "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions"
+    },
+    "dependencies": {
+        "firebase-admin": "^12.1.1",
+        "firebase-functions": "^5.0.1",
+        "shared-my": "^1.0.0"
+    },
+    "devDependencies": {
+        "@types/dotenv-webpack": "^7.0.7",
+        "@types/jest": "^29.5.5",
+        "@types/webpack-node-externals": "^3.0.0",
+        "cross-env": "^7.0.3",
+        "dotenv-webpack": "^8.0.1",
+        "eslint": "^8.9.0",
+        "firebase-functions-test": "^3.1.0",
+        "isolate-package": "^1.16.0",
+        "jest": "^29.7.0",
+        "node-loader": "^2.0.0",
+        "terser-webpack-plugin": "^5.3.10",
+        "ts-jest": "^29.1.2",
+        "ts-loader": "^9.2.2",
+        "ts-node": "^10.0.0",
+        "typescript": "~5.3.3",
+        "webpack": "^5.69.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-node-externals": "3.0.0",
+        "prettier": "^3.0.3"
+    }
+}

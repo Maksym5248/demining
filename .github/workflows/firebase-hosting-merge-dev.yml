@@ -6,6 +6,10 @@ name: Deploy to Firebase Hosting on merge dev
     push:
         branches:
             - dev
+        paths:
+            - 'apps/dsns-web/**'
+            - 'packages/shared/**'
+            - 'packages/shared-client/**'
 jobs:
     build_and_deploy:
         runs-on: ubuntu-latest
@@ -16,14 +20,13 @@ jobs:
               with:
                   node-version: 18
             - name: Create .env file
-              working-directory: ./web
+              working-directory: ./apps/dsns-web
               run: |
                   echo "${{ secrets.ENV_DEV }}" > .env
             - name: Install dependencies
-              working-directory: ./web
               run: yarn install
             - name: Build project
-              working-directory: ./web
+              working-directory: ./apps/dsns-web
               run: yarn build
             - uses: FirebaseExtended/action-hosting-deploy@v0
               with:
@@ -31,4 +34,4 @@ jobs:
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
                   channelId: live
                   projectId: dsns-dev-85963
-                  entryPoint: ./web
+                  entryPoint: ./apps/dsns-web

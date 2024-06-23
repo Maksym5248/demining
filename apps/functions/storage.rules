@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+      match /DOCUMENT/{organizationId}/{document=**} {
+        allow read, write: if maxSize(5) && isAuthorized() && isMember(organizationId);
+      }
+
+      function getUser() {
+        let user = firestore.get(/databases/(default)/USER/$(request.auth.uid));
+        return user;
+      }
+
+      function isAuthorized() {
+        return request.auth != null;
+      } 
+
+      function maxSize(number) {
+        return request.resource.size < number * 1024 * 1024;
+      }
+
+      function isMember(organizationId) {
+        return request.auth.token.organizationId == organizationId;
+      }
+
+      match /{allPaths=**} {
+        allow read, write: if false;
+      }
+  }
+}

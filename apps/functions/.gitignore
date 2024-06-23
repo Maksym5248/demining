@@ -1,0 +1,14 @@
+# Compiled JavaScript files
+lib/**/*.js
+lib/**/*.js.map
+
+# TypeScript v1 declaration files
+typings/
+dist/
+
+# Node.js dependency directory
+node_modules/
+tsconfig.tsbuildinfo
+.env
+ui-debug.log
+isolate
