@@ -46,7 +46,7 @@ export class Document implements IDocument {
     }
 
     load = new RequestModel({
-        run: () => this.api.document.load(fileUtils.getPath(this.data.id)),
+        run: async () => this.api.document.load(fileUtils.getPath(this.data.id)),
         onError: () => this.services.message.error('Не вдалось увійти, спробуйте ще раз'),
     });
 

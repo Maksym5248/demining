@@ -38,11 +38,13 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
     }
 
     async run(...args: Params): Promise<Return | void> {
+        let res: Return | void;
+
         try {
             if (this._returnIfLoaded && this.requestState.isLoaded) return;
             if (this._shouldRun && !this._shouldRun(...args)) return;
             this.requestState.start();
-            await this._run(...args);
+            res = await this._run(...args);
             this._onSuccuss?.();
             this.requestState.success();
         } catch (e) {
@@ -51,6 +53,8 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
             this.requestState.failure(e as Error);
             throw e;
         }
+
+        return res;
     }
 
     get isLoading() {

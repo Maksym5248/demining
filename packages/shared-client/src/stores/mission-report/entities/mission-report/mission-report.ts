@@ -232,7 +232,7 @@ export class MissionReport implements IMissionReport {
             checkedGA: `${checkedTerritory ? checkedTerritory / 10000 : '---'} га`,
             uncheckedM2: `${uncheckedTerritory ?? '---'} м2`,
             uncheckedGA: `${uncheckedTerritory ? uncheckedTerritory / 10000 : '---'} га`,
-            depthM: String(depthExamination) ?? '---',
+            depthM: depthExamination ? String(depthExamination) : '---',
             uncheckedReason: uncheckedReason ?? '---',
             explosiveObjectsTotal: explosiveObjectActions.reduce((acc, el) => (el?.data.quantity ?? 0) + acc, 0),
             explosiveObjects: explosiveObjectActions.reduce(
