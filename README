@@ -1,12 +1,3 @@
-TODO:
-- shared rules for prittier
-- fix huskie and lint-staged
-- fix eslint errors
-- refactoring web code to make items independent
-- create package shared-client
-- move stores, controllers, client-types, client utils to shared-client
-- move common utils to shared
-
 packages:
 - shared
 - shared/client 
@@ -19,11 +10,16 @@ apps:
 - mobile app dsns (for documents)
 
 
-Refactoring
-
+TODO
+- make removed as archived and rewrite actions to disable data dublications
+- migration from old explosive object schema to new
+- permissions to edit explosive objects
+- create shared theme
 - map
 - form to useFormik
 - validation yup
 - map utils
 - normalize data, all data should be the same as we have in db not in dto
 - token expiration
+
+Детальна класифікація боєприпасів та підривників

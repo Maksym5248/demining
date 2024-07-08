@@ -1,0 +1,27 @@
+export enum DEST_ENGINEERING {
+    ANTI_TANK = 'ANTI_TANK',
+    ANTI_PERSONNEL = 'ANTI_PERSONNEL',
+    VEHICLE = 'VEHICLE',
+    OBJECT = 'OBJECT',
+    ANTI_AIRCRAFT = 'ANTI_AIRCRAFT',
+    RIVER = 'RIVER',
+    SPECIAL = 'SPECIAL',
+}
+
+export enum DEST_ANTI_TANK {
+    ANTI_CATERPILLAR = 'ANTI_CATERPILLAR', // протигусинечні
+    ANTIDOTE = 'ANTIDOTE', // протиднищеві
+    OPPOSITE = 'OPPOSITE', // протибортові
+}
+
+export enum ANTI_PERSONNEL_DAMAGE_TYPE {
+    SHELL = 'SHELL', // фугасні
+    FRAGMENTAL = 'FRAGMENTAL', // осколкові
+}
+
+export enum ANTI_PERSONNEL_DAMAGE_METHOD {
+    CIRCULAR = 'CIRCULAR', // кругові
+    DIRECTED = 'DIRECTED', // направлені
+}
+
+export type AMMO_ENGINEERING_TYPE = DEST_ENGINEERING | DEST_ANTI_TANK | ANTI_PERSONNEL_DAMAGE_TYPE | ANTI_PERSONNEL_DAMAGE_METHOD;

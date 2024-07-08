@@ -1,4 +1,4 @@
-import { EXPLOSIVE_OBJECT_TYPE } from "../enum";
+import { EXPLOSIVE_OBJECT_TYPE } from '../enum';
 
 export const explosiveObjectTypesData = [
     {

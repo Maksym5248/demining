@@ -6,4 +6,5 @@ export enum MIME_TYPE {
 
 export enum ASSET_TYPE {
     DOCUMENT = 'DOCUMENT',
+    IMAGE = 'IMAGE',
 }

@@ -1,5 +1,4 @@
-import { type Timestamp as TimestampInternal } from '@firebase/firestore-types';
-
+import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp } from './common';
 import {
     type EMPLOYEE_TYPE,
     type DOCUMENT_TYPE,
@@ -11,9 +10,8 @@ import {
     type ASSET_TYPE,
     type MISSION_REQUEST_TYPE,
     type EXPLOSIVE_TYPE,
-} from './enum';
+} from '../enum';
 
-export type Timestamp = TimestampInternal;
 export interface IAddressDB {
     city: string | null;
     country: string | null;
@@ -23,17 +21,6 @@ export interface IAddressDB {
     state: string | null;
     street: string | null;
     municipality: string | null;
-}
-export interface IBaseDB {
-    id: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
-    _search?: string[];
-}
-export interface ILinkedToDocumentDB {
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
-    executedAt: Timestamp | null;
 }
 
 export interface IEmployeeDB extends IBaseDB {
