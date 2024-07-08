@@ -1,5 +1,3 @@
-import { type FUSE_TYPE } from '~/db';
-
 import { type INeutralization, type IMarking, type IStructure, type IAction } from './common';
 
 interface ILiquidator {
@@ -13,7 +11,6 @@ interface IReduction {
 }
 
 export interface IFuse {
-    type: FUSE_TYPE[];
     marking: IMarking;
     structure: IStructure;
     action: IAction;

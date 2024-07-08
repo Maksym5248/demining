@@ -1,4 +1,4 @@
-import { type AMMO_TYPE, type MATERIAL } from '~/db';
+import { type MATERIAL } from '~/db';
 
 import { type IStructure, type IMarking, type INeutralization, type IAction } from './common';
 
@@ -23,17 +23,16 @@ interface IDestination {
 }
 
 export interface IAmmoDB {
-    type: AMMO_TYPE;
-    destination: IDestination;
-    temperatureRange: [number, number];
+    destination: IDestination | null;
+    temperatureRange: [number, number] | null;
     imageIds: string[];
     weight: IWight[];
     caliber: number | null;
     body: IBody | null;
     size: ISize | null;
-    structure: IStructure;
-    action: IAction;
+    structure: IStructure | null;
+    action: IAction | null;
     fuseIds: string[];
     marking: IMarking[];
-    neutralization: INeutralization;
+    neutralization: INeutralization | null;
 }

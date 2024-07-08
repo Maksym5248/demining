@@ -9,11 +9,16 @@ apps:
 - mobile dictionaries (explosive objects, explosive, furmulas, some common practice, mine detectors)
 - mobile app dsns (for documents)
 
+Migration explosiveObject
+- get analogs for created types
+- transform prev types to new types
+- migrate objects
+- migrate actions
 
 TODO
+- migration from old explosive object and action schema to new
+- how to show tree of clasification of ammonnitions
 - make removed as archived and rewrite actions to disable data dublications
-- migration from old explosive object schema to new
-- permissions to edit explosive objects
 - create shared theme
 - map
 - form to useFormik
@@ -21,5 +26,6 @@ TODO
 - map utils
 - normalize data, all data should be the same as we have in db not in dto
 - token expiration
+- permissions to edit explosive objects
 
 Детальна класифікація боєприпасів та підривників

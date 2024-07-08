@@ -1,73 +1,73 @@
-import { EXPLOSIVE_OBJECT_TYPE } from '../enum';
+import { EXPLOSIVE_OBJECT_TYPE_V1 } from '../enum';
 
 export const explosiveObjectTypesData = [
     {
-        id: EXPLOSIVE_OBJECT_TYPE.AB,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.AB,
         name: 'АБ',
         fullName: 'Авіаційна бомба',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.UAM,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.UAM,
         name: 'НУРС',
         fullName: 'Некерована авіаційна ракета',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.AS,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.AS,
         name: 'АС',
         fullName: 'Артилерійський снаряд',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.MM,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.MM,
         name: 'ММ',
         fullName: 'Мінометна Міна',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.MLRS,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.MLRS,
         name: 'РСЗВ',
         fullName: 'Реактивний снаряд залпового вогню',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.RG,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.RG,
         name: 'РГ',
         fullName: 'Ручна Граната',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.IM,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.IM,
         name: 'ІМ',
         fullName: 'Інженерна міна',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.AMMO,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.AMMO,
         name: 'Набої',
         fullName: 'Боєприпас стрілецької зброї',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.AGL,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.AGL,
         name: 'АГС',
         fullName: 'Набої до автоматичного гранатомету',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.ATGM,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.ATGM,
         name: 'ПТУР',
         fullName: 'Протитанковий керований реактивний снаряд',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.ZRK,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.ZRK,
         name: 'ЗРК',
         fullName: 'Зенітний ракетний снаряд',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.CR,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.CR,
         name: 'Крилата ракета',
         fullName: 'Крилата ракета',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.BM,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.BM,
         name: 'Балістична ракета',
         fullName: 'Балістична ракета',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.UAV,
+        id: EXPLOSIVE_OBJECT_TYPE_V1.UAV,
         name: 'БПЛА',
         fullName: 'Безпілотний літальний апарат',
     },

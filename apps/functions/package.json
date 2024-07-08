@@ -25,7 +25,7 @@
     "dependencies": {
         "firebase-admin": "^12.1.1",
         "firebase-functions": "^5.0.1",
-        "shared-my": "^1.0.0"
+        "shared-my": "*"
     },
     "devDependencies": {
         "@types/dotenv-webpack": "^7.0.7",

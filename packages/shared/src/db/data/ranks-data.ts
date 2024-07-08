@@ -1,4 +1,4 @@
-import { RANKS } from "../enum";
+import { RANKS } from '../enum';
 
 export const ranksData = [
     {

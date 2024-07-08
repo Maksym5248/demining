@@ -1,4 +1,4 @@
-import { EXPLOSIVE_OBJECT_TYPE } from "../enum";
+import { EXPLOSIVE_OBJECT_TYPE_V1 } from '../enum';
 
 export const AC = [23, 30, 37, 45, 75, 76, 85, 88, 107, 115, 122, 125, 152, 155, 203];
 
@@ -32,27 +32,27 @@ export const IM = [
 
 export const explosiveObjectsData = [
     ...AC.map((caliber) => ({
-        typeId: EXPLOSIVE_OBJECT_TYPE.AS,
+        typeId: EXPLOSIVE_OBJECT_TYPE_V1.AS,
         name: null,
         caliber,
     })),
     ...MM.map((caliber) => ({
-        typeId: EXPLOSIVE_OBJECT_TYPE.MM,
+        typeId: EXPLOSIVE_OBJECT_TYPE_V1.MM,
         name: null,
         caliber,
     })),
     ...MLRS.map((caliber) => ({
-        typeId: EXPLOSIVE_OBJECT_TYPE.MLRS,
+        typeId: EXPLOSIVE_OBJECT_TYPE_V1.MLRS,
         name: null,
         caliber,
     })),
     ...RG.map((name) => ({
-        typeId: EXPLOSIVE_OBJECT_TYPE.RG,
+        typeId: EXPLOSIVE_OBJECT_TYPE_V1.RG,
         caliber: null,
         name,
     })),
     ...IM.map((name) => ({
-        typeId: EXPLOSIVE_OBJECT_TYPE.IM,
+        typeId: EXPLOSIVE_OBJECT_TYPE_V1.IM,
         caliber: null,
         name,
     })),
