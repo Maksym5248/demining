@@ -11,7 +11,8 @@ export const v1Tov2 = (prev: IExplosiveObjectDBv1): IExplosiveObjectDB => {
         id: prev.id,
         createdAt: prev.createdAt,
         updatedAt: prev.updatedAt,
-        type: [EXPLOSIVE_OBJECT_TYPE.AMMO /* TODO: transform prev types to new types */],
+        type: EXPLOSIVE_OBJECT_TYPE.AMMO,
+        categoryIds: [],
         name: prev.name,
         isConfirmed: false,
         data: {

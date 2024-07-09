@@ -1,6 +1,4 @@
-import { type MATERIAL } from '~/db';
-
-import { type IStructure, type IMarking, type INeutralization, type IAction } from './common';
+import { type IStructure, type IMarking, type INeutralization, type IAction, type IBody } from './common';
 
 interface ISize {
     type: string;
@@ -11,10 +9,6 @@ interface IWight {
     weight: number;
     explosiveName: string;
     explosiveWeight: number;
-}
-
-interface IBody {
-    material: MATERIAL;
 }
 
 interface IDestination {

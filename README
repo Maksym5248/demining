@@ -8,12 +8,18 @@ apps:
 - web dsns (how to connect dictionaries ?? should we create different web app for dictionaries)
 - mobile dictionaries (explosive objects, explosive, furmulas, some common practice, mine detectors)
 - mobile app dsns (for documents)
+- ammo web admin
+- ammo mobile
 
 Migration explosiveObject
-- get analogs for created types
-- transform prev types to new types
-- migrate objects
-- migrate actions
+1. create logo for amm application
+2. create admin panel for ammo application
+3. create way to add categories with correct structure
+4. add all categories to db
+5. migrate explosive object items
+6. migrate explosive object action items
+7. rewrite code to use new structure
+
 
 TODO
 - migration from old explosive object and action schema to new

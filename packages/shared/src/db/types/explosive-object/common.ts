@@ -1,3 +1,5 @@
+import { type MATERIAL } from '~/db';
+
 import { type IDocumentDB } from '../types';
 
 export interface IMarking {
@@ -16,4 +18,8 @@ export interface INeutralization {
 export interface IAction {
     description: string;
     imageIds: string[];
+}
+
+export interface IBody {
+    material: MATERIAL;
 }
