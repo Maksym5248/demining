@@ -1,8 +1,10 @@
-export * from './material';
+export enum EXPLOSIVE_OBJECT_STATUS {
+    CONFIRMED = 'CONFIRMED',
+    REJECTED = 'REJECTED',
+    PENDING = 'PENDING',
+}
 
-// створити нову класифікацію
-
-export enum EXPLOSIVE_OBJECT_TYPE {
+export enum EXPLOSIVE_OBJECT_GROUP {
     AMMO = 'AMMO',
     FUSE = 'FUSE',
 }
@@ -22,6 +24,11 @@ export enum EXPLOSIVE_OBJECT_TYPE_V1 {
     CR = 'CR',
     BM = 'BM',
     UAV = 'UAV',
+}
+
+export enum MATERIAL {
+    METAL = 'METAL',
+    PLASTIC = 'PLASTIC',
 }
 
 // Вибухові речовини

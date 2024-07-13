@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_GROUP } from 'shared-my/db';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -11,7 +12,9 @@ import {
     createExplosiveObject,
     type IExplosiveObjectData,
 } from './explosive-object.schema';
-import { type IExplosiveObjectType, type ExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
+import { Ammo, type IAmmoData } from '../ammo';
+import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
+import { Fuse, type IFuseData } from '../fuse';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -33,26 +36,40 @@ interface IExplosiveObjectParams {
 
 export interface IExplosiveObject {
     id: string;
-    data: IExplosiveObjectData;
-    type?: ExplosiveObjectType;
+    data: Omit<IExplosiveObjectData, 'details'>;
+    types: IExplosiveObjectType[];
     displayName: string;
     fullDisplayName: string;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
+    setDetails(details: IFuseData | IAmmoData): void;
 }
 
 export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
     collections: ICollections;
-    data: IExplosiveObjectData;
+    data: Omit<IExplosiveObjectData, 'details'>;
+
+    details: Fuse | Ammo | null = null;
 
     constructor(data: IExplosiveObjectData, { collections, api, services }: IExplosiveObjectParams) {
         this.data = data;
+
         this.collections = collections;
         this.api = api;
         this.services = services;
 
         makeAutoObservable(this);
+    }
+
+    setDetails(details: IFuseData | IAmmoData) {
+        if (details && this.data.group === EXPLOSIVE_OBJECT_GROUP.FUSE) {
+            this.details = new Fuse(details as unknown as IFuseData);
+        }
+
+        if (details && this.data.group === EXPLOSIVE_OBJECT_GROUP.AMMO) {
+            this.details = new Ammo(details as unknown as IAmmoData);
+        }
     }
 
     get id() {
@@ -63,17 +80,25 @@ export class ExplosiveObject implements IExplosiveObject {
         Object.assign(this.data, data);
     }
 
-    get type() {
-        return this.collections.type.get(this.data.typeId);
+    get types() {
+        return this.data.typeIds.map((id) => this.collections.type.get(id)) as IExplosiveObjectType[];
     }
 
     get displayName() {
-        return `${this.data.name ?? ''}${this.data.name && this.data.caliber ? '  -  ' : ''}${this.data.caliber ? this.data.caliber : ''}`;
+        return this.data.name ?? '';
     }
 
     get fullDisplayName() {
-        return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
+        return this.data.name ?? '';
     }
+
+    // get displayName() {
+    //     return `${this.data.name ?? ''}${this.data.name && this.data?.details?.caliber ? '  -  ' : ''}${this.data.details > caliber ? this.data.caliber : ''}`;
+    // }
+
+    // get fullDisplayName() {
+    //     return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
+    // }
 
     update = new RequestModel({
         run: async (data: IUpdateValue<IExplosiveObjectDataParams>) => {

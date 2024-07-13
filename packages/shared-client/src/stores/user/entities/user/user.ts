@@ -9,6 +9,7 @@ export interface IUser {
     isRootAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;
+    isAuthor: boolean;
 }
 
 export class User implements IUser {
@@ -27,10 +28,16 @@ export class User implements IUser {
     get isRootAdmin() {
         return this.data.roles.includes(ROLES.ROOT_ADMIN);
     }
+
     get isOrganizationAdmin() {
         return this.data.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.data.organizationId;
     }
+
     get isOrganizationMember() {
         return !!this.data.organizationId;
+    }
+
+    get isAuthor() {
+        return this.data.roles.includes(ROLES.AUTHOR);
     }
 }

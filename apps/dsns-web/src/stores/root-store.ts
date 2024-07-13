@@ -148,7 +148,6 @@ export class RootStore implements IRootStore {
         this.services.analytics.init();
         this.services.crashlytics.init();
         this.employee.init();
-        this.explosiveObject.init();
 
         await DB.init();
 

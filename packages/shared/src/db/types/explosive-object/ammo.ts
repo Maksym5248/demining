@@ -1,32 +1,25 @@
-import { type IStructure, type IMarking, type INeutralization, type IAction, type IBody } from './common';
-
-interface ISize {
-    type: string;
-    times: number[];
-}
-
-interface IWight {
-    weight: number;
-    explosiveName: string;
-    explosiveWeight: number;
-}
-
-interface IDestination {
-    type: string[];
-    description: string;
-}
+import {
+    type IDestinationDB,
+    type IWightDB,
+    type IBodyDB,
+    type ISizeDB,
+    type IStructureDB,
+    type IActionDB,
+    type IMarkingDB,
+    type INeutralizationDB,
+} from './common';
 
 export interface IAmmoDB {
-    destination: IDestination | null;
+    destination: IDestinationDB | null;
     temperatureRange: [number, number] | null;
     imageIds: string[];
-    weight: IWight[];
+    weight: IWightDB[];
     caliber: number | null;
-    body: IBody | null;
-    size: ISize | null;
-    structure: IStructure | null;
-    action: IAction | null;
+    body: IBodyDB | null;
+    size: ISizeDB | null;
+    structure: IStructureDB | null;
+    action: IActionDB | null;
     fuseIds: string[];
-    marking: IMarking[];
-    neutralization: INeutralization | null;
+    marking: IMarkingDB[];
+    neutralization: INeutralizationDB | null;
 }

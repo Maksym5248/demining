@@ -1,5 +1,5 @@
 import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp } from './common';
-import { type IExplosiveObjectDBv1, type IExplosiveObjectDB } from './explosive-object';
+import { type IExplosiveObjectDBv1, type IExplosiveObjectDB, type IExplosiveObjectDBv2 } from './explosive-object/explosive-object';
 import {
     type EMPLOYEE_TYPE,
     type DOCUMENT_TYPE,
@@ -53,6 +53,16 @@ export interface IMissionRequestDB extends IBaseDB {
 }
 
 export interface IExplosiveObjectActionDBv1 extends IExplosiveObjectDBv1, ILinkedToDocumentDB {
+    explosiveObjectId: string;
+    quantity: number;
+    category: EXPLOSIVE_OBJECT_CATEGORY;
+    isDiscovered: boolean;
+    isTransported: boolean;
+    isDestroyed: boolean;
+    executedAt: Timestamp;
+}
+
+export interface IExplosiveObjectActionDBv2 extends IExplosiveObjectDBv2, ILinkedToDocumentDB {
     explosiveObjectId: string;
     quantity: number;
     category: EXPLOSIVE_OBJECT_CATEGORY;

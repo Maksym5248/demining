@@ -12,14 +12,42 @@ apps:
 - ammo mobile
 
 Migration explosiveObject
-1. create logo for amm application
-2. create admin panel for ammo application
-3. create way to add categories with correct structure
-4. add all categories to db
-5. migrate explosive object items
-6. migrate explosive object action items
-7. rewrite code to use new structure
 
+1. + create author role
+2. налаштуати права автора в firestore rules and ui, можливість заходити в додаток без організації, заборониити не авторам редагувати вибухонебезпечні предмети
+3. створити таблицю для підривників
+4. створит окрему таблцю для Боєприпасів
+5. посилатися на них у таблиці на ВНП
+6. автоматично оновлювати в explosive objects поля які використовуються і позначиитии як продубльовані і звідки, додати поле meta
+7. мігрувати на нову структуру explosive objects та action explosive object
+8. онвоити ui відповідно до нової структури
+
+actions
+- remove dublications
+- видалення обєктів повинно не видалята а змінювати поле на isRemoved
+
+КАТЕГОРІЇ
+5. налаштування сатегорій боєприпасів та створення окремої сторінки для них
+6. налаштування категорій для створених боєприпасів
+
+ВИБУХОВІ РЕЧОВИНИ ТА ЗА ТА ВР
+7. переіменувати поточну таблицю на засоби підриву та засоби ініціювання
+8. створити окрему таблицю для вибухових речовин та засобів підриву
+
+common
+ - перенести поле _search до meta
+ 
+AMMO ADMIN app
+// in feature we can for multi apps we can migrate on format
+// roles: [{
+//     app: "DSNS"
+//     roles: ['ROOT_ADMIN', 'ORGANIZATION_ADMIN'],
+// }]
+
+1. - add field apps to user (need to know source of app)
+2. - create web ui library
+3. - write app field to the token
+4. - move management explosive and explosive objects modules to ammo-admin-app
 
 TODO
 - migration from old explosive object and action schema to new

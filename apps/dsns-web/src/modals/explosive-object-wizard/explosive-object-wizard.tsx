@@ -1,10 +1,9 @@
 import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
-import { WizardButtons, Select, WizardFooter } from '~/components';
+import { WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
-import { select } from '~/utils';
 
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
@@ -66,7 +65,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   typeId: firstType?.data.id,
                               }
                     }>
-                    <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    {/* <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={select.append(
                                 explosiveObject.sortedListTypes.map((el) => ({
@@ -79,7 +78,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 },
                             )}
                         />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item label="Калібр" name="caliber">
                         <InputNumber size="middle" min={1} max={100000} />
                     </Form.Item>

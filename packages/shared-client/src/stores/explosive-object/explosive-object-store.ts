@@ -1,6 +1,5 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { explosiveObjectTypesData } from 'shared-my/db';
 
 import { type IExplosiveObjectAPI, type IExplosiveObjectActionSumDTO, type IExplosiveObjectDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -18,11 +17,11 @@ import {
     type IExplosiveObjectDataParams,
     createExplosiveObject,
     createExplosiveObjectDTO,
-    createExplosiveObjectType,
     type IExplosiveObjectActionData,
     type IExplosiveObjectAction,
     createExplosiveObjectActionSum,
     ExplosiveObjectAction,
+    createExplosiveObjectDetails,
 } from './entities';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 
@@ -44,11 +43,9 @@ export interface IExplosiveObjectStore {
     sum: SumExplosiveObjectActions;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
-    init: () => void;
     append: (res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) => void;
     create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
-    createExplosiveObjects: RequestModel;
     fetchList: RequestModel<[search?: string]>;
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
     fetchMoreList: RequestModel<[search?: string]>;
@@ -87,7 +84,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     get sortedListTypes() {
         return this.listTypes.asArray.sort((a, b) =>
-            a.data.fullName.localeCompare(b.data.fullName, ['uk'], {
+            a.data.name.localeCompare(b.data.name, ['uk'], {
                 numeric: true,
                 sensitivity: 'base',
             }),
@@ -97,10 +94,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.sum.set(createExplosiveObjectActionSum(sum));
     }
 
-    init() {
-        const data = explosiveObjectTypesData.map(createExplosiveObjectType);
-        this.listTypes.push(data, true);
-    }
     append(res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) {
         const list = isSearch ? this.searchList : this.list;
         if (isSearch && !isMore) this.searchList.clear();
@@ -111,7 +104,12 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     create = new RequestModel({
         run: async (data: ICreateValue<IExplosiveObjectDataParams>) => {
             const res = await this.api.explosiveObject.create(createExplosiveObjectDTO(data));
-            this.list.unshift(createExplosiveObject(res));
+
+            const value = createExplosiveObject(res);
+            const details = createExplosiveObjectDetails(res);
+
+            this.list.unshift(value);
+            if (details) this.collection.get(value.id)?.setDetails(details);
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -126,12 +124,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
         onError: () => this.services.message.error('Не вдалось видалити'),
-    });
-
-    createExplosiveObjects = new RequestModel({
-        run: () => this.api.explosiveObject.init(),
-        onSuccuss: () => this.services.message.success('Виконано успішно'),
-        onError: () => this.services.message.error('Не вдалось виконати'),
     });
 
     fetchList = new RequestModel({

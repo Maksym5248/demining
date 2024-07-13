@@ -1,11 +1,20 @@
+import { type Dayjs } from 'dayjs';
+import { type IExplosiveObjectTypeDB } from 'shared-my/db';
+
+import { dates } from '~/common';
+
 export interface IExplosiveObjectTypeData {
     id: string;
     name: string;
-    fullName: string;
+    parentId: string | null;
+    createdAt: Dayjs;
+    updatedAt: Dayjs;
 }
 
-export const createExplosiveObjectType = (value: IExplosiveObjectTypeData): IExplosiveObjectTypeData => ({
+export const createExplosiveObjectType = (value: IExplosiveObjectTypeDB): IExplosiveObjectTypeData => ({
     id: value.id,
     name: value.name,
-    fullName: value.fullName,
+    parentId: value.parentId,
+    createdAt: dates.fromServerDate(value.createdAt),
+    updatedAt: dates.fromServerDate(value.updatedAt),
 });

@@ -20,6 +20,18 @@ import {
     type IPointDB,
     type IAddressDB,
     type Timestamp,
+    type IAmmoDB,
+    type IFuseDB,
+    type IMarkingDB,
+    type IStructureDB,
+    type INeutralizationDB,
+    type IActionDB,
+    type IBodyDB,
+    type ISizeDB,
+    type IWightDB,
+    type IDestinationDB,
+    type ILiquidatorDB,
+    type IReductionDB,
 } from 'shared-my/db';
 
 export type IAddressDTO = IAddressDB;
@@ -41,6 +53,20 @@ export type IMissionRequestDTO = IMissionRequestDB;
 export interface IMissionRequestSumDTO {
     total: number;
 }
+
+export type IMarkingDTO = IMarkingDB;
+export type IStructureDTO = IStructureDB;
+export type INeutralizationDTO = INeutralizationDB;
+export type IActionDTO = IActionDB;
+export type IBodyDTO = IBodyDB;
+export type ISizeDTO = ISizeDB;
+export type IWightDTO = IWightDB;
+export type IDestinationDTO = IDestinationDB;
+export type ILiquidatorDTO = ILiquidatorDB;
+export type IReductionDTO = IReductionDB;
+export type IAmmoDTO = IAmmoDB;
+export type IFuseDTO = IFuseDB;
+
 export type IExplosiveObjectDTO = IExplosiveObjectDB;
 
 export type IExplosiveObjectActionDTO = IExplosiveObjectActionDB;
@@ -61,7 +87,7 @@ export interface IExplosiveActionSumDTO {
     detonator: number;
 }
 
-export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
+export type IExplosiveObjectDTOParams = Omit<IExplosiveObjectDB, 'details'>;
 export interface IExplosiveObjectActionDTOParams {
     id?: string;
     explosiveObjectId: string;

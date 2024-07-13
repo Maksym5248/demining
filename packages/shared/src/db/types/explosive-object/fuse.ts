@@ -1,20 +1,17 @@
-import { type INeutralization, type IMarking, type IStructure, type IAction } from './common';
+import {
+    type INeutralizationDB,
+    type IMarkingDB,
+    type IStructureDB,
+    type IActionDB,
+    type ILiquidatorDB,
+    type IReductionDB,
+} from './common';
 
-interface ILiquidator {
-    type: string;
-    times: number[];
-}
-
-interface IReduction {
-    type: string;
-    times: number[];
-}
-
-export interface IFuse {
-    marking: IMarking;
-    structure: IStructure;
-    action: IAction;
-    liquidator: ILiquidator | false | null;
-    reduction: IReduction | false | null;
-    neutralization: INeutralization | false | null;
+export interface IFuseDB {
+    marking: IMarkingDB;
+    structure: IStructureDB;
+    action: IActionDB;
+    liquidator: ILiquidatorDB | false | null;
+    reduction: IReductionDB | false | null;
+    neutralization: INeutralizationDB | false | null;
 }

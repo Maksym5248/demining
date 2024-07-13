@@ -1,4 +1,4 @@
-import { explosiveObjectsData, type IExplosiveObjectActionDB, type IExplosiveObjectDB } from 'shared-my/db';
+import { type IExplosiveObjectActionDB, type IExplosiveObjectDB } from 'shared-my/db';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
 
@@ -9,7 +9,6 @@ export interface IExplosiveObjectAPI {
     update: (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectDTO[]>;
-    init: () => Promise<void>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
@@ -25,9 +24,13 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     ) {}
 
     create = async (value: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
-        const explosiveObject = await this.db.explosiveObject.create(value);
-        if (!explosiveObject) throw new Error('there is explosive object');
-        return explosiveObject;
+        const res = await this.db.explosiveObject.create({
+            details: null,
+            ...value,
+        });
+        if (!res) throw new Error('there is explosive object');
+
+        return res;
     };
 
     update = async (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
@@ -48,20 +51,6 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             },
             ...(query ?? {}),
         });
-
-    init = async (): Promise<void> => {
-        const count = await this.db.explosiveObject.count();
-
-        if (count) return;
-
-        this.db.batchStart();
-
-        explosiveObjectsData.forEach((el) => {
-            this.db.explosiveObject.create(el);
-        });
-
-        await this.db.batchCommit();
-    };
 
     get = async (id: string): Promise<IExplosiveObjectDTO> => {
         const res = await this.db.explosiveObject.get(id);

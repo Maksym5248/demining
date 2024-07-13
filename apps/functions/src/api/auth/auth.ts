@@ -11,6 +11,7 @@ const customUserClaims = async (userData: IUserDB) => {
         const customClaims = {
             ROOT_ADMIN: userData?.roles.includes(ROLES.ROOT_ADMIN),
             ORGANIZATION_ADMIN: userData?.roles.includes(ROLES.ORGANIZATION_ADMIN),
+            AUTHOR: userData?.roles.includes(ROLES.AUTHOR),
             organizationId: userData?.organizationId,
         };
 
