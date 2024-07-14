@@ -27,7 +27,7 @@ interface IExplosiveObjectActionParams {
 
 export interface IExplosiveObjectAction {
     data: IExplosiveObjectActionData;
-    types: IExplosiveObjectType[];
+    type?: IExplosiveObjectType;
     explosiveObject: IExplosiveObject;
     updateFields(data: Partial<IExplosiveObjectActionData>): void;
 }
@@ -47,8 +47,8 @@ export class ExplosiveObjectAction implements IExplosiveObjectAction {
         makeAutoObservable(this);
     }
 
-    get types() {
-        return this.data.typeIds.map((id) => this.collections.type.get(id)) as IExplosiveObjectType[];
+    get type() {
+        return this.collections.type.get(this.data.typeId);
     }
 
     get explosiveObject() {

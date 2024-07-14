@@ -1,22 +1,20 @@
-import { type EXPLOSIVE_OBJECT_TYPE_V1, type EXPLOSIVE_OBJECT_GROUP, type EXPLOSIVE_OBJECT_STATUS, type IAmmoDB, type IFuseDB } from '~/db';
+import {
+    type EXPLOSIVE_OBJECT_TYPE_V1,
+    type EXPLOSIVE_OBJECT_GROUP,
+    type EXPLOSIVE_OBJECT_STATUS,
+    type MANUFACTURED_COUNTRY,
+    type IAmmoDB,
+    type IFuseDB,
+} from '~/db';
 
 import { type IBaseDB } from '../common';
 
-// TODO: 1 - класифікацію за типом боєприпасу, інженерний, арт снаряд, авіаційна бомба, краще якщо ці типи вручну можна додавати
-//       2 - група повинна бути в одному екземплярі
-
-// 1 - артилерійський снаряд
-//   1.1  за призначенням
-//       1.1.1 ...
-//       1.1.2 ...
-//   1.2 за способом стабілізації
-//       ...
-
-export interface IExplosiveObjectTypeDB extends IBaseDB {
-    name: string; // приклад: за призначенням, тип ураження, спосіб ураження
-    parentId: string | null;
-}
-
+//
+// 1 - create types
+// 2 - create classification
+// 3 - create class
+// 4 - create object
+// 5 - create object details
 export interface IExplosiveObjectDBv1 extends IBaseDB {
     typeId: EXPLOSIVE_OBJECT_TYPE_V1;
     name: string | null;
@@ -36,10 +34,29 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
     };
 }
 
+export interface IExplosiveObjectClassificationDB extends IBaseDB {
+    typeId: string;
+    group: EXPLOSIVE_OBJECT_GROUP;
+    name: string; // за призначенням, тип ураження, спосіб ураження
+}
+
+export interface IExplosiveObjectClassDB extends IBaseDB {
+    classId: string;
+    parentId: string | null;
+    name: string; // протиднищевий, протипіхотний, протиповітряний
+}
+
+export interface IExplosiveObjectTypeDB extends IBaseDB {
+    id: string;
+    name: string;
+}
+
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
+    country: MANUFACTURED_COUNTRY; // СССР
     status: EXPLOSIVE_OBJECT_STATUS;
-    group: EXPLOSIVE_OBJECT_GROUP;
-    typeIds: string[];
+    group: EXPLOSIVE_OBJECT_GROUP; // Боєприпас
+    typeId: string; // інженерний
+    classIds: string[]; // протитанковий, протиднищевий; кумулятивний
     details: IAmmoDB | IFuseDB | null;
 }

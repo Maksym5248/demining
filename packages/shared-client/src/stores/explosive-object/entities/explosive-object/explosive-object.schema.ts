@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_STATUS } from 'shared-my/db';
+import { EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_STATUS, MANUFACTURED_COUNTRY } from 'shared-my/db';
 
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams, type IFuseDTO, type IAmmoDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -12,7 +12,9 @@ export interface IExplosiveObjectData {
     id: string;
     name: string;
     group: EXPLOSIVE_OBJECT_GROUP;
-    typeIds: string[];
+    typeId: string;
+    classIds: string[];
+    country: MANUFACTURED_COUNTRY;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
@@ -20,24 +22,30 @@ export interface IExplosiveObjectData {
 export interface IExplosiveObjectDataParams {
     name: string;
     group: EXPLOSIVE_OBJECT_GROUP;
-    typeIds: string[];
+    typeId: string;
     status: EXPLOSIVE_OBJECT_STATUS;
+    country: MANUFACTURED_COUNTRY;
+    classIds: string[];
     // details: IAmmoData | IFuseData | null;
 }
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
     name: value?.name ?? null,
-    typeIds: value.typeIds,
+    typeId: value.typeId,
     group: value.group,
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    country: value.country,
+    classIds: value.classIds,
     // details: value.details ?? null,
 });
 
 export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>((value) => ({
-    name: value?.name ?? null,
-    typeIds: value.typeIds ?? [],
+    name: value.name ?? null,
+    typeId: value.typeId ?? '',
     group: value.group ?? EXPLOSIVE_OBJECT_GROUP.AMMO,
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    country: value.country ?? MANUFACTURED_COUNTRY.USSR,
+    classIds: value.classIds ?? [],
     // details: value.details ?? null,
 }));
 
@@ -57,7 +65,9 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     id: value.id,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
-    typeIds: value.typeIds,
+    typeId: value.typeId,
+    classIds: value.classIds ?? [],
+    country: value.country ?? MANUFACTURED_COUNTRY.USSR,
     group: value.group,
     name: value?.name ?? '',
 });

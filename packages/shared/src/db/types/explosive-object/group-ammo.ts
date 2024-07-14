@@ -1,5 +1,5 @@
 import {
-    type IDestinationDB,
+    type IPurposeDB,
     type IWightDB,
     type IBodyDB,
     type ISizeDB,
@@ -10,7 +10,7 @@ import {
 } from './common';
 
 export interface IAmmoDB {
-    destination: IDestinationDB | null;
+    purpose: IPurposeDB | null;
     temperatureRange: [number, number] | null;
     imageIds: string[];
     weight: IWightDB[];

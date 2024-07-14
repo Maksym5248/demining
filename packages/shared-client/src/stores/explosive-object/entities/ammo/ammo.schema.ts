@@ -4,14 +4,14 @@ import {
     type IActionDTO,
     type INeutralizationDTO,
     type IAmmoDTO,
-    type IDestinationDTO,
+    type IPurposeDTO,
     type IWightDTO,
     type IBodyDTO,
     type ISizeDTO,
 } from '~/api';
 
 export interface IAmmoData {
-    destination: IDestinationDTO | null;
+    purpose: IPurposeDTO | null;
     temperatureRange: [number, number] | null;
     imageIds: string[];
     weight: IWightDTO[];
@@ -27,7 +27,7 @@ export interface IAmmoData {
 
 export const createAmmo = (value: IAmmoDTO): IAmmoData => {
     return {
-        destination: value.destination,
+        purpose: value.purpose,
         temperatureRange: value.temperatureRange,
         imageIds: value.imageIds,
         weight: value.weight,

@@ -17,7 +17,7 @@ export class ExplosiveObjectType {
     }
 
     get displayName() {
-        return `${this.data.name} (${this.data.name})`;
+        return this.data.name;
     }
 
     updateFields(data: Partial<IExplosiveObjectTypeData>) {

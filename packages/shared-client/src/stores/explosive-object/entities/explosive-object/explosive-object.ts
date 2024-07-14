@@ -37,7 +37,7 @@ interface IExplosiveObjectParams {
 export interface IExplosiveObject {
     id: string;
     data: Omit<IExplosiveObjectData, 'details'>;
-    types: IExplosiveObjectType[];
+    type?: IExplosiveObjectType;
     displayName: string;
     fullDisplayName: string;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
@@ -80,8 +80,8 @@ export class ExplosiveObject implements IExplosiveObject {
         Object.assign(this.data, data);
     }
 
-    get types() {
-        return this.data.typeIds.map((id) => this.collections.type.get(id)) as IExplosiveObjectType[];
+    get type() {
+        return this.collections.type.get(this.data.typeId);
     }
 
     get displayName() {

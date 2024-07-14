@@ -29,7 +29,7 @@ import {
     type IBodyDB,
     type ISizeDB,
     type IWightDB,
-    type IDestinationDB,
+    type IPurposeDB,
     type ILiquidatorDB,
     type IReductionDB,
 } from 'shared-my/db';
@@ -61,7 +61,7 @@ export type IActionDTO = IActionDB;
 export type IBodyDTO = IBodyDB;
 export type ISizeDTO = ISizeDB;
 export type IWightDTO = IWightDB;
-export type IDestinationDTO = IDestinationDB;
+export type IPurposeDTO = IPurposeDB;
 export type ILiquidatorDTO = ILiquidatorDB;
 export type IReductionDTO = IReductionDB;
 export type IAmmoDTO = IAmmoDB;

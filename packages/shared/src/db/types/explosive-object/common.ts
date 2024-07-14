@@ -35,7 +35,7 @@ export interface IWightDB {
     explosiveWeight: number;
 }
 
-export interface IDestinationDB {
+export interface IPurposeDB {
     type: string[];
     description: string;
 }
