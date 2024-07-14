@@ -9,10 +9,6 @@ export enum EXPLOSIVE_OBJECT_GROUP {
     FUSE = 'FUSE',
 }
 
-export enum MANUFACTURED_COUNTRY {
-    USSR = 'USSR',
-}
-
 // enum EXPLOSIVE_OBJECT_CLASS {
 //     PURPOSE = 'PURPOSE', // за призначенням
 //     METHOD = 'METHOD', // за способом ураження

@@ -21,30 +21,30 @@ export interface IExplosiveObjectData {
 
 export interface IExplosiveObjectDataParams {
     name: string;
-    group: EXPLOSIVE_OBJECT_GROUP;
-    typeId: string;
     status: EXPLOSIVE_OBJECT_STATUS;
-    country: MANUFACTURED_COUNTRY;
+    group: string;
+    typeId: string;
+    countryId: string;
     classIds: string[];
     // details: IAmmoData | IFuseData | null;
 }
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
     name: value?.name ?? null,
+    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     typeId: value.typeId,
     group: value.group,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
-    country: value.country,
+    countryId: value.countryId,
     classIds: value.classIds,
     // details: value.details ?? null,
 });
 
 export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>((value) => ({
     name: value.name ?? null,
+    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     typeId: value.typeId ?? '',
     group: value.group ?? EXPLOSIVE_OBJECT_GROUP.AMMO,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
-    country: value.country ?? MANUFACTURED_COUNTRY.USSR,
+    countryId: value.countryId ?? MANUFACTURED_COUNTRY.USSR,
     classIds: value.classIds ?? [],
     // details: value.details ?? null,
 }));
