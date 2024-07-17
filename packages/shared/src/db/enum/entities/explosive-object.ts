@@ -9,28 +9,29 @@ export enum EXPLOSIVE_OBJECT_GROUP {
     FUSE = 'FUSE',
 }
 
-// enum EXPLOSIVE_OBJECT_CLASS {
-//     PURPOSE = 'PURPOSE', // за призначенням
-//     METHOD = 'METHOD', // за способом ураження
-//     STABILIZATION = 'STABILIZATION', // за способом стабілізації в польоті
-//     DELIVERY = 'DELIVERY', // за способом доставки
-//     CALIBER = 'CALIBER', // за калібром
-// }
+export enum EXPLOSIVE_OBJECT_CLASS {
+    PURPOSE = 'PURPOSE', // за призначенням
+    METHOD = 'METHOD', // за способом ураження
+    FRAGMENTATION = 'FRAGMENTATION', // За зоною розльоту осколків
+    STABILIZATION = 'STABILIZATION', // за способом стабілізації в польоті
+    DELIVERY = 'DELIVERY', // за способом доставки
+    CALIBER = 'CALIBER', // за калібром
+}
 
-// enum EXPLOSIVE_OBJECT_TYPE {
-//     ENGINEERING = 'ENGINEERING',
-//     AVIATION_BOMBS = 'AVIATION_BOMBS',
-//     GRENADES = 'GRENADES', // АГС, РПГ, СПГ,
-//     HANDLE_GRENADES = 'HANDLE_GRENADES',
-//     UNGUIDED_ROCKETS = 'UNGUIDED_ROCKETS',
-//     GUIDED_MISSILES = 'GUIDED_MISSILES',
-//     ARTILLERY_SHELLS = 'ARTILLERY_SHELLS',
-//     MORTAL_MINES = 'MORTAL_MINES',
-//     AMMO = 'AMMO', // Боєприпас стрілецької зброї
-//     ANTI_TANK_MISSILES = 'ANTI_TANK_MISSILES', // Протитанковий керований реактивний снаряд
-//     ANTI_AIRCRAFT_MISSILE = 'ANTI_AIRCRAFT_MISSILE', // Зенітний ракетний комплекс
-//     UNMANNED_AERIAL_VEHICLE = 'UNMANNED_AERIAL_VEHICLE', // БПЛА
-// }
+export enum EXPLOSIVE_OBJECT_TYPE {
+    ENGINEERING = 'ENGINEERING',
+    AVIATION_BOMBS = 'AVIATION_BOMBS',
+    GRENADES = 'GRENADES', // АГС, РПГ, СПГ,
+    HANDLE_GRENADES = 'HANDLE_GRENADES',
+    GUIDED_MISSILES = 'GUIDED_MISSILES',
+    ARTILLERY_SHELLS = 'ARTILLERY_SHELLS',
+    MORTAL_MINES = 'MORTAL_MINES',
+    AMMO = 'AMMO', // Боєприпас стрілецької зброї
+    // UNGUIDED_ROCKETS = 'UNGUIDED_ROCKETS',
+    // ANTI_TANK_MISSILES = 'ANTI_TANK_MISSILES', // Протитанковий керований реактивний снаряд
+    // ANTI_AIRCRAFT_MISSILE = 'ANTI_AIRCRAFT_MISSILE', // Зенітний ракетний комплекс
+    // UNMANNED_AERIAL_VEHICLE = 'UNMANNED_AERIAL_VEHICLE', // БПЛА
+}
 
 export enum EXPLOSIVE_OBJECT_TYPE_V1 {
     AB = 'AB',

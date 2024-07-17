@@ -30,21 +30,21 @@ export interface IExplosiveObjectClassificationDB {
     id: string;
     typeId: string;
     group: EXPLOSIVE_OBJECT_GROUP;
-    name: string; // за призначенням, тип ураження, спосіб ураження
+    name: string;
 }
 
 export interface IExplosiveObjectClassDB {
     id: string;
     classId: string;
     parentId: string | null;
-    name: string; // протиднищевий, протипіхотний, протиповітряний
+    name: string;
 }
 
 export interface IExplosiveObjectTypeDB {
     id: string;
     name: string;
 }
-export interface IManufactureCountryDB {
+export interface ICountryDB {
     id: string;
     name: string;
 }
