@@ -20,10 +20,12 @@ import {
     type IPointDB,
     type IAddressDB,
     type Timestamp,
+    type IRankDB,
 } from 'shared-my/db';
 
 export type IAddressDTO = IAddressDB;
 
+export type IRankDTO = IRankDB;
 export type IEmployeeDTO = IEmployeeDB;
 export type IEmployeeActionDTO = IEmployeeActionDB;
 

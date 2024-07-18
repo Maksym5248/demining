@@ -11,6 +11,7 @@ import {
     type ASSET_TYPE,
     type MISSION_REQUEST_TYPE,
     type EXPLOSIVE_TYPE,
+    type RANKS,
 } from '../enum';
 
 export interface IAddressDB {
@@ -22,6 +23,16 @@ export interface IAddressDB {
     state: string | null;
     street: string | null;
     municipality: string | null;
+}
+
+/**
+ * saved locally
+ */
+export interface IRankDB {
+    id: string;
+    fullName: string;
+    shortName: string;
+    rank: RANKS;
 }
 
 export interface IEmployeeDB extends IBaseDB {

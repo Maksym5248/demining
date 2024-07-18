@@ -4,5 +4,7 @@ export interface IExplosiveObjectForm {
     name: string;
     status: EXPLOSIVE_OBJECT_STATUS;
     group: EXPLOSIVE_OBJECT_GROUP;
-    typeIds: string[];
+    countryId: string;
+    typeId: string;
+    classIds: string[];
 }

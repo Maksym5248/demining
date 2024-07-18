@@ -30,6 +30,10 @@ import {
     type IExplosiveObjectClass,
     type IExplosiveObjectClassItemData,
     type IExplosiveObjectClassItem,
+    createExplosiveObjectClassItem,
+    createExplosiveObjectType,
+    createExplosiveObjectClass,
+    createCountry,
 } from './entities';
 import { createExplosiveObjectDetails } from './entities/explosive-object-details';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
@@ -59,6 +63,7 @@ export interface IExplosiveObjectStore {
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
+    fetchDeeps: RequestModel;
 }
 
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
@@ -215,6 +220,23 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (id: string) => {
             const res = await this.api.explosiveObject.get(id);
             this.collection.set(res.id, createExplosiveObject(res));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchDeeps = new RequestModel({
+        run: async () => {
+            const [types, classes, classesItems, countries] = await Promise.all([
+                this.api.explosiveObject.getTypesList(),
+                this.api.explosiveObject.getClassesList(),
+                this.api.explosiveObject.getClassesItemsList(),
+                this.api.explosiveObject.getCountriesList(),
+            ]);
+
+            this.collectionTypes.setArr(types.map(createExplosiveObjectType));
+            this.collectionClasses.setArr(classes.map(createExplosiveObjectClass));
+            this.collectionClassesItems.setArr(classesItems.map(createExplosiveObjectClassItem));
+            this.collectionCountries.setArr(countries.map(createCountry));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
