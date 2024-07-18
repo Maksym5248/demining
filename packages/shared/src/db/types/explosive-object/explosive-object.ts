@@ -26,14 +26,14 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
     };
 }
 
-export interface IExplosiveObjectClassificationDB {
+export interface IExplosiveObjectClassDB {
     id: string;
     typeId: string;
     group: EXPLOSIVE_OBJECT_GROUP;
     name: string;
 }
 
-export interface IExplosiveObjectClassDB {
+export interface IExplosiveObjectClassItemDB {
     id: string;
     classId: string;
     parentId: string | null;

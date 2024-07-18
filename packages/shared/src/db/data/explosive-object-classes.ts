@@ -1,7 +1,7 @@
 import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_TYPE } from '../enum';
-import { type IExplosiveObjectClassDB, type IExplosiveObjectClassificationDB } from '../types';
+import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../types';
 
-export const explosiveObjectClassificationData: IExplosiveObjectClassificationDB[] = [
+export const explosiveObjectClassData: IExplosiveObjectClassDB[] = [
     {
         id: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
         group: EXPLOSIVE_OBJECT_GROUP.AMMO,
@@ -22,7 +22,7 @@ export const explosiveObjectClassificationData: IExplosiveObjectClassificationDB
     },
 ];
 
-export const explosiveObjectClassPurposeData: IExplosiveObjectClassDB[] = [
+export const explosiveObjectClassItemsPurposeData: IExplosiveObjectClassItemDB[] = [
     {
         id: '1',
         classId: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
@@ -79,7 +79,7 @@ export const explosiveObjectClassPurposeData: IExplosiveObjectClassDB[] = [
     },
 ];
 
-export const explosiveObjectClassMethodData = [
+export const explosiveObjectClassItemsMethodData = [
     {
         id: '2.1.1',
         classId: EXPLOSIVE_OBJECT_CLASS.METHOD,
@@ -94,7 +94,7 @@ export const explosiveObjectClassMethodData = [
     },
 ];
 
-export const explosiveObjectClassFragmentationData = [
+export const explosiveObjectClassItemsFragmentationData = [
     {
         id: '2.2.1',
         classId: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
@@ -107,4 +107,10 @@ export const explosiveObjectClassFragmentationData = [
         parentId: '2',
         name: 'Направленного розльоту',
     },
+];
+
+export const explosiveObjectClassDataItems = [
+    ...explosiveObjectClassItemsPurposeData,
+    ...explosiveObjectClassItemsMethodData,
+    ...explosiveObjectClassItemsFragmentationData,
 ];

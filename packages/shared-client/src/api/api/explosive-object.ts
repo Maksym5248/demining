@@ -1,14 +1,33 @@
-import { type IExplosiveObjectActionDB, type IExplosiveObjectDB } from 'shared-my/db';
+import {
+    countries,
+    explosiveObjectClassData,
+    explosiveObjectClassDataItems,
+    explosiveObjectTypesData,
+    type IExplosiveObjectActionDB,
+    type IExplosiveObjectDB,
+} from 'shared-my/db';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
 
-import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams, type IExplosiveObjectActionSumDTO } from '../dto';
+import {
+    type IExplosiveObjectDTO,
+    type IExplosiveObjectDTOParams,
+    type IExplosiveObjectActionSumDTO,
+    type IExplosiveObjectClassDTO,
+    type IExplosiveObjectClassItemDTO,
+    type ICountryDTO,
+    type IExplosiveObjectTypeDTO,
+} from '../dto';
 
 export interface IExplosiveObjectAPI {
     create: (value: ICreateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
     update: (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectDTO[]>;
+    getClassesList: () => Promise<IExplosiveObjectClassDTO[]>;
+    getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
+    getCountriesList: () => Promise<ICountryDTO[]>;
+    getTypesList: () => Promise<IExplosiveObjectTypeDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
@@ -51,6 +70,20 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             },
             ...(query ?? {}),
         });
+
+    async getClassesList() {
+        return explosiveObjectClassData;
+    }
+
+    async getClassesItemsList() {
+        return explosiveObjectClassDataItems;
+    }
+    async getCountriesList() {
+        return countries;
+    }
+    async getTypesList() {
+        return explosiveObjectTypesData;
+    }
 
     get = async (id: string): Promise<IExplosiveObjectDTO> => {
         const res = await this.db.explosiveObject.get(id);
