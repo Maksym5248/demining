@@ -49,3 +49,24 @@ export interface IReductionDB {
     type: string;
     times: number[];
 }
+
+export interface IExplosiveObjectDetailsDB {
+    purpose: IPurposeDB | null;
+    temperatureRange: [number, number] | null;
+    imageIds: string[];
+    body: IBodyDB | null;
+    size: ISizeDB | null;
+    structure: IStructureDB | null;
+    action: IActionDB | null;
+    marking: IMarkingDB[];
+    neutralization: INeutralizationDB | null;
+
+    // ammo
+    weight: IWightDB[];
+    caliber: number | null;
+    fuseIds: string[];
+
+    // fuse
+    liquidator: ILiquidatorDB | false | null;
+    reduction: IReductionDB | false | null;
+}

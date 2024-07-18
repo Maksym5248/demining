@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_GROUP } from 'shared-my/db';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -11,10 +10,12 @@ import {
     updateExplosiveObjectDTO,
     createExplosiveObject,
     type IExplosiveObjectData,
+    type IExplosiveObjectDetails,
 } from './explosive-object.schema';
-import { Ammo, type IAmmoData } from '../ammo';
+import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
+import { type IExplosiveObjectClassItem } from '../explosive-object-class-item';
+import { ExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
 import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
-import { Fuse, type IFuseData } from '../fuse';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -26,6 +27,9 @@ interface IServices {
 
 interface ICollections {
     type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItem>;
+    country: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
 }
 
 interface IExplosiveObjectParams {
@@ -36,21 +40,22 @@ interface IExplosiveObjectParams {
 
 export interface IExplosiveObject {
     id: string;
-    data: Omit<IExplosiveObjectData, 'details'>;
-    type?: IExplosiveObjectType;
+    data: IExplosiveObjectData;
     displayName: string;
     fullDisplayName: string;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
-    setDetails(details: IFuseData | IAmmoData): void;
+    setDetails(details: IExplosiveObjectDetailsData | IExplosiveObjectDetailsData): void;
+    type?: IExplosiveObjectType;
+    details: IExplosiveObjectDetailsData | null;
 }
 
 export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
     collections: ICollections;
-    data: Omit<IExplosiveObjectData, 'details'>;
+    data: IExplosiveObjectData;
 
-    details: Fuse | Ammo | null = null;
+    details: IExplosiveObjectDetails | null = null;
 
     constructor(data: IExplosiveObjectData, { collections, api, services }: IExplosiveObjectParams) {
         this.data = data;
@@ -62,14 +67,8 @@ export class ExplosiveObject implements IExplosiveObject {
         makeAutoObservable(this);
     }
 
-    setDetails(details: IFuseData | IAmmoData) {
-        if (details && this.data.group === EXPLOSIVE_OBJECT_GROUP.FUSE) {
-            this.details = new Fuse(details as unknown as IFuseData);
-        }
-
-        if (details && this.data.group === EXPLOSIVE_OBJECT_GROUP.AMMO) {
-            this.details = new Ammo(details as unknown as IAmmoData);
-        }
+    setDetails(details: IExplosiveObjectDetailsData) {
+        this.details = new ExplosiveObjectDetails(details);
     }
 
     get id() {

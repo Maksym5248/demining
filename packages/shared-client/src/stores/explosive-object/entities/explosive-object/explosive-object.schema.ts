@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_STATUS, MANUFACTURED_COUNTRY } from 'shared-my/db';
+import { EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_STATUS } from 'shared-my/db';
 
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams, type IFuseDTO, type IAmmoDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -14,19 +14,20 @@ export interface IExplosiveObjectData {
     group: EXPLOSIVE_OBJECT_GROUP;
     typeId: string;
     classIds: string[];
-    country: MANUFACTURED_COUNTRY;
+    countryId: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
 
+export type IExplosiveObjectDetails = IAmmoData | IFuseData | null;
+
 export interface IExplosiveObjectDataParams {
     name: string;
     status: EXPLOSIVE_OBJECT_STATUS;
-    group: string;
+    group: EXPLOSIVE_OBJECT_GROUP;
     typeId: string;
     countryId: string;
     classIds: string[];
-    // details: IAmmoData | IFuseData | null;
 }
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
@@ -36,7 +37,6 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
     group: value.group,
     countryId: value.countryId,
     classIds: value.classIds,
-    // details: value.details ?? null,
 });
 
 export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>((value) => ({
@@ -44,7 +44,7 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     typeId: value.typeId ?? '',
     group: value.group ?? EXPLOSIVE_OBJECT_GROUP.AMMO,
-    countryId: value.countryId ?? MANUFACTURED_COUNTRY.USSR,
+    countryId: value.countryId ?? '',
     classIds: value.classIds ?? [],
     // details: value.details ?? null,
 }));
@@ -67,7 +67,7 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     updatedAt: dates.fromServerDate(value.updatedAt),
     typeId: value.typeId,
     classIds: value.classIds ?? [],
-    country: value.country ?? MANUFACTURED_COUNTRY.USSR,
+    countryId: value.countryId ?? '',
     group: value.group,
     name: value?.name ?? '',
 });

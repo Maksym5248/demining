@@ -1,5 +1,6 @@
-import { type EXPLOSIVE_OBJECT_TYPE_V1, type EXPLOSIVE_OBJECT_GROUP, type EXPLOSIVE_OBJECT_STATUS, type IAmmoDB, type IFuseDB } from '~/db';
+import { type EXPLOSIVE_OBJECT_TYPE_V1, type EXPLOSIVE_OBJECT_GROUP, type EXPLOSIVE_OBJECT_STATUS } from '~/db';
 
+import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
 
 // 1 - create types
@@ -56,5 +57,5 @@ export interface IExplosiveObjectDB extends IBaseDB {
     countryId: string; // СССР
     typeId: string; // інженерний
     classIds: string[]; // протитанковий, протиднищевий; кумулятивний
-    details: IAmmoDB | IFuseDB | null;
+    details: IExplosiveObjectDetailsDB | null;
 }
