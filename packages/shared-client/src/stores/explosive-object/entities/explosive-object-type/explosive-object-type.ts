@@ -8,7 +8,7 @@ export interface IExplosiveObjectType {
     updateFields(data: Partial<IExplosiveObjectTypeData>): void;
 }
 
-export class ExplosiveObjectType {
+export class ExplosiveObjectType implements IExplosiveObjectType {
     data: IExplosiveObjectTypeData;
 
     constructor(data: IExplosiveObjectTypeData) {
