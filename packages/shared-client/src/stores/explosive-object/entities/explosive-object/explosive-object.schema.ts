@@ -1,12 +1,9 @@
 import { type Dayjs } from 'dayjs';
 import { EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_STATUS } from 'shared-my/db';
 
-import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams, type IFuseDTO, type IAmmoDTO } from '~/api';
+import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
-
-import { type IAmmoData, createAmmo } from '../ammo';
-import { type IFuseData, createFuse } from '../fuse';
 
 export interface IExplosiveObjectData {
     id: string;
@@ -18,8 +15,6 @@ export interface IExplosiveObjectData {
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
-
-export type IExplosiveObjectDetails = IAmmoData | IFuseData | null;
 
 export interface IExplosiveObjectDataParams {
     name: string;
@@ -48,18 +43,6 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     classIds: value.classIds ?? [],
     // details: value.details ?? null,
 }));
-
-export const createExplosiveObjectDetails = (value: IExplosiveObjectDTO): IAmmoData | IFuseData | null => {
-    if (value?.details && value?.group === EXPLOSIVE_OBJECT_GROUP.FUSE) {
-        return createFuse(value.details as IFuseDTO);
-    }
-
-    if (value?.details && value?.group === EXPLOSIVE_OBJECT_GROUP.AMMO) {
-        return createAmmo(value.details as IAmmoDTO);
-    }
-
-    return null;
-};
 
 export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObjectData => ({
     id: value.id,

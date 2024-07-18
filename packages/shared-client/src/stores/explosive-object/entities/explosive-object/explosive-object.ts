@@ -10,11 +10,11 @@ import {
     updateExplosiveObjectDTO,
     createExplosiveObject,
     type IExplosiveObjectData,
-    type IExplosiveObjectDetails,
 } from './explosive-object.schema';
+import { type ICountryData, type ICountry } from '../country';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
-import { type IExplosiveObjectClassItem } from '../explosive-object-class-item';
-import { ExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
+import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
+import { ExplosiveObjectDetails, type IExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
 import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
 
 interface IApi {
@@ -28,8 +28,8 @@ interface IServices {
 interface ICollections {
     type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
-    classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItem>;
-    country: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    country: ICollectionModel<ICountry, ICountryData>;
 }
 
 interface IExplosiveObjectParams {
@@ -46,7 +46,8 @@ export interface IExplosiveObject {
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     setDetails(details: IExplosiveObjectDetailsData | IExplosiveObjectDetailsData): void;
     type?: IExplosiveObjectType;
-    details: IExplosiveObjectDetailsData | null;
+    countries?: ICountry[];
+    details: IExplosiveObjectDetails | null;
 }
 
 export class ExplosiveObject implements IExplosiveObject {
@@ -67,8 +68,8 @@ export class ExplosiveObject implements IExplosiveObject {
         makeAutoObservable(this);
     }
 
-    setDetails(details: IExplosiveObjectDetailsData) {
-        this.details = new ExplosiveObjectDetails(details);
+    setDetails(data: IExplosiveObjectDetailsData) {
+        this.details = new ExplosiveObjectDetails(data);
     }
 
     get id() {

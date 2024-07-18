@@ -10,19 +10,28 @@ import { type IMessage } from '~/services';
 import {
     ExplosiveObject,
     ExplosiveObjectType,
+    createExplosiveObject,
+    createExplosiveObjectDTO,
+    createExplosiveObjectActionSum,
+    ExplosiveObjectAction,
+    Country,
+    ExplosiveObjectClass,
+    ExplosiveObjectClassItem,
     type IExplosiveObject,
     type IExplosiveObjectType,
     type IExplosiveObjectData,
     type IExplosiveObjectTypeData,
     type IExplosiveObjectDataParams,
-    createExplosiveObject,
-    createExplosiveObjectDTO,
     type IExplosiveObjectActionData,
     type IExplosiveObjectAction,
-    createExplosiveObjectActionSum,
-    ExplosiveObjectAction,
-    createExplosiveObjectDetails,
+    type ICountry,
+    type ICountryData,
+    type IExplosiveObjectClassData,
+    type IExplosiveObjectClass,
+    type IExplosiveObjectClassItemData,
+    type IExplosiveObjectClassItem,
 } from './entities';
+import { createExplosiveObjectDetails } from './entities/explosive-object-details';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 
 interface IApi {
@@ -59,17 +68,25 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
     });
+    collectionCountries = new CollectionModel<ICountry, ICountryData>({
+        factory: (data: ICountryData) => new Country(data),
+    });
+    collectionClasses = new CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
+        factory: (data: IExplosiveObjectClassData) => new ExplosiveObjectClass(data),
+    });
+    collectionClassesItems = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
+        factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data),
+    });
     collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>({
-        factory: (data: IExplosiveObjectActionData) =>
-            new ExplosiveObjectAction(data, { collections: { type: this.collectionTypes }, ...this }),
+        factory: (data: IExplosiveObjectActionData) => new ExplosiveObjectAction(data, this),
     });
     collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
-        factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, { collections: { type: this.collectionTypes }, ...this }),
+        factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
     });
     listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         collection: this.collectionTypes,
     });
-    list = new ListModel<IExplosiveObject, IExplosiveObjectData>({ collection: this.collection });
+    list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
     searchList = new ListModel<IExplosiveObject, IExplosiveObjectData>({
         collection: this.collection,
     });
@@ -80,6 +97,15 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    get collections() {
+        return {
+            type: this.collectionTypes,
+            class: this.collectionClasses,
+            classItem: this.collectionClassesItems,
+            country: this.collectionCountries,
+        };
     }
 
     get sortedListTypes() {
@@ -106,10 +132,13 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const res = await this.api.explosiveObject.create(createExplosiveObjectDTO(data));
 
             const value = createExplosiveObject(res);
-            const details = createExplosiveObjectDetails(res);
 
             this.list.unshift(value);
-            if (details) this.collection.get(value.id)?.setDetails(details);
+
+            if (res.details) {
+                const details = createExplosiveObjectDetails(res.details);
+                this.collection.get(value.id)?.setDetails(details);
+            }
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
