@@ -18,6 +18,8 @@ import {
     type IExplosiveObjectClassItemData,
     type ICountry,
     type ICountryData,
+    type IExplosiveObjectDetails,
+    type IExplosiveObjectDetailsData,
 } from '..';
 
 interface IApi {
@@ -34,6 +36,7 @@ interface ICollections {
     class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     country: ICollectionModel<ICountry, ICountryData>;
+    details: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
 }
 
 interface IExplosiveObjectActionParams {

@@ -46,10 +46,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     ) {}
 
     create = async (value: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
-        const res = await this.db.explosiveObject.create({
-            details: null,
-            ...value,
-        });
+        const res = await this.db.explosiveObject.create(value);
         if (!res) throw new Error('there is explosive object');
 
         return res;

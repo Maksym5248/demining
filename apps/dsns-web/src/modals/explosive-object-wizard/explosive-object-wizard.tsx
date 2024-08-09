@@ -61,7 +61,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosiveObject
-                            ? { ...currentExplosiveObject.data }
+                            ? { ...currentExplosiveObject.data, caliber: currentExplosiveObject.details?.data.caliber }
                             : {
                                   typeId: firstType?.data.id,
                               }

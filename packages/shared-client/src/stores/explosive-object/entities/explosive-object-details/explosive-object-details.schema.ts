@@ -24,6 +24,7 @@ export type ILiquidatorData = ILiquidatorDTO;
 export type IReductionData = IReductionDTO;
 
 export interface IExplosiveObjectDetailsData {
+    id: string;
     purpose: IPurposeData | null;
     temperatureRange: [number, number] | null;
     imageIds: string[];
@@ -44,8 +45,9 @@ export interface IExplosiveObjectDetailsData {
     reduction: IReductionData | false | null;
 }
 
-export const createExplosiveObjectDetails = (value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
+export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
     return {
+        id: id,
         purpose: value.purpose,
         temperatureRange: value.temperatureRange,
         imageIds: [],

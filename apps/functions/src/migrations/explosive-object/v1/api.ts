@@ -12,7 +12,7 @@ import { v1Tov2, actionV1Tov2 } from './entitie';
 
 initializeApp({
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    credential: credential.cert(require('../../../../adminsdk.json')),
+    credential: credential.cert(require('../../../../firebase-adminsdk.json')),
 });
 
 const collection = (table: string) => getFirestore().collection(table);

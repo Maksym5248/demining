@@ -8,4 +8,5 @@ export interface IExplosiveObjectForm {
     groupId: string;
     typeId: string;
     classIds: string[];
+    caliber?: number;
 }

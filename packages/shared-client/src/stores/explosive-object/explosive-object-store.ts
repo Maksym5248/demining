@@ -10,7 +10,6 @@ import { type IMessage } from '~/services';
 import {
     ExplosiveObject,
     ExplosiveObjectType,
-    createExplosiveObject,
     createExplosiveObjectDTO,
     createExplosiveObjectActionSum,
     ExplosiveObjectAction,
@@ -38,8 +37,12 @@ import {
     type IExplosiveObjectGroupData,
     ExplosiveObjectGroup,
     createExplosiveObjectGroup,
+    type IExplosiveObjectDetailsData,
+    type IExplosiveObjectDetails,
+    ExplosiveObjectDetails,
+    createExplosiveObject,
+    createExplosiveObjectDetails,
 } from './entities';
-import { createExplosiveObjectDetails } from './entities/explosive-object-details';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 
 interface IApi {
@@ -93,6 +96,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>({
         factory: (data: IExplosiveObjectActionData) => new ExplosiveObjectAction(data, this),
     });
+    collectionDetails = new CollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>({
+        factory: (data: IExplosiveObjectDetailsData) => new ExplosiveObjectDetails(data),
+    });
     collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
         factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
     });
@@ -128,6 +134,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     get collections() {
         return {
+            details: this.collectionDetails,
             group: this.collectionGroups,
             type: this.collectionTypes,
             class: this.collectionClasses,
@@ -164,8 +171,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             this.list.unshift(value);
 
             if (res.details) {
-                const details = createExplosiveObjectDetails(res.details);
-                this.collection.get(value.id)?.setDetails(details);
+                const details = createExplosiveObjectDetails(res.id, res.details);
+                this.collectionDetails.set(details.id, details);
             }
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
@@ -243,6 +250,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (id: string) => {
             const res = await this.api.explosiveObject.get(id);
             this.collection.set(res.id, createExplosiveObject(res));
+
+            if (res.details) {
+                const details = createExplosiveObjectDetails(res.id, res.details);
+                this.collectionDetails.set(details.id, details);
+            }
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

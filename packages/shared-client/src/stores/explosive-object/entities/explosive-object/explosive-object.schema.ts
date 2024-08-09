@@ -13,6 +13,7 @@ export interface IExplosiveObjectData {
     typeId: string;
     classIds: string[];
     countryId: string;
+    detailsId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
@@ -25,16 +26,33 @@ export interface IExplosiveObjectDataParams {
     typeId: string;
     countryId: string;
     classIds: string[];
+    caliber?: number;
 }
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
     name: value?.name ?? null,
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
-    typeId: value.typeId,
-    groupId: value.groupId,
-    component: value.component,
-    countryId: value.countryId,
-    classIds: value.classIds,
+    typeId: value.typeId ?? null,
+    groupId: value.groupId ?? null,
+    component: value.component ?? null,
+    countryId: value.countryId ?? null,
+    classIds: value.classIds ?? [],
+    details: {
+        caliber: value.caliber ?? null,
+        purpose: null,
+        temperatureRange: null,
+        imageIds: [],
+        body: null,
+        size: null,
+        structure: null,
+        action: null,
+        marking: [],
+        neutralization: null,
+        weight: [],
+        fuseIds: [],
+        liquidator: null,
+        reduction: null,
+    },
 });
 
 export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>((value) => ({
@@ -45,7 +63,22 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     groupId: value.groupId ?? '',
     countryId: value.countryId ?? '',
     classIds: value.classIds ?? [],
-    // details: value.details ?? null,
+    details: {
+        caliber: value.caliber ?? null,
+        purpose: null,
+        temperatureRange: null,
+        imageIds: [],
+        body: null,
+        size: null,
+        structure: null,
+        action: null,
+        marking: [],
+        neutralization: null,
+        weight: [],
+        fuseIds: [],
+        liquidator: null,
+        reduction: null,
+    },
 }));
 
 export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObjectData => ({
@@ -58,4 +91,5 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     countryId: value.countryId ?? '',
     groupId: value.groupId ?? undefined,
     name: value?.name ?? '',
+    detailsId: value.id,
 });
