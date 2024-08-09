@@ -96,8 +96,22 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
         factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
     });
+
+    listGroups = new ListModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
+        collection: this.collectionGroups,
+    });
+
+    listCountries = new ListModel<ICountry, ICountryData>({
+        collection: this.collectionCountries,
+    });
     listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         collection: this.collectionTypes,
+    });
+    listClasses = new ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
+        collection: this.collectionClasses,
+    });
+    listClassesItems = new ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
+        collection: this.collectionClassesItems,
     });
     list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
     searchList = new ListModel<IExplosiveObject, IExplosiveObjectData>({
@@ -243,11 +257,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 this.api.explosiveObject.getGroupsList(),
             ]);
 
-            this.collectionTypes.setArr(types.map(createExplosiveObjectType));
-            this.collectionClasses.setArr(classes.map(createExplosiveObjectClass));
-            this.collectionClassesItems.setArr(classesItems.map(createExplosiveObjectClassItem));
-            this.collectionCountries.setArr(countries.map(createCountry));
-            this.collectionGroups.setArr(groups.map(createExplosiveObjectGroup));
+            this.listTypes.set(types.map(createExplosiveObjectType));
+            this.listClasses.set(classes.map(createExplosiveObjectClass));
+            this.listClassesItems.set(classesItems.map(createExplosiveObjectClassItem));
+            this.listCountries.set(countries.map(createCountry));
+            this.listGroups.set(groups.map(createExplosiveObjectGroup));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
