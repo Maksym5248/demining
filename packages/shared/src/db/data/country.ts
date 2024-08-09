@@ -2,7 +2,7 @@ import { type ICountryDB } from '../types';
 
 export const countries: ICountryDB[] = [
     {
-        id: '1',
+        id: 'SSSR',
         name: 'СССР',
     },
 ];

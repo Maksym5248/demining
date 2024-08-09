@@ -8,8 +8,8 @@ import { dates, data } from '~/common';
 export interface IExplosiveObjectData {
     id: string;
     name: string;
-    component: EXPLOSIVE_OBJECT_COMPONENT;
-    groupId: string;
+    component?: EXPLOSIVE_OBJECT_COMPONENT;
+    groupId?: string;
     typeId: string;
     classIds: string[];
     countryId: string;
@@ -50,12 +50,12 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
 
 export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObjectData => ({
     id: value.id,
-    component: value.component,
+    component: value.component ?? undefined,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
     typeId: value.typeId,
     classIds: value.classIds ?? [],
     countryId: value.countryId ?? '',
-    groupId: value.groupId,
+    groupId: value.groupId ?? undefined,
     name: value?.name ?? '',
 });

@@ -4,7 +4,8 @@ import {
     type IExplosiveObjectActionDBv1,
     type IExplosiveObjectActionDB,
     EXPLOSIVE_OBJECT_STATUS,
-    EXPLOSIVE_OBJECT_GROUP,
+    EXPLOSIVE_OBJECT_COMPONENT,
+    countries,
 } from 'shared-my/db';
 
 export const v1Tov2 = (prev: IExplosiveObjectDBv1): IExplosiveObjectDB => {
@@ -13,14 +14,27 @@ export const v1Tov2 = (prev: IExplosiveObjectDBv1): IExplosiveObjectDB => {
         createdAt: prev.createdAt,
         updatedAt: prev.updatedAt,
         name: prev.name,
-        detailsId: null,
+        typeId: prev.typeId,
+        groupId: null,
+        countryId: countries[0].id,
+        classIds: [],
         status: EXPLOSIVE_OBJECT_STATUS.PENDING,
-        meta: {
-            copy: {
-                group: EXPLOSIVE_OBJECT_GROUP.AMMO,
-                typeIds: [],
-                caliber: prev.caliber ?? null,
-            },
+        component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+        details: {
+            purpose: null,
+            temperatureRange: null,
+            imageIds: [],
+            body: null,
+            size: null,
+            structure: null,
+            action: null,
+            marking: [],
+            neutralization: null,
+            weight: [],
+            caliber: prev.caliber ?? null,
+            fuseIds: [],
+            liquidator: null,
+            reduction: null,
         },
     };
 

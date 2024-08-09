@@ -61,8 +61,8 @@ export interface ICountryDB {
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
-    component: EXPLOSIVE_OBJECT_COMPONENT; // Боєприпас
-    groupId: string; // Інженерний
+    component: EXPLOSIVE_OBJECT_COMPONENT | null; // Боєприпас
+    groupId: string | null; // Інженерний
     countryId: string; // СССР
     classIds: string[]; // протитанковий, протиднищевий; кумулятивний
     /** @deprecated */

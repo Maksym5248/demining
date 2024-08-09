@@ -37,6 +37,7 @@ import {
     type IExplosiveObjectGroup,
     type IExplosiveObjectGroupData,
     ExplosiveObjectGroup,
+    createExplosiveObjectGroup,
 } from './entities';
 import { createExplosiveObjectDetails } from './entities/explosive-object-details';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
@@ -234,17 +235,19 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     fetchDeeps = new RequestModel({
         run: async () => {
-            const [types, classes, classesItems, countries] = await Promise.all([
+            const [types, classes, classesItems, countries, groups] = await Promise.all([
                 this.api.explosiveObject.getTypesList(),
                 this.api.explosiveObject.getClassesList(),
                 this.api.explosiveObject.getClassesItemsList(),
                 this.api.explosiveObject.getCountriesList(),
+                this.api.explosiveObject.getGroupsList(),
             ]);
 
             this.collectionTypes.setArr(types.map(createExplosiveObjectType));
             this.collectionClasses.setArr(classes.map(createExplosiveObjectClass));
             this.collectionClassesItems.setArr(classesItems.map(createExplosiveObjectClassItem));
             this.collectionCountries.setArr(countries.map(createCountry));
+            this.collectionGroups.setArr(groups.map(createExplosiveObjectGroup));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

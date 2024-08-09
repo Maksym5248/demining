@@ -18,6 +18,7 @@ import {
     type IExplosiveObjectClassItemDTO,
     type ICountryDTO,
     type IExplosiveObjectTypeDTO,
+    type IExplosiveObjectGroupDTO,
 } from '../dto';
 
 export interface IExplosiveObjectAPI {
@@ -29,6 +30,7 @@ export interface IExplosiveObjectAPI {
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     getCountriesList: () => Promise<ICountryDTO[]>;
     getTypesList: () => Promise<IExplosiveObjectTypeDTO[]>;
+    getGroupsList: () => Promise<IExplosiveObjectGroupDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
