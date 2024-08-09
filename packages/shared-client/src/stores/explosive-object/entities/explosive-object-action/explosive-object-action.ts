@@ -5,8 +5,20 @@ import { type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IExplosiveObjectActionData } from './explosive-object-action.schema';
-import { ExplosiveObject, type IExplosiveObject } from '..';
-import { type IExplosiveObjectTypeData, type IExplosiveObjectType } from '../explosive-object-group';
+import {
+    ExplosiveObject,
+    type IExplosiveObjectType,
+    type IExplosiveObjectTypeData,
+    type IExplosiveObject,
+    type IExplosiveObjectGroup,
+    type IExplosiveObjectGroupData,
+    type IExplosiveObjectClass,
+    type IExplosiveObjectClassData,
+    type IExplosiveObjectClassItem,
+    type IExplosiveObjectClassItemData,
+    type ICountry,
+    type ICountryData,
+} from '..';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -17,8 +29,13 @@ interface IServices {
 }
 
 interface ICollections {
+    group: ICollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
     type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    country: ICollectionModel<ICountry, ICountryData>;
 }
+
 interface IExplosiveObjectActionParams {
     collections: ICollections;
     api: IApi;
