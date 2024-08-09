@@ -2,6 +2,7 @@ import {
     countries,
     explosiveObjectClassData,
     explosiveObjectClassDataItems,
+    explosiveObjectGroupsData,
     explosiveObjectTypesData,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
@@ -81,6 +82,10 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     async getCountriesList() {
         return countries;
     }
+    async getGroupsList() {
+        return explosiveObjectGroupsData;
+    }
+
     async getTypesList() {
         return explosiveObjectTypesData;
     }

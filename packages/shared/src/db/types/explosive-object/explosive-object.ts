@@ -1,21 +1,21 @@
-import { type EXPLOSIVE_OBJECT_TYPE_V1, type EXPLOSIVE_OBJECT_GROUP, type EXPLOSIVE_OBJECT_STATUS } from '~/db';
+import {
+    type EXPLOSIVE_OBJECT_TYPE,
+    type EXPLOSIVE_OBJECT_GROUP,
+    type EXPLOSIVE_OBJECT_STATUS,
+    type EXPLOSIVE_OBJECT_COMPONENT,
+} from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
 
-// 1 - create types
-// 2 - create classification
-// 3 - create class
-// 4 - create object
-// 5 - create object details
 export interface IExplosiveObjectDBv1 extends IBaseDB {
-    typeId: EXPLOSIVE_OBJECT_TYPE_V1;
+    typeId: EXPLOSIVE_OBJECT_TYPE;
     name: string | null;
     caliber: number | null;
 }
 
 export interface IExplosiveObjectDBv2 extends IBaseDB {
-    typeId: EXPLOSIVE_OBJECT_TYPE_V1;
+    typeId: EXPLOSIVE_OBJECT_TYPE;
     name: string | null;
     caliber: number | null;
     meta: {
@@ -29,8 +29,8 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
 
 export interface IExplosiveObjectClassDB {
     id: string;
-    typeId: string;
-    group: EXPLOSIVE_OBJECT_GROUP;
+    groupId: string;
+    component: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
 }
 
@@ -41,10 +41,18 @@ export interface IExplosiveObjectClassItemDB {
     name: string;
 }
 
+export interface IExplosiveObjectGroupDB {
+    id: string;
+    name: string;
+    fullName: string;
+}
+
 export interface IExplosiveObjectTypeDB {
     id: string;
     name: string;
+    fullName: string;
 }
+
 export interface ICountryDB {
     id: string;
     name: string;
@@ -53,9 +61,11 @@ export interface ICountryDB {
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
-    group: EXPLOSIVE_OBJECT_GROUP; // Боєприпас
+    component: EXPLOSIVE_OBJECT_COMPONENT; // Боєприпас
+    groupId: string; // Інженерний
     countryId: string; // СССР
-    typeId: string; // інженерний
     classIds: string[]; // протитанковий, протиднищевий; кумулятивний
+    /** @deprecated */
+    typeId: string; // old
     details: IExplosiveObjectDetailsDB | null;
 }

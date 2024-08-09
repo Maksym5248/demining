@@ -4,7 +4,7 @@ export enum EXPLOSIVE_OBJECT_STATUS {
     PENDING = 'PENDING',
 }
 
-export enum EXPLOSIVE_OBJECT_GROUP {
+export enum EXPLOSIVE_OBJECT_COMPONENT {
     AMMO = 'AMMO',
     FUSE = 'FUSE',
 }
@@ -18,7 +18,7 @@ export enum EXPLOSIVE_OBJECT_CLASS {
     CALIBER = 'CALIBER', // за калібром
 }
 
-export enum EXPLOSIVE_OBJECT_TYPE {
+export enum EXPLOSIVE_OBJECT_GROUP {
     ENGINEERING = 'ENGINEERING',
     AVIATION_BOMBS = 'AVIATION_BOMBS',
     GRENADES = 'GRENADES', // АГС, РПГ, СПГ,
@@ -33,7 +33,7 @@ export enum EXPLOSIVE_OBJECT_TYPE {
     // UNMANNED_AERIAL_VEHICLE = 'UNMANNED_AERIAL_VEHICLE', // БПЛА
 }
 
-export enum EXPLOSIVE_OBJECT_TYPE_V1 {
+export enum EXPLOSIVE_OBJECT_TYPE {
     AB = 'AB',
     UAM = 'UAM',
     AS = 'AS',

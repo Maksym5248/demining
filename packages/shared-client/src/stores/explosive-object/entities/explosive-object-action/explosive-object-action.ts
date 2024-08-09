@@ -6,7 +6,7 @@ import { type IMessage } from '~/services';
 
 import { type IExplosiveObjectActionData } from './explosive-object-action.schema';
 import { ExplosiveObject, type IExplosiveObject } from '..';
-import { type IExplosiveObjectTypeData, type IExplosiveObjectType } from '../explosive-object-type';
+import { type IExplosiveObjectTypeData, type IExplosiveObjectType } from '../explosive-object-group';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;

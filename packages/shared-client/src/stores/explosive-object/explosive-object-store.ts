@@ -34,6 +34,9 @@ import {
     createExplosiveObjectType,
     createExplosiveObjectClass,
     createCountry,
+    type IExplosiveObjectGroup,
+    type IExplosiveObjectGroupData,
+    ExplosiveObjectGroup,
 } from './entities';
 import { createExplosiveObjectDetails } from './entities/explosive-object-details';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
@@ -69,6 +72,10 @@ export interface IExplosiveObjectStore {
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
+
+    collectionGroups = new CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
+        factory: (data: IExplosiveObjectGroupData) => new ExplosiveObjectGroup(data),
+    });
 
     collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
@@ -106,6 +113,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     get collections() {
         return {
+            group: this.collectionGroups,
             type: this.collectionTypes,
             class: this.collectionClasses,
             classItem: this.collectionClassesItems,

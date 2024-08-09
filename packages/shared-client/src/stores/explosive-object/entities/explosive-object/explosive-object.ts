@@ -7,14 +7,15 @@ import { type IMessage } from '~/services';
 
 import {
     type IExplosiveObjectDataParams,
+    type IExplosiveObjectData,
     updateExplosiveObjectDTO,
     createExplosiveObject,
-    type IExplosiveObjectData,
 } from './explosive-object.schema';
 import { type ICountryData, type ICountry } from '../country';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
 import { ExplosiveObjectDetails, type IExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
+import { type IExplosiveObjectGroupData, type IExplosiveObjectGroup } from '../explosive-object-group';
 import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
 
 interface IApi {
@@ -26,6 +27,7 @@ interface IServices {
 }
 
 interface ICollections {
+    group: ICollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
     type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;

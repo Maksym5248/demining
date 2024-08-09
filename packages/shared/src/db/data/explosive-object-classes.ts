@@ -1,23 +1,23 @@
-import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_TYPE } from '../enum';
+import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_COMPONENT } from '../enum';
 import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../types';
 
 export const explosiveObjectClassData: IExplosiveObjectClassDB[] = [
     {
         id: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
-        group: EXPLOSIVE_OBJECT_GROUP.AMMO,
-        typeId: EXPLOSIVE_OBJECT_TYPE.ENGINEERING,
+        component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+        groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'за призначенням',
     },
     {
         id: EXPLOSIVE_OBJECT_CLASS.METHOD,
-        group: EXPLOSIVE_OBJECT_GROUP.AMMO,
-        typeId: EXPLOSIVE_OBJECT_TYPE.ENGINEERING,
+        component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+        groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'За способом ураження',
     },
     {
         id: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
-        group: EXPLOSIVE_OBJECT_GROUP.AMMO,
-        typeId: EXPLOSIVE_OBJECT_TYPE.ENGINEERING,
+        component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+        groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'За зоною розльоту осколків',
     },
 ];
