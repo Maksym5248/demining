@@ -1,1 +1,1 @@
-export * as mapUtils from "./map";
+export * as mapUtils from './map';

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EMPLOYEE_TYPE, ranksData } from 'shared-my/db';
+import { EMPLOYEE_TYPE } from 'shared-my/db';
 
 import { type IEmployeeAPI, type IEmployeeDTO } from '~/api';
 import { type ICreateValue, dates } from '~/common';
@@ -37,10 +37,10 @@ export interface IEmployeeStore {
     chiefFirst: IEmployee;
     squadLeadFirst: IEmployee;
 
-    init: () => void;
     getById: (id: string) => IEmployee | undefined;
     append: (res: IEmployeeDTO[], isSearch: boolean, isMore?: boolean) => void;
     setAll: (res: IEmployeeDTO[]) => void;
+    fetchRanks: IRequestModel;
     create: IRequestModel<[ICreateValue<IEmployeeData>]>;
     remove: IRequestModel<[string]>;
     fetchListAll: IRequestModel;
@@ -102,10 +102,6 @@ export class EmployeeStore implements IEmployeeStore {
         return this.squadLeads[0];
     }
 
-    init() {
-        this.ranksList.push(ranksData.map(createRank));
-    }
-
     getById(id: string) {
         return this.collection.get(id);
     }
@@ -122,6 +118,13 @@ export class EmployeeStore implements IEmployeeStore {
         this.list.setMore(false);
         this.list.push(res.map(createEmployee));
     }
+
+    fetchRanks = new RequestModel({
+        run: async () => {
+            const res = await this.api.employee.getRanksList();
+            this.ranksList.push(res.map(createRank));
+        },
+    });
 
     create = new RequestModel({
         run: async (data: ICreateValue<IEmployeeData>) => {

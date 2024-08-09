@@ -12,3 +12,4 @@ tsconfig.tsbuildinfo
 .env
 ui-debug.log
 isolate
+firebase-adminsdk.json

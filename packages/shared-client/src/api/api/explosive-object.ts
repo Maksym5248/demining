@@ -1,15 +1,36 @@
-import { explosiveObjectsData, type IExplosiveObjectActionDB, type IExplosiveObjectDB } from 'shared-my/db';
+import {
+    countries,
+    explosiveObjectClassData,
+    explosiveObjectClassDataItems,
+    explosiveObjectGroupsData,
+    explosiveObjectTypesData,
+    type IExplosiveObjectActionDB,
+    type IExplosiveObjectDB,
+} from 'shared-my/db';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
 
-import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams, type IExplosiveObjectActionSumDTO } from '../dto';
+import {
+    type IExplosiveObjectDTO,
+    type IExplosiveObjectDTOParams,
+    type IExplosiveObjectActionSumDTO,
+    type IExplosiveObjectClassDTO,
+    type IExplosiveObjectClassItemDTO,
+    type ICountryDTO,
+    type IExplosiveObjectTypeDTO,
+    type IExplosiveObjectGroupDTO,
+} from '../dto';
 
 export interface IExplosiveObjectAPI {
     create: (value: ICreateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
     update: (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectDTO[]>;
-    init: () => Promise<void>;
+    getClassesList: () => Promise<IExplosiveObjectClassDTO[]>;
+    getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
+    getCountriesList: () => Promise<ICountryDTO[]>;
+    getTypesList: () => Promise<IExplosiveObjectTypeDTO[]>;
+    getGroupsList: () => Promise<IExplosiveObjectGroupDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
@@ -25,9 +46,10 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     ) {}
 
     create = async (value: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
-        const explosiveObject = await this.db.explosiveObject.create(value);
-        if (!explosiveObject) throw new Error('there is explosive object');
-        return explosiveObject;
+        const res = await this.db.explosiveObject.create(value);
+        if (!res) throw new Error('there is explosive object');
+
+        return res;
     };
 
     update = async (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
@@ -49,19 +71,23 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
 
-    init = async (): Promise<void> => {
-        const count = await this.db.explosiveObject.count();
+    async getClassesList() {
+        return explosiveObjectClassData;
+    }
 
-        if (count) return;
+    async getClassesItemsList() {
+        return explosiveObjectClassDataItems;
+    }
+    async getCountriesList() {
+        return countries;
+    }
+    async getGroupsList() {
+        return explosiveObjectGroupsData;
+    }
 
-        this.db.batchStart();
-
-        explosiveObjectsData.forEach((el) => {
-            this.db.explosiveObject.create(el);
-        });
-
-        await this.db.batchCommit();
-    };
+    async getTypesList() {
+        return explosiveObjectTypesData;
+    }
 
     get = async (id: string): Promise<IExplosiveObjectDTO> => {
         const res = await this.db.explosiveObject.get(id);

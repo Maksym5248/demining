@@ -8,7 +8,7 @@
  */
 import { initializeApp } from 'firebase-admin/app';
 
-import { processSignUp, refreshToken } from './auth';
+import { processSignUp, refreshToken } from './api';
 
 initializeApp();
 

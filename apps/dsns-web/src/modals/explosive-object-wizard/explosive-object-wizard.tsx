@@ -1,7 +1,7 @@
 import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
-import { WizardButtons, Select, WizardFooter } from '~/components';
+import { Select, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { select } from '~/utils';
@@ -61,7 +61,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosiveObject
-                            ? { ...currentExplosiveObject.data }
+                            ? { ...currentExplosiveObject.data, caliber: currentExplosiveObject.details?.data.caliber }
                             : {
                                   typeId: firstType?.data.id,
                               }

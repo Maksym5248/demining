@@ -1,5 +1,5 @@
-import { type Timestamp as TimestampInternal } from '@firebase/firestore-types';
-
+import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp } from './common';
+import { type IExplosiveObjectDBv1, type IExplosiveObjectDB, type IExplosiveObjectDBv2 } from './explosive-object/explosive-object';
 import {
     type EMPLOYEE_TYPE,
     type DOCUMENT_TYPE,
@@ -11,9 +11,9 @@ import {
     type ASSET_TYPE,
     type MISSION_REQUEST_TYPE,
     type EXPLOSIVE_TYPE,
-} from './enum';
+    type RANKS,
+} from '../enum';
 
-export type Timestamp = TimestampInternal;
 export interface IAddressDB {
     city: string | null;
     country: string | null;
@@ -24,16 +24,15 @@ export interface IAddressDB {
     street: string | null;
     municipality: string | null;
 }
-export interface IBaseDB {
+
+/**
+ * saved locally
+ */
+export interface IRankDB {
     id: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
-    _search?: string[];
-}
-export interface ILinkedToDocumentDB {
-    documentType: DOCUMENT_TYPE;
-    documentId: string;
-    executedAt: Timestamp | null;
+    fullName: string;
+    shortName: string;
+    rank: RANKS;
 }
 
 export interface IEmployeeDB extends IBaseDB {
@@ -64,11 +63,24 @@ export interface IMissionRequestDB extends IBaseDB {
     type?: MISSION_REQUEST_TYPE;
 }
 
-export interface IExplosiveObjectDB extends IBaseDB {
-    typeId: string;
-    name: string | null;
-    caliber: number | null;
-    authorId: string;
+export interface IExplosiveObjectActionDBv1 extends IExplosiveObjectDBv1, ILinkedToDocumentDB {
+    explosiveObjectId: string;
+    quantity: number;
+    category: EXPLOSIVE_OBJECT_CATEGORY;
+    isDiscovered: boolean;
+    isTransported: boolean;
+    isDestroyed: boolean;
+    executedAt: Timestamp;
+}
+
+export interface IExplosiveObjectActionDBv2 extends IExplosiveObjectDBv2, ILinkedToDocumentDB {
+    explosiveObjectId: string;
+    quantity: number;
+    category: EXPLOSIVE_OBJECT_CATEGORY;
+    isDiscovered: boolean;
+    isTransported: boolean;
+    isDestroyed: boolean;
+    executedAt: Timestamp;
 }
 
 export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {

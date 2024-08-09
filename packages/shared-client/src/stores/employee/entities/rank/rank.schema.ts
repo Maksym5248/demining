@@ -1,5 +1,7 @@
 import { RANKS } from 'shared-my/db';
 
+import { type IRankDTO } from '~/api';
+
 export interface IRankData {
     id: string;
     fullName: string;
@@ -7,7 +9,7 @@ export interface IRankData {
     rank: RANKS;
 }
 
-export const createRank = (rank: IRankData): IRankData => ({
+export const createRank = (rank: IRankDTO): IRankData => ({
     id: rank.id,
     fullName: String(rank.fullName) || '',
     shortName: String(rank.shortName) || '',

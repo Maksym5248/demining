@@ -38,12 +38,12 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
         currentOrganization?.updateMember.isLoading;
 
     const onFinishCreate = async (values: IMemberForm) => {
-        await currentOrganization?.createMember.run(values.id, values.isAdmin);
+        await currentOrganization?.createMember.run(values.id, values.isAdmin, values.isAuthor);
         hide();
     };
 
     const onFinishUpdate = async (values: IMemberForm) => {
-        await currentOrganization?.updateMember.run(values.id, values.isAdmin);
+        await currentOrganization?.updateMember.run(values.id, values.isAdmin, values.isAuthor);
         hide();
     };
 
@@ -73,6 +73,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                     initialValues={{
                         id,
                         isAdmin: !!member?.isOrganizationAdmin,
+                        isAuthor: !!member?.isAuthor,
                     }}>
                     <Form.Item label="Email" name="id" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
@@ -90,6 +91,13 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                     <Form.Item
                         label="Адмін організації"
                         name="isAdmin"
+                        valuePropName="checked"
+                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Switch disabled={!viewer.user?.isRootAdmin} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Автор контенту"
+                        name="isAuthor"
                         valuePropName="checked"
                         rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Switch disabled={!viewer.user?.isRootAdmin} />
