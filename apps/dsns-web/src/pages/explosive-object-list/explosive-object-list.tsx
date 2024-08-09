@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space } from 'antd';
+import { Button } from 'antd';
 import { observer } from 'mobx-react';
 import { type IExplosiveObject } from 'shared-my-client/stores';
 
@@ -8,10 +8,6 @@ import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-
-import { s } from './explosive-object-list.styles';
-
-const { Text } = Typography;
 
 const ListItem = observer(({ item }: { item: IExplosiveObject }) => {
     const onOpen = (e: React.SyntheticEvent) => {
@@ -21,14 +17,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject }) => {
 
     return (
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
-            <List.Item.Meta
-                title={item?.fullDisplayName}
-                description={
-                    <Space css={s.listItemDesc}>
-                        <Text type="secondary">{item?.type?.data.fullName}</Text>
-                    </Space>
-                }
-            />
+            <List.Item.Meta title={item?.fullDisplayName} />
         </List.Item>
     );
 });

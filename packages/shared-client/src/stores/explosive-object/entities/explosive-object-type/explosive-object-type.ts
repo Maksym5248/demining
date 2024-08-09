@@ -8,7 +8,7 @@ export interface IExplosiveObjectType {
     updateFields(data: Partial<IExplosiveObjectTypeData>): void;
 }
 
-export class ExplosiveObjectType {
+export class ExplosiveObjectType implements IExplosiveObjectType {
     data: IExplosiveObjectTypeData;
 
     constructor(data: IExplosiveObjectTypeData) {
@@ -17,7 +17,7 @@ export class ExplosiveObjectType {
     }
 
     get displayName() {
-        return `${this.data.name} (${this.data.fullName})`;
+        return this.data.name;
     }
 
     updateFields(data: Partial<IExplosiveObjectTypeData>) {

@@ -147,12 +147,12 @@ export class RootStore implements IRootStore {
 
         this.services.analytics.init();
         this.services.crashlytics.init();
-        this.employee.init();
-        this.explosiveObject.init();
-
-        await DB.init();
 
         try {
+            await DB.init();
+
+            await Promise.all([this.employee.fetchRanks.run(), this.explosiveObject.fetchDeeps.run()]);
+
             this.viewer.initUser();
         } catch (e) {
             this.services.logger.error('init', e);

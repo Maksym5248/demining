@@ -1,13 +1,14 @@
-import { type IEmployeeDB } from 'shared-my/db';
+import { ranksData, type IEmployeeDB } from 'shared-my/db';
 
 import { type ICreateValue, type IDBBase, type IQuery, type IUpdateValue } from '~/common';
 
-import { type IEmployeeDTO } from '../dto';
+import { type IRankDTO, type IEmployeeDTO } from '../dto';
 
 export interface IEmployeeAPI {
     create: (value: ICreateValue<IEmployeeDTO>) => Promise<IEmployeeDTO>;
     update: (id: string, value: IUpdateValue<IEmployeeDTO>) => Promise<IEmployeeDTO>;
     remove: (id: string) => Promise<string>;
+    getRanksList: () => Promise<IRankDTO[]>;
     getList: (query?: IQuery) => Promise<IEmployeeDTO[]>;
     get: (id: string) => Promise<IEmployeeDTO>;
 }
@@ -30,6 +31,10 @@ export class EmployeeAPI implements IEmployeeAPI {
             },
             ...(query ?? {}),
         });
+
+    async getRanksList() {
+        return ranksData;
+    }
 
     get = async (id: string): Promise<IEmployeeDTO> => {
         const res = await this.db.employee.get(id);

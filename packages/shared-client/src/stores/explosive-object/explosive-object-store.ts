@@ -1,6 +1,5 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { explosiveObjectTypesData } from 'shared-my/db';
 
 import { type IExplosiveObjectAPI, type IExplosiveObjectActionSumDTO, type IExplosiveObjectDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -11,18 +10,38 @@ import { type IMessage } from '~/services';
 import {
     ExplosiveObject,
     ExplosiveObjectType,
+    createExplosiveObjectDTO,
+    createExplosiveObjectActionSum,
+    ExplosiveObjectAction,
+    Country,
+    ExplosiveObjectClass,
+    ExplosiveObjectClassItem,
     type IExplosiveObject,
     type IExplosiveObjectType,
     type IExplosiveObjectData,
     type IExplosiveObjectTypeData,
     type IExplosiveObjectDataParams,
-    createExplosiveObject,
-    createExplosiveObjectDTO,
-    createExplosiveObjectType,
     type IExplosiveObjectActionData,
     type IExplosiveObjectAction,
-    createExplosiveObjectActionSum,
-    ExplosiveObjectAction,
+    type ICountry,
+    type ICountryData,
+    type IExplosiveObjectClassData,
+    type IExplosiveObjectClass,
+    type IExplosiveObjectClassItemData,
+    type IExplosiveObjectClassItem,
+    createExplosiveObjectClassItem,
+    createExplosiveObjectType,
+    createExplosiveObjectClass,
+    createCountry,
+    type IExplosiveObjectGroup,
+    type IExplosiveObjectGroupData,
+    ExplosiveObjectGroup,
+    createExplosiveObjectGroup,
+    type IExplosiveObjectDetailsData,
+    type IExplosiveObjectDetails,
+    ExplosiveObjectDetails,
+    createExplosiveObject,
+    createExplosiveObjectDetails,
 } from './entities';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 
@@ -44,35 +63,63 @@ export interface IExplosiveObjectStore {
     sum: SumExplosiveObjectActions;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
-    init: () => void;
     append: (res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) => void;
     create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
-    createExplosiveObjects: RequestModel;
     fetchList: RequestModel<[search?: string]>;
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
+    fetchDeeps: RequestModel;
 }
 
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
 
+    collectionGroups = new CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
+        factory: (data: IExplosiveObjectGroupData) => new ExplosiveObjectGroup(data),
+    });
+
     collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
     });
+    collectionCountries = new CollectionModel<ICountry, ICountryData>({
+        factory: (data: ICountryData) => new Country(data),
+    });
+    collectionClasses = new CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
+        factory: (data: IExplosiveObjectClassData) => new ExplosiveObjectClass(data),
+    });
+    collectionClassesItems = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
+        factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data),
+    });
     collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>({
-        factory: (data: IExplosiveObjectActionData) =>
-            new ExplosiveObjectAction(data, { collections: { type: this.collectionTypes }, ...this }),
+        factory: (data: IExplosiveObjectActionData) => new ExplosiveObjectAction(data, this),
+    });
+    collectionDetails = new CollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>({
+        factory: (data: IExplosiveObjectDetailsData) => new ExplosiveObjectDetails(data),
     });
     collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
-        factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, { collections: { type: this.collectionTypes }, ...this }),
+        factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
+    });
+
+    listGroups = new ListModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
+        collection: this.collectionGroups,
+    });
+
+    listCountries = new ListModel<ICountry, ICountryData>({
+        collection: this.collectionCountries,
     });
     listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         collection: this.collectionTypes,
     });
-    list = new ListModel<IExplosiveObject, IExplosiveObjectData>({ collection: this.collection });
+    listClasses = new ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
+        collection: this.collectionClasses,
+    });
+    listClassesItems = new ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
+        collection: this.collectionClassesItems,
+    });
+    list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
     searchList = new ListModel<IExplosiveObject, IExplosiveObjectData>({
         collection: this.collection,
     });
@@ -85,9 +132,20 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         makeAutoObservable(this);
     }
 
+    get collections() {
+        return {
+            details: this.collectionDetails,
+            group: this.collectionGroups,
+            type: this.collectionTypes,
+            class: this.collectionClasses,
+            classItem: this.collectionClassesItems,
+            country: this.collectionCountries,
+        };
+    }
+
     get sortedListTypes() {
         return this.listTypes.asArray.sort((a, b) =>
-            a.data.fullName.localeCompare(b.data.fullName, ['uk'], {
+            a.data.name.localeCompare(b.data.name, ['uk'], {
                 numeric: true,
                 sensitivity: 'base',
             }),
@@ -97,10 +155,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.sum.set(createExplosiveObjectActionSum(sum));
     }
 
-    init() {
-        const data = explosiveObjectTypesData.map(createExplosiveObjectType);
-        this.listTypes.push(data, true);
-    }
     append(res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) {
         const list = isSearch ? this.searchList : this.list;
         if (isSearch && !isMore) this.searchList.clear();
@@ -111,7 +165,15 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     create = new RequestModel({
         run: async (data: ICreateValue<IExplosiveObjectDataParams>) => {
             const res = await this.api.explosiveObject.create(createExplosiveObjectDTO(data));
-            this.list.unshift(createExplosiveObject(res));
+
+            const value = createExplosiveObject(res);
+
+            this.list.unshift(value);
+
+            if (res.details) {
+                const details = createExplosiveObjectDetails(res.id, res.details);
+                this.collectionDetails.set(details.id, details);
+            }
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -126,12 +188,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
         onError: () => this.services.message.error('Не вдалось видалити'),
-    });
-
-    createExplosiveObjects = new RequestModel({
-        run: () => this.api.explosiveObject.init(),
-        onSuccuss: () => this.services.message.success('Виконано успішно'),
-        onError: () => this.services.message.error('Не вдалось виконати'),
     });
 
     fetchList = new RequestModel({
@@ -194,6 +250,30 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (id: string) => {
             const res = await this.api.explosiveObject.get(id);
             this.collection.set(res.id, createExplosiveObject(res));
+
+            if (res.details) {
+                const details = createExplosiveObjectDetails(res.id, res.details);
+                this.collectionDetails.set(details.id, details);
+            }
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchDeeps = new RequestModel({
+        run: async () => {
+            const [types, classes, classesItems, countries, groups] = await Promise.all([
+                this.api.explosiveObject.getTypesList(),
+                this.api.explosiveObject.getClassesList(),
+                this.api.explosiveObject.getClassesItemsList(),
+                this.api.explosiveObject.getCountriesList(),
+                this.api.explosiveObject.getGroupsList(),
+            ]);
+
+            this.listTypes.set(types.map(createExplosiveObjectType));
+            this.listClasses.set(classes.map(createExplosiveObjectClass));
+            this.listClassesItems.set(classesItems.map(createExplosiveObjectClassItem));
+            this.listCountries.set(countries.map(createCountry));
+            this.listGroups.set(groups.map(createExplosiveObjectGroup));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

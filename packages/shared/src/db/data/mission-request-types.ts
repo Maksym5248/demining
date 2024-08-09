@@ -1,4 +1,4 @@
-import { MISSION_REQUEST_TYPE } from "../enum";
+import { MISSION_REQUEST_TYPE } from '../enum';
 
 export const missionRequestType = [
     {

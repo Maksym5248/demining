@@ -3,7 +3,7 @@ export * from './entities/document-type';
 export * from './entities/employee-type';
 export * from './entities/equipment-type';
 export * from './entities/explosive-object-category';
-export * from './entities/explosive-object-type';
+export * from './entities/explosive-object';
 export * from './entities/explosive-type';
 export * from './entities/mission-request-type';
 export * from './entities/roles';

@@ -13,9 +13,9 @@ export interface IOrganization {
     data: IOrganizationValue;
     members: IListModel<IUser, IUserData>;
     update: IRequestModel<[ICreateOrganizationDTO]>;
-    createMember: IRequestModel<[string, boolean]>;
+    createMember: IRequestModel<[string, boolean, boolean]>;
+    updateMember: IRequestModel<[string, boolean, boolean]>;
     removeMember: IRequestModel<[string]>;
-    updateMember: IRequestModel<[string, boolean]>;
     fetchMembers: IRequestModel;
 }
 
@@ -77,8 +77,13 @@ export class Organization implements IOrganization {
     });
 
     createMember = new RequestModel({
-        run: async (userId: string, isAdmin: boolean) => {
-            const res = await this.api.organization.updateMember(this.data.id, userId, isAdmin, !!this.stores.viewer.user?.isRootAdmin);
+        run: async (userId: string, isAdmin: boolean, isAuthor: boolean) => {
+            const res = await this.api.organization.updateMember(
+                this.data.id,
+                userId,
+                { isAdmin, isAuthor },
+                !!this.stores.viewer.user?.isRootAdmin,
+            );
 
             this.members.push(createUser(res), true);
         },
@@ -87,8 +92,13 @@ export class Organization implements IOrganization {
     });
 
     updateMember = new RequestModel({
-        run: async (userId: string, isAdmin: boolean) => {
-            const res = await this.api.organization.updateMember(this.data.id, userId, isAdmin, !!this.stores.viewer.user?.isRootAdmin);
+        run: async (userId: string, isAdmin: boolean, isAuthor: boolean) => {
+            const res = await this.api.organization.updateMember(
+                this.data.id,
+                userId,
+                { isAdmin, isAuthor },
+                !!this.stores.viewer.user?.isRootAdmin,
+            );
             const member = createUser(res);
 
             this.stores.user.collection.update(member.id, member);

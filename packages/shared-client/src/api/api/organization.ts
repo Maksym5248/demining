@@ -9,7 +9,12 @@ import { type IOrganizationDTO, type IUserDTO, type ICreateOrganizationDTO } fro
 export interface IOrganizationAPI {
     create: (value: Pick<ICreateOrganizationDTO, 'name'>) => Promise<IOrganizationDTO>;
     update: (id: string, value: ICreateOrganizationDTO) => Promise<Omit<IOrganizationDTO, 'members'>>;
-    updateMember: (organizationId: string, userId: string, isAdmin: boolean, isRootAdmin: boolean) => Promise<IUserDTO>;
+    updateMember: (
+        organizationId: string,
+        userId: string,
+        permissions: { isAdmin: boolean; isAuthor: boolean },
+        isRootAdmin: boolean,
+    ) => Promise<IUserDTO>;
     removeMember: (organizationId: string, userId: string) => Promise<void>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IOrganizationDTO[]>;
@@ -37,21 +42,44 @@ export class OrganizationAPI {
         return res;
     };
 
+    private getRoles(user: IUserDB, permissions: { isAdmin: boolean; isAuthor: boolean }) {
+        let roles = user.roles.includes(ROLES.ROOT_ADMIN) ? [ROLES.ROOT_ADMIN] : [];
+
+        if (permissions.isAdmin) {
+            roles.push(ROLES.ORGANIZATION_ADMIN);
+        } else {
+            roles = roles.filter((el) => el !== ROLES.ORGANIZATION_ADMIN);
+        }
+
+        if (permissions.isAuthor) {
+            roles.push(ROLES.AUTHOR);
+        } else {
+            roles = roles.filter((el) => el !== ROLES.AUTHOR);
+        }
+
+        return roles;
+    }
+
     update = async (id: string, value: ICreateOrganizationDTO): Promise<Omit<IOrganizationDTO, 'members'>> => {
         const res = await this.db.organization.update(id, value);
         removeFields(res, 'membersIds');
         return res;
     };
 
-    updateMember = async (organizationId: string, userId: string, isAdmin: boolean, isRootAdmin: boolean): Promise<IUserDTO> => {
+    updateMember = async (
+        organizationId: string,
+        userId: string,
+        permissions: { isAdmin: boolean; isAuthor: boolean },
+        isRootAdmin: boolean,
+    ): Promise<IUserDTO> => {
         const [organization, user] = await Promise.all([
             this.db.organization.get(organizationId),
             this.db.user.get(userId) as Promise<IUserDTO>,
         ]);
 
         const membersIds = organization?.membersIds ?? [];
-        const userRolesWithAdmin = user.roles.includes(ROLES.ORGANIZATION_ADMIN) ? user.roles : [...user.roles, ROLES.ORGANIZATION_ADMIN];
-        const roles = isAdmin ? userRolesWithAdmin : user.roles.filter((el) => el !== ROLES.ORGANIZATION_ADMIN);
+
+        const roles = this.getRoles(user, permissions);
 
         await Promise.all([
             this.db.organization.update(organizationId, {

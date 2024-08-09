@@ -29,10 +29,11 @@ export const DevPage = observer(() => {
             store.equipment.create.run(el);
         });
     };
-
-    const onCreateExplosiveObjects = async () => {
-        store.explosiveObject.createExplosiveObjects.run();
-    };
+    const isLoading =
+        store.employee.create.isLoading ||
+        store.missionRequest.create.isLoading ||
+        store.transport.create.isLoading ||
+        store.equipment.create.isLoading;
 
     return (
         <div>
@@ -41,15 +42,12 @@ export const DevPage = observer(() => {
             </Space>
 
             <div css={s.content}>
-                {store.explosiveObject.createExplosiveObjects.isLoading ? (
+                {isLoading ? (
                     <Loading />
                 ) : (
                     <>
                         <Space>
                             <Button onClick={onClickGenerateEmployee}>Згенеруват дані о/c</Button>
-                        </Space>
-                        <Space>
-                            <Button onClick={onCreateExplosiveObjects}>Створити ВНП</Button>
                         </Space>
                     </>
                 )}

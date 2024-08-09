@@ -1,12 +1,3 @@
-TODO:
-- shared rules for prittier
-- fix huskie and lint-staged
-- fix eslint errors
-- refactoring web code to make items independent
-- create package shared-client
-- move stores, controllers, client-types, client utils to shared-client
-- move common utils to shared
-
 packages:
 - shared
 - shared/client 
@@ -17,13 +8,58 @@ apps:
 - web dsns (how to connect dictionaries ?? should we create different web app for dictionaries)
 - mobile dictionaries (explosive objects, explosive, furmulas, some common practice, mine detectors)
 - mobile app dsns (for documents)
+- ammo web admin
+- ammo mobile
 
+Migration explosiveObject
 
-Refactoring
+1. + create author role
+2. налаштуати права автора в firestore rules and ui, можливість заходити в додаток без організації, заборониити не авторам редагувати вибухонебезпечні предмети
+3. створити таблицю для підривників
+4. створит окрему таблцю для Боєприпасів
+5. посилатися на них у таблиці на ВНП
+6. автоматично оновлювати в explosive objects поля які використовуються і позначиитии як продубльовані і звідки, додати поле meta
+7. мігрувати на нову структуру explosive objects та action explosive object
+8. онвоити ui відповідно до нової структури
 
+actions
+- remove dublications
+- видалення обєктів повинно не видалята а змінювати поле на isRemoved
+
+КАТЕГОРІЇ
+5. налаштування сатегорій боєприпасів та створення окремої сторінки для них
+6. налаштування категорій для створених боєприпасів
+
+ВИБУХОВІ РЕЧОВИНИ ТА ЗА ТА ВР
+7. переіменувати поточну таблицю на засоби підриву та засоби ініціювання
+8. створити окрему таблицю для вибухових речовин та засобів підриву
+
+common
+ - перенести поле _search до meta
+ 
+AMMO ADMIN app
+// in feature we can for multi apps we can migrate on format
+// roles: [{
+//     app: "DSNS"
+//     roles: ['ROOT_ADMIN', 'ORGANIZATION_ADMIN'],
+// }]
+
+1. - add field apps to user (need to know source of app)
+2. - create web ui library
+3. - write app field to the token
+4. - move management explosive and explosive objects modules to ammo-admin-app
+
+TODO
+- migration from old explosive object and action schema to new
+- how to show tree of clasification of ammonnitions
+- make removed as archived and rewrite actions to disable data dublications
+- create shared theme
 - map
 - form to useFormik
 - validation yup
 - map utils
 - normalize data, all data should be the same as we have in db not in dto
 - token expiration
+- permissions to edit explosive objects
+
+Детальна класифікація боєприпасів та підривників

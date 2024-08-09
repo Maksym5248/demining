@@ -1,5 +1,5 @@
 import { type WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
-import { TABLES, TABLES_DIR, explosiveObjectTypesData, mapUtils } from 'shared-my/db';
+import { TABLES, TABLES_DIR, mapUtils } from 'shared-my/db';
 import {
     type IDocumentDB,
     type IEmployeeActionDB,
@@ -34,11 +34,6 @@ const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | 'updatedAt
     geo: mapUtils.getGeoDB(value),
 });
 
-const getSearchDataExplosiveObject = (value: Partial<IExplosiveObjectDB>) => {
-    const type = explosiveObjectTypesData.find((item) => item.id === value.typeId);
-    return [type?.fullName, type?.name].filter((el) => !!el) as string[];
-};
-
 const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
     if (!value.polygon && !value.circle && !value.marker) {
         return {};
@@ -55,13 +50,7 @@ export class DBRemote implements IDB {
 
     organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ['name'], getCreateData);
 
-    explosiveObject = new DBBase<IExplosiveObjectDB>(
-        TABLES.EXPLOSIVE_OBJECT,
-        ['name', 'caliber'],
-        getCreateData,
-        undefined,
-        getSearchDataExplosiveObject,
-    );
+    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
 
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
