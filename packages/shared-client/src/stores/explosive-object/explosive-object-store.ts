@@ -247,7 +247,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
-    fetchDeeps = new RequestModel({
+    fetchDeeps = new ReqsuestModel({
         run: async () => {
             const [types, classes, classesItems, countries, groups] = await Promise.all([
                 this.api.explosiveObject.getTypesList(),
