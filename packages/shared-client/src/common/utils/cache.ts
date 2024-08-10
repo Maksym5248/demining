@@ -1,4 +1,4 @@
-export default class Cache {
+export class Cache {
     _data: { [key: string]: any };
 
     constructor() {

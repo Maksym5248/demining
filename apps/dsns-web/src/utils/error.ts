@@ -8,7 +8,7 @@ const createError = (e: Error) => ({
     reason: get(e, 'response.data.reason', null),
 });
 
-const getErrorTranslation = (e?: { message: string } | null) => {
+export default const getErrorTranslation = (e?: { message: string } | null) => {
     let res = null;
 
     if (e?.message?.includes('auth/invalid-login-credentials')) {
