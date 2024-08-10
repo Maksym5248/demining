@@ -22,7 +22,7 @@ export function App(): React.JSX.Element {
                         backgroundColor: isDarkMode ? Colors.black : Colors.white,
                     }}>
                     <Section title="Step One">
-                        Edit <Text style={styles.highlight}>App.tsx</Text> to change this screen and then come back to see your edits.
+                        <Text style={styles.highlight}>App.tsx</Text>
                     </Section>
                     <Section title="See Your Changes">
                         <ReloadInstructions />
@@ -30,7 +30,6 @@ export function App(): React.JSX.Element {
                     <Section title="Debug">
                         <DebugInstructions />
                     </Section>
-                    <Section title="Learn More">Read the docs to discover what to do next:</Section>
                     <LearnMoreLinks />
                 </View>
             </ScrollView>
@@ -39,19 +38,6 @@ export function App(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-    sectionContainer: {
-        marginTop: 32,
-        paddingHorizontal: 24,
-    },
-    sectionTitle: {
-        fontSize: 24,
-        fontWeight: '600',
-    },
-    sectionDescription: {
-        marginTop: 8,
-        fontSize: 18,
-        fontWeight: '400',
-    },
     highlight: {
         fontWeight: '700',
     },
