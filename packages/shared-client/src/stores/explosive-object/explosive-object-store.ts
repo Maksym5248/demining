@@ -160,6 +160,14 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         if (isSearch && !isMore) this.searchList.clear();
 
         list.checkMore(res.length);
+
+        res.forEach((el) => {
+            if (el.details) {
+                const details = createExplosiveObjectDetails(el.id, el.details);
+                this.collectionDetails.set(details.id, details);
+            }
+        });
+
         list.push(res.map(createExplosiveObject), true);
     }
     create = new RequestModel({
@@ -168,12 +176,12 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
             const value = createExplosiveObject(res);
 
-            this.list.unshift(value);
-
             if (res.details) {
                 const details = createExplosiveObjectDetails(res.id, res.details);
                 this.collectionDetails.set(details.id, details);
             }
+
+            this.list.unshift(value);
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -226,7 +234,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            list.push(res.map(createExplosiveObject), true);
+            this.append(res, isSearch, true);
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -249,12 +257,15 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     fetchItem = new RequestModel({
         run: async (id: string) => {
             const res = await this.api.explosiveObject.get(id);
-            this.collection.set(res.id, createExplosiveObject(res));
+            console.log('res', res);
 
             if (res.details) {
                 const details = createExplosiveObjectDetails(res.id, res.details);
+                console.log('details', details);
                 this.collectionDetails.set(details.id, details);
             }
+
+            this.collection.set(res.id, createExplosiveObject(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

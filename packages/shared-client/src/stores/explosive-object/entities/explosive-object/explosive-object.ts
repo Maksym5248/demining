@@ -85,20 +85,12 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get displayName() {
-        return this.data.name ?? '';
+        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? this.details.data.caliber : ''}`;
     }
 
     get fullDisplayName() {
-        return this.data.name ?? '';
+        return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
     }
-
-    // get displayName() {
-    //     return `${this.data.name ?? ''}${this.data.name && this.data?.details?.caliber ? '  -  ' : ''}${this.data.details > caliber ? this.data.caliber : ''}`;
-    // }
-
-    // get fullDisplayName() {
-    //     return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
-    // }
 
     update = new RequestModel({
         run: async (data: IUpdateValue<IExplosiveObjectDataParams>) => {
