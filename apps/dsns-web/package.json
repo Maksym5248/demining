@@ -66,6 +66,7 @@
         "lint-staged": "^14.0.1",
         "mini-css-extract-plugin": "^2.7.6",
         "node-loader": "^2.0.0",
+        "prettier": "^3.0.3",
         "react-refresh": "^0.14.0",
         "style-loader": "^3.0.0",
         "terser-webpack-plugin": "^5.3.10",
@@ -76,12 +77,9 @@
         "webpack": "^5.69.1",
         "webpack-bundle-analyzer": "^4.10.1",
         "webpack-cli": "^5.1.4",
-        "webpack-dev-server": "^4.15.1",
-        "prettier": "^3.0.3"
+        "webpack-dev-server": "^4.15.1"
     },
     "dependencies": {
-        "shared-my": "*",
-        "shared-my-client": "*",
         "@ant-design/icons": "^4.3.0",
         "@emotion/css": "^11.11.2",
         "@emotion/eslint-plugin": "^11.11.0",
@@ -95,6 +93,7 @@
         "easy-template-x": "^3.2.0",
         "events": "^3.3.0",
         "firebase": "10.10.0",
+        "formik": "^2.4.5",
         "html2canvas": "^1.4.1",
         "i18next": "^23.6.0",
         "jsstore": "^4.6.4",
@@ -109,9 +108,10 @@
         "react-dom": "^18.2.0",
         "react-i18next": "^13.3.1",
         "react-router-dom": "^6.16.0",
+        "shared-my": "*",
+        "shared-my-client": "*",
         "use-places-autocomplete": "^4.0.1",
-        "yup": "^1.2.0",
         "uuid": "^3.3.2",
-        "formik": "^2.4.5"
+        "yup": "^1.2.0"
     }
 }

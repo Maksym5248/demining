@@ -10,7 +10,7 @@
     "packages": [
       "packages/shared",
       "packages/shared-client",
-      "apps/ammo-mobile",
+      "apps/ammo",
       "apps/dsns-web",
       "apps/functions"
     ],
@@ -27,9 +27,11 @@
     "lint-staged": "lint-staged",
     "link:web": "yarn workspace dsns-web add ./packages/shared && yarn workspace dsns-web add ./packages/shared-client",
     "link:functions": "workspace functions add shared-my",
-    "link:ammo-mobile": "yarn workspace ammo-mobile add ./packages/shared && yarn workspace ammo-mobile add ./packages/shared-client",
-    "postinstall": "yarn build:packages",
+    "link:ammo": "yarn workspace ammo add ./packages/shared && yarn workspace ammo add ./packages/shared-client",
     "clean:all": "lerna run watch && lerna run clean",
+    "clean:build:packages": "yarn clean:build:shared && yarn clean:build:shared-client",
+    "clean:build:shared": "lerna run clean:build --scope=shared-my",
+    "clean:build:shared-client": "lerna run clean:build --scope=shared-my-client",
     "clean": "rm -rf node_modules",
     "build:shared": "lerna run build --scope=shared-my",
     "build:shared-client": "lerna run build --scope=shared-my-client",
@@ -42,9 +44,9 @@
     "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev"
   },
   "devDependencies": {
+    "concurrently": "^6.2.0",
     "husky": "^4.3.0",
     "lerna": "^8.1.3",
-    "lint-staged": "^14.0.1",
-    "concurrently": "^6.2.0"
+    "lint-staged": "^14.0.1"
   }
 }
