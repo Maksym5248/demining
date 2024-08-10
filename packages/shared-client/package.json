@@ -32,35 +32,35 @@
         "check:eslint": "eslint --fix"
     },
     "peerDependencies": {
-        "shared-my": "*",
         "axios": "^1.6.5",
         "dayjs": "^1.11.10",
         "formik": "^2.4.5",
+        "lodash": "^4.17.21",
         "mobx": "^6.8.0",
         "mobx-react": "^7.6.0",
         "mobx-react-lite": "^3.4.3",
+        "shared-my": "*",
+        "typescript": "~5.3.3",
         "uuid": "^3.3.2",
         "yup": "^1.2.0",
-        "typescript": "~5.3.3",
-        "lodash": "^4.17.21"
+        "geofire-common": "^6.0.0"
     },
     "dependencies": {
         "@turf/helpers": "^6.5.0",
-        "@turf/turf": "^6.5.0",
-        "geofire-common": "^6.0.0"
+        "@turf/turf": "^6.5.0"
     },
     "devDependencies": {
-        "@firebase/firestore-types": "2.2.0",
         "@firebase/auth-types": "0.12.2",
+        "@firebase/firestore-types": "2.2.0",
         "dayjs": "^1.11.10",
         "eslint": "8.45.0",
         "eslint-plugin-jsx-a11y": "^6.8.0",
         "eslint-plugin-react": "7.33.0",
         "eslint-plugin-react-hooks": "4.6.0",
         "eslint-plugin-testing-library": "5.11.0",
-        "husky": "^4.3.0",
+        "husky": "4.3.0",
         "jest": "^29.7.0",
-        "lint-staged": "^14.0.1",
+        "lint-staged": "14.0.1",
         "prettier": "^3.0.3",
         "tsc-alias": "1.8.10"
     }
