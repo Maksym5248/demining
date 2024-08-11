@@ -13,3 +13,9 @@ export interface ErrorInner {
     code?: string;
     message: string;
 }
+
+export interface TreeNode<T> {
+    id: string;
+    item: T;
+    children: TreeNode<T>[];
+}

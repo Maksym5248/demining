@@ -8,6 +8,11 @@ import {
 import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
 
+export interface IExplosiveObjectComponentNotDB {
+    id: EXPLOSIVE_OBJECT_COMPONENT;
+    name: string;
+}
+
 export interface IExplosiveObjectDBv1 extends IBaseDB {
     typeId: EXPLOSIVE_OBJECT_TYPE;
     name: string | null;

@@ -42,7 +42,8 @@
     "reset": "yarn clean && yarn install && yarn build:functions && yarn build:web",
     "deploy:functions:dev": "lerna run  cd ./apps/dsns-web && yarn deploy:functions:dev",
     "deploy:functions:prod": "cd ./apps/dsns-web && deploy:functions:prod",
-    "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev"
+    "redeploy:functions:dev": "yarn clean && yarn install && yarn build:functions && yarn deploy:functions:dev",
+    "start:web": "yarn workspace dsns-web start"
   },
   "devDependencies": {
     "concurrently": "^6.2.0",

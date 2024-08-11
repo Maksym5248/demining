@@ -1,5 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my/db';
 
 import { type IExplosiveObjectAPI, type IExplosiveObjectActionSumDTO, type IExplosiveObjectDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -57,13 +58,22 @@ export interface IExplosiveObjectStore {
     collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
     collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
+    collectionGroups: CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
+    collectionCountries: CollectionModel<ICountry, ICountryData>;
+    collectionClasses: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    collectionClassesItems: CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     list: ListModel<IExplosiveObject, IExplosiveObjectData>;
     searchList: ListModel<IExplosiveObject, IExplosiveObjectData>;
+    listGroups: ListModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
+    listCountries: ListModel<ICountry, ICountryData>;
+    listClasses: ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    listClassesItems: ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     sum: SumExplosiveObjectActions;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
     append: (res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) => void;
+    getClassesByGroupId(groupId: string, component: EXPLOSIVE_OBJECT_COMPONENT): IExplosiveObjectClass[];
     create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -88,7 +98,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         factory: (data: ICountryData) => new Country(data),
     });
     collectionClasses = new CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
-        factory: (data: IExplosiveObjectClassData) => new ExplosiveObjectClass(data),
+        factory: (data: IExplosiveObjectClassData) =>
+            new ExplosiveObjectClass(data, { collections: { classItem: this.collectionClassesItems }, lists: this.lists }),
     });
     collectionClassesItems = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
         factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data),
@@ -132,6 +143,12 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         makeAutoObservable(this);
     }
 
+    get lists() {
+        return {
+            classItem: this.listClassesItems,
+        };
+    }
+
     get collections() {
         return {
             details: this.collectionDetails,
@@ -170,6 +187,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
         list.push(res.map(createExplosiveObject), true);
     }
+
+    getClassesByGroupId(groupId: string, component: EXPLOSIVE_OBJECT_COMPONENT) {
+        return this.listClasses.asArray.filter((el) => el.data.groupId === groupId && el.data.component === component);
+    }
+
     create = new RequestModel({
         run: async (data: ICreateValue<IExplosiveObjectDataParams>) => {
             const res = await this.api.explosiveObject.create(createExplosiveObjectDTO(data));

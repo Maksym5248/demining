@@ -50,6 +50,8 @@ export interface IExplosiveObject {
     type?: IExplosiveObjectType;
     countries?: ICountry[];
     details?: IExplosiveObjectDetails;
+    group?: IExplosiveObjectGroup;
+    class?: IExplosiveObjectClass[];
 }
 
 export class ExplosiveObject implements IExplosiveObject {
@@ -82,6 +84,10 @@ export class ExplosiveObject implements IExplosiveObject {
 
     get type() {
         return this.collections.type.get(this.data.typeId);
+    }
+
+    get group() {
+        return this.collections.group.get(this.data.groupId);
     }
 
     get displayName() {
