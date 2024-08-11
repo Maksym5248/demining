@@ -6,31 +6,37 @@ export const explosiveObjectGroupsData: IExplosiveObjectGroupDB[] = [
         id: EXPLOSIVE_OBJECT_GROUP.AVIATION_BOMBS,
         name: 'АБ',
         fullName: 'Авіаційна бомба',
+        hasCaliber: true,
     },
     {
         id: EXPLOSIVE_OBJECT_GROUP.ARTILLERY_SHELLS,
         name: 'АС',
         fullName: 'Артилерійський снаряд',
+        hasCaliber: true,
     },
     {
         id: EXPLOSIVE_OBJECT_GROUP.MORTAL_MINES,
         name: 'ММ',
         fullName: 'Мінометна Міна',
+        hasCaliber: true,
     },
     {
         id: EXPLOSIVE_OBJECT_GROUP.HANDLE_GRENADES,
         name: 'РГ',
         fullName: 'Ручна Граната',
+        hasCaliber: false,
     },
     {
         id: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'ІМ',
         fullName: 'Інженерна міна',
+        hasCaliber: false,
     },
     {
         id: EXPLOSIVE_OBJECT_GROUP.AMMO,
         name: 'Набої',
         fullName: 'Боєприпас стрілецької зброї',
+        hasCaliber: true,
     },
     // {
     //     id: '2',

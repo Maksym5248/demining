@@ -50,6 +50,7 @@ export interface IExplosiveObjectGroupDB {
     id: string;
     name: string;
     fullName: string;
+    hasCaliber: boolean;
 }
 
 export interface IExplosiveObjectTypeDB {

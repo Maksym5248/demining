@@ -16,6 +16,6 @@ export interface ErrorInner {
 
 export interface TreeNode<T> {
     id: string;
-    item: T;
+    item?: T;
     children: TreeNode<T>[];
 }

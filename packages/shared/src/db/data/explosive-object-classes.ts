@@ -6,7 +6,7 @@ export const explosiveObjectClassData: IExplosiveObjectClassDB[] = [
         id: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
         groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
-        name: 'за призначенням',
+        name: 'За призначенням',
     },
     {
         id: EXPLOSIVE_OBJECT_CLASS.METHOD,
@@ -87,6 +87,18 @@ export const explosiveObjectClassItemsMethodData = [
         name: 'Осколковий',
     },
     {
+        id: 'f7b23c44-1699-4f2b-ad02-9f86c25a467f',
+        classId: EXPLOSIVE_OBJECT_CLASS.METHOD,
+        parentId: '122dbdd7-6d17-4982-b5fc-6af5063eda35',
+        name: 'Кругового розльоту',
+    },
+    {
+        id: 'a51d4684-b5df-42eb-93b2-93cf06f9bcb3',
+        classId: EXPLOSIVE_OBJECT_CLASS.METHOD,
+        parentId: '122dbdd7-6d17-4982-b5fc-6af5063eda35',
+        name: 'Направленного розльоту',
+    },
+    {
         id: '336b7313-fc8a-44a1-a417-6b66e2e0c86e',
         classId: EXPLOSIVE_OBJECT_CLASS.METHOD,
         parentId: '4f5fe731-3b10-42e3-b7de-f7ff686859ce',
@@ -94,23 +106,4 @@ export const explosiveObjectClassItemsMethodData = [
     },
 ];
 
-export const explosiveObjectClassItemsFragmentationData = [
-    {
-        id: 'f7b23c44-1699-4f2b-ad02-9f86c25a467f',
-        classId: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
-        parentId: '4f5fe731-3b10-42e3-b7de-f7ff686859ce',
-        name: 'Кругового розльоту',
-    },
-    {
-        id: 'a51d4684-b5df-42eb-93b2-93cf06f9bcb3',
-        classId: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
-        parentId: '4f5fe731-3b10-42e3-b7de-f7ff686859ce',
-        name: 'Направленного розльоту',
-    },
-];
-
-export const explosiveObjectClassDataItems = [
-    ...explosiveObjectClassItemsPurposeData,
-    ...explosiveObjectClassItemsMethodData,
-    ...explosiveObjectClassItemsFragmentationData,
-];
+export const explosiveObjectClassDataItems = [...explosiveObjectClassItemsPurposeData, ...explosiveObjectClassItemsMethodData];

@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 
-import { Form, Input, Drawer, InputNumber, Spin, TreeSelect } from 'antd';
+import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { explosiveObjectComponentData } from 'shared-my/db';
+import { TREE_ROOT_ID } from 'shared-my-client/models';
 import { type IExplosiveObjectClassItem } from 'shared-my-client/stores';
 
-import { Select, WizardButtons, WizardFooter } from '~/components';
+import { Select, TreeSelect, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { select, transformTreeNodesToTreeData } from '~/utils';
@@ -110,39 +111,76 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
-                    <Form.Item label="Класифікація" name="classIds">
+                    <Form.Item label="Класифікація" name="classIds" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Form.Item noStyle shouldUpdate={() => true}>
-                            {({ getFieldValue }) => {
+                            {({ getFieldValue, setFieldValue }) => {
+                                const classIds = getFieldValue('classIds');
                                 const groupId = getFieldValue('groupId');
                                 const component = getFieldValue('component');
 
-                                const classsification = explosiveObject.getClassesByGroupId(groupId, component);
-                                console.log('classsification', classsification);
-                                return (
-                                    <TreeSelect
-                                        showSearch
-                                        style={{ width: '100%' }}
-                                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                        placeholder="Please select"
-                                        allowClear
-                                        multiple
-                                        treeDefaultExpandAll
-                                        treeData={classsification.map((el) => ({
-                                            id: el.data.id,
-                                            label: el.data.name,
-                                            children: transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
-                                                el.childrenTree,
-                                                (item) => item.data.name,
-                                            ),
-                                        }))}
-                                    />
-                                );
+                                const classsifications = explosiveObject.getClassesByGroupId(groupId, component);
+
+                                return classsifications.map((classification) => {
+                                    const children =
+                                        classification.itemsTree.tree?.children.filter(
+                                            (item) => !item?.item?.data.parentId || !!classIds.includes(item?.item.data.parentId),
+                                        ) ?? [];
+
+                                    const onChange = (newValue: string) => {
+                                        const classItemsIds = classification.items.map((item) => item.data.id);
+
+                                        const prevValue = classIds.filter((id: string) => classItemsIds.includes(id));
+                                        const prevValueChilds = prevValue
+                                            .map((id: string) => explosiveObject.treeClassesItems.getAllChildsIds(id))
+                                            .reduce((acc: string[], val: string[]) => [...acc, ...val], []);
+
+                                        let value = classIds.filter((id: string) => ![...prevValue, ...prevValueChilds].includes(id));
+
+                                        if (newValue) {
+                                            const newValueParents = explosiveObject.treeClassesItems
+                                                .getAllParentsIds(newValue)
+                                                .filter((id: string) => id !== TREE_ROOT_ID)
+                                                .filter((id) => !value.includes(id));
+                                            value = [...value, newValue, ...newValueParents];
+                                        }
+
+                                        setFieldValue('classIds', value);
+                                    };
+
+                                    return (
+                                        !!children.length && (
+                                            <Form.Item key={classification.data.id}>
+                                                <TreeSelect
+                                                    treeData={transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
+                                                        classification.itemsTree?.tree?.children ?? [],
+                                                        (item) => item?.data?.name ?? '',
+                                                    )}
+                                                    placeholder={classification.displayName}
+                                                    onChange={onChange}
+                                                />
+                                            </Form.Item>
+                                        )
+                                    );
+                                });
                             }}
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label="Калібр" name="caliber">
-                        <InputNumber size="middle" min={1} max={100000} />
+
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => {
+                            const groupId = getFieldValue('groupId');
+                            const group = explosiveObject.collectionGroups.get(groupId);
+
+                            return (
+                                !!group?.data.hasCaliber && (
+                                    <Form.Item label="Калібр" name="caliber">
+                                        <InputNumber size="middle" min={1} max={100000} />
+                                    </Form.Item>
+                                )
+                            );
+                        }}
                     </Form.Item>
+
                     <Form.Item label="Назва" name="name" rules={[{ message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

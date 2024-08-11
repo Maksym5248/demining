@@ -1,40 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type TreeNode } from '~/common';
-import { type IListModel, type ICollectionModel } from '~/models';
+import { data } from '~/common';
+import { type IListModel, type ICollectionModel, TreeModel } from '~/models';
 
 import { type IExplosiveObjectClassData } from './explosive-object-class.schema';
 import { type IExplosiveObjectClassItem, type IExplosiveObjectClassItemData } from '../explosive-object-class-item';
-
-function buildTreeForClass(items: IExplosiveObjectClassItem[]): TreeNode<IExplosiveObjectClassItem>[] {
-    const itemMap: { [key: string]: TreeNode<IExplosiveObjectClassItem> } = {};
-    const roots: TreeNode<IExplosiveObjectClassItem>[] = [];
-
-    try {
-        items.forEach((item) => {
-            itemMap[item.data.id] = { id: item.data.id, item, children: [] };
-        });
-
-        items.forEach((item) => {
-            if (item.data.parentId && itemMap[item.data.parentId]) {
-                itemMap[item.data.parentId].children.push(itemMap[item.data.id]);
-            } else {
-                roots.push(itemMap[item.data.id]);
-            }
-        });
-    } catch (error) {
-        console.log('error', error);
-    }
-
-    return roots;
-}
 
 export interface IExplosiveObjectClass {
     data: IExplosiveObjectClassData;
     displayName: string;
     updateFields(data: Partial<IExplosiveObjectClassData>): void;
-    childrenTree: TreeNode<IExplosiveObjectClassItem>[];
-    childrenItems: IExplosiveObjectClassItem[];
+    itemsTree: TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    items: IExplosiveObjectClassItem[];
 }
 
 interface IExplosiveObjectClassParams {
@@ -67,12 +44,16 @@ export class ExplosiveObjectClass implements IExplosiveObjectClass {
         return this.data.name;
     }
 
-    get childrenItems() {
+    get items() {
         return this.lists.classItem.asArray.filter((item) => this.data.id === item.data.classId);
     }
 
-    get childrenTree() {
-        return buildTreeForClass(this.childrenItems);
+    get itemsTree() {
+        const nodes = data.buildTreeNodes<IExplosiveObjectClassItem>(this.items);
+        const tree = new TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>();
+        tree.set(nodes);
+
+        return tree;
     }
 
     updateFields(data: Partial<IExplosiveObjectClassData>) {
