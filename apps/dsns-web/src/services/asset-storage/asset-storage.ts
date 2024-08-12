@@ -6,6 +6,8 @@ import { AssetStorageBase } from './asset-base';
 export class AssetStorageClass implements IAssetStorage {
     document = new AssetStorageBase(ASSET_TYPE.DOCUMENT);
 
+    image = new AssetStorageBase(ASSET_TYPE.IMAGE);
+
     setOrganizationId(organizationId: string) {
         const rootCollection = `${ASSET_DIR.ORGANIZATION_DATA}/${organizationId}`;
 

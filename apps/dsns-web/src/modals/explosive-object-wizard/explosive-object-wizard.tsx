@@ -2,15 +2,14 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { explosiveObjectComponentData } from 'shared-my/db';
-import { TREE_ROOT_ID } from 'shared-my-client/models';
-import { type IExplosiveObjectClassItem } from 'shared-my-client/stores';
+import { EXPLOSIVE_OBJECT_STATUS, explosiveObjectComponentData, explosiveObjectStatuses, MIME_TYPE } from 'shared-my/db';
 
-import { Select, TreeSelect, WizardButtons, WizardFooter } from '~/components';
+import { Select, UploadFile, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
-import { select, transformTreeNodesToTreeData } from '~/utils';
+import { select } from '~/utils';
 
+import { Classification } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -20,6 +19,13 @@ interface Props {
     mode: WIZARD_MODE;
     hide: () => void;
 }
+
+const getParams = ({ caliber, ...values }: IExplosiveObjectForm) => ({
+    ...values,
+    details: {
+        caliber,
+    },
+});
 
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const { explosiveObject } = useStore();
@@ -32,12 +38,12 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
     const firstType = explosiveObject.listTypes.first;
 
     const onFinishCreate = async (values: IExplosiveObjectForm) => {
-        await explosiveObject.create.run(values);
+        await explosiveObject.create.run(getParams(values));
         hide();
     };
 
     const onFinishUpdate = async (values: IExplosiveObjectForm) => {
-        await currentExplosiveObject?.update.run(values);
+        await currentExplosiveObject?.update.run(getParams(values));
         hide();
     };
 
@@ -73,8 +79,30 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             ? { ...currentExplosiveObject.data, caliber: currentExplosiveObject.details?.data.caliber }
                             : {
                                   typeId: firstType?.data.id,
+                                  status: EXPLOSIVE_OBJECT_STATUS.PENDING,
                               }
                     }>
+                    <Form.Item name="image" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => {
+                                const image = getFieldValue('image');
+                                const imageUri = getFieldValue('imageUri');
+
+                                const onChangeFile = ({ file }: { file: File | null }) => setFieldValue('image', file);
+
+                                return (
+                                    <UploadFile
+                                        onChangeFile={onChangeFile}
+                                        file={image}
+                                        preview="image"
+                                        accept={MIME_TYPE.PNG}
+                                        uri={imageUri}
+                                    />
+                                );
+                            }}
+                        </Form.Item>
+                    </Form.Item>
+
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={select.append(
@@ -111,61 +139,22 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
-                    <Form.Item label="Класифікація" name="classIds" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Form.Item noStyle shouldUpdate={() => true}>
-                            {({ getFieldValue, setFieldValue }) => {
-                                const classIds = getFieldValue('classIds');
-                                const groupId = getFieldValue('groupId');
-                                const component = getFieldValue('component');
+                    <Classification />
 
-                                const classsifications = explosiveObject.getClassesByGroupId(groupId, component);
-
-                                return classsifications.map((classification) => {
-                                    const children =
-                                        classification.itemsTree.tree?.children.filter(
-                                            (item) => !item?.item?.data.parentId || !!classIds.includes(item?.item.data.parentId),
-                                        ) ?? [];
-
-                                    const onChange = (newValue: string) => {
-                                        const classItemsIds = classification.items.map((item) => item.data.id);
-
-                                        const prevValue = classIds.filter((id: string) => classItemsIds.includes(id));
-                                        const prevValueChilds = prevValue
-                                            .map((id: string) => explosiveObject.treeClassesItems.getAllChildsIds(id))
-                                            .reduce((acc: string[], val: string[]) => [...acc, ...val], []);
-
-                                        let value = classIds.filter((id: string) => ![...prevValue, ...prevValueChilds].includes(id));
-
-                                        if (newValue) {
-                                            const newValueParents = explosiveObject.treeClassesItems
-                                                .getAllParentsIds(newValue)
-                                                .filter((id: string) => id !== TREE_ROOT_ID)
-                                                .filter((id) => !value.includes(id));
-                                            value = [...value, newValue, ...newValueParents];
-                                        }
-
-                                        setFieldValue('classIds', value);
-                                    };
-
-                                    return (
-                                        !!children.length && (
-                                            <Form.Item key={classification.data.id}>
-                                                <TreeSelect
-                                                    treeData={transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
-                                                        classification.itemsTree?.tree?.children ?? [],
-                                                        (item) => item?.data?.name ?? '',
-                                                    )}
-                                                    placeholder={classification.displayName}
-                                                    onChange={onChange}
-                                                />
-                                            </Form.Item>
-                                        )
-                                    );
-                                });
-                            }}
-                        </Form.Item>
+                    <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Select
+                            options={explosiveObject.listCountries.asArray.map((el) => ({
+                                label: el.data.name,
+                                value: el.data.id,
+                            }))}
+                        />
                     </Form.Item>
-
+                    <Form.Item label="Статус" name="status" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Select options={explosiveObjectStatuses} />
+                    </Form.Item>
+                    <Form.Item label="Назва" name="name" rules={[{ message: "Прізвище є обов'язковим полем" }]}>
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => {
                             const groupId = getFieldValue('groupId');
@@ -179,10 +168,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 )
                             );
                         }}
-                    </Form.Item>
-
-                    <Form.Item label="Назва" name="name" rules={[{ message: "Прізвище є обов'язковим полем" }]}>
-                        <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>

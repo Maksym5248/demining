@@ -20,10 +20,10 @@ export const v1Tov2 = (prev: IExplosiveObjectDBv1): IExplosiveObjectDB => {
         classIds: [],
         status: EXPLOSIVE_OBJECT_STATUS.PENDING,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+        imageUri: null,
         details: {
             purpose: null,
             temperatureRange: null,
-            imageIds: [],
             body: null,
             size: null,
             structure: null,

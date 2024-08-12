@@ -13,6 +13,8 @@ export interface IExplosiveObjectData {
     typeId: string;
     classIds: string[];
     countryId: string;
+    imageUri?: string;
+    // detailsId the same as id
     detailsId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -26,7 +28,10 @@ export interface IExplosiveObjectDataParams {
     typeId: string;
     countryId: string;
     classIds: string[];
-    caliber?: number;
+    image?: File;
+    details: {
+        caliber?: number;
+    };
 }
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
@@ -37,11 +42,11 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
     component: value.component ?? null,
     countryId: value.countryId ?? null,
     classIds: value.classIds ?? [],
+    image: value.image,
     details: {
-        caliber: value.caliber ?? null,
+        caliber: value.details.caliber ?? null,
         purpose: null,
         temperatureRange: null,
-        imageIds: [],
         body: null,
         size: null,
         structure: null,
@@ -63,11 +68,12 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     groupId: value.groupId ?? '',
     countryId: value.countryId ?? '',
     classIds: value.classIds ?? [],
+    image: value.image,
     details: {
-        caliber: value.caliber ?? null,
+        imageUri: value?.image ?? null,
+        caliber: value.details?.caliber ?? null,
         purpose: null,
         temperatureRange: null,
-        imageIds: [],
         body: null,
         size: null,
         structure: null,
@@ -91,5 +97,6 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     countryId: value.countryId ?? '',
     groupId: value.groupId ?? undefined,
     name: value?.name ?? '',
+    imageUri: value.imageUri ?? '',
     detailsId: value.id,
 });

@@ -71,7 +71,9 @@ export interface IExplosiveObjectDB extends IBaseDB {
     groupId: string | null; // Інженерний
     countryId: string; // СССР
     classIds: string[]; // протитанковий, протиднищевий; кумулятивний
+    imageUri: string | null;
+    details: IExplosiveObjectDetailsDB | null;
+
     /** @deprecated */
     typeId: string; // old
-    details: IExplosiveObjectDetailsDB | null;
 }

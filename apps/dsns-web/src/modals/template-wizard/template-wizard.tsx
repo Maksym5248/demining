@@ -89,7 +89,7 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
         hide();
     };
 
-    const onChangeFile = (item: { file: File }) => {
+    const onChangeFile = (item: { file: File | null }) => {
         setFile(item.file);
     };
 

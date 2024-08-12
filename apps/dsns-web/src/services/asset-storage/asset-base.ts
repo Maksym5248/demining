@@ -1,5 +1,5 @@
 import { getApp } from 'firebase/app';
-import { getStorage, ref, uploadBytes, deleteObject, getBlob } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, deleteObject, getBlob, getDownloadURL } from 'firebase/storage';
 import { type ASSET_TYPE } from 'shared-my/db';
 import { Cache } from 'shared-my-client/common';
 import { type IAssetStorageBase } from 'shared-my-client/services';
@@ -29,6 +29,11 @@ export class AssetStorageBase implements IAssetStorageBase {
 
         return ref(storage, `${dirPath}/${id}`);
     };
+
+    async getFileUrl(id: string): Promise<string> {
+        const fileRef = this.getFileRef(id);
+        return await getDownloadURL(fileRef);
+    }
 
     async save(id: string, data: File): Promise<void> {
         const fileRef = this.getFileRef(id);

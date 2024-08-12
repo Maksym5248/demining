@@ -5,3 +5,4 @@ export * from './explosive-object-classes';
 export * from './explosive-object-component';
 export * from './explosive-object-group';
 export * from './country';
+export * from './statuses';
