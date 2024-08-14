@@ -1,6 +1,6 @@
 import { type IPalette } from './types';
 
-export const palette: Record<string, IPalette> = {
+export const palette: Record<IPalette, string> = {
     black: '#000000',
     grey4E: '#4E4E4E',
     grey92: '#8B8C92',
