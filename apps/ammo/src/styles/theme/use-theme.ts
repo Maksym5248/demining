@@ -1,8 +1,6 @@
-import { useContext } from 'react';
-
-import { ThemeNameContext } from './theme-provider';
+import { useThemeName } from './use-theme-name';
 
 export function useTheme() {
-    const name = useContext(ThemeNameContext);
+    const name = useThemeName();
     return name;
 }
