@@ -1,15 +1,12 @@
+import { ThemeManager as ThemeManagerCreator } from 'react-native-theme-mk';
+
 import { themePrimary } from './primary-theme';
-import { ThemeCreator } from './theme';
-import { useThemeName } from './theme/use-theme-name';
 import { type IThemeSchema } from './types';
 
 const theme: Record<string, IThemeSchema> = {
     primary: themePrimary,
 };
 
-export const Theme = new ThemeCreator<IThemeSchema>(theme);
-
-export const useTheme = () => {
-    const theme = useThemeName();
-    return Theme.get(theme);
-};
+export const ThemeManager = new ThemeManagerCreator('primary', theme, {});
+// eslint-disable-next-line @typescript-eslint/unbound-method
+export const { ThemeProvider, useTheme, useDevice, useScale } = ThemeManager;

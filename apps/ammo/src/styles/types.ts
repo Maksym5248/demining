@@ -1,4 +1,4 @@
-import { type IStyle } from './theme';
+import { type IStyle } from 'react-native-theme-mk';
 
 export type IPalette = 'black' | 'grey4E' | 'grey92' | 'creamF5' | 'white' | 'green78' | 'redEF' | 'transparent' | 'greenF7';
 export type IColor =
