@@ -1,5 +1,6 @@
 export * from './docx-preview';
 export * from './icon';
+export * from './image';
 export * from './list';
 export * from './list-header';
 export * from './map-preview';

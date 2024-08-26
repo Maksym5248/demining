@@ -8,6 +8,7 @@ import { dates, data } from '~/common';
 export interface IExplosiveObjectData {
     id: string;
     name: string;
+    status: EXPLOSIVE_OBJECT_STATUS;
     component?: EXPLOSIVE_OBJECT_COMPONENT;
     groupId?: string;
     typeId: string;
@@ -70,7 +71,6 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     classIds: value.classIds ?? [],
     image: value.image,
     details: {
-        imageUri: value?.image ?? null,
         caliber: value.details?.caliber ?? null,
         purpose: null,
         temperatureRange: null,
@@ -97,6 +97,7 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     countryId: value.countryId ?? '',
     groupId: value.groupId ?? undefined,
     name: value?.name ?? '',
+    status: value.status,
     imageUri: value.imageUri ?? '',
     detailsId: value.id,
 });

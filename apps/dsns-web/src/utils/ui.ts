@@ -20,12 +20,14 @@ const append = (options: Option[], newOption: Partial<Option> | Partial<Option>[
 interface AntTreeNode {
     title: string;
     value?: string;
+    key: string;
     children: AntTreeNode[];
 }
 
 export function transformTreeNodeToTreeData<T>(treeNode: TreeNode<T>, getLabel: (value?: T) => string): AntTreeNode {
     return {
         value: treeNode.id,
+        key: treeNode.id,
         title: getLabel(treeNode?.item),
         children: treeNode.children.map((el) => transformTreeNodeToTreeData(el, getLabel)),
     };

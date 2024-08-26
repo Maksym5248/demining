@@ -8,13 +8,15 @@ interface SelectTemplateProps {
     file: File | null;
     onChangeFile: (options: { file: File | null }) => void;
     accept?: string;
-    preview?: 'doncument' | 'image';
+    type?: 'document' | 'image';
     uri?: string;
 }
 
 const { Dragger } = Upload;
 
-export function UploadFile({ preview = 'doncument', uri, file, onChangeFile, accept = MIME_TYPE.DOCX }: SelectTemplateProps) {
+export function UploadFile({ type = 'document', uri, file, onChangeFile, accept = MIME_TYPE.DOCX }: SelectTemplateProps) {
+    const isImagePreview = !!(file || uri);
+
     return (
         <Dragger
             openFileDialogOnClick
@@ -23,7 +25,7 @@ export function UploadFile({ preview = 'doncument', uri, file, onChangeFile, acc
             onRemove={() => onChangeFile({ file: null })}
             maxCount={1}
             accept={accept}>
-            {preview === 'doncument' && (
+            {type === 'document' && (
                 <>
                     <p className="ant-upload-drag-icon">
                         <Icon.InboxOutlined />
@@ -32,12 +34,13 @@ export function UploadFile({ preview = 'doncument', uri, file, onChangeFile, acc
                     <p className="ant-upload-hint">Вибрати шаблон</p>
                 </>
             )}
-            {preview === 'image' && !file && (
+            {!isImagePreview && !file && (
                 <p className="ant-upload-drag-icon">
+                    <p className="ant-upload-text">Натисніть або перетягніть картинку у цю область, щоб завантажити</p>
                     <Icon.InboxOutlined />
                 </p>
             )}
-            {preview === 'image' && !!(file || uri) && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
+            {isImagePreview && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
         </Dragger>
     );
 }

@@ -91,7 +91,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get displayName() {
-        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? this.details.data.caliber : ''}`;
+        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? `${this.details.data.caliber}мм` : ''}`;
     }
 
     get fullDisplayName() {

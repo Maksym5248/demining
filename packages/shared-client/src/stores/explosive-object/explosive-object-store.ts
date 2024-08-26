@@ -282,11 +282,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     fetchItem = new RequestModel({
         run: async (id: string) => {
             const res = await this.api.explosiveObject.get(id);
-            console.log('res', res);
 
             if (res.details) {
                 const details = createExplosiveObjectDetails(res.id, res.details);
-                console.log('details', details);
                 this.collectionDetails.set(details.id, details);
             }
 

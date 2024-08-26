@@ -16,7 +16,13 @@ const listItemDesc = Theme.css(`
     align-items: flex-start;
 `);
 
+const image = Theme.css(`
+    width: 80px;
+    height: 60px;
+`);
+
 export const s = {
     listHeader,
     listItemDesc,
+    image,
 };
