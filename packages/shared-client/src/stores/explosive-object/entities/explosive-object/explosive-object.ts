@@ -50,6 +50,8 @@ export interface IExplosiveObject {
     type?: IExplosiveObjectType;
     countries?: ICountry[];
     details?: IExplosiveObjectDetails;
+    group?: IExplosiveObjectGroup;
+    class?: IExplosiveObjectClass[];
 }
 
 export class ExplosiveObject implements IExplosiveObject {
@@ -84,8 +86,12 @@ export class ExplosiveObject implements IExplosiveObject {
         return this.collections.type.get(this.data.typeId);
     }
 
+    get group() {
+        return this.collections.group.get(this.data.groupId);
+    }
+
     get displayName() {
-        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? this.details.data.caliber : ''}`;
+        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? `${this.details.data.caliber}мм` : ''}`;
     }
 
     get fullDisplayName() {

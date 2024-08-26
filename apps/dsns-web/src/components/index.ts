@@ -1,5 +1,6 @@
 export * from './docx-preview';
 export * from './icon';
+export * from './image';
 export * from './list';
 export * from './list-header';
 export * from './map-preview';
@@ -7,6 +8,7 @@ export * from './map';
 export * from './search';
 export * from './select';
 export * from './select-async';
+export * from './tree-select';
 export * from './upload-file';
 export * from './wizard-buttons';
 export * from './wizard-footer';

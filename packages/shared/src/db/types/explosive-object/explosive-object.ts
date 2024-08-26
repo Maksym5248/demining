@@ -8,6 +8,11 @@ import {
 import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
 
+export interface IExplosiveObjectComponentNotDB {
+    id: EXPLOSIVE_OBJECT_COMPONENT;
+    name: string;
+}
+
 export interface IExplosiveObjectDBv1 extends IBaseDB {
     typeId: EXPLOSIVE_OBJECT_TYPE;
     name: string | null;
@@ -45,6 +50,7 @@ export interface IExplosiveObjectGroupDB {
     id: string;
     name: string;
     fullName: string;
+    hasCaliber: boolean;
 }
 
 export interface IExplosiveObjectTypeDB {
@@ -65,7 +71,9 @@ export interface IExplosiveObjectDB extends IBaseDB {
     groupId: string | null; // Інженерний
     countryId: string; // СССР
     classIds: string[]; // протитанковий, протиднищевий; кумулятивний
+    imageUri: string | null;
+    details: IExplosiveObjectDetailsDB | null;
+
     /** @deprecated */
     typeId: string; // old
-    details: IExplosiveObjectDetailsDB | null;
 }

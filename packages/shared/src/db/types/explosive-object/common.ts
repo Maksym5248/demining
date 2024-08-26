@@ -1,14 +1,12 @@
 import { type MATERIAL } from '~/db';
 
-import { type IDocumentDB } from '../types';
-
 export interface IMarkingDB {
     name: string;
 }
 
 export interface IStructureDB {
     description: string;
-    imageIds: IDocumentDB[];
+    imageUris: string[];
 }
 
 export interface INeutralizationDB {
@@ -17,7 +15,7 @@ export interface INeutralizationDB {
 
 export interface IActionDB {
     description: string;
-    imageIds: string[];
+    imageUris: string[];
 }
 
 export interface IBodyDB {
@@ -53,7 +51,6 @@ export interface IReductionDB {
 export interface IExplosiveObjectDetailsDB {
     purpose: IPurposeDB | null;
     temperatureRange: [number, number] | null;
-    imageIds: string[];
     body: IBodyDB | null;
     size: ISizeDB | null;
     structure: IStructureDB | null;

@@ -1,10 +1,11 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my/db';
 
 import { type IExplosiveObjectAPI, type IExplosiveObjectActionSumDTO, type IExplosiveObjectDTO } from '~/api';
-import { type ICreateValue } from '~/common';
+import { data, type ICreateValue } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { CollectionModel, type ITreeModel, ListModel, RequestModel, TreeModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import {
@@ -57,13 +58,23 @@ export interface IExplosiveObjectStore {
     collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
     collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
+    collectionGroups: CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
+    collectionCountries: CollectionModel<ICountry, ICountryData>;
+    collectionClasses: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    collectionClassesItems: CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     list: ListModel<IExplosiveObject, IExplosiveObjectData>;
     searchList: ListModel<IExplosiveObject, IExplosiveObjectData>;
+    listGroups: ListModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
+    listCountries: ListModel<ICountry, ICountryData>;
+    listClasses: ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    listClassesItems: ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     sum: SumExplosiveObjectActions;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
     append: (res: IExplosiveObjectDTO[], isSearch: boolean, isMore?: boolean) => void;
+    getClassesByGroupId(groupId: string, component: EXPLOSIVE_OBJECT_COMPONENT): IExplosiveObjectClass[];
+    treeClassesItems: ITreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -76,7 +87,6 @@ export interface IExplosiveObjectStore {
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
-
     collectionGroups = new CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
         factory: (data: IExplosiveObjectGroupData) => new ExplosiveObjectGroup(data),
     });
@@ -88,7 +98,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         factory: (data: ICountryData) => new Country(data),
     });
     collectionClasses = new CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
-        factory: (data: IExplosiveObjectClassData) => new ExplosiveObjectClass(data),
+        factory: (data: IExplosiveObjectClassData) =>
+            new ExplosiveObjectClass(data, { collections: { classItem: this.collectionClassesItems }, lists: this.lists }),
     });
     collectionClassesItems = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
         factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data),
@@ -125,11 +136,19 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
     sum = new SumExplosiveObjectActions();
 
+    treeClassesItems = new TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>();
+
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    get lists() {
+        return {
+            classItem: this.listClassesItems,
+        };
     }
 
     get collections() {
@@ -151,6 +170,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             }),
         );
     }
+
     setSum(sum: IExplosiveObjectActionSumDTO) {
         this.sum.set(createExplosiveObjectActionSum(sum));
     }
@@ -170,6 +190,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
         list.push(res.map(createExplosiveObject), true);
     }
+
+    getClassesByGroupId(groupId: string, component: EXPLOSIVE_OBJECT_COMPONENT) {
+        return this.listClasses.asArray.filter((el) => el.data.groupId === groupId && el.data.component === component);
+    }
+
     create = new RequestModel({
         run: async (data: ICreateValue<IExplosiveObjectDataParams>) => {
             const res = await this.api.explosiveObject.create(createExplosiveObjectDTO(data));
@@ -257,11 +282,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     fetchItem = new RequestModel({
         run: async (id: string) => {
             const res = await this.api.explosiveObject.get(id);
-            console.log('res', res);
 
             if (res.details) {
                 const details = createExplosiveObjectDetails(res.id, res.details);
-                console.log('details', details);
                 this.collectionDetails.set(details.id, details);
             }
 
@@ -285,6 +308,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             this.listClassesItems.set(classesItems.map(createExplosiveObjectClassItem));
             this.listCountries.set(countries.map(createCountry));
             this.listGroups.set(groups.map(createExplosiveObjectGroup));
+
+            this.treeClassesItems.set(data.buildTreeNodes<IExplosiveObjectClassItem>(this.listClassesItems.asArray));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
