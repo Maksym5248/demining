@@ -5,10 +5,12 @@ export interface IAssetStorageBase {
     read(id: string): Promise<File | null>;
     remove(id: string): Promise<void>;
     update(id: string, file: File): Promise<void>;
+    getFileUrl(id: string): Promise<string>;
 }
 
 export interface IAssetStorage {
     document: IAssetStorageBase;
+    image: IAssetStorageBase;
     setOrganizationId(organizationId: string): void;
     removeOrganizationId(): void;
 }

@@ -7,8 +7,10 @@ import {
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
 } from 'shared-my/db';
+import { v4 as uuid } from 'uuid';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
+import { type IAssetStorage } from '~/services';
 
 import {
     type IExplosiveObjectDTO,
@@ -43,17 +45,45 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             batchStart(): void;
             batchCommit(): Promise<void>;
         },
+        private services: {
+            assetStorage: IAssetStorage;
+        },
     ) {}
 
-    create = async (value: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
-        const res = await this.db.explosiveObject.create(value);
+    create = async ({ image, ...value }: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
+        let imageUri = null;
+
+        if (image) {
+            const id = uuid();
+            await this.services.assetStorage.image.save(id, image);
+            imageUri = await this.services.assetStorage.image.getFileUrl(id);
+        }
+
+        const res = await this.db.explosiveObject.create({
+            ...value,
+            imageUri,
+        });
+
         if (!res) throw new Error('there is explosive object');
 
         return res;
     };
 
-    update = async (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
-        const explosiveObject = await this.db.explosiveObject.update(id, value);
+    update = async (id: string, { image, ...value }: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
+        const current = await this.db.explosiveObject.get(id);
+
+        let imageUri = current?.imageUri;
+
+        if (image) {
+            const id = uuid();
+            await this.services.assetStorage.image.save(id, image);
+            imageUri = await this.services.assetStorage.image.getFileUrl(id);
+        }
+
+        const explosiveObject = await this.db.explosiveObject.update(id, {
+            ...value,
+            imageUri,
+        });
 
         if (!explosiveObject) throw new Error('there is explosive object');
 

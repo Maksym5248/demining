@@ -27,7 +27,6 @@ export interface IExplosiveObjectDetailsData {
     id: string;
     purpose: IPurposeData | null;
     temperatureRange: [number, number] | null;
-    imageIds: string[];
     body: IBodyData | null;
     size: ISizeData | null;
     structure: IStructureData | null;
@@ -50,7 +49,6 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         id: id,
         purpose: value.purpose,
         temperatureRange: value.temperatureRange,
-        imageIds: [],
         body: value.body,
         size: value.size,
         structure: value.structure,

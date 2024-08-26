@@ -27,7 +27,7 @@ const services = {
 export const Api = {
     employee: new EmployeeAPI(DB),
     equipment: new EquipmentAPI(DB),
-    explosiveObject: new ExplosiveObjectAPI(DB),
+    explosiveObject: new ExplosiveObjectAPI(DB, services),
     explosive: new ExplosiveAPI(DB),
     missionReport: new MissionReportAPI(DB),
     missionRequest: new MissionRequestAPI(DB),

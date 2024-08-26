@@ -62,7 +62,10 @@ export interface IExplosiveActionSumDTO {
     detonator: number;
 }
 
-export type IExplosiveObjectDTOParams = IExplosiveObjectDB;
+export interface IExplosiveObjectDTOParams extends Omit<IExplosiveObjectDB, 'imageUri'> {
+    image?: File;
+}
+
 export interface IExplosiveObjectActionDTOParams {
     id?: string;
     explosiveObjectId: string;
