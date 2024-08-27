@@ -23,10 +23,11 @@ export const themeBase: IBaseThemeSchema = {
         backgroundChat: palette.creamF5,
         backgroundModal: palette.transparent,
         textSecondary: palette.white,
-        accent: palette.green78,
+        accent: palette.blueB4,
         accentLight: palette.greenF7,
         error: palette.redEF,
         transparent: palette.transparent,
+        ripplePrimary: palette.blackTransparent01,
     },
     fonts: Device.isIOS
         ? {

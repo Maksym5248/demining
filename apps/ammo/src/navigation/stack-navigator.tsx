@@ -21,7 +21,7 @@ export const StackNavigator = () => {
             animation: 'slide_from_right' as StackAnimationTypes,
             animationTypeForReplace: 'push' as const,
         },
-        initialRouteName: SCREENS.HOME,
+        initialRouteName: SCREENS.MAIN,
     };
 
     return (

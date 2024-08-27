@@ -7,6 +7,7 @@ module.exports = (api) => {
       {
         alias: {
           "~/api": "./src/api",
+          '~/core': './src/core',
           '~/components': './src/components',
           '~/containers': './src/containers',
           '~/config': './src/config',
