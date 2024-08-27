@@ -1,6 +1,7 @@
-module.exports = {
-  presets: ['module:@react-native/babel-preset'],
-  plugins: [
+module.exports = (api) => {
+  const isProd = api.env('production');
+
+  const plugins = [
     [
       'module-resolver',
       {
@@ -25,5 +26,17 @@ module.exports = {
         },
       },
     ],
-  ]
+    // ['react-native-reanimated/plugin', {
+    //   relativeSourceLocation: true,
+    // }]
+  ];
+
+  if (isProd) {
+    plugins.push(['transform-remove-console']);
+  }
+
+  return {
+    presets: ['module:@react-native/babel-preset'],
+    plugins,
+  };
 };

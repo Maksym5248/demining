@@ -1,3 +1,5 @@
+import { Device } from '~/utils';
+
 import { createElementsStyles } from './elements';
 import { fonts } from './font-family';
 import { palette } from './palette';
@@ -26,12 +28,19 @@ export const themeBase: IBaseThemeSchema = {
         error: palette.redEF,
         transparent: palette.transparent,
     },
-    fonts: {
-        bold: fonts.AmericaBold,
-        medium: fonts.AmericaMedium,
-        regular: fonts.AmericaRegular,
-        light: fonts.AmericaLight,
-    },
+    fonts: Device.isIOS
+        ? {
+              bold: fonts.AvenirBold,
+              medium: fonts.AvenirMedium,
+              regular: fonts.Avenir,
+              light: fonts.AvenirLight,
+          }
+        : {
+              bold: fonts.SansSerif,
+              medium: fonts.SansSerifMedium,
+              regular: fonts.SansSerif,
+              light: fonts.SansSerifLight,
+          },
     lineHeight: {
         H1: 36,
         H2: 32,
