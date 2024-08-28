@@ -1,3 +1,6 @@
+import Config from 'react-native-config';
+
 export const CONFIG = {
-    ENV: 'dev',
+    IS_DEBUG: true,
+    ENV: Config.ENV,
 };
