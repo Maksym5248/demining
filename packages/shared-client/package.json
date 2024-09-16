@@ -13,6 +13,7 @@
         "config/*"
     ],
     "exports": {
+        ".": "./dist/index.js",
         "./api": "./dist/api/index.js",
         "./common": "./dist/common/index.js",
         "./map": "./dist/map/index.js",
