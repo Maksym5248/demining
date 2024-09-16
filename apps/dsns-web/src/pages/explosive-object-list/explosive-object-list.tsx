@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import { type IExplosiveObject } from 'shared-my-client/stores';
+import { type IExplosiveObject } from 'shared-my-client';
 
 import { Icon, List, ListHeader, Image } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

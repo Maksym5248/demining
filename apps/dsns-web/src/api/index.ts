@@ -1,3 +1,4 @@
+import { publicIpv4 } from 'public-ip';
 import {
     EmployeeAPI,
     EquipmentAPI,
@@ -12,13 +13,13 @@ import {
     DocumentAPI,
     MapAPI,
     ExternalApi as ExternalApiClass,
-} from 'shared-my-client/api';
+} from 'shared-my-client';
 
 import { CONFIG } from '~/config';
 import { DB } from '~/db';
 import { AssetStorage } from '~/services';
 
-export const ExternalApi = new ExternalApiClass(CONFIG.GEO_APIFY_KEY);
+export const ExternalApi = new ExternalApiClass(CONFIG.GEO_APIFY_KEY, publicIpv4);
 
 const services = {
     assetStorage: AssetStorage,

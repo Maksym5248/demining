@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { TRANSPORT_TYPE } from 'shared-my/db';
+import { TRANSPORT_TYPE } from 'shared-my';
 
 import { type ITransportDTO } from '~/api';
 import { type ICreateValue } from '~/common';

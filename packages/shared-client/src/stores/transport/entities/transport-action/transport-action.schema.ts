@@ -1,4 +1,4 @@
-import { DOCUMENT_TYPE, TRANSPORT_TYPE } from 'shared-my/db';
+import { DOCUMENT_TYPE, TRANSPORT_TYPE } from 'shared-my';
 
 import { type ITransportActionDTO } from '~/api';
 import { type ICreateValue } from '~/common';

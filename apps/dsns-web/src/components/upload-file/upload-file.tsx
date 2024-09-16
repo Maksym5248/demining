@@ -1,6 +1,6 @@
 import { Image, Upload } from 'antd';
 import { type RcFile } from 'antd/es/upload';
-import { MIME_TYPE } from 'shared-my/db';
+import { MIME_TYPE } from 'shared-my';
 
 import { Icon } from '../icon';
 

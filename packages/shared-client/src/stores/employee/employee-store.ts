@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EMPLOYEE_TYPE } from 'shared-my/db';
+import { EMPLOYEE_TYPE } from 'shared-my';
 
 import { type IEmployeeAPI, type IEmployeeDTO } from '~/api';
 import { type ICreateValue, dates } from '~/common';

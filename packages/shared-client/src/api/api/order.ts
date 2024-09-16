@@ -1,5 +1,5 @@
-import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from 'shared-my/db';
-import { type IEmployeeActionDB, type IOrderDB, type IEmployeeDB } from 'shared-my/db';
+import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from 'shared-my';
+import { type IEmployeeActionDB, type IOrderDB, type IEmployeeDB } from 'shared-my';
 
 import { type IUpdateValue, type IDBBase, type IQuery } from '~/common';
 

@@ -1,4 +1,4 @@
-import { type EMPLOYEE_TYPE } from 'shared-my/db';
+import { type EMPLOYEE_TYPE } from 'shared-my';
 
 export interface IEmployeeForm {
     firstName: string;

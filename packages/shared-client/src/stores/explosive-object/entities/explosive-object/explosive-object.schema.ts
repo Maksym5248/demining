@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my/db';
+import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api';
 import { type ICreateValue } from '~/common';

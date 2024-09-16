@@ -1,6 +1,6 @@
 import { Form } from 'antd';
-import { TREE_ROOT_ID } from 'shared-my-client/models';
-import { type IExplosiveObjectClassItem } from 'shared-my-client/stores';
+import { TREE_ROOT_ID } from 'shared-my-client';
+import { type IExplosiveObjectClassItem } from 'shared-my-client';
 
 import { TreeSelect } from '~/components';
 import { useStore } from '~/hooks';

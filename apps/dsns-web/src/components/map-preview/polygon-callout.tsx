@@ -1,6 +1,6 @@
 import { OVERLAY_MOUSE_TARGET, OverlayViewF } from '@react-google-maps/api';
 import { Typography } from 'antd';
-import { type IPoint } from 'shared-my-client/map';
+import { type IPoint } from 'shared-my-client';
 
 import { s } from './map-preview.style';
 

@@ -1,5 +1,5 @@
 import { type WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
-import { TABLES, TABLES_DIR, mapUtils } from 'shared-my/db';
+import { TABLES, TABLES_DIR, mapUtils } from 'shared-my';
 import {
     type IDocumentDB,
     type IEmployeeActionDB,
@@ -18,8 +18,8 @@ import {
     type ITransportActionDB,
     type ITransportDB,
     type IUserDB,
-} from 'shared-my/db';
-import { type IDB } from 'shared-my-client/common';
+} from 'shared-my';
+import { type IDB } from 'shared-my-client';
 
 import { Auth } from '~/services';
 

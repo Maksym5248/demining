@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
-import { useAsyncEffect } from 'shared-my-client/common';
-import { type IUser } from 'shared-my-client/stores';
+import { useAsyncEffect } from 'shared-my-client';
+import { type IUser } from 'shared-my-client';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

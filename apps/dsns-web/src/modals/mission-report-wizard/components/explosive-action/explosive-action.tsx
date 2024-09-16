@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import { observer } from 'mobx-react';
-import { type IExplosiveActionDataParams } from 'shared-my-client/stores';
+import { type IExplosiveActionDataParams } from 'shared-my-client';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

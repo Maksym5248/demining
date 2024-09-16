@@ -1,8 +1,8 @@
 import { getApp } from 'firebase/app';
 import { getStorage, ref, uploadBytes, deleteObject, getBlob, getDownloadURL } from 'firebase/storage';
-import { type ASSET_TYPE } from 'shared-my/db';
-import { Cache } from 'shared-my-client/common';
-import { type IAssetStorageBase } from 'shared-my-client/services';
+import { type ASSET_TYPE } from 'shared-my';
+import { Cache } from 'shared-my-client';
+import { type IAssetStorageBase } from 'shared-my-client';
 
 export class AssetStorageBase implements IAssetStorageBase {
     rootCollection?: string;

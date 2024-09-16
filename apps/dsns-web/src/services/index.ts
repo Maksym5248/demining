@@ -1,4 +1,4 @@
-import { Logger as LoggerClass, Modal as ModalClass } from 'shared-my-client/services';
+import { Logger as LoggerClass, Modal as ModalClass } from 'shared-my-client';
 
 import { AnalyticsClass } from './analytics';
 import { AssetStorageClass } from './asset-storage';

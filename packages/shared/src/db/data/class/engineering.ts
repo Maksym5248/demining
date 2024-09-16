@@ -1,28 +1,38 @@
-import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_COMPONENT } from '../enum';
-import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../types';
+import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_COMPONENT } from '../../enum';
+import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../../types';
 
-export const explosiveObjectClassData: IExplosiveObjectClassDB[] = [
+export const engineeringClassData: IExplosiveObjectClassDB[] = [
     {
-        id: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
+        id: 'f3887427-71d6-4965-a87b-80943d186f39',
+        class: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
         groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'За призначенням',
     },
     {
-        id: EXPLOSIVE_OBJECT_CLASS.METHOD,
+        id: 'a5168dbd-988a-4318-9cbe-6e300243d979',
+        class: EXPLOSIVE_OBJECT_CLASS.METHOD,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
         groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'За способом ураження',
     },
     {
-        id: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
+        id: '88e5c873-a826-4e53-bd48-0ed1a74c1e63',
+        class: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
+        component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+        groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
+        name: 'За зоною розльоту осколків',
+    },
+    {
+        id: '638075e8-6d72-4359-ab07-f1f94c30c923',
+        class: EXPLOSIVE_OBJECT_CLASS.FRAGMENTATION,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
         groupId: EXPLOSIVE_OBJECT_GROUP.ENGINEERING,
         name: 'За зоною розльоту осколків',
     },
 ];
 
-export const explosiveObjectClassItemsPurposeData: IExplosiveObjectClassItemDB[] = [
+export const engineeringPurposeData: IExplosiveObjectClassItemDB[] = [
     {
         id: '65fe334d-f4fb-496d-a860-efbab90a89cc',
         classId: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
@@ -79,7 +89,7 @@ export const explosiveObjectClassItemsPurposeData: IExplosiveObjectClassItemDB[]
     },
 ];
 
-export const explosiveObjectClassItemsMethodData = [
+export const engineeringMethodData: IExplosiveObjectClassItemDB[] = [
     {
         id: '122dbdd7-6d17-4982-b5fc-6af5063eda35',
         classId: EXPLOSIVE_OBJECT_CLASS.METHOD,
@@ -106,4 +116,4 @@ export const explosiveObjectClassItemsMethodData = [
     },
 ];
 
-export const explosiveObjectClassDataItems = [...explosiveObjectClassItemsPurposeData, ...explosiveObjectClassItemsMethodData];
+export const engineeringDataItems = [...engineeringPurposeData, ...engineeringMethodData];

@@ -1,4 +1,4 @@
-import { type IMissionRequestDB } from 'shared-my/db';
+import { type IMissionRequestDB } from 'shared-my';
 
 import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase } from '~/common';
 

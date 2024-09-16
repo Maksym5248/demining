@@ -1,16 +1,18 @@
 import axios from 'axios';
 import { pick } from 'lodash';
-import { publicIpv4 } from 'public-ip';
 
 import { type IPoint } from '~/map';
 
 import { type IIpLocation, type IGeoapifyAddress } from './external.types';
 
 export class ExternalApi {
-    constructor(private geoApiGyKey: string) {}
+    constructor(
+        private geoApiGyKey: string,
+        private publicIpv4: () => Promise<string>,
+    ) {}
 
     async getLocation(): Promise<IIpLocation> {
-        const publicIpV4 = await publicIpv4();
+        const publicIpV4 = await this.publicIpv4();
 
         const res = await axios.get(`http://ip-api.com/json/${publicIpV4}`);
         return res?.data;

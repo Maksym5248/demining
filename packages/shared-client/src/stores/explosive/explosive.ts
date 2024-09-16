@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_TYPE } from 'shared-my/db';
+import { EXPLOSIVE_TYPE } from 'shared-my';
 
 import { type IExplosiveAPI, type IExplosiveActionSumDTO, type IExplosiveDTO } from '~/api';
 import { type ICreateValue } from '~/common';

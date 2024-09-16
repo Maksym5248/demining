@@ -33,6 +33,7 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
         fullName: 'Ручна Граната',
     },
     {
+        // +++
         id: EXPLOSIVE_OBJECT_TYPE.IM,
         name: 'ІМ',
         fullName: 'Інженерна міна',
@@ -58,11 +59,13 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
         fullName: 'Зенітний ракетний снаряд',
     },
     {
+        // +++
         id: EXPLOSIVE_OBJECT_TYPE.CR,
         name: 'Крилата ракета',
         fullName: 'Крилата ракета',
     },
     {
+        // +++
         id: EXPLOSIVE_OBJECT_TYPE.BM,
         name: 'Балістична ракета',
         fullName: 'Балістична ракета',
@@ -71,5 +74,15 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
         id: EXPLOSIVE_OBJECT_TYPE.UAV,
         name: 'БПЛА',
         fullName: 'Безпілотний літальний апарат',
+    },
+    {
+        id: EXPLOSIVE_OBJECT_TYPE.UAV,
+        name: 'БПЛА',
+        fullName: 'Безпілотний літальний апарат',
+    },
+    {
+        id: EXPLOSIVE_OBJECT_TYPE.SUB,
+        name: 'Касетний боєприпас',
+        fullName: 'Касетний боєприпас',
     },
 ];

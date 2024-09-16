@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { LogLevel } from 'shared-my-client/services';
+import { LogLevel } from 'shared-my-client';
 
 import { RootNavigation } from '~/navigation';
 

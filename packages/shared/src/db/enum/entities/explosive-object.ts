@@ -16,6 +16,15 @@ export enum EXPLOSIVE_OBJECT_CLASS {
     STABILIZATION = 'STABILIZATION', // за способом стабілізації в польоті
     DELIVERY = 'DELIVERY', // за способом доставки
     CALIBER = 'CALIBER', // за калібром
+
+    // Ракети
+    TRAJECTORY = 'TRAJECTORY', // за траєкторією
+    CLASS = 'CLASS', // за класом
+    RANGE = 'RANGE', // за дальністю
+    ENGINE = 'ENGINE', // за двигуном
+    CHARGE = 'CHARGE', // за зарядом
+    SPEED = 'SPEED', // за швидкістю
+    TARGETING_SYSTEM = 'TARGETING_SYSTEM', // за системою наведення
 }
 
 export enum EXPLOSIVE_OBJECT_GROUP {
@@ -27,6 +36,7 @@ export enum EXPLOSIVE_OBJECT_GROUP {
     ARTILLERY_SHELLS = 'ARTILLERY_SHELLS',
     MORTAL_MINES = 'MORTAL_MINES',
     AMMO = 'AMMO', // Боєприпас стрілецької зброї
+    ROСKET = 'ROСKET',
     // UNGUIDED_ROCKETS = 'UNGUIDED_ROCKETS',
     // ANTI_TANK_MISSILES = 'ANTI_TANK_MISSILES', // Протитанковий керований реактивний снаряд
     // ANTI_AIRCRAFT_MISSILE = 'ANTI_AIRCRAFT_MISSILE', // Зенітний ракетний комплекс
@@ -48,6 +58,7 @@ export enum EXPLOSIVE_OBJECT_TYPE {
     CR = 'CR',
     BM = 'BM',
     UAV = 'UAV',
+    SUB = 'SUB',
 }
 
 export enum MATERIAL {

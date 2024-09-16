@@ -11,7 +11,7 @@ import {
     type User,
 } from 'firebase/auth';
 import { httpsCallable, getFunctions } from 'firebase/functions';
-import { type IAuthUser, type IAuth } from 'shared-my-client/services';
+import { type IAuthUser, type IAuth } from 'shared-my-client';
 
 export class AuthClass implements IAuth {
     googleProvide = new GoogleAuthProvider();

@@ -2,7 +2,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { auth, https } from 'firebase-functions';
 import * as logger from 'firebase-functions/logger';
-import { type IUserDB, ROLES } from 'shared-my/db';
+import { type IUserDB, ROLES } from 'shared-my';
 
 const createUserRef = (uid: string) => getFirestore().collection('USER').doc(uid);
 

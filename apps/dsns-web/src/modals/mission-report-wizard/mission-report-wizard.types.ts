@@ -4,7 +4,7 @@ import {
     type IMapViewActionDataParams,
     type IExplosiveActionDataParams,
     type IAddressData,
-} from 'shared-my-client/stores';
+} from 'shared-my-client';
 
 import { type WIZARD_MODE } from '~/constants';
 

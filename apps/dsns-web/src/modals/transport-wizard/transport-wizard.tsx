@@ -1,6 +1,6 @@
 import { Form, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { TRANSPORT_TYPE } from 'shared-my/db';
+import { TRANSPORT_TYPE } from 'shared-my';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';

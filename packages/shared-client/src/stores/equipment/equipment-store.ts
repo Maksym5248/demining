@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EQUIPMENT_TYPE } from 'shared-my/db';
+import { EQUIPMENT_TYPE } from 'shared-my';
 
 import { type IEquipmentAPI, type IEquipmentDTO } from '~/api';
 import { type ICreateValue } from '~/common';

@@ -16,7 +16,7 @@ import {
     type IExplosiveObjectTypeDB,
     type IExplosiveObjectDetailsDB,
     type IExplosiveObjectGroupDB,
-} from 'shared-my/db';
+} from 'shared-my';
 
 export type IMarkingDTO = IMarkingDB;
 export type IStructureDTO = IStructureDB;

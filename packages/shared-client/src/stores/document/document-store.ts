@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { DOCUMENT_TYPE } from 'shared-my/db';
+import { DOCUMENT_TYPE } from 'shared-my';
 
 import { type IDocumentAPI, type IDocumentDTO } from '~/api';
 import { type ICreateValue, dates } from '~/common';

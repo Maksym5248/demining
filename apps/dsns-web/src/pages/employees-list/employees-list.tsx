@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
-import { str } from 'shared-my/common';
-import { type IEmployee } from 'shared-my-client/stores';
+import { str } from 'shared-my';
+import { type IEmployee } from 'shared-my-client';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

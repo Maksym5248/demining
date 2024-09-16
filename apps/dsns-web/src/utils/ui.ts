@@ -1,5 +1,5 @@
 import { isArray } from 'lodash';
-import { type TreeNode } from 'shared-my-client/common';
+import { type TreeNode } from 'shared-my-client';
 
 interface Option {
     label: string;

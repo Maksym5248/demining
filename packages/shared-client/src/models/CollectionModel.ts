@@ -1,5 +1,5 @@
 import { get, has, remove, set, makeAutoObservable } from 'mobx';
-import { path } from 'shared-my/common';
+import { path } from 'shared-my';
 
 type ID = string | number;
 

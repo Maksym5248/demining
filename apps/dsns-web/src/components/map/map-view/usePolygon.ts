@@ -1,7 +1,7 @@
 import { type MutableRefObject, useRef } from 'react';
 
-import { mapUtils } from 'shared-my-client/map';
-import { type ICircle, type ILine, type IPoint, type IPolygon } from 'shared-my-client/map';
+import { mapUtils } from 'shared-my-client';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
 
 import { DrawingType } from '../map.types';
 

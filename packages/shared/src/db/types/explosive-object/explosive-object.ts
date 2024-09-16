@@ -3,6 +3,7 @@ import {
     type EXPLOSIVE_OBJECT_GROUP,
     type EXPLOSIVE_OBJECT_STATUS,
     type EXPLOSIVE_OBJECT_COMPONENT,
+    type EXPLOSIVE_OBJECT_CLASS,
 } from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
@@ -34,6 +35,7 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
 
 export interface IExplosiveObjectClassDB {
     id: string;
+    class: EXPLOSIVE_OBJECT_CLASS;
     groupId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
@@ -44,6 +46,7 @@ export interface IExplosiveObjectClassItemDB {
     classId: string;
     parentId: string | null;
     name: string;
+    description?: string;
 }
 
 export interface IExplosiveObjectGroupDB {

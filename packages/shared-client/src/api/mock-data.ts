@@ -1,5 +1,5 @@
-import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE } from 'shared-my/db';
 import omit from 'lodash/omit';
+import { DOCUMENT_TYPE, EMPLOYEE_TYPE, EQUIPMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY, TRANSPORT_TYPE } from 'shared-my';
 
 import { dates } from '~/common';
 

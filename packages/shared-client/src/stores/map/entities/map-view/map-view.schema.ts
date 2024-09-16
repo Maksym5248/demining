@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { type ILinkedToDocumentDB } from 'shared-my/db';
+import { type ILinkedToDocumentDB } from 'shared-my';
 
 import { type IMapViewActionDTO, type IMapViewActionDTOParams } from '~/api';
 import { dates } from '~/common';

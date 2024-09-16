@@ -1,4 +1,4 @@
-import { ranksData, type IEmployeeDB } from 'shared-my/db';
+import { ranksData, type IEmployeeDB } from 'shared-my';
 
 import { type ICreateValue, type IDBBase, type IQuery, type IUpdateValue } from '~/common';
 

@@ -3,8 +3,8 @@ import { memo, useState, useRef, useEffect } from 'react';
 import { GoogleMap, type GoogleMapProps, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { Button, Tooltip, Typography } from 'antd';
 import { type Dayjs } from 'dayjs';
-import { type ICircle, type ILine, type IPoint, type IPolygon } from 'shared-my-client/map';
-import { mapUtils, useVisibleMap } from 'shared-my-client/map';
+import { type ICircle, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
+import { mapUtils, useVisibleMap } from 'shared-my-client';
 
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';

@@ -1,5 +1,5 @@
-import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE, MISSION_REQUEST_TYPE } from 'shared-my/db';
-import { dates } from 'shared-my-client/common';
+import { RANKS, EMPLOYEE_TYPE, TRANSPORT_TYPE, EQUIPMENT_TYPE, MISSION_REQUEST_TYPE } from 'shared-my';
+import { dates } from 'shared-my-client';
 
 export const mockEmployees = [
     {

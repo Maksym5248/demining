@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { type ROLES } from 'shared-my/db';
+import { type ROLES } from 'shared-my';
 
 import { type ICurrentUserDTO, type IUserOrganizationDTO } from '~/api';
 import { dates } from '~/common';

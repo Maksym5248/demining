@@ -1,6 +1,6 @@
 import { Divider, Typography, message } from 'antd';
-import { mathUtils } from 'shared-my-client/common';
-import { type IPoint } from 'shared-my-client/map';
+import { mathUtils } from 'shared-my-client';
+import { type IPoint } from 'shared-my-client';
 
 import { s } from './map-info.style';
 
