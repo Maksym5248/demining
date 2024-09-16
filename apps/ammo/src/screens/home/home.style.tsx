@@ -11,4 +11,12 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
     carouselContent: {
         justifyContent: 'flex-end',
     },
+    green: {
+        backgroundColor: 'green',
+        height: 300,
+    },
+    red: {
+        backgroundColor: 'red',
+        height: 300,
+    },
 }));
