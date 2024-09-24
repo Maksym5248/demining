@@ -78,3 +78,7 @@ tsconfig.tsbuildinfo
 
 # react-native-config codegen
 ios/tmp.xcconfig
+
+gradle.sign.properties
+ammo-dev.keystore
+ammo-prod.keystore

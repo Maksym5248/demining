@@ -1,15 +1,20 @@
 {
     "name": "ammo",
-    "version": "0.0.1",
     "private": true,
+    "version": "0.0.1",
+    "build-number": 1,
     "scripts": {
-        "android": "react-native run-android",
-        "ios": "react-native run-ios",
+        "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
+        "ios": "react-native run-ios --scheme=\"demining.ammo.dev\" --configuration=\"Debug.dev\" --simulator=\"iPhone 8\"",
+        "ios-device": "react-native run-ios --scheme=\"demining.ammo.dev\" --configuration=\"Debug.dev\" --device=\"Max\"",
         "lint": "eslint .",
         "start": "react-native start",
         "test": "jest",
         "clean:js": "/bin/sh ./bin/clean-js.sh",
         "clean:android": "cd android && ./gradlew clean && rm -rf ./.gradle && cd app && rm -rf ./build",
+        "apk:dev": "cd android && ./gradlew assembleDevReleaseLocal",
+        "apk:prod": "cd android && ./gradlew assembleProdReleaseLocal",
+        "bundle": "cd android && ./gradlew bundleProdReleaseLocal",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
         "check:eslint": "eslint --fix"

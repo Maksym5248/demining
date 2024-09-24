@@ -1,4 +1,4 @@
-package com.ammo
+package com.demining.ammo
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity

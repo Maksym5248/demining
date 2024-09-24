@@ -1,4 +1,5 @@
 import { engineeringDataItems, engineeringClassData } from './engineering';
+import { rocketDataItems, rocketClassData } from './rocket';
 
-export const explosiveObjectClassData = [...engineeringClassData];
-export const explosiveObjectClassDataItems = [...engineeringDataItems];
+export const explosiveObjectClassData = [...engineeringClassData, ...rocketClassData];
+export const explosiveObjectClassDataItems = [...engineeringDataItems, ...rocketDataItems];
