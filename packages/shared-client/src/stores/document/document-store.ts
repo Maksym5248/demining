@@ -55,7 +55,7 @@ export class DocumentStore implements IDocumentStore {
         if (isSearch && !isMore) this.templatesSearchList.clear();
 
         list.checkMore(res.length);
-        list.push(res.map(createDocument));
+        list.push(res.map(createDocument), true);
     }
 
     create = new RequestModel({

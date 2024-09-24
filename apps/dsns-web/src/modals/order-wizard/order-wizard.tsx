@@ -52,6 +52,7 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
         hide();
     };
 
+    console.log('currentOrder', currentOrder);
     return (
         <Drawer
             open={isVisible}
@@ -73,7 +74,7 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                     initialValues={
                         currentOrder
                             ? {
-                                  ...currentOrder,
+                                  ...currentOrder.data,
                                   signedById: currentOrder?.signedByAction?.data.employeeId,
                               }
                             : {

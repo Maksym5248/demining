@@ -16,7 +16,9 @@ interface SelectTemplateProps {
 const { Dragger } = Upload;
 
 export function UploadFile({ type = 'document', uri, file, onChangeFile, accept = MIME_TYPE.DOCX }: SelectTemplateProps) {
-    const isImagePreview = !!(file || uri);
+    const isPreview = !!(file || uri);
+    const isDocument = type === 'document';
+    const isImage = type === 'image';
 
     return (
         <Dragger
@@ -26,7 +28,7 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
             onRemove={() => onChangeFile({ file: null })}
             maxCount={1}
             accept={isArray(accept) ? accept.join(', ') : accept}>
-            {type === 'document' && (
+            {isDocument && (
                 <>
                     <p className="ant-upload-drag-icon">
                         <Icon.InboxOutlined />
@@ -35,13 +37,13 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
                     <p className="ant-upload-hint">Вибрати шаблон</p>
                 </>
             )}
-            {!isImagePreview && !file && (
+            {!isPreview && isImage && (
                 <p className="ant-upload-drag-icon">
                     <p className="ant-upload-text">Натисніть або перетягніть картинку у цю область, щоб завантажити</p>
                     <Icon.InboxOutlined />
                 </p>
             )}
-            {isImagePreview && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
+            {isPreview && isImage && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
         </Dragger>
     );
 }

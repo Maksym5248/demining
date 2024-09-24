@@ -73,7 +73,7 @@ export class EquipmentStore implements IEquipmentStore {
         if (isSearch && !isMore) this.searchList.clear();
 
         list.checkMore(res.length);
-        list.push(res.map(createEquipment));
+        list.push(res.map(createEquipment), true);
     }
 
     create = new RequestModel({

@@ -71,7 +71,7 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                     disabled={wizard.isView}
                     initialValues={
                         missionRequest
-                            ? { ...missionRequest }
+                            ? { ...missionRequest.data }
                             : {
                                   type: MISSION_REQUEST_TYPE.APPLICATION,
                                   number: (store.missionRequest.list.first?.data.number ?? 0) + 1,

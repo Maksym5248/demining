@@ -123,7 +123,7 @@ export class Organization implements IOrganization {
         run: async () => {
             const res = await this.api.organization.getMembers(this.data.id);
 
-            this.members.push(res.map(createUser));
+            this.members.push(res.map(createUser), true);
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

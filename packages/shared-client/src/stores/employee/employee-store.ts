@@ -111,18 +111,18 @@ export class EmployeeStore implements IEmployeeStore {
         if (isSearch && !isMore) this.searchList.clear();
 
         list.checkMore(res.length);
-        list.push(res.map(createEmployee));
+        list.push(res.map(createEmployee), true);
     }
 
     setAll(res: IEmployeeDTO[]) {
         this.list.setMore(false);
-        this.list.push(res.map(createEmployee));
+        this.list.push(res.map(createEmployee), true);
     }
 
     fetchRanks = new RequestModel({
         run: async () => {
             const res = await this.api.employee.getRanksList();
-            this.ranksList.push(res.map(createRank));
+            this.ranksList.push(res.map(createRank), true);
         },
     });
 

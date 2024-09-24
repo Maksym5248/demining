@@ -77,7 +77,7 @@ export class ExplosiveStore implements IExplosiveStore {
         if (isSearch && !isMore) this.searchList.clear();
 
         list.checkMore(res.length);
-        list.push(res.map(createExplosive));
+        list.push(res.map(createExplosive), true);
     }
 
     get explosiveList() {

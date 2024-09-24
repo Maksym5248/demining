@@ -24,6 +24,7 @@ PRODUCT
 TODO
 - removed => archived, make removed as archived and rewrite actions to disable data dublications
 - add confirmation email for autentication process
+- permission for verifying and editing explosivce objects
 - migration from old explosive object and action schema to new
 - + how to show tree of clasification of ammonnitions
 - create shared theme
