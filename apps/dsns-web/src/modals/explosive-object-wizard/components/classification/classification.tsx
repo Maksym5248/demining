@@ -10,7 +10,11 @@ export const Classification = () => {
     const { explosiveObject } = useStore();
 
     return (
-        <Form.Item label="Класифікація" name="classIds" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+        <Form.Item
+            label="Класифікація"
+            name="classIds"
+            rules={[{ required: true, message: "Обов'язкове поле" }]}
+            style={{ marginBottom: 0 }}>
             <Form.Item noStyle shouldUpdate={() => true}>
                 {({ getFieldValue, setFieldValue }) => {
                     const classIds: string[] = getFieldValue('classIds') ?? [];
@@ -65,6 +69,7 @@ export const Classification = () => {
                                         value={currentClassIds[0]?.id}
                                         placeholder={classification.displayName}
                                         onChange={onChange}
+                                        style={{ marginBottom: 0 }}
                                     />
                                 </Form.Item>
                             );

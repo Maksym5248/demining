@@ -1,5 +1,6 @@
 import { Image, Upload } from 'antd';
 import { type RcFile } from 'antd/es/upload';
+import { isArray } from 'lodash';
 import { MIME_TYPE } from 'shared-my';
 
 import { Icon } from '../icon';
@@ -7,7 +8,7 @@ import { Icon } from '../icon';
 interface SelectTemplateProps {
     file: File | null;
     onChangeFile: (options: { file: File | null }) => void;
-    accept?: string;
+    accept?: string | string[];
     type?: 'document' | 'image';
     uri?: string;
 }
@@ -24,7 +25,7 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
             customRequest={(value) => onChangeFile && onChangeFile(value as { file: File })}
             onRemove={() => onChangeFile({ file: null })}
             maxCount={1}
-            accept={accept}>
+            accept={isArray(accept) ? accept.join(', ') : accept}>
             {type === 'document' && (
                 <>
                     <p className="ant-upload-drag-icon">

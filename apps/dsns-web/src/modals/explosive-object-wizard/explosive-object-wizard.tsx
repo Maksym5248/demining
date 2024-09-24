@@ -95,7 +95,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                         onChangeFile={onChangeFile}
                                         file={image}
                                         type="image"
-                                        accept={`${MIME_TYPE.PNG},${MIME_TYPE.JPG}`}
+                                        accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
                                         uri={imageUri}
                                     />
                                 );
