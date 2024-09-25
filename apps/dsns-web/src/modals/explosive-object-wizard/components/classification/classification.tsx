@@ -27,7 +27,7 @@ export const Classification = () => {
                                 {({ getFieldValue, setFieldValue }) => {
                                     const classItemsIds: string[] = getFieldValue('classIds') ?? [];
                                     const classsifications = explosiveObject.getClassesByGroupId(groupId, component);
-                                    console.log('classsifications', groupId, component, classsifications);
+
                                     return classsifications
                                         .map((classification) => {
                                             const children =
@@ -35,7 +35,6 @@ export const Classification = () => {
                                                     (item) =>
                                                         !item?.item?.data.parentId || !!classItemsIds.includes(item?.item.data.parentId),
                                                 ) ?? [];
-                                            console.log('children', classification.itemsTree.tree?.children);
 
                                             const onChange = (newValue: string) => {
                                                 const classItemsIds = classification.items.map((item) => item.data.id);

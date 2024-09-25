@@ -187,7 +187,7 @@ export interface IMissionReportDB extends IBaseDB {
     authorId: string;
 }
 
-export interface IUserDB extends IBaseDB {
+export interface IUserDB extends Omit<IBaseDB, 'organizationId'> {
     email: string;
     roles: ROLES[];
     organizationId: string | null;

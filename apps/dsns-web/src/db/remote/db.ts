@@ -25,13 +25,17 @@ import { Auth } from '~/services';
 
 import { DBBase } from './db-base';
 
+let organizationId: string | null = null;
+
 const getCreateData = () => ({
     authorId: Auth.uuid() as string,
+    organizationId,
 });
 
 const getCreateDataMap = (value: Omit<IMapViewActionDB, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => ({
     authorId: Auth.uuid() as string,
     geo: mapUtils.getGeoDB(value),
+    organizationId,
 });
 
 const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
@@ -89,6 +93,7 @@ export class DBRemote implements IDB {
 
     setOrganizationId(id: string) {
         const rootCollection = `${TABLES_DIR.ORGANIZATION_DATA}/${id}`;
+        organizationId = id;
 
         this.employee.setRootCollection(rootCollection);
         this.employeeAction.setRootCollection(rootCollection);
@@ -119,6 +124,8 @@ export class DBRemote implements IDB {
         this.equipmentAction.removeRootCollection();
         this.document.removeRootCollection();
         this.explosiveAction.removeRootCollection();
+
+        organizationId = null;
     }
 
     private setBatch(batch: WriteBatch | null) {
