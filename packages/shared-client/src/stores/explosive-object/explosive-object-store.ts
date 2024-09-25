@@ -34,10 +34,6 @@ import {
     createExplosiveObjectType,
     createExplosiveObjectClass,
     createCountry,
-    type IExplosiveObjectGroup,
-    type IExplosiveObjectGroupData,
-    ExplosiveObjectGroup,
-    createExplosiveObjectGroup,
     type IExplosiveObjectDetailsData,
     type IExplosiveObjectDetails,
     ExplosiveObjectDetails,
@@ -58,20 +54,18 @@ export interface IExplosiveObjectStore {
     collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
     collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
-    collectionGroups: CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
     collectionCountries: CollectionModel<ICountry, ICountryData>;
     collectionClasses: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     collectionClassesItems: CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     list: ListModel<IExplosiveObject, IExplosiveObjectData>;
-    listGroups: ListModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
     listCountries: ListModel<ICountry, ICountryData>;
     listClasses: ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     listClassesItems: ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     sum: SumExplosiveObjectActions;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
-    getClassesByGroupId(groupId: string, component: EXPLOSIVE_OBJECT_COMPONENT): IExplosiveObjectClass[];
+    getClassesBytypeId(typeId: string, component: EXPLOSIVE_OBJECT_COMPONENT): IExplosiveObjectClass[];
     treeClassesItems: ITreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
@@ -85,9 +79,6 @@ export interface IExplosiveObjectStore {
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
-    collectionGroups = new CollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
-        factory: (data: IExplosiveObjectGroupData) => new ExplosiveObjectGroup(data),
-    });
 
     collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
@@ -110,10 +101,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
     collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
         factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
-    });
-
-    listGroups = new ListModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>({
-        collection: this.collectionGroups,
     });
 
     listCountries = new ListModel<ICountry, ICountryData>({
@@ -149,7 +136,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     get collections() {
         return {
             details: this.collectionDetails,
-            group: this.collectionGroups,
             type: this.collectionTypes,
             class: this.collectionClasses,
             classItem: this.collectionClassesItems,
@@ -170,8 +156,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.sum.set(createExplosiveObjectActionSum(sum));
     }
 
-    getClassesByGroupId(groupId: string, component: EXPLOSIVE_OBJECT_COMPONENT) {
-        return this.listClasses.asArray.filter((el) => el.data.groupId === groupId && el.data.component === component);
+    getClassesBytypeId(typeId: string, component: EXPLOSIVE_OBJECT_COMPONENT) {
+        return this.listClasses.asArray.filter((el) => el.data.typeId === typeId && el.data.component === component);
     }
 
     create = new RequestModel({
@@ -268,19 +254,17 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     fetchDeeps = new RequestModel({
         run: async () => {
-            const [types, classes, classesItems, countries, groups] = await Promise.all([
+            const [types, classes, classesItems, countries] = await Promise.all([
                 this.api.explosiveObject.getTypesList(),
                 this.api.explosiveObject.getClassesList(),
                 this.api.explosiveObject.getClassesItemsList(),
                 this.api.explosiveObject.getCountriesList(),
-                this.api.explosiveObject.getGroupsList(),
             ]);
 
             this.listTypes.set(types.map(createExplosiveObjectType));
             this.listClasses.set(classes.map(createExplosiveObjectClass));
             this.listClassesItems.set(classesItems.map(createExplosiveObjectClassItem));
             this.listCountries.set(countries.map(createCountry));
-            this.listGroups.set(groups.map(createExplosiveObjectGroup));
 
             this.treeClassesItems.set(data.buildTreeNodes<IExplosiveObjectClassItem>(this.listClassesItems.asArray));
         },

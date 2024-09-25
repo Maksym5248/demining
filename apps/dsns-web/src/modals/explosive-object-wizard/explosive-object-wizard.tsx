@@ -119,21 +119,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             )}
                         />
                     </Form.Item>
-                    <Form.Item label="Група" name="groupId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select
-                            options={select.append(
-                                explosiveObject.listGroups.asArray.map((el) => ({
-                                    label: el.displayName,
-                                    value: el.data.id,
-                                })),
-                                {
-                                    label: currentExplosiveObject?.group?.displayName,
-                                    value: currentExplosiveObject?.group?.data.id,
-                                },
-                            )}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Частина" name="component" rules={[{ message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={explosiveObjectComponentData.map((el) => ({
                                 label: el.name,
@@ -141,9 +127,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
-                    <Classification />
-
-                    <Form.Item label="Країна" name="countryId" rules={[{ message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={explosiveObject.listCountries.asArray.map((el) => ({
                                 label: el.data.name,
@@ -151,16 +135,17 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
+                    <Classification />
                     <Form.Item label="Статус" name="status" rules={[{ message: "Обов'язкове поле" }]}>
                         <Select options={explosiveObjectStatuses} />
                     </Form.Item>
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => {
-                            const groupId = getFieldValue('groupId');
-                            const group = explosiveObject.collectionGroups.get(groupId);
+                            const typeId = getFieldValue('typeId');
+                            const type = explosiveObject.collectionTypes.get(typeId);
 
                             return (
-                                !!group?.data.hasCaliber && (
+                                !!type?.data.hasCaliber && (
                                     <Form.Item label="Калібр" name="caliber">
                                         <InputNumber size="middle" min={1} max={100000} />
                                     </Form.Item>

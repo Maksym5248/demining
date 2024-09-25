@@ -5,7 +5,6 @@ export interface IExplosiveObjectForm {
     status: EXPLOSIVE_OBJECT_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     countryId: string;
-    groupId: string;
     typeId: string;
     classIds: string[];
     imageUri: string;

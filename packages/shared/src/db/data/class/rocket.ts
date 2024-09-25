@@ -1,54 +1,54 @@
-import { EXPLOSIVE_OBJECT_GROUP, EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_CLASS } from '../../enum';
+import { EXPLOSIVE_OBJECT_TYPE, EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_CLASS } from '../../enum';
 import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../../types';
 
 export const rocketClassData: IExplosiveObjectClassDB[] = [
     {
-        id: 'f3887427-71d6-4965-a87b-80943d186f39',
+        id: 'f3887427-71d6-4965-a87b-809432186f39',
         class: EXPLOSIVE_OBJECT_CLASS.TRAJECTORY,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За траєкторією',
     },
     {
         id: '8d8cf76f-cf39-4b42-85a8-0176da849203',
         class: EXPLOSIVE_OBJECT_CLASS.CLASS,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За місцем старту і напревленням польоту (Клас)',
     },
     {
         id: '394f8943-bbe4-4966-ab71-0fe2b0a33322',
         class: EXPLOSIVE_OBJECT_CLASS.RANGE,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За дальністю польоту',
     },
     {
         id: 'a2690948-3e21-4645-a3e2-746411209b4e',
         class: EXPLOSIVE_OBJECT_CLASS.ENGINE,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За типом двигуна',
     },
     {
         id: '852257d8-13ad-472c-b3db-39e4c8112ce1',
         class: EXPLOSIVE_OBJECT_CLASS.CHARGE,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За типом заряду(боєголовки)',
     },
     {
         id: '2f510177-89bf-457b-a738-17b98212d8b4',
         class: EXPLOSIVE_OBJECT_CLASS.SPEED,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За швидкістю польоту',
     },
     {
         id: '428f998e-58db-4c92-8884-10f938aaee21',
         class: EXPLOSIVE_OBJECT_CLASS.TARGETING_SYSTEM,
         component: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-        groupId: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        typeId: EXPLOSIVE_OBJECT_TYPE.ROCKET,
         name: 'За системою наведення',
     },
 ];
@@ -56,14 +56,14 @@ export const rocketClassData: IExplosiveObjectClassDB[] = [
 export const rocketTrajectoryData: IExplosiveObjectClassItemDB[] = [
     {
         id: '10c7690a-e0ca-4f80-8e76-ad4a5aeb5b19',
-        classId: 'f3887427-71d6-4965-a87b-80943d186f39',
+        classId: 'f3887427-71d6-4965-a87b-809432186f39',
         parentId: null,
         name: 'Крилата',
         description: 'Ракета з керованим двигуном',
     },
     {
         id: '747a05ec-2c53-475f-b3f2-b6abcbd9727e',
-        classId: 'f3887427-71d6-4965-a87b-80943d186f39',
+        classId: 'f3887427-71d6-4965-a87b-809432186f39',
         parentId: null,
         name: 'Балістична',
         description: 'Ракета яка має бальстичну траєкторію на більшій частині польоту',
@@ -204,7 +204,7 @@ export const rocketEngineData: IExplosiveObjectClassItemDB[] = [
         name: 'Прямоточний повітряно-реактивний з надзвуковим горінням',
     },
     {
-        id: '5687c43e-49f9-4781-9e11-b8a6ad3dfb4b',
+        id: '5687c43e-49f9-4781-9e11-b8atad3dfb4b',
         classId: 'a2690948-3e21-4645-a3e2-746411209b4e',
         parentId: null,
         name: 'Кріогенний',
@@ -252,7 +252,7 @@ export const rocketTargitingSystemData: IExplosiveObjectClassItemDB[] = [
         name: 'Геофізичне',
     },
     {
-        id: '72338c51-f462-4790-af16-b122cd4adb6d',
+        id: '72338c51-f463-4790-af16-b122cd4adb6d',
         classId: '428f998e-58db-4c92-8884-10f938aaee21',
         parentId: null,
         name: 'Інерційне наведення',
