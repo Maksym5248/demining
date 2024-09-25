@@ -1,4 +1,4 @@
-import { ranksData, type IEmployeeDB } from 'shared-my/db';
+import { ranksData, type IEmployeeDB } from 'shared-my';
 
 import { type ICreateValue, type IDBBase, type IQuery, type IUpdateValue } from '~/common';
 
@@ -8,7 +8,7 @@ export interface IEmployeeAPI {
     create: (value: ICreateValue<IEmployeeDTO>) => Promise<IEmployeeDTO>;
     update: (id: string, value: IUpdateValue<IEmployeeDTO>) => Promise<IEmployeeDTO>;
     remove: (id: string) => Promise<string>;
-    getRanksList: () => Promise<IRankDTO[]>;
+    getlistRanks: () => Promise<IRankDTO[]>;
     getList: (query?: IQuery) => Promise<IEmployeeDTO[]>;
     get: (id: string) => Promise<IEmployeeDTO>;
 }
@@ -32,7 +32,7 @@ export class EmployeeAPI implements IEmployeeAPI {
             ...(query ?? {}),
         });
 
-    async getRanksList() {
+    async getlistRanks() {
         return ranksData;
     }
 

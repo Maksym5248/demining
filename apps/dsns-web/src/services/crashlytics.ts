@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { type ICrashlytics, type ILogger } from 'shared-my-client/services';
+import { type ICrashlytics, type ILogger } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
 

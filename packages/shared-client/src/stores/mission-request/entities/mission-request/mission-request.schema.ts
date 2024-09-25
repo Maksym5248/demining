@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { MISSION_REQUEST_TYPE } from 'shared-my/db';
+import { MISSION_REQUEST_TYPE } from 'shared-my';
 
 import { type IMissionRequestDTO, type IMissionRequestSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';

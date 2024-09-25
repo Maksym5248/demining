@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
-import { type IDocument } from 'shared-my-client/stores';
+import { type IDocument } from 'shared-my-client';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -61,16 +61,14 @@ export const TemplatesListPage = observer(() => {
         document.fetchTemplatesList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? document.templatesSearchList : document.templatesList;
-
     return (
         <List
             rowKey="id"
             itemLayout="horizontal"
             loading={document.fetchTemplatesList.isLoading}
             loadingMore={document.fetchTemplatesListMore.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!document.listTemplates.isMorePages}
+            dataSource={document.listTemplates.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} onOpenInfo={onOpenInfo} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

@@ -1,6 +1,18 @@
 import { type IStyle } from 'react-native-theme-mk';
 
-export type IPalette = 'black' | 'grey4E' | 'grey92' | 'creamF5' | 'white' | 'green78' | 'redEF' | 'transparent' | 'greenF7';
+export type IPalette =
+    | 'black'
+    | 'grey4E'
+    | 'grey92'
+    | 'creamF5'
+    | 'white'
+    | 'green78'
+    | 'redEF'
+    | 'transparent'
+    | 'greenF7'
+    | 'blueB4'
+    | 'blackTransparent01';
+
 export type IColor =
     | 'white'
     | 'black'
@@ -16,7 +28,8 @@ export type IColor =
     | 'accent'
     | 'accentLight'
     | 'error'
-    | 'transparent';
+    | 'transparent'
+    | 'ripplePrimary';
 
 export interface IThemeTextStyle {
     color: string;

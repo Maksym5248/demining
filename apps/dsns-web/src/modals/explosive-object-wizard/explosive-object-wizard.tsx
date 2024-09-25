@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_OBJECT_STATUS, explosiveObjectComponentData, explosiveObjectStatuses, MIME_TYPE } from 'shared-my/db';
+import { EXPLOSIVE_OBJECT_STATUS, explosiveObjectComponentData, explosiveObjectStatuses, MIME_TYPE } from 'shared-my';
 
 import { Select, UploadFile, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -95,14 +95,16 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                         onChangeFile={onChangeFile}
                                         file={image}
                                         type="image"
-                                        accept={MIME_TYPE.PNG}
+                                        accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
                                         uri={imageUri}
                                     />
                                 );
                             }}
                         </Form.Item>
                     </Form.Item>
-
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={select.append(
@@ -131,7 +133,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             )}
                         />
                     </Form.Item>
-                    <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Частина" name="component" rules={[{ message: "Обов'язкове поле" }]}>
                         <Select
                             options={explosiveObjectComponentData.map((el) => ({
                                 label: el.name,
@@ -141,7 +143,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Classification />
 
-                    <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Країна" name="countryId" rules={[{ message: "Обов'язкове поле" }]}>
                         <Select
                             options={explosiveObject.listCountries.asArray.map((el) => ({
                                 label: el.data.name,
@@ -149,11 +151,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
-                    <Form.Item label="Статус" name="status" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Form.Item label="Статус" name="status" rules={[{ message: "Обов'язкове поле" }]}>
                         <Select options={explosiveObjectStatuses} />
-                    </Form.Item>
-                    <Form.Item label="Назва" name="name" rules={[{ message: "Прізвище є обов'язковим полем" }]}>
-                        <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => {

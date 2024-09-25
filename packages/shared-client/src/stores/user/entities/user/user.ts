@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { ROLES } from 'shared-my/db';
+import { ROLES } from 'shared-my';
 
 import { type IUserData } from './user.schema';
 

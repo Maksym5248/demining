@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IOrganizationAPI, type ICreateOrganizationDTO, type IOrganizationDTO } from '~/api';
+import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -37,8 +37,6 @@ interface IOrganizationStoreParams {
 export interface IOrganizationStore {
     collection: ICollectionModel<IOrganization, IOrganizationValue>;
     list: IListModel<IOrganization, IOrganizationValue>;
-    searchList: IListModel<IOrganization, IOrganizationValue>;
-    append(res: IOrganizationDTO[], isSearch: boolean, isMore?: boolean): void;
     create: RequestModel<[ICreateOrganizationDTO]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -52,7 +50,6 @@ export class OrganizationStore implements IOrganizationStore {
 
     collection: ICollectionModel<IOrganization, IOrganizationValue>;
     list: IListModel<IOrganization, IOrganizationValue>;
-    searchList: IListModel<IOrganization, IOrganizationValue>;
 
     constructor(params: IOrganizationStoreParams) {
         this.stores = params.stores;
@@ -61,16 +58,8 @@ export class OrganizationStore implements IOrganizationStore {
 
         this.collection = new CollectionModel<IOrganization, IOrganizationValue>({ factory: (data) => new Organization(data, this) });
         this.list = new ListModel<IOrganization, IOrganizationValue>(this);
-        this.searchList = new ListModel<IOrganization, IOrganizationValue>(this);
+
         makeAutoObservable(this);
-    }
-
-    append(res: IOrganizationDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createOrganization), true);
     }
 
     create = new RequestModel({
@@ -85,8 +74,6 @@ export class OrganizationStore implements IOrganizationStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.organization.remove(id);
-            this.list.removeById(id);
-            this.searchList.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -94,44 +81,27 @@ export class OrganizationStore implements IOrganizationStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.organization.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createOrganization));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
+        shouldRun: () => this.list.isMorePages,
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.organization.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createOrganization));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

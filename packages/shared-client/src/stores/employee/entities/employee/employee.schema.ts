@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EMPLOYEE_TYPE } from 'shared-my/db';
+import { EMPLOYEE_TYPE } from 'shared-my';
 
 import { type IEmployeeDTO } from '~/api';
 import { dates, data, type ICreateValue } from '~/common';

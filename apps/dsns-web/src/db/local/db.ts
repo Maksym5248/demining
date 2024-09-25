@@ -12,8 +12,8 @@ import {
     type ITransportActionDB,
     type IEquipmentDB,
     type IEquipmentActionDB,
-} from 'shared-my/db';
-import { TABLES } from 'shared-my/db';
+} from 'shared-my';
+import { TABLES } from 'shared-my';
 
 import { CONFIG } from '~/config';
 

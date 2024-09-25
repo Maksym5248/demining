@@ -1,5 +1,5 @@
 import { DATA_TYPE } from 'jsstore';
-import { TABLES } from 'shared-my/db';
+import { TABLES } from 'shared-my';
 
 import { schemaEmployee } from './employee';
 

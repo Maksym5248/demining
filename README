@@ -11,20 +11,7 @@ apps:
 - ammo web admin
 - ammo mobile
 
-Migration explosiveObject
-
-1. + create author role
-2. налаштуати права автора в firestore rules and ui, можливість заходити в додаток без організації, заборониити не авторам редагувати вибухонебезпечні предмети
-3. створити таблицю для підривників
-4. створит окрему таблцю для Боєприпасів
-5. посилатися на них у таблиці на ВНП
-6. автоматично оновлювати в explosive objects поля які використовуються і позначиитии як продубльовані і звідки, додати поле meta
-7. мігрувати на нову структуру explosive objects та action explosive object
-8. онвоити ui відповідно до нової структури
-
-actions
-- remove dublications
-- видалення обєктів повинно не видалята а змінювати поле на isRemoved
+PRODUCT
 
 КАТЕГОРІЇ
 5. налаштування сатегорій боєприпасів та створення окремої сторінки для них
@@ -34,32 +21,28 @@ actions
 7. переіменувати поточну таблицю на засоби підриву та засоби ініціювання
 8. створити окрему таблицю для вибухових речовин та засобів підриву
 
-common
- - перенести поле _search до meta
- 
-AMMO ADMIN app
-// in feature we can for multi apps we can migrate on format
-// roles: [{
-//     app: "DSNS"
-//     roles: ['ROOT_ADMIN', 'ORGANIZATION_ADMIN'],
-// }]
-
-1. - add field apps to user (need to know source of app)
-2. - create web ui library
-3. - write app field to the token
-4. - move management explosive and explosive objects modules to ammo-admin-app
-
 TODO
-- migration from old explosive object and action schema to new
-- how to show tree of clasification of ammonnitions
-- make removed as archived and rewrite actions to disable data dublications
+// DSNS WEB
+1.
+- fix classification
+- + refactroing setting list data
++ update prod with new schema
+- add confirmation email for autentication process
+- permission for verifying and editing explosivce objects
+- map = create single map for teritories
+- map = agregation 
+- map = select object on map and show details (act)
+- search, how to improve ? перенести поле _search до meta
+- cache on api level
+
+// AMMO MOBILE
+- mobile app initial setup
 - create shared theme
 - map
 - form to useFormik
 - validation yup
-- map utils
 - normalize data, all data should be the same as we have in db not in dto
 - token expiration
-- permissions to edit explosive objects
 
+// DATA
 Детальна класифікація боєприпасів та підривників

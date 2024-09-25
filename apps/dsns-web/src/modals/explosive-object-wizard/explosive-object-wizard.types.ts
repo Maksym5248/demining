@@ -1,4 +1,4 @@
-import { type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my/db';
+import { type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 export interface IExplosiveObjectForm {
     name: string;

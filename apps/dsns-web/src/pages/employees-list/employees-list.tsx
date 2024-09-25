@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
-import { str } from 'shared-my/common';
-import { type IEmployee } from 'shared-my-client/stores';
+import { str } from 'shared-my';
+import { type IEmployee } from 'shared-my-client';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -58,14 +58,12 @@ export const EmployeesListPage = observer(() => {
         employee.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? employee.searchList : employee.list;
-
     return (
         <List
             loading={employee.fetchList.isLoading}
             loadingMore={employee.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!employee.list.isMorePages}
+            dataSource={employee.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

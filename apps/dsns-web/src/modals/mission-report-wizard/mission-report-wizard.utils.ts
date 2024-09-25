@@ -1,6 +1,6 @@
-import { removeFields } from 'shared-my/common';
-import { dates } from 'shared-my-client/common';
-import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from 'shared-my-client/stores';
+import { removeFields } from 'shared-my';
+import { dates } from 'shared-my-client';
+import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from 'shared-my-client';
 
 import { MAP_ZOOM } from '~/constants';
 

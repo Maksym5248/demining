@@ -1,4 +1,4 @@
-import { type MIME_TYPE } from 'shared-my/db';
+import { type MIME_TYPE } from 'shared-my';
 
 import { type IMetaData } from '../types';
 

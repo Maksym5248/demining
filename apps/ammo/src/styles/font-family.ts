@@ -1,7 +1,11 @@
 export const fonts = {
-    AmericaLight: 'GTAmerica-Light',
-    AmericaRegular: 'GTAmerica-Regular',
-    AmericaMedium: 'GTAmerica-Medium',
-    AmericaBold: 'GTAmerica-Bold',
-    AmericaExpandedMedium: 'GTAmericaExpanded-Medium',
+    SansSerif: 'sans-serif',
+    SansSerifLight: 'sans-serif-light',
+    SansSerifThin: 'sans-serif-thin',
+    SansSerifCondensed: 'sans-serif-condensed',
+    SansSerifMedium: 'sans-serif-medium',
+    Avenir: 'Avenir',
+    AvenirLight: 'Avenir-Light',
+    AvenirMedium: 'Avenir-Medium',
+    AvenirBold: 'Avenir-Bold',
 };

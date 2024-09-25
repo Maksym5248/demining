@@ -1,4 +1,4 @@
-import { type DOCUMENT_TYPE } from 'shared-my/db';
+import { type DOCUMENT_TYPE } from 'shared-my';
 
 import { type IEmployeeActionDTO } from '~/api';
 

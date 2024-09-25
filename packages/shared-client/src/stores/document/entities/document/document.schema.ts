@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { ASSET_TYPE, DOCUMENT_TYPE, MIME_TYPE } from 'shared-my/db';
+import { ASSET_TYPE, DOCUMENT_TYPE, MIME_TYPE } from 'shared-my';
 
 import { type IDocumentDTO } from '~/api';
 import { data, dates, type ICreateValue } from '~/common';

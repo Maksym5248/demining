@@ -38,6 +38,12 @@ export const explosiveObjectGroupsData: IExplosiveObjectGroupDB[] = [
         fullName: 'Боєприпас стрілецької зброї',
         hasCaliber: true,
     },
+    {
+        id: EXPLOSIVE_OBJECT_GROUP.ROСKET,
+        name: 'Ракета',
+        fullName: 'Ракета',
+        hasCaliber: false,
+    },
     // {
     //     id: '2',
     //     name: 'НУРС',

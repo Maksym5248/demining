@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EQUIPMENT_TYPE } from 'shared-my/db';
+import { EQUIPMENT_TYPE } from 'shared-my';
 
 import { type IEquipmentDTO } from '~/api';
 import { dates, data } from '~/common';

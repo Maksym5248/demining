@@ -1,5 +1,5 @@
-import { EXPLOSIVE_TYPE } from 'shared-my/db';
-import { type IExplosiveActionDB, type IExplosiveDB } from 'shared-my/db';
+import { EXPLOSIVE_TYPE } from 'shared-my';
+import { type IExplosiveActionDB, type IExplosiveDB } from 'shared-my';
 
 import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase } from '~/common';
 

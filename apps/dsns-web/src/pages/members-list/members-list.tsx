@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
-import { useAsyncEffect } from 'shared-my-client/common';
-import { type IUser } from 'shared-my-client/stores';
+import { useAsyncEffect } from 'shared-my-client';
+import { type IUser } from 'shared-my-client';
 
 import { Icon, List } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -58,14 +58,14 @@ export const MembersListPage = observer(() => {
 
     useEffect(() => {
         if (id) {
-            currentOrganization?.fetchMembers.run();
+            currentOrganization?.fetchListMembers.run();
         }
     }, [id]);
 
     return (
         <List
-            loading={currentOrganization?.fetchMembers.isLoading || organization.fetchItem.isLoading}
-            dataSource={currentOrganization?.members.asArray}
+            loading={currentOrganization?.fetchListMembers.isLoading || organization.fetchItem.isLoading}
+            dataSource={currentOrganization?.listMembers.asArray}
             isReachedEnd
             header={
                 <Space css={s.listHeader}>

@@ -1,7 +1,6 @@
 import { Form } from 'antd';
-import { str } from 'shared-my/common';
-import { type IExplosiveObjectActionDTOParams } from 'shared-my-client/api';
-import { type IMapViewActionData } from 'shared-my-client/stores';
+import { str } from 'shared-my';
+import { type IExplosiveObjectActionDTOParams, type IMapViewActionData } from 'shared-my-client';
 
 import { ExternalApi } from '~/api';
 import { MapPreview } from '~/components';

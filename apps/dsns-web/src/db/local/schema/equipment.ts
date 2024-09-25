@@ -1,5 +1,5 @@
 import { DATA_TYPE } from 'jsstore';
-import { TABLES, EQUIPMENT_TYPE } from 'shared-my/db';
+import { TABLES, EQUIPMENT_TYPE } from 'shared-my';
 
 export const schemaEquipment = {
     name: TABLES.EQUIPMENT,

@@ -29,7 +29,7 @@ import {
     UserStore,
     OrganizationStore,
     ViewerStore,
-} from 'shared-my-client/stores';
+} from 'shared-my-client';
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';

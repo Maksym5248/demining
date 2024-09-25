@@ -1,4 +1,4 @@
-import { RANKS } from 'shared-my/db';
+import { RANKS } from 'shared-my';
 
 import { type IRankDTO } from '~/api';
 

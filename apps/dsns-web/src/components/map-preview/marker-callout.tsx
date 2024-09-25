@@ -1,7 +1,7 @@
 import { OVERLAY_MOUSE_TARGET, Polyline, OverlayViewF } from '@react-google-maps/api';
 import { Divider, Typography } from 'antd';
 import { type Dayjs } from 'dayjs';
-import { type IPoint } from 'shared-my-client/map';
+import { type IPoint } from 'shared-my-client';
 
 import { useMapOptions } from '~/hooks';
 

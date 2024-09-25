@@ -1,5 +1,5 @@
 import { Form, DatePicker } from 'antd';
-import { type IEmployee, type IEmployeeAction } from 'shared-my-client/stores';
+import { type IEmployee, type IEmployeeAction } from 'shared-my-client';
 
 import { Select } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

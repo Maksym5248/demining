@@ -1,4 +1,4 @@
-package com.ammo
+package com.demining.ammo
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity
@@ -14,6 +14,7 @@ class MainActivity : ReactActivity() {
    */
   override fun getMainComponentName(): String = "ammo"
 
+  //react-native-screens override
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(null)
   }

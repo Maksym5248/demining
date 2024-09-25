@@ -1,9 +1,8 @@
 import { Button, Form, Space, InputNumber, Drawer, Switch } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { removeFields } from 'shared-my/common';
-import { EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my/db';
-import { useSelectStore } from 'shared-my-client/common';
-import { type IExplosiveObjectTypeData } from 'shared-my-client/stores';
+import { removeFields, EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my';
+import { useSelectStore } from 'shared-my-client';
+import { type IExplosiveObjectTypeData } from 'shared-my-client';
 
 import { Select, SelectAsync } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';

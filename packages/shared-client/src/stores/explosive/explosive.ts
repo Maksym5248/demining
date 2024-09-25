@@ -1,8 +1,8 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_TYPE } from 'shared-my/db';
+import { EXPLOSIVE_TYPE } from 'shared-my';
 
-import { type IExplosiveAPI, type IExplosiveActionSumDTO, type IExplosiveDTO } from '~/api';
+import { type IExplosiveAPI, type IExplosiveActionSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
@@ -25,16 +25,14 @@ export interface IExplosiveStore {
     collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionData>;
     collection: CollectionModel<IExplosive, IExplosiveData>;
     list: ListModel<IExplosive, IExplosiveData>;
-    searchList: ListModel<IExplosive, IExplosiveData>;
     sum: SumExplosiveActions;
     setSum(sum: IExplosiveActionSumDTO): void;
-    append(res: IExplosiveDTO[], isSearch: boolean, isMore?: boolean): void;
-    explosiveList: IExplosive[];
-    detonatorList: IExplosive[];
+    explosiveItems: IExplosive[];
+    detonatorItems: IExplosive[];
     create: RequestModel<[ICreateValue<IExplosiveData>]>;
     remove: RequestModel<[string]>;
-    fetchList: RequestModel<[string]>;
-    fetchMoreList: RequestModel<[string]>;
+    fetchList: RequestModel<[search?: string]>;
+    fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
 }
@@ -58,7 +56,6 @@ export class ExplosiveStore implements IExplosiveStore {
         factory: (data: IExplosiveData) => new Explosive(data, this),
     });
     list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
-    searchList = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
     sum: SumExplosiveActions = new SumExplosiveActions();
 
     constructor(params: { api: IApi; services: IServices }) {
@@ -72,19 +69,11 @@ export class ExplosiveStore implements IExplosiveStore {
         this.sum = createExplosiveActionSum(sum);
     }
 
-    append(res: IExplosiveDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createExplosive));
-    }
-
-    get explosiveList() {
+    get explosiveItems() {
         return this.list.asArray.filter((el) => el.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
     }
 
-    get detonatorList() {
+    get detonatorItems() {
         return this.list.asArray.filter((el) => el.data.type === EXPLOSIVE_TYPE.DETONATOR);
     }
 
@@ -101,8 +90,6 @@ export class ExplosiveStore implements IExplosiveStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.explosive.remove(id);
-            this.list.removeById(id);
-            this.searchList.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -110,47 +97,26 @@ export class ExplosiveStore implements IExplosiveStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
-        run: async (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            if (!isSearch && list.length) return;
-
+        run: async (search?: string) => {
             const res = await this.api.explosive.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createExplosive));
         },
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
-        run: async (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            if (!list.isMorePages) return;
-
+        shouldRun: () => this.list.isMorePages,
+        run: async (search?: string) => {
             const res = await this.api.explosive.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createExplosive));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

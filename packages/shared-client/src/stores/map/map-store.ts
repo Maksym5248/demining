@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IMapAPI, type IMapViewActionDTO } from '~/api';
+import { type IMapAPI } from '~/api';
 import { type IGeoBox, type IGeohashRange, mapUtils } from '~/map';
 import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -23,7 +23,6 @@ export interface IMapStore {
     collection: ICollectionModel<IMapViewAction, IMapViewActionData>;
     list: IListModel<IMapViewAction, IMapViewActionData>;
     loadedGeohashes: IGeohashes[];
-    append: (res: IMapViewActionDTO | IMapViewActionDTO[]) => void;
     addLoadedGeohash: (geohash: IGeohashRange) => void;
     fetchAllInGeoBox: RequestModel<[IGeoBox]>;
 }
@@ -44,11 +43,6 @@ export class MapStore implements IMapStore {
         makeAutoObservable(this);
     }
 
-    append(res: IMapViewActionDTO | IMapViewActionDTO[]) {
-        const value = Array.isArray(res) ? res : [res];
-        this.list.push(value.map(createMapView), true);
-    }
-
     addLoadedGeohash(geohash: IGeohashRange) {
         if (!this.loadedGeohashes.some((range) => range.start === geohash.start && range.end === geohash.end)) {
             this.loadedGeohashes.push(geohash);
@@ -56,7 +50,9 @@ export class MapStore implements IMapStore {
     }
 
     fetchAllInGeoBox = new RequestModel({
-        shouldRun: (box: IGeoBox) => {
+        shouldRun: (box?: IGeoBox) => {
+            if (!box) return false;
+
             const ranges = mapUtils.getGeohashRangesByGeoBox(box);
             const adjustedRanges = mapUtils.getAdjustedRanges(ranges, this.loadedGeohashes);
 
@@ -68,7 +64,7 @@ export class MapStore implements IMapStore {
 
             const res = await this.api.map.getByGeohashRanges(adjustedRanges);
 
-            this.append(res);
+            this.list.push(res.map(createMapView));
             adjustedRanges.forEach((range) => this.addLoadedGeohash(range));
         },
         onError: () => this.services.message.error('Виникла помилка'),

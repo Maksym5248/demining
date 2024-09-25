@@ -1,4 +1,4 @@
-import { type IDocumentDB, ASSET_TYPE } from 'shared-my/db';
+import { type IDocumentDB, ASSET_TYPE } from 'shared-my';
 
 import { type IDBBase, type IQuery, type IUpdateValue, type ICreateValue } from '~/common';
 import { fileUtils } from '~/common';

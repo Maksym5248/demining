@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { ROLES } from 'shared-my/db';
+import { ROLES } from 'shared-my';
 
 import { type ICurrentUserData } from './current-user.schema';
 
@@ -8,7 +8,8 @@ export interface ICurrentUser {
     isRootAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;
-    isAuthorized: boolean;
+    isAuthorizedDSNS: boolean;
+    isAuthorizedAmmo: boolean;
     isWaitingApproved: boolean;
 }
 
@@ -30,10 +31,13 @@ export class CurrentUser implements ICurrentUser {
     get isOrganizationMember() {
         return !!this.data.organization;
     }
-    get isAuthorized() {
+    get isAuthorizedDSNS() {
         return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember;
     }
     get isWaitingApproved() {
         return !!this.data.id && !this.data.organization;
+    }
+    get isAuthorizedAmmo() {
+        return !!this.data;
     }
 }

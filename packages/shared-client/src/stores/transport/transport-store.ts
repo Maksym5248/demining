@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
-import { TRANSPORT_TYPE } from 'shared-my/db';
+import { TRANSPORT_TYPE } from 'shared-my';
 
-import { type ITransportAPI, type ITransportDTO } from '~/api';
+import { type ITransportAPI } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
@@ -30,13 +30,10 @@ export interface ITransportStore {
     collectionActions: ICollectionModel<ITransportAction, ITransportActionData>;
     collection: ICollectionModel<ITransport, ITransportData>;
     list: IListModel<ITransport, ITransportData>;
-    searchList: IListModel<ITransport, ITransportData>;
-    append(res: ITransportDTO[], isSearch: boolean, isMore?: boolean): void;
     transportExplosiveObjectList: ITransport[];
     transportHumansList: ITransport[];
     transportExplosiveObjectFirst: ITransport;
     transportHumansFirst: ITransport;
-    getList(search: string): IListModel<ITransport, ITransportData>;
     create: IRequestModel<[ICreateValue<ITransportData>]>;
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel<[search: string]>;
@@ -56,21 +53,12 @@ export class TransportStore implements ITransportStore {
     });
 
     list = new ListModel<ITransport, ITransportData>({ collection: this.collection });
-    searchList = new ListModel<ITransport, ITransportData>({ collection: this.collection });
 
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
 
         makeAutoObservable(this);
-    }
-
-    append(res: ITransportDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createTransport), true);
     }
 
     get transportExplosiveObjectList() {
@@ -87,10 +75,6 @@ export class TransportStore implements ITransportStore {
         return this.transportHumansList[0];
     }
 
-    getList(search: string) {
-        return search ? this.searchList : this.list;
-    }
-
     create = new RequestModel({
         run: async (data: ICreateValue<ITransportData>) => {
             const res = await this.api.transport.create(createTransportDTO(data));
@@ -105,8 +89,6 @@ export class TransportStore implements ITransportStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.transport.remove(id);
-            this.list.removeById(id);
-            this.searchList.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -114,43 +96,27 @@ export class TransportStore implements ITransportStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search: string) => {
-            const isSearch = !!search;
-            const list = this.getList(search);
-
-            return !(!isSearch && list.asArray.length);
-        },
         run: async (search: string) => {
-            const isSearch = !!search;
-            const list = this.getList(search);
-
             const res = await this.api.transport.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createTransport));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search: string) => {
-            const list = this.getList(search);
-
-            return list.isMorePages;
-        },
-        run: async (search: string) => {
-            const isSearch = !!search;
-            const list = this.getList(search);
-
+        shouldRun: () => this.list.isMorePages,
+        run: async (search?: string) => {
             const res = await this.api.transport.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createTransport));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

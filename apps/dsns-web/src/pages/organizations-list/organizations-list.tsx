@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import { type IOrganization } from 'shared-my-client/stores';
+import { type IOrganization } from 'shared-my-client';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, ROUTES, WIZARD_MODE } from '~/constants';
@@ -55,14 +55,12 @@ export const OrganizationsListPage = observer(() => {
         organization.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? organization.searchList : organization.list;
-
     return (
         <List
             loading={organization.fetchList.isLoading}
             loadingMore={organization.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!organization.list.isMorePages}
+            dataSource={organization.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

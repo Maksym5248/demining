@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IOrderAPI, type IOrderPreviewDTO } from '~/api';
+import { type IOrderAPI } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, ListModel, RequestModel } from '~/models';
@@ -12,7 +12,6 @@ import { type IEmployeeStore, createEmployeeAction } from '../employee';
 export interface IOrderStore {
     collection: ICollectionModel<IOrder, IOrderData>;
     list: ListModel<IOrder, IOrderData>;
-    searchList: ListModel<IOrder, IOrderData>;
     create: RequestModel<[ICreateValue<IOrderDataParams>]>;
     remove: RequestModel<[string]>;
     fetchItem: RequestModel<[string]>;
@@ -65,18 +64,6 @@ export class OrderStore implements IOrderStore {
         collection: this.collection,
     });
 
-    searchList = new ListModel<IOrder, IOrderData>({
-        collection: this.collection,
-    });
-
-    append(res: IOrderPreviewDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createOrderPreview), true);
-    }
-
     create = new RequestModel({
         run: async (data: ICreateValue<IOrderDataParams>) => {
             const res = await this.api.order.create(createOrderDTO(data));
@@ -91,8 +78,6 @@ export class OrderStore implements IOrderStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.order.remove(id);
-            this.list.removeById(id);
-            this.searchList.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -109,44 +94,27 @@ export class OrderStore implements IOrderStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.order.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createOrderPreview));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
+        shouldRun: () => this.list.isMorePages,
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.order.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createOrderPreview));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

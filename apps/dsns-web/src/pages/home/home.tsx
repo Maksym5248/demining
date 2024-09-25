@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Card, Radio, type RadioChangeEvent, Spin, DatePicker } from 'antd';
 import { type Dayjs } from 'dayjs';
 import { observer } from 'mobx-react';
-import { dates } from 'shared-my-client/common';
+import { dates } from 'shared-my-client';
 
 import { useStore } from '~/hooks';
 

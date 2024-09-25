@@ -1,4 +1,4 @@
-import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my/db';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { type IExplosiveObjectClassDTO } from '~/api';
 

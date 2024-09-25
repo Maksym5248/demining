@@ -1,5 +1,5 @@
 import { get, has, remove, set, makeAutoObservable } from 'mobx';
-import { path } from 'shared-my/common';
+import { path } from 'shared-my';
 
 type ID = string | number;
 
@@ -11,6 +11,7 @@ export interface ICollectionModel<T, B> {
     remove: (id: string) => void;
     exist: (id: string) => boolean;
     findBy(path: string, value: unknown): T | undefined;
+    onRemoved?: (fn: (id: string) => void) => void;
 }
 
 interface ICollectionModelParams<T extends { data: B }, B> {
@@ -18,12 +19,18 @@ interface ICollectionModelParams<T extends { data: B }, B> {
     model?: new (data: B) => T;
 }
 
+interface CallBacks {
+    removed: ((id: string) => void)[];
+}
+
 export class CollectionModel<T extends { data: B }, B> implements ICollectionModel<T, B> {
     private collection: Record<string, T> = {};
 
     model?: new (data: B) => T;
     factory: (data: B) => T;
-
+    private callBacks: CallBacks = {
+        removed: [],
+    };
     constructor({ factory, model }: ICollectionModelParams<T, B>) {
         const defaultFactory = model ? (data: B) => new model(data) : (data: B) => data as unknown as T;
         this.factory = factory ?? defaultFactory;
@@ -69,9 +76,14 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
 
     remove(id: string) {
         remove(this.collection, id);
+        this.callBacks.removed.forEach((fn) => fn(id));
     }
 
     exist(id: string) {
         return has(this.collection, id);
+    }
+
+    onRemoved(fn: (id: string) => void) {
+        this.callBacks.removed.push(fn);
     }
 }

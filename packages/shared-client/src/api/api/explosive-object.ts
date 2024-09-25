@@ -6,7 +6,7 @@ import {
     explosiveObjectTypesData,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
-} from 'shared-my/db';
+} from 'shared-my';
 import { v4 as uuid } from 'uuid';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';

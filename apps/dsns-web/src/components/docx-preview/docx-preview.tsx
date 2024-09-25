@@ -1,6 +1,6 @@
 import * as docx from 'docx-preview';
-import { MIME_TYPE } from 'shared-my/db';
-import { fileUtils, useAsyncEffect } from 'shared-my-client/common';
+import { MIME_TYPE } from 'shared-my';
+import { fileUtils, useAsyncEffect } from 'shared-my-client';
 
 import { Crashlytics } from '~/services';
 
