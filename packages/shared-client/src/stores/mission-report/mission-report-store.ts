@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
 
-import { type IMissionReportAPI, type IMissionReportDTO, type IMissionReportPreviewDTO, type IMissionReportSumDTO } from '~/api';
+import { type IMissionReportAPI, type IMissionReportDTO, type IMissionReportSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
@@ -23,7 +23,7 @@ import { type IEmployeeStore, createEmployeeAction } from '../employee';
 import { type IEquipmentStore, createEquipmentAction } from '../equipment';
 import { type IExplosiveStore, createExplosiveAction } from '../explosive';
 import { type IExplosiveObjectStore, createExplosiveObjectAction } from '../explosive-object';
-import { type IMapStore } from '../map';
+import { createMapView, type IMapStore } from '../map';
 import { type ITransportStore, createTransportAction } from '../transport';
 
 interface IServices {
@@ -33,13 +33,11 @@ interface IServices {
 export interface IMissionReportStore {
     collection: CollectionModel<IMissionReport, IMissionReportData>;
     list: ListModel<IMissionReport, IMissionReportData>;
-    searchList: ListModel<IMissionReport, IMissionReportData>;
     sum: {
         total: number;
     };
     setSum: (sum: IMissionReportSumDTO) => void;
     appendToCollections: (data: IMissionReportDTO) => void;
-    append: (res: IMissionReportPreviewDTO[], isSearch: boolean, isMore?: boolean) => void;
     create: RequestModel<[ICreateValue<IMissionReportDataParams>]>;
     update: RequestModel<[string, ICreateValue<IMissionReportDataParams>]>;
     fetchList: RequestModel<[search?: string]>;
@@ -81,10 +79,6 @@ export class MissionReportStore implements IMissionReportStore {
 
     list = new ListModel<IMissionReport, IMissionReportData>({ collection: this.collection });
 
-    searchList = new ListModel<IMissionReport, IMissionReportData>({
-        collection: this.collection,
-    });
-
     sum = {
         total: 0,
     };
@@ -103,7 +97,7 @@ export class MissionReportStore implements IMissionReportStore {
     appendToCollections(data: IMissionReportDTO) {
         this.stores.employee.collectionActions.set(data.approvedByAction?.id, createEmployeeAction(data.approvedByAction));
         this.stores.employee.collectionActions.set(data.squadLeaderAction?.id, createEmployeeAction(data.squadLeaderAction));
-        this.stores.map.append(data.mapView);
+        this.stores.map.collection.set(data.mapView.id, createMapView(data.mapView));
         this.stores.employee.collectionActions.setArr(data.squadActions.map(createEmployeeAction));
         this.stores.explosiveObject.collectionActions.setArr(data.explosiveObjectActions.map(createExplosiveObjectAction));
         this.stores.transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
@@ -112,14 +106,6 @@ export class MissionReportStore implements IMissionReportStore {
         this.stores.order.collection.set(data.order.id, createOrder(data.order));
         this.stores.missionRequest.collection.set(data.missionRequest.id, createMissionRequest(data.missionRequest));
         this.collection.set(data.id, createMissionReport(data));
-    }
-
-    append(res: IMissionReportPreviewDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createMissionReportPreview), true);
     }
 
     create = new RequestModel({
@@ -142,44 +128,27 @@ export class MissionReportStore implements IMissionReportStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.missionReport.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createMissionReportPreview));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
+        shouldRun: () => this.list.isMorePages,
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.missionReport.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createMissionReportPreview));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -195,7 +164,7 @@ export class MissionReportStore implements IMissionReportStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.missionReport.remove(id);
-            this.list.removeById(id);
+            this.list.remove(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),

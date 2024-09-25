@@ -1,3 +1,4 @@
+import { isArray } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 
 import { type ICollectionModel } from './CollectionModel';
@@ -11,7 +12,7 @@ export interface IListModel<T extends { data: B }, B extends { id: string }> {
     setMore: (isMore: boolean) => void;
 
     // remove: (ids: string | string[]) => void;
-    removeById: (ids: string | string[]) => void;
+    remove: (ids: string | string[]) => void;
     pageSize: number;
     isEmpty: boolean;
     isMorePages: boolean;
@@ -39,6 +40,10 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
         this.pageSize = params?.pageSize ?? 10;
         this.collection = params.collection;
 
+        this.collection?.onRemoved?.((id) => {
+            this.remove(id);
+        });
+
         makeAutoObservable(this);
     }
 
@@ -53,52 +58,40 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
     set(arr: B[]) {
         this.collection.setArr(arr);
         this.ids = arr.map((item) => item.id);
+
+        this.checkMore(arr.length);
     }
 
-    push(value: B | B[], isUniqueEnabled = false) {
+    push(value: B | B[]) {
         const newItems = Array.isArray(value) ? value : [value];
         const items = newItems as (B & { id: string })[];
 
-        const data = isUniqueEnabled ? items.filter((el) => !this.ids.includes(el.id)) : items;
-
         this.collection.setArr(items);
-        this.ids.push(...data.map((el) => el.id));
+        this.ids.push(...items.map((el) => el.id));
+
+        if (isArray(value)) this.checkMore(value.length);
     }
 
-    unshift(value: B | B[], isUniqueEnabled = false) {
+    unshift(value: B | B[]) {
         const newItems = Array.isArray(value) ? value : [value];
         const items = newItems as (B & { id: string })[];
 
-        const data = isUniqueEnabled ? items.filter((el) => !this.ids.includes(el.id)) : items;
-
         this.collection.setArr(items);
-        this.ids.unshift(...data.map((el) => el.id));
+        this.ids.unshift(...items.map((el) => el.id));
+
+        if (isArray(value)) this.checkMore(value.length);
     }
 
     clear() {
         this.ids = [];
+        this.isMorePages = true;
     }
 
     includes(id: string) {
         return this.ids.includes(id);
     }
 
-    // TODO: remove by index
-    // remove(index: number | number[]) {
-    //     const indexToRemove = Array.isArray(index) ? index : [index];
-
-    //     this.setTotal(this.total - indexToRemove.length);
-
-    //     this.ids = this.ids.filter((id) => !idsToRemove.includes(id));
-
-    //     if (this.collection) {
-    //         this.arr = (this.arr as (T & { id: string | number })[]).filter(
-    //             ({ id }) => !idsToRemove.includes(id),
-    //         );
-    //     }
-    // }
-
-    removeById(ids: string | string[]) {
+    remove(ids: string | string[]) {
         const idsToRemove = Array.isArray(ids) ? ids : [ids];
         this.ids = this.ids.filter((id) => !idsToRemove.includes(id));
     }

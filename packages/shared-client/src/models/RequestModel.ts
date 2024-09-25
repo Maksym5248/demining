@@ -12,7 +12,7 @@ export interface IRequestModel<Params extends Array<any> = undefined[], Return =
 }
 
 export interface IRequestModelParams<Params extends Array<any> = undefined[], Return = void> {
-    shouldRun?: (...args: Params) => boolean;
+    shouldRun?: (...args: Partial<Params> | Params) => boolean;
     run: (...args: Params) => Promise<Return | void> | Return | void;
     onError?: () => void;
     onSuccuss?: () => void;
@@ -33,6 +33,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
         this._run = params?.run;
         this._onError = params?.onError;
         this._onSuccuss = params?.onSuccuss;
+        this._returnIfLoaded = !!params?.returnIfLoaded;
 
         makeAutoObservable(this);
     }
@@ -43,8 +44,11 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
         try {
             if (this._returnIfLoaded && this.requestState.isLoaded) return;
             if (this._shouldRun && !this._shouldRun(...args)) return;
+
             this.requestState.start();
+
             res = await this._run(...args);
+
             this._onSuccuss?.();
             this.requestState.success();
         } catch (e) {

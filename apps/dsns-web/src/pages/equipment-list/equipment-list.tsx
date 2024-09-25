@@ -61,14 +61,12 @@ export const EquipmentListPage = observer(() => {
         equipment.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? equipment.searchList : equipment.list;
-
     return (
         <List
             loading={equipment.fetchList.isLoading}
             loadingMore={equipment.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!equipment.list.isMorePages}
+            dataSource={equipment.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

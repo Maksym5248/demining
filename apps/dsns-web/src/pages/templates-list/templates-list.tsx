@@ -61,16 +61,14 @@ export const TemplatesListPage = observer(() => {
         document.fetchTemplatesList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? document.templatesSearchList : document.templatesList;
-
     return (
         <List
             rowKey="id"
             itemLayout="horizontal"
             loading={document.fetchTemplatesList.isLoading}
             loadingMore={document.fetchTemplatesListMore.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!document.listTemplates.isMorePages}
+            dataSource={document.listTemplates.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} onOpenInfo={onOpenInfo} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

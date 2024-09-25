@@ -57,14 +57,12 @@ export const MissionRequestListPage = observer(() => {
         missionRequest.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? missionRequest.searchList : missionRequest.list;
-
     return (
         <List
             loading={missionRequest.fetchList.isLoading}
             loadingMore={missionRequest.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!missionRequest.list.isMorePages}
+            dataSource={missionRequest.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

@@ -22,16 +22,17 @@ PRODUCT
 8. створити окрему таблицю для вибухових речовин та засобів підриву
 
 TODO
+- refactroing setting list data (remove checking of unique id and use set)
+- fix classification
+- update prod with new schema (migration) and code fixes
+- mobile app initial setup
 - removed => archived, make removed as archived and rewrite actions to disable data dublications
 - add confirmation email for autentication process
 - permission for verifying and editing explosivce objects
-- migration from old explosive object and action schema to new
-- + how to show tree of clasification of ammonnitions
 - create shared theme
 - map
 - form to useFormik
 - validation yup
-- map utils
 - normalize data, all data should be the same as we have in db not in dto
 - token expiration
 - permissions to edit explosive objects

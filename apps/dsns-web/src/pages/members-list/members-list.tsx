@@ -58,14 +58,14 @@ export const MembersListPage = observer(() => {
 
     useEffect(() => {
         if (id) {
-            currentOrganization?.fetchMembers.run();
+            currentOrganization?.fetchListMembers.run();
         }
     }, [id]);
 
     return (
         <List
-            loading={currentOrganization?.fetchMembers.isLoading || organization.fetchItem.isLoading}
-            dataSource={currentOrganization?.members.asArray}
+            loading={currentOrganization?.fetchListMembers.isLoading || organization.fetchItem.isLoading}
+            dataSource={currentOrganization?.listMembers.asArray}
             isReachedEnd
             header={
                 <Space css={s.listHeader}>

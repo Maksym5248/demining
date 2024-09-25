@@ -11,12 +11,12 @@ import { type IViewerStore } from '../../../viewer';
 export interface IOrganization {
     id: string;
     data: IOrganizationValue;
-    members: IListModel<IUser, IUserData>;
+    listMembers: IListModel<IUser, IUserData>;
     update: IRequestModel<[ICreateOrganizationDTO]>;
     createMember: IRequestModel<[string, boolean, boolean]>;
     updateMember: IRequestModel<[string, boolean, boolean]>;
     removeMember: IRequestModel<[string]>;
-    fetchMembers: IRequestModel;
+    fetchListMembers: IRequestModel;
 }
 
 interface IApi {
@@ -44,7 +44,7 @@ export class Organization implements IOrganization {
     services: IServices;
     data: IOrganizationValue;
 
-    members: IListModel<IUser, IUserData>;
+    listMembers: IListModel<IUser, IUserData>;
 
     constructor(value: IOrganizationValue, { stores, api, services }: IOrganizationParams) {
         this.data = value;
@@ -53,7 +53,7 @@ export class Organization implements IOrganization {
         this.api = api;
         this.services = services;
 
-        this.members = new ListModel<IUser, IUserData>({ collection: this.stores.user.collection });
+        this.listMembers = new ListModel<IUser, IUserData>({ collection: this.stores.user.collection });
 
         makeAutoObservable(this);
     }
@@ -85,7 +85,7 @@ export class Organization implements IOrganization {
                 !!this.stores.viewer.user?.isRootAdmin,
             );
 
-            this.members.push(createUser(res), true);
+            this.listMembers.push(createUser(res));
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -111,19 +111,17 @@ export class Organization implements IOrganization {
         run: async (userId: string) => {
             await this.api.organization.removeMember(this.data.id, userId);
 
-            this.members.removeById(userId);
             this.stores.user.collection.remove(userId);
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось видалити'),
     });
 
-    fetchMembers = new RequestModel({
+    fetchListMembers = new RequestModel({
         returnIfLoaded: true,
         run: async () => {
             const res = await this.api.organization.getMembers(this.data.id);
-
-            this.members.push(res.map(createUser), true);
+            this.listMembers.set(res.map(createUser));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

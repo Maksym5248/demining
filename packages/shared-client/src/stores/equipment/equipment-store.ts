@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { EQUIPMENT_TYPE } from 'shared-my';
 
-import { type IEquipmentAPI, type IEquipmentDTO } from '~/api';
+import { type IEquipmentAPI } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
@@ -22,10 +22,8 @@ export interface IEquipmentStore {
     collectionActions: CollectionModel<IEquipmentAction, IEquipmentActionData>;
     collection: CollectionModel<IEquipment, IEquipmentData>;
     list: ListModel<IEquipment, IEquipmentData>;
-    searchList: ListModel<IEquipment, IEquipmentData>;
     listMineDetectors: IEquipment[];
     firstMineDetector: IEquipment | undefined;
-    append(res: IEquipmentDTO[], isSearch: boolean, isMore?: boolean): void;
     create: RequestModel<[ICreateValue<IEquipmentData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -52,7 +50,6 @@ export class EquipmentStore implements IEquipmentStore {
         factory: (data: IEquipmentData) => new Equipment(data, this),
     });
     list = new ListModel<IEquipment, IEquipmentData>({ collection: this.collection });
-    searchList = new ListModel<IEquipment, IEquipmentData>({ collection: this.collection });
 
     constructor(params: { api: IApi; services: IServices }) {
         makeAutoObservable(this);
@@ -68,14 +65,6 @@ export class EquipmentStore implements IEquipmentStore {
         return this.listMineDetectors[0];
     }
 
-    append(res: IEquipmentDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createEquipment), true);
-    }
-
     create = new RequestModel({
         run: async (data: ICreateValue<IEquipmentData>) => {
             const res = await this.api.equipment.create(createEquipmentDTO(data));
@@ -88,9 +77,6 @@ export class EquipmentStore implements IEquipmentStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.equipment.remove(id);
-
-            this.list.removeById(id);
-            this.searchList.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -98,44 +84,27 @@ export class EquipmentStore implements IEquipmentStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.equipment.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createEquipment));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
+        shouldRun: () => this.list.isMorePages,
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.equipment.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createEquipment));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

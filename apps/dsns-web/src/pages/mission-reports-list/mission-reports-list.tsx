@@ -59,14 +59,12 @@ export const MissionReportsListPage = observer(() => {
         missionReport.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? missionReport.searchList : missionReport.list;
-
     return (
         <List
             loading={missionReport.fetchList.isLoading}
             loadingMore={missionReport.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!missionReport.list.isMorePages}
+            dataSource={missionReport.list.asArray}
             onLoadMore={onLoadMore}
             style={{ flex: 1 }}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}

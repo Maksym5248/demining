@@ -63,14 +63,12 @@ export const TransportListPage = observer(() => {
         transport.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? transport.searchList : transport.list;
-
     return (
         <List
             loading={transport.fetchList.isLoading}
             loadingMore={transport.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!transport.list.isMorePages}
+            dataSource={transport.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

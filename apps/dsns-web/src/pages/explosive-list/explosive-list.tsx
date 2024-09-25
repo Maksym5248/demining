@@ -62,14 +62,12 @@ export const ExplosiveListPage = observer(() => {
         explosive.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? explosive.searchList : explosive.list;
-
     return (
         <List
             loading={explosive.fetchList.isLoading}
             loadingMore={explosive.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!explosive.list.isMorePages}
+            dataSource={explosive.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
