@@ -24,7 +24,7 @@ PRODUCT
 TODO
 // DSNS WEB
 1.
-- fix classification
+- + fix classification
 - + refactroing setting list data
 + update prod with new schema
 - add confirmation email for autentication process

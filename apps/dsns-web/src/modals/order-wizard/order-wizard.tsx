@@ -52,7 +52,6 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
         hide();
     };
 
-    console.log('currentOrder', currentOrder);
     return (
         <Drawer
             open={isVisible}

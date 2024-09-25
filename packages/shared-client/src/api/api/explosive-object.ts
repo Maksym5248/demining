@@ -2,7 +2,6 @@ import {
     countries,
     explosiveObjectClassData,
     explosiveObjectClassDataItems,
-    explosiveObjectGroupsData,
     explosiveObjectTypesData,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
@@ -20,7 +19,6 @@ import {
     type IExplosiveObjectClassItemDTO,
     type ICountryDTO,
     type IExplosiveObjectTypeDTO,
-    type IExplosiveObjectGroupDTO,
 } from '../dto';
 
 export interface IExplosiveObjectAPI {
@@ -32,7 +30,6 @@ export interface IExplosiveObjectAPI {
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     getCountriesList: () => Promise<ICountryDTO[]>;
     getTypesList: () => Promise<IExplosiveObjectTypeDTO[]>;
-    getGroupsList: () => Promise<IExplosiveObjectGroupDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
@@ -110,9 +107,6 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     }
     async getCountriesList() {
         return countries;
-    }
-    async getGroupsList() {
-        return explosiveObjectGroupsData;
     }
 
     async getTypesList() {

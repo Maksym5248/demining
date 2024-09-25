@@ -15,7 +15,6 @@ import {
     type IExplosiveObjectClassItemDB,
     type IExplosiveObjectTypeDB,
     type IExplosiveObjectDetailsDB,
-    type IExplosiveObjectGroupDB,
 } from 'shared-my';
 
 export type IMarkingDTO = IMarkingDB;
@@ -34,6 +33,5 @@ export type ICountryDTO = ICountryDB;
 export type IExplosiveObjectClassDTO = IExplosiveObjectClassDB;
 export type IExplosiveObjectClassItemDTO = IExplosiveObjectClassItemDB;
 export type IExplosiveObjectTypeDTO = IExplosiveObjectTypeDB;
-export type IExplosiveObjectGroupDTO = IExplosiveObjectGroupDB;
 
 export type IExplosiveObjectDTO = IExplosiveObjectDB;

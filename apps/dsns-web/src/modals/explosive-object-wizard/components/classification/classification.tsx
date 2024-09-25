@@ -12,34 +12,29 @@ export const Classification = () => {
     return (
         <Form.Item noStyle shouldUpdate={() => true}>
             {({ getFieldValue }) => {
-                const groupId = getFieldValue('groupId');
+                const typeId = getFieldValue('typeId');
                 const component = getFieldValue('component');
 
                 return (
-                    !!groupId &&
+                    !!typeId &&
                     !!component && (
-                        <Form.Item
-                            label="Класифікація"
-                            name="classIds"
-                            rules={[{ message: "Обов'язкове поле" }]}
-                            style={{ marginBottom: 0 }}>
+                        <Form.Item label="Класифікація" name="classIds" style={{ marginBottom: 0 }}>
                             <Form.Item noStyle shouldUpdate={() => true}>
                                 {({ getFieldValue, setFieldValue }) => {
-                                    const classItemsIds: string[] = getFieldValue('classIds') ?? [];
-                                    const classsifications = explosiveObject.getClassesByGroupId(groupId, component);
+                                    const itemsIds: string[] = getFieldValue('classIds') ?? [];
+                                    const classsifications = explosiveObject.getClassesBytypeId(typeId, component);
 
                                     return classsifications
                                         .map((classification) => {
                                             const children =
                                                 classification.itemsTree.tree?.children.filter(
-                                                    (item) =>
-                                                        !item?.item?.data.parentId || !!classItemsIds.includes(item?.item.data.parentId),
+                                                    (item) => !item?.item?.data.parentId || !!itemsIds.includes(item?.item.data.parentId),
                                                 ) ?? [];
 
                                             const onChange = (newValue: string) => {
                                                 const classItemsIds = classification.items.map((item) => item.data.id);
 
-                                                const prevValue = classItemsIds.filter((id: string) => classItemsIds.includes(id));
+                                                const prevValue = classItemsIds.filter((id: string) => itemsIds.includes(id));
                                                 const prevValueChilds = prevValue
                                                     .map((id: string) => explosiveObject.treeClassesItems.getAllChildsIds(id))
                                                     .reduce((acc: string[], val: string[]) => [...acc, ...val], []);
@@ -66,7 +61,7 @@ export const Classification = () => {
                                                 (item) => item?.data?.name ?? '',
                                             );
 
-                                            const currentClassIds = classItemsIds
+                                            const currentClassIds = itemsIds
                                                 .map((id) => classification.itemsTree?.getNode(id))
                                                 .filter(Boolean)
                                                 .filter((el) => !el?.children?.length);

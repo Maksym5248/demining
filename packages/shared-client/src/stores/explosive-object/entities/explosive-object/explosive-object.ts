@@ -15,7 +15,6 @@ import { type ICountryData, type ICountry } from '../country';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
 import { createExplosiveObjectDetails, type IExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
-import { type IExplosiveObjectGroupData, type IExplosiveObjectGroup } from '../explosive-object-group';
 import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
 
 interface IApi {
@@ -27,7 +26,6 @@ interface IServices {
 }
 
 interface ICollections {
-    group: ICollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
     type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
@@ -50,7 +48,6 @@ export interface IExplosiveObject {
     type?: IExplosiveObjectType;
     countries?: ICountry[];
     details?: IExplosiveObjectDetails;
-    group?: IExplosiveObjectGroup;
     class?: IExplosiveObjectClass[];
 }
 
@@ -84,10 +81,6 @@ export class ExplosiveObject implements IExplosiveObject {
 
     get type() {
         return this.collections.type.get(this.data.typeId);
-    }
-
-    get group() {
-        return this.collections.group.get(this.data.groupId);
     }
 
     get displayName() {
