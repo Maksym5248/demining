@@ -137,8 +137,6 @@ export const rocketClassDataItems: IExplosiveObjectClassItemDB[] = [
         parentId: null,
         name: 'Море-земля',
     },
-
-    // протитанкові
 ];
 
 export const rocketRangeBallisticData: IExplosiveObjectClassItemDB[] = [
