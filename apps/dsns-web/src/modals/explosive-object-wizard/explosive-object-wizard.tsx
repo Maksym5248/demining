@@ -80,6 +80,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             : {
                                   typeId: firstType?.data.id,
                                   status: EXPLOSIVE_OBJECT_STATUS.PENDING,
+                                  classIds: [],
                               }
                     }>
                     <Form.Item name="image" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>

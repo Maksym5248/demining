@@ -40,7 +40,9 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
 
                         return classifications
                             .map((classification) => {
-                                const currentSelectedItem = classification.getItemsByIds(selectedIds)[0];
+                                const currentSelectedItemsIds = classification.getItemsIdsByIds(selectedIds);
+                                const currentSelectedItemTree = classification.treeItems.getNodeLowLevel(currentSelectedItemsIds);
+                                const currentSelectedItem = classification.getItem(currentSelectedItemTree?.id);
 
                                 const isSelectedItems = !!currentSelectedItem;
                                 const isRootItems = !!classification.isRootItems(selectedIds);
@@ -56,10 +58,12 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
                                         removeArray = classificationsStore.treeItems.getAllChildsIds(currentSelectedItem.data.id);
                                     }
 
-                                    setFieldValue(
-                                        'classIds',
-                                        newValuesIds.filter((id) => !removeArray.includes(id)),
-                                    );
+                                    const newParrentsIds = classification.treeItems.getAllParentsIds(newValue, true).filter(Boolean);
+
+                                    setFieldValue('classIds', [
+                                        ...newParrentsIds,
+                                        ...newValuesIds.filter((id) => !removeArray.includes(id)),
+                                    ]);
                                 };
 
                                 const itemsOptions = transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
@@ -67,7 +71,7 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
                                     (item) => item?.data?.name ?? '',
                                 );
 
-                                const itemValue = classification.treeItems.getNode(currentSelectedItem?.data.id);
+                                const itemValue = classification.treeItems.getNode(currentSelectedItem?.data.id ?? '');
 
                                 return (
                                     <Form.Item key={classification.data.id}>
