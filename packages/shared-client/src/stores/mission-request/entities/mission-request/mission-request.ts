@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { missionRequestType } from 'shared-my/db';
+import { missionRequestType } from 'shared-my';
 
 import { type IMissionRequestAPI } from '~/api';
 import { type IUpdateValue } from '~/common';

@@ -1,4 +1,4 @@
-import { type EQUIPMENT_TYPE } from 'shared-my/db';
+import { type EQUIPMENT_TYPE } from 'shared-my';
 
 export interface IEquipmentForm {
     name: string;

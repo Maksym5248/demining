@@ -1,7 +1,7 @@
 import { Form, Select, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EQUIPMENT_TYPE } from 'shared-my/db';
-import { useItemStore } from 'shared-my-client/common';
+import { EQUIPMENT_TYPE } from 'shared-my';
+import { useItemStore } from 'shared-my-client';
 
 import { WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';

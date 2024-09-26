@@ -87,7 +87,7 @@ function translateKeyToUkrainian(key: string): string {
 }
 
 export const missionReportTemplateData = Object.entries(missionReportData).map(([key, value]) => ({
-    key: `{{${key}}}`,
+    key: `{${key}}`,
     value,
     field: translateKeyToUkrainian(key),
 }));

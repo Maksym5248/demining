@@ -1,5 +1,5 @@
 import { message as antd } from 'antd';
-import { type IMessage } from 'shared-my-client/services';
+import { type IMessage } from 'shared-my-client';
 
 export class MessageService implements IMessage {
     error = (text: string) => antd.error(text);

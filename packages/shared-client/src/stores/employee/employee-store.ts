@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
-import { EMPLOYEE_TYPE } from 'shared-my/db';
+import { EMPLOYEE_TYPE } from 'shared-my';
 
-import { type IEmployeeAPI, type IEmployeeDTO } from '~/api';
+import { type IEmployeeAPI } from '~/api';
 import { type ICreateValue, dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -23,23 +23,17 @@ import {
 
 export interface IEmployeeStore {
     collection: ICollectionModel<IEmployee, IEmployeeData>;
-    list: IListModel<IEmployee, IEmployeeData>;
-    searchList: IListModel<IEmployee, IEmployeeData>;
-
-    ranksCollection: ICollectionModel<IRank, IRankData>;
-    ranksList: IListModel<IRank, IRankData>;
-
     collectionActions: ICollectionModel<IEmployeeAction, IEmployeeActionData>;
+    collectionRanks: ICollectionModel<IRank, IRankData>;
+
+    list: IListModel<IEmployee, IEmployeeData>;
+    listRanks: IListModel<IRank, IRankData>;
 
     chiefs: IEmployee[];
     squadLeads: IEmployee[];
     workers: IEmployee[];
     chiefFirst: IEmployee;
     squadLeadFirst: IEmployee;
-
-    getById: (id: string) => IEmployee | undefined;
-    append: (res: IEmployeeDTO[], isSearch: boolean, isMore?: boolean) => void;
-    setAll: (res: IEmployeeDTO[]) => void;
     fetchRanks: IRequestModel;
     create: IRequestModel<[ICreateValue<IEmployeeData>]>;
     remove: IRequestModel<[string]>;
@@ -61,19 +55,18 @@ export class EmployeeStore implements IEmployeeStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IEmployee, IEmployeeData>({
-        factory: (data: IEmployeeData) => new Employee(data, { collections: { rank: this.ranksCollection }, ...this }),
-    });
-    list = new ListModel<IEmployee, IEmployeeData>({ collection: this.collection });
-    searchList = new ListModel<IEmployee, IEmployeeData>({ collection: this.collection });
-    ranksCollection = new CollectionModel<IRank, IRankData>({
+    collectionRanks = new CollectionModel<IRank, IRankData>({
         factory: (data: IRankData) => new Rank(data),
     });
-    ranksList = new ListModel<IRank, IRankData>({ collection: this.ranksCollection });
-
-    collectionActions = new CollectionModel<IEmployeeAction, IEmployeeActionData>({
-        factory: (data: IEmployeeActionData) => new EmployeeAction(data, { collections: { rank: this.ranksCollection }, ...this }),
+    collection = new CollectionModel<IEmployee, IEmployeeData>({
+        factory: (data: IEmployeeData) => new Employee(data, { collections: { rank: this.collectionRanks }, ...this }),
     });
+    collectionActions = new CollectionModel<IEmployeeAction, IEmployeeActionData>({
+        factory: (data: IEmployeeActionData) => new EmployeeAction(data, { collections: { rank: this.collectionRanks }, ...this }),
+    });
+
+    list = new ListModel<IEmployee, IEmployeeData>({ collection: this.collection });
+    listRanks = new ListModel<IRank, IRankData>({ collection: this.collectionRanks });
 
     constructor({ api, services }: { api: IApi; services: IServices }) {
         this.api = api;
@@ -106,23 +99,11 @@ export class EmployeeStore implements IEmployeeStore {
         return this.collection.get(id);
     }
 
-    append(res: IEmployeeDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createEmployee));
-    }
-
-    setAll(res: IEmployeeDTO[]) {
-        this.list.setMore(false);
-        this.list.push(res.map(createEmployee));
-    }
-
     fetchRanks = new RequestModel({
+        shouldRun: () => !this.listRanks.length,
         run: async () => {
-            const res = await this.api.employee.getRanksList();
-            this.ranksList.push(res.map(createRank));
+            const res = await this.api.employee.getlistRanks();
+            this.listRanks.push(res.map(createRank));
         },
     });
 
@@ -138,7 +119,6 @@ export class EmployeeStore implements IEmployeeStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.employee.remove(id);
-            this.list.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -148,48 +128,32 @@ export class EmployeeStore implements IEmployeeStore {
     fetchListAll = new RequestModel({
         run: async () => {
             const res = await this.api.employee.getList();
-            this.setAll(res);
+            this.list.setMore(false);
+            this.list.set(res.map(createEmployee));
         },
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.employee.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createEmployee));
         },
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
-        run: async (search: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
+        shouldRun: () => !!this.list.isMorePages,
+        run: async (search?: string) => {
             const res = await this.api.employee.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createEmployee));
         },
     });
 

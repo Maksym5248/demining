@@ -1,4 +1,4 @@
-import { type IMapViewActionDB } from 'shared-my/db';
+import { type IMapViewActionDB } from 'shared-my';
 
 import { type IDBBase } from '~/common';
 import { type IGeohashRange } from '~/map';

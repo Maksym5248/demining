@@ -1,4 +1,4 @@
-import { type IEquipmentDB } from 'shared-my/db';
+import { type IEquipmentDB } from 'shared-my';
 
 import { type IQuery, type IDBBase, type ICreateValue, type IUpdateValue } from '~/common';
 

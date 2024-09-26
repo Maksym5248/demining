@@ -26,9 +26,9 @@ import {
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
-import { removeFields } from 'shared-my/common';
-import { type IBaseDB } from 'shared-my/db';
-import { type IWhere, type IQuery, type IOrder, type IDBBase, type ICreateData } from 'shared-my-client/common';
+import { removeFields } from 'shared-my';
+import { type IBaseDB } from 'shared-my';
+import { type IWhere, type IQuery, type IQueryOrder, type IDBBase, type ICreateData } from 'shared-my-client';
 
 function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];
@@ -73,7 +73,7 @@ const getWhere = (values: IWhere) => {
     return res;
 };
 
-const getOrder = (value: IOrder) => orderBy(value.by, value.type);
+const getOrder = (value: IQueryOrder) => orderBy(value.by, value.type);
 
 export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     tableName: string;

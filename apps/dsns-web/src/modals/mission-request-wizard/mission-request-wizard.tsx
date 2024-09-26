@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import { Form, DatePicker, Drawer, Spin, Input } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MISSION_REQUEST_TYPE, missionRequestType } from 'shared-my/db';
-import { dates } from 'shared-my-client/common';
+import { MISSION_REQUEST_TYPE, missionRequestType } from 'shared-my';
+import { dates } from 'shared-my-client';
 
 import { Select, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -71,7 +71,7 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                     disabled={wizard.isView}
                     initialValues={
                         missionRequest
-                            ? { ...missionRequest }
+                            ? { ...missionRequest.data }
                             : {
                                   type: MISSION_REQUEST_TYPE.APPLICATION,
                                   number: (store.missionRequest.list.first?.data.number ?? 0) + 1,

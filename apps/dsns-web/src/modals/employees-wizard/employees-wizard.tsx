@@ -1,6 +1,6 @@
 import { Form, Input, Select, Drawer } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EMPLOYEE_TYPE } from 'shared-my/db';
+import { EMPLOYEE_TYPE } from 'shared-my';
 
 import { WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -54,7 +54,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         hide();
     };
 
-    const ranks = store.employee.ranksList.asArray;
+    const ranks = store.employee.listRanks.asArray;
 
     return (
         <Drawer
@@ -76,7 +76,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         ? { ...employee.data }
                         : {
                               type: employeeTypesData[0]?.type,
-                              rankId: store.employee.ranksList.first?.data.id,
+                              rankId: store.employee.listRanks.first?.data.id,
                           }
                 }>
                 <Form.Item label="Прізвище" name="lastName" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>

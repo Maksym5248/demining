@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import { type IExplosiveObject } from 'shared-my-client/stores';
+import { type IExplosiveObject } from 'shared-my-client';
 
 import { Icon, List, ListHeader, Image } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -48,14 +48,12 @@ export const ExplosiveObjectListPage = observer(() => {
         explosiveObject.fetchList.run(search.searchValue);
     }, []);
 
-    const list = search.searchValue ? explosiveObject.searchList : explosiveObject.list;
-
     return (
         <List
             loading={explosiveObject.fetchList.isLoading}
             loadingMore={explosiveObject.fetchMoreList.isLoading}
-            isReachedEnd={!list.isMorePages}
-            dataSource={list.asArray}
+            isReachedEnd={!explosiveObject.list.isMorePages}
+            dataSource={explosiveObject.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={(item) => <ListItem item={item} />}

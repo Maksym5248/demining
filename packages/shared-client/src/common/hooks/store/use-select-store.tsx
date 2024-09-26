@@ -21,8 +21,6 @@ export function useSelectStore<T extends { data: B }, B extends { id: string }>(
         store.fetchList.run(searchValue);
     };
 
-    const list = searchValue ? store.searchList : store.list;
-
     useEffect(() => {
         if (defaultValue && !initialItem) {
             store.fetchItem.run(defaultValue);
@@ -34,10 +32,10 @@ export function useSelectStore<T extends { data: B }, B extends { id: string }>(
         loadingInput: store.fetchItem.isLoading,
         loading: store.fetchList.isLoading,
         loadingMore: store.fetchMoreList.isLoading,
-        isReachedEnd: !list.isMorePages,
+        isReachedEnd: !store.list.isMorePages,
         onLoadMore,
         onFocus,
-        list: list.asArray,
+        list: store.list.asArray,
         initialItem,
     };
 }

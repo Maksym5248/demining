@@ -1,4 +1,4 @@
-import { DOCUMENT_TYPE, EQUIPMENT_TYPE } from 'shared-my/db';
+import { DOCUMENT_TYPE, EQUIPMENT_TYPE } from 'shared-my';
 
 import { type IEquipmentActionDTO } from '~/api';
 import { data, dates } from '~/common';

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { str } from 'shared-my/common';
+import { str } from 'shared-my';
 
 import { type IEmployeeAPI } from '~/api';
 import { type IUpdateValue } from '~/common';

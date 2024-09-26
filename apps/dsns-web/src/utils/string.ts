@@ -1,4 +1,4 @@
-import { DOCUMENT_TYPE } from 'shared-my/db';
+import { DOCUMENT_TYPE } from 'shared-my';
 
 const getValue = (value: DOCUMENT_TYPE) =>
     ({

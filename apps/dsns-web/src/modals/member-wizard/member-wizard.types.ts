@@ -1,4 +1,4 @@
-import { type IUser } from 'shared-my-client/stores';
+import { type IUser } from 'shared-my-client';
 
 export interface IMemberForm {
     id: string;

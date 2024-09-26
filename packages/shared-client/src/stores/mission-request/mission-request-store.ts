@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
 
-import { type IMissionRequestAPI, type IMissionRequestDTO, type IMissionRequestSumDTO } from '~/api';
+import { type IMissionRequestAPI, type IMissionRequestSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
@@ -19,10 +19,8 @@ import {
 export interface IMissionRequestStore {
     collection: CollectionModel<IMissionRequest, IMissionRequestData>;
     list: ListModel<IMissionRequest, IMissionRequestData>;
-    searchList: ListModel<IMissionRequest, IMissionRequestData>;
     sum: { total: number };
     setSum: (sum: IMissionRequestSumDTO) => void;
-    append: (res: IMissionRequestDTO[], isSearch: boolean, isMore?: boolean) => void;
     create: RequestModel<[ICreateValue<IMissionRequestData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -47,9 +45,6 @@ export class MissionRequestStore implements IMissionRequestStore {
         factory: (data: IMissionRequestData) => new MissionRequest(data, this),
     });
     list = new ListModel<IMissionRequest, IMissionRequestData>({ collection: this.collection });
-    searchList = new ListModel<IMissionRequest, IMissionRequestData>({
-        collection: this.collection,
-    });
     sum = { total: 0 };
 
     constructor(params: { api: IApi; services: IServices }) {
@@ -61,14 +56,6 @@ export class MissionRequestStore implements IMissionRequestStore {
 
     setSum(sum: IMissionRequestSumDTO) {
         this.sum = createMissionRequestSum(sum);
-    }
-
-    append(res: IMissionRequestDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchList : this.list;
-        if (isSearch && !isMore) this.searchList.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createMissionRequest), true);
     }
 
     create = new RequestModel({
@@ -83,8 +70,6 @@ export class MissionRequestStore implements IMissionRequestStore {
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.missionRequest.remove(id);
-            this.list.removeById(id);
-            this.searchList.removeById(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -92,44 +77,27 @@ export class MissionRequestStore implements IMissionRequestStore {
     });
 
     fetchList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.missionRequest.getList({
                 search,
-                limit: list.pageSize,
+                limit: this.list.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.list.set(res.map(createMissionRequest));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
-            return list.isMorePages;
-        },
+        shouldRun: () => this.list.isMorePages,
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchList : this.list;
-
             const res = await this.api.missionRequest.getList({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.list.push(res.map(createMissionRequest));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

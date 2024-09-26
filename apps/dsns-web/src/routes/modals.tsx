@@ -1,4 +1,4 @@
-import { type IModalsMap } from 'shared-my-client/services';
+import { type IModalsMap } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import {

@@ -1,7 +1,7 @@
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE } from 'shared-my/db';
-import { fileUtils } from 'shared-my-client/common';
+import { MIME_TYPE } from 'shared-my';
+import { fileUtils } from 'shared-my-client';
 
 import { DocxPreview } from '~/components';
 import { Crashlytics } from '~/services';

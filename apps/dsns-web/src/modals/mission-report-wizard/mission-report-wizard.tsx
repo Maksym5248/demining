@@ -2,9 +2,8 @@ import { useEffect, useState, useMemo } from 'react';
 
 import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE } from 'shared-my/db';
-import { fileUtils } from 'shared-my-client/common';
-import { mapUtils } from 'shared-my-client/map';
+import { MIME_TYPE } from 'shared-my';
+import { fileUtils, mapUtils } from 'shared-my-client';
 
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';

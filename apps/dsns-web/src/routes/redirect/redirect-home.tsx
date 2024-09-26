@@ -9,9 +9,9 @@ export const RedirectHome = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthorized } = store.viewer.user ?? {};
+    const { isAuthorizedDSNS } = store.viewer.user ?? {};
 
-    if (isAuthorized) {
+    if (isAuthorizedDSNS) {
         return <Navigate to={ROUTES.HOME} state={{ from: location }} replace />;
     }
 

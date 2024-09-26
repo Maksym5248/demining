@@ -1,5 +1,5 @@
 import { type GoogleMapProps } from '@react-google-maps/api';
-import { type ICircle, type IGeoBox, type ILine, type IPoint, type IPolygon } from 'shared-my-client/map';
+import { type ICircle, type IGeoBox, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
 
 export interface IOnChangeMapView {
     line?: ILine;

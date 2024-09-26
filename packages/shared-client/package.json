@@ -13,6 +13,7 @@
         "config/*"
     ],
     "exports": {
+        ".": "./dist/index.js",
         "./api": "./dist/api/index.js",
         "./common": "./dist/common/index.js",
         "./map": "./dist/map/index.js",
@@ -32,6 +33,7 @@
         "check:eslint": "eslint --fix"
     },
     "peerDependencies": {
+        "react": "*",
         "axios": "^1.6.5",
         "dayjs": "^1.11.10",
         "formik": "^2.4.5",

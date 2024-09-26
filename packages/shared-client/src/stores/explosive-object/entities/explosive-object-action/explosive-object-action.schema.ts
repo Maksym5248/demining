@@ -1,4 +1,4 @@
-import { type DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my/db';
+import { type DOCUMENT_TYPE, EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my';
 
 import { type IExplosiveObjectActionDTO, type IExplosiveObjectActionDTOParams, type IExplosiveObjectActionSumDTO } from '~/api';
 import { data } from '~/common';

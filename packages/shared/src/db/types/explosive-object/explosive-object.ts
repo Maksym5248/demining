@@ -1,8 +1,8 @@
 import {
     type EXPLOSIVE_OBJECT_TYPE,
-    type EXPLOSIVE_OBJECT_GROUP,
     type EXPLOSIVE_OBJECT_STATUS,
     type EXPLOSIVE_OBJECT_COMPONENT,
+    type EXPLOSIVE_OBJECT_CLASS,
 } from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
@@ -25,7 +25,7 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
     caliber: number | null;
     meta: {
         copy: {
-            group: EXPLOSIVE_OBJECT_GROUP;
+            group: EXPLOSIVE_OBJECT_TYPE;
             typeIds: string[];
             caliber: number | null;
         };
@@ -34,7 +34,8 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
 
 export interface IExplosiveObjectClassDB {
     id: string;
-    groupId: string;
+    class: EXPLOSIVE_OBJECT_CLASS;
+    typeId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
 }
@@ -44,19 +45,14 @@ export interface IExplosiveObjectClassItemDB {
     classId: string;
     parentId: string | null;
     name: string;
-}
-
-export interface IExplosiveObjectGroupDB {
-    id: string;
-    name: string;
-    fullName: string;
-    hasCaliber: boolean;
+    description?: string;
 }
 
 export interface IExplosiveObjectTypeDB {
     id: string;
     name: string;
     fullName: string;
+    hasCaliber?: boolean;
 }
 
 export interface ICountryDB {
@@ -68,12 +64,9 @@ export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT | null; // Боєприпас
-    groupId: string | null; // Інженерний
+    typeId: string | null; // Інженерний
     countryId: string; // СССР
     classIds: string[]; // протитанковий, протиднищевий; кумулятивний
     imageUri: string | null;
     details: IExplosiveObjectDetailsDB | null;
-
-    /** @deprecated */
-    typeId: string; // old
 }

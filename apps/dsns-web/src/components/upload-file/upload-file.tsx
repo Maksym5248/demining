@@ -1,13 +1,14 @@
 import { Image, Upload } from 'antd';
 import { type RcFile } from 'antd/es/upload';
-import { MIME_TYPE } from 'shared-my/db';
+import { isArray } from 'lodash';
+import { MIME_TYPE } from 'shared-my';
 
 import { Icon } from '../icon';
 
 interface SelectTemplateProps {
     file: File | null;
     onChangeFile: (options: { file: File | null }) => void;
-    accept?: string;
+    accept?: string | string[];
     type?: 'document' | 'image';
     uri?: string;
 }
@@ -15,7 +16,9 @@ interface SelectTemplateProps {
 const { Dragger } = Upload;
 
 export function UploadFile({ type = 'document', uri, file, onChangeFile, accept = MIME_TYPE.DOCX }: SelectTemplateProps) {
-    const isImagePreview = !!(file || uri);
+    const isPreview = !!(file || uri);
+    const isDocument = type === 'document';
+    const isImage = type === 'image';
 
     return (
         <Dragger
@@ -24,8 +27,8 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
             customRequest={(value) => onChangeFile && onChangeFile(value as { file: File })}
             onRemove={() => onChangeFile({ file: null })}
             maxCount={1}
-            accept={accept}>
-            {type === 'document' && (
+            accept={isArray(accept) ? accept.join(', ') : accept}>
+            {isDocument && (
                 <>
                     <p className="ant-upload-drag-icon">
                         <Icon.InboxOutlined />
@@ -34,13 +37,13 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
                     <p className="ant-upload-hint">Вибрати шаблон</p>
                 </>
             )}
-            {!isImagePreview && !file && (
+            {!isPreview && isImage && (
                 <p className="ant-upload-drag-icon">
                     <p className="ant-upload-text">Натисніть або перетягніть картинку у цю область, щоб завантажити</p>
                     <Icon.InboxOutlined />
                 </p>
             )}
-            {isImagePreview && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
+            {isPreview && isImage && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
         </Dragger>
     );
 }

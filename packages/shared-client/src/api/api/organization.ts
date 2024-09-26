@@ -1,6 +1,5 @@
-import { removeFields } from 'shared-my/common';
-import { ROLES } from 'shared-my/db';
-import { type IUserDB, type IOrganizationDB } from 'shared-my/db';
+import { removeFields, ROLES } from 'shared-my';
+import { type IUserDB, type IOrganizationDB } from 'shared-my';
 
 import { type IQuery, type IDBBase } from '~/common';
 

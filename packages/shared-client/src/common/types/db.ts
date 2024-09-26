@@ -18,10 +18,10 @@ import {
     type IDocumentDB,
     type IExplosiveActionDB,
     type IUserDB,
-} from 'shared-my/db';
+} from 'shared-my';
 
 export type IWhere = { [field: string]: any };
-export type IOrder = {
+export type IQueryOrder = {
     by: string;
     type?: 'asc' | 'desc';
 };
@@ -29,7 +29,7 @@ export type IOrder = {
 export type IQuery = {
     search?: string;
     where?: IWhere;
-    order?: IOrder;
+    order?: IQueryOrder;
     limit?: number;
     startAfter?: string | number | Timestamp;
     startAt?: string | number | Timestamp;

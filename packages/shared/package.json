@@ -17,6 +17,7 @@
         "config/eslint-config-prettier.js"
     ],
     "exports": {
+        ".": "./dist/index.js",
         "./common": "./dist/common/index.js",
         "./db": "./dist/db/index.js",
         "./eslint-config-base": "./config/eslint-config-prettier.js",

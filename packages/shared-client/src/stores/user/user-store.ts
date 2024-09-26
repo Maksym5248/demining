@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IUserAPI, type IUserDTO } from '~/api';
+import { type IUserAPI } from '~/api';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -10,7 +10,6 @@ import { createUser, type IUser, type IUserData, User } from './entities';
 export interface IUserStore {
     collection: CollectionModel<IUser, IUserData>;
     listUnassigned: ListModel<IUser, IUserData>;
-    searchListUnassigned: ListModel<IUser, IUserData>;
     fetchListUnassigned: RequestModel<[search?: string]>;
     fetchListUnassignedMore: RequestModel<[search?: string]>;
 }
@@ -29,7 +28,6 @@ export class UserStore implements IUserStore {
 
     collection = new CollectionModel<IUser, IUserData>({ model: User });
     listUnassigned = new ListModel<IUser, IUserData>(this);
-    searchListUnassigned = new ListModel<IUser, IUserData>(this);
 
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
@@ -38,53 +36,28 @@ export class UserStore implements IUserStore {
         makeAutoObservable(this);
     }
 
-    append(res: IUserDTO[], isSearch: boolean, isMore?: boolean) {
-        const list = isSearch ? this.searchListUnassigned : this.listUnassigned;
-        if (isSearch && !isMore) this.searchListUnassigned.clear();
-
-        list.checkMore(res.length);
-        list.push(res.map(createUser), true);
-    }
-
     fetchListUnassigned = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchListUnassigned : this.listUnassigned;
-
-            return !(!isSearch && list.length);
-        },
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchListUnassigned : this.listUnassigned;
-
             const res = await this.api.user.getListUnassignedUsers({
                 search,
-                limit: list.pageSize,
+                limit: this.listUnassigned.pageSize,
             });
 
-            this.append(res, isSearch);
+            this.listUnassigned.set(res.map(createUser));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchListUnassignedMore = new RequestModel({
-        shouldRun: (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchListUnassigned : this.listUnassigned;
-
-            return list.isMorePages;
-        },
+        shouldRun: () => this.listUnassigned.isMorePages,
         run: async (search?: string) => {
-            const isSearch = !!search;
-            const list = isSearch ? this.searchListUnassigned : this.listUnassigned;
-
             const res = await this.api.user.getListUnassignedUsers({
                 search,
-                limit: list.pageSize,
-                startAfter: dates.toDateServer(list.last.data.createdAt),
+                limit: this.listUnassigned.pageSize,
+                startAfter: dates.toDateServer(this.listUnassigned.last.data.createdAt),
             });
 
-            this.append(res, isSearch, true);
+            this.listUnassigned.push(res.map(createUser));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

@@ -1,4 +1,4 @@
-package com.ammo
+package com.demining.ammo
 
 import android.app.Application
 import com.facebook.react.PackageList

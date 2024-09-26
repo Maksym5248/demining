@@ -8,6 +8,7 @@ export interface IBaseDB {
     id: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
+    organizationId?: string | null;
     authorId?: string;
     _search?: string[];
 }

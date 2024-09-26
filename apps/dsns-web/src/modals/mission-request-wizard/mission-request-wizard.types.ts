@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { type MISSION_REQUEST_TYPE } from 'shared-my/db';
+import { type MISSION_REQUEST_TYPE } from 'shared-my';
 
 export interface IMissionRequestForm {
     type: MISSION_REQUEST_TYPE;

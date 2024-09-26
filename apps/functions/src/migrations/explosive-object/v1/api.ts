@@ -6,7 +6,7 @@ import {
     TABLES,
     TABLES_DIR,
     type IExplosiveObjectActionDBv1,
-} from 'shared-my/db';
+} from 'shared-my';
 
 import { v1Tov2, actionV1Tov2 } from './entitie';
 

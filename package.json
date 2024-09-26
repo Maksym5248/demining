@@ -23,7 +23,7 @@
   },
   "packageManager": "yarn@1.22.19",
   "scripts": {
-    "watch": "concurrently \"lerna run watch --parallel --scope=\"shared-my*\"\"",
+    "watch:packages": "concurrently \"lerna run watch --parallel --scope=\"shared-my*\"\"",
     "lint-staged": "lint-staged",
     "link:web": "yarn workspace dsns-web add ./packages/shared && yarn workspace dsns-web add ./packages/shared-client",
     "link:functions": "workspace functions add shared-my",

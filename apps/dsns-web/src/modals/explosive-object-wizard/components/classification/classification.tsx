@@ -1,77 +1,90 @@
+import { useEffect } from 'react';
+
 import { Form } from 'antd';
-import { TREE_ROOT_ID } from 'shared-my-client/models';
-import { type IExplosiveObjectClassItem } from 'shared-my-client/stores';
+import { uniq } from 'lodash';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
+import { useValues, type IExplosiveObjectClassItem } from 'shared-my-client';
 
 import { TreeSelect } from '~/components';
 import { useStore } from '~/hooks';
 import { transformTreeNodesToTreeData } from '~/utils';
 
-export const Classification = () => {
+interface ClassificationProps {
+    typeId: string;
+    component: EXPLOSIVE_OBJECT_COMPONENT;
+    setFieldValue: (name: string, value: any) => void;
+}
+
+export const Classification = ({ typeId, component, setFieldValue }: ClassificationProps) => {
     const { explosiveObject } = useStore();
+    const { classifications: classificationsStore } = explosiveObject;
+    const values = useValues();
+
+    useEffect(() => {
+        if (!values.get('isInitialized')) {
+            values.set('isInitialized', true);
+            return;
+        }
+
+        setFieldValue('classIds', []);
+    }, [typeId, component]);
 
     return (
-        <Form.Item label="Класифікація" name="classIds" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-            <Form.Item noStyle shouldUpdate={() => true}>
-                {({ getFieldValue, setFieldValue }) => {
-                    const classIds: string[] = getFieldValue('classIds') ?? [];
-                    const groupId = getFieldValue('groupId');
-                    const component = getFieldValue('component');
-                    const classsifications = explosiveObject.getClassesByGroupId(groupId, component);
+        !!typeId &&
+        !!component && (
+            <Form.Item label="Класифікація" name="classIds" style={{ marginBottom: 0 }}>
+                <Form.Item noStyle shouldUpdate={() => true}>
+                    {({ getFieldValue, setFieldValue }) => {
+                        const selectedIds: string[] = getFieldValue('classIds') ?? [];
+                        const classifications = classificationsStore.getBy(typeId, component);
 
-                    return classsifications
-                        .map((classification) => {
-                            const children =
-                                classification.itemsTree.tree?.children.filter(
-                                    (item) => !item?.item?.data.parentId || !!classIds.includes(item?.item.data.parentId),
-                                ) ?? [];
+                        return classifications
+                            .map((classification) => {
+                                const currentSelectedItem = classification.getItemsByIds(selectedIds)[0];
 
-                            const onChange = (newValue: string) => {
-                                const classItemsIds = classification.items.map((item) => item.data.id);
+                                const isSelectedItems = !!currentSelectedItem;
+                                const isRootItems = !!classification.isRootItems(selectedIds);
 
-                                const prevValue = classIds.filter((id: string) => classItemsIds.includes(id));
-                                const prevValueChilds = prevValue
-                                    .map((id: string) => explosiveObject.treeClassesItems.getAllChildsIds(id))
-                                    .reduce((acc: string[], val: string[]) => [...acc, ...val], []);
+                                if (!isRootItems && !isSelectedItems) return false;
 
-                                let value = classIds.filter((id: string) => ![...prevValue, ...prevValueChilds].includes(id));
+                                const onChange = (newValue: string) => {
+                                    const restSelectedItemsIds = classification.getItemsIdsByExludedIds(selectedIds);
+                                    const newValuesIds = uniq([...restSelectedItemsIds, newValue].filter(Boolean));
+                                    let removeArray: string[] = [];
 
-                                if (newValue) {
-                                    const newValueParents = explosiveObject.treeClassesItems
-                                        .getAllParentsIds(newValue)
-                                        .filter((id: string) => id !== TREE_ROOT_ID)
-                                        .filter((id) => !value.includes(id));
-                                    value = [...value, newValue, ...newValueParents];
-                                }
+                                    if (!!currentSelectedItem?.data?.id && newValue !== currentSelectedItem?.data?.id) {
+                                        removeArray = classificationsStore.treeItems.getAllChildsIds(currentSelectedItem.data.id);
+                                    }
 
-                                setFieldValue('classIds', value);
-                            };
+                                    setFieldValue(
+                                        'classIds',
+                                        newValuesIds.filter((id) => !removeArray.includes(id)),
+                                    );
+                                };
 
-                            if (!children.length) return undefined;
+                                const itemsOptions = transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
+                                    classification.treeItems?.tree?.children ?? [],
+                                    (item) => item?.data?.name ?? '',
+                                );
 
-                            const treeData = transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
-                                classification.itemsTree?.tree?.children ?? [],
-                                (item) => item?.data?.name ?? '',
-                            );
+                                const itemValue = classification.treeItems.getNode(currentSelectedItem?.data.id);
 
-                            const currentClassIds = classIds
-                                .map((id) => classification.itemsTree?.getNode(id))
-                                .filter(Boolean)
-                                .filter((el) => !el?.children?.length);
-
-                            return (
-                                <Form.Item key={classification.data.id}>
-                                    <TreeSelect
-                                        treeData={treeData}
-                                        value={currentClassIds[0]?.id}
-                                        placeholder={classification.displayName}
-                                        onChange={onChange}
-                                    />
-                                </Form.Item>
-                            );
-                        })
-                        .filter(Boolean);
-                }}
+                                return (
+                                    <Form.Item key={classification.data.id}>
+                                        <TreeSelect
+                                            treeData={itemsOptions}
+                                            value={itemValue?.id}
+                                            placeholder={classification.displayName}
+                                            onChange={onChange}
+                                            style={{ marginBottom: 0 }}
+                                        />
+                                    </Form.Item>
+                                );
+                            })
+                            .filter(Boolean);
+                    }}
+                </Form.Item>
             </Form.Item>
-        </Form.Item>
+        )
     );
 };

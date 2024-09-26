@@ -1,5 +1,5 @@
 import omit from 'lodash/omit';
-import { removeFields } from 'shared-my/common';
+import { removeFields, DOCUMENT_TYPE, EMPLOYEE_TYPE } from 'shared-my';
 import {
     type IEmployeeActionDB,
     type IMissionReportDB,
@@ -16,8 +16,7 @@ import {
     type IExplosiveDB,
     type IOrderDB,
     type IMissionRequestDB,
-} from 'shared-my/db';
-import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from 'shared-my/db';
+} from 'shared-my';
 
 import { type ICreateValue, type IDBBase, type IQuery } from '~/common';
 

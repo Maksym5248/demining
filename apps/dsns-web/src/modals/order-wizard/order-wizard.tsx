@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, DatePicker, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { dates } from 'shared-my-client/common';
+import { dates } from 'shared-my-client';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -73,7 +73,7 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                     initialValues={
                         currentOrder
                             ? {
-                                  ...currentOrder,
+                                  ...currentOrder.data,
                                   signedById: currentOrder?.signedByAction?.data.employeeId,
                               }
                             : {

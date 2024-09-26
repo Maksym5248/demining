@@ -7,6 +7,7 @@
         "composite": true,
         "lib": ["dom", "dom.iterable", "esnext"],
         "paths": {
+            "~/assets": ["./assets"],
             "~/*": ["./src/*"],
             "shared-my/*": ["../../packages/shared/src/*"],
             "shared-my-client/*": ["../../packages/shared-client/src/*"]
@@ -20,6 +21,6 @@
             "path": "../../packages/shared-client"
         }
     ],
-    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js"],
+    "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx", "*.js", "./types"],
     "exclude": ["**/Pods/**", "node_modules"]
 }

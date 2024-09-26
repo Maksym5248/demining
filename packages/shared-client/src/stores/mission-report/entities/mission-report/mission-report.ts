@@ -1,8 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { toLower } from 'lodash';
 import { makeAutoObservable } from 'mobx';
-import { str } from 'shared-my/common';
-import { EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my/db';
+import { str, EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my';
 
 import { dates } from '~/common';
 import { type IPoint } from '~/map';
@@ -203,7 +202,7 @@ export class MissionReport implements IMissionReport {
         const getDate = (date?: Dayjs, empty?: string) =>
             date
                 ? `«${date.format('DD')}» ${toLower(dates.formatGenitiveMonth(date))} ${date.format('YYYY')} року`
-                : empty ?? '`«--» ------ року`';
+                : (empty ?? '`«--» ------ року`');
 
         const getTime = (start?: Dayjs, end?: Dayjs) =>
             start && end

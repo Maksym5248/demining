@@ -10,8 +10,6 @@ import {
     type IExplosiveObjectType,
     type IExplosiveObjectTypeData,
     type IExplosiveObject,
-    type IExplosiveObjectGroup,
-    type IExplosiveObjectGroupData,
     type IExplosiveObjectClass,
     type IExplosiveObjectClassData,
     type IExplosiveObjectClassItem,
@@ -31,7 +29,6 @@ interface IServices {
 }
 
 interface ICollections {
-    group: ICollectionModel<IExplosiveObjectGroup, IExplosiveObjectGroupData>;
     type: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     class: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;

@@ -21,7 +21,7 @@ import {
     type IAddressDB,
     type Timestamp,
     type IRankDB,
-} from 'shared-my/db';
+} from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
 

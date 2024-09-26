@@ -2,11 +2,10 @@ import {
     countries,
     explosiveObjectClassData,
     explosiveObjectClassDataItems,
-    explosiveObjectGroupsData,
     explosiveObjectTypesData,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
-} from 'shared-my/db';
+} from 'shared-my';
 import { v4 as uuid } from 'uuid';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
@@ -20,7 +19,6 @@ import {
     type IExplosiveObjectClassItemDTO,
     type ICountryDTO,
     type IExplosiveObjectTypeDTO,
-    type IExplosiveObjectGroupDTO,
 } from '../dto';
 
 export interface IExplosiveObjectAPI {
@@ -32,7 +30,6 @@ export interface IExplosiveObjectAPI {
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     getCountriesList: () => Promise<ICountryDTO[]>;
     getTypesList: () => Promise<IExplosiveObjectTypeDTO[]>;
-    getGroupsList: () => Promise<IExplosiveObjectGroupDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
@@ -72,7 +69,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     update = async (id: string, { image, ...value }: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
         const current = await this.db.explosiveObject.get(id);
 
-        let imageUri = current?.imageUri;
+        let imageUri = current?.imageUri ?? null;
 
         if (image) {
             const id = uuid();
@@ -110,9 +107,6 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     }
     async getCountriesList() {
         return countries;
-    }
-    async getGroupsList() {
-        return explosiveObjectGroupsData;
     }
 
     async getTypesList() {

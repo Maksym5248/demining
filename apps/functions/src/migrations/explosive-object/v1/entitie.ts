@@ -6,7 +6,7 @@ import {
     EXPLOSIVE_OBJECT_STATUS,
     EXPLOSIVE_OBJECT_COMPONENT,
     countries,
-} from 'shared-my/db';
+} from 'shared-my';
 
 export const v1Tov2 = (prev: IExplosiveObjectDBv1): IExplosiveObjectDB => {
     const v: IExplosiveObjectDB = {
@@ -15,7 +15,6 @@ export const v1Tov2 = (prev: IExplosiveObjectDBv1): IExplosiveObjectDB => {
         updatedAt: prev.updatedAt,
         name: prev.name,
         typeId: prev.typeId,
-        groupId: null,
         countryId: countries[0].id,
         classIds: [],
         status: EXPLOSIVE_OBJECT_STATUS.PENDING,

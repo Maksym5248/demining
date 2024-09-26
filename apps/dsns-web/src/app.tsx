@@ -3,8 +3,7 @@ import { useEffect } from 'react';
 import { ConfigProvider } from 'antd';
 import uk from 'antd/lib/locale/uk_UA';
 import { Timestamp } from 'firebase/firestore';
-import { dates } from 'shared-my-client/common';
-import { LogLevel } from 'shared-my-client/services';
+import { dates, LogLevel } from 'shared-my-client';
 
 import { ThemeProvider, ModalProvider } from '~/containers';
 import { RootStoreContext } from '~/context';

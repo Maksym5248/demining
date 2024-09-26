@@ -17,7 +17,7 @@ export class ExplosiveObjectType implements IExplosiveObjectType {
     }
 
     get displayName() {
-        return this.data.name;
+        return this.data.fullName;
     }
 
     updateFields(data: Partial<IExplosiveObjectTypeData>) {
