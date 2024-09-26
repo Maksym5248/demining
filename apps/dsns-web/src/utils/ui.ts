@@ -21,6 +21,7 @@ interface AntTreeNode {
     title: string;
     value?: string;
     key: string;
+    selectable: boolean;
     children: AntTreeNode[];
 }
 
@@ -29,6 +30,7 @@ export function transformTreeNodeToTreeData<T>(treeNode: TreeNode<T>, getLabel: 
         value: treeNode.id,
         key: treeNode.id,
         title: getLabel(treeNode?.item),
+        selectable: !treeNode.children?.length,
         children: treeNode.children.map((el) => transformTreeNodeToTreeData(el, getLabel)),
     };
 }

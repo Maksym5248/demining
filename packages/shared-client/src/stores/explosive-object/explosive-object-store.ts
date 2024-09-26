@@ -1,13 +1,13 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { type IExplosiveObjectAPI, type IExplosiveObjectActionSumDTO } from '~/api';
-import { data, type ICreateValue } from '~/common';
+import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, type ITreeModel, ListModel, RequestModel, TreeModel } from '~/models';
+import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
+import { Classifications, type IClassifications } from './classifications';
 import {
     ExplosiveObject,
     ExplosiveObjectType,
@@ -17,6 +17,13 @@ import {
     Country,
     ExplosiveObjectClass,
     ExplosiveObjectClassItem,
+    createExplosiveObjectClassItem,
+    createExplosiveObjectType,
+    createExplosiveObjectClass,
+    createCountry,
+    ExplosiveObjectDetails,
+    createExplosiveObject,
+    createExplosiveObjectDetails,
     type IExplosiveObject,
     type IExplosiveObjectType,
     type IExplosiveObjectData,
@@ -30,15 +37,8 @@ import {
     type IExplosiveObjectClass,
     type IExplosiveObjectClassItemData,
     type IExplosiveObjectClassItem,
-    createExplosiveObjectClassItem,
-    createExplosiveObjectType,
-    createExplosiveObjectClass,
-    createCountry,
     type IExplosiveObjectDetailsData,
     type IExplosiveObjectDetails,
-    ExplosiveObjectDetails,
-    createExplosiveObject,
-    createExplosiveObjectDetails,
 } from './entities';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 
@@ -63,10 +63,9 @@ export interface IExplosiveObjectStore {
     listClasses: ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     listClassesItems: ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     sum: SumExplosiveObjectActions;
+    classifications: IClassifications;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
-    getClassesBytypeId(typeId: string, component: EXPLOSIVE_OBJECT_COMPONENT): IExplosiveObjectClass[];
-    treeClassesItems: ITreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -118,11 +117,12 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
     sum = new SumExplosiveObjectActions();
 
-    treeClassesItems = new TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>();
+    classifications: IClassifications;
 
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
         this.services = params.services;
+        this.classifications = new Classifications(this);
 
         makeAutoObservable(this);
     }
@@ -154,10 +154,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     setSum(sum: IExplosiveObjectActionSumDTO) {
         this.sum.set(createExplosiveObjectActionSum(sum));
-    }
-
-    getClassesBytypeId(typeId: string, component: EXPLOSIVE_OBJECT_COMPONENT) {
-        return this.listClasses.asArray.filter((el) => el.data.typeId === typeId && el.data.component === component);
     }
 
     create = new RequestModel({
@@ -265,8 +261,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             this.listClasses.set(classes.map(createExplosiveObjectClass));
             this.listClassesItems.set(classesItems.map(createExplosiveObjectClassItem));
             this.listCountries.set(countries.map(createCountry));
-
-            this.treeClassesItems.set(data.buildTreeNodes<IExplosiveObjectClassItem>(this.listClassesItems.asArray));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

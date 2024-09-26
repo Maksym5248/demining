@@ -264,7 +264,7 @@ export const rocketTargitingSystemData: IExplosiveObjectClassItemDB[] = [
         name: 'За променем',
     },
     {
-        id: '0184e8fe-c78d-4df9-9df6-dafeadd172cb',
+        id: '0184e8fe-c78d-4df9-9df6-dadeadd172cb',
         classId: '428f998e-58db-4c92-8884-10f938aaee21',
         parentId: null,
         name: 'Лазерене',
