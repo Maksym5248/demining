@@ -135,7 +135,14 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
-                    <Classification />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue, setFieldValue }) => {
+                            const typeId = getFieldValue('typeId');
+                            const component = getFieldValue('component');
+
+                            return <Classification typeId={typeId} component={component} setFieldValue={setFieldValue} />;
+                        }}
+                    </Form.Item>
                     <Form.Item label="Статус" name="status" rules={[{ message: "Обов'язкове поле" }]}>
                         <Select options={explosiveObjectStatuses} />
                     </Form.Item>

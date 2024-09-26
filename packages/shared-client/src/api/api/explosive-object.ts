@@ -69,7 +69,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     update = async (id: string, { image, ...value }: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
         const current = await this.db.explosiveObject.get(id);
 
-        let imageUri = current?.imageUri;
+        let imageUri = current?.imageUri ?? null;
 
         if (image) {
             const id = uuid();

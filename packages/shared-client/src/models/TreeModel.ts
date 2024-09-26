@@ -22,13 +22,14 @@ export interface ITreeModel<T extends { data: B }, B extends { id: string; paren
     set(nodes: ITreeNode<T, B>[]): void;
     clear(): void;
     getNode(id: string): ITreeNode<T, B> | null;
+    getNodeLowLevel(ids: string[]): ITreeNode<T, B> | null;
     findParent(id: string, node: ITreeNode<T, B>): ITreeNode<T, B> | null;
     getChilds(id: string): ITreeNode<T, B>[];
     getAllChilds(id: string): ITreeNode<T, B>[];
     getAllChildsIds(id: string): string[];
     getParent(id: string): ITreeNode<T, B> | null;
     getAllParents(id: string): ITreeNode<T, B>[];
-    getAllParentsIds(id: string): string[];
+    getAllParentsIds(id: string, excluderRoot?: boolean): string[];
 }
 
 export class TreeModel<T extends { data: B }, B extends { id: string; parentId: string | null }> implements ITreeModel<T, B> {
@@ -59,6 +60,15 @@ export class TreeModel<T extends { data: B }, B extends { id: string; parentId: 
 
     getNode(id: string): ITreeNode<T, B> | null {
         return this.map[id] || null;
+    }
+
+    getNodeLowLevel(ids: string[]): ITreeNode<T, B> | null {
+        const arr = ids
+            .map((id) => this?.getNode(id))
+            .filter(Boolean)
+            .filter((el) => !el?.children?.length);
+
+        return arr[0] || null;
     }
 
     findParent = (id: string, node: ITreeNode<T, B>): ITreeNode<T, B> | null => {
@@ -107,7 +117,9 @@ export class TreeModel<T extends { data: B }, B extends { id: string; parentId: 
         return [parent, ...this.getAllParents(parent.id)];
     }
 
-    getAllParentsIds(id: string): string[] {
-        return this.getAllParents(id).map((parent) => parent.id);
+    getAllParentsIds(id: string, excluderRoot?: boolean): string[] {
+        return this.getAllParents(id)
+            .map((parent) => parent.id)
+            .filter((id) => !excluderRoot || id !== TREE_ROOT_ID);
     }
 }

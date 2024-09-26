@@ -10,8 +10,14 @@ export interface IExplosiveObjectClass {
     data: IExplosiveObjectClassData;
     displayName: string;
     updateFields(data: Partial<IExplosiveObjectClassData>): void;
-    itemsTree: TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    treeItems: TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     items: IExplosiveObjectClassItem[];
+    itemsIds: string[];
+    getItemsByIds(ids: string[]): IExplosiveObjectClassItem[];
+    getItemsIdsByIds(ids: string[]): string[];
+    getItemsIdsByExludedIds(ids: string[]): string[];
+    getItem(id?: string): IExplosiveObjectClassItem | undefined;
+    isRootItems(potentialParentIds: string[]): boolean;
 }
 
 interface IExplosiveObjectClassParams {
@@ -48,12 +54,48 @@ export class ExplosiveObjectClass implements IExplosiveObjectClass {
         return this.lists.classItem.asArray.filter((item) => this.data.id === item.data.classId);
     }
 
-    get itemsTree() {
+    get itemsMap() {
+        return this.items.reduce(
+            (acc, item) => {
+                acc[item.data.id] = item;
+                return acc;
+            },
+            {} as Record<string, IExplosiveObjectClassItem>,
+        );
+    }
+
+    getItem(id?: string) {
+        return id ? this.itemsMap[id] : undefined;
+    }
+
+    get itemsIds() {
+        return this.items.map((item) => item.data.id);
+    }
+
+    get treeItems() {
         const nodes = data.buildTreeNodes<IExplosiveObjectClassItem>(this.items);
         const tree = new TreeModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>();
         tree.set(nodes);
 
         return tree;
+    }
+
+    isRootItems(potentialParentIds: string[]) {
+        return !!this.items.filter((item) => !item.data.parentId || potentialParentIds.includes(item.data.parentId)).length;
+    }
+
+    getItemsByIds(ids: string[]) {
+        return ids.map((id) => this.getItem(id)).filter(Boolean) as IExplosiveObjectClassItem[];
+    }
+
+    getItemsIdsByIds(ids: string[]) {
+        const items = this.getItemsByIds(ids);
+        return items.map((item) => item.data.id);
+    }
+
+    getItemsIdsByExludedIds(ids: string[]) {
+        const items = this.getItemsByIds(ids);
+        return ids.filter((id) => !items.find((el) => el?.data.id === id));
     }
 
     updateFields(data: Partial<IExplosiveObjectClassData>) {
