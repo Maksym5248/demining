@@ -24,9 +24,10 @@ PRODUCT
 TODO
 // DSNS WEB
 1.
-- + fix classification
-- + refactroing setting list data
++ fix classification
++ refactroing setting list data
 + update prod with new schema
+- відображення на карті та при створенні документів
 - add confirmation email for autentication process
 - permission for verifying and editing explosivce objects
 - map = create single map for teritories
