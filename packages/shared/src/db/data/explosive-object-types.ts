@@ -13,9 +13,15 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
         fullName: 'Некерована авіаційна ракета',
     },
     {
-        id: EXPLOSIVE_OBJECT_TYPE.AS,
+        id: EXPLOSIVE_OBJECT_TYPE.ARTELERY_SHELL,
         name: 'АС',
         fullName: 'Артилерійський снаряд',
+        hasCaliber: true,
+    },
+    {
+        id: EXPLOSIVE_OBJECT_TYPE.MLRS,
+        name: 'РС',
+        fullName: 'Реактивний снаряд',
         hasCaliber: true,
     },
     {
@@ -62,7 +68,7 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.ROCKET,
-        name: 'Hакета',
+        name: 'Ракета',
         fullName: 'Ракета',
     },
     {

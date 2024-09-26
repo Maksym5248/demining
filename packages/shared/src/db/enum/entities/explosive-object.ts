@@ -30,7 +30,7 @@ export enum EXPLOSIVE_OBJECT_CLASS {
 export enum EXPLOSIVE_OBJECT_TYPE {
     AVIATION_BOMBS = 'AB',
     UAM = 'UAM',
-    AS = 'AS',
+    ARTELERY_SHELL = 'AS',
     MORTAL_MINES = 'MM',
     MLRS = 'MLRS',
     RG = 'RG',
