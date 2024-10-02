@@ -23,6 +23,7 @@ import {
     TemplatesListPage,
     ExplosiveListPage,
     HomePage,
+    MapPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
                             [
                                 {
                                     path: ROUTES.HOME,
+                                    Component: MapPage,
+                                },
+                                {
+                                    path: ROUTES.STATISTICS,
                                     Component: HomePage,
                                 },
                                 {

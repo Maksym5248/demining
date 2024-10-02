@@ -1,5 +1,5 @@
 import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp } from './common';
-import { type IExplosiveObjectDBv1, type IExplosiveObjectDB, type IExplosiveObjectDBv2 } from './explosive-object/explosive-object';
+import { type IExplosiveObjectDBv1, type IExplosiveObjectDB } from './explosive-object/explosive-object';
 import {
     type EMPLOYEE_TYPE,
     type DOCUMENT_TYPE,
@@ -73,16 +73,6 @@ export interface IExplosiveObjectActionDBv1 extends IExplosiveObjectDBv1, ILinke
     executedAt: Timestamp;
 }
 
-export interface IExplosiveObjectActionDBv2 extends IExplosiveObjectDBv2, ILinkedToDocumentDB {
-    explosiveObjectId: string;
-    quantity: number;
-    category: EXPLOSIVE_OBJECT_CATEGORY;
-    isDiscovered: boolean;
-    isTransported: boolean;
-    isDestroyed: boolean;
-    executedAt: Timestamp;
-}
-
 export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {
     explosiveObjectId: string;
     quantity: number;
@@ -112,58 +102,6 @@ export interface IEquipmentDB extends IBaseDB {
 
 export interface IEquipmentActionDB extends IEquipmentDB, ILinkedToDocumentDB {
     equipmentId: string;
-}
-
-export interface IPointDB {
-    lat: number;
-    lng: number;
-}
-
-export interface IGeoPointDB extends IPointDB {
-    lat: number;
-    lng: number;
-    hash: string;
-}
-
-export interface IGeoBoxDB {
-    topLeft: IGeoPointDB;
-    bottomRight: IGeoPointDB;
-}
-
-export interface IGeoBoxHashDB {
-    topLeft: string;
-    bottomRight: string;
-}
-
-export interface IGeoDB {
-    center: IGeoPointDB;
-    box: IGeoBoxDB | null;
-}
-
-export type IMarkerDB = IPointDB;
-
-export interface ICircleDB {
-    center: IPointDB;
-    radius: number;
-}
-
-export interface ILineDB {
-    points: IPointDB[];
-    width: number;
-}
-
-export interface IPolygonDB {
-    points: IPointDB[];
-}
-
-export interface IMapViewActionDB extends ILinkedToDocumentDB, IBaseDB {
-    marker: IMarkerDB | null;
-    circle: ICircleDB | null;
-    line: ILineDB | null;
-    polygon: IPolygonDB | null;
-    zoom: number;
-    geo: IGeoDB | null;
-    authorId: string;
 }
 
 export interface IMissionReportDB extends IBaseDB {

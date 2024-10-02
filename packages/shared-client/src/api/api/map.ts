@@ -7,6 +7,7 @@ import { type IMapViewActionDTO } from '../dto';
 
 export interface IMapAPI {
     getByGeohashRanges: (ranges: IGeohashRange[]) => Promise<IMapViewActionDTO[]>;
+    getList: () => Promise<IMapViewActionDTO[]>;
 }
 
 export class MapAPI implements IMapAPI {
@@ -37,5 +38,11 @@ export class MapAPI implements IMapAPI {
         });
 
         return matchingDocs;
+    };
+
+    getList = async (): Promise<IMapViewActionDTO[]> => {
+        const res = this.db.mapViewAction.select();
+
+        return res;
     };
 }
