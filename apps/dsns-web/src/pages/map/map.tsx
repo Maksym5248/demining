@@ -58,6 +58,7 @@ export const MapPage = observer(() => {
                 lines={store.map.list.asArray.map((el) => el.data.line as ILine).filter((el) => !!el)}
                 initialIsActiveStick
                 initialIsVisibleInArea
+                minZoomLoadArea={1}
             />
             {isCreating && (
                 <FloatButton shape="square" style={{ bottom: 150, right: 60 }} icon={<Icon.PlusOutlined />} onClick={onOpenMissionReport} />

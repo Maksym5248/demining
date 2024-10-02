@@ -267,15 +267,14 @@ function Component({
     };
 
     const isVisibleMarker = !!marker;
-    const isEditing = !(
-        !polygonManager.isVisiblePolygon &&
-        !circleManager.isVisibleCircle &&
-        !isVisibleMarker &&
-        !polygonManager.isVisiblePolyline &&
-        !lineManager.isVisiblePolyline
-    );
+    const isEditing =
+        !!polygonManager.isVisiblePolygon ||
+        !!circleManager.isVisibleCircle ||
+        !!isVisibleMarker ||
+        !!polygonManager.isVisiblePolyline ||
+        !!lineManager.isVisiblePolyline;
 
-    const isChangeEditing = isEditing && !isCreating;
+    const isChangeEditing = (isEditing && !isCreating) || !!lineManager.isVisiblePolyline;
 
     useEffect(() => {
         if (!values.get('isInitializedCreating')) {
