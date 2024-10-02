@@ -2,22 +2,22 @@ import { memo, useEffect, useRef, useState } from 'react';
 
 import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
 import { InputNumber } from 'antd';
-import { mathUtils, useValues } from 'shared-my-client';
+import { DrawingType, mathUtils, useValues } from 'shared-my-client';
 import { mapUtils, type ICircle, type ILine, type IMarker, type IPoint, type IPolygon, useVisibleMap } from 'shared-my-client';
 
-import { MapInfo } from '~/components/map-info';
 import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
 import { useMapOptions } from '~/hooks';
 
 import { s } from './map-view.style';
+import { type IMapViewProps } from './map.types';
 import { useCircle } from './useCircle';
 import { useLine } from './useLine';
 import { usePolygon } from './usePolygon';
-import { MapZoomView } from '../../map-zoom-view';
-import { Autocomplete } from '../autocomplete';
-import { DrawingManager } from '../drawing-manager';
-import { DrawingType, type IMapViewProps } from '../map.types';
+import { Autocomplete } from '../map-autocomplete';
+import { DrawingManager } from '../map-drawing-manager';
+import { MapInfo } from '../map-info';
+import { MapZoomView } from '../map-zoom-view';
 
 const circlesOptions = {
     fillOpacity: 0.3,
@@ -51,8 +51,11 @@ function Component({
     polygons,
     lines,
     onChangeGeobox,
+    onChangeEditing,
     isLoadingVisibleInArea,
     minZoomLoadArea = 16,
+    initialIsActiveStick = false,
+    initialIsVisibleInArea = false,
     ...rest
 }: IMapViewProps) {
     const [drawing, setDrawing] = useState(DrawingType.MOVE);
@@ -63,8 +66,8 @@ function Component({
 
     const mapRef = useRef<google.maps.Map>();
 
-    const [isActiveStick, setActiveStick] = useState(false);
-    const [isVisibleInArea, setVisibleInArea] = useState(false);
+    const [isActiveStick, setActiveStick] = useState(initialIsActiveStick);
+    const [isVisibleInArea, setVisibleInArea] = useState(initialIsVisibleInArea);
     const values = useValues();
 
     const initialCenter = mapUtils.getCenter({
@@ -264,6 +267,24 @@ function Component({
     };
 
     const isVisibleMarker = !!marker;
+    const isEditing = !(
+        !polygonManager.isVisiblePolygon &&
+        !circleManager.isVisibleCircle &&
+        !isVisibleMarker &&
+        !polygonManager.isVisiblePolyline &&
+        !lineManager.isVisiblePolyline
+    );
+
+    const isChangeEditing = isEditing && !isCreating;
+
+    useEffect(() => {
+        if (!values.get('isInitializedCreating')) {
+            values.set('isInitializedCreating', true);
+            return;
+        }
+
+        onChangeEditing?.(isChangeEditing);
+    }, [isChangeEditing]);
 
     return (
         <div css={s.container}>
@@ -292,13 +313,7 @@ function Component({
                     isVisibleInArea={isVisibleInArea}
                     onChangeVisibleInArea={onChangeVisibleInArea}
                     onChangeStick={setActiveStick}
-                    isDisabledClean={
-                        !polygonManager.isVisiblePolygon &&
-                        !circleManager.isVisibleCircle &&
-                        !isVisibleMarker &&
-                        !polygonManager.isVisiblePolyline &&
-                        !lineManager.isVisiblePolyline
-                    }
+                    isDisabledClean={!isEditing}
                     isLoadingVisibleInArea={isLoadingVisibleInArea}
                 />
                 {isVisibleMarker && <Marker position={marker} />}

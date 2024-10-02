@@ -33,3 +33,11 @@ export interface IGeohashRange {
     start: string;
     end: string;
 }
+
+export enum DrawingType {
+    MOVE = 'move',
+    MARKER = 'marker',
+    CIRCLE = 'circle',
+    LINE = 'line',
+    POLYGON = 'polygon',
+}

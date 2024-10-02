@@ -19,19 +19,6 @@ export interface IExplosiveObjectDBv1 extends IBaseDB {
     caliber: number | null;
 }
 
-export interface IExplosiveObjectDBv2 extends IBaseDB {
-    typeId: EXPLOSIVE_OBJECT_TYPE;
-    name: string | null;
-    caliber: number | null;
-    meta: {
-        copy: {
-            group: EXPLOSIVE_OBJECT_TYPE;
-            typeIds: string[];
-            caliber: number | null;
-        };
-    };
-}
-
 export interface IExplosiveObjectClassDB {
     id: string;
     class: EXPLOSIVE_OBJECT_CLASS;

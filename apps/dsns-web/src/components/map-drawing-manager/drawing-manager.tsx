@@ -1,8 +1,8 @@
 import { Button, Radio, Tooltip, Popconfirm } from 'antd';
+import { DrawingType } from 'shared-my-client';
 
 import { s } from './drawing-manager.style';
-import { Icon } from '../../icon';
-import { DrawingType } from '../map.types';
+import { Icon } from '../icon';
 
 interface IDrawingManagerProps {
     value?: DrawingType;

@@ -10,14 +10,6 @@ export interface IOnChangeMapView {
     area?: number; // m2
 }
 
-export enum DrawingType {
-    MOVE = 'move',
-    MARKER = 'marker',
-    CIRCLE = 'circle',
-    LINE = 'line',
-    POLYGON = 'polygon',
-}
-
 export interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
     initialMarker?: IPoint;
     initialCircle?: ICircle;
@@ -31,5 +23,8 @@ export interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapCon
     circles?: ICircle[];
     isLoadingVisibleInArea?: boolean;
     onChangeGeobox?: (value: { box: IGeoBox; zoom: number }) => void;
+    onChangeEditing?: (value: boolean) => void;
     minZoomLoadArea?: number;
+    initialIsActiveStick?: boolean;
+    initialIsVisibleInArea?: boolean;
 }

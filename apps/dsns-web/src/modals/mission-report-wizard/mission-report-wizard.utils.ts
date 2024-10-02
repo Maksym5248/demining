@@ -1,7 +1,9 @@
-import { removeFields } from 'shared-my';
+import { removeFields, str } from 'shared-my';
 import { dates } from 'shared-my-client';
 import { type IEmployee, type IMissionReport, type IMissionRequest, type IOrder, createAddress } from 'shared-my-client';
+import { type IGeoapifyAddress } from 'shared-my-client/api/external/external.types';
 
+import { type IOnChangeMapView } from '~/components';
 import { MAP_ZOOM } from '~/constants';
 
 function removeId<T extends { id?: string }>(item: T) {
@@ -72,6 +74,8 @@ export const createCreateValue = (
     firstOrder?: IOrder,
     firstMissionRequest?: IMissionRequest,
     firstSquadLeader?: IEmployee,
+    initialMap?: IOnChangeMapView,
+    initialAddressDetails?: IGeoapifyAddress,
 ) => ({
     approvedAt: dates.today(),
     approvedById: chiefFirst?.data?.id,
@@ -96,9 +100,10 @@ export const createCreateValue = (
     explosiveActions: [],
     squadLeaderId: firstSquadLeader?.data?.id,
     squadIds: [],
-    address: '',
-    addressDetails: createAddress(),
+    address: initialAddressDetails ? str.toAddressString(initialAddressDetails) : '',
+    addressDetails: createAddress(initialAddressDetails),
     mapView: {
         zoom: MAP_ZOOM.DEFAULT,
+        ...(initialMap ?? {}),
     },
 });

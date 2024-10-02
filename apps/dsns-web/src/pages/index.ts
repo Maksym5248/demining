@@ -1,5 +1,5 @@
 export * from './dev';
-export * from './home';
+export * from './statistics';
 export * from './employees-list';
 export * from './error-not-found';
 export * from './explosive-list';
@@ -10,6 +10,7 @@ export * from './orders-list';
 export * from './organizations-list';
 export * from './signup';
 export * from './login';
+export * from './map';
 export * from './members-list';
 export * from './transport-list';
 export * from './equipment-list';
