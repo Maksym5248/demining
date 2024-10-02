@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { DrawingType } from '~/components';
+import { DrawingType } from 'shared-my-client';
 
 export const useMapOptions = ({
     isPictureType,

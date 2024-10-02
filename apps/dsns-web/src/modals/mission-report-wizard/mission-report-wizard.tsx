@@ -3,8 +3,10 @@ import { useEffect, useState, useMemo } from 'react';
 import { Form, Drawer, Divider, Spin, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE } from 'shared-my';
-import { fileUtils, mapUtils } from 'shared-my-client';
+import { fileUtils, mapUtils, useAsyncEffect } from 'shared-my-client';
+import { type IGeoapifyAddress } from 'shared-my-client/api/external/external.types';
 
+import { ExternalApi } from '~/api';
 import { Icon, Select, WizardButtons, WizardFooter } from '~/components';
 import { WIZARD_MODE, MODALS, MAP_VIEW_TAKE_PRINT_CONTAINER, MAP_SIZE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
@@ -23,8 +25,10 @@ const getTitles = ({ isEdit, isCreate }: { isEdit: boolean; isCreate: boolean })
     return 'Акт виконаних робіт';
 };
 
-export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW }: IMissionReportProps) => {
+export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = WIZARD_MODE.VIEW, initialMap }: IMissionReportProps) => {
     const [isLoadingPreview, setLoadingPreview] = useState(false);
+    const [isLoadingAddress, setLoadingAddress] = useState(false);
+    const [initialAddressDetails, setInitialAddressDetails] = useState<IGeoapifyAddress | undefined>(undefined);
     const [templateId, setTemplateId] = useState();
 
     const { order, missionRequest, employee, missionReport, document } = useStore();
@@ -119,6 +123,22 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
         hide();
     };
 
+    useAsyncEffect(async () => {
+        setLoadingAddress(true);
+
+        try {
+            if (initialMap?.marker) {
+                const address = await ExternalApi.getGeocode(initialMap.marker);
+                // form.setFieldValue('address', str.toAddressString(address));
+                // form.setFieldValue('addressDetails', address);
+                setInitialAddressDetails(address);
+            }
+        } catch (error) {
+            /* empty */
+        }
+        setLoadingAddress(false);
+    }, []);
+
     useEffect(() => {
         if (id) {
             missionReport.fetchItem.run(id);
@@ -133,7 +153,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
         document.fetchTemplatesList.run();
     }, []);
 
-    const isLoading = missionReport.fetchItem.isLoading || employee.fetchListAll.isLoading || document.fetchTemplatesList.isLoading;
+    const isLoading =
+        missionReport.fetchItem.isLoading || employee.fetchListAll.isLoading || document.fetchTemplatesList.isLoading || isLoadingAddress;
 
     const initialValues: Partial<IMissionReportForm> = useMemo(
         () =>
@@ -145,6 +166,8 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
                       order.list.first,
                       missionRequest.list.first,
                       employee.squadLeadFirst,
+                      initialMap,
+                      initialAddressDetails,
                   ),
         [isLoading],
     );

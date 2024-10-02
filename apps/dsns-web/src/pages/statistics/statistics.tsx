@@ -7,7 +7,7 @@ import { dates } from 'shared-my-client';
 
 import { useStore } from '~/hooks';
 
-import { s } from './home.styles';
+import { s } from './statistics.styles';
 
 const { RangePicker } = DatePicker;
 type RangeValue = [Dayjs | null, Dayjs | null] | null;

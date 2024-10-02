@@ -6,6 +6,7 @@ import {
     type IAddressData,
 } from 'shared-my-client';
 
+import { type IOnChangeMapView } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 
 export interface IMissionReportProps {
@@ -13,6 +14,7 @@ export interface IMissionReportProps {
     isVisible: boolean;
     hide: () => void;
     mode: WIZARD_MODE;
+    initialMap?: IOnChangeMapView;
 }
 
 export interface IMissionReportForm {

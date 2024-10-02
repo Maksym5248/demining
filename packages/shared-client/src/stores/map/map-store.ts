@@ -25,6 +25,8 @@ export interface IMapStore {
     loadedGeohashes: IGeohashes[];
     addLoadedGeohash: (geohash: IGeohashRange) => void;
     fetchAllInGeoBox: RequestModel<[IGeoBox]>;
+    fetchAll: RequestModel;
+    isLoaded: boolean;
 }
 
 export class MapStore implements IMapStore {
@@ -35,6 +37,8 @@ export class MapStore implements IMapStore {
     });
     list = new ListModel<IMapViewAction, IMapViewActionData>({ collection: this.collection });
     loadedGeohashes: IGeohashes[] = [];
+
+    isLoaded = false;
 
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;
@@ -49,9 +53,21 @@ export class MapStore implements IMapStore {
         }
     }
 
+    fetchAll = new RequestModel({
+        shouldRun: () => !this.isLoaded,
+        run: async () => {
+            const res = await this.api.map.getList();
+
+            this.list.set(res.map(createMapView));
+
+            this.isLoaded = true;
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
     fetchAllInGeoBox = new RequestModel({
         shouldRun: (box?: IGeoBox) => {
-            if (!box) return false;
+            if (!box || this.isLoaded) return false;
 
             const ranges = mapUtils.getGeohashRangesByGeoBox(box);
             const adjustedRanges = mapUtils.getAdjustedRanges(ranges, this.loadedGeohashes);
