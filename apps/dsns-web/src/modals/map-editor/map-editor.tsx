@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
@@ -72,6 +72,18 @@ export const MapEditorModal = observer(
             fetchAllInGeoBox(value.box);
         };
 
+        const figures = useMemo(() => {
+            const polygons = store.map.list.asArray.filter(el => el.id !== id && !!el.data.polygon).map(el => el.data.polygon as IPolygon);
+            const circles = store.map.list.asArray.filter(el => el.id !== id && !!el.data.circle).map(el => el.data.circle as ICircle);
+            const lines = store.map.list.asArray.filter(el => el.id !== id && !!el.data.line).map(el => el.data.line as ILine);
+
+            return {
+                polygons,
+                circles,
+                lines,
+            };
+        }, [id, store.map.list.asArray]);
+
         return (
             <Modal centered afterClose={hide} title="Карта" open={isVisible} width="80%" onOk={onSave} onCancel={onCancel}>
                 <MapView
@@ -83,11 +95,7 @@ export const MapEditorModal = observer(
                     mapContainerStyle={mapContainerStyle}
                     onChange={onChange}
                     onChangeGeobox={onChangeGeobox}
-                    polygons={store.map.list.asArray
-                        .filter((el) => el.id !== id && !!el.data.polygon)
-                        .map((el) => el.data.polygon as IPolygon)}
-                    circles={store.map.list.asArray.filter((el) => el.id !== id && !!el.data.circle).map((el) => el.data.circle as ICircle)}
-                    lines={store.map.list.asArray.filter((el) => el.id !== id && !!el.data.line).map((el) => el.data.line as ILine)}
+                    {...figures}
                     isLoadingVisibleInArea={store.map.fetchAllInGeoBox.isLoading || isLoadingAllInGeoBox}
                     minZoomLoadArea={minZoomLoadArea}
                 />

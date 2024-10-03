@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { FloatButton } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { useValues, type ICircle, type ILine, type IPolygon } from 'shared-my-client';
+import { useValues } from 'shared-my-client';
 
 import { Icon, type IOnChangeMapView, MapView } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
@@ -29,17 +29,17 @@ export const MapPage = observer(() => {
         },
     });
 
-    const onChange = (value: IOnChangeMapView) => {
+    const onChange = useCallback((value: IOnChangeMapView) => {
         values.set('value', value);
-    };
+    }, []);
 
-    const onOpenMissionReport = async () => {
+    const onOpenMissionReport = useCallback(async () => {
         Modal.show(MODALS.MISSION_REPORT_WIZARD, { mode: WIZARD_MODE.CREATE, initialMap: values.get('value') });
-    };
+    }, []);
 
-    const onChangeEditing = (value: boolean) => {
+    const onChangeEditing = useCallback((value: boolean) => {
         setCreating(value);
-    };
+    }, []);
 
     useEffect(() => {
         if (!store.map.isLoaded) {
@@ -53,9 +53,9 @@ export const MapPage = observer(() => {
                 mapContainerStyle={mapContainerStyle}
                 onChange={onChange}
                 onChangeEditing={onChangeEditing}
-                polygons={store.map.list.asArray.map((el) => el.data.polygon as IPolygon).filter((el) => !!el)}
-                circles={store.map.list.asArray.map((el) => el.data.circle as ICircle).filter((el) => !!el)}
-                lines={store.map.list.asArray.map((el) => el.data.line as ILine).filter((el) => !!el)}
+                polygons={store.map.polygons}
+                circles={store.map.circles}
+                lines={store.map.lines}
                 initialIsActiveStick
                 initialIsVisibleInArea
                 minZoomLoadArea={1}

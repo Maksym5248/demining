@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { DrawingType, type ICircle, type ILine, type IPolygon } from 'shared-my-client';
 import { mapUtils } from 'shared-my-client';
@@ -13,12 +13,30 @@ interface IUseCircleParams {
     setCircle: (value?: ICircle | undefined) => void;
 }
 
-export function useCircle({ isCreating, setCreating, drawing, circle, setPolygon, setLine, setCircle }: IUseCircleParams) {
+export interface IUseCircleReturn {
+    isVisibleCircle: boolean;
+    onLoadCircle: (newCircleRef: google.maps.Circle) => void;
+    onRadiusChanged: () => void;
+    onDragCircleEnd: () => void;
+    clear: () => void;
+    onClickMap: (e: google.maps.MapMouseEvent) => void;
+    onMouseMove: (e: google.maps.MapMouseEvent) => void;
+}
+
+export function useCircle({
+    isCreating,
+    setCreating,
+    drawing,
+    circle,
+    setPolygon,
+    setLine,
+    setCircle,
+}: IUseCircleParams): IUseCircleReturn {
     const circleRef = useRef<google.maps.Circle>();
 
-    const onLoadCircle = (newCircleRef: google.maps.Circle) => {
+    const onLoadCircle = useCallback((newCircleRef: google.maps.Circle) => {
         circleRef.current = newCircleRef;
-    };
+    }, []);
 
     const onRadiusChanged = useCallback(() => {
         if (circleRef.current) {
@@ -39,53 +57,62 @@ export function useCircle({ isCreating, setCreating, drawing, circle, setPolygon
         setCircle(value);
     }, []);
 
-    const clear = () => {
+    const clear = useCallback(() => {
         setCircle(undefined);
-    };
+    }, []);
 
-    const onClickMap = (e: google.maps.MapMouseEvent) => {
-        if (!e?.latLng) return;
+    const onClickMap = useCallback(
+        (e: google.maps.MapMouseEvent) => {
+            if (!e?.latLng) return;
 
-        const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+            const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
 
-        if (drawing === DrawingType.CIRCLE && isCreating) {
-            setCreating(false);
-        }
+            if (drawing === DrawingType.CIRCLE && isCreating) {
+                setCreating(false);
+            }
 
-        if (drawing === DrawingType.CIRCLE && !isCreating && !circle) {
-            setCreating(true);
-            setPolygon(undefined);
-            setLine(undefined);
-            setCircle({
-                center: point,
-                radius: 0,
-            });
-        }
-    };
+            if (drawing === DrawingType.CIRCLE && !isCreating && !circle) {
+                setCreating(true);
+                setPolygon(undefined);
+                setLine(undefined);
+                setCircle({
+                    center: point,
+                    radius: 0,
+                });
+            }
+        },
+        [drawing, isCreating, circle],
+    );
 
-    const onMouseMove = (e: google.maps.MapMouseEvent) => {
-        if (!e?.latLng || !circle?.center) return;
+    const onMouseMove = useCallback(
+        (e: google.maps.MapMouseEvent) => {
+            if (!e?.latLng || !circle?.center) return;
 
-        if (drawing === DrawingType.CIRCLE && isCreating) {
-            const currentPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-            const value = {
-                ...circle,
-                radius: mapUtils.getDistanceByPoints(circle?.center, currentPosition),
-            };
+            if (drawing === DrawingType.CIRCLE && isCreating) {
+                const currentPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+                const value = {
+                    ...circle,
+                    radius: mapUtils.getDistanceByPoints(circle?.center, currentPosition),
+                };
 
-            setCircle(value);
-        }
-    };
+                setCircle(value);
+            }
+        },
+        [circle, isCreating, drawing],
+    );
 
-    const isVisibleCircle = !!circle?.center && circle?.radius;
+    const isVisibleCircle = !!circle?.center && !!circle?.radius;
 
-    return {
-        isVisibleCircle,
-        onLoadCircle,
-        onRadiusChanged,
-        onDragCircleEnd,
-        clear,
-        onClickMap,
-        onMouseMove,
-    };
+    return useMemo(
+        () => ({
+            isVisibleCircle,
+            onLoadCircle,
+            onRadiusChanged,
+            onDragCircleEnd,
+            clear,
+            onClickMap,
+            onMouseMove,
+        }),
+        [isVisibleCircle, onLoadCircle, onRadiusChanged, onDragCircleEnd, clear, onClickMap, onMouseMove],
+    );
 }
