@@ -1,4 +1,4 @@
-import { type MutableRefObject, useRef } from 'react';
+import { type MutableRefObject, useCallback, useMemo, useRef } from 'react';
 
 import { DrawingType, mapUtils } from 'shared-my-client';
 import { type ICircle, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
@@ -17,73 +17,121 @@ interface IUseLineParams {
     mapRef?: MutableRefObject<google.maps.Map | undefined>;
 }
 
-export function useLine({ isCreating, setCreating, drawing, line, defaultWidth = 1, setPolygon, setCircle, setLine }: IUseLineParams) {
+export interface IUseLineReturn {
+    isVisiblePolyline: boolean;
+    isVisiblePolygon: boolean;
+    isVisiblePolylineInput: boolean;
+    value?: ILine;
+    onDragEndPolyline: () => void;
+    onLoadPolyline: (newPolylineRef: google.maps.Polyline) => void;
+    onClickMap: (e: google.maps.MapMouseEvent) => void;
+    onMouseUpPolyline: (e: google.maps.MapMouseEvent) => void;
+    onChangeLineWidth: (value: number | null) => void;
+    clear: () => void;
+}
+
+export function useLine({
+    isCreating,
+    setCreating,
+    drawing,
+    line,
+    defaultWidth = 1,
+    setPolygon,
+    setCircle,
+    setLine,
+}: IUseLineParams): IUseLineReturn {
     const polylineRef = useRef<google.maps.Polyline>();
 
-    const onLoadPolyline = (newPolylineRef: google.maps.Polyline) => {
+    const onLoadPolyline = useCallback((newPolylineRef: google.maps.Polyline) => {
         polylineRef.current = newPolylineRef;
-    };
+    }, []);
 
-    const appendPoint = (value: IPoint) => {
-        if (line?.points.length) {
-            setLine({ points: [...line.points, value], width: line.width });
-        } else {
-            setLine({ points: [value], width: defaultWidth });
-        }
-    };
+    const appendPoint = useCallback(
+        (value: IPoint) => {
+            if (line?.points.length) {
+                setLine({ points: [...line.points, value], width: line.width });
+            } else {
+                setLine({ points: [value], width: defaultWidth });
+            }
+        },
+        [line, defaultWidth],
+    );
 
-    const onDragEndPolyline = () => {
+    const onDragEndPolyline = useCallback(() => {
         if (!polylineRef.current) return;
 
         const points = polylineRef.current?.getPath();
 
         if (!points.getLength()) return;
 
-        const value = points.getArray().map((point) => mapUtils.createPointLiteral(point));
+        const value = points.getArray().map(point => mapUtils.createPointLiteral(point));
         setLine({ points: value, width: line?.width || defaultWidth });
-    };
+    }, [line, defaultWidth]);
 
-    const clear = () => {
+    const clear = useCallback(() => {
         setLine(undefined);
-    };
+    }, []);
 
-    const onClickMap = (e: google.maps.MapMouseEvent) => {
-        if (!e?.latLng || drawing !== DrawingType.LINE) return;
+    const onClickMap = useCallback(
+        (e: google.maps.MapMouseEvent) => {
+            if (!e?.latLng || drawing !== DrawingType.LINE) return;
 
-        const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+            const point = { lat: e.latLng.lat(), lng: e.latLng.lng() };
 
-        if (!isCreating && !line?.points.length) {
-            setCreating(true);
-            setCircle(undefined);
-            setPolygon(undefined);
-        }
+            if (!isCreating && !line?.points.length) {
+                setCreating(true);
+                setCircle(undefined);
+                setPolygon(undefined);
+            }
 
-        appendPoint(point);
-    };
+            appendPoint(point);
+        },
+        [drawing, line, isCreating, appendPoint],
+    );
 
-    const onMouseUpPolyline = (e: google.maps.MapMouseEvent) => {
-        if (!e?.latLng) return;
-        onDragEndPolyline();
-    };
+    const onMouseUpPolyline = useCallback(
+        (e: google.maps.MapMouseEvent) => {
+            if (!e?.latLng) return;
+            onDragEndPolyline();
+        },
+        [onDragEndPolyline],
+    );
 
-    const onChangeLineWidth = (value: number | null) => {
-        setLine({ points: line?.points ?? [], width: value ?? defaultWidth });
-    };
+    const onChangeLineWidth = useCallback(
+        (value: number | null) => {
+            setLine({ points: line?.points ?? [], width: value ?? defaultWidth });
+        },
+        [line],
+    );
 
-    const isVisiblePolyline = line?.points.length;
+    const isVisiblePolyline = !!line?.points.length;
     const isVisiblePolygon = (line?.points?.length ?? 0) >= 2;
     const isVisiblePolylineInput = drawing === DrawingType.LINE && (line?.points.length ?? 0) > 1;
 
-    return {
-        isVisiblePolyline,
-        isVisiblePolygon,
-        isVisiblePolylineInput,
-        value: line,
-        onDragEndPolyline,
-        onLoadPolyline,
-        onClickMap,
-        onMouseUpPolyline,
-        onChangeLineWidth,
-        clear,
-    };
+    return useMemo(
+        () => ({
+            isVisiblePolyline,
+            isVisiblePolygon,
+            isVisiblePolylineInput,
+            value: line,
+            onDragEndPolyline,
+            onLoadPolyline,
+            onClickMap,
+            onMouseUpPolyline,
+            onChangeLineWidth,
+            clear,
+        }),
+        [
+            isVisiblePolyline,
+            isVisiblePolygon,
+            isVisiblePolylineInput,
+            line,
+            onDragEndPolyline,
+            onLoadPolyline,
+            onClickMap,
+            onMouseUpPolyline,
+            onChangeLineWidth,
+            clear,
+        ],
+    );
 }

@@ -7,5 +7,7 @@ module.exports = {
     trailingComma: 'all',
     semi: true,
     quote: true,
+    endOfLine: "auto",
+    arrowParens: "avoid"
   };
   
