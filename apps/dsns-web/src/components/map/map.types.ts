@@ -4,6 +4,7 @@ import { type DrawingType, type ICircle, type IGeoBox, type ILine, type IPoint, 
 import { type IUseCircleReturn } from './useCircle';
 import { type IUseLineReturn } from './useLine';
 import { type IUsePolygonReturn } from './usePolygon';
+import { type IMapItem } from '../map-item';
 
 export interface IOnChangeMapView {
     line?: ILine;
@@ -26,28 +27,26 @@ export interface IMapDrawingProps {
     polygonManager: IUsePolygonReturn;
 }
 
-export interface IMapFiguresProps {
+export interface IMapFiguresProps<T extends IMapItem> {
     isVisibleInArea: boolean;
-    circles: ICircle[] | undefined;
-    polygons: IPolygon[] | undefined;
-    lines: ILine[] | undefined;
+    items?: T[];
+    renderMapItem?: (item: T) => React.ReactNode | undefined;
 }
 
-export interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
+export interface IMapViewProps<T extends IMapItem> extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
     initialMarker?: IPoint;
     initialCircle?: ICircle;
     initialLine?: ILine;
     initialPolygon?: IPolygon;
     initialZoom?: number;
-    onChange: (value: IOnChangeMapView) => void;
     position?: IPoint;
-    polygons?: IPolygon[];
-    lines?: ILine[];
-    circles?: ICircle[];
+    items?: T[];
     isLoadingVisibleInArea?: boolean;
-    onChangeGeobox?: (value: { box: IGeoBox; zoom: number }) => void;
-    onChangeEditing?: (value: boolean) => void;
     minZoomLoadArea?: number;
     initialIsActiveStick?: boolean;
     initialIsVisibleInArea?: boolean;
+    onChange: (value: IOnChangeMapView) => void;
+    onChangeGeobox?: (value: { box: IGeoBox; zoom: number }) => void;
+    onChangeEditing?: (value: boolean) => void;
+    renderMapItem?: (item: T) => React.ReactNode | undefined;
 }

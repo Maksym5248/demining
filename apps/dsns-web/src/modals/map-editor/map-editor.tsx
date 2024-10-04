@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { Modal } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { useDebounce, useValues } from 'shared-my-client';
-import { type ICircle, type IGeoBox, type ILine, type IPolygon } from 'shared-my-client';
+import { useDebounce, useValues, type IGeoBox } from 'shared-my-client';
 
 import { type IOnChangeMapView, MapView } from '~/components';
 import { useStore } from '~/hooks';
@@ -42,18 +41,18 @@ export const MapEditorModal = observer(
 
         const [isLoadingAllInGeoBox, setLoadingAllInGeoBox] = useState(false);
 
-        const onCancel = () => {
+        const onCancel = useCallback(() => {
             hide();
-        };
+        }, []);
 
-        const onChange = (value: IOnChangeMapView) => {
+        const onChange = useCallback((value: IOnChangeMapView) => {
             values.set('value', value);
-        };
+        }, []);
 
-        const onSave = () => {
+        const onSave = useCallback(() => {
             onSubmit?.(values.get('value'));
             hide();
-        };
+        }, []);
 
         const fetchAllInGeoBox = useDebounce(
             (box: IGeoBox) => {
@@ -72,17 +71,7 @@ export const MapEditorModal = observer(
             fetchAllInGeoBox(value.box);
         };
 
-        const figures = useMemo(() => {
-            const polygons = store.map.list.asArray.filter(el => el.id !== id && !!el.data.polygon).map(el => el.data.polygon as IPolygon);
-            const circles = store.map.list.asArray.filter(el => el.id !== id && !!el.data.circle).map(el => el.data.circle as ICircle);
-            const lines = store.map.list.asArray.filter(el => el.id !== id && !!el.data.line).map(el => el.data.line as ILine);
-
-            return {
-                polygons,
-                circles,
-                lines,
-            };
-        }, [id, store.map.list.asArray]);
+        const items = useMemo(() => store.map.list.asArray.filter(el => el.id !== id), [id, store.map.list.asArray]);
 
         return (
             <Modal centered afterClose={hide} title="Карта" open={isVisible} width="80%" onOk={onSave} onCancel={onCancel}>
@@ -95,7 +84,7 @@ export const MapEditorModal = observer(
                     mapContainerStyle={mapContainerStyle}
                     onChange={onChange}
                     onChangeGeobox={onChangeGeobox}
-                    {...figures}
+                    items={items}
                     isLoadingVisibleInArea={store.map.fetchAllInGeoBox.isLoading || isLoadingAllInGeoBox}
                     minZoomLoadArea={minZoomLoadArea}
                 />
