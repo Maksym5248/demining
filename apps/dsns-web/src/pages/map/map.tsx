@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { FloatButton } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { useValues } from 'shared-my-client';
+import { type IMapViewAction, useValues } from 'shared-my-client';
 
-import { Icon, type IOnChangeMapView, MapView } from '~/components';
+import { Icon, type IOnChangeMapView, MapItem, MapView } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore } from '~/hooks';
 import { Modal } from '~/services';
@@ -47,18 +47,21 @@ export const MapPage = observer(() => {
         }
     }, []);
 
+    const renderMapItem = useCallback((item: IMapViewAction) => {
+        return <MapItem key={item.id} item={item} />;
+    }, []);
+
     return (
         <div css={s.container}>
             <MapView
                 mapContainerStyle={mapContainerStyle}
                 onChange={onChange}
                 onChangeEditing={onChangeEditing}
-                polygons={store.map.polygons}
-                circles={store.map.circles}
-                lines={store.map.lines}
+                items={store.map.list.asArray}
                 initialIsActiveStick
                 initialIsVisibleInArea
                 minZoomLoadArea={1}
+                renderMapItem={renderMapItem}
             />
             {isCreating && (
                 <FloatButton shape="square" style={{ bottom: 150, right: 60 }} icon={<Icon.PlusOutlined />} onClick={onOpenMissionReport} />

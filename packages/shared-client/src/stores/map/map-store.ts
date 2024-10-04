@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IMapAPI } from '~/api';
-import { type ICircle, type IGeoBox, type IGeohashRange, type ILine, type IMarker, type IPolygon, mapUtils } from '~/map';
+import { type IGeoBox, type IGeohashRange, mapUtils } from '~/map';
 import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
@@ -27,11 +27,6 @@ export interface IMapStore {
     fetchAllInGeoBox: RequestModel<[IGeoBox]>;
     fetchAll: RequestModel;
     isLoaded: boolean;
-
-    polygons: IPolygon[];
-    circles: ICircle[];
-    lines: ILine[];
-    markers: IMarker[];
 }
 
 export class MapStore implements IMapStore {
@@ -90,20 +85,4 @@ export class MapStore implements IMapStore {
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
-
-    get polygons() {
-        return this.list.asArray.map(el => el.data.polygon).filter(el => !!el);
-    }
-
-    get circles() {
-        return this.list.asArray.map(el => el.data.circle).filter(el => !!el);
-    }
-
-    get lines() {
-        return this.list.asArray.map(el => el.data.line).filter(el => !!el);
-    }
-
-    get markers() {
-        return this.list.asArray.map(el => el.data.marker).filter(el => !!el);
-    }
 }

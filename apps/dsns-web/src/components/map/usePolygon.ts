@@ -33,15 +33,15 @@ export interface IUsePolygonReturn {
 
 export function usePolygon({
     isCreating,
-    setCreating,
     drawing,
     polygon,
-    setPolygon,
-    setCircle,
-    setLine,
     polygons,
     isActiveStick,
     mapRef,
+    setCreating,
+    setPolygon,
+    setCircle,
+    setLine,
 }: IUsePolygonParams): IUsePolygonReturn {
     const polygonRef = useRef<google.maps.Polygon>();
     const polylineRef = useRef<google.maps.Polyline>(); // New reference for the polyline

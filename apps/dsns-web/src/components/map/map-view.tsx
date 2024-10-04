@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { GoogleMap } from '@react-google-maps/api';
 import { DrawingType, mathUtils, useValues } from 'shared-my-client';
@@ -9,7 +9,7 @@ import { withMapProvider } from '~/hoc';
 import { useMapOptions } from '~/hooks';
 
 import { MapDrawing } from './map-drawing';
-import { MapFigures } from './map-figures';
+import { MapItems } from './map-items';
 import { s } from './map-view.style';
 import { type IMapViewProps } from './map.types';
 import { useCircle } from './useCircle';
@@ -18,9 +18,14 @@ import { usePolygon } from './usePolygon';
 import { Autocomplete } from '../map-autocomplete';
 import { DrawingManager } from '../map-drawing-manager';
 import { MapInfo } from '../map-info';
+import { type IMapItem, MapItem } from '../map-item';
 import { MapZoomView } from '../map-zoom-view';
 
-function Component({
+function defaultRenderMapItem<T extends IMapItem>(item: T) {
+    return <MapItem key={item.id} item={item} />;
+}
+
+function Component<T extends IMapItem>({
     initialMarker,
     initialCircle,
     initialPolygon,
@@ -28,17 +33,16 @@ function Component({
     initialLine,
     onChange,
     position,
-    circles,
-    polygons,
-    lines,
+    items,
     onChangeGeobox,
     onChangeEditing,
     isLoadingVisibleInArea,
     minZoomLoadArea = 16,
     initialIsActiveStick = false,
     initialIsVisibleInArea = false,
+    renderMapItem = defaultRenderMapItem,
     ...rest
-}: IMapViewProps) {
+}: IMapViewProps<T>) {
     const [drawing, setDrawing] = useState(DrawingType.MOVE);
     const [isCreating, setCreating] = useState(false);
 
@@ -67,6 +71,8 @@ function Component({
     const isVisibleMap = useVisibleMap({ mapRef });
 
     const area = mapUtils.getArea(circle, polygon, line);
+
+    const polygons: IPolygon[] = useMemo(() => items?.map(el => el.data.polygon).filter(el => !!el) ?? [], [items]) as IPolygon[];
 
     const _onChange = () => {
         onChange?.({
@@ -136,28 +142,26 @@ function Component({
 
     const lineManager = useLine({
         isCreating,
-        setCreating,
         drawing,
         line,
+        isActiveStick,
+        setCreating,
         setPolygon,
         setCircle,
         setLine,
-        polygons,
-        isActiveStick,
-        mapRef,
     });
 
     const polygonManager = usePolygon({
         isCreating,
-        setCreating,
         drawing,
         polygon,
-        setPolygon,
-        setCircle,
-        setLine,
         polygons,
         isActiveStick,
         mapRef,
+        setCreating,
+        setPolygon,
+        setCircle,
+        setLine,
     });
 
     const circleManager = useCircle({
@@ -295,7 +299,7 @@ function Component({
                     isDisabledClean={!isEditing}
                     isLoadingVisibleInArea={isLoadingVisibleInArea}
                 />
-                <MapFigures isVisibleInArea={isVisibleInArea} circles={circles} polygons={polygons} lines={lines} />
+                <MapItems isVisibleInArea={isVisibleInArea} items={items} renderMapItem={renderMapItem} />
                 <MapDrawing
                     marker={marker}
                     circle={circle}
@@ -319,4 +323,4 @@ function Component({
     );
 }
 
-export const MapView = memo(withMapProvider(Component));
+export const MapView = memo(withMapProvider(Component)) as <T extends IMapItem>(props: IMapViewProps<T>) => JSX.Element;

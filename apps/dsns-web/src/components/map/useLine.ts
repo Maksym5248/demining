@@ -32,10 +32,10 @@ export interface IUseLineReturn {
 
 export function useLine({
     isCreating,
-    setCreating,
     drawing,
     line,
     defaultWidth = 1,
+    setCreating,
     setPolygon,
     setCircle,
     setLine,
