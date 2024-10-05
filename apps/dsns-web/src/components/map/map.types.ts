@@ -1,3 +1,4 @@
+import { type Interpolation, type Theme } from '@emotion/react';
 import { type GoogleMapProps } from '@react-google-maps/api';
 import { type DrawingType, type ICircle, type IGeoBox, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
 
@@ -50,4 +51,6 @@ export interface IMapViewProps<T extends IMapItem> extends Pick<GoogleMapProps, 
     onChangeEditing?: (value: boolean) => void;
     renderMapItem?: (item: T) => React.ReactNode | undefined;
     isVisibleDrawing?: boolean;
+    selectedItem?: T;
+    css?: Interpolation<Theme>;
 }

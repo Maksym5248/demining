@@ -95,7 +95,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
     const onFinishCreate = async (values: IMissionReportForm) => {
         await missionReport.create.run({
             ...values,
-            squadIds: values.squadIds.filter((el) => !!el),
+            squadIds: values.squadIds.filter(el => !!el),
         });
         hide();
     };
@@ -106,7 +106,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 
         await missionReport.update.run(id, {
             ...values,
-            squadIds: values.squadIds.filter((el) => !!el),
+            squadIds: values.squadIds.filter(el => !!el),
         });
         hide();
     };
@@ -118,7 +118,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
 
         await missionReport.create.run({
             ...values,
-            squadIds: values.squadIds.filter((el) => !!el),
+            squadIds: values.squadIds.filter(el => !!el),
         });
         hide();
     };
@@ -222,7 +222,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
                             value={templateId}
                             onChange={setTemplateId}
                             placeholder="Виберіть шаблон"
-                            options={document.missionReportTemplatesList.map((el) => ({
+                            options={document.missionReportTemplatesList.map(el => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}
@@ -275,7 +275,12 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
                                 <Divider />
                             </div>
                         ))}
-                        <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                        <WizardFooter
+                            {...wizard}
+                            onCancel={hide}
+                            onRemove={onRemove}
+                            loading={missionReport.create.isLoading || missionReport.update.isLoading}
+                        />
                     </Form>
                 )}
             </>

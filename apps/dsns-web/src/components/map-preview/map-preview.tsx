@@ -117,7 +117,7 @@ function Component({
 
                 {isVisiblePolygon && <Polygon options={polygonOptions} paths={polygon?.points} {...(polygon ?? {})} />}
                 {isVisibleCircle && <Circle options={circleOptions} {...(circle ?? {})} />}
-                {isVisibleMarker && <Marker position={marker} />}
+                {isVisibleMarker && <Marker position={marker} icon={'http://maps.google.com/mapfiles/ms/icons/red-dot.png'} />}
                 {isVisibleMarkerCallout && (
                     <MarkerCallout date={date} explosiveObjects={explosiveObjects} marker={marker} callout={markerCallout} />
                 )}

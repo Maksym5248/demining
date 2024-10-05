@@ -74,7 +74,12 @@ export const OrganizationWizardModal = observer(({ id, isVisible, hide, mode }: 
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
                         <Input placeholder="Назва організації" />
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={organization.create.isLoading || currentOrganization?.update.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

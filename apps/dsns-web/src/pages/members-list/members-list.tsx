@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
@@ -40,7 +40,8 @@ export const MembersListPage = observer(() => {
     const { organization, viewer } = useStore();
     const title = useRouteTitle();
     const { organizationId } = useParams<'organizationId'>();
-    const [id, setId] = useState(organizationId ?? '');
+
+    const id = organizationId ?? viewer.user?.data.organization?.id ?? '';
 
     const currentOrganization = organization.collection.get(id);
 
@@ -51,16 +52,12 @@ export const MembersListPage = observer(() => {
 
     useAsyncEffect(async () => {
         if (!currentOrganization) {
-            await organization.fetchItem.run(viewer.user?.data.organization?.id ?? '');
-            setId(viewer.user?.data.organization?.id ?? '');
+            await organization.fetchItem.run(id);
         }
-    }, []);
 
-    useEffect(() => {
-        if (id) {
-            currentOrganization?.fetchListMembers.run();
-        }
-    }, [id]);
+        const org = organization.collection.get(id);
+        await org?.fetchListMembers.run();
+    }, []);
 
     return (
         <List
@@ -73,7 +70,7 @@ export const MembersListPage = observer(() => {
                     <Button type="primary" icon={<Icon.UserAddOutlined />} onClick={onCreate} />
                 </Space>
             }
-            renderItem={(item) => <ListItem item={item} organizationId={id ?? ''} />}
+            renderItem={item => <ListItem item={item} organizationId={id ?? ''} />}
         />
     );
 });

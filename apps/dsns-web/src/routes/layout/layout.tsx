@@ -48,12 +48,6 @@ export const Layout = observer(() => {
                           onClick: () => navigate(ROUTES.HOME),
                       },
                       {
-                          key: ROUTES.STATISTICS,
-                          icon: <Icon.LineChartOutlined />,
-                          label: nav.getRouteTitle(ROUTES.STATISTICS),
-                          onClick: () => navigate(ROUTES.STATISTICS),
-                      },
-                      {
                           key: 'Documents',
                           icon: <Icon.FileTextOutlined />,
                           label: 'Документи',
@@ -83,6 +77,12 @@ export const Layout = observer(() => {
                                   onClick: () => navigate(ROUTES.ORDER_LIST),
                               },
                           ],
+                      },
+                      {
+                          key: ROUTES.STATISTICS,
+                          icon: <Icon.LineChartOutlined />,
+                          label: nav.getRouteTitle(ROUTES.STATISTICS),
+                          onClick: () => navigate(ROUTES.STATISTICS),
                       },
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_LIST,

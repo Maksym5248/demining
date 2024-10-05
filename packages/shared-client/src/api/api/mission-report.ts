@@ -29,7 +29,7 @@ interface IItemId {
 const creatorAction =
     (document: ILinkedToDocumentDB) =>
     <B, T extends IItemId>(sourceValueId: string, merge: Partial<B>, sourceAction: T[]): B => {
-        const source = sourceAction.find((el) => el.id === sourceValueId) as T;
+        const source = sourceAction.find(el => el.id === sourceValueId) as T;
 
         const sourceWithRemovedFields = omit(source, ['id', 'updatedAt', 'createdAt']);
 
@@ -119,29 +119,29 @@ export class MissionReportAPI implements IMissionReportAPI {
 
     batchCreateActions = async (actions: INewActions) => {
         if (actions.mapView) this.db.mapViewAction.batchCreate(actions.mapView);
-        actions.employeesActions.map((el) => this.db.employeeAction.batchCreate(el));
-        actions.equipmentActions.map((el) => this.db.equipmentAction.batchCreate(el));
-        actions.transportActions.map((el) => this.db.transportAction.batchCreate(el));
-        actions.explosiveObjectActions.map((el) => this.db.explosiveObjectAction.batchCreate(el));
-        actions.explosiveActions.map((el) => this.db.explosiveAction.batchCreate(el));
+        actions.employeesActions.map(el => this.db.employeeAction.batchCreate(el));
+        actions.equipmentActions.map(el => this.db.equipmentAction.batchCreate(el));
+        actions.transportActions.map(el => this.db.transportAction.batchCreate(el));
+        actions.explosiveObjectActions.map(el => this.db.explosiveObjectAction.batchCreate(el));
+        actions.explosiveActions.map(el => this.db.explosiveAction.batchCreate(el));
     };
 
     batchRemoveActions = async (actions: IPrevActions) => {
         if (actions.mapView) this.db.mapViewAction.batchRemove(actions.mapView.id);
-        actions.employeesActions.map((el) => this.db.employeeAction.batchRemove(el.id));
-        actions.equipmentActions.map((el) => this.db.equipmentAction.batchRemove(el.id));
-        actions.transportActions.map((el) => this.db.transportAction.batchRemove(el.id));
-        actions.explosiveObjectActions.map((el) => this.db.explosiveObjectAction.batchRemove(el.id));
-        actions.explosiveActions.map((el) => this.db.explosiveAction.batchRemove(el.id));
+        actions.employeesActions.map(el => this.db.employeeAction.batchRemove(el.id));
+        actions.equipmentActions.map(el => this.db.equipmentAction.batchRemove(el.id));
+        actions.transportActions.map(el => this.db.transportAction.batchRemove(el.id));
+        actions.explosiveObjectActions.map(el => this.db.explosiveObjectAction.batchRemove(el.id));
+        actions.explosiveActions.map(el => this.db.explosiveAction.batchRemove(el.id));
     };
 
     batchUpdateActions = async (actions: IPrevActions) => {
         if (actions.mapView) this.db.mapViewAction.batchUpdate(actions.mapView.id, actions.mapView);
-        actions.employeesActions.map((el) => this.db.employeeAction.batchUpdate(el.id, el));
-        actions.equipmentActions.map((el) => this.db.equipmentAction.batchUpdate(el.id, el));
-        actions.transportActions.map((el) => this.db.transportAction.batchUpdate(el.id, el));
-        actions.explosiveObjectActions.map((el) => this.db.explosiveObjectAction.batchUpdate(el.id, el));
-        actions.explosiveActions.map((el) => this.db.explosiveAction.batchUpdate(el.id, el));
+        actions.employeesActions.map(el => this.db.employeeAction.batchUpdate(el.id, el));
+        actions.equipmentActions.map(el => this.db.equipmentAction.batchUpdate(el.id, el));
+        actions.transportActions.map(el => this.db.transportAction.batchUpdate(el.id, el));
+        actions.explosiveObjectActions.map(el => this.db.explosiveObjectAction.batchUpdate(el.id, el));
+        actions.explosiveActions.map(el => this.db.explosiveAction.batchUpdate(el.id, el));
     };
 
     get = async (id: string): Promise<IMissionReportDTO> => {
@@ -195,9 +195,9 @@ export class MissionReportAPI implements IMissionReportAPI {
         const [signedByActionOrder] = signedByActionOrderArr;
         const [mapViewAction] = mapViewActionArr;
 
-        const approvedByAction = employeesAction.find((el) => el.typeInDocument === EMPLOYEE_TYPE.CHIEF);
-        const squadLeaderAction = employeesAction.find((el) => el.typeInDocument === EMPLOYEE_TYPE.SQUAD_LEAD);
-        const squadActions = employeesAction.filter((el) => el.typeInDocument === EMPLOYEE_TYPE.WORKER);
+        const approvedByAction = employeesAction.find(el => el.typeInDocument === EMPLOYEE_TYPE.CHIEF);
+        const squadLeaderAction = employeesAction.find(el => el.typeInDocument === EMPLOYEE_TYPE.SQUAD_LEAD);
+        const squadActions = employeesAction.filter(el => el.typeInDocument === EMPLOYEE_TYPE.WORKER);
 
         if (!order) throw new Error('there is no order');
         if (!signedByActionOrder) throw new Error('there is no signedByActionOrder');
@@ -266,11 +266,11 @@ export class MissionReportAPI implements IMissionReportAPI {
             explosiveActions: explosiveActionsValue,
         } = value;
 
-        const employeesIds = [approvedById, squadLeaderId, ...squadIds].filter((el) => !!el) ?? [];
-        const transportIds = [transportHumansId, transportExplosiveObjectId].filter((el) => !!el) as string[];
-        const explosiveObjectIds = explosiveObjectActionsValue.map((el) => el.explosiveObjectId).filter((el) => !!el) ?? [];
-        const equipmentIds = ([mineDetectorId].filter((el) => !!el) as string[]) ?? [];
-        const explosiveIds = explosiveActionsValue?.map((el) => el.explosiveId).filter((el) => !!el) ?? [];
+        const employeesIds = [approvedById, squadLeaderId, ...squadIds].filter(el => !!el) ?? [];
+        const transportIds = [transportHumansId, transportExplosiveObjectId].filter(el => !!el) as string[];
+        const explosiveObjectIds = explosiveObjectActionsValue?.map(el => el.explosiveObjectId).filter(el => !!el) ?? [];
+        const equipmentIds = ([mineDetectorId].filter(el => !!el) as string[]) ?? [];
+        const explosiveIds = explosiveActionsValue?.map(el => el.explosiveId).filter(el => !!el) ?? [];
 
         const [employees, transports, explosiveObjects, equipments, explosives] = await Promise.all([
             employeesIds.length
@@ -329,26 +329,26 @@ export class MissionReportAPI implements IMissionReportAPI {
             { employeeId: squadLeaderId, typeInDocument: EMPLOYEE_TYPE.SQUAD_LEAD },
             employees,
         );
-        const squadActions = squadIds.map((id) =>
+        const squadActions = squadIds.map(id =>
             createAction<IEmployeeActionDB, IEmployeeDB>(id, { employeeId: id, typeInDocument: EMPLOYEE_TYPE.WORKER }, employees),
         );
 
-        const employeesActions = [approvedByAction, squadLeaderAction, ...squadActions].filter((el) => !!el) ?? [];
+        const employeesActions = [approvedByAction, squadLeaderAction, ...squadActions].filter(el => !!el) ?? [];
 
-        const equipmentActions = equipmentIds.map((id) =>
+        const equipmentActions = equipmentIds.map(id =>
             createAction<IEquipmentActionDB, IEquipmentDB>(id, { equipmentId: id }, equipments),
         );
 
-        const transportActions = transportIds.map((id) =>
+        const transportActions = transportIds.map(id =>
             createAction<ITransportActionDB, ITransportDB>(id, { transportId: id }, transports),
         );
 
-        const explosiveObjectActions = explosiveObjectActionsValue.map((el) =>
+        const explosiveObjectActions = explosiveObjectActionsValue.map(el =>
             createAction<IExplosiveObjectActionDB, IExplosiveObjectDB>(el.explosiveObjectId, el, explosiveObjects),
         );
 
         const explosiveActions =
-            explosiveActionsValue?.map((el) => createAction<IExplosiveActionDB, IExplosiveDB>(el.explosiveId, el, explosives)) ?? [];
+            explosiveActionsValue?.map(el => createAction<IExplosiveActionDB, IExplosiveDB>(el.explosiveId, el, explosives)) ?? [];
 
         return {
             mapView,
@@ -361,16 +361,16 @@ export class MissionReportAPI implements IMissionReportAPI {
     };
 
     getRemovedActions = <T extends B, B extends { id?: string }>(prev: T[], newB: B[], compareId: keyof B): T[] =>
-        prev.filter((t) => !newB.find((b) => t[compareId] === b[compareId]));
+        prev.filter(t => !newB.find(b => t[compareId] === b[compareId]));
     getCreateActions = <T extends B, B extends { id?: string }>(prev: T[], newB: B[], compareId: keyof B): B[] =>
-        newB.filter((t) => !prev.find((b) => t[compareId] === b[compareId]));
+        newB.filter(t => !prev.find(b => t[compareId] === b[compareId]));
     getUpdatedActions = <T extends B, B extends { id?: string }>(prev: T[], newB: B[], removeB: T[], compareId: keyof B): T[] => {
         const needUpdate = prev
-            .filter((el) => !removeB.find((r) => r[compareId] === el[compareId]))
-            .filter((t) => !!newB.find((b) => t[compareId] === b?.[compareId]));
-        return needUpdate.map((t) => ({
+            .filter(el => !removeB.find(r => r[compareId] === el[compareId]))
+            .filter(t => !!newB.find(b => t[compareId] === b?.[compareId]));
+        return needUpdate.map(t => ({
             ...t,
-            ...newB.find((b) => t[compareId] === b?.[compareId]),
+            ...newB.find(b => t[compareId] === b?.[compareId]),
         })) as T[];
     };
 
@@ -379,7 +379,7 @@ export class MissionReportAPI implements IMissionReportAPI {
             ...missionReportDTO.squadActions,
             missionReportDTO.approvedByAction,
             missionReportDTO.squadLeaderAction,
-        ].filter((el) => !!el);
+        ].filter(el => !!el);
 
         return {
             mapView: newActions?.mapView ? undefined : missionReportDTO.mapView,
@@ -400,7 +400,7 @@ export class MissionReportAPI implements IMissionReportAPI {
             ...missionReportDTO.squadActions,
             missionReportDTO.approvedByAction,
             missionReportDTO.squadLeaderAction,
-        ].filter((el) => !!el);
+        ].filter(el => !!el);
 
         return {
             mapView: newActions?.mapView && !missionReportDTO.mapView ? undefined : missionReportDTO.mapView,
@@ -417,7 +417,7 @@ export class MissionReportAPI implements IMissionReportAPI {
             ...missionReportDTO.squadActions,
             missionReportDTO.approvedByAction,
             missionReportDTO.squadLeaderAction,
-        ].filter((el) => !!el);
+        ].filter(el => !!el);
 
         return {
             mapView: {

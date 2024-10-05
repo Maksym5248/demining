@@ -78,6 +78,7 @@ export class RootStore implements IRootStore {
 
     get stores() {
         return {
+            viewer: this.viewer,
             auth: this.auth,
             document: this.document,
             equipment: this.equipment,
@@ -91,7 +92,6 @@ export class RootStore implements IRootStore {
             transport: this.transport,
             user: this.user,
             organization: this.organization,
-            viewer: this.viewer,
         };
     }
 
@@ -112,6 +112,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
+        this.viewer = new ViewerStore(this);
         this.auth = new AuthStore(this);
         this.document = new DocumentStore(this);
         this.equipment = new EquipmentStore(this);
@@ -124,7 +125,6 @@ export class RootStore implements IRootStore {
         this.transport = new TransportStore(this);
         this.user = new UserStore(this);
         this.organization = new OrganizationStore(this);
-        this.viewer = new ViewerStore(this);
         this.missionReport = new MissionReportStore(this);
 
         makeAutoObservable(this);

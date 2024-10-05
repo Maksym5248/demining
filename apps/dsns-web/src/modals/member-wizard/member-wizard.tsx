@@ -32,10 +32,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
     }, []);
 
     const isEdit = !!id;
-    const isLoading =
-        (!user.fetchListUnassigned.isLoaded && user.fetchListUnassigned.isLoading) ||
-        currentOrganization?.createMember.isLoading ||
-        currentOrganization?.updateMember.isLoading;
+    const isLoading = !user.fetchListUnassigned.isLoaded && user.fetchListUnassigned.isLoading;
 
     const onFinishCreate = async (values: IMemberForm) => {
         await currentOrganization?.createMember.run(values.id, values.isAdmin, values.isAuthor);
@@ -80,7 +77,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                             disabled={!wizard.isCreate}
                             options={
                                 wizard.isCreate
-                                    ? user.listUnassigned.asArray.map((el) => ({
+                                    ? user.listUnassigned.asArray.map(el => ({
                                           label: el.data.email,
                                           value: el.id,
                                       }))
@@ -110,6 +107,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                             wizard.isRemove &&
                             (viewer.user?.isRootAdmin || (viewer.user?.isOrganizationAdmin && !member?.isOrganizationAdmin))
                         }
+                        loading={currentOrganization?.createMember.isLoading || currentOrganization?.updateMember.isLoading}
                     />
                 </Form>
             )}
