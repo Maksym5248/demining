@@ -25,7 +25,7 @@ export const Layout = observer(() => {
     const [collapsed, setCollapsed] = useState(false);
 
     const routes = nav.getRoutes(location.pathname, params as { [key: string]: string });
-    const itemsBreadcrumb = routes.map((el) => ({
+    const itemsBreadcrumb = routes.map(el => ({
         ...el,
         onClick: () => navigate(el.route, params),
     }));
@@ -156,6 +156,8 @@ export const Layout = observer(() => {
         return [`/${initialRoute}`];
     }, []);
 
+    const currentRoute = nav.getBasePath(location.pathname, params as { [key: string]: string });
+
     return (
         <Lay>
             <Header css={s.header}>
@@ -188,7 +190,7 @@ export const Layout = observer(() => {
                 <Sider
                     collapsible
                     collapsed={collapsed}
-                    onCollapse={(value) => setCollapsed(value)}
+                    onCollapse={value => setCollapsed(value)}
                     style={{
                         overflow: 'auto',
                         height: '100vh',
@@ -212,10 +214,15 @@ export const Layout = observer(() => {
                         display: 'flex',
                         flex: 1,
                     }}>
-                    <Breadcrumb css={s.breadcrumb} items={itemsBreadcrumb} />
-                    <Content css={s.content}>
-                        <Outlet />
-                    </Content>
+                    {currentRoute === ROUTES.HOME && <Outlet />}
+                    {currentRoute !== ROUTES.HOME && (
+                        <>
+                            <Breadcrumb css={s.breadcrumb} items={itemsBreadcrumb} />
+                            <Content css={s.content}>
+                                <Outlet />
+                            </Content>
+                        </>
+                    )}
                 </Lay>
             </Lay>
         </Lay>

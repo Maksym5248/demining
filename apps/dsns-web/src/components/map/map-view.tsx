@@ -41,6 +41,7 @@ function Component<T extends IMapItem>({
     initialIsActiveStick = false,
     initialIsVisibleInArea = false,
     renderMapItem = defaultRenderMapItem,
+    isVisibleDrawing = true,
     ...rest
 }: IMapViewProps<T>) {
     const [drawing, setDrawing] = useState(DrawingType.MOVE);
@@ -285,32 +286,38 @@ function Component<T extends IMapItem>({
                 onMouseMove={onMouseMove}
                 onBoundsChanged={_onChangeGeobox}
                 {...rest}>
-                <DrawingManager
-                    mapTypeId={mapOptions.mapTypeId}
-                    onToggleMapType={toggleMapType}
-                    canVisibleInArea={zoom > minZoomLoadArea}
-                    onChange={onChangeDrawing}
-                    value={drawing}
-                    onClear={onClear}
-                    isActiveStick={isActiveStick}
-                    isVisibleInArea={isVisibleInArea}
-                    onChangeVisibleInArea={onChangeVisibleInArea}
-                    onChangeStick={setActiveStick}
-                    isDisabledClean={!isEditing}
-                    isLoadingVisibleInArea={isLoadingVisibleInArea}
-                />
+                {!!isVisibleDrawing && (
+                    <DrawingManager
+                        mapTypeId={mapOptions.mapTypeId}
+                        onToggleMapType={toggleMapType}
+                        canVisibleInArea={zoom > minZoomLoadArea}
+                        onChange={onChangeDrawing}
+                        value={drawing}
+                        onClear={onClear}
+                        isActiveStick={isActiveStick}
+                        isVisibleInArea={isVisibleInArea}
+                        onChangeVisibleInArea={onChangeVisibleInArea}
+                        onChangeStick={setActiveStick}
+                        isDisabledClean={!isEditing}
+                        isLoadingVisibleInArea={isLoadingVisibleInArea}
+                    />
+                )}
+
                 <MapItems isVisibleInArea={isVisibleInArea} items={items} renderMapItem={renderMapItem} />
-                <MapDrawing
-                    marker={marker}
-                    circle={circle}
-                    line={line}
-                    polygon={polygon}
-                    isCreating={isCreating}
-                    drawing={drawing}
-                    circleManager={circleManager}
-                    lineManager={lineManager}
-                    polygonManager={polygonManager}
-                />
+                {!!isVisibleDrawing && (
+                    <MapDrawing
+                        marker={marker}
+                        circle={circle}
+                        line={line}
+                        polygon={polygon}
+                        isCreating={isCreating}
+                        drawing={drawing}
+                        circleManager={circleManager}
+                        lineManager={lineManager}
+                        polygonManager={polygonManager}
+                    />
+                )}
+
                 <Autocomplete onPlaceChanged={onPlaceChanged} />
                 <MapZoomView zoom={zoom} onChange={onChangeZoomView} />
                 <MapInfo

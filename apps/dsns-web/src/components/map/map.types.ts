@@ -49,4 +49,5 @@ export interface IMapViewProps<T extends IMapItem> extends Pick<GoogleMapProps, 
     onChangeGeobox?: (value: { box: IGeoBox; zoom: number }) => void;
     onChangeEditing?: (value: boolean) => void;
     renderMapItem?: (item: T) => React.ReactNode | undefined;
+    isVisibleDrawing?: boolean;
 }

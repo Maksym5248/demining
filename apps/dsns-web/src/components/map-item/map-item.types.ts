@@ -13,4 +13,6 @@ export interface IMapItem {
 export interface IMapItemProps<T extends IMapItem> {
     item: T;
     onClick?: (item: T) => void;
+    isSelected?: boolean;
+    isClickable?: boolean;
 }

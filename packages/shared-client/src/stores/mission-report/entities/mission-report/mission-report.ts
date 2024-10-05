@@ -35,6 +35,7 @@ export interface IMissionReport {
     transportExplosiveObject?: ITransportAction;
     transportHumans?: ITransportAction;
     mineDetector?: IEquipmentAction;
+    numberView: string;
     printData: {
         approvedAt: string;
         approvedByName: string;
@@ -108,8 +109,12 @@ export class MissionReport implements IMissionReport {
         Object.assign(this.data, data);
     }
 
+    get numberView() {
+        return `${this.data.number}${this.data.subNumber ? `/${this.data.subNumber}` : ''}`;
+    }
+
     get equipmentActions() {
-        return this.data.equipmentActionsIds?.map((id) => this.stores.equipment.collectionActions.get(id) as IEquipmentAction) ?? [];
+        return this.data.equipmentActionsIds?.map(id => this.stores.equipment.collectionActions.get(id) as IEquipmentAction) ?? [];
     }
 
     get order() {
@@ -129,7 +134,7 @@ export class MissionReport implements IMissionReport {
     }
 
     get transportActions() {
-        return this.data.transportActionsIds?.map((id) => this.stores.transport.collectionActions.get(id) as ITransportAction) ?? [];
+        return this.data.transportActionsIds?.map(id => this.stores.transport.collectionActions.get(id) as ITransportAction) ?? [];
     }
 
     get squadLeaderAction() {
@@ -137,19 +142,19 @@ export class MissionReport implements IMissionReport {
     }
 
     get squadActions() {
-        return this.data.squadActionsIds?.map((id) => this.stores.employee.collectionActions.get(id) as IEmployeeAction) ?? [];
+        return this.data.squadActionsIds?.map(id => this.stores.employee.collectionActions.get(id) as IEmployeeAction) ?? [];
     }
 
     get explosiveObjectActions() {
         return (
             this.data.explosiveObjectActionsIds?.map(
-                (id) => this.stores.explosiveObject.collectionActions.get(id) as IExplosiveObjectAction,
+                id => this.stores.explosiveObject.collectionActions.get(id) as IExplosiveObjectAction,
             ) ?? []
         );
     }
 
     get explosiveActions() {
-        return this.data.explosiveActionsIds?.map((id) => this.stores.explosive.collectionActions.get(id) as IExplosiveAction) ?? [];
+        return this.data.explosiveActionsIds?.map(id => this.stores.explosive.collectionActions.get(id) as IExplosiveAction) ?? [];
     }
 
     get docName() {
@@ -157,15 +162,15 @@ export class MissionReport implements IMissionReport {
     }
 
     get transportExplosiveObject() {
-        return this.transportActions?.find((el) => el?.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
+        return this.transportActions?.find(el => el?.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS);
     }
 
     get transportHumans() {
-        return this.transportActions?.find((el) => el?.data.type === TRANSPORT_TYPE.FOR_HUMANS);
+        return this.transportActions?.find(el => el?.data.type === TRANSPORT_TYPE.FOR_HUMANS);
     }
 
     get mineDetector() {
-        return this?.equipmentActions?.find((el) => el?.data.type === EQUIPMENT_TYPE.MINE_DETECTOR);
+        return this?.equipmentActions?.find(el => el?.data.type === EQUIPMENT_TYPE.MINE_DETECTOR);
     }
 
     get printData() {
@@ -210,8 +215,8 @@ export class MissionReport implements IMissionReport {
                 : 'з ---- по ----';
 
         const actNumber = `${number}${subNumber ? `/${subNumber}` : ''}`;
-        const explosive = explosiveActions.filter((el) => el?.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
-        const detonator = explosiveActions.filter((el) => el?.data.type === EXPLOSIVE_TYPE.DETONATOR);
+        const explosive = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
+        const detonator = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_TYPE.DETONATOR);
 
         return {
             approvedAt: getDate(approvedAt),
@@ -254,12 +259,10 @@ export class MissionReport implements IMissionReport {
             ),
             squadTotal: squadActions.length + 1,
             humanHours: (squadActions.length + 1) * (workEnd.hour() - workStart.hour()),
-            transportHuman:
-                transportActions.find((el) => el?.transport.data.type === TRANSPORT_TYPE.FOR_HUMANS)?.transport?.fullName ?? '--',
+            transportHuman: transportActions.find(el => el?.transport.data.type === TRANSPORT_TYPE.FOR_HUMANS)?.transport?.fullName ?? '--',
             transportExplosiveObjects:
-                transportActions.find((el) => el?.transport.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.transport?.fullName ??
-                '--',
-            mineDetector: equipmentActions.find((el) => el?.equipment.data.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.data.name ?? '--',
+                transportActions.find(el => el?.transport.data.type === TRANSPORT_TYPE.FOR_EXPLOSIVE_OBJECTS)?.transport?.fullName ?? '--',
+            mineDetector: equipmentActions.find(el => el?.equipment.data.type === EQUIPMENT_TYPE.MINE_DETECTOR)?.data.name ?? '--',
             squadLead: squadLeaderAction?.employee.signName ?? '',
             squadPosition: squadActions.reduce(
                 (prev, el, i) => `${prev}${el?.employee.data.position}${squadActions.length - 1 !== i ? `\n` : ''}`,
