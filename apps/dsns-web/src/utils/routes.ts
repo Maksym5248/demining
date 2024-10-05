@@ -7,7 +7,7 @@ const getBasePath = (pathname: string, params: { [key: string]: string | number 
     let path = pathname;
     const paramsValues = Object.keys(params || {});
 
-    paramsValues.forEach((key) => {
+    paramsValues.forEach(key => {
         const value = params[key];
         path = path.replace(`${value}`, `:${key}`);
     });
@@ -72,4 +72,5 @@ export const nav = {
     getRouteTitle,
     getRouteTitleByLocation,
     getRoutes,
+    getBasePath,
 };

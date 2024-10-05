@@ -20,7 +20,7 @@ function Component({ marker, circle, line, polygon, drawing, isCreating, circleM
 
     return (
         <>
-            {isVisibleMarker && <Marker position={marker} />}
+            {isVisibleMarker && <Marker position={marker} icon={'http://maps.google.com/mapfiles/ms/icons/red-dot.png'} />}
             {circleManager.isVisibleCircle && (
                 <Circle
                     onLoad={circleManager.onLoadCircle}

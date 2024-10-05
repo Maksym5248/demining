@@ -22,11 +22,12 @@ const polygonsOptions = {
     clickable: false,
 };
 
-const markerOptions = {
-    opacity: 0.5,
+const selectedOptions = {
+    fillColor: '#3399ff',
+    strokeColor: '#3399ff',
 };
 
-export function MapItem<T extends IMapItem>({ item, onClick }: IMapItemProps<T>) {
+export function MapItem<T extends IMapItem>({ item, onClick, isSelected, isClickable = false }: IMapItemProps<T>) {
     const { polygon, line, marker, circle } = item?.data ?? {};
 
     const _onClick = () => {
@@ -38,14 +39,37 @@ export function MapItem<T extends IMapItem>({ item, onClick }: IMapItemProps<T>)
             {!!circle && (
                 <Circle
                     onClick={onClick ? _onClick : undefined}
-                    options={circlesOptions}
+                    options={{ ...circlesOptions, ...(isSelected ? selectedOptions : {}), clickable: isClickable }}
                     radius={circle?.radius ?? 0}
                     center={circle?.center ?? { lat: 0, lng: 0 }}
                 />
             )}
-            {!!polygon && <Polygon onClick={onClick ? _onClick : undefined} options={polygonsOptions} path={polygon?.points} />}
-            {!!line && <Polygon onClick={onClick ? _onClick : undefined} options={polygonsOptions} path={line?.points} />}
-            {!!marker && <Marker onClick={onClick ? _onClick : undefined} options={markerOptions} position={marker} />}
+            {!!polygon && (
+                <Polygon
+                    onClick={onClick ? _onClick : undefined}
+                    options={{ ...polygonsOptions, ...(isSelected ? selectedOptions : {}), clickable: isClickable }}
+                    path={polygon?.points}
+                />
+            )}
+            {!!line && (
+                <Polygon
+                    onClick={onClick ? _onClick : undefined}
+                    options={{ ...polygonsOptions, ...(isSelected ? selectedOptions : {}), clickable: isClickable }}
+                    path={line?.points}
+                />
+            )}
+            {!!marker && (
+                <Marker
+                    onClick={onClick ? _onClick : undefined}
+                    position={marker}
+                    clickable={isClickable}
+                    icon={
+                        isSelected
+                            ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                            : 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'
+                    }
+                />
+            )}
         </>
     );
 }
