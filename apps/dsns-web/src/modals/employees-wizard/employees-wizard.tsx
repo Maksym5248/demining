@@ -93,7 +93,7 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     name="rankId"
                     rules={[{ required: true, message: "Спеціальне звання є обов'язковим полем" }]}>
                     <Select>
-                        {ranks.map((el) => (
+                        {ranks.map(el => (
                             <Option value={el.data.id} key={el.data.id}>
                                 {el.data.fullName}
                             </Option>
@@ -105,14 +105,19 @@ export const EmployeesWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                 </Form.Item>
                 <Form.Item label="Тип посади" name="type" rules={[{ required: true, message: "Тип посади є обов'язковим полем" }]}>
                     <Select>
-                        {employeeTypesData.map((el) => (
+                        {employeeTypesData.map(el => (
                             <Option value={el.type} key={el.type}>
                                 {el.name}
                             </Option>
                         ))}
                     </Select>
                 </Form.Item>
-                <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                <WizardFooter
+                    {...wizard}
+                    onCancel={hide}
+                    onRemove={onRemove}
+                    loading={!!store.employee.create.isLoading || !!employee?.update.isLoading}
+                />
             </Form>
         </Drawer>
     );

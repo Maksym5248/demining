@@ -42,6 +42,8 @@ function Component<T extends IMapItem>({
     initialIsVisibleInArea = false,
     renderMapItem = defaultRenderMapItem,
     isVisibleDrawing = true,
+    selectedItem,
+    css,
     ...rest
 }: IMapViewProps<T>) {
     const [drawing, setDrawing] = useState(DrawingType.MOVE);
@@ -271,7 +273,7 @@ function Component<T extends IMapItem>({
     }, [isChangeEditing]);
 
     return (
-        <div css={s.container}>
+        <div css={[s.container, css]}>
             <GoogleMap
                 mapContainerStyle={s.mapContainerStyle}
                 zoom={zoom}
@@ -321,9 +323,13 @@ function Component<T extends IMapItem>({
                 <Autocomplete onPlaceChanged={onPlaceChanged} />
                 <MapZoomView zoom={zoom} onChange={onChangeZoomView} />
                 <MapInfo
-                    point={mapUtils.getCenter({ marker, circle, polygon, line })}
-                    distance={mapUtils.getTotalDistance({ line, polygon })}
-                    area={area}
+                    point={mapUtils.getCenter(selectedItem?.data ?? { marker, circle, polygon, line })}
+                    distance={mapUtils.getTotalDistance(selectedItem?.data ?? { line, polygon })}
+                    area={
+                        selectedItem?.data
+                            ? mapUtils.getArea(selectedItem?.data?.circle, selectedItem?.data?.polygon, selectedItem?.data?.line)
+                            : area
+                    }
                 />
             </GoogleMap>
         </div>

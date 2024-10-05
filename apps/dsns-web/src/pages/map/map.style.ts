@@ -6,6 +6,11 @@ const container = Theme.css(`
     position: relative;
 `);
 
+const map = Theme.css(`
+    border-radius: 0;
+`);
+
 export const s = {
     container,
+    map,
 };

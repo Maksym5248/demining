@@ -43,11 +43,7 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
     }, []);
 
     const isEdit = !!id;
-    const isLoading =
-        store.document.fetchTemplatesList.isLoading ||
-        store.document.create.isLoading ||
-        document?.update?.isLoading ||
-        document?.load?.isLoading;
+    const isLoading = store.document.fetchTemplatesList.isLoading || document?.load?.isLoading;
 
     const onFinishCreate = async (values: IDocumentForm) => {
         if (!file) {
@@ -120,7 +116,12 @@ export const TemplateWizardModal = observer(({ id, isVisible, hide, mode }: Prop
                     </Form.Item>
                     <UploadFile onChangeFile={onChangeFile} file={file} />
                     <div style={{ height: 16 }} />
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={store.document.create.isLoading || document?.update?.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

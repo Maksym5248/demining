@@ -56,7 +56,7 @@ export class OrganizationStore implements IOrganizationStore {
         this.api = params.api;
         this.services = params.services;
 
-        this.collection = new CollectionModel<IOrganization, IOrganizationValue>({ factory: (data) => new Organization(data, this) });
+        this.collection = new CollectionModel<IOrganization, IOrganizationValue>({ factory: data => new Organization(data, this) });
         this.list = new ListModel<IOrganization, IOrganizationValue>(this);
 
         makeAutoObservable(this);

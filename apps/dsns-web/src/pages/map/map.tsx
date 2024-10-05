@@ -72,6 +72,8 @@ export const MapPage = observer(() => {
         setSelectedId(undefined);
     }, []);
 
+    const selectedItem = store.map.collection.get(selectedId);
+
     return (
         <div css={s.container}>
             <MapView
@@ -83,6 +85,8 @@ export const MapPage = observer(() => {
                 initialIsVisibleInArea
                 minZoomLoadArea={1}
                 renderMapItem={renderMapItem}
+                selectedItem={selectedItem}
+                css={s.map}
             />
             {isCreating && (
                 <FloatButton shape="square" style={{ bottom: 120, right: 10 }} icon={<Icon.PlusOutlined />} onClick={onOpenMissionReport} />

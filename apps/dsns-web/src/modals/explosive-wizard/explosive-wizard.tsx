@@ -76,7 +76,12 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={store.explosive.create.isLoading || item?.update.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

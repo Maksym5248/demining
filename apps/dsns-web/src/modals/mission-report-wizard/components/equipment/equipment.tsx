@@ -24,19 +24,19 @@ export const Equipment = observer(({ initialValues, selectedMineDetector }: Equi
     const onAdd = () => Modal.show(MODALS.EQUIPMENT_WIZARD, { mode: WIZARD_MODE.CREATE });
 
     return (
-        <Form.Item label="Міношукач" name="mineDetectorId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+        <Form.Item label="Міношукач" name="mineDetectorId">
             <SelectAsync
                 {...props}
                 onAdd={onAdd}
                 options={select.append(
-                    equipment.listMineDetectors.map((el) => ({ label: el.data.name, value: el.data.id })),
+                    equipment.listMineDetectors.map(el => ({ label: el.data.name, value: el.data.id })),
                     [
                         {
                             label: selectedMineDetector?.data.name,
                             value: selectedMineDetector?.data.equipmentId,
                         },
                         { label: initialItem?.data.name, value: initialItem?.data.id },
-                    ].filter((el) => !!el.value),
+                    ].filter(el => !!el.value),
                 )}
             />
         </Form.Item>

@@ -109,7 +109,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={select.append(
-                                explosiveObject.sortedListTypes.map((el) => ({
+                                explosiveObject.sortedListTypes.map(el => ({
                                     label: el.displayName,
                                     value: el.data.id,
                                 })),
@@ -122,7 +122,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveObjectComponentData.map((el) => ({
+                            options={explosiveObjectComponentData.map(el => ({
                                 label: el.name,
                                 value: el.id,
                             }))}
@@ -130,7 +130,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveObject.listCountries.asArray.map((el) => ({
+                            options={explosiveObject.listCountries.asArray.map(el => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}
@@ -161,7 +161,12 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={explosiveObject.create.isLoading || currentExplosiveObject?.update?.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

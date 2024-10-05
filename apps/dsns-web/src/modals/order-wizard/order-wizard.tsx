@@ -92,7 +92,7 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                         <Select
                             onAdd={onAdd}
                             options={select.append(
-                                chiefs.map((el) => ({ label: el.fullName, value: el.data.id })),
+                                chiefs.map(el => ({ label: el.fullName, value: el.data.id })),
                                 {
                                     label: currentOrder?.signedByAction?.employee.fullName,
                                     value: currentOrder?.signedByAction?.data.employeeId,
@@ -100,7 +100,12 @@ export const OrderWizardModal = observer(({ id, isVisible, hide, mode }: Props) 
                             )}
                         />
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={order.create.isLoading || currentOrder?.update.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

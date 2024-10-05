@@ -118,7 +118,6 @@ export class Organization implements IOrganization {
     });
 
     fetchListMembers = new RequestModel({
-        returnIfLoaded: true,
         run: async () => {
             const res = await this.api.organization.getMembers(this.data.id);
             this.listMembers.set(res.map(createUser));

@@ -72,7 +72,12 @@ export const EquipmentWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={!!store.equipment.create.isLoading || !!item?.update.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

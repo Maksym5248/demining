@@ -30,11 +30,7 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
     }, []);
 
     const isEdit = !!id;
-    const isLoading =
-        store.missionRequest.fetchList.isLoading ||
-        store.missionRequest.remove.isLoading ||
-        store.missionRequest.create.isLoading ||
-        missionRequest?.update.isLoading;
+    const isLoading = store.missionRequest.fetchList.isLoading || store.missionRequest.remove.isLoading;
 
     const onFinishCreate = async (values: IMissionRequestForm) => {
         await store.missionRequest.create.run(values);
@@ -92,7 +88,12 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                     <Form.Item label="Дата підписання" name="signedAt" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <DatePicker />
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        loading={store.missionRequest.create.isLoading || missionRequest?.update.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>
