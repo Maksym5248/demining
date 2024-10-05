@@ -1,7 +1,6 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
-import { GoogleMap, Marker, Circle, Polygon, Polyline } from '@react-google-maps/api';
-import { InputNumber } from 'antd';
+import { GoogleMap } from '@react-google-maps/api';
 import { DrawingType, mathUtils, useValues } from 'shared-my-client';
 import { mapUtils, type ICircle, type ILine, type IMarker, type IPoint, type IPolygon, useVisibleMap } from 'shared-my-client';
 
@@ -9,6 +8,8 @@ import { MAP_ZOOM } from '~/constants';
 import { withMapProvider } from '~/hoc';
 import { useMapOptions } from '~/hooks';
 
+import { MapDrawing } from './map-drawing';
+import { MapItems } from './map-items';
 import { s } from './map-view.style';
 import { type IMapViewProps } from './map.types';
 import { useCircle } from './useCircle';
@@ -17,29 +18,14 @@ import { usePolygon } from './usePolygon';
 import { Autocomplete } from '../map-autocomplete';
 import { DrawingManager } from '../map-drawing-manager';
 import { MapInfo } from '../map-info';
+import { type IMapItem, MapItem } from '../map-item';
 import { MapZoomView } from '../map-zoom-view';
 
-const circlesOptions = {
-    fillOpacity: 0.3,
-    fillColor: '#FFFF00',
-    strokeColor: '#FFFF00',
-    strokeWeight: 2,
-    draggable: false,
-    editable: false,
-    clickable: false,
-};
+function defaultRenderMapItem<T extends IMapItem>(item: T) {
+    return <MapItem key={item.id} item={item} />;
+}
 
-const polygonsOptions = {
-    fillOpacity: 0.3,
-    fillColor: '#FFFF00',
-    strokeColor: '#FFFF00',
-    strokeWeight: 2,
-    draggable: false,
-    editable: false,
-    clickable: false,
-};
-
-function Component({
+function Component<T extends IMapItem>({
     initialMarker,
     initialCircle,
     initialPolygon,
@@ -47,22 +33,21 @@ function Component({
     initialLine,
     onChange,
     position,
-    circles,
-    polygons,
-    lines,
+    items,
     onChangeGeobox,
     onChangeEditing,
     isLoadingVisibleInArea,
     minZoomLoadArea = 16,
     initialIsActiveStick = false,
     initialIsVisibleInArea = false,
+    renderMapItem = defaultRenderMapItem,
+    isVisibleDrawing = true,
     ...rest
-}: IMapViewProps) {
+}: IMapViewProps<T>) {
     const [drawing, setDrawing] = useState(DrawingType.MOVE);
     const [isCreating, setCreating] = useState(false);
 
-    const { mapOptions, polygonOptions, circleOptions, createPolygonOptions, toggleMapType, lineOptions, linePolygonOptions } =
-        useMapOptions({ isPictureType: false, isCreating, drawing });
+    const { mapOptions, toggleMapType } = useMapOptions({ isPictureType: false, isCreating, drawing });
 
     const mapRef = useRef<google.maps.Map>();
 
@@ -88,6 +73,8 @@ function Component({
 
     const area = mapUtils.getArea(circle, polygon, line);
 
+    const polygons: IPolygon[] = useMemo(() => items?.map(el => el.data.polygon).filter(el => !!el) ?? [], [items]) as IPolygon[];
+
     const _onChange = () => {
         onChange?.({
             marker: marker
@@ -99,7 +86,7 @@ function Component({
             line:
                 !!line && (line?.points?.length ?? 0) >= 2
                     ? {
-                          points: line.points.map((el) => ({
+                          points: line.points.map(el => ({
                               lat: mathUtils.toFixed(el.lat, 9),
                               lng: mathUtils.toFixed(el.lng, 9),
                           })),
@@ -108,7 +95,7 @@ function Component({
                     : undefined,
             polygon: polygon
                 ? {
-                      points: polygon.points.map((el) => ({
+                      points: polygon.points.map(el => ({
                           lat: mathUtils.toFixed(el.lat, 9),
                           lng: mathUtils.toFixed(el.lng, 9),
                       })),
@@ -156,28 +143,26 @@ function Component({
 
     const lineManager = useLine({
         isCreating,
-        setCreating,
         drawing,
         line,
+        isActiveStick,
+        setCreating,
         setPolygon,
         setCircle,
         setLine,
-        polygons,
-        isActiveStick,
-        mapRef,
     });
 
     const polygonManager = usePolygon({
         isCreating,
-        setCreating,
         drawing,
         polygon,
-        setPolygon,
-        setCircle,
-        setLine,
         polygons,
         isActiveStick,
         mapRef,
+        setCreating,
+        setPolygon,
+        setCircle,
+        setLine,
     });
 
     const circleManager = useCircle({
@@ -301,89 +286,38 @@ function Component({
                 onMouseMove={onMouseMove}
                 onBoundsChanged={_onChangeGeobox}
                 {...rest}>
-                <DrawingManager
-                    mapTypeId={mapOptions.mapTypeId}
-                    onToggleMapType={toggleMapType}
-                    canVisibleInArea={zoom > minZoomLoadArea}
-                    onChange={onChangeDrawing}
-                    value={drawing}
-                    onClear={onClear}
-                    isActiveStick={isActiveStick}
-                    isVisibleInArea={isVisibleInArea}
-                    onChangeVisibleInArea={onChangeVisibleInArea}
-                    onChangeStick={setActiveStick}
-                    isDisabledClean={!isEditing}
-                    isLoadingVisibleInArea={isLoadingVisibleInArea}
-                />
-                {isVisibleMarker && <Marker position={marker} />}
-                {circleManager.isVisibleCircle && (
-                    <Circle
-                        onLoad={circleManager.onLoadCircle}
-                        options={circleOptions}
-                        radius={circle?.radius ?? 0}
-                        center={circle?.center ?? { lat: 0, lng: 0 }}
-                        onRadiusChanged={circleManager.onRadiusChanged}
-                        onDragEnd={circleManager.onDragCircleEnd}
+                {!!isVisibleDrawing && (
+                    <DrawingManager
+                        mapTypeId={mapOptions.mapTypeId}
+                        onToggleMapType={toggleMapType}
+                        canVisibleInArea={zoom > minZoomLoadArea}
+                        onChange={onChangeDrawing}
+                        value={drawing}
+                        onClear={onClear}
+                        isActiveStick={isActiveStick}
+                        isVisibleInArea={isVisibleInArea}
+                        onChangeVisibleInArea={onChangeVisibleInArea}
+                        onChangeStick={setActiveStick}
+                        isDisabledClean={!isEditing}
+                        isLoadingVisibleInArea={isLoadingVisibleInArea}
                     />
                 )}
-                {polygonManager.isVisiblePolygon && (
-                    <Polygon
-                        onLoad={polygonManager.onLoadPolygon}
-                        options={polygonOptions}
-                        path={polygon?.points}
-                        onDragEnd={polygonManager.onDragEndPolygon}
-                        onMouseUp={polygonManager.onMouseUpPolygon}
+
+                <MapItems isVisibleInArea={isVisibleInArea} items={items} renderMapItem={renderMapItem} />
+                {!!isVisibleDrawing && (
+                    <MapDrawing
+                        marker={marker}
+                        circle={circle}
+                        line={line}
+                        polygon={polygon}
+                        isCreating={isCreating}
+                        drawing={drawing}
+                        circleManager={circleManager}
+                        lineManager={lineManager}
+                        polygonManager={polygonManager}
                     />
                 )}
-                {isVisibleInArea &&
-                    !!circles?.length &&
-                    circles.map((item, index) => (
-                        <Circle
-                            key={index}
-                            options={circlesOptions}
-                            radius={item?.radius ?? 0}
-                            center={item?.center ?? { lat: 0, lng: 0 }}
-                        />
-                    ))}
-                {isVisibleInArea &&
-                    !!polygons?.length &&
-                    polygons.map((item, index) => <Polygon key={index} options={polygonsOptions} path={item?.points} />)}
-                {isVisibleInArea &&
-                    !!lines?.length &&
-                    lines.map((item, index) => <Polygon key={index} options={polygonsOptions} path={item?.points} />)}
-                {polygonManager.isVisiblePolyline && (
-                    <Polyline
-                        onLoad={polygonManager.onLoadPolyline}
-                        path={polygon?.points}
-                        options={createPolygonOptions}
-                        onDragEnd={polygonManager.onDragEndPolyline}
-                        onMouseUp={polygonManager.onMouseUpPolyline}
-                    />
-                )}
-                {lineManager.isVisiblePolyline && (
-                    <Polyline
-                        onLoad={lineManager.onLoadPolyline}
-                        path={line?.points}
-                        options={lineOptions}
-                        onDragEnd={lineManager.onDragEndPolyline}
-                        onMouseUp={lineManager.onMouseUpPolyline}
-                    />
-                )}
-                {lineManager.isVisiblePolygon && !!line && (
-                    <Polygon options={linePolygonOptions} path={mapUtils.generatePolygonFromLines(line)?.points} />
-                )}
-                {lineManager.isVisiblePolylineInput && (
-                    <div css={s.inputNumberContainer}>
-                        <InputNumber
-                            addonBefore="Ширина"
-                            addonAfter="м"
-                            value={line?.width}
-                            onChange={lineManager.onChangeLineWidth}
-                            css={s.inputNumber}
-                            disabled={false}
-                        />
-                    </div>
-                )}
+
                 <Autocomplete onPlaceChanged={onPlaceChanged} />
                 <MapZoomView zoom={zoom} onChange={onChangeZoomView} />
                 <MapInfo
@@ -396,4 +330,4 @@ function Component({
     );
 }
 
-export const MapView = memo(withMapProvider(Component));
+export const MapView = memo(withMapProvider(Component)) as <T extends IMapItem>(props: IMapViewProps<T>) => JSX.Element;

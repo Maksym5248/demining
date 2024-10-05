@@ -48,7 +48,7 @@ export class MapStore implements IMapStore {
     }
 
     addLoadedGeohash(geohash: IGeohashRange) {
-        if (!this.loadedGeohashes.some((range) => range.start === geohash.start && range.end === geohash.end)) {
+        if (!this.loadedGeohashes.some(range => range.start === geohash.start && range.end === geohash.end)) {
             this.loadedGeohashes.push(geohash);
         }
     }
@@ -81,7 +81,7 @@ export class MapStore implements IMapStore {
             const res = await this.api.map.getByGeohashRanges(adjustedRanges);
 
             this.list.push(res.map(createMapView));
-            adjustedRanges.forEach((range) => this.addLoadedGeohash(range));
+            adjustedRanges.forEach(range => this.addLoadedGeohash(range));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

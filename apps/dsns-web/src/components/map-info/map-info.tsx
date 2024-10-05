@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Divider, Typography, message } from 'antd';
 import { mathUtils } from 'shared-my-client';
 import { type IPoint } from 'shared-my-client';
@@ -10,7 +12,7 @@ interface IMapInfoProps {
     distance?: number;
 }
 
-export function MapInfo({ point, area, distance }: IMapInfoProps) {
+function Component({ point, area, distance }: IMapInfoProps) {
     const onCopyCoords = () => {
         const text = `${point?.lat},${point?.lng}`;
         navigator.clipboard.writeText(text);
@@ -47,3 +49,5 @@ export function MapInfo({ point, area, distance }: IMapInfoProps) {
         </div>
     );
 }
+
+export const MapInfo = memo(Component);

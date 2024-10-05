@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { DrawingType } from 'shared-my-client';
 
@@ -12,6 +12,10 @@ export const useMapOptions = ({
     drawing?: DrawingType;
 }) => {
     const [mapTypeId, setMapTypeId] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.SATELLITE);
+
+    const toggleMapType = useCallback(() => {
+        setMapTypeId(prev => (prev === google.maps.MapTypeId.HYBRID ? google.maps.MapTypeId.SATELLITE : google.maps.MapTypeId.HYBRID));
+    }, []);
 
     const mapOptions = {
         streetViewControl: false,
@@ -92,19 +96,15 @@ export const useMapOptions = ({
         editable: true,
     };
 
-    const toggleMapType = () => {
-        setMapTypeId((prev) => (prev === google.maps.MapTypeId.HYBRID ? google.maps.MapTypeId.SATELLITE : google.maps.MapTypeId.HYBRID));
-    };
-
     return {
         mapOptions,
-        polygonOptions,
         circleOptions,
-        lineOptions,
-        polylineOptions,
-        createPolygonOptions,
+        polygonOptions,
         gridOptions,
-        toggleMapType,
+        polylineOptions,
+        lineOptions,
         linePolygonOptions,
+        createPolygonOptions,
+        toggleMapType,
     };
 };

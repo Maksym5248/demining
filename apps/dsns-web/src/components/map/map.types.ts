@@ -1,5 +1,10 @@
 import { type GoogleMapProps } from '@react-google-maps/api';
-import { type ICircle, type IGeoBox, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
+import { type DrawingType, type ICircle, type IGeoBox, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
+
+import { type IUseCircleReturn } from './useCircle';
+import { type IUseLineReturn } from './useLine';
+import { type IUsePolygonReturn } from './usePolygon';
+import { type IMapItem } from '../map-item';
 
 export interface IOnChangeMapView {
     line?: ILine;
@@ -10,21 +15,39 @@ export interface IOnChangeMapView {
     area?: number; // m2
 }
 
-export interface IMapViewProps extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
+export interface IMapDrawingProps {
+    marker: IPoint | undefined;
+    circle: ICircle | undefined;
+    line: ILine | undefined;
+    polygon: IPolygon | undefined;
+    drawing: DrawingType;
+    isCreating: boolean;
+    circleManager: IUseCircleReturn;
+    lineManager: IUseLineReturn;
+    polygonManager: IUsePolygonReturn;
+}
+
+export interface IMapFiguresProps<T extends IMapItem> {
+    isVisibleInArea: boolean;
+    items?: T[];
+    renderMapItem?: (item: T) => React.ReactNode | undefined;
+}
+
+export interface IMapViewProps<T extends IMapItem> extends Pick<GoogleMapProps, 'children' | 'mapContainerStyle'> {
     initialMarker?: IPoint;
     initialCircle?: ICircle;
     initialLine?: ILine;
     initialPolygon?: IPolygon;
     initialZoom?: number;
-    onChange: (value: IOnChangeMapView) => void;
     position?: IPoint;
-    polygons?: IPolygon[];
-    lines?: ILine[];
-    circles?: ICircle[];
+    items?: T[];
     isLoadingVisibleInArea?: boolean;
-    onChangeGeobox?: (value: { box: IGeoBox; zoom: number }) => void;
-    onChangeEditing?: (value: boolean) => void;
     minZoomLoadArea?: number;
     initialIsActiveStick?: boolean;
     initialIsVisibleInArea?: boolean;
+    onChange: (value: IOnChangeMapView) => void;
+    onChangeGeobox?: (value: { box: IGeoBox; zoom: number }) => void;
+    onChangeEditing?: (value: boolean) => void;
+    renderMapItem?: (item: T) => React.ReactNode | undefined;
+    isVisibleDrawing?: boolean;
 }
