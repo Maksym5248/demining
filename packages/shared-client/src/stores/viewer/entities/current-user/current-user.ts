@@ -8,6 +8,7 @@ export interface ICurrentUser {
     isRootAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;
+    isAuthor: boolean;
     isAuthorizedDSNS: boolean;
     isAuthorizedAmmo: boolean;
     isWaitingApproved: boolean;
@@ -28,9 +29,13 @@ export class CurrentUser implements ICurrentUser {
     get isOrganizationAdmin() {
         return this.data.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.data.organization;
     }
+    get isAuthor() {
+        return this.data.roles.includes(ROLES.AUTHOR);
+    }
     get isOrganizationMember() {
         return !!this.data.organization;
     }
+
     get isAuthorizedDSNS() {
         return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember;
     }

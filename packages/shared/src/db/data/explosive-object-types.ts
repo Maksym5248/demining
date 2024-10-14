@@ -1,4 +1,4 @@
-import { EXPLOSIVE_OBJECT_TYPE } from '../enum';
+import { EXPLOSIVE_OBJECT_TYPE, METHRIC } from '../enum';
 import { type IExplosiveObjectTypeDB } from '../types';
 
 export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
@@ -6,29 +6,36 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
         id: EXPLOSIVE_OBJECT_TYPE.AVIATION_BOMBS,
         name: 'АБ',
         fullName: 'Авіаційна бомба',
+        hasCaliber: true,
+        metricCaliber: METHRIC.KG,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.UAM,
         name: 'НУРС',
         fullName: 'Некерована авіаційна ракета',
+        hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.ARTELERY_SHELL,
         name: 'АС',
         fullName: 'Артилерійський снаряд',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.MLRS,
         name: 'РС',
         fullName: 'Реактивний снаряд',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.MORTAL_MINES,
         name: 'ММ',
         fullName: 'Мінометна Міна',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.RG,
@@ -47,24 +54,28 @@ export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
         name: 'Набої',
         fullName: 'Боєприпас стрілецької зброї',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.AGL,
         name: 'АГС',
         fullName: 'Набої до автоматичного гранатомету',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.ATGM,
         name: 'ПТУР',
         fullName: 'Протитанковий керований реактивний снаряд',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.ZRK,
         name: 'ЗРК',
         fullName: 'Зенітний ракетний снаряд',
         hasCaliber: true,
+        metricCaliber: METHRIC.MM,
     },
     {
         id: EXPLOSIVE_OBJECT_TYPE.ROCKET,

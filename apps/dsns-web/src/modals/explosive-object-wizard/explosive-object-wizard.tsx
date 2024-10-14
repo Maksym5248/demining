@@ -28,7 +28,7 @@ const getParams = ({ caliber, ...values }: IExplosiveObjectForm) => ({
 });
 
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-    const { explosiveObject } = useStore();
+    const { explosiveObject, viewer } = useStore();
     const wizard = useWizard({ id, mode });
 
     const currentExplosiveObject = explosiveObject.collection.get(id as string);
@@ -56,6 +56,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
         !!id && explosiveObject.fetchItem.run(id);
     }, [id]);
 
+    const isEditable = !!viewer.user?.isAuthor || !!currentExplosiveObject?.isCurrentOrganization;
+
     return (
         <Drawer
             open={isVisible}
@@ -64,7 +66,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
             placement="right"
             width={500}
             onClose={hide}
-            extra={<WizardButtons {...wizard} />}>
+            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (
@@ -103,7 +105,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }}
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
@@ -144,9 +146,11 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             return <Classification typeId={typeId} component={component} setFieldValue={setFieldValue} />;
                         }}
                     </Form.Item>
-                    <Form.Item label="Статус" name="status" rules={[{ message: "Обов'язкове поле" }]}>
-                        <Select options={explosiveObjectStatuses} />
-                    </Form.Item>
+                    {viewer.user?.isAuthor && (
+                        <Form.Item label="Статус" name="status">
+                            <Select options={explosiveObjectStatuses} />
+                        </Form.Item>
+                    )}
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => {
                             const typeId = getFieldValue('typeId');

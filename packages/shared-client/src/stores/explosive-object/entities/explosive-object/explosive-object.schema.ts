@@ -18,6 +18,8 @@ export interface IExplosiveObjectData {
     detailsId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
+    organizationId?: string;
+    authorId?: string;
 }
 
 export interface IExplosiveObjectDataParams {
@@ -58,7 +60,7 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
     },
 });
 
-export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>((value) => ({
+export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>(value => ({
     name: value.name ?? null,
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,
@@ -95,4 +97,6 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     status: value.status,
     imageUri: value.imageUri ?? '',
     detailsId: value.id,
+    organizationId: value?.organizationId ?? undefined,
+    authorId: value?.authorId ?? undefined,
 });

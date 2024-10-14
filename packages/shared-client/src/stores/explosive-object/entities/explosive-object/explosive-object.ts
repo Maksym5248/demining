@@ -1,9 +1,11 @@
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_STATUS, METHRIC } from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
 import { type ICollectionModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
+import { type IViewerStore } from '~/stores/viewer';
 
 import {
     type IExplosiveObjectDataParams,
@@ -33,10 +35,15 @@ interface ICollections {
     details: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
 }
 
+interface IStores {
+    viewer: IViewerStore;
+}
+
 interface IExplosiveObjectParams {
     collections: ICollections;
     api: IApi;
     services: IServices;
+    stores: IStores;
 }
 
 export interface IExplosiveObject {
@@ -49,20 +56,24 @@ export interface IExplosiveObject {
     countries?: ICountry[];
     details?: IExplosiveObjectDetails;
     class?: IExplosiveObjectClass[];
+    isConfirmed: boolean;
+    isCurrentOrganization: boolean;
 }
 
 export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
     collections: ICollections;
+    stores: IStores;
     data: IExplosiveObjectData;
 
-    constructor(data: IExplosiveObjectData, { collections, api, services }: IExplosiveObjectParams) {
+    constructor(data: IExplosiveObjectData, { collections, api, services, stores }: IExplosiveObjectParams) {
         this.data = data;
 
         this.collections = collections;
         this.api = api;
         this.services = services;
+        this.stores = stores;
 
         makeAutoObservable(this);
     }
@@ -84,11 +95,19 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get displayName() {
-        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? `${this.details.data.caliber}мм` : ''}`;
+        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? `${this.details.data.caliber}${this.type?.data.metricCaliber === METHRIC.MM ? 'мм' : ''}` : ''}`;
     }
 
     get fullDisplayName() {
         return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
+    }
+
+    get isConfirmed() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
+    }
+
+    get isCurrentOrganization() {
+        return this.data.organizationId === this.stores.viewer.user?.data.organization?.id;
     }
 
     update = new RequestModel({
