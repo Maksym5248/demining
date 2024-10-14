@@ -26,7 +26,7 @@ import {
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
-import { removeFields } from 'shared-my';
+import { path, removeFields } from 'shared-my';
 import { type IBaseDB } from 'shared-my';
 import { type IWhere, type IQuery, type IQueryOrder, type IDBBase, type ICreateData } from 'shared-my-client';
 
@@ -34,7 +34,7 @@ function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];
     const arr = value.toLowerCase().split(/\s+/);
 
-    arr.forEach((v) => {
+    arr.forEach(v => {
         for (let i = 1; i <= v.length; i += 1) {
             prefixes.push(v.substring(0, i));
         }
@@ -46,7 +46,7 @@ function generateValueStartsWith(value: string): string[] {
 const getWhere = (values: IWhere) => {
     const res: QueryFieldFilterConstraint[] = [];
 
-    Object.keys(values).forEach((key) => {
+    Object.keys(values).forEach(key => {
         const value = values[key];
 
         if (value?.in && isArray(value.in)) {
@@ -144,7 +144,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
 
         const snapshot = await getDocs(q);
 
-        const data = snapshot.docs.map((d) => {
+        const data = snapshot.docs.map(d => {
             const newData = d.data();
             removeFields(newData, '_search');
             return newData;
@@ -188,15 +188,15 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     private createSearchField(value: Partial<T>) {
         const _search: string[] = [];
 
-        this.searchFields.forEach((field) => {
-            const arr = generateValueStartsWith(String(value[field] ?? ''));
+        this.searchFields.forEach(field => {
+            const arr = generateValueStartsWith(String(path(value, field as string) ?? ''));
             _search.push(...arr);
         });
 
         if (this.getSearchData) {
             const values = this.getSearchData(value);
 
-            values.forEach((v) => {
+            values.forEach(v => {
                 const arr = generateValueStartsWith(v);
                 _search.push(...arr);
             });
@@ -324,7 +324,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         const querySnapshot = await getDocs(q);
         const deletePromises: Promise<any>[] = [];
 
-        querySnapshot.forEach((d) => {
+        querySnapshot.forEach(d => {
             deletePromises.push(deleteDoc(d.ref));
         });
 

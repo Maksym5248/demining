@@ -51,6 +51,8 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         hide();
     };
 
+    const isEditable = !!store.viewer.user?.isAuthor || !!item?.isCurrentOrganization;
+
     return (
         <Drawer
             open={isVisible}
@@ -59,7 +61,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
             placement="right"
             width={500}
             onClose={hide}
-            extra={<WizardButtons {...wizard} />}>
+            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (

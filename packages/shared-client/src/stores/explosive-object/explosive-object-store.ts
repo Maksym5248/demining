@@ -41,6 +41,7 @@ import {
     type IExplosiveObjectDetails,
 } from './entities';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
+import { type IViewerStore } from '../viewer';
 
 interface IApi {
     explosiveObject: IExplosiveObjectAPI;
@@ -48,6 +49,10 @@ interface IApi {
 
 interface IServices {
     message: IMessage;
+}
+
+interface IStores {
+    viewer: IViewerStore;
 }
 
 export interface IExplosiveObjectStore {
@@ -78,6 +83,7 @@ export interface IExplosiveObjectStore {
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
+    stores: IStores;
 
     collectionTypes = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
@@ -119,9 +125,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     classifications: IClassifications;
 
-    constructor(params: { api: IApi; services: IServices }) {
+    constructor(params: { api: IApi; services: IServices; stores: IStores }) {
         this.api = params.api;
         this.services = params.services;
+        this.stores = params.stores;
+
         this.classifications = new Classifications(this);
 
         makeAutoObservable(this);
@@ -191,7 +199,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
             this.collectionDetails.setArr(
                 res
-                    .map((el) => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
+                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
                     .filter(Boolean) as IExplosiveObjectDetailsData[],
             );
 
@@ -210,7 +218,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
             this.collectionDetails.setArr(
                 res
-                    .map((el) => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
+                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
                     .filter(Boolean) as IExplosiveObjectDetailsData[],
             );
 

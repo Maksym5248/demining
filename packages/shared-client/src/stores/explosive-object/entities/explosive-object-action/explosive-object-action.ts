@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import { type IExplosiveObjectAPI } from '~/api';
 import { type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
+import { type IViewerStore } from '~/stores';
 
 import { type IExplosiveObjectActionData } from './explosive-object-action.schema';
 import {
@@ -36,10 +37,15 @@ interface ICollections {
     details: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
 }
 
+interface IStores {
+    viewer: IViewerStore;
+}
+
 interface IExplosiveObjectActionParams {
     collections: ICollections;
     api: IApi;
     services: IServices;
+    stores: IStores;
 }
 
 export interface IExplosiveObjectAction {
@@ -53,13 +59,15 @@ export class ExplosiveObjectAction implements IExplosiveObjectAction {
     api: IApi;
     collections: ICollections;
     services: IServices;
+    stores: IStores;
     data: IExplosiveObjectActionData;
 
-    constructor(value: IExplosiveObjectActionData, { collections, api, services }: IExplosiveObjectActionParams) {
+    constructor(value: IExplosiveObjectActionData, { collections, api, services, stores }: IExplosiveObjectActionParams) {
         this.data = value;
         this.collections = collections;
         this.api = api;
         this.services = services;
+        this.stores = stores;
 
         makeAutoObservable(this);
     }

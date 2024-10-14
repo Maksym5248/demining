@@ -3,6 +3,7 @@ import {
     type EXPLOSIVE_OBJECT_STATUS,
     type EXPLOSIVE_OBJECT_COMPONENT,
     type EXPLOSIVE_OBJECT_CLASS,
+    type METHRIC,
 } from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
@@ -40,6 +41,7 @@ export interface IExplosiveObjectTypeDB {
     name: string;
     fullName: string;
     hasCaliber?: boolean;
+    metricCaliber?: METHRIC;
 }
 
 export interface ICountryDB {

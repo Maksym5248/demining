@@ -48,3 +48,8 @@ export enum MATERIAL {
     METAL = 'METAL',
     PLASTIC = 'PLASTIC',
 }
+
+export enum METHRIC {
+    MM = 'mm',
+    KG = 'kg',
+}

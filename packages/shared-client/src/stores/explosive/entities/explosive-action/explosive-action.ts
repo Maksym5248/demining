@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveAPI } from '~/api';
 import { type IMessage } from '~/services';
+import { type IViewerStore } from '~/stores';
 
 import { type IExplosiveActionData } from './explosive-action.schema';
 import { Explosive } from '../explosive';
@@ -19,15 +20,22 @@ interface IApi {
 interface IServices {
     message: IMessage;
 }
+interface IStores {
+    viewer: IViewerStore;
+}
+
 export class ExplosiveAction implements IExplosiveAction {
     api: IApi;
     services: IServices;
+    stores: IStores;
+
     data: IExplosiveActionData;
 
-    constructor(data: IExplosiveActionData, params: { api: IApi; services: IServices }) {
+    constructor(data: IExplosiveActionData, params: { api: IApi; services: IServices; stores: IStores }) {
         this.data = data;
         this.api = params.api;
         this.services = params.services;
+        this.stores = params.stores;
 
         makeAutoObservable(this);
     }

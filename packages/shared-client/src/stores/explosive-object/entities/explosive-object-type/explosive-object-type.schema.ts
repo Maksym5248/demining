@@ -1,3 +1,5 @@
+import { type METHRIC } from 'shared-my';
+
 import { type IExplosiveObjectTypeDTO } from '~/api';
 
 export interface IExplosiveObjectTypeData {
@@ -5,6 +7,7 @@ export interface IExplosiveObjectTypeData {
     name: string;
     fullName: string;
     hasCaliber?: boolean;
+    metricCaliber?: METHRIC;
 }
 
 export const createExplosiveObjectType = (value: IExplosiveObjectTypeDTO): IExplosiveObjectTypeData => ({
@@ -12,4 +15,5 @@ export const createExplosiveObjectType = (value: IExplosiveObjectTypeDTO): IExpl
     name: value.name,
     fullName: value.fullName,
     hasCaliber: !!value.hasCaliber,
+    metricCaliber: value?.metricCaliber,
 });

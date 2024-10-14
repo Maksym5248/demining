@@ -9,10 +9,11 @@ interface DrawerExtraProps extends React.PropsWithChildren {
     isView?: boolean;
     isEdit?: boolean;
     isSave?: boolean;
+    isEditable?: boolean;
     menu?: MenuProps['items'];
 }
 
-export function WizardButtons({ onEdit, onView, onSave, isView, isEdit, isSave, children, menu }: DrawerExtraProps) {
+export function WizardButtons({ onEdit, onView, onSave, isView, isEdit, isSave, isEditable = true, children, menu }: DrawerExtraProps) {
     const items: MenuProps['items'] = [];
 
     if (onSave && isSave) {
@@ -36,7 +37,7 @@ export function WizardButtons({ onEdit, onView, onSave, isView, isEdit, isSave, 
                     <Button icon={<Icon.EyeOutlined />} onClick={onView} />
                 </Tooltip>
             )}
-            {!!onEdit && isView && (
+            {!!onEdit && isView && !!isEditable && (
                 <Tooltip placement="bottomRight" title="Редагувати" arrow>
                     <Button icon={<Icon.EditOutlined />} onClick={onEdit} />
                 </Tooltip>

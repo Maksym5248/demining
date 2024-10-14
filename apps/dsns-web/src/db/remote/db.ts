@@ -54,7 +54,12 @@ export class DBRemote implements IDB {
 
     organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ['name'], getCreateData);
 
-    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
+    explosiveObject = new DBBase<IExplosiveObjectDB>(
+        TABLES.EXPLOSIVE_OBJECT,
+        ['name', 'details.caliber' as keyof IExplosiveObjectDB],
+        getCreateData,
+        undefined,
+    );
 
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 

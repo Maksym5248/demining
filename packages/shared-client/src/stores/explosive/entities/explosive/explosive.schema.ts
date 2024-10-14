@@ -11,6 +11,8 @@ export interface IExplosiveData {
     name: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
+    organizationId?: string;
+    authorId?: string;
 }
 
 export const createExplosiveDTO = (value: ICreateValue<IExplosiveData>): ICreateValue<IExplosiveDTO> => ({
@@ -18,7 +20,7 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveData>): ICreate
     name: value.name,
 });
 
-export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveData, IExplosiveDTO>((value) => ({
+export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveData, IExplosiveDTO>(value => ({
     type: value?.type ?? EXPLOSIVE_TYPE.EXPLOSIVE,
     name: value?.name ?? '',
 }));
@@ -27,6 +29,8 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
     id: value.id,
     type: value.type,
     name: value?.name ?? '',
+    organizationId: value?.organizationId ?? undefined,
+    authorId: value?.authorId ?? undefined,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });

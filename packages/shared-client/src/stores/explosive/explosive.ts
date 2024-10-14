@@ -20,6 +20,7 @@ import {
     createExplosiveActionSum,
 } from './entities';
 import { SumExplosiveActions } from './sum-explosive-actions';
+import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveStore {
     collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionData>;
@@ -41,6 +42,10 @@ interface IApi {
     explosive: IExplosiveAPI;
 }
 
+interface IStores {
+    viewer: IViewerStore;
+}
+
 interface IServices {
     message: IMessage;
 }
@@ -48,6 +53,7 @@ interface IServices {
 export class ExplosiveStore implements IExplosiveStore {
     api: IApi;
     services: IServices;
+    stores: IStores;
 
     collectionActions = new CollectionModel<IExplosiveAction, IExplosiveActionData>({
         factory: (data: IExplosiveActionData) => new ExplosiveAction(data, this),
@@ -58,9 +64,10 @@ export class ExplosiveStore implements IExplosiveStore {
     list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
     sum: SumExplosiveActions = new SumExplosiveActions();
 
-    constructor(params: { api: IApi; services: IServices }) {
+    constructor(params: { api: IApi; services: IServices; stores: IStores }) {
         this.api = params.api;
         this.services = params.services;
+        this.stores = params.stores;
 
         makeAutoObservable(this);
     }
@@ -70,11 +77,11 @@ export class ExplosiveStore implements IExplosiveStore {
     }
 
     get explosiveItems() {
-        return this.list.asArray.filter((el) => el.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
+        return this.list.asArray.filter(el => el.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
     }
 
     get detonatorItems() {
-        return this.list.asArray.filter((el) => el.data.type === EXPLOSIVE_TYPE.DETONATOR);
+        return this.list.asArray.filter(el => el.data.type === EXPLOSIVE_TYPE.DETONATOR);
     }
 
     create = new RequestModel({
