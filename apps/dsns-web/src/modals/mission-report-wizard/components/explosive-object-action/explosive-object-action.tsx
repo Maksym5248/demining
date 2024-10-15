@@ -24,7 +24,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
     return (
         <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
             <List.Item.Meta
-                title={`${explosiveObject?.fullDisplayName}; Категорія: ${item.category}; ${item.quantity} од.`}
+                title={`${explosiveObject?.signName}; Категорія: ${item.category}; ${item.quantity} од.`}
                 description={`Виявлено ${getIcon(item.isDiscovered)}; Транспортовано ${getIcon(item.isTransported)}; Знищено ${getIcon(item.isDestroyed)}: `}
             />
         </List.Item>

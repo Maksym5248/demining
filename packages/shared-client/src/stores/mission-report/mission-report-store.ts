@@ -22,7 +22,12 @@ import {
 import { type IEmployeeStore, createEmployeeAction } from '../employee';
 import { type IEquipmentStore, createEquipmentAction } from '../equipment';
 import { type IExplosiveStore, createExplosiveAction } from '../explosive';
-import { type IExplosiveObjectStore, createExplosiveObjectAction } from '../explosive-object';
+import {
+    type IExplosiveObjectDetailsData,
+    type IExplosiveObjectStore,
+    createExplosiveObjectAction,
+    createExplosiveObjectDetails,
+} from '../explosive-object';
 import { createMapView, type IMapStore } from '../map';
 import { type ITransportStore, createTransportAction } from '../transport';
 
@@ -99,6 +104,11 @@ export class MissionReportStore implements IMissionReportStore {
         this.stores.employee.collectionActions.set(data.squadLeaderAction?.id, createEmployeeAction(data.squadLeaderAction));
         this.stores.map.collection.set(data.mapView.id, createMapView(data.mapView));
         this.stores.employee.collectionActions.setArr(data.squadActions.map(createEmployeeAction));
+        this.stores.explosiveObject.collectionDetails.setArr(
+            data.explosiveObjectActions
+                .map(el => (el.details ? createExplosiveObjectDetails(el.id, el.details) : null))
+                .filter(Boolean) as IExplosiveObjectDetailsData[],
+        );
         this.stores.explosiveObject.collectionActions.setArr(data.explosiveObjectActions.map(createExplosiveObjectAction));
         this.stores.transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
         this.stores.equipment.collectionActions.setArr(data.equipmentActions.map(createEquipmentAction));

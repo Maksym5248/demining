@@ -36,7 +36,7 @@ export const createExplosiveObjectActionDTO = (value: IExplosiveObjectActionData
 });
 
 export const updateExplosiveObjectActionDTO = data.createUpdateDTO<IExplosiveObjectActionDataParams, IExplosiveObjectActionDTOParams>(
-    (value) => ({
+    value => ({
         explosiveObjectId: value?.explosiveObjectId ?? '',
         quantity: value?.quantity ?? 0,
         category: value?.category ?? EXPLOSIVE_OBJECT_CATEGORY.I,
