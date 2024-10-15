@@ -58,6 +58,7 @@ interface IStores {
 export interface IExplosiveObjectStore {
     collectionTypes: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
+    collectionDetails: CollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
     collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
     collectionCountries: CollectionModel<ICountry, ICountryData>;
     collectionClasses: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;

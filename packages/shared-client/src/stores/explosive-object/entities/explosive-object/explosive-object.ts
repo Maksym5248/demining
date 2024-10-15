@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS, METHRIC } from 'shared-my';
+import { EXPLOSIVE_OBJECT_STATUS, EXPLOSIVE_OBJECT_TYPE } from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -50,7 +50,7 @@ export interface IExplosiveObject {
     id: string;
     data: IExplosiveObjectData;
     displayName: string;
-    fullDisplayName: string;
+    signName: string;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     type?: IExplosiveObjectType;
     countries?: ICountry[];
@@ -95,11 +95,43 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get displayName() {
-        return `${this.data.name ?? ''}${this.data.name && this?.details?.data.caliber ? '  -  ' : ''}${this.details?.data.caliber ? `${this.details.data.caliber}${this.type?.data.metricCaliber === METHRIC.MM ? 'мм' : ''}` : ''}`;
+        if (
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.ARTELERY_SHELL ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.UAM ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.MLRS ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.MORTAL_MINES ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.AMMO
+        ) {
+            return `${this?.data?.name}${this?.data?.name ? ' ' : ''}${this.type?.data.name}-${this.details?.data.caliber}мм`;
+        }
+
+        if (this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.AVIATION_BOMBS) {
+            return `${this?.data.name}-${this.details?.data.caliber}`;
+        }
+
+        return String(this.data.name);
     }
 
-    get fullDisplayName() {
-        return `${this.type?.data.name}${this.displayName ? ' -  ' : ''}${this.displayName}`;
+    get signName() {
+        if (
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.ARTELERY_SHELL ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.UAM ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.MLRS ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.MORTAL_MINES ||
+            this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.AMMO
+        ) {
+            return `${this.type?.data.name}-${this.details?.data.caliber}мм`;
+        }
+
+        if (this.type?.data.id === EXPLOSIVE_OBJECT_TYPE.AVIATION_BOMBS) {
+            return `${this?.data.name}-${this.details?.data.caliber}`;
+        }
+
+        if (EXPLOSIVE_OBJECT_TYPE.RG || EXPLOSIVE_OBJECT_TYPE.ENGINEERING) {
+            return String(this.type?.data.name);
+        }
+
+        return String(this.data.name);
     }
 
     get isConfirmed() {

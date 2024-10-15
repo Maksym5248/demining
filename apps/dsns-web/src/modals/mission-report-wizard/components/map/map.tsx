@@ -74,11 +74,11 @@ export function Map({ isEdit = false }: { isEdit?: boolean }) {
 
                         const explosiveObjects: Record<string, number> = {};
 
-                        explosiveObjectActions.forEach((el) => {
+                        explosiveObjectActions.forEach(el => {
                             const item =
                                 explosiveObject.collectionActions.get(el?.id ?? '')?.explosiveObject ||
                                 explosiveObject.collection.get(el.explosiveObjectId);
-                            const name = item?.fullDisplayName as string;
+                            const name = item?.signName as string;
 
                             if (explosiveObjects[name]) {
                                 explosiveObjects[name] += el.quantity;
@@ -95,7 +95,7 @@ export function Map({ isEdit = false }: { isEdit?: boolean }) {
                                 line={mapView?.line}
                                 initialZoom={mapView?.zoom}
                                 onChange={onChange}
-                                explosiveObjects={Object.keys(explosiveObjects).map((key) => `${key} - ${explosiveObjects[key]}`)}
+                                explosiveObjects={Object.keys(explosiveObjects).map(key => `${key} - ${explosiveObjects[key]}`)}
                                 date={executedAt}
                                 isEdit={isEdit}
                                 onEdit={onEdit}

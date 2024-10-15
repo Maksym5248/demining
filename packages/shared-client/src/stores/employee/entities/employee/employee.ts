@@ -15,6 +15,7 @@ export interface IEmployee {
     rank?: IRank;
     fullName: string;
     signName: string;
+    signName2: string;
     updateFields: (data: Partial<IEmployeeData>) => void;
     update: RequestModel<[IUpdateValue<IEmployeeData>]>;
 }
@@ -68,6 +69,10 @@ export class Employee implements IEmployee {
 
     get signName() {
         return `${str.toUpper(this.data.firstName[0])}.${str.toUpper(this.data.surname[0])}. ${str.toUpperFirst(this.data.lastName)}`;
+    }
+
+    get signName2() {
+        return `${str.toUpperFirst(this.data.firstName)} ${str.toUpper(this.data.lastName)}`;
     }
 
     updateFields(data: Partial<IEmployeeData>) {

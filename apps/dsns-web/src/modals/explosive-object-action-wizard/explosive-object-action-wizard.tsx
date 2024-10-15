@@ -66,8 +66,8 @@ export const ExplosiveObjectActionWizardModal = observer(({ isVisible, hide, onS
                     <SelectAsync
                         {...explosiveObjectProps}
                         onAdd={onAddExplosiveObject}
-                        options={explosiveObjectProps.list.map((el) => ({
-                            label: el?.fullDisplayName,
+                        options={explosiveObjectProps.list.map(el => ({
+                            label: el?.displayName,
                             value: el.data.id,
                         }))}
                     />
