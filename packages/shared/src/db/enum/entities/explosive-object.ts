@@ -16,8 +16,9 @@ export enum EXPLOSIVE_OBJECT_CLASS {
     STABILIZATION = 'STABILIZATION', // за способом стабілізації в польоті
     DELIVERY = 'DELIVERY', // за способом доставки
     CALIBER = 'CALIBER', // за калібром
-
-    // Ракети
+    CALIBER_TO_GUN = 'CALIBER_TO_GUN', // По відношенню калібру снаряда до калібру гармати
+    OUTER_COUNTUR = 'OUTER_COUNTUR', // за зовнішнім контуром або за формою снаряду
+    CHARGING = 'CHARGING', // за способом заряджання
     TRAJECTORY = 'TRAJECTORY', // за траєкторією
     CLASS = 'CLASS', // за класом
     RANGE = 'RANGE', // за дальністю
