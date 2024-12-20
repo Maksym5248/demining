@@ -30,7 +30,7 @@ export const Layout = observer(() => {
         onClick: () => navigate(el.route, params),
     }));
 
-    const { isRootAdmin, isOrganizationAdmin, isOrganizationMember } = store.viewer.user ?? {};
+    const { isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor } = store.viewer.user ?? {};
 
     const onSignOut = async () => {
         await store.auth.signInOut.run();
@@ -129,10 +129,26 @@ export const Layout = observer(() => {
             ...(isOrganizationAdmin
                 ? [
                       {
-                          key: ROUTES.MY_ORGANIZATION,
-                          icon: <Icon.TeamOutlined />,
-                          label: nav.getRouteTitle(ROUTES.MY_ORGANIZATION),
-                          onClick: () => navigate(ROUTES.MY_ORGANIZATION),
+                          key: ROUTES.ORGANIZATIONS_LIST,
+                          icon: <Icon.BankOutlined />,
+                          label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
+                          onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST),
+                      },
+                  ]
+                : []),
+            ...(isAuthor
+                ? [
+                      {
+                          key: ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST,
+                          icon: <Icon.ApartmentOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST),
+                      },
+                      {
+                          key: ROUTES.EXPLOSIVE_OBJECT_LIST,
+                          icon: <Icon.FireOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
                       },
                   ]
                 : []),

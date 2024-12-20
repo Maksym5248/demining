@@ -22,23 +22,26 @@ import {
     MembersListPage,
     TemplatesListPage,
     ExplosiveListPage,
+    ExplosiveObjectTypesPage,
     HomePage,
     MapPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
-import { ViewAuth } from './access/view-auth';
-import { ViewDev } from './access/view-dev';
-import { ViewOrganization } from './access/view-organization';
-import { ViewOrganizationManagment } from './access/view-organization-managment';
-import { ViewOrganizationsManagment } from './access/view-organizations-managment';
-import { ViewSettings } from './access/view-settings';
-import { ViewWaitingApprove } from './access/view-waiting-approve';
+import {
+    ViewAuth,
+    ViewAuthorManagment,
+    ViewDev,
+    ViewExplosiveObjectList,
+    ViewOrganization,
+    ViewOrganizationManagment,
+    ViewOrganizationsManagment,
+    ViewSettings,
+    ViewWaitingApprove,
+} from './access';
 import { InitialRoute } from './initial-route';
 import { Layout } from './layout';
-import { RedirectAuth } from './redirect/redirect-auth';
-import { RedirectHome } from './redirect/redirect-home';
-import { RedirectWaitingApprove } from './redirect/redirect-waiting-approve';
+import { RedirectAuth, RedirectHome, RedirectWaitingApprove } from './redirect';
 
 const router = createBrowserRouter([
     {
@@ -77,10 +80,6 @@ const router = createBrowserRouter([
                                     Component: EmployeesListPage,
                                 },
                                 {
-                                    path: ROUTES.EXPLOSIVE_OBJECT_LIST,
-                                    Component: ExplosiveObjectListPage,
-                                },
-                                {
                                     path: ROUTES.EXPLOSIVE_LIST,
                                     Component: ExplosiveListPage,
                                 },
@@ -98,6 +97,20 @@ const router = createBrowserRouter([
                                 },
                             ],
                             <ViewOrganization />,
+                        ),
+                        nav.withAccess(
+                            {
+                                path: ROUTES.EXPLOSIVE_OBJECT_LIST,
+                                Component: ExplosiveObjectListPage,
+                            },
+                            <ViewExplosiveObjectList />,
+                        ),
+                        nav.withAccess(
+                            {
+                                path: ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST,
+                                Component: ExplosiveObjectTypesPage,
+                            },
+                            <ViewAuthorManagment />,
                         ),
                         nav.withAccess(
                             {

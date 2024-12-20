@@ -4,7 +4,7 @@ import { makeAutoObservable } from 'mobx';
 import { type IExplosiveObjectAPI, type IExplosiveObjectActionSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { CollectionModel, type IListModel, type IRequestModel, type ISearchModel, ListModel, RequestModel, SearchModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { Classifications, type IClassifications } from './classifications';
@@ -63,22 +63,23 @@ export interface IExplosiveObjectStore {
     collectionCountries: CollectionModel<ICountry, ICountryData>;
     collectionClasses: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     collectionClassesItems: CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
-    listTypes: ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
-    list: ListModel<IExplosiveObject, IExplosiveObjectData>;
-    listCountries: ListModel<ICountry, ICountryData>;
-    listClasses: ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
-    listClassesItems: ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    listTypes: IListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    listTypesSearch: ISearchModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    list: IListModel<IExplosiveObject, IExplosiveObjectData>;
+    listCountries: IListModel<ICountry, ICountryData>;
+    listClasses: IListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    listClassesItems: IListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     sum: SumExplosiveObjectActions;
     classifications: IClassifications;
     sortedListTypes: IExplosiveObjectType[];
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
-    create: RequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
-    remove: RequestModel<[string]>;
-    fetchList: RequestModel<[search?: string]>;
-    fetchSum: RequestModel<[Dayjs, Dayjs]>;
-    fetchMoreList: RequestModel<[search?: string]>;
-    fetchItem: RequestModel<[string]>;
-    fetchDeeps: RequestModel;
+    create: IRequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
+    remove: IRequestModel<[string]>;
+    fetchList: IRequestModel<[search?: string]>;
+    fetchSum: IRequestModel<[Dayjs, Dayjs]>;
+    fetchMoreList: IRequestModel<[search?: string]>;
+    fetchItem: IRequestModel<[string]>;
+    fetchDeeps: IRequestModel;
 }
 
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
@@ -115,6 +116,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     listTypes = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
         collection: this.collectionTypes,
     });
+    listTypesSearch = new SearchModel<IExplosiveObjectType, IExplosiveObjectTypeData>(this.listTypes, { fields: ['displayName'] });
     listClasses = new ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
         collection: this.collectionClasses,
     });

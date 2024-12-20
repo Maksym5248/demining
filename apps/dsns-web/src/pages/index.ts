@@ -1,3 +1,4 @@
+export * from './explosive-object-types-list';
 export * from './dev';
 export * from './statistics';
 export * from './employees-list';

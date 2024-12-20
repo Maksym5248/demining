@@ -21,6 +21,9 @@ export enum ROUTES {
     WAITING_APPROVE = '/waiting-approve',
 
     NOT_FOUND = '/not-found',
+
+    CLASSIFICATIONS_LIST = '/classifications-list',
+    EXPLOSIVE_OBJECT_TYPES_LIST = '/explosive-object-types-list',
 }
 
 export const routesInfo = {
@@ -74,6 +77,12 @@ export const routesInfo = {
     },
     [ROUTES.SIGNUP]: {
         title: 'Зареєструватись',
+    },
+    [ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST]: {
+        title: 'Класифікація',
+    },
+    [ROUTES.CLASSIFICATIONS_LIST]: {
+        title: 'Класифікація',
     },
     [ROUTES.WAITING_APPROVE]: {
         title: 'Очікування підтвердження',

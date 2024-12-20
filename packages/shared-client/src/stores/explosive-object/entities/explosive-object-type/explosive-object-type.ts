@@ -5,6 +5,7 @@ import { type IExplosiveObjectTypeData } from './explosive-object-type.schema';
 export interface IExplosiveObjectType {
     data: IExplosiveObjectTypeData;
     displayName: string;
+    id: string;
     updateFields(data: Partial<IExplosiveObjectTypeData>): void;
 }
 
@@ -14,6 +15,10 @@ export class ExplosiveObjectType implements IExplosiveObjectType {
     constructor(data: IExplosiveObjectTypeData) {
         this.data = data;
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     get displayName() {

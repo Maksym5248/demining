@@ -4,14 +4,14 @@ import { Navigate, Outlet, useLocation, useOutletContext } from 'react-router-do
 import { ROUTES } from '~/constants';
 import { useStore } from '~/hooks';
 
-export const ViewAuth = observer(() => {
+export const ViewExplosiveObjectList = observer(() => {
     const store = useStore();
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthorizedDSNS } = store.viewer.user ?? {};
+    const { isAuthor, isOrganizationAdmin } = store.viewer.user ?? {};
 
-    if (!isAuthorizedDSNS) {
+    if (!isAuthor && !isOrganizationAdmin) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 
