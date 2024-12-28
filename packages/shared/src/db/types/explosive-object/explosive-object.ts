@@ -20,7 +20,20 @@ export interface IExplosiveObjectDBv1 extends IBaseDB {
     caliber: number | null;
 }
 
-export interface IExplosiveObjectClassDB {
+export interface IExplosiveObjectDBv2 extends IBaseDB {
+    typeId: EXPLOSIVE_OBJECT_TYPE;
+    name: string | null;
+    caliber: number | null;
+    meta: {
+        copy: {
+            group: EXPLOSIVE_OBJECT_TYPE;
+            typeIds: string[];
+            caliber: number | null;
+        };
+    };
+}
+
+export interface IExplosiveObjectClassDB extends IBaseDB {
     id: string;
     class: EXPLOSIVE_OBJECT_CLASS;
     typeId: string;
@@ -28,7 +41,7 @@ export interface IExplosiveObjectClassDB {
     name: string;
 }
 
-export interface IExplosiveObjectClassItemDB {
+export interface IExplosiveObjectClassItemDB extends IBaseDB {
     id: string;
     classId: string;
     parentId: string | null;
@@ -36,7 +49,7 @@ export interface IExplosiveObjectClassItemDB {
     description?: string;
 }
 
-export interface IExplosiveObjectTypeDB {
+export interface IExplosiveObjectTypeDB extends IBaseDB {
     id: string;
     name: string;
     fullName: string;

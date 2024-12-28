@@ -1,7 +1,6 @@
 import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_TYPE, EXPLOSIVE_OBJECT_COMPONENT } from '../../enum';
-import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../../types';
 
-export const engineeringClassData: IExplosiveObjectClassDB[] = [
+export const engineeringClassData = [
     {
         id: 'f3887427-71d6-4965-a87b-80943d186f39',
         class: EXPLOSIVE_OBJECT_CLASS.PURPOSE,
@@ -25,7 +24,7 @@ export const engineeringClassData: IExplosiveObjectClassDB[] = [
     },
 ];
 
-export const engineeringPurposeData: IExplosiveObjectClassItemDB[] = [
+export const engineeringPurposeData = [
     {
         id: '65fe334d-f4fb-496d-a860-efbab90a89cc',
         classId: 'f3887427-71d6-4965-a87b-80943d186f39',
@@ -82,7 +81,7 @@ export const engineeringPurposeData: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const engineeringMethodData: IExplosiveObjectClassItemDB[] = [
+export const engineeringMethodData = [
     {
         id: '122dbdd7-6d17-4982-b5fc-6af5063eda35',
         classId: 'a5168dbd-988a-4318-9cbe-6e300243d979',

@@ -1,0 +1,98 @@
+import { makeAutoObservable } from 'mobx';
+
+import { type IExplosiveObjectClassItemAPI } from '~/api';
+import { type ICreateValue } from '~/common';
+import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { type IMessage } from '~/services';
+
+import {
+    type IExplosiveObjectClassItem,
+    type IExplosiveObjectClassItemData,
+    createExplosiveObjectClassItemDTO,
+    createExplosiveObjectClassItem,
+    ExplosiveObjectClassItem,
+} from './entities';
+
+interface IApi {
+    explosiveObjectClassItem: IExplosiveObjectClassItemAPI;
+}
+
+interface IServices {
+    message: IMessage;
+}
+
+interface ILists {
+    classItem: IListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+}
+
+interface ICollections {
+    classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+}
+
+export interface IExplosiveObjectClassItemStore {
+    collection: CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    list: IListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
+    create: IRequestModel<[ICreateValue<IExplosiveObjectClassItemData>]>;
+    remove: IRequestModel<[string]>;
+    fetchList: IRequestModel;
+    fetchItem: IRequestModel<[string]>;
+}
+
+export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemStore {
+    api: IApi;
+    services: IServices;
+    lists: ILists;
+    collections: ICollections;
+
+    collection = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
+        factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data),
+    });
+
+    list = new ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
+        collection: this.collection,
+    });
+
+    constructor(params: { api: IApi; services: IServices; lists: ILists; collections: ICollections }) {
+        this.api = params.api;
+        this.services = params.services;
+        this.lists = params.lists;
+        this.collections = params.collections;
+
+        makeAutoObservable(this);
+    }
+
+    create = new RequestModel({
+        run: async (data: ICreateValue<IExplosiveObjectClassItemData>) => {
+            const res = await this.api.explosiveObjectClassItem.create(createExplosiveObjectClassItemDTO(data));
+            const value = createExplosiveObjectClassItem(res);
+            this.list.unshift(value);
+        },
+        onSuccuss: () => this.services.message.success('Додано успішно'),
+        onError: () => this.services.message.error('Не вдалось додати'),
+    });
+
+    remove = new RequestModel({
+        run: async (id: string) => {
+            await this.api.explosiveObjectClassItem.remove(id);
+            this.collection.remove(id);
+        },
+        onSuccuss: () => this.services.message.success('Видалено успішно'),
+        onError: () => this.services.message.error('Не вдалось видалити'),
+    });
+
+    fetchList = new RequestModel({
+        run: async () => {
+            const res = await this.api.explosiveObjectClassItem.getList();
+            this.list.set(res.map(createExplosiveObjectClassItem));
+        },
+        onError: () => this.services.message.error('Не вдалось видалити'),
+    });
+
+    fetchItem = new RequestModel({
+        run: async (id: string) => {
+            const res = await this.api.explosiveObjectClassItem.get(id);
+            this.collection.set(res.id, createExplosiveObjectClassItem(res));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+}

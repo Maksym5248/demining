@@ -1,6 +1,7 @@
-import { type EXPLOSIVE_OBJECT_CLASS, type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
+import { EXPLOSIVE_OBJECT_CLASS, EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { type IExplosiveObjectClassDTO } from '~/api';
+import { data, type ICreateValue } from '~/common';
 
 export interface IExplosiveObjectClassData {
     id: string;
@@ -17,3 +18,17 @@ export const createExplosiveObjectClass = (value: IExplosiveObjectClassDTO): IEx
     component: value.component,
     class: value.class,
 });
+
+export const createExplosiveObjectClassDTO = (value: ICreateValue<IExplosiveObjectClassData>): ICreateValue<IExplosiveObjectClassDTO> => ({
+    name: value.name,
+    typeId: value.typeId,
+    component: value.component,
+    class: value.class,
+});
+
+export const updateExplosiveObjectClassDTO = data.createUpdateDTO<IExplosiveObjectClassData, IExplosiveObjectClassDTO>((value) => ({
+    name: value.name ?? '',
+    typeId: value.typeId ?? '',
+    component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+    class: value.class ?? EXPLOSIVE_OBJECT_CLASS.PURPOSE,
+}));

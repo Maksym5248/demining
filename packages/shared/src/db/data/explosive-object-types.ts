@@ -1,7 +1,6 @@
 import { EXPLOSIVE_OBJECT_TYPE, METHRIC } from '../enum';
-import { type IExplosiveObjectTypeDB } from '../types';
 
-export const explosiveObjectTypesData: IExplosiveObjectTypeDB[] = [
+export const explosiveObjectTypesData = [
     {
         id: EXPLOSIVE_OBJECT_TYPE.AVIATION_BOMBS,
         name: 'АБ',

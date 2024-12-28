@@ -1,10 +1,10 @@
 import {
     countries,
-    explosiveObjectClassData,
-    explosiveObjectClassDataItems,
-    explosiveObjectTypesData,
+    type IExplosiveObjectTypeDB,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
+    type IExplosiveObjectClassDB,
+    type IExplosiveObjectClassItemDB,
 } from 'shared-my';
 import { v4 as uuid } from 'uuid';
 
@@ -15,10 +15,8 @@ import {
     type IExplosiveObjectDTO,
     type IExplosiveObjectDTOParams,
     type IExplosiveObjectActionSumDTO,
-    type IExplosiveObjectClassDTO,
     type IExplosiveObjectClassItemDTO,
     type ICountryDTO,
-    type IExplosiveObjectTypeDTO,
 } from '../dto';
 
 export interface IExplosiveObjectAPI {
@@ -26,10 +24,8 @@ export interface IExplosiveObjectAPI {
     update: (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectDTO[]>;
-    getClassesList: () => Promise<IExplosiveObjectClassDTO[]>;
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     getCountriesList: () => Promise<ICountryDTO[]>;
-    getTypesList: () => Promise<IExplosiveObjectTypeDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
@@ -37,6 +33,9 @@ export interface IExplosiveObjectAPI {
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     constructor(
         private db: {
+            explosiveObjectType: IDBBase<IExplosiveObjectTypeDB>;
+            explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
+            explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
             explosiveObject: IDBBase<IExplosiveObjectDB>;
             explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
             batchStart(): void;
@@ -98,19 +97,17 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
 
-    async getClassesList() {
-        return explosiveObjectClassData;
-    }
-
-    async getClassesItemsList() {
-        return explosiveObjectClassDataItems;
+    getClassesItemsList(query?: IQuery) {
+        return this.db.explosiveObjectClassItem.select({
+            order: {
+                by: 'createdAt',
+                type: 'desc',
+            },
+            ...(query ?? {}),
+        });
     }
     async getCountriesList() {
         return countries;
-    }
-
-    async getTypesList() {
-        return explosiveObjectTypesData;
     }
 
     get = async (id: string): Promise<IExplosiveObjectDTO> => {

@@ -40,13 +40,13 @@ export const ExplosiveObjectTypesPage = observer(() => {
     };
 
     useEffect(() => {
-        explosiveObject.listTypesSearch.setSearchBy(search.searchBy);
+        explosiveObject.type.search.setSearchBy(search.searchBy);
     }, [search.searchBy]);
 
     return (
         <List
             isReachedEnd
-            dataSource={explosiveObject.listTypesSearch.asArray}
+            dataSource={explosiveObject.type.search.asArray}
             header={<ListHeader title={title} onCreate={onCreate} onSearch={onSearch} {...search} />}
             renderItem={(item) => <ListItem item={item} />}
         />

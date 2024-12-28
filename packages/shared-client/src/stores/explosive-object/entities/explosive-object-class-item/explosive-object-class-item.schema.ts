@@ -1,4 +1,5 @@
 import { type IExplosiveObjectClassItemDTO } from '~/api';
+import { data, type ICreateValue } from '~/common';
 
 export interface IExplosiveObjectClassItemData {
     id: string;
@@ -13,3 +14,19 @@ export const createExplosiveObjectClassItem = (value: IExplosiveObjectClassItemD
     classId: value.classId,
     parentId: value.parentId,
 });
+
+export const createExplosiveObjectClassItemDTO = (
+    value: ICreateValue<IExplosiveObjectClassItemData>,
+): ICreateValue<IExplosiveObjectClassItemDTO> => ({
+    name: value.name,
+    classId: value.classId,
+    parentId: value.parentId,
+});
+
+export const updateExplosiveObjectClassItemDTO = data.createUpdateDTO<IExplosiveObjectClassItemData, IExplosiveObjectClassItemDTO>(
+    (value) => ({
+        name: value.name ?? '',
+        classId: value.classId ?? '',
+        parentId: value.parentId ?? '',
+    }),
+);

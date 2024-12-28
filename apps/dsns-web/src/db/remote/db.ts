@@ -1,6 +1,9 @@
 import { type WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
-import { TABLES, TABLES_DIR, mapUtils } from 'shared-my';
 import {
+    type IExplosiveObjectTypeDB,
+    TABLES,
+    TABLES_DIR,
+    mapUtils,
     type IDocumentDB,
     type IEmployeeActionDB,
     type IEmployeeDB,
@@ -18,6 +21,8 @@ import {
     type ITransportActionDB,
     type ITransportDB,
     type IUserDB,
+    type IExplosiveObjectClassDB,
+    type IExplosiveObjectClassItemDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -54,12 +59,18 @@ export class DBRemote implements IDB {
 
     organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ['name'], getCreateData);
 
-    explosiveObject = new DBBase<IExplosiveObjectDB>(
-        TABLES.EXPLOSIVE_OBJECT,
-        ['name', 'details.caliber' as keyof IExplosiveObjectDB],
+    explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], getCreateData, undefined);
+
+    explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, ['name'], getCreateData, undefined);
+
+    explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(
+        TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM,
+        ['name'],
         getCreateData,
         undefined,
     );
+
+    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
 
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 

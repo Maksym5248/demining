@@ -35,7 +35,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
 
     const isEdit = !!id;
     const isLoading = explosiveObject.fetchItem.isLoading;
-    const firstType = explosiveObject.listTypes.first;
+    const firstType = explosiveObject.type.list.first;
 
     const onFinishCreate = async (values: IExplosiveObjectForm) => {
         await explosiveObject.create.run(getParams(values));
@@ -111,7 +111,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={select.append(
-                                explosiveObject.sortedListTypes.map(el => ({
+                                explosiveObject.type.sortedListTypes.map((el) => ({
                                     label: el.displayName,
                                     value: el.data.id,
                                 })),
@@ -124,7 +124,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveObjectComponentData.map(el => ({
+                            options={explosiveObjectComponentData.map((el) => ({
                                 label: el.name,
                                 value: el.id,
                             }))}
@@ -132,7 +132,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveObject.listCountries.asArray.map(el => ({
+                            options={explosiveObject.listCountries.asArray.map((el) => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}
@@ -154,7 +154,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => {
                             const typeId = getFieldValue('typeId');
-                            const type = explosiveObject.collectionTypes.get(typeId);
+                            const type = explosiveObject.type.collection.get(typeId);
 
                             return (
                                 !!type?.data.hasCaliber && (

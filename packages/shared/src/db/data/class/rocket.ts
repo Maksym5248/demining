@@ -1,7 +1,6 @@
 import { EXPLOSIVE_OBJECT_TYPE, EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_CLASS } from '../../enum';
-import { type IExplosiveObjectClassItemDB, type IExplosiveObjectClassDB } from '../../types';
 
-export const rocketClassData: IExplosiveObjectClassDB[] = [
+export const rocketClassData = [
     {
         id: 'f3887427-71d6-4965-a87b-809432186f39',
         class: EXPLOSIVE_OBJECT_CLASS.TRAJECTORY,
@@ -53,7 +52,7 @@ export const rocketClassData: IExplosiveObjectClassDB[] = [
     },
 ];
 
-export const rocketTrajectoryData: IExplosiveObjectClassItemDB[] = [
+export const rocketTrajectoryData = [
     {
         id: '10c7690a-e0ca-4f80-8e76-ad4a5aeb5b19',
         classId: 'f3887427-71d6-4965-a87b-809432186f39',
@@ -70,7 +69,7 @@ export const rocketTrajectoryData: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const rocketSpeedCruiseData: IExplosiveObjectClassItemDB[] = [
+export const rocketSpeedCruiseData = [
     {
         id: 'ba75f2b7-1043-422c-9c06-a8d34c9f51dd',
         classId: '2f510177-89bf-457b-a738-17b98212d8b4',
@@ -94,7 +93,7 @@ export const rocketSpeedCruiseData: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const rocketClassDataItems: IExplosiveObjectClassItemDB[] = [
+export const rocketClassDataItems = [
     {
         id: 'fdc97624-ff39-4530-94df-4c817f04adb9',
         classId: '8d8cf76f-cf39-4b42-85a8-0176da849203',
@@ -139,7 +138,7 @@ export const rocketClassDataItems: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const rocketRangeBallisticData: IExplosiveObjectClassItemDB[] = [
+export const rocketRangeBallisticData = [
     {
         id: 'f4b59cba-9f9a-41cd-ba8b-26e2db3d2f7e',
         classId: '394f8943-bbe4-4966-ab71-0fe2b0a33322',
@@ -170,7 +169,7 @@ export const rocketRangeBallisticData: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const rocketEngineData: IExplosiveObjectClassItemDB[] = [
+export const rocketEngineData = [
     {
         id: '8433b640-2121-49d2-9492-32da6f54c8bb',
         classId: 'a2690948-3e21-4645-a3e2-746411209b4e',
@@ -209,7 +208,7 @@ export const rocketEngineData: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const rocketChargeData: IExplosiveObjectClassItemDB[] = [
+export const rocketChargeData = [
     {
         id: '1bfbb2ef-f32e-4db7-b5e2-c7140172ea63',
         classId: '852257d8-13ad-472c-b3db-39e4c8112ce1',
@@ -224,7 +223,7 @@ export const rocketChargeData: IExplosiveObjectClassItemDB[] = [
     },
 ];
 
-export const rocketTargitingSystemData: IExplosiveObjectClassItemDB[] = [
+export const rocketTargitingSystemData = [
     {
         id: 'cb97b4c7-a165-4fc2-a27c-b4f629bd9a37',
         classId: '428f998e-58db-4c92-8884-10f938aaee21',
