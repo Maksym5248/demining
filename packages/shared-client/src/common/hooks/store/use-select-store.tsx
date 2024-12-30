@@ -14,7 +14,7 @@ export function useSelectStore<T extends { data: B }, B extends { id: string }>(
     }, []);
 
     const onLoadMore = () => {
-        store.fetchMoreList.run(searchValue);
+        store?.fetchMoreList?.run(searchValue);
     };
 
     const onFocus = () => {
@@ -31,7 +31,7 @@ export function useSelectStore<T extends { data: B }, B extends { id: string }>(
         onSearch,
         loadingInput: store.fetchItem.isLoading,
         loading: store.fetchList.isLoading,
-        loadingMore: store.fetchMoreList.isLoading,
+        loadingMore: !!store?.fetchMoreList?.isLoading,
         isReachedEnd: !store.list.isMorePages,
         onLoadMore,
         onFocus,

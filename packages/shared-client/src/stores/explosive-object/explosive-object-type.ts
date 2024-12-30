@@ -37,7 +37,11 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
     services: IServices;
 
     collection = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
-        factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data),
+        factory: (data: IExplosiveObjectTypeData) =>
+            new ExplosiveObjectType(data, {
+                api: this.api,
+                services: this.services,
+            }),
     });
 
     list = new ListModel<IExplosiveObjectType, IExplosiveObjectTypeData>({

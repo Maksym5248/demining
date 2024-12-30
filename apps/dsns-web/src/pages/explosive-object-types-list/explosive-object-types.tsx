@@ -12,7 +12,7 @@ import { Modal } from '~/services';
 const ListItem = observer(({ item }: { item: IExplosiveObjectType }) => {
     const onOpen = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { id: item.data.id, mode: WIZARD_MODE.VIEW });
+        Modal.show(MODALS.EXPLOSIVE_OBJECT_TYPE_WIZARD, { id: item.data.id, mode: WIZARD_MODE.VIEW });
     };
 
     return (
@@ -32,7 +32,7 @@ export const ExplosiveObjectTypesPage = observer(() => {
     const search = useSearch();
 
     const onCreate = () => {
-        Modal.show(MODALS.EXPLOSIVE_OBJECT_WIZARD, { mode: WIZARD_MODE.CREATE });
+        Modal.show(MODALS.EXPLOSIVE_OBJECT_TYPE_WIZARD, { mode: WIZARD_MODE.CREATE });
     };
 
     const onSearch = (value: string) => {

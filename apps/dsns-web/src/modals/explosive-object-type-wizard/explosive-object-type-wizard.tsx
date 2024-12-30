@@ -1,14 +1,13 @@
-import { Form, Drawer, Input, Spin } from 'antd';
+import { Form, Drawer, Input, Spin, Checkbox } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_TYPE } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
-import { WizardButtons, Select, WizardFooter } from '~/components';
+import { WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
 import { s } from './explosive-object-type-wizard.style';
-import { type IExplosiveForm } from './explosive-object-type-wizard.types';
+import { type IExplosiveObjectTypeForm } from './explosive-object-type-wizard.types';
 
 interface Props {
     id?: string;
@@ -17,31 +16,20 @@ interface Props {
     hide: () => void;
 }
 
-const typeOptions = [
-    {
-        label: 'Вибухова речовна',
-        value: EXPLOSIVE_TYPE.EXPLOSIVE,
-    },
-    {
-        label: 'Засіб підриву',
-        value: EXPLOSIVE_TYPE.DETONATOR,
-    },
-];
-
 export const ExplosiveObjectTypeWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const store = useStore();
     const wizard = useWizard({ id, mode });
 
-    const { isLoading, item } = useItemStore(store.explosive, id as string);
+    const { isLoading, item } = useItemStore(store.explosiveObject.type, id as string);
 
     const isEdit = !!id;
 
-    const onFinishCreate = async (values: IExplosiveForm) => {
-        await store.explosive.create.run(values);
+    const onFinishCreate = async (values: IExplosiveObjectTypeForm) => {
+        await store.explosiveObject.type.create.run(values);
         hide();
     };
 
-    const onFinishUpdate = async (values: IExplosiveForm) => {
+    const onFinishUpdate = async (values: IExplosiveObjectTypeForm) => {
         await item?.update.run(values);
         hide();
     };
@@ -55,7 +43,7 @@ export const ExplosiveObjectTypeWizardModal = observer(({ id, isVisible, hide, m
         <Drawer
             open={isVisible}
             destroyOnClose
-            title={`${isEdit ? 'Редагувати' : 'Створити'} ВР та ЗП`}
+            title={`${isEdit ? 'Редагувати' : 'Створити'} тип`}
             placement="right"
             width={500}
             onClose={hide}
@@ -69,12 +57,15 @@ export const ExplosiveObjectTypeWizardModal = observer(({ id, isVisible, hide, m
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item.data } : { type: EXPLOSIVE_TYPE.EXPLOSIVE }}>
-                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select options={typeOptions} />
-                    </Form.Item>
-                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    initialValues={item ? { ...item.data } : { hasCaliber: false }}>
+                    <Form.Item label="Скорочена назва" name="name" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Повна назва" name="fullName" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Калібр" name="hasCaliber" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Checkbox />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>

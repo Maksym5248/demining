@@ -1,6 +1,5 @@
-import { type EXPLOSIVE_TYPE } from 'shared-my';
-
-export interface IExplosiveForm {
+export interface IExplosiveObjectTypeForm {
     name: string;
-    type: EXPLOSIVE_TYPE;
+    fullName: string;
+    hasCaliber?: boolean;
 }
