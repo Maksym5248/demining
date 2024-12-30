@@ -19,7 +19,7 @@ export const InitialRoute = observer(() => {
     }
 
     if (isAuthor) {
-        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST} state={{ from: location }} replace />;
+        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
     }
 
     if (isWaitingApproved) {

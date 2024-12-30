@@ -4,6 +4,7 @@ export * from './statistics';
 export * from './employees-list';
 export * from './error-not-found';
 export * from './explosive-list';
+export * from './explosive-object-classification';
 export * from './explosive-object-list';
 export * from './mission-request-list';
 export * from './mission-reports-list';

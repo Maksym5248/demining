@@ -1,4 +1,4 @@
-import { Form, Drawer, Input, Spin, Checkbox } from 'antd';
+import { Form, Drawer, Input, Spin, Switch } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
@@ -85,10 +85,19 @@ export const ExplosiveObjectTypeWizardModal = observer(({ id, isVisible, hide, m
                     <Form.Item label="Повна назва" name="fullName" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <Form.Item label="Калібр" name="hasCaliber" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Checkbox />
+                    <Form.Item
+                        label="Калібр"
+                        name="hasCaliber"
+                        valuePropName="checked"
+                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Switch />
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <WizardFooter
+                        {...wizard}
+                        onCancel={hide}
+                        onRemove={onRemove}
+                        isLoading={item?.update.isLoading || store.explosiveObject.type.create.isLoading}
+                    />
                 </Form>
             )}
         </Drawer>

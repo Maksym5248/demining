@@ -12,7 +12,7 @@ export const RedirectHome = observer(() => {
     const { isAuthorizedDSNS, isAuthor, isOrganizationMember } = store.viewer.user ?? {};
 
     if (isAuthorizedDSNS && isAuthor && !isOrganizationMember) {
-        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST} state={{ from: location }} replace />;
+        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
     }
 
     if (isAuthorizedDSNS) {

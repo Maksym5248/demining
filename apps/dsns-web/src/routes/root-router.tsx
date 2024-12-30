@@ -25,6 +25,7 @@ import {
     ExplosiveObjectTypesPage,
     HomePage,
     MapPage,
+    ExplosiveObjectClassificationPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
@@ -106,10 +107,16 @@ const router = createBrowserRouter([
                             <ViewExplosiveObjectList />,
                         ),
                         nav.withAccess(
-                            {
-                                path: ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST,
-                                Component: ExplosiveObjectTypesPage,
-                            },
+                            [
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_TYPE,
+                                    Component: ExplosiveObjectTypesPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_CLASSIFICATION,
+                                    Component: ExplosiveObjectClassificationPage,
+                                },
+                            ],
                             <ViewAuthorManagment />,
                         ),
                         nav.withAccess(

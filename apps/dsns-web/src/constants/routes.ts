@@ -22,8 +22,8 @@ export enum ROUTES {
 
     NOT_FOUND = '/not-found',
 
-    CLASSIFICATIONS_LIST = '/classifications-list',
-    EXPLOSIVE_OBJECT_TYPES_LIST = '/explosive-object-types-list',
+    EXPLOSIVE_OBJECT_CLASSIFICATION = '/types/classification/:id',
+    EXPLOSIVE_OBJECT_TYPE = '/types',
 }
 
 export const routesInfo = {
@@ -78,10 +78,10 @@ export const routesInfo = {
     [ROUTES.SIGNUP]: {
         title: 'Зареєструватись',
     },
-    [ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST]: {
-        title: 'Класифікація',
+    [ROUTES.EXPLOSIVE_OBJECT_TYPE]: {
+        title: 'Типи',
     },
-    [ROUTES.CLASSIFICATIONS_LIST]: {
+    [ROUTES.EXPLOSIVE_OBJECT_CLASSIFICATION]: {
         title: 'Класифікація',
     },
     [ROUTES.WAITING_APPROVE]: {

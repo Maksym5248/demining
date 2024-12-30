@@ -2,7 +2,16 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveObjectClassAPI } from '~/api';
 import { type ICreateValue } from '~/common';
-import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import {
+    CollectionModel,
+    type ICollectionModel,
+    type IListModel,
+    type IRequestModel,
+    type ISearchModel,
+    ListModel,
+    RequestModel,
+    SearchModel,
+} from '~/models';
 import { type IMessage } from '~/services';
 
 import {
@@ -34,6 +43,7 @@ interface ICollections {
 export interface IExplosiveObjectClassStore {
     collection: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     list: IListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    search: ISearchModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     create: IRequestModel<[ICreateValue<IExplosiveObjectClassData>]>;
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel;
@@ -53,6 +63,8 @@ export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
     list = new ListModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
         collection: this.collection,
     });
+
+    search = new SearchModel<IExplosiveObjectClass, IExplosiveObjectClassData>(this.list, { fields: ['displayName'] });
 
     constructor(params: { api: IApi; services: IServices; lists: ILists; collections: ICollections }) {
         this.api = params.api;

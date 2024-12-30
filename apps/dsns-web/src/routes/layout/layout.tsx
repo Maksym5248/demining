@@ -139,10 +139,10 @@ export const Layout = observer(() => {
             ...(isAuthor
                 ? [
                       {
-                          key: ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST,
+                          key: ROUTES.EXPLOSIVE_OBJECT_TYPE,
                           icon: <Icon.ApartmentOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST),
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_TYPE),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_TYPE),
                       },
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_LIST,

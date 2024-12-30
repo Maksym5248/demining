@@ -4,5 +4,6 @@ export * from './explosive-object-types';
 export * from './explosive-types';
 export * from './class';
 export * from './explosive-object-component';
+export * from './explosive-object-class';
 export * from './country';
 export * from './statuses';

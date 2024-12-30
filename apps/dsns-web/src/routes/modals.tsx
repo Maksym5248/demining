@@ -19,6 +19,7 @@ import {
     MapEditorModal,
     TemplateDataPreviewModal,
     ExplosiveObjectTypeWizardModal,
+    ExplosiveObjectClassificationWizardModal,
 } from '~/modals';
 
 export const modals: IModalsMap = {
@@ -39,6 +40,9 @@ export const modals: IModalsMap = {
     },
     [MODALS.EXPLOSIVE_OBJECT_TYPE_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectTypeWizardModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_OBJECT_CLASSIFICATION_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveObjectClassificationWizardModal {...props} />,
     },
     [MODALS.EXPLOSIVE_OBJECT_ACTION_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectActionWizardModal {...props} />,
