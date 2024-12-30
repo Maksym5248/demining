@@ -30,13 +30,13 @@ interface IStores {
 export class Explosive implements IExplosive {
     api: IApi;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
     data: IExplosiveData;
-    constructor(data: IExplosiveData, params: { api: IApi; services: IServices; stores: IStores }) {
+    constructor(data: IExplosiveData, params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.data = data;
         this.api = params.api;
         this.services = params.services;
-        this.stores = params.stores;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }
@@ -50,7 +50,7 @@ export class Explosive implements IExplosive {
     }
 
     get isCurrentOrganization() {
-        return this.data.organizationId === this.stores.viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
     }
 
     update = new RequestModel({

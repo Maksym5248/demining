@@ -43,7 +43,7 @@ interface IExplosiveObjectParams {
     collections: ICollections;
     api: IApi;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
 }
 
 export interface IExplosiveObject {
@@ -64,16 +64,16 @@ export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
     collections: ICollections;
-    stores: IStores;
+    getStores: () => IStores;
     data: IExplosiveObjectData;
 
-    constructor(data: IExplosiveObjectData, { collections, api, services, stores }: IExplosiveObjectParams) {
+    constructor(data: IExplosiveObjectData, { collections, api, services, getStores }: IExplosiveObjectParams) {
         this.data = data;
 
         this.collections = collections;
         this.api = api;
         this.services = services;
-        this.stores = stores;
+        this.getStores = getStores;
 
         makeAutoObservable(this);
     }
@@ -139,7 +139,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get isCurrentOrganization() {
-        return this.data.organizationId === this.stores.viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
     }
 
     update = new RequestModel({

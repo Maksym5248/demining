@@ -29,7 +29,7 @@ interface IStores {
 }
 
 interface IOrganizationStoreParams {
-    stores: IStores;
+    getStores: () => IStores;
     api: IApi;
     services: IServices;
 }
@@ -44,7 +44,7 @@ export interface IOrganizationStore {
     fetchItem: RequestModel<[string]>;
 }
 export class OrganizationStore implements IOrganizationStore {
-    stores: IStores;
+    getStores: () => IStores;
     api: IApi;
     services: IServices;
 
@@ -52,7 +52,7 @@ export class OrganizationStore implements IOrganizationStore {
     list: IListModel<IOrganization, IOrganizationValue>;
 
     constructor(params: IOrganizationStoreParams) {
-        this.stores = params.stores;
+        this.getStores = params.getStores;
         this.api = params.api;
         this.services = params.services;
 

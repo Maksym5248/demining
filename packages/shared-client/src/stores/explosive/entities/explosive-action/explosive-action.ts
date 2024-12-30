@@ -27,15 +27,15 @@ interface IStores {
 export class ExplosiveAction implements IExplosiveAction {
     api: IApi;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
 
     data: IExplosiveActionData;
 
-    constructor(data: IExplosiveActionData, params: { api: IApi; services: IServices; stores: IStores }) {
+    constructor(data: IExplosiveActionData, params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.data = data;
         this.api = params.api;
         this.services = params.services;
-        this.stores = params.stores;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }

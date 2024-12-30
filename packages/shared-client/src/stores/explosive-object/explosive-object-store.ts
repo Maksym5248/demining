@@ -78,7 +78,7 @@ export interface IExplosiveObjectStore {
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
     api: IApi;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
 
     type: IExplosiveObjectTypeStore;
     class: IExplosiveObjectClassStore;
@@ -107,10 +107,10 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     classifications: IClassifications;
 
-    constructor(params: { api: IApi; services: IServices; stores: IStores }) {
+    constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
-        this.stores = params.stores;
+        this.getStores = params.getStores;
 
         this.classifications = new Classifications(this);
         this.type = new ExplosiveObjectTypeStore(this);
@@ -122,17 +122,17 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     get lists() {
         return {
-            classItem: this.classItem.list,
-            class: this.class.list,
+            classItem: this.classItem?.list,
+            class: this.class?.list,
         };
     }
 
     get collections() {
         return {
             details: this.collectionDetails,
-            type: this.type.collection,
-            class: this.class.collection,
-            classItem: this.classItem.collection,
+            type: this.type?.collection,
+            class: this.class?.collection,
+            classItem: this.classItem?.collection,
             country: this.collectionCountries,
         };
     }
@@ -234,6 +234,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
 
     fetchDeeps = new RequestModel({
+        cachePolicy: 'cache-first',
         run: async () => {
             const [countries] = await Promise.all([
                 this.api.explosiveObject.getCountriesList(),

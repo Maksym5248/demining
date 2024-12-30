@@ -85,7 +85,7 @@ export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemS
             const res = await this.api.explosiveObjectClassItem.getList();
             this.list.set(res.map(createExplosiveObjectClassItem));
         },
-        onError: () => this.services.message.error('Не вдалось видалити'),
+        onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchItem = new RequestModel({

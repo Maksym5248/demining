@@ -9,7 +9,11 @@ export const RedirectHome = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthorizedDSNS } = store.viewer.user ?? {};
+    const { isAuthorizedDSNS, isAuthor, isOrganizationMember } = store.viewer.user ?? {};
+
+    if (isAuthorizedDSNS && isAuthor && !isOrganizationMember) {
+        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPES_LIST} state={{ from: location }} replace />;
+    }
 
     if (isAuthorizedDSNS) {
         return <Navigate to={ROUTES.HOME} state={{ from: location }} replace />;

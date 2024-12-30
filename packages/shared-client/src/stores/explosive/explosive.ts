@@ -53,7 +53,7 @@ interface IServices {
 export class ExplosiveStore implements IExplosiveStore {
     api: IApi;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
 
     collectionActions = new CollectionModel<IExplosiveAction, IExplosiveActionData>({
         factory: (data: IExplosiveActionData) => new ExplosiveAction(data, this),
@@ -64,10 +64,10 @@ export class ExplosiveStore implements IExplosiveStore {
     list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
     sum: SumExplosiveActions = new SumExplosiveActions();
 
-    constructor(params: { api: IApi; services: IServices; stores: IStores }) {
+    constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
-        this.stores = params.stores;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }
