@@ -5,7 +5,12 @@ import { type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { createExplosiveObjectType, updateExplosiveObjectTypeDTO, type IExplosiveObjectTypeData } from './explosive-object-type.schema';
+import {
+    createExplosiveObjectType,
+    updateExplosiveObjectTypeDTO,
+    type IExplosiveObjectTypeDataParams,
+    type IExplosiveObjectTypeData,
+} from './explosive-object-type.schema';
 
 interface IApi {
     explosiveObjectType: IExplosiveObjectTypeAPI;
@@ -54,7 +59,7 @@ export class ExplosiveObjectType implements IExplosiveObjectType {
     }
 
     update = new RequestModel({
-        run: async (data: IUpdateValue<IExplosiveObjectTypeData>) => {
+        run: async (data: IUpdateValue<IExplosiveObjectTypeDataParams>) => {
             const res = await this.api.explosiveObjectType.update(this.data.id, updateExplosiveObjectTypeDTO(data));
             this.updateFields(createExplosiveObjectType(res));
         },

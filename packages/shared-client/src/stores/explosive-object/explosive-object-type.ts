@@ -7,6 +7,7 @@ import { type IMessage } from '~/services';
 
 import {
     ExplosiveObjectType,
+    type IExplosiveObjectTypeDataParams,
     createExplosiveObjectType,
     createExplosiveObjectTypeDTO,
     type IExplosiveObjectType,
@@ -25,7 +26,7 @@ export interface IExplosiveObjectTypeStore {
     collection: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     list: IListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     search: ISearchModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
-    create: IRequestModel<[ICreateValue<IExplosiveObjectTypeData>]>;
+    create: IRequestModel<[ICreateValue<IExplosiveObjectTypeDataParams>]>;
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel;
     fetchItem: IRequestModel<[string]>;
@@ -58,7 +59,7 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IExplosiveObjectTypeData>) => {
+        run: async (data: ICreateValue<IExplosiveObjectTypeDataParams>) => {
             const res = await this.api.explosiveObjectType.create(createExplosiveObjectTypeDTO(data));
             const value = createExplosiveObjectType(res);
             this.list.unshift(value);

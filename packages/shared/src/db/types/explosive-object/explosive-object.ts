@@ -52,6 +52,7 @@ export interface IExplosiveObjectClassItemDB extends IBaseDB {
 export interface IExplosiveObjectTypeDB extends IBaseDB {
     id: string;
     name: string;
+    imageUri: string | null;
     fullName: string;
     hasCaliber?: boolean;
     metricCaliber?: METHRIC;

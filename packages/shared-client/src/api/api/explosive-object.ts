@@ -6,7 +6,6 @@ import {
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
 } from 'shared-my';
-import { v4 as uuid } from 'uuid';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
 import { type IAssetStorage } from '~/services';
@@ -18,6 +17,7 @@ import {
     type IExplosiveObjectClassItemDTO,
     type ICountryDTO,
 } from '../dto';
+import { createImage, updateImage } from '../image';
 
 export interface IExplosiveObjectAPI {
     create: (value: ICreateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
@@ -47,13 +47,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     ) {}
 
     create = async ({ image, ...value }: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
-        let imageUri = null;
-
-        if (image) {
-            const id = uuid();
-            await this.services.assetStorage.image.save(id, image);
-            imageUri = await this.services.assetStorage.image.getFileUrl(id);
-        }
+        const imageUri = await createImage({ image, services: this.services });
 
         const res = await this.db.explosiveObject.create({
             ...value,
@@ -67,14 +61,9 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
     update = async (id: string, { image, ...value }: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
         const current = await this.db.explosiveObject.get(id);
+        if (!current) throw new Error('there is explosive object');
 
-        let imageUri = current?.imageUri ?? null;
-
-        if (image) {
-            const id = uuid();
-            await this.services.assetStorage.image.save(id, image);
-            imageUri = await this.services.assetStorage.image.getFileUrl(id);
-        }
+        const imageUri = await updateImage({ image, imageUri: current.imageUri, services: this.services });
 
         const explosiveObject = await this.db.explosiveObject.update(id, {
             ...value,

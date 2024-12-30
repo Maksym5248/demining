@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 
-import { type IExplosiveObjectTypeDTO } from '~/api';
+import { type IExplosiveObjectTypeDTOParams, type IExplosiveObjectTypeDTO } from '~/api';
 import { data, dates, type ICreateValue } from '~/common';
 
 export interface IExplosiveObjectTypeData {
@@ -8,8 +8,16 @@ export interface IExplosiveObjectTypeData {
     name: string;
     fullName: string;
     hasCaliber?: boolean;
+    imageUri?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
+}
+
+export interface IExplosiveObjectTypeDataParams {
+    name: string;
+    fullName: string;
+    hasCaliber?: boolean;
+    image?: File;
 }
 
 export const createExplosiveObjectType = (value: IExplosiveObjectTypeDTO): IExplosiveObjectTypeData => ({
@@ -17,18 +25,23 @@ export const createExplosiveObjectType = (value: IExplosiveObjectTypeDTO): IExpl
     name: value.name,
     fullName: value.fullName,
     hasCaliber: !!value.hasCaliber,
+    imageUri: value.imageUri ?? '',
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
-export const createExplosiveObjectTypeDTO = (value: ICreateValue<IExplosiveObjectTypeData>): ICreateValue<IExplosiveObjectTypeDTO> => ({
+export const createExplosiveObjectTypeDTO = (
+    value: ICreateValue<IExplosiveObjectTypeDataParams>,
+): ICreateValue<IExplosiveObjectTypeDTOParams> => ({
     name: value.name,
     fullName: value.fullName,
     hasCaliber: !!value.hasCaliber,
+    image: value.image,
 });
 
-export const updateExplosiveObjectTypeDTO = data.createUpdateDTO<IExplosiveObjectTypeData, IExplosiveObjectTypeDTO>(value => ({
+export const updateExplosiveObjectTypeDTO = data.createUpdateDTO<IExplosiveObjectTypeDataParams, IExplosiveObjectTypeDTOParams>(value => ({
     name: value.name ?? '',
     fullName: value.fullName ?? '',
     hasCaliber: !!value.hasCaliber,
+    image: value?.image ?? undefined,
 }));

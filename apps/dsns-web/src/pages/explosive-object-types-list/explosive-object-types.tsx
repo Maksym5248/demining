@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { observer } from 'mobx-react';
 import { type IExplosiveObjectType } from 'shared-my-client';
 
-import { Icon, List, ListHeader } from '~/components';
+import { Icon, List, ListHeader, Image } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
@@ -19,9 +19,9 @@ const ListItem = observer(({ item }: { item: IExplosiveObjectType }) => {
         <List.Item
             actions={[
                 <Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />,
-                <Button key="list-edit" icon={<Icon.ApartmentOutlined type="danger" />} onClick={onOpen} />,
+                <Button key="list" icon={<Icon.ApartmentOutlined type="danger" />} onClick={onOpen} />,
             ]}>
-            <List.Item.Meta title={item?.displayName} />
+            <List.Item.Meta title={item?.displayName} avatar={<Image src={item.data.imageUri} width={70} />} />
         </List.Item>
     );
 });

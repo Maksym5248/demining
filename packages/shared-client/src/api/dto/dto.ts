@@ -21,6 +21,7 @@ import {
     type IAddressDB,
     type Timestamp,
     type IRankDB,
+    type IExplosiveObjectTypeDB,
 } from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
@@ -63,6 +64,10 @@ export interface IExplosiveActionSumDTO {
 }
 
 export interface IExplosiveObjectDTOParams extends Omit<IExplosiveObjectDB, 'imageUri'> {
+    image?: File;
+}
+
+export interface IExplosiveObjectTypeDTOParams extends Omit<IExplosiveObjectTypeDB, 'imageUri'> {
     image?: File;
 }
 
