@@ -28,10 +28,24 @@ const ListItem = observer(({ item }: { item: INode }) => {
         Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW, typeId: params.id });
     };
 
+    const onCreate = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD, {
+            mode: WIZARD_MODE.CREATE,
+            typeId: params.id,
+            classId: item.classId,
+            component: item.component,
+            parentId: item.id,
+        });
+    };
+
     return (
         <List.Item
             style={{ paddingLeft: item.deep * 16 }}
-            actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
+            actions={[
+                <Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />,
+                <Button key="list-create" icon={<Icon.PlusOutlined type="danger" />} onClick={onCreate} />,
+            ]}>
             <List.Item.Meta title={item?.displayName} />
         </List.Item>
     );

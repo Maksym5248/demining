@@ -61,6 +61,8 @@ export enum TypeNodeClassification {
 export interface INode {
     id: string;
     displayName: string;
+    classId: string;
+    component: EXPLOSIVE_OBJECT_COMPONENT;
     type: TypeNodeClassification;
     parents: INode[];
     deep: number;
@@ -81,6 +83,14 @@ class Node implements INode {
         this.classifications = classifications;
 
         makeAutoObservable(this);
+    }
+
+    get classId() {
+        return this.item.data.classId;
+    }
+
+    get component() {
+        return this.item.data.component;
     }
 
     get id() {
