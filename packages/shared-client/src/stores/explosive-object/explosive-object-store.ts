@@ -247,7 +247,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             ]);
 
             this.listCountries.set(countries.map(createCountry));
-            this.classifications.build();
+            this.classifications.init();
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

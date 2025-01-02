@@ -10,9 +10,11 @@ import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 
+import { s } from './explosive-object-class-item-tree.styles';
+
 const Section = observer(({ item }: { item: ISectionNode }) => {
     return (
-        <List.Item>
+        <List.Item css={s.section}>
             <List.Item.Meta title={item.displayName} />
         </List.Item>
     );
@@ -28,10 +30,8 @@ const ListItem = observer(({ item }: { item: INode }) => {
 
     return (
         <List.Item
-            actions={[
-                <Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />,
-                <Button key="list-class-item" icon={<Icon.ApartmentOutlined type="danger" />} onClick={onOpen} />,
-            ]}>
+            style={{ paddingLeft: item.deep * 16 }}
+            actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta title={item?.displayName} />
         </List.Item>
     );

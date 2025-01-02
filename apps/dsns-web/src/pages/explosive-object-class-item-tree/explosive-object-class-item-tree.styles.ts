@@ -1,28 +1,15 @@
 import { Theme } from '~/styles';
 
-const listHeader = Theme.css(`
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-between;
+const section = Theme.css(
+    (theme) => `
+    background: ${theme.token['blue-1']};
+    border-radius: 4px;
     align-items: center;
-    padding-right: 8px;
-`);
-
-const listItemDesc = Theme.css(`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-`);
-
-const image = Theme.css(`
-    width: 80px;
-    height: 60px;
-`);
+    justify-content: center;
+    display: flex;   
+`,
+);
 
 export const s = {
-    listHeader,
-    listItemDesc,
-    image,
+    section,
 };

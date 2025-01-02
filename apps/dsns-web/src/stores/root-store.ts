@@ -143,7 +143,6 @@ export class RootStore implements IRootStore {
     }
 
     private async onChangeUser(user: IAuthUser | null) {
-        console.log('onChangeUser', user);
         try {
             if (user) {
                 this.services.analytics.setUserId(user.uid);
