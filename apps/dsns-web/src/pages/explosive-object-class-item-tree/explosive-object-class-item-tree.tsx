@@ -23,7 +23,7 @@ const ListItem = observer(({ item }: { item: INode }) => {
 
     const onOpen = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW, typeId: params.id });
+        Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW, typeId: params.id });
     };
 
     return (
@@ -37,7 +37,7 @@ const ListItem = observer(({ item }: { item: INode }) => {
     );
 });
 
-export const ExplosiveObjectClassificationPage = observer(() => {
+export const ExplosiveObjectClassItemTreePage = observer(() => {
     const { explosiveObject } = useStore();
     const title = useRouteTitle();
     const search = useSearch();
@@ -46,7 +46,7 @@ export const ExplosiveObjectClassificationPage = observer(() => {
     const list = explosiveObject.classifications.flattenSections(params.id ?? '');
 
     const onCreate = () => {
-        Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_WIZARD, { mode: WIZARD_MODE.CREATE, typeId: params.id });
+        Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD, { mode: WIZARD_MODE.CREATE, typeId: params.id });
     };
 
     const onSearch = (value: string) => {

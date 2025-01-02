@@ -145,6 +145,12 @@ export const Layout = observer(() => {
                           onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_TYPE),
                       },
                       {
+                          key: ROUTES.EXPLOSIVE_OBJECT_CLASS,
+                          icon: <Icon.AlignLeftOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_CLASS),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_CLASS),
+                      },
+                      {
                           key: ROUTES.EXPLOSIVE_OBJECT_LIST,
                           icon: <Icon.FireOutlined />,
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),

@@ -22,10 +22,11 @@ import {
     MembersListPage,
     TemplatesListPage,
     ExplosiveListPage,
-    ExplosiveObjectTypesPage,
     HomePage,
     MapPage,
-    ExplosiveObjectClassificationPage,
+    ExplosiveObjectTypesPage,
+    ExplosiveObjectClassPage,
+    ExplosiveObjectClassItemTreePage,
 } from '~/pages';
 import { nav } from '~/utils';
 
@@ -113,8 +114,12 @@ const router = createBrowserRouter([
                                     Component: ExplosiveObjectTypesPage,
                                 },
                                 {
-                                    path: ROUTES.EXPLOSIVE_OBJECT_CLASSIFICATION,
-                                    Component: ExplosiveObjectClassificationPage,
+                                    path: ROUTES.EXPLOSIVE_OBJECT_CLASS,
+                                    Component: ExplosiveObjectClassPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM,
+                                    Component: ExplosiveObjectClassItemTreePage,
                                 },
                             ],
                             <ViewAuthorManagment />,

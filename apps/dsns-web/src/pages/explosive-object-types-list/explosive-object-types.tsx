@@ -18,7 +18,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObjectType }) => {
 
     const onOpenClassification = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        navigate(ROUTES.EXPLOSIVE_OBJECT_CLASSIFICATION.replace(':id', item.data.id));
+        navigate(ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM.replace(':id', item.data.id));
     };
 
     return (

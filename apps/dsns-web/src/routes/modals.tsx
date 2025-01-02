@@ -45,7 +45,7 @@ export const modals: IModalsMap = {
     [MODALS.EXPLOSIVE_OBJECT_CLASS_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectClassWizardModal {...props} />,
     },
-    [MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM__WIZARD]: {
+    [MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectClassItemWizardModal {...props} />,
     },
     [MODALS.EXPLOSIVE_OBJECT_ACTION_WIZARD]: {

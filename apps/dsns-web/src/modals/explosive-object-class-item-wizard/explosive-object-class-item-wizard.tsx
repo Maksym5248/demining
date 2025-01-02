@@ -12,7 +12,7 @@ import { type IExplosiveObjectClassItemForm } from './explosive-object-class-ite
 
 interface Props {
     id?: string;
-    typeId?: string;
+    typeId: string;
     parentId?: string;
     isVisible: boolean;
     mode: WIZARD_MODE;
@@ -32,13 +32,17 @@ export const ExplosiveObjectClassItemWizardModal = observer(({ id, typeId, paren
     const onFinishCreate = async (values: IExplosiveObjectClassItemForm) => {
         await store.explosiveObject.classItem.create.run({
             ...values,
+            typeId,
             parentId: values.parentId || null,
         });
         hide();
     };
 
     const onFinishUpdate = async (values: IExplosiveObjectClassItemForm) => {
-        await item?.update.run(values);
+        await item?.update.run({
+            ...values,
+            typeId,
+        });
         hide();
     };
 
@@ -75,15 +79,6 @@ export const ExplosiveObjectClassItemWizardModal = observer(({ id, typeId, paren
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
-                        <Select placeholder="Вибрати">
-                            {store.explosiveObject.type.list.asArray.map((el) => (
-                                <Option value={el.id} key={el.id}>
-                                    {el.displayName}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
                     <Form.Item label="Класифікація" name="classId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Select placeholder="Вибрати">
                             {store.explosiveObject.class.list.asArray.map((el) => (
@@ -93,13 +88,15 @@ export const ExplosiveObjectClassItemWizardModal = observer(({ id, typeId, paren
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Підпорядкований" name="parentId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
+                    <Form.Item label="Підпорядкований" name="parentId">
                         <Select placeholder="Вибрати">
-                            {store.explosiveObject.classItem.list.asArray.map((el) => (
-                                <Option value={el.id} key={el.id}>
-                                    {el.displayName}
-                                </Option>
-                            ))}
+                            {store.explosiveObject.classItem.list.asArray
+                                .filter((el) => el.data.typeId === typeId)
+                                .map((el) => (
+                                    <Option value={el.id} key={el.id}>
+                                        {el.displayName}
+                                    </Option>
+                                ))}
                         </Select>
                     </Form.Item>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>

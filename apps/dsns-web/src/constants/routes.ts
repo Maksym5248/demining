@@ -22,8 +22,9 @@ export enum ROUTES {
 
     NOT_FOUND = '/not-found',
 
-    EXPLOSIVE_OBJECT_CLASSIFICATION = '/types/classification/:id',
     EXPLOSIVE_OBJECT_TYPE = '/types',
+    EXPLOSIVE_OBJECT_CLASS = '/class',
+    EXPLOSIVE_OBJECT_CLASS_ITEM = '/types/class-items/:id',
 }
 
 export const routesInfo = {
@@ -81,7 +82,10 @@ export const routesInfo = {
     [ROUTES.EXPLOSIVE_OBJECT_TYPE]: {
         title: 'Типи',
     },
-    [ROUTES.EXPLOSIVE_OBJECT_CLASSIFICATION]: {
+    [ROUTES.EXPLOSIVE_OBJECT_CLASS]: {
+        title: 'Класифікація',
+    },
+    [ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM]: {
         title: 'Класифікація',
     },
     [ROUTES.WAITING_APPROVE]: {
