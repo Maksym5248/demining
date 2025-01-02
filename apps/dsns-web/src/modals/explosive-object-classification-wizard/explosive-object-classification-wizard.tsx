@@ -32,6 +32,7 @@ export const ExplosiveObjectClassificationWizardModal = observer(({ id, typeId, 
     const onFinishCreate = async (values: IExplosiveObjectClassForm) => {
         await store.explosiveObject.class.create.run({
             ...values,
+            parentId: values.parentId || null,
             typeId,
         });
         hide();

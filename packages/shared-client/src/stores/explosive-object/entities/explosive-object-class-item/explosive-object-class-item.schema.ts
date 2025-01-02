@@ -4,7 +4,6 @@ import { data, type ICreateValue } from '~/common';
 export interface IExplosiveObjectClassItemData {
     id: string;
     classId: string;
-    parentId: string | null;
     name: string;
 }
 
@@ -12,7 +11,6 @@ export const createExplosiveObjectClassItem = (value: IExplosiveObjectClassItemD
     id: value.id,
     name: value.name,
     classId: value.classId,
-    parentId: value.parentId,
 });
 
 export const createExplosiveObjectClassItemDTO = (
@@ -20,13 +18,11 @@ export const createExplosiveObjectClassItemDTO = (
 ): ICreateValue<IExplosiveObjectClassItemDTO> => ({
     name: value.name,
     classId: value.classId,
-    parentId: value.parentId,
 });
 
 export const updateExplosiveObjectClassItemDTO = data.createUpdateDTO<IExplosiveObjectClassItemData, IExplosiveObjectClassItemDTO>(
     (value) => ({
         name: value.name ?? '',
         classId: value.classId ?? '',
-        parentId: value.parentId ?? '',
     }),
 );

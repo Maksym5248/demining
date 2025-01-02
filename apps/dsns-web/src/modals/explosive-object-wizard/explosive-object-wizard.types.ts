@@ -6,7 +6,7 @@ export interface IExplosiveObjectForm {
     component: EXPLOSIVE_OBJECT_COMPONENT;
     countryId: string;
     typeId: string;
-    classIds: string[];
+    classItemIds: string[];
     imageUri: string;
 
     // details

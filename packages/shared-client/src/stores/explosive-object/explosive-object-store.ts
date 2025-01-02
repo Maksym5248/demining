@@ -118,6 +118,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.type = new ExplosiveObjectTypeStore(this);
         this.class = new ExplosiveObjectClassStore(this);
         this.classItem = new ExplosiveObjectClassItemStore(this);
+        this.classifications = new Classifications(this);
 
         makeAutoObservable(this);
     }
@@ -246,6 +247,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             ]);
 
             this.listCountries.set(countries.map(createCountry));
+            this.classifications.build();
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

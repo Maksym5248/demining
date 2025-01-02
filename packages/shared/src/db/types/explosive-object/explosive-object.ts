@@ -39,12 +39,12 @@ export interface IExplosiveObjectClassDB extends IBaseDB {
     typeId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
+    parentId: string | null; // class item
 }
 
 export interface IExplosiveObjectClassItemDB extends IBaseDB {
     id: string;
     classId: string;
-    parentId: string | null;
     name: string;
     description?: string;
 }
@@ -69,7 +69,7 @@ export interface IExplosiveObjectDB extends IBaseDB {
     component: EXPLOSIVE_OBJECT_COMPONENT | null; // Боєприпас
     typeId: string | null; // Інженерний
     countryId: string; // СССР
-    classIds: string[]; // протитанковий, протиднищевий; кумулятивний
+    classItemIds: string[]; // протитанковий, протиднищевий; кумулятивний
     imageUri: string | null;
     details: IExplosiveObjectDetailsDB | null;
 }

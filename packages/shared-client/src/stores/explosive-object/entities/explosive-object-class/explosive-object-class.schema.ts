@@ -9,6 +9,7 @@ export interface IExplosiveObjectClassData {
     component: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
     class: EXPLOSIVE_OBJECT_CLASS;
+    parentId: string | null;
 }
 
 export const createExplosiveObjectClass = (value: IExplosiveObjectClassDTO): IExplosiveObjectClassData => ({
@@ -17,6 +18,7 @@ export const createExplosiveObjectClass = (value: IExplosiveObjectClassDTO): IEx
     typeId: value.typeId,
     component: value.component,
     class: value.class,
+    parentId: value.parentId,
 });
 
 export const createExplosiveObjectClassDTO = (value: ICreateValue<IExplosiveObjectClassData>): ICreateValue<IExplosiveObjectClassDTO> => ({
@@ -24,6 +26,7 @@ export const createExplosiveObjectClassDTO = (value: ICreateValue<IExplosiveObje
     typeId: value.typeId,
     component: value.component,
     class: value.class,
+    parentId: value.parentId,
 });
 
 export const updateExplosiveObjectClassDTO = data.createUpdateDTO<IExplosiveObjectClassData, IExplosiveObjectClassDTO>((value) => ({
@@ -31,4 +34,5 @@ export const updateExplosiveObjectClassDTO = data.createUpdateDTO<IExplosiveObje
     typeId: value.typeId ?? '',
     component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,
     class: value.class ?? EXPLOSIVE_OBJECT_CLASS.PURPOSE,
+    parentId: value.parentId ?? '',
 }));
