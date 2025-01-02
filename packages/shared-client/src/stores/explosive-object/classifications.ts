@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { type ICollectionModel, type IListModel } from '~/models';
 
@@ -13,9 +13,14 @@ import {
 export interface IClassifications {
     build(): void;
     get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): IClassNode[];
-    getArray(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): INode[];
+    flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): (IClassNode | IClassItemNode)[];
+    flattenSections(typeId: string): (IClassNode | IClassItemNode | ISectionNode)[];
 }
 
+// 1. Видалити EXPLOSIVE_OBJECT_CLASS та зробити окремий список для видів класифікації
+// 2. дерево будувати тільки на основі classItem
+
+// Може взагалі краще видалити class ?
 // За призначенням:
 // - протитанкові
 //     За призначенням (parentId-classitem):
@@ -42,26 +47,28 @@ interface IClassificationsParams {
 }
 
 type ITypeId = string;
-export enum TypeNode {
-    class = 'class',
-    classItem = 'classItem',
+
+export enum TypeNodeClassification {
+    Class = 'class',
+    ClassItem = 'classItem',
+    Section = 'section',
 }
 
-interface INode {
+export interface INode {
     id: string;
-    disaplyName: string;
-    type: TypeNode;
+    displayName: string;
+    type: TypeNodeClassification;
     flatten: INode[];
 }
 
-interface IClassNode extends INode {
+export interface IClassNode extends INode {
     class: IExplosiveObjectClass;
     children: IClassItemNode[];
 }
 
-export type INodeClassification = INode;
+export type ISectionNode = INode;
 
-interface IClassItemNode extends INode {
+export interface IClassItemNode extends INode {
     classItem: IExplosiveObjectClassItem;
     children: IClassNode[];
 }
@@ -69,7 +76,7 @@ interface IClassItemNode extends INode {
 class ClassItemNode implements INode {
     classItem: IExplosiveObjectClassItem;
     children: ClassNode[] = [];
-    type = TypeNode.classItem;
+    type = TypeNodeClassification.ClassItem;
 
     constructor(item: IExplosiveObjectClassItem) {
         this.classItem = item;
@@ -84,12 +91,12 @@ class ClassItemNode implements INode {
         return this.classItem.data.name;
     }
 
-    get disaplyName() {
+    get displayName() {
         return this.classItem.displayName;
     }
 
-    get flatten(): INode[] {
-        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as INode[])];
+    get flatten(): (IClassNode | IClassItemNode)[] {
+        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as (IClassNode | IClassItemNode)[])];
     }
 
     add(item: ClassNode) {
@@ -100,7 +107,7 @@ class ClassItemNode implements INode {
 class ClassNode implements INode {
     class: IExplosiveObjectClass;
     children: ClassItemNode[] = [];
-    type = TypeNode.class;
+    type = TypeNodeClassification.Class;
 
     constructor(item: IExplosiveObjectClass) {
         this.class = item;
@@ -115,12 +122,12 @@ class ClassNode implements INode {
         return this.class.data.name;
     }
 
-    get disaplyName() {
+    get displayName() {
         return this.class.displayName;
     }
 
-    get flatten(): INode[] {
-        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as INode[])];
+    get flatten(): (IClassNode | IClassItemNode)[] {
+        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as (IClassNode | IClassItemNode)[])];
     }
 
     add(item: ClassItemNode) {
@@ -150,10 +157,12 @@ export class Classifications implements IClassifications {
     }
 
     createRoot(id: string) {
-        if (this.roots[id]) {
-            this.roots[id].push(this.getClass(id));
+        const item = this.getClass(id);
+
+        if (this.roots[item.class.data.typeId]) {
+            this.roots[item.class.data.typeId].push(this.getClass(id));
         } else {
-            this.roots[id] = [this.getClass(id)];
+            this.roots[item.class.data.typeId] = [this.getClass(id)];
         }
     }
 
@@ -183,12 +192,31 @@ export class Classifications implements IClassifications {
     }
 
     get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
-        const byTypes = this.roots[typeId];
+        const byTypes = this.roots[typeId] ?? [];
         return component ? byTypes.filter((node) => node.class.data.component === component) : byTypes;
     }
 
-    getArray(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
+    flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
         const items = this.get(typeId, component);
-        return items.reduce((acc, item) => [...acc, ...item.flatten], [] as INode[]);
+        return items.reduce((acc, item) => [...acc, ...item.flatten], [] as (IClassNode | IClassItemNode)[]);
+    }
+
+    flattenSections(typeId: string) {
+        const ammo = this.flatten(typeId, EXPLOSIVE_OBJECT_COMPONENT.AMMO);
+        const fuse = this.flatten(typeId, EXPLOSIVE_OBJECT_COMPONENT.FUSE);
+
+        const items = [];
+
+        if (ammo.length) {
+            items.push({ id: 'ammo', displayName: 'Боєприпаси', type: TypeNodeClassification.Section } as ISectionNode);
+            items.push(...ammo);
+        }
+
+        if (fuse.length) {
+            items.push({ id: 'fuse', displayName: 'Підривники', type: TypeNodeClassification.Section } as ISectionNode);
+            items.push(...fuse);
+        }
+
+        return items;
     }
 }

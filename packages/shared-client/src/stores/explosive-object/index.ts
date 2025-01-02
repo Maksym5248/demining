@@ -1,3 +1,4 @@
 export * from './explosive-object-store';
 export * from './entities';
-export type { INodeClassification } from './classifications';
+export type { INode, IClassNode, IClassItemNode, ISectionNode } from './classifications';
+export { TypeNodeClassification } from './classifications';
