@@ -45,7 +45,11 @@ export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemS
     collections: ICollections;
 
     collection = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
-        factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data),
+        factory: (data: IExplosiveObjectClassItemData) =>
+            new ExplosiveObjectClassItem(data, {
+                api: this.api,
+                services: this.services,
+            }),
     });
 
     list = new ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({

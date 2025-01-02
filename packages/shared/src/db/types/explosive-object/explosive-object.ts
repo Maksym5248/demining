@@ -1,10 +1,4 @@
-import {
-    type EXPLOSIVE_OBJECT_TYPE,
-    type EXPLOSIVE_OBJECT_STATUS,
-    type EXPLOSIVE_OBJECT_COMPONENT,
-    type EXPLOSIVE_OBJECT_CLASS,
-    type METHRIC,
-} from '~/db';
+import { type EXPLOSIVE_OBJECT_TYPE, type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_OBJECT_COMPONENT, type METHRIC } from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
@@ -35,18 +29,17 @@ export interface IExplosiveObjectDBv2 extends IBaseDB {
 
 export interface IExplosiveObjectClassDB extends IBaseDB {
     id: string;
-    class: EXPLOSIVE_OBJECT_CLASS;
-    typeId: string;
-    component: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
-    parentId: string | null; // class item
 }
 
 export interface IExplosiveObjectClassItemDB extends IBaseDB {
     id: string;
-    classId: string;
     name: string;
     description?: string;
+    classId: string;
+    typeId: string;
+    component: EXPLOSIVE_OBJECT_COMPONENT;
+    parentId: string | null; // class item
 }
 
 export interface IExplosiveObjectTypeDB extends IBaseDB {

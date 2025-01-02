@@ -1,18 +1,19 @@
 import { Form, Drawer, Input, Spin, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { explosiveObjectClassData, explosiveObjectComponentData } from 'shared-my';
+import { explosiveObjectComponentData } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
 import { WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
-import { s } from './explosive-object-classification-wizard.style';
-import { type IExplosiveObjectClassForm } from './explosive-object-classification-wizard.types';
+import { s } from './explosive-object-class-item-wizard.style';
+import { type IExplosiveObjectClassItemForm } from './explosive-object-class-item-wizard.types';
 
 interface Props {
     id?: string;
-    typeId: string;
+    typeId?: string;
+    parentId?: string;
     isVisible: boolean;
     mode: WIZARD_MODE;
     hide: () => void;
@@ -20,25 +21,23 @@ interface Props {
 
 const { Option } = Select;
 
-export const ExplosiveObjectClassificationWizardModal = observer(({ id, typeId, isVisible, hide, mode }: Props) => {
+export const ExplosiveObjectClassItemWizardModal = observer(({ id, typeId, parentId, isVisible, hide, mode }: Props) => {
     const store = useStore();
     const wizard = useWizard({ id, mode });
 
-    const { isLoading, item } = useItemStore(store.explosiveObject.class, id as string);
+    const { isLoading, item } = useItemStore(store.explosiveObject.classItem, id as string);
 
     const isEdit = !!id;
-    console.log('typeId', typeId);
 
-    const onFinishCreate = async (values: IExplosiveObjectClassForm) => {
-        await store.explosiveObject.class.create.run({
+    const onFinishCreate = async (values: IExplosiveObjectClassItemForm) => {
+        await store.explosiveObject.classItem.create.run({
             ...values,
             parentId: values.parentId || null,
-            typeId,
         });
         hide();
     };
 
-    const onFinishUpdate = async (values: IExplosiveObjectClassForm) => {
+    const onFinishUpdate = async (values: IExplosiveObjectClassItemForm) => {
         await item?.update.run(values);
         hide();
     };
@@ -52,7 +51,7 @@ export const ExplosiveObjectClassificationWizardModal = observer(({ id, typeId, 
         <Drawer
             open={isVisible}
             destroyOnClose
-            title={`${isEdit ? 'Редагувати' : 'Створити'} тип`}
+            title={`${isEdit ? 'Редагувати' : 'Створити'} елемент класифікації`}
             placement="right"
             width={500}
             onClose={hide}
@@ -61,12 +60,12 @@ export const ExplosiveObjectClassificationWizardModal = observer(({ id, typeId, 
                 <Spin css={s.spin} />
             ) : (
                 <Form
-                    name="explosive-object-class"
+                    name="explosive-object-class-item"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item.data } : {}}>
+                    initialValues={item ? { ...item.data } : { typeId, parentId }}>
                     <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Select placeholder="Вибрати">
                             {explosiveObjectComponentData.map((el) => (
@@ -76,11 +75,29 @@ export const ExplosiveObjectClassificationWizardModal = observer(({ id, typeId, 
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Класифікація" name="class" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
+                    <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Select placeholder="Вибрати">
-                            {explosiveObjectClassData.map((el) => (
-                                <Option value={el.class} key={el.class}>
-                                    {el.name}
+                            {store.explosiveObject.type.list.asArray.map((el) => (
+                                <Option value={el.id} key={el.id}>
+                                    {el.displayName}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Класифікація" name="classId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
+                        <Select placeholder="Вибрати">
+                            {store.explosiveObject.class.list.asArray.map((el) => (
+                                <Option value={el.id} key={el.id}>
+                                    {el.displayName}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Підпорядкований" name="parentId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
+                        <Select placeholder="Вибрати">
+                            {store.explosiveObject.classItem.list.asArray.map((el) => (
+                                <Option value={el.id} key={el.id}>
+                                    {el.displayName}
                                 </Option>
                             ))}
                         </Select>

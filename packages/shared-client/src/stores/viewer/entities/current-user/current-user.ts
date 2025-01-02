@@ -11,7 +11,6 @@ export interface ICurrentUser {
     isAuthor: boolean;
     isAuthorizedDSNS: boolean;
     isAuthorizedAmmo: boolean;
-    isAuthor: boolean;
     isWaitingApproved: boolean;
 }
 

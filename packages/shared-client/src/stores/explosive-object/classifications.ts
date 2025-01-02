@@ -12,9 +12,9 @@ import {
 
 export interface IClassifications {
     build(): void;
-    get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): IClassNode[];
-    flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): (IClassNode | IClassItemNode)[];
-    flattenSections(typeId: string): (IClassNode | IClassItemNode | ISectionNode)[];
+    get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): INode[];
+    flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): INode[];
+    flattenSections(typeId: string): (INode | ISectionNode)[];
 }
 
 // 1. Видалити EXPLOSIVE_OBJECT_CLASS та зробити окремий список для видів класифікації
@@ -47,9 +47,9 @@ interface IClassificationsParams {
 }
 
 type ITypeId = string;
+type IClassItemId = string;
 
 export enum TypeNodeClassification {
-    Class = 'class',
     ClassItem = 'classItem',
     Section = 'section',
 }
@@ -61,76 +61,35 @@ export interface INode {
     flatten: INode[];
 }
 
-export interface IClassNode extends INode {
-    class: IExplosiveObjectClass;
-    children: IClassItemNode[];
-}
-
 export type ISectionNode = INode;
 
-export interface IClassItemNode extends INode {
-    classItem: IExplosiveObjectClassItem;
-    children: IClassNode[];
-}
-
-class ClassItemNode implements INode {
-    classItem: IExplosiveObjectClassItem;
-    children: ClassNode[] = [];
+class Node implements INode {
+    item: IExplosiveObjectClassItem;
+    children: INode[] = [];
     type = TypeNodeClassification.ClassItem;
 
     constructor(item: IExplosiveObjectClassItem) {
-        this.classItem = item;
+        this.item = item;
         makeAutoObservable(this);
     }
 
     get id() {
-        return this.classItem.data.id;
+        return this.item.data.id;
     }
 
     get name() {
-        return this.classItem.data.name;
+        return this.item.data.name;
     }
 
     get displayName() {
-        return this.classItem.displayName;
+        return this.item.displayName;
     }
 
-    get flatten(): (IClassNode | IClassItemNode)[] {
-        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as (IClassNode | IClassItemNode)[])];
+    get flatten(): INode[] {
+        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as INode[])];
     }
 
-    add(item: ClassNode) {
-        this.children.push(item);
-    }
-}
-
-class ClassNode implements INode {
-    class: IExplosiveObjectClass;
-    children: ClassItemNode[] = [];
-    type = TypeNodeClassification.Class;
-
-    constructor(item: IExplosiveObjectClass) {
-        this.class = item;
-        makeAutoObservable(this);
-    }
-
-    get id() {
-        return this.class.data.id;
-    }
-
-    get name() {
-        return this.class.data.name;
-    }
-
-    get displayName() {
-        return this.class.displayName;
-    }
-
-    get flatten(): (IClassNode | IClassItemNode)[] {
-        return [this, ...this.children.reduce((acc, item) => [...acc, ...item.flatten], [] as (IClassNode | IClassItemNode)[])];
-    }
-
-    add(item: ClassItemNode) {
+    add(item: INode) {
         this.children.push(item);
     }
 }
@@ -139,66 +98,48 @@ export class Classifications implements IClassifications {
     lists: IClassificationsParams['lists'];
     collections: IClassificationsParams['collections'];
 
-    classes: Record<string, ClassNode> = {};
-    items: Record<string, ClassItemNode> = {};
-    roots: Record<ITypeId, ClassNode[]> = {};
+    nodes: Record<IClassItemId, Node> = {};
+    roots: Record<ITypeId, Node[]> = {};
 
     constructor(params: IClassificationsParams) {
         this.collections = params.collections;
         this.lists = params.lists;
     }
 
-    createClass(data: IExplosiveObjectClass) {
-        this.classes[data.data.id] = new ClassNode(data);
+    createNode(data: IExplosiveObjectClassItem) {
+        this.nodes[data.data.id] = new Node(data);
     }
 
-    createClassItem(data: IExplosiveObjectClassItem) {
-        this.items[data.data.id] = new ClassItemNode(data);
-    }
+    bind(id: string) {
+        const item = this.getNode(id);
 
-    createRoot(id: string) {
-        const item = this.getClass(id);
-
-        if (this.roots[item.class.data.typeId]) {
-            this.roots[item.class.data.typeId].push(this.getClass(id));
+        if (item.item.data.parentId) {
+            const parent = this.getNode(item.item.data.parentId);
+            parent.add(item);
+        } else if (this.roots[item.item.data.typeId]) {
+            this.roots[item.item.data.typeId].push(item);
         } else {
-            this.roots[item.class.data.typeId] = [this.getClass(id)];
+            this.roots[item.item.data.typeId] = [item];
         }
     }
 
-    getClassItem(id: string) {
-        return this.items[id];
-    }
-
-    getClass(id: string) {
-        return this.classes[id];
+    getNode(id: string) {
+        return this.nodes[id];
     }
 
     build() {
-        this.lists.class.asArray.forEach((item) => this.createClass(item));
-        this.lists.classItem.asArray.forEach((item) => this.createClassItem(item));
-
-        this.lists.class.asArray.forEach((item) => {
-            if (item.data.parentId) {
-                this.getClassItem(item.data.parentId).add(this.getClass(item.data.id));
-            } else {
-                this.createRoot(item.data.id);
-            }
-        });
-
-        this.lists.classItem.asArray.forEach((item) => {
-            this.getClass(item.data.classId).add(this.getClassItem(item.data.id));
-        });
+        this.lists.classItem.asArray.forEach((item) => this.createNode(item));
+        this.lists.classItem.asArray.forEach((item) => this.bind(item.data.id));
     }
 
     get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
         const byTypes = this.roots[typeId] ?? [];
-        return component ? byTypes.filter((node) => node.class.data.component === component) : byTypes;
+        return component ? byTypes.filter((node) => node.item.data.component === component) : byTypes;
     }
 
     flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
         const items = this.get(typeId, component);
-        return items.reduce((acc, item) => [...acc, ...item.flatten], [] as (IClassNode | IClassItemNode)[]);
+        return items.reduce((acc, item) => [...acc, ...item.flatten], [] as INode[]);
     }
 
     flattenSections(typeId: string) {
