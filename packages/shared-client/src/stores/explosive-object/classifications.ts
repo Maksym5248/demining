@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { type ICollectionModel, type IListModel } from '~/models';
@@ -12,31 +12,14 @@ import {
 
 export interface IClassifications {
     init(): void;
-    get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): INode[];
     create(item: IExplosiveObjectClassItem): void;
     remove(id: string): void;
+    move(id: string, newParentId?: string | null, oldParentId?: string | null): void;
+    getBy(params: { typeId: string; component?: EXPLOSIVE_OBJECT_COMPONENT }): INode[];
     getParents(id: string): INode[];
-    flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT): INode[];
-    flattenSections(typeId: string): (INode | ISectionNode)[];
+    flatten(typeId: string): INode[];
+    flattenSections(typeId?: string): (INode | ISectionNode)[];
 }
-
-// 1. Видалити EXPLOSIVE_OBJECT_CLASS та зробити окремий список для видів класифікації
-// 2. дерево будувати тільки на основі classItem
-
-// Може взагалі краще видалити class ?
-// За призначенням:
-// - протитанкові
-//     За призначенням (parentId-classitem):
-//     - протиднищеві
-//     - протибортові
-//     - протигусинечні
-// - протипіхотні
-//     За способом ураження (parentId-classitem):
-//     - фугасні
-//     - осколкові
-//          За способом розльоту осколків (parentId-classitem):
-//          - кругові
-//          - напрвлені
 
 interface IClassificationsParams {
     lists: {
@@ -68,6 +51,8 @@ export interface INode {
     deep: number;
     path: string;
     flatten: INode[];
+    add(item: INode): void;
+    remove(id: string): void;
 }
 
 export type ISectionNode = INode;
@@ -83,6 +68,13 @@ class Node implements INode {
         this.classifications = classifications;
 
         makeAutoObservable(this);
+
+        reaction(
+            () => this.item.data.parentId, // The reactive expression
+            (newValue, oldValue) => {
+                this.classifications.move(this.item.data.id, newValue, oldValue);
+            },
+        );
     }
 
     get classId() {
@@ -124,6 +116,10 @@ class Node implements INode {
     add(item: INode) {
         this.children.push(item);
     }
+
+    remove(id: string) {
+        this.children = this.children.filter((item) => item.id !== id);
+    }
 }
 
 export class Classifications implements IClassifications {
@@ -138,13 +134,23 @@ export class Classifications implements IClassifications {
     constructor(params: IClassificationsParams) {
         this.collections = params.collections;
         this.lists = params.lists;
+
+        makeAutoObservable(this);
     }
 
-    createNode(data: IExplosiveObjectClassItem) {
+    private createNode(data: IExplosiveObjectClassItem) {
         this.nodes[data.data.id] = new Node(data, this);
     }
 
-    bind(id: string) {
+    private removeNode(id: string) {
+        delete this.nodes[id];
+    }
+
+    private getNode(id: string) {
+        return this.nodes[id];
+    }
+
+    private bind(id: string) {
         const item = this.getNode(id);
 
         if (item.item.data.parentId) {
@@ -157,8 +163,9 @@ export class Classifications implements IClassifications {
         }
     }
 
-    getNode(id: string) {
-        return this.nodes[id];
+    getBy(params: { typeId: string; component?: EXPLOSIVE_OBJECT_COMPONENT }) {
+        const res = this.roots[params.typeId] ?? [];
+        return res.filter((item) => item.component === params.component);
     }
 
     getParents(id: string) {
@@ -201,35 +208,47 @@ export class Classifications implements IClassifications {
             this.roots[item.item.data.typeId] = this.roots[item.item.data.typeId].filter((node) => node.id !== id);
         }
 
-        delete this.nodes[id];
+        this.removeNode(id);
     }
 
-    get(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
-        const byTypes = this.roots[typeId] ?? [];
-        return component ? byTypes.filter((node) => node.item.data.component === component) : byTypes;
-    }
+    move(id: string, newParentId?: string | null, oldParentId?: string | null) {
+        const item = this.getNode(id);
 
-    flatten(typeId: string, component?: EXPLOSIVE_OBJECT_COMPONENT) {
-        const items = this.get(typeId, component);
-        return items.reduce((acc, item) => [...acc, ...item.flatten], [] as INode[]);
-    }
-
-    flattenSections(typeId: string) {
-        const ammo = this.flatten(typeId, EXPLOSIVE_OBJECT_COMPONENT.AMMO);
-        const fuse = this.flatten(typeId, EXPLOSIVE_OBJECT_COMPONENT.FUSE);
-
-        const items = [];
-
-        if (ammo.length) {
-            items.push({ id: 'ammo', displayName: 'Боєприпаси', type: TypeNodeClassification.Section } as ISectionNode);
-            items.push(...ammo);
+        if (oldParentId) {
+            const parent = this.getNode(oldParentId);
+            parent.remove(id);
         }
 
-        if (fuse.length) {
-            items.push({ id: 'fuse', displayName: 'Підривники', type: TypeNodeClassification.Section } as ISectionNode);
-            items.push(...fuse);
+        if (newParentId) {
+            const newParent = this.getNode(newParentId);
+            newParent.add(item);
+        } else {
+            this.roots[item.item.data.typeId].push(item);
         }
+    }
 
-        return items;
+    flatten(typeId: string) {
+        return this.getBy({ typeId }).reduce((acc, item) => [...acc, ...item.flatten], [] as INode[]);
+    }
+
+    flattenSections(typeId?: string) {
+        if (!typeId) return [];
+
+        const res: (ISectionNode | INode)[] = [];
+        const sections: EXPLOSIVE_OBJECT_COMPONENT[] = [];
+
+        this.flatten(typeId).forEach((item) => {
+            if (item.component === EXPLOSIVE_OBJECT_COMPONENT.AMMO && !sections.includes(item.component)) {
+                res.push({ id: 'ammo', displayName: 'Боєприпаси', type: TypeNodeClassification.Section } as ISectionNode);
+                sections.push(item.component);
+            } else if (item.component === EXPLOSIVE_OBJECT_COMPONENT.FUSE && !sections.includes(item.component)) {
+                res.push({ id: 'fuse', displayName: 'Підривники', type: TypeNodeClassification.Section } as ISectionNode);
+                sections.push(item.component);
+            }
+
+            res.push(item);
+        });
+
+        return res;
     }
 }

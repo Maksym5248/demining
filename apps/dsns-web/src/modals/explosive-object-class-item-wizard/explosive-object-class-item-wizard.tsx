@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Form, Drawer, Input, Spin, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { type EXPLOSIVE_OBJECT_COMPONENT, explosiveObjectComponentData } from 'shared-my';
@@ -27,6 +29,7 @@ export const ExplosiveObjectClassItemWizardModal = observer(
     ({ id, typeId, classId, component, parentId, isVisible, hide, mode }: Props) => {
         const store = useStore();
         const wizard = useWizard({ id, mode });
+        const [parentSearchValue, setParentSearchValue] = useState('');
 
         const { isLoading, item } = useItemStore(store.explosiveObject.classItem, id as string);
 
@@ -50,7 +53,7 @@ export const ExplosiveObjectClassItemWizardModal = observer(
         };
 
         const onRemove = async () => {
-            !!id && store.explosiveObject.class.remove.run(id);
+            !!id && store.explosiveObject.classItem.remove.run(id);
             hide();
         };
 
@@ -85,16 +88,25 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                         <Form.Item label="Класифікація" name="classId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                             <Select placeholder="Вибрати">
                                 {store.explosiveObject.class.list.asArray.map((el) => (
-                                    <Option value={el.id} key={el.id}>
+                                    <Option value={el.id} key={el.id} дфиуд>
                                         {el.displayName}
                                     </Option>
                                 ))}
                             </Select>
                         </Form.Item>
                         <Form.Item label="Підпорядкований" name="parentId">
-                            <Select placeholder="Вибрати">
+                            <Select
+                                placeholder="Вибрати"
+                                allowClear
+                                showSearch
+                                searchValue={parentSearchValue}
+                                onSearch={(value) => {
+                                    console.log(value);
+                                    setParentSearchValue(value);
+                                }}>
                                 {store.explosiveObject.classItem.list.asArray
                                     .filter((el) => el.data.typeId === typeId)
+                                    .filter((el) => el.data.id !== id)
                                     .map((el) => (
                                         <Option value={el.id} key={el.id}>
                                             {el.displayName}

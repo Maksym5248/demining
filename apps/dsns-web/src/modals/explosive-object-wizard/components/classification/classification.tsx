@@ -37,7 +37,7 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
                     {
                         (/* { getFieldValue, setFieldValue }*/) => {
                             // const selectedIds: string[] = getFieldValue('classItemIds') ?? [];
-                            const classes = classifications.get(typeId, component);
+                            const classes = classifications.getBy({ typeId, component });
 
                             return classes
                                 .map((cls) => {

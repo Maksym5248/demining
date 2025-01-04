@@ -41,7 +41,7 @@ const ListItem = observer(({ item }: { item: INode }) => {
 
     return (
         <List.Item
-            style={{ paddingLeft: item.deep * 16 }}
+            style={{ paddingLeft: item.deep * 24 }}
             actions={[
                 <Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />,
                 <Button key="list-create" icon={<Icon.PlusOutlined type="danger" />} onClick={onCreate} />,
@@ -57,8 +57,9 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
     const search = useSearch();
     const params = useParams<{ id: string }>();
 
-    const list = explosiveObject.classifications.flattenSections(params.id ?? '');
+    const list = explosiveObject.classifications.flattenSections(params.id);
 
+    console.log('list', list);
     const onCreate = () => {
         Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD, { mode: WIZARD_MODE.CREATE, typeId: params.id });
     };
