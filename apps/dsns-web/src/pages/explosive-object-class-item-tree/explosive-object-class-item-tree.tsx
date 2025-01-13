@@ -18,9 +18,8 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
     const search = useSearch();
     const params = useParams<{ id: string }>();
 
-    const list = explosiveObject.classifications
-        .flattenSections(params.id)
-        ?.filter((item) => item.displayName?.toLocaleLowerCase().includes(search.searchBy?.toLocaleLowerCase()));
+    const list = explosiveObject.classifications.flattenSections(params.id);
+    const type = explosiveObject.type.collection.get(params.id);
 
     const onCreate = (e: React.SyntheticEvent, parentId?: string) => {
         e.preventDefault();
@@ -96,9 +95,11 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
         </div>
     );
 
+    console.log('search?.searchBy', search?.searchBy);
+
     return (
         <div css={s.container}>
-            <ListHeader title={title} onCreate={onCreate} onSearch={onSearch} {...search} />
+            <ListHeader title={type?.displayName ?? title} onCreate={onCreate} onSearch={onSearch} {...search} />
             <Tree
                 showLine
                 showIcon
@@ -108,6 +109,9 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
                 defaultExpandAll
                 draggable
                 titleRender={titleRender}
+                filterTreeNode={(node) =>
+                    !!search?.searchBy && !!String(node?.title)?.toLowerCase().includes(search.searchBy.toLowerCase())
+                }
             />
         </div>
     );

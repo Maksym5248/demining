@@ -1,11 +1,9 @@
-import { useState } from 'react';
-
-import { Form, Drawer, Input, Spin, Select } from 'antd';
+import { Form, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { type EXPLOSIVE_OBJECT_COMPONENT, explosiveObjectComponentData } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
-import { WizardButtons, WizardFooter } from '~/components';
+import { WizardButtons, WizardFooter, Select } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
@@ -23,13 +21,10 @@ interface Props {
     hide: () => void;
 }
 
-const { Option } = Select;
-
 export const ExplosiveObjectClassItemWizardModal = observer(
     ({ id, typeId, classId, component, parentId, isVisible, hide, mode }: Props) => {
         const store = useStore();
         const wizard = useWizard({ id, mode });
-        const [parentSearchValue, setParentSearchValue] = useState('');
 
         const { isLoading, item } = useItemStore(store.explosiveObject.classItem, id as string);
 
@@ -77,42 +72,38 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                         disabled={wizard.isView}
                         initialValues={item ? { ...item.data } : { typeId, parentId, classId, component }}>
                         <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
-                            <Select placeholder="Вибрати">
-                                {explosiveObjectComponentData.map((el) => (
-                                    <Option value={el.id} key={el.id}>
-                                        {el.name}
-                                    </Option>
-                                ))}
-                            </Select>
+                            <Select
+                                placeholder="Вибрати"
+                                options={explosiveObjectComponentData.map((el) => ({
+                                    label: el.name,
+                                    value: el.id,
+                                }))}
+                            />
                         </Form.Item>
                         <Form.Item label="Класифікація" name="classId" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
-                            <Select placeholder="Вибрати">
-                                {store.explosiveObject.class.list.asArray.map((el) => (
-                                    <Option value={el.id} key={el.id} дфиуд>
-                                        {el.displayName}
-                                    </Option>
-                                ))}
-                            </Select>
+                            <Select
+                                allowClear
+                                showSearch
+                                placeholder="Вибрати"
+                                options={store.explosiveObject.class.list.asArray.map((el) => ({
+                                    label: el.displayName,
+                                    value: el.id,
+                                }))}
+                            />
                         </Form.Item>
                         <Form.Item label="Підпорядкований" name="parentId">
                             <Select
                                 placeholder="Вибрати"
                                 allowClear
                                 showSearch
-                                searchValue={parentSearchValue}
-                                onSearch={(value) => {
-                                    console.log(value);
-                                    setParentSearchValue(value);
-                                }}>
-                                {store.explosiveObject.classItem.list.asArray
+                                options={store.explosiveObject.classItem.list.asArray
                                     .filter((el) => el.data.typeId === typeId)
                                     .filter((el) => el.data.id !== id)
-                                    .map((el) => (
-                                        <Option value={el.id} key={el.id}>
-                                            {el.displayName}
-                                        </Option>
-                                    ))}
-                            </Select>
+                                    .map((el) => ({
+                                        label: el.displayName,
+                                        value: el.id,
+                                    }))}
+                            />
                         </Form.Item>
                         <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                             <Input placeholder="Введіть дані" />
