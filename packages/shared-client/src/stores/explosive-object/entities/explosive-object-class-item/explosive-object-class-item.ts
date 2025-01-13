@@ -59,7 +59,10 @@ export class ExplosiveObjectClassItem implements IExplosiveObjectClassItem {
 
     update = new RequestModel({
         run: async (data: IUpdateValue<IExplosiveObjectClassItemData>) => {
-            const res = await this.api.explosiveObjectClassItem.update(this.data.id, updateExplosiveObjectClassItemDTO(data));
+            const res = await this.api.explosiveObjectClassItem.update(
+                this.data.id,
+                updateExplosiveObjectClassItemDTO({ ...this.data, ...data }),
+            );
             this.updateFields(createExplosiveObjectClassItem(res));
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),

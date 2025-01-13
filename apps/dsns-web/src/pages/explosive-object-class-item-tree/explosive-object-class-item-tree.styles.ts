@@ -6,10 +6,34 @@ const section = Theme.css(
     border-radius: 4px;
     align-items: center;
     justify-content: center;
-    display: flex;   
+    display: flex;
+    flex: 1;   
 `,
 );
 
+const classification = Theme.css(`
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+    display: flex;   
+`);
+
+const container = Theme.css(`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 8px;   
+`);
+
+const title = Theme.css(`
+    display: flex;
+    flex: 1;
+    gap: 8px;   
+`);
+
 export const s = {
+    container,
     section,
+    classification,
+    title,
 };

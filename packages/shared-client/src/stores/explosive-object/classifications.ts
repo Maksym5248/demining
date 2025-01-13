@@ -56,6 +56,7 @@ export interface INode {
 }
 
 export type ISectionNode = INode;
+export type IClassNode = INode;
 
 class Node implements INode {
     item: IExplosiveObjectClassItem;
@@ -164,8 +165,13 @@ export class Classifications implements IClassifications {
     }
 
     getBy(params: { typeId: string; component?: EXPLOSIVE_OBJECT_COMPONENT }) {
-        const res = this.roots[params.typeId] ?? [];
-        return res.filter((item) => item.component === params.component);
+        let res = this.roots[params.typeId] ?? [];
+
+        if (params.component) {
+            res = res.filter((item) => item.component === params.component);
+        }
+
+        return res;
     }
 
     getParents(id: string) {
@@ -183,7 +189,6 @@ export class Classifications implements IClassifications {
 
     init() {
         if (this.isInitialized) return;
-
         this.lists.classItem.asArray.forEach((item) => this.createNode(item));
         this.lists.classItem.asArray.forEach((item) => this.bind(item.data.id));
 
@@ -238,12 +243,24 @@ export class Classifications implements IClassifications {
         const sections: EXPLOSIVE_OBJECT_COMPONENT[] = [];
 
         this.flatten(typeId).forEach((item) => {
+            const prev = res[res.length - 1];
+
             if (item.component === EXPLOSIVE_OBJECT_COMPONENT.AMMO && !sections.includes(item.component)) {
                 res.push({ id: 'ammo', displayName: 'Боєприпаси', type: TypeNodeClassification.Section } as ISectionNode);
                 sections.push(item.component);
             } else if (item.component === EXPLOSIVE_OBJECT_COMPONENT.FUSE && !sections.includes(item.component)) {
                 res.push({ id: 'fuse', displayName: 'Підривники', type: TypeNodeClassification.Section } as ISectionNode);
                 sections.push(item.component);
+            }
+
+            if (prev?.classId !== item.classId) {
+                const classification = this.collections.class.get(item.classId);
+                res.push({
+                    id: item.classId,
+                    displayName: classification?.displayName,
+                    type: TypeNodeClassification.Class,
+                    deep: item.deep,
+                } as IClassNode);
             }
 
             res.push(item);
