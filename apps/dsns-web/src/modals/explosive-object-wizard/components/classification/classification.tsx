@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
 import { Form } from 'antd';
-// import { uniq } from 'lodash';
+import { isArray } from 'lodash';
 import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
-import { useValues /*, type IExplosiveObjectClassItem */ } from 'shared-my-client';
+import { type IExplosiveObjectClassItem, useValues /*, type IExplosiveObjectClassItem */ } from 'shared-my-client';
 
 import { TreeSelect } from '~/components';
 import { useStore } from '~/hooks';
-// import { transformTreeNodesToTreeData } from '~/utils';
+import { transformTreeNodesToTreeData } from '~/utils';
 
 interface ClassificationProps {
     typeId: string;
@@ -34,61 +34,29 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
         !!component && (
             <Form.Item label="Класифікація" name="classItemIds" style={{ marginBottom: 0 }}>
                 <Form.Item noStyle shouldUpdate={() => true}>
-                    {
-                        (/* { getFieldValue, setFieldValue }*/) => {
-                            // const selectedIds: string[] = getFieldValue('classItemIds') ?? [];
-                            const classes = classifications.getBy({ typeId, component });
+                    {({ getFieldValue, setFieldValue }) => {
+                        const selectedIds: string[] = getFieldValue('classItemIds') ?? [];
+                        const classes = classifications.getBy({ typeId, component });
 
-                            return classes
-                                .map((cls) => {
-                                    // const currentSelectedItemsIds = cls.getItemsIdsByIds(selectedIds);
-                                    // const currentSelectedItemTree = cls.treeItems.getNodeLowLevel(currentSelectedItemsIds);
-                                    // const currentSelectedItem = cls.getItem(currentSelectedItemTree?.id);
+                        const itemsOptions = transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
+                            classes,
+                            (item) => item?.displayName ?? '',
+                        );
 
-                                    // const isSelectedItems = !!currentSelectedItem;
-                                    // const isRootItems = !!cls.isRootItems(selectedIds);
+                        const onChange = (value: string[]) => setFieldValue('classItemIds', isArray(value) ? value : [value]);
 
-                                    // if (!isRootItems && !isSelectedItems) return false;
-
-                                    // const onChange = (newValue: string) => {
-                                    //     const restSelectedItemsIds = cls.getItemsIdsByExludedIds(selectedIds);
-                                    //     const newValuesIds = uniq([...restSelectedItemsIds, newValue].filter(Boolean));
-                                    //     let removeArray: string[] = [];
-
-                                    //     if (!!currentSelectedItem?.data?.id && newValue !== currentSelectedItem?.data?.id) {
-                                    //         removeArray = classifications.treeItems.getAllChildsIds(currentSelectedItem.data.id);
-                                    //     }
-
-                                    //     const newParrentsIds = cls.treeItems.getAllParentsIds(newValue, true).filter(Boolean);
-
-                                    //     setFieldValue('classItemIds', [
-                                    //         ...newParrentsIds,
-                                    //         ...newValuesIds.filter((id) => !removeArray.includes(id)),
-                                    //     ]);
-                                    // };
-
-                                    // const itemsOptions = transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
-                                    //     classification.treeItems?.tree?.children ?? [],
-                                    //     (item) => item?.data?.name ?? '',
-                                    // );
-
-                                    // const itemValue = classification.treeItems.getNode(currentSelectedItem?.data.id ?? '');
-
-                                    return (
-                                        <Form.Item key={cls.id}>
-                                            <TreeSelect
-                                                // treeData={itemsOptions}
-                                                // value={itemValue?.id}
-                                                // placeholder={classification.displayName}
-                                                // onChange={onChange}
-                                                style={{ marginBottom: 0 }}
-                                            />
-                                        </Form.Item>
-                                    );
-                                })
-                                .filter(Boolean);
-                        }
-                    }
+                        return (
+                            <Form.Item>
+                                <TreeSelect
+                                    treeData={itemsOptions}
+                                    onChange={onChange}
+                                    value={selectedIds}
+                                    showCheckedStrategy={TreeSelect.SHOW_PARENT}
+                                    style={{ marginBottom: 0 }}
+                                />
+                            </Form.Item>
+                        );
+                    }}
                 </Form.Item>
             </Form.Item>
         )

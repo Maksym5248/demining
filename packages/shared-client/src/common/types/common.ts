@@ -14,10 +14,17 @@ export interface ErrorInner {
     message: string;
 }
 
-export interface TreeNode<T> {
+export interface ITreeNode<T> {
     id: string;
-    item?: T;
-    children: TreeNode<T>[];
+    item: T;
+    displayName: string;
+    parents: ITreeNode<T>[];
+    children: ITreeNode<T>[];
+    deep: number;
+    path: string;
+    flatten: ITreeNode<T>[];
+    add(item: ITreeNode<T>): void;
+    remove(id: string): void;
 }
 
 export type Path<T, Depth extends number = 4> = [Depth] extends [never]

@@ -67,7 +67,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
         const explosiveObject = await this.db.explosiveObject.update(id, {
             ...value,
-            imageUri,
+            imageUri: imageUri ?? null,
         });
 
         if (!explosiveObject) throw new Error('there is explosive object');

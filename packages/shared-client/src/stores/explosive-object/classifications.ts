@@ -1,6 +1,7 @@
 import { makeAutoObservable, reaction } from 'mobx';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
+import { type ITreeNode } from '~/common';
 import { type ICollectionModel, type IListModel } from '~/models';
 
 import {
@@ -41,18 +42,14 @@ export enum TypeNodeClassification {
     Section = 'section',
 }
 
-export interface INode {
-    id: string;
-    displayName: string;
+export interface INode extends ITreeNode<IExplosiveObjectClassItem> {
     classId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     type: TypeNodeClassification;
     parents: INode[];
-    deep: number;
-    path: string;
+    children: INode[];
     flatten: INode[];
     add(item: INode): void;
-    remove(id: string): void;
 }
 
 export type ISectionNode = INode;
