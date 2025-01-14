@@ -11,13 +11,6 @@ const section = Theme.css(
 `,
 );
 
-const classification = Theme.css(`
-    border-radius: 4px;
-    align-items: center;
-    justify-content: center;
-    display: flex;   
-`);
-
 const container = Theme.css(`
     display: flex;
     flex-direction: column;
@@ -25,15 +18,29 @@ const container = Theme.css(`
     gap: 8px;   
 `);
 
-const title = Theme.css(
-    (theme) => `
-    color: ${theme.token.blue};  
-`,
-);
+const title = Theme.css(`
+    display: flex;
+    flex: 1;
+    gap: 8px;   
+`);
+
+const classification = Theme.css(`
+    display: flex;
+    flex: 1;
+    gap: 8px;   
+`);
+
+const icon = Theme.css(`
+    ::hover {
+        cursor: pointer;
+        color: red;
+    };
+`);
 
 export const s = {
     container,
     section,
     classification,
     title,
+    icon,
 };

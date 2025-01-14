@@ -25,11 +25,12 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
         e.preventDefault();
 
         const parent = parentId ? explosiveObject.classItem.collection.get(parentId) : undefined;
+        const cls = parentId ? explosiveObject.class.collection.get(parentId) : undefined;
 
         Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD, {
             mode: WIZARD_MODE.CREATE,
             typeId: params.id,
-            classId: parent?.data?.classId,
+            classId: cls?.id ?? parent?.data?.classId,
             component: parent?.data?.component,
             parentId: parent?.data?.id,
         });
@@ -54,8 +55,11 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
     const onDrop = async ({ node, dragNode }: { node: TreeDataNode; dragNode: TreeDataNode }) => {
         const item = explosiveObject.classItem.collection.get(dragNode?.key as string);
         const parent = explosiveObject.classItem.collection.get(node?.key as string);
+        const classification = explosiveObject.class.collection.get(node?.key as string);
 
-        await item?.update.run({ parentId: parent?.id ?? null });
+        if (classification?.id === item?.data.classId || !item) return;
+
+        await item?.update.run(classification ? { parentId: null, classId: classification.id } : { parentId: parent?.id ?? null });
     };
 
     const treeData = useMemo(() => {
@@ -76,12 +80,9 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
                 });
             } else if (section && item.type !== TypeNodeClassification.Class) {
                 const parent = getByDeep(section, item.deep);
-                const isRoot = item.deep === 0;
-
                 const prev = list[index - 1];
                 const subTitle = prev.type === TypeNodeClassification.Class ? prev.displayName : undefined;
-                const text = subTitle ? `${item.displayName} (${subTitle})` : item.displayName;
-                const title = isRoot && subTitle ? <span css={s.title}>{text}</span> : text;
+                const title = subTitle && !!item.deep ? `${item.displayName} (${subTitle})` : item.displayName;
 
                 parent.children?.push({
                     title,
@@ -94,14 +95,59 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
         return res;
     }, [list]);
 
-    const titleRender = (node: TreeDataNode) => (
-        <div css={s.title}>
-            <Typography.Text onClick={(e) => onOpen(e, node)}>{node?.title as string}</Typography.Text>
-            <Icon.PlusOutlined type="danger" onClick={(e) => onCreate(e, node?.key as string)} />
-        </div>
-    );
+    const treeDataWithClasses = useMemo(() => {
+        const classifications: Record<string, Record<string, TreeDataNode[]>> = {};
+        const res: TreeDataNode = {
+            ...treeData,
+            children: treeData.children?.map((section) => {
+                section.children?.forEach((classItem) => {
+                    const item = explosiveObject.classItem.collection.get(classItem.key as string);
+                    const component = item?.data.component ?? '';
+                    const classId = item?.data.classId ?? '';
 
-    console.log('search?.searchBy', search?.searchBy);
+                    if (!classifications[component]) {
+                        classifications[component] = {};
+                    }
+
+                    if (!classifications[component][classId]) {
+                        classifications[component][classId] = [];
+                    }
+
+                    classifications[component][classId].push(classItem);
+                });
+
+                return {
+                    ...section,
+                    children: Object.keys(classifications)
+                        .map((component) => {
+                            const classItems = classifications[component];
+                            return Object.keys(classItems).map((classId) => {
+                                const classf = explosiveObject.class.collection.get(classId);
+                                return {
+                                    title: classf?.displayName,
+                                    key: classf?.id ?? '',
+                                    children: classItems[classId],
+                                };
+                            });
+                        })
+                        .flat(),
+                };
+            }),
+        };
+
+        return res;
+    }, [treeData]);
+
+    const titleRender = (node: TreeDataNode) => {
+        const item = explosiveObject.classItem.collection.get(node.key as string);
+
+        return (
+            <div css={s.title}>
+                <Typography.Text onClick={(e) => item && onOpen(e, node)}>{node?.title as string}</Typography.Text>
+                {<Icon.PlusOutlined type="danger" onClick={(e) => onCreate(e, node?.key as string)} />}
+            </div>
+        );
+    };
 
     return (
         <div css={s.container}>
@@ -111,7 +157,7 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
                 showIcon
                 defaultExpandedKeys={['0-0-0']}
                 onDrop={onDrop}
-                treeData={treeData.children}
+                treeData={treeDataWithClasses.children}
                 defaultExpandAll
                 draggable
                 titleRender={titleRender}

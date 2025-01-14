@@ -51,7 +51,8 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
                                     treeData={itemsOptions}
                                     onChange={onChange}
                                     value={selectedIds}
-                                    showCheckedStrategy={TreeSelect.SHOW_PARENT}
+                                    // showCheckedStrategy={TreeSelect.SHOW_PARENT}
+                                    multiple
                                     style={{ marginBottom: 0 }}
                                 />
                             </Form.Item>
