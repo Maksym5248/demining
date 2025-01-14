@@ -3,7 +3,7 @@ import {
     EmployeeAPI,
     EquipmentAPI,
     ExplosiveObjectAPI,
-    ExplosiveAPI,
+    ExplosiveDeviceAPI,
     MissionReportAPI,
     MissionRequestAPI,
     OrderAPI,
@@ -36,7 +36,7 @@ export const Api = {
     explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DB),
 
     explosiveObject: new ExplosiveObjectAPI(DB, services),
-    explosive: new ExplosiveAPI(DB),
+    explosiveDevice: new ExplosiveDeviceAPI(DB),
     missionReport: new MissionReportAPI(DB),
     missionRequest: new MissionRequestAPI(DB),
     order: new OrderAPI(DB),

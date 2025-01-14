@@ -2,9 +2,9 @@ import { type DOCUMENT_TYPE } from 'shared-my';
 
 import { type IExplosiveActionDTO, type IExplosiveActionDTOParams, type IExplosiveActionSumDTO } from '~/api';
 
-import { type IExplosiveData, createExplosive } from '../explosive/explosive.schema';
+import { type IExplosiveDeviceData, createExplosiveDevice } from '../explosive-device/explosive-device.schema';
 
-export interface IExplosiveActionData extends IExplosiveData {
+export interface IExplosiveDeviceActionData extends IExplosiveDeviceData {
     documentType: DOCUMENT_TYPE;
     documentId: string;
     explosiveId: string;
@@ -24,15 +24,15 @@ export interface IExplosiveActionSumValue {
     detonator: number;
 }
 
-export const createExplosiveActionDTO = (value: IExplosiveActionDataParams): IExplosiveActionDTOParams => ({
+export const createExplosiveDeviceActionDTO = (value: IExplosiveActionDataParams): IExplosiveActionDTOParams => ({
     id: value?.id,
     explosiveId: value?.explosiveId,
     quantity: value?.quantity ?? null,
     weight: value?.weight ?? null,
 });
 
-export const createExplosiveAction = (value: IExplosiveActionDTO): IExplosiveActionData => ({
-    ...createExplosive(value),
+export const createExplosiveDeviceAction = (value: IExplosiveActionDTO): IExplosiveDeviceActionData => ({
+    ...createExplosiveDevice(value),
     documentType: value?.documentType,
     documentId: value?.documentId,
     explosiveId: value?.explosiveId,
@@ -40,7 +40,7 @@ export const createExplosiveAction = (value: IExplosiveActionDTO): IExplosiveAct
     weight: value?.weight ?? undefined,
 });
 
-export const createExplosiveActionSum = (value: IExplosiveActionSumDTO): IExplosiveActionSumValue => ({
+export const createExplosiveDeviceActionSum = (value: IExplosiveActionSumDTO): IExplosiveActionSumValue => ({
     explosive: value.explosive,
     detonator: value.detonator,
 });

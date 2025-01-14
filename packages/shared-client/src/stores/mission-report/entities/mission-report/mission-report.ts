@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { toLower } from 'lodash';
 import { makeAutoObservable } from 'mobx';
-import { str, EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my';
+import { str, EQUIPMENT_TYPE, EXPLOSIVE_DEVICE_TYPE, TRANSPORT_TYPE } from 'shared-my';
 
 import { dates } from '~/common';
 import { type IPoint } from '~/map';
@@ -9,7 +9,7 @@ import { type IPoint } from '~/map';
 import { type IMissionReportData } from './mission-report.schema';
 import { type IEmployeeAction, type IEmployeeStore } from '../../../employee';
 import { type IEquipmentAction, type IEquipmentStore } from '../../../equipment';
-import { type IExplosiveAction, type IExplosiveStore } from '../../../explosive';
+import { type IExplosiveDeviceAction, type IExplosiveDeviceStore } from '../../../explosive-device';
 import { type IExplosiveObjectAction, type IExplosiveObjectStore } from '../../../explosive-object';
 import { type IMapViewAction, type IMapStore } from '../../../map';
 import { type IMissionRequest, type IMissionRequestStore } from '../../../mission-request';
@@ -30,7 +30,7 @@ export interface IMissionReport {
     squadLeaderAction: IEmployeeAction;
     squadActions: IEmployeeAction[];
     explosiveObjectActions: IExplosiveObjectAction[];
-    explosiveActions: IExplosiveAction[];
+    explosiveActions: IExplosiveDeviceAction[];
     docName: string;
     transportExplosiveObject?: ITransportAction;
     transportHumans?: ITransportAction;
@@ -77,7 +77,7 @@ export interface IMissionReport {
 }
 interface Stores {
     equipment: IEquipmentStore;
-    explosive: IExplosiveStore;
+    explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
@@ -154,7 +154,11 @@ export class MissionReport implements IMissionReport {
     }
 
     get explosiveActions() {
-        return this.data.explosiveActionsIds?.map(id => this.getStores().explosive.collectionActions.get(id) as IExplosiveAction) ?? [];
+        return (
+            this.data.explosiveActionsIds?.map(
+                id => this.getStores().explosiveDevice.collectionActions.get(id) as IExplosiveDeviceAction,
+            ) ?? []
+        );
     }
 
     get docName() {
@@ -215,8 +219,8 @@ export class MissionReport implements IMissionReport {
                 : 'з ---- по ----';
 
         const actNumber = `${number}${subNumber ? `/${subNumber}` : ''}`;
-        const explosive = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
-        const detonator = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_TYPE.DETONATOR);
+        const explosive = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE);
+        const detonator = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_DEVICE_TYPE.DETONATOR);
 
         return {
             approvedAt: getDate(approvedAt),

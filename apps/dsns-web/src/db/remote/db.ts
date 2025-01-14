@@ -9,8 +9,8 @@ import {
     type IEmployeeDB,
     type IEquipmentActionDB,
     type IEquipmentDB,
-    type IExplosiveActionDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceActionDB,
+    type IExplosiveDeviceDB,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
     type IMapViewActionDB,
@@ -72,7 +72,7 @@ export class DBRemote implements IDB {
 
     explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
 
-    explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
+    explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], getCreateData);
 
     /** ORGANIZATION SUBCOLLECTION */
     employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ['firstName', 'lastName', 'surname', 'position'], getCreateData);
@@ -89,7 +89,7 @@ export class DBRemote implements IDB {
 
     explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION, [], getCreateData);
 
-    explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, [], getCreateData);
+    explosiveDeviceAction = new DBBase<IExplosiveDeviceActionDB>(TABLES.EXPLOSIVE_DEVICE_ACTION, [], getCreateData);
 
     transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ['name', 'number'], getCreateData);
 
@@ -123,7 +123,7 @@ export class DBRemote implements IDB {
         this.equipment.setRootCollection(rootCollection);
         this.equipmentAction.setRootCollection(rootCollection);
         this.document.setRootCollection(rootCollection);
-        this.explosiveAction.setRootCollection(rootCollection);
+        this.explosiveDeviceAction.setRootCollection(rootCollection);
     }
 
     removeOrganizationId() {
@@ -139,7 +139,7 @@ export class DBRemote implements IDB {
         this.equipment.removeRootCollection();
         this.equipmentAction.removeRootCollection();
         this.document.removeRootCollection();
-        this.explosiveAction.removeRootCollection();
+        this.explosiveDeviceAction.removeRootCollection();
 
         organizationId = null;
     }
@@ -163,7 +163,7 @@ export class DBRemote implements IDB {
         this.equipment.setBatch(batch);
         this.equipmentAction.setBatch(batch);
         this.document.setBatch(batch);
-        this.explosiveAction.setBatch(batch);
+        this.explosiveDeviceAction.setBatch(batch);
     }
 
     batchStart() {

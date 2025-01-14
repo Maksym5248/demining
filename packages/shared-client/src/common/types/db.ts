@@ -3,7 +3,7 @@ import {
     type IBaseDB,
     type Timestamp,
     type IExplosiveObjectDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceDB,
     type IEmployeeDB,
     type IEmployeeActionDB,
     type IMapViewActionDB,
@@ -16,7 +16,7 @@ import {
     type IEquipmentDB,
     type IEquipmentActionDB,
     type IDocumentDB,
-    type IExplosiveActionDB,
+    type IExplosiveDeviceActionDB,
     type IUserDB,
 } from 'shared-my';
 
@@ -61,7 +61,7 @@ export interface IDB {
     user: IDBBase<IUserDB>;
     organization: IDBBase<IOrganizationDB>;
     explosiveObject: IDBBase<IExplosiveObjectDB>;
-    explosive: IDBBase<IExplosiveDB>;
+    explosiveDevice: IDBBase<IExplosiveDeviceDB>;
     employee: IDBBase<IEmployeeDB>;
     employeeAction: IDBBase<IEmployeeActionDB>;
     mapViewAction: IDBBase<IMapViewActionDB>;
@@ -74,7 +74,7 @@ export interface IDB {
     equipment: IDBBase<IEquipmentDB>;
     equipmentAction: IDBBase<IEquipmentActionDB>;
     document: IDBBase<IDocumentDB>;
-    explosiveAction: IDBBase<IExplosiveActionDB>;
+    explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
     batchStart(): void;
     batchCommit(): Promise<void>;
     init(): void;

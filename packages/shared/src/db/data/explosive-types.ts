@@ -1,12 +1,12 @@
-import { EXPLOSIVE_TYPE } from '../enum';
+import { EXPLOSIVE_DEVICE_TYPE } from '../enum';
 
 export const explosiveTypeData = [
     {
         label: 'Вибухова речовна',
-        value: EXPLOSIVE_TYPE.EXPLOSIVE,
+        value: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
     },
     {
         label: 'Засіб підриву',
-        value: EXPLOSIVE_TYPE.DETONATOR,
+        value: EXPLOSIVE_DEVICE_TYPE.DETONATOR,
     },
 ];

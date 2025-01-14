@@ -1,36 +1,36 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 
-import { type IExplosiveAPI, type IExplosiveActionSumDTO } from '~/api';
+import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import {
-    type IExplosive,
-    type IExplosiveData,
-    type IExplosiveActionData,
-    type IExplosiveAction,
-    createExplosive,
-    createExplosiveDTO,
-    Explosive,
-    ExplosiveAction,
-    createExplosiveActionSum,
+    type IExplosiveDevice,
+    type IExplosiveDeviceData,
+    type IExplosiveDeviceActionData,
+    type IExplosiveDeviceAction,
+    createExplosiveDevice,
+    createExplosiveDeviceDTO,
+    ExplosiveDevice,
+    ExplosiveDeviceAction,
+    createExplosiveDeviceActionSum,
 } from './entities';
-import { SumExplosiveActions } from './sum-explosive-actions';
+import { SumExplosiveDeviceActions } from './sum-explosive-actions';
 import { type IViewerStore } from '../viewer';
 
-export interface IExplosiveStore {
-    collectionActions: CollectionModel<IExplosiveAction, IExplosiveActionData>;
-    collection: CollectionModel<IExplosive, IExplosiveData>;
-    list: ListModel<IExplosive, IExplosiveData>;
-    sum: SumExplosiveActions;
+export interface IExplosiveDeviceStore {
+    collectionActions: CollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData>;
+    collection: CollectionModel<IExplosiveDevice, IExplosiveDeviceData>;
+    list: ListModel<IExplosiveDevice, IExplosiveDeviceData>;
+    sum: SumExplosiveDeviceActions;
     setSum(sum: IExplosiveActionSumDTO): void;
-    explosiveItems: IExplosive[];
-    detonatorItems: IExplosive[];
-    create: RequestModel<[ICreateValue<IExplosiveData>]>;
+    explosiveItems: IExplosiveDevice[];
+    detonatorItems: IExplosiveDevice[];
+    create: RequestModel<[ICreateValue<IExplosiveDeviceData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
     fetchMoreList: RequestModel<[search?: string]>;
@@ -39,7 +39,7 @@ export interface IExplosiveStore {
 }
 
 interface IApi {
-    explosive: IExplosiveAPI;
+    explosiveDevice: IExplosiveDeviceAPI;
 }
 
 interface IStores {
@@ -50,19 +50,19 @@ interface IServices {
     message: IMessage;
 }
 
-export class ExplosiveStore implements IExplosiveStore {
+export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
     api: IApi;
     services: IServices;
     getStores: () => IStores;
 
-    collectionActions = new CollectionModel<IExplosiveAction, IExplosiveActionData>({
-        factory: (data: IExplosiveActionData) => new ExplosiveAction(data, this),
+    collectionActions = new CollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData>({
+        factory: (data: IExplosiveDeviceActionData) => new ExplosiveDeviceAction(data, this),
     });
-    collection = new CollectionModel<IExplosive, IExplosiveData>({
-        factory: (data: IExplosiveData) => new Explosive(data, this),
+    collection = new CollectionModel<IExplosiveDevice, IExplosiveDeviceData>({
+        factory: (data: IExplosiveDeviceData) => new ExplosiveDevice(data, this),
     });
-    list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
-    sum: SumExplosiveActions = new SumExplosiveActions();
+    list = new ListModel<IExplosiveDevice, IExplosiveDeviceData>({ collection: this.collection });
+    sum: SumExplosiveDeviceActions = new SumExplosiveDeviceActions();
 
     constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.api = params.api;
@@ -73,22 +73,22 @@ export class ExplosiveStore implements IExplosiveStore {
     }
 
     setSum(sum: IExplosiveActionSumDTO) {
-        this.sum = createExplosiveActionSum(sum);
+        this.sum = createExplosiveDeviceActionSum(sum);
     }
 
     get explosiveItems() {
-        return this.list.asArray.filter(el => el.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
+        return this.list.asArray.filter(el => el.data.type === EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE);
     }
 
     get detonatorItems() {
-        return this.list.asArray.filter(el => el.data.type === EXPLOSIVE_TYPE.DETONATOR);
+        return this.list.asArray.filter(el => el.data.type === EXPLOSIVE_DEVICE_TYPE.DETONATOR);
     }
 
     create = new RequestModel({
-        run: async (data: ICreateValue<IExplosiveData>) => {
-            const res = await this.api.explosive.create(createExplosiveDTO(data));
+        run: async (data: ICreateValue<IExplosiveDeviceData>) => {
+            const res = await this.api.explosiveDevice.create(createExplosiveDeviceDTO(data));
 
-            this.list.unshift(createExplosive(res));
+            this.list.unshift(createExplosiveDevice(res));
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -96,7 +96,7 @@ export class ExplosiveStore implements IExplosiveStore {
 
     remove = new RequestModel({
         run: async (id: string) => {
-            await this.api.explosive.remove(id);
+            await this.api.explosiveDevice.remove(id);
             this.collection.remove(id);
         },
         onSuccuss: () => this.services.message.success('Видалено успішно'),
@@ -105,41 +105,41 @@ export class ExplosiveStore implements IExplosiveStore {
 
     fetchList = new RequestModel({
         run: async (search?: string) => {
-            const res = await this.api.explosive.getList({
+            const res = await this.api.explosiveDevice.getList({
                 search,
                 limit: this.list.pageSize,
             });
 
-            this.list.set(res.map(createExplosive));
+            this.list.set(res.map(createExplosiveDevice));
         },
     });
 
     fetchMoreList = new RequestModel({
         shouldRun: () => this.list.isMorePages,
         run: async (search?: string) => {
-            const res = await this.api.explosive.getList({
+            const res = await this.api.explosiveDevice.getList({
                 search,
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.list.push(res.map(createExplosive));
+            this.list.push(res.map(createExplosiveDevice));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchItem = new RequestModel({
         run: async (id: string) => {
-            const res = await this.api.explosive.get(id);
+            const res = await this.api.explosiveDevice.get(id);
 
-            this.collection.set(res.id, createExplosive(res));
+            this.collection.set(res.id, createExplosiveDevice(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
     fetchSum = new RequestModel({
         run: async (startDate: Dayjs, endDate: Dayjs) => {
-            const res = await this.api.explosive.sum({
+            const res = await this.api.explosiveDevice.sum({
                 where: {
                     executedAt: {
                         '>=': dates.toDateServer(startDate),

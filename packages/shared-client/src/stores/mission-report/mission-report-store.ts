@@ -21,7 +21,7 @@ import {
 } from './entities';
 import { type IEmployeeStore, createEmployeeAction } from '../employee';
 import { type IEquipmentStore, createEquipmentAction } from '../equipment';
-import { type IExplosiveStore, createExplosiveAction } from '../explosive';
+import { type IExplosiveDeviceStore, createExplosiveDeviceAction } from '../explosive-device';
 import { type IExplosiveObjectStore, createExplosiveObjectAction } from '../explosive-object';
 import { createMapView, type IMapStore } from '../map';
 import { type ITransportStore, createTransportAction } from '../transport';
@@ -49,7 +49,7 @@ export interface IMissionReportStore {
 
 interface Stores {
     equipment: IEquipmentStore;
-    explosive: IExplosiveStore;
+    explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
@@ -102,7 +102,7 @@ export class MissionReportStore implements IMissionReportStore {
         this.getStores().explosiveObject.collectionActions.setArr(data.explosiveObjectActions.map(createExplosiveObjectAction));
         this.getStores().transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
         this.getStores().equipment.collectionActions.setArr(data.equipmentActions.map(createEquipmentAction));
-        this.getStores().explosive.collectionActions.setArr(data.explosiveActions.map(createExplosiveAction));
+        this.getStores().explosiveDevice.collectionActions.setArr(data.explosiveActions.map(createExplosiveDeviceAction));
         this.getStores().order.collection.set(data.order.id, createOrder(data.order));
         this.getStores().missionRequest.collection.set(data.missionRequest.id, createMissionRequest(data.missionRequest));
         this.collection.set(data.id, createMissionReport(data));

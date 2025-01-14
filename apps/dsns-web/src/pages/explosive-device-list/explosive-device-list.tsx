@@ -2,27 +2,27 @@ import React, { useEffect } from 'react';
 
 import { Button, Typography, Space, Badge } from 'antd';
 import { observer } from 'mobx-react';
-import { EXPLOSIVE_TYPE } from 'shared-my';
-import { type IExplosive } from 'shared-my-client';
+import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { type IExplosiveDevice } from 'shared-my-client';
 
 import { Icon, List, ListHeader } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
 
-import { s } from './explosive-list.styles';
+import { s } from './explosive-device-list.styles';
 
 const { Text } = Typography;
 
 const types = {
-    [EXPLOSIVE_TYPE.EXPLOSIVE]: 'Вибухові речовини',
-    [EXPLOSIVE_TYPE.DETONATOR]: 'Засоб підриву',
+    [EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE]: 'Вибухові речовини',
+    [EXPLOSIVE_DEVICE_TYPE.DETONATOR]: 'Засоб підриву',
 };
 
-const ListItem = observer(({ item }: { item: IExplosive }) => {
+const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
     const onOpen = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        Modal.show(MODALS.EXPLOSIVE_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW });
+        Modal.show(MODALS.EXPLOSIVE_DEVICE_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW });
     };
 
     const children = (
@@ -49,33 +49,33 @@ const ListItem = observer(({ item }: { item: IExplosive }) => {
 });
 
 export const ExplosiveListPage = observer(() => {
-    const { explosive } = useStore();
+    const { explosiveDevice } = useStore();
     const title = useRouteTitle();
     const search = useSearch();
 
     const onCreate = () => {
-        Modal.show(MODALS.EXPLOSIVE_WIZARD, { mode: WIZARD_MODE.CREATE });
+        Modal.show(MODALS.EXPLOSIVE_DEVICE_WIZARD, { mode: WIZARD_MODE.CREATE });
     };
 
     const onSearch = (value: string) => {
         search.updateSearchParams(value);
-        explosive.fetchList.run(value);
+        explosiveDevice.fetchList.run(value);
     };
 
     const onLoadMore = () => {
-        explosive.fetchMoreList.run(search.searchValue);
+        explosiveDevice.fetchMoreList.run(search.searchValue);
     };
 
     useEffect(() => {
-        explosive.fetchList.run(search.searchValue);
+        explosiveDevice.fetchList.run(search.searchValue);
     }, []);
 
     return (
         <List
-            loading={explosive.fetchList.isLoading}
-            loadingMore={explosive.fetchMoreList.isLoading}
-            isReachedEnd={!explosive.list.isMorePages}
-            dataSource={explosive.list.asArray}
+            loading={explosiveDevice.fetchList.isLoading}
+            loadingMore={explosiveDevice.fetchMoreList.isLoading}
+            isReachedEnd={!explosiveDevice.list.isMorePages}
+            dataSource={explosiveDevice.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
             renderItem={item => <ListItem item={item} />}

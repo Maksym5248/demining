@@ -10,7 +10,7 @@ import {
     type MIME_TYPE,
     type ASSET_TYPE,
     type MISSION_REQUEST_TYPE,
-    type EXPLOSIVE_TYPE,
+    type EXPLOSIVE_DEVICE_TYPE,
     type RANKS,
 } from '../enum';
 
@@ -145,13 +145,13 @@ export interface IDocumentDB extends IBaseDB {
     authorId: string;
 }
 
-export interface IExplosiveDB extends IBaseDB {
+export interface IExplosiveDeviceDB extends IBaseDB {
     name: string;
-    type: EXPLOSIVE_TYPE;
+    type: EXPLOSIVE_DEVICE_TYPE;
     authorId: string;
 }
 
-export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {
+export interface IExplosiveDeviceActionDB extends IExplosiveDeviceDB, ILinkedToDocumentDB {
     explosiveId: string;
     weight: number | null /* in kilograms */;
     quantity: number | null;

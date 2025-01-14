@@ -12,8 +12,8 @@ import {
     type ITransportDB,
     type IEquipmentDB,
     type IExplosiveObjectDB,
-    type IExplosiveActionDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceActionDB,
+    type IExplosiveDeviceDB,
     type IOrderDB,
     type IMissionRequestDB,
 } from 'shared-my';
@@ -54,7 +54,7 @@ interface INewActions {
         id?: string;
     })[];
     explosiveObjectActions: (Omit<IExplosiveObjectActionDB, 'id' | 'createdAt' | 'updatedAt' | 'authorId'> & { id?: string })[];
-    explosiveActions: (Omit<IExplosiveActionDB, 'id' | 'createdAt' | 'updatedAt' | 'authorId'> & {
+    explosiveActions: (Omit<IExplosiveDeviceActionDB, 'id' | 'createdAt' | 'updatedAt' | 'authorId'> & {
         id?: string;
     })[];
 }
@@ -65,7 +65,7 @@ interface IPrevActions {
     transportActions: ITransportActionDB[];
     equipmentActions: IEquipmentActionDB[];
     explosiveObjectActions: IExplosiveObjectActionDB[];
-    explosiveActions: IExplosiveActionDB[];
+    explosiveActions: IExplosiveDeviceActionDB[];
 }
 
 export interface IRemoveList {
@@ -110,8 +110,8 @@ export class MissionReportAPI implements IMissionReportAPI {
             explosiveObject: IDBBase<IExplosiveObjectDB>;
             equipmentAction: IDBBase<IEquipmentActionDB>;
             equipment: IDBBase<IEquipmentDB>;
-            explosiveAction: IDBBase<IExplosiveActionDB>;
-            explosive: IDBBase<IExplosiveDB>;
+            explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
+            explosiveDevice: IDBBase<IExplosiveDeviceDB>;
             batchCommit: () => Promise<void>;
             batchStart: () => void;
         },
@@ -123,7 +123,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         actions.equipmentActions.map(el => this.db.equipmentAction.batchCreate(el));
         actions.transportActions.map(el => this.db.transportAction.batchCreate(el));
         actions.explosiveObjectActions.map(el => this.db.explosiveObjectAction.batchCreate(el));
-        actions.explosiveActions.map(el => this.db.explosiveAction.batchCreate(el));
+        actions.explosiveActions.map(el => this.db.explosiveDeviceAction.batchCreate(el));
     };
 
     batchRemoveActions = async (actions: IPrevActions) => {
@@ -132,7 +132,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         actions.equipmentActions.map(el => this.db.equipmentAction.batchRemove(el.id));
         actions.transportActions.map(el => this.db.transportAction.batchRemove(el.id));
         actions.explosiveObjectActions.map(el => this.db.explosiveObjectAction.batchRemove(el.id));
-        actions.explosiveActions.map(el => this.db.explosiveAction.batchRemove(el.id));
+        actions.explosiveActions.map(el => this.db.explosiveDeviceAction.batchRemove(el.id));
     };
 
     batchUpdateActions = async (actions: IPrevActions) => {
@@ -141,7 +141,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         actions.equipmentActions.map(el => this.db.equipmentAction.batchUpdate(el.id, el));
         actions.transportActions.map(el => this.db.transportAction.batchUpdate(el.id, el));
         actions.explosiveObjectActions.map(el => this.db.explosiveObjectAction.batchUpdate(el.id, el));
-        actions.explosiveActions.map(el => this.db.explosiveAction.batchUpdate(el.id, el));
+        actions.explosiveActions.map(el => this.db.explosiveDeviceAction.batchUpdate(el.id, el));
     };
 
     get = async (id: string): Promise<IMissionReportDTO> => {
@@ -189,7 +189,7 @@ export class MissionReportAPI implements IMissionReportAPI {
                 },
                 limit: 1,
             }),
-            this.db.explosiveAction.select(query),
+            this.db.explosiveDeviceAction.select(query),
         ]);
 
         const [signedByActionOrder] = signedByActionOrderArr;
@@ -248,7 +248,7 @@ export class MissionReportAPI implements IMissionReportAPI {
             this.db.transportAction.removeBy(query),
             this.db.explosiveObjectAction.removeBy(query),
             this.db.equipmentAction.removeBy(query),
-            this.db.explosiveAction.removeBy(query),
+            this.db.explosiveDeviceAction.removeBy(query),
         ]);
     };
 
@@ -302,7 +302,7 @@ export class MissionReportAPI implements IMissionReportAPI {
                   })
                 : [],
             explosiveIds.length
-                ? this.db.explosive.select({
+                ? this.db.explosiveDevice.select({
                       where: {
                           id: { in: explosiveIds },
                       },
@@ -348,7 +348,8 @@ export class MissionReportAPI implements IMissionReportAPI {
         );
 
         const explosiveActions =
-            explosiveActionsValue?.map(el => createAction<IExplosiveActionDB, IExplosiveDB>(el.explosiveId, el, explosives)) ?? [];
+            explosiveActionsValue?.map(el => createAction<IExplosiveDeviceActionDB, IExplosiveDeviceDB>(el.explosiveId, el, explosives)) ??
+            [];
 
         return {
             mapView,

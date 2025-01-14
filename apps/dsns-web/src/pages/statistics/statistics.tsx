@@ -40,14 +40,14 @@ export const HomePage = observer(() => {
 
     useEffect(() => {
         store.explosiveObject.fetchSum.run(startDate, endDate);
-        store.explosive.fetchSum.run(startDate, endDate);
+        store.explosiveDevice.fetchSum.run(startDate, endDate);
         store.missionReport.fetchSum.run(startDate, endDate);
         store.missionRequest.fetchSum.run(startDate, endDate);
     }, [startDate, endDate]);
 
     const isLoading =
         store.explosiveObject.fetchSum.isLoading ||
-        store.explosive.fetchSum.isLoading ||
+        store.explosiveDevice.fetchSum.isLoading ||
         store.missionReport.fetchSum.isLoading ||
         store.missionRequest.fetchSum.isLoading;
 
@@ -64,8 +64,8 @@ export const HomePage = observer(() => {
                     <p>Знищено: {store.explosiveObject.sum.destroyed}</p>
                 </Card>
                 <Card title="ВР та ЗП" css={s.card}>
-                    <p>ВР: {store.explosive.sum.explosive} кг.</p>
-                    <p>ЗП: {store.explosive.sum.detonator} од.</p>
+                    <p>ВР: {store.explosiveDevice.sum.explosive} кг.</p>
+                    <p>ЗП: {store.explosiveDevice.sum.detonator} од.</p>
                 </Card>
                 <Card title="Виконано" css={s.card}>
                     <p>Акт: {store.missionReport.sum.total}</p>

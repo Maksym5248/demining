@@ -15,8 +15,8 @@ import {
     type IUserDB,
     type IOrganizationDB,
     type IDocumentDB,
-    type IExplosiveActionDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceActionDB,
+    type IExplosiveDeviceDB,
     type IPointDB,
     type IAddressDB,
     type Timestamp,
@@ -54,9 +54,9 @@ export interface IExplosiveObjectActionSumDTO {
     destroyed: number;
 }
 
-export type IExplosiveDTO = IExplosiveDB;
+export type IExplosiveDeviceDTO = IExplosiveDeviceDB;
 
-export type IExplosiveActionDTO = IExplosiveActionDB;
+export type IExplosiveActionDTO = IExplosiveDeviceActionDB;
 
 export interface IExplosiveActionSumDTO {
     explosive: number;

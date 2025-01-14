@@ -1,14 +1,14 @@
 import { Form, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
 import { WizardButtons, Select, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
-import { s } from './explosive-wizard.style';
-import { type IExplosiveForm } from './explosive-wizard.types';
+import { s } from './explosive-device-wizard.style';
+import { type IExplosiveForm } from './explosive-device-wizard.types';
 
 interface Props {
     id?: string;
@@ -20,24 +20,24 @@ interface Props {
 const typeOptions = [
     {
         label: 'Вибухова речовна',
-        value: EXPLOSIVE_TYPE.EXPLOSIVE,
+        value: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
     },
     {
         label: 'Засіб підриву',
-        value: EXPLOSIVE_TYPE.DETONATOR,
+        value: EXPLOSIVE_DEVICE_TYPE.DETONATOR,
     },
 ];
 
-export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
+export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const store = useStore();
     const wizard = useWizard({ id, mode });
 
-    const { isLoading, item } = useItemStore(store.explosive, id as string);
+    const { isLoading, item } = useItemStore(store.explosiveDevice, id as string);
 
     const isEdit = !!id;
 
     const onFinishCreate = async (values: IExplosiveForm) => {
-        await store.explosive.create.run(values);
+        await store.explosiveDevice.create.run(values);
         hide();
     };
 
@@ -47,7 +47,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     };
 
     const onRemove = async () => {
-        !!id && store.explosive.remove.run(id);
+        !!id && store.explosiveDevice.remove.run(id);
         hide();
     };
 
@@ -71,7 +71,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item.data } : { type: EXPLOSIVE_TYPE.EXPLOSIVE }}>
+                    initialValues={item ? { ...item.data } : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }}>
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={typeOptions} />
                     </Form.Item>

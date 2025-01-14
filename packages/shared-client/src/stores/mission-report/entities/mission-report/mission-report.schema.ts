@@ -10,7 +10,7 @@ import {
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { createExplosiveObjectActionDTO } from '~/stores';
-import { type IExplosiveActionDataParams, createExplosiveActionDTO } from '~/stores/explosive';
+import { type IExplosiveActionDataParams, createExplosiveDeviceActionDTO } from '~/stores';
 import { type IMapViewActionDataParams, createMapViewDTO } from '~/stores/map';
 
 import { type IAddressData, createAddress, createAddressDTO } from '../address';
@@ -99,9 +99,9 @@ export const createMissionReportDTO = (value: ICreateValue<IMissionReportDataPar
     workEnd: dates.toDateServer(value.workEnd),
     transportExplosiveObjectId: value.transportExplosiveObjectId,
     transportHumansId: value.transportHumansId,
-    mineDetectorId: value?.mineDetectorId,
-    explosiveObjectActions: value.explosiveObjectActions.map(el => createExplosiveObjectActionDTO(el)) ?? [],
-    explosiveActions: value.explosiveActions?.map(el => createExplosiveActionDTO(el)) ?? [],
+    mineDetectorId: value.mineDetectorId,
+    explosiveObjectActions: value.explosiveObjectActions.map(el => createExplosiveObjectActionDTO(el)),
+    explosiveActions: value.explosiveActions?.map(el => createExplosiveDeviceActionDTO(el)) ?? [],
     squadLeaderId: value.squadLeaderId,
     squadIds: value.squadIds,
     address: value.address ?? '',
