@@ -53,7 +53,9 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
 
     const onDrop = async ({ node, dragNode }: { node: TreeDataNode; dragNode: TreeDataNode }) => {
         const item = explosiveObject.classItem.collection.get(dragNode?.key as string);
-        await item?.update.run({ parentId: node?.key as string });
+        const parent = explosiveObject.classItem.collection.get(node?.key as string);
+
+        await item?.update.run({ parentId: parent?.id ?? null });
     };
 
     const treeData = useMemo(() => {
@@ -74,11 +76,15 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
                 });
             } else if (section && item.type !== TypeNodeClassification.Class) {
                 const parent = getByDeep(section, item.deep);
+                const isRoot = item.deep === 0;
+
                 const prev = list[index - 1];
                 const subTitle = prev.type === TypeNodeClassification.Class ? prev.displayName : undefined;
+                const text = subTitle ? `${item.displayName} (${subTitle})` : item.displayName;
+                const title = isRoot && subTitle ? <span css={s.title}>{text}</span> : text;
 
                 parent.children?.push({
-                    title: subTitle ? `${item.displayName} (${subTitle})` : item.displayName,
+                    title,
                     key: item.id,
                     children: [],
                 });

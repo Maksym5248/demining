@@ -25,11 +25,11 @@ const container = Theme.css(`
     gap: 8px;   
 `);
 
-const title = Theme.css(`
-    display: flex;
-    flex: 1;
-    gap: 8px;   
-`);
+const title = Theme.css(
+    (theme) => `
+    color: ${theme.token.blue};  
+`,
+);
 
 export const s = {
     container,

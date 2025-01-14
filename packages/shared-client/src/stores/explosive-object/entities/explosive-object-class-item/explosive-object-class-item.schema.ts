@@ -7,6 +7,7 @@ export interface IExplosiveObjectClassItemData {
     id: string;
     name: string;
     shortName: string;
+    description: string;
     classId: string;
     typeId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
@@ -16,6 +17,7 @@ export interface IExplosiveObjectClassItemData {
 export const createExplosiveObjectClassItem = (value: IExplosiveObjectClassItemDTO): IExplosiveObjectClassItemData => ({
     id: value.id,
     name: value.name,
+    description: value.description ?? '',
     classId: value.classId,
     typeId: value.typeId,
     component: value.component,
@@ -28,6 +30,7 @@ export const createExplosiveObjectClassItemDTO = (
 ): ICreateValue<IExplosiveObjectClassItemDTO> => ({
     name: value.name,
     shortName: value.shortName ?? '',
+    description: value.description ?? '',
     classId: value.classId,
     typeId: value.typeId,
     component: value.component,
@@ -38,6 +41,7 @@ export const updateExplosiveObjectClassItemDTO = data.createUpdateDTO<IExplosive
     (value) => ({
         name: value.name ?? '',
         shortName: value.shortName ?? '',
+        description: value.description ?? '',
         classId: value.classId ?? '',
         typeId: value.typeId ?? '',
         component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,

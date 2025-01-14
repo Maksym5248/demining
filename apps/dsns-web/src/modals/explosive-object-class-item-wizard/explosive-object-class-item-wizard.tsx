@@ -1,4 +1,5 @@
 import { Form, Drawer, Input, Spin } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import { observer } from 'mobx-react-lite';
 import { type EXPLOSIVE_OBJECT_COMPONENT, explosiveObjectComponentData } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
@@ -35,6 +36,7 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                 ...values,
                 typeId,
                 parentId: values.parentId || null,
+                description: values.description || '',
             });
             hide();
         };
@@ -110,6 +112,9 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                         </Form.Item>
                         <Form.Item label="Скорочена назва" name="shortName">
                             <Input placeholder="Введіть дані" />
+                        </Form.Item>
+                        <Form.Item label="Опис" name="description">
+                            <TextArea placeholder="Введіть дані" maxLength={300} />
                         </Form.Item>
                         <WizardFooter
                             {...wizard}

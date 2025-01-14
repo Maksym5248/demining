@@ -13,6 +13,7 @@ import {
 
 export interface IClassifications {
     init(): void;
+    get(id?: string): INode;
     create(item: IExplosiveObjectClassItem): void;
     remove(id: string): void;
     move(id: string, newParentId?: string | null, oldParentId?: string | null): void;
@@ -70,7 +71,8 @@ class Node implements INode {
         reaction(
             () => this.item.data.parentId, // The reactive expression
             (newValue, oldValue) => {
-                this.classifications.move(this.item.data.id, newValue, oldValue);
+                const parentId = this.classifications.get(newValue ?? '') ? newValue : null;
+                this.classifications.move(this.item.data.id, parentId, oldValue);
             },
         );
     }
@@ -153,12 +155,16 @@ export class Classifications implements IClassifications {
 
         if (item.item.data.parentId) {
             const parent = this.getNode(item.item.data.parentId);
-            parent.add(item);
+            parent?.add(item);
         } else if (this.roots[item.item.data.typeId]) {
             this.roots[item.item.data.typeId].push(item);
         } else {
             this.roots[item.item.data.typeId] = [item];
         }
+    }
+
+    get(id: string) {
+        return this.getNode(id);
     }
 
     getBy(params: { typeId: string; component?: EXPLOSIVE_OBJECT_COMPONENT }) {
@@ -218,12 +224,12 @@ export class Classifications implements IClassifications {
 
         if (oldParentId) {
             const parent = this.getNode(oldParentId);
-            parent.remove(id);
+            parent?.remove(id);
         }
 
         if (newParentId) {
             const newParent = this.getNode(newParentId);
-            newParent.add(item);
+            newParent?.add(item);
         } else {
             this.roots[item.item.data.typeId].push(item);
         }
@@ -243,10 +249,18 @@ export class Classifications implements IClassifications {
             const prev = res[res.length - 1];
 
             if (item.component === EXPLOSIVE_OBJECT_COMPONENT.AMMO && !sections.includes(item.component)) {
-                res.push({ id: 'ammo', displayName: 'Боєприпаси', type: TypeNodeClassification.Section } as ISectionNode);
+                res.push({
+                    id: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+                    displayName: 'Боєприпаси',
+                    type: TypeNodeClassification.Section,
+                } as ISectionNode);
                 sections.push(item.component);
             } else if (item.component === EXPLOSIVE_OBJECT_COMPONENT.FUSE && !sections.includes(item.component)) {
-                res.push({ id: 'fuse', displayName: 'Підривники', type: TypeNodeClassification.Section } as ISectionNode);
+                res.push({
+                    id: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
+                    displayName: 'Підривники',
+                    type: TypeNodeClassification.Section,
+                } as ISectionNode);
                 sections.push(item.component);
             }
 
