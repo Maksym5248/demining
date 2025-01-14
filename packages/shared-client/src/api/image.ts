@@ -33,12 +33,12 @@ export const updateImage = async ({
         assetStorage: IAssetStorage;
     };
 }): Promise<string | null> => {
-    const imageUriInternal = imageUri;
+    let imageUriInternal = imageUri;
 
     if (image) {
         const id = uuid();
         await services.assetStorage.image.save(id, image);
-        imageUri = await services.assetStorage.image.getFileUrl(id);
+        imageUriInternal = await services.assetStorage.image.getFileUrl(id);
     }
 
     return imageUriInternal;

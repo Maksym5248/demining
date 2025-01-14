@@ -35,6 +35,7 @@ export interface IExplosiveObjectClassDB extends IBaseDB {
 export interface IExplosiveObjectClassItemDB extends IBaseDB {
     id: string;
     name: string;
+    shortName: string;
     description?: string;
     classId: string;
     typeId: string;

@@ -108,6 +108,9 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                         <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                             <Input placeholder="Введіть дані" />
                         </Form.Item>
+                        <Form.Item label="Скорочена назва" name="shortName">
+                            <Input placeholder="Введіть дані" />
+                        </Form.Item>
                         <WizardFooter
                             {...wizard}
                             onCancel={hide}
