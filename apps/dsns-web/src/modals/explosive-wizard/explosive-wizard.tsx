@@ -104,7 +104,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                             } | null;
 
                             return (
-                                <Form.Item label="Швидкість детонації, м/c" name="detonation">
+                                <Form.Item label="Швидкість детонації, м/c">
                                     <InputNumber
                                         onChange={(velocity) => setFieldValue('detonation', { velocity })}
                                         value={detonation?.velocity}
