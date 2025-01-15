@@ -48,7 +48,7 @@ const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
     );
 });
 
-export const ExplosiveListPage = observer(() => {
+export const ExplosiveDeviceListPage = observer(() => {
     const { explosiveDevice } = useStore();
     const title = useRouteTitle();
     const search = useSearch();

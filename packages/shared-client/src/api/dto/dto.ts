@@ -22,6 +22,7 @@ import {
     type Timestamp,
     type IRankDB,
     type IExplosiveObjectTypeDB,
+    type IExplosiveDB,
 } from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
@@ -190,4 +191,10 @@ export type ICreateOrganizationMembersDTO = Pick<IOrganizationDB, 'membersIds'>;
 export interface IGetAllInRectParams {
     topLeft: IPointDB;
     bottomRight: IPointDB;
+}
+
+export type IExplosiveDTO = IExplosiveDB;
+
+export interface IExplosiveDTOParams extends Omit<IExplosiveDTO, 'imageUri'> {
+    image?: File;
 }

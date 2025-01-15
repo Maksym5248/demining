@@ -23,6 +23,7 @@ import {
     type IUserDB,
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
+    type IExplosiveDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -73,6 +74,8 @@ export class DBRemote implements IDB {
     explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
 
     explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], getCreateData);
+
+    explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
     /** ORGANIZATION SUBCOLLECTION */
     employee = new DBBase<IEmployeeDB>(TABLES.EMPLOYEE, ['firstName', 'lastName', 'surname', 'position'], getCreateData);

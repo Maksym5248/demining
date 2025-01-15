@@ -21,12 +21,13 @@ import {
     OrganizationsListPage,
     MembersListPage,
     TemplatesListPage,
-    ExplosiveListPage,
+    ExplosiveDeviceListPage,
     HomePage,
     MapPage,
     ExplosiveObjectTypesPage,
     ExplosiveObjectClassPage,
     ExplosiveObjectClassItemTreePage,
+    ExplosiveListPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
@@ -82,10 +83,6 @@ const router = createBrowserRouter([
                                     Component: EmployeesListPage,
                                 },
                                 {
-                                    path: ROUTES.EXPLOSIVE_LIST,
-                                    Component: ExplosiveListPage,
-                                },
-                                {
                                     path: ROUTES.TRANSPORT_LIST,
                                     Component: TransportListPage,
                                 },
@@ -101,14 +98,24 @@ const router = createBrowserRouter([
                             <ViewOrganization />,
                         ),
                         nav.withAccess(
-                            {
-                                path: ROUTES.EXPLOSIVE_OBJECT_LIST,
-                                Component: ExplosiveObjectListPage,
-                            },
+                            [
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_LIST,
+                                    Component: ExplosiveObjectListPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_DEVICE_LIST,
+                                    Component: ExplosiveDeviceListPage,
+                                },
+                            ],
                             <ViewExplosiveObjectList />,
                         ),
                         nav.withAccess(
                             [
+                                {
+                                    path: ROUTES.EXPLOSIVE_LIST,
+                                    Component: ExplosiveListPage,
+                                },
                                 {
                                     path: ROUTES.EXPLOSIVE_OBJECT_TYPE,
                                     Component: ExplosiveObjectTypesPage,

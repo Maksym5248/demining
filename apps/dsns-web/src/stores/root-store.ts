@@ -31,7 +31,7 @@ import {
     ViewerStore,
     type IAuthUser,
 } from 'shared-my-client';
-import { createCurrentUser } from 'shared-my-client/stores';
+import { createCurrentUser, ExplosiveStore, type IExplosiveStore } from 'shared-my-client/stores';
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';
@@ -42,6 +42,7 @@ export interface IRootStore {
     auth: IAuthStore;
     document: IDocumentStore;
     equipment: IEquipmentStore;
+    explosive: IExplosiveStore;
     explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
@@ -64,6 +65,7 @@ export class RootStore implements IRootStore {
     auth: IAuthStore;
     document: IDocumentStore;
     equipment: IEquipmentStore;
+    explosive: IExplosiveStore;
     explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
@@ -85,6 +87,7 @@ export class RootStore implements IRootStore {
             auth: this.auth,
             document: this.document,
             equipment: this.equipment,
+            explosive: this.explosive,
             explosiveDevice: this.explosiveDevice,
             explosiveObject: this.explosiveObject,
             employee: this.employee,
@@ -119,6 +122,7 @@ export class RootStore implements IRootStore {
         this.auth = new AuthStore(this);
         this.document = new DocumentStore(this);
         this.equipment = new EquipmentStore(this);
+        this.explosive = new ExplosiveStore(this);
         this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
         this.employee = new EmployeeStore(this);

@@ -157,3 +157,27 @@ export interface IExplosiveDeviceActionDB extends IExplosiveDeviceDB, ILinkedToD
     quantity: number | null;
     executedAt: Timestamp;
 }
+
+export interface IExplosiveСompositionDB {
+    explosiveId: string | null;
+    name: string | null;
+    persent: number | null;
+}
+
+export interface IExplosiveDB extends IBaseDB {
+    name: string;
+    imageUri: string | null;
+    fullName: string | null;
+    formula: string | null;
+    description: string | null;
+    composition: IExplosiveСompositionDB[] | null;
+    detonation: {
+        velocity: number | null; // m/s
+    } | null;
+    sensitivity: {
+        shock: string | null;
+        tempurture: string | null;
+    } | null;
+    density: number | null; // г/см3
+    authorId: string;
+}

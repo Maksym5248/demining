@@ -16,6 +16,7 @@ import {
     ExplosiveObjectTypeAPI,
     ExplosiveObjectClassAPI,
     ExplosiveObjectClassItemAPI,
+    ExplosiveAPI,
 } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
@@ -37,6 +38,7 @@ export const Api = {
 
     explosiveObject: new ExplosiveObjectAPI(DB, services),
     explosiveDevice: new ExplosiveDeviceAPI(DB),
+    explosive: new ExplosiveAPI(DB, services),
     missionReport: new MissionReportAPI(DB),
     missionRequest: new MissionRequestAPI(DB),
     order: new OrderAPI(DB),

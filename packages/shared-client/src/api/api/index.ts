@@ -5,6 +5,7 @@ export * from './explosive-object-class';
 export * from './explosive-object-type';
 export * from './explosive-object';
 export * from './explosive-device';
+export * from './explosive';
 export * from './mission-report';
 export * from './mission-request';
 export * from './order';

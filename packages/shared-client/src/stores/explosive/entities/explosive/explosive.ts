@@ -11,8 +11,9 @@ import { type IExplosiveData, updateExplosiveDTO, createExplosive } from './expl
 export interface IExplosive {
     id: string;
     data: IExplosiveData;
-    update: RequestModel<[IUpdateValue<IExplosiveData>]>;
     isCurrentOrganization: boolean;
+    displayName: string;
+    update: RequestModel<[IUpdateValue<IExplosiveData>]>;
 }
 
 interface IApi {
@@ -45,6 +46,10 @@ export class Explosive implements IExplosive {
         return this.data.id;
     }
 
+    get displayName() {
+        return this.data.name;
+    }
+
     updateFields(data: Partial<IExplosiveData>) {
         Object.assign(this.data, data);
     }
@@ -55,7 +60,7 @@ export class Explosive implements IExplosive {
 
     update = new RequestModel({
         run: async (data: IUpdateValue<IExplosiveData>) => {
-            const res = await this.api.explosive.update(this.data.id, updateExplosiveDTO(data));
+            const res = await this.api.explosive.update(this.data.id, updateExplosiveDTO({ ...this.data, ...data }));
 
             this.updateFields(createExplosive(res));
         },

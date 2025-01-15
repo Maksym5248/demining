@@ -91,10 +91,10 @@ export const Layout = observer(() => {
                           onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
                       },
                       {
-                          key: ROUTES.EXPLOSIVE_LIST,
+                          key: ROUTES.EXPLOSIVE_DEVICE_LIST,
                           icon: <Icon.CodeSandboxOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_DEVICE_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_DEVICE_LIST),
                       },
                       {
                           key: ROUTES.EMPLOYEES_LIST,
@@ -155,6 +155,18 @@ export const Layout = observer(() => {
                           icon: <Icon.FireOutlined />,
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
                           onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
+                      },
+                      {
+                          key: ROUTES.EXPLOSIVE_DEVICE_LIST,
+                          icon: <Icon.FireOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_DEVICE_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_DEVICE_LIST),
+                      },
+                      {
+                          key: ROUTES.EXPLOSIVE_LIST,
+                          icon: <Icon.FireOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
                       },
                   ]
                 : []),

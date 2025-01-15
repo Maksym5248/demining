@@ -21,6 +21,7 @@ import {
     ExplosiveObjectTypeWizardModal,
     ExplosiveObjectClassWizardModal,
     ExplosiveObjectClassItemWizardModal,
+    ExplosiveWizardModal,
 } from '~/modals';
 
 export const modals: IModalsMap = {
@@ -35,6 +36,9 @@ export const modals: IModalsMap = {
     },
     [MODALS.ORDER_WIZARD]: {
         renderComponent: (props: any) => <OrderWizardModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveWizardModal {...props} />,
     },
     [MODALS.EXPLOSIVE_OBJECT_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectWizardModal {...props} />,

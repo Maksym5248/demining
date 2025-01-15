@@ -18,6 +18,7 @@ import {
     type IDocumentDB,
     type IExplosiveDeviceActionDB,
     type IUserDB,
+    type IExplosiveDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -62,6 +63,7 @@ export interface IDB {
     organization: IDBBase<IOrganizationDB>;
     explosiveObject: IDBBase<IExplosiveObjectDB>;
     explosiveDevice: IDBBase<IExplosiveDeviceDB>;
+    explosive: IDBBase<IExplosiveDB>;
     employee: IDBBase<IEmployeeDB>;
     employeeAction: IDBBase<IEmployeeActionDB>;
     mapViewAction: IDBBase<IMapViewActionDB>;

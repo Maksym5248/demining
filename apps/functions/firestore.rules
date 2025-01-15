@@ -45,9 +45,15 @@ service cloud.firestore {
     }
     
     match /EXPLOSIVE/{explosiveId} {
-      allow read: if isAuth() && (isOrganization() || isRootAdmin());
-      allow create: if isRootAdmin() || isOrganizationAdmin();
-      allow update, delete: if isRootAdmin();
+      allow read: if isAuth() && (isOrganization() || isRootAdmin() || isAuth());
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAuth();
+      allow update, delete: if isRootAdmin() || isAuth();
+    }
+
+    match /EXPLOSIVE_NEW/{explosiveId} {
+      allow read: if isAuth() && (isOrganization() || isRootAdmin() || isAuth());
+      allow create: if isRootAdmin() || isAuth();
+      allow update, delete: if isRootAdmin() || isAuth();
     }
 
     function isAuth() {
