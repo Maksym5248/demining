@@ -5,6 +5,8 @@ import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api'
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
+import { createExplosiveObjectDetailsDTO, type IExplosiveObjectDetailsData } from '../explosive-object-details';
+
 export interface IExplosiveObjectData {
     id: string;
     name: string;
@@ -30,9 +32,7 @@ export interface IExplosiveObjectDataParams {
     countryId: string;
     classItemIds: string[];
     image?: File;
-    details: {
-        caliber?: number;
-    };
+    details: Omit<IExplosiveObjectDetailsData, 'id'>;
 }
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
@@ -43,21 +43,7 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
     countryId: value.countryId ?? null,
     classItemIds: value.classItemIds ?? [],
     image: value.image,
-    details: {
-        caliber: value.details.caliber ?? null,
-        purpose: null,
-        temperatureRange: null,
-        body: null,
-        size: null,
-        structure: null,
-        action: null,
-        marking: [],
-        neutralization: null,
-        weight: [],
-        fuseIds: [],
-        liquidator: null,
-        reduction: null,
-    },
+    details: createExplosiveObjectDetailsDTO(value.details),
 });
 
 export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>(value => ({
@@ -68,21 +54,7 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     countryId: value.countryId ?? '',
     classItemIds: value.classItemIds ?? [],
     image: value.image,
-    details: {
-        caliber: value.details?.caliber ?? null,
-        purpose: null,
-        temperatureRange: null,
-        body: null,
-        size: null,
-        structure: null,
-        action: null,
-        marking: [],
-        neutralization: null,
-        weight: [],
-        fuseIds: [],
-        liquidator: null,
-        reduction: null,
-    },
+    details: createExplosiveObjectDetailsDTO(value.details),
 }));
 
 export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObjectData => ({

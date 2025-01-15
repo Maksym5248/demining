@@ -47,6 +47,7 @@ export enum EXPLOSIVE_OBJECT_TYPE {
 export enum MATERIAL {
     METAL = 'METAL',
     PLASTIC = 'PLASTIC',
+    WOOD = 'WOOD',
 }
 
 export enum METHRIC {

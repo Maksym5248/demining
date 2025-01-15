@@ -8,6 +8,19 @@ const spin = Theme.css(`
     height: 300px;
 `);
 
+const size = Theme.css(`
+    margin: 0 8px;
+`);
+
+const inert = Theme.css(
+    (theme) => `
+    color: ${theme.token.colorInfoActive};
+
+`,
+);
+
 export const s = {
     spin,
+    size,
+    inert,
 };

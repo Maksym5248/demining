@@ -57,6 +57,11 @@ export interface ICountryDB {
     name: string;
 }
 
+export interface IMaterialDB {
+    id: string;
+    name: string;
+}
+
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;

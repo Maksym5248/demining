@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_OBJECT_STATUS, explosiveObjectComponentData, explosiveObjectStatuses, MIME_TYPE } from 'shared-my';
+import { EXPLOSIVE_OBJECT_STATUS, explosiveObjectComponentData, explosiveObjectStatuses, materialsData, MIME_TYPE } from 'shared-my';
+import { type ITempartureData, type ISizeData } from 'shared-my-client';
 
 import { Select, UploadFile, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -20,13 +21,33 @@ interface Props {
     hide: () => void;
 }
 
-const getParams = ({ caliber, ...values }: IExplosiveObjectForm) => ({
+const getParams = ({
+    caliber,
+    material,
+    size,
+    weight,
+    temperature,
+    filler,
+    fuseIds,
+    purpose,
+    structure,
+    action,
+    ...values
+}: IExplosiveObjectForm) => ({
     ...values,
     details: {
         caliber,
+        material,
+        size,
+        weight,
+        temperature,
+        filler,
+        fuseIds,
+        purpose,
+        structure,
+        action,
     },
 });
-
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const { explosiveObject, viewer } = useStore();
     const wizard = useWizard({ id, mode });
@@ -64,7 +85,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
             destroyOnClose
             title={`${isEdit ? 'Редагувати' : 'Створити'} ВНП`}
             placement="right"
-            width={500}
+            width={600}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
             {isLoading ? (
@@ -78,7 +99,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosiveObject
-                            ? { ...currentExplosiveObject.data, caliber: currentExplosiveObject.details?.data.caliber }
+                            ? { ...currentExplosiveObject.data, ...currentExplosiveObject.details?.data }
                             : {
                                   typeId: firstType?.data.id,
                                   status: EXPLOSIVE_OBJECT_STATUS.PENDING,
@@ -105,6 +126,11 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }}
                         </Form.Item>
                     </Form.Item>
+                    {viewer.user?.isAuthor && (
+                        <Form.Item label="Статус" name="status">
+                            <Select options={explosiveObjectStatuses} />
+                        </Form.Item>
+                    )}
                     <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
@@ -146,11 +172,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             return <Classification typeId={typeId} component={component} setFieldValue={setFieldValue} />;
                         }}
                     </Form.Item>
-                    {viewer.user?.isAuthor && (
-                        <Form.Item label="Статус" name="status">
-                            <Select options={explosiveObjectStatuses} />
-                        </Form.Item>
-                    )}
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => {
                             const typeId = getFieldValue('typeId');
@@ -165,12 +186,67 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
-                    <WizardFooter
-                        {...wizard}
-                        onCancel={hide}
-                        onRemove={onRemove}
-                        loading={explosiveObject.create.isLoading || currentExplosiveObject?.update?.isLoading}
-                    />
+                    <Form.Item label="Корпус" name="material">
+                        <Select
+                            options={materialsData.map((el) => ({
+                                label: el.name,
+                                value: el.id,
+                            }))}
+                        />
+                    </Form.Item>
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue, setFieldValue }) => {
+                            const size = (getFieldValue('size') as ISizeData) ?? {};
+                            return (
+                                <Form.Item label="Розмір, мм" name="size">
+                                    <InputNumber
+                                        placeholder="Довжина"
+                                        onChange={(length) => setFieldValue('size', { ...size, length })}
+                                        value={size?.length}
+                                        min={0}
+                                    />
+                                    <InputNumber
+                                        placeholder="Ширина"
+                                        css={s.size}
+                                        onChange={(width) => setFieldValue('size', { ...size, width })}
+                                        value={size?.width}
+                                        min={0}
+                                    />
+                                    <InputNumber
+                                        placeholder="Висота"
+                                        onChange={(height) => setFieldValue('size', { ...size, height })}
+                                        value={size?.height}
+                                        min={0}
+                                    />
+                                </Form.Item>
+                            );
+                        }}
+                    </Form.Item>
+                    <Form.Item label="Вага, кг" name="weight">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue, setFieldValue }) => {
+                            const value = (getFieldValue('temperature') as ITempartureData) ?? {};
+
+                            return (
+                                <Form.Item label="Температура, °C" name="temperature">
+                                    <InputNumber
+                                        placeholder="Макс"
+                                        onChange={(max) => setFieldValue('temperature', { ...value, max })}
+                                        value={value?.max}
+                                    />
+                                    <InputNumber
+                                        placeholder="Мін"
+                                        onChange={(min) => setFieldValue('temperature', { ...value, min })}
+                                        value={value?.min}
+                                        css={s.size}
+                                    />
+                                </Form.Item>
+                            );
+                        }}
+                    </Form.Item>
+                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>
             )}
         </Drawer>

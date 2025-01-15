@@ -144,7 +144,10 @@ export class ExplosiveObject implements IExplosiveObject {
 
     update = new RequestModel({
         run: async (data: IUpdateValue<IExplosiveObjectDataParams>) => {
-            const res = await this.api.explosiveObject.update(this.data.id, updateExplosiveObjectDTO(data));
+            const res = await this.api.explosiveObject.update(
+                this.data.id,
+                updateExplosiveObjectDTO({ ...this.data, details: this.details?.data, ...data }),
+            );
 
             this.updateFields(createExplosiveObject(res));
 
