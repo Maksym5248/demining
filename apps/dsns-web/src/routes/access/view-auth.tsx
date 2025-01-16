@@ -9,9 +9,9 @@ export const ViewAuth = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthorizedDSNS } = store.viewer.user ?? {};
+    const { isInitialized } = store ?? {};
 
-    if (isAuthorizedDSNS) {
+    if (!isInitialized) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 

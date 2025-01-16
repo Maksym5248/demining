@@ -5,7 +5,7 @@ export enum ROUTES {
     MISSION_REPORT_LIST = '/mission-report',
     EMPLOYEES_LIST = '/employees-list',
     EXPLOSIVE_OBJECT_LIST = '/explosive-object-list',
-    EXPLOSIVE_LIST = '/explosive-list',
+    EXPLOSIVE_DEVICE_LIST = '/explosive-device-list',
     TRANSPORT_LIST = '/transport-list',
     EQUIPMENT_LIST = '/equipment-list',
     SETTINGS = '/settings',
@@ -21,6 +21,11 @@ export enum ROUTES {
     WAITING_APPROVE = '/waiting-approve',
 
     NOT_FOUND = '/not-found',
+
+    EXPLOSIVE_LIST = '/explosive-list',
+    EXPLOSIVE_OBJECT_TYPE = '/types',
+    EXPLOSIVE_OBJECT_CLASS = '/class',
+    EXPLOSIVE_OBJECT_CLASS_ITEM = '/types/class-items/:id',
 }
 
 export const routesInfo = {
@@ -42,7 +47,7 @@ export const routesInfo = {
     [ROUTES.ORDER_LIST]: {
         title: 'Накази',
     },
-    [ROUTES.EXPLOSIVE_LIST]: {
+    [ROUTES.EXPLOSIVE_DEVICE_LIST]: {
         title: 'ВР та ЗП',
     },
     [ROUTES.EXPLOSIVE_OBJECT_LIST]: {
@@ -74,6 +79,18 @@ export const routesInfo = {
     },
     [ROUTES.SIGNUP]: {
         title: 'Зареєструватись',
+    },
+    [ROUTES.EXPLOSIVE_OBJECT_TYPE]: {
+        title: 'Типи',
+    },
+    [ROUTES.EXPLOSIVE_OBJECT_CLASS]: {
+        title: 'Класифікація',
+    },
+    [ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM]: {
+        title: 'Класифікація',
+    },
+    [ROUTES.EXPLOSIVE_LIST]: {
+        title: 'Речовини',
     },
     [ROUTES.WAITING_APPROVE]: {
         title: 'Очікування підтвердження',

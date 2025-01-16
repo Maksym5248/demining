@@ -6,6 +6,7 @@ import { type IExplosiveObjectDetailsData } from './explosive-object-details.sch
 
 export interface IExplosiveObjectDetails {
     data: IExplosiveObjectDetailsData;
+    updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>): void;
 }
 
 export class ExplosiveObjectDetails implements IExplosiveObjectDetails {

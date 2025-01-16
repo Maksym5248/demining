@@ -21,24 +21,30 @@ import {
     OrganizationsListPage,
     MembersListPage,
     TemplatesListPage,
-    ExplosiveListPage,
+    ExplosiveDeviceListPage,
     HomePage,
     MapPage,
+    ExplosiveObjectTypesPage,
+    ExplosiveObjectClassPage,
+    ExplosiveObjectClassItemTreePage,
+    ExplosiveListPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
-import { ViewAuth } from './access/view-auth';
-import { ViewDev } from './access/view-dev';
-import { ViewOrganization } from './access/view-organization';
-import { ViewOrganizationManagment } from './access/view-organization-managment';
-import { ViewOrganizationsManagment } from './access/view-organizations-managment';
-import { ViewSettings } from './access/view-settings';
-import { ViewWaitingApprove } from './access/view-waiting-approve';
+import {
+    ViewAuth,
+    ViewAuthorManagment,
+    ViewDev,
+    ViewExplosiveObjectList,
+    ViewOrganization,
+    ViewOrganizationManagment,
+    ViewOrganizationsManagment,
+    ViewSettings,
+    ViewWaitingApprove,
+} from './access';
 import { InitialRoute } from './initial-route';
 import { Layout } from './layout';
-import { RedirectAuth } from './redirect/redirect-auth';
-import { RedirectHome } from './redirect/redirect-home';
-import { RedirectWaitingApprove } from './redirect/redirect-waiting-approve';
+import { RedirectAuth, RedirectHome, RedirectWaitingApprove } from './redirect';
 
 const router = createBrowserRouter([
     {
@@ -77,14 +83,6 @@ const router = createBrowserRouter([
                                     Component: EmployeesListPage,
                                 },
                                 {
-                                    path: ROUTES.EXPLOSIVE_OBJECT_LIST,
-                                    Component: ExplosiveObjectListPage,
-                                },
-                                {
-                                    path: ROUTES.EXPLOSIVE_LIST,
-                                    Component: ExplosiveListPage,
-                                },
-                                {
                                     path: ROUTES.TRANSPORT_LIST,
                                     Component: TransportListPage,
                                 },
@@ -98,6 +96,40 @@ const router = createBrowserRouter([
                                 },
                             ],
                             <ViewOrganization />,
+                        ),
+                        nav.withAccess(
+                            [
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_LIST,
+                                    Component: ExplosiveObjectListPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_DEVICE_LIST,
+                                    Component: ExplosiveDeviceListPage,
+                                },
+                            ],
+                            <ViewExplosiveObjectList />,
+                        ),
+                        nav.withAccess(
+                            [
+                                {
+                                    path: ROUTES.EXPLOSIVE_LIST,
+                                    Component: ExplosiveListPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_TYPE,
+                                    Component: ExplosiveObjectTypesPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_CLASS,
+                                    Component: ExplosiveObjectClassPage,
+                                },
+                                {
+                                    path: ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM,
+                                    Component: ExplosiveObjectClassItemTreePage,
+                                },
+                            ],
+                            <ViewAuthorManagment />,
                         ),
                         nav.withAccess(
                             {

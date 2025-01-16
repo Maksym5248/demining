@@ -4,6 +4,11 @@ export interface IMarkingDB {
     name: string;
 }
 
+export interface IFillerDB {
+    explosiveId: string;
+    weight: number;
+}
+
 export interface IStructureDB {
     description: string;
     imageUris: string[];
@@ -18,23 +23,14 @@ export interface IActionDB {
     imageUris: string[];
 }
 
-export interface IBodyDB {
-    material: MATERIAL;
-}
-
 export interface ISizeDB {
-    type: string;
-    times: number[];
-}
-
-export interface IWightDB {
-    weight: number;
-    explosiveName: string;
-    explosiveWeight: number;
+    length: number | null;
+    width: number;
+    height: number;
 }
 
 export interface IPurposeDB {
-    type: string[];
+    imageUris: string[];
     description: string;
 }
 
@@ -48,22 +44,31 @@ export interface IReductionDB {
     times: number[];
 }
 
-export interface IExplosiveObjectDetailsDB {
-    purpose: IPurposeDB | null;
-    temperatureRange: [number, number] | null;
-    body: IBodyDB | null;
-    size: ISizeDB | null;
-    structure: IStructureDB | null;
-    action: IActionDB | null;
-    marking: IMarkingDB[];
-    neutralization: INeutralizationDB | null;
+export interface ITempartureDB {
+    min: number | null;
+    max: number | null;
+}
 
-    // ammo
-    weight: IWightDB[];
-    caliber: number | null;
-    fuseIds: string[];
+export interface IExplosiveObjectDetailsDB {
+    // characteristics
+    material: MATERIAL;
+    size: ISizeDB | null; //мм;
+    weight: number | null; // kg;
+    temperature: ITempartureDB | null;
+    filler: IFillerDB | null; // спорядження ВР;
+    caliber: number | null; // ammo
+    fuseIds: string[]; // ammo
+
+    // description
+    purpose: IPurposeDB | null; // призначення;
+    structure: IStructureDB | null; // будова;
+    action: IActionDB | null; // принцип дії;
 
     // fuse
-    liquidator: ILiquidatorDB | false | null;
-    reduction: IReductionDB | false | null;
+    // liquidator: ILiquidatorDB | false | null;
+    // reduction: IReductionDB | false | null;
+
+    // TODO: investigate it
+    // marking: IMarkingDB[] // do we need it ? if we have name;
+    // neutralization: INeutralizationDB | null;
 }

@@ -14,10 +14,15 @@ import {
     OrganizationWizardModal,
     MemberWizardModal,
     TemplateWizardModal,
-    ExplosiveWizardModal,
-    ExplosiveActionWizardModal,
+    ExplosiveDeviceWizardModal,
+    ExplosiveDeviceActionWizardModal,
     MapEditorModal,
     TemplateDataPreviewModal,
+    ExplosiveObjectTypeWizardModal,
+    ExplosiveObjectClassWizardModal,
+    ExplosiveObjectClassItemWizardModal,
+    ExplosiveWizardModal,
+    ExplosiveCompositionWizardModal,
 } from '~/modals';
 
 export const modals: IModalsMap = {
@@ -33,8 +38,23 @@ export const modals: IModalsMap = {
     [MODALS.ORDER_WIZARD]: {
         renderComponent: (props: any) => <OrderWizardModal {...props} />,
     },
+    [MODALS.EXPLOSIVE_COMPOSITION]: {
+        renderComponent: (props: any) => <ExplosiveCompositionWizardModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveWizardModal {...props} />,
+    },
     [MODALS.EXPLOSIVE_OBJECT_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectWizardModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_OBJECT_TYPE_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveObjectTypeWizardModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_OBJECT_CLASS_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveObjectClassWizardModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_OBJECT_CLASS_ITEM_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveObjectClassItemWizardModal {...props} />,
     },
     [MODALS.EXPLOSIVE_OBJECT_ACTION_WIZARD]: {
         renderComponent: (props: any) => <ExplosiveObjectActionWizardModal {...props} />,
@@ -51,11 +71,11 @@ export const modals: IModalsMap = {
     [MODALS.TEMPLATE_WIZARD]: {
         renderComponent: (props: any) => <TemplateWizardModal {...props} />,
     },
-    [MODALS.EXPLOSIVE_ACTION_WIZARD]: {
-        renderComponent: (props: any) => <ExplosiveActionWizardModal {...props} />,
+    [MODALS.EXPLOSIVE_DEVICE_ACTION_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveDeviceActionWizardModal {...props} />,
     },
-    [MODALS.EXPLOSIVE_WIZARD]: {
-        renderComponent: (props: any) => <ExplosiveWizardModal {...props} />,
+    [MODALS.EXPLOSIVE_DEVICE_WIZARD]: {
+        renderComponent: (props: any) => <ExplosiveDeviceWizardModal {...props} />,
     },
     [MODALS.MEMBER_WIZARD]: {
         renderComponent: (props: any) => <MemberWizardModal {...props} />,

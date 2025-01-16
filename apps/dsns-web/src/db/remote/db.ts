@@ -1,13 +1,16 @@
 import { type WriteBatch, getFirestore, writeBatch } from 'firebase/firestore';
-import { TABLES, TABLES_DIR, mapUtils } from 'shared-my';
 import {
+    type IExplosiveObjectTypeDB,
+    TABLES,
+    TABLES_DIR,
+    mapUtils,
     type IDocumentDB,
     type IEmployeeActionDB,
     type IEmployeeDB,
     type IEquipmentActionDB,
     type IEquipmentDB,
-    type IExplosiveActionDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceActionDB,
+    type IExplosiveDeviceDB,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
     type IMapViewActionDB,
@@ -18,6 +21,9 @@ import {
     type ITransportActionDB,
     type ITransportDB,
     type IUserDB,
+    type IExplosiveObjectClassDB,
+    type IExplosiveObjectClassItemDB,
+    type IExplosiveDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -54,12 +60,20 @@ export class DBRemote implements IDB {
 
     organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ['name'], getCreateData);
 
-    explosiveObject = new DBBase<IExplosiveObjectDB>(
-        TABLES.EXPLOSIVE_OBJECT,
-        ['name', 'details.caliber' as keyof IExplosiveObjectDB],
+    explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], getCreateData, undefined);
+
+    explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, ['name'], getCreateData, undefined);
+
+    explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(
+        TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM,
+        ['name'],
         getCreateData,
         undefined,
     );
+
+    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
+
+    explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], getCreateData);
 
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
@@ -78,7 +92,7 @@ export class DBRemote implements IDB {
 
     explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION, [], getCreateData);
 
-    explosiveAction = new DBBase<IExplosiveActionDB>(TABLES.EXPLOSIVE_ACTION, [], getCreateData);
+    explosiveDeviceAction = new DBBase<IExplosiveDeviceActionDB>(TABLES.EXPLOSIVE_DEVICE_ACTION, [], getCreateData);
 
     transport = new DBBase<ITransportDB>(TABLES.TRANSPORT, ['name', 'number'], getCreateData);
 
@@ -112,7 +126,7 @@ export class DBRemote implements IDB {
         this.equipment.setRootCollection(rootCollection);
         this.equipmentAction.setRootCollection(rootCollection);
         this.document.setRootCollection(rootCollection);
-        this.explosiveAction.setRootCollection(rootCollection);
+        this.explosiveDeviceAction.setRootCollection(rootCollection);
     }
 
     removeOrganizationId() {
@@ -128,7 +142,7 @@ export class DBRemote implements IDB {
         this.equipment.removeRootCollection();
         this.equipmentAction.removeRootCollection();
         this.document.removeRootCollection();
-        this.explosiveAction.removeRootCollection();
+        this.explosiveDeviceAction.removeRootCollection();
 
         organizationId = null;
     }
@@ -152,7 +166,7 @@ export class DBRemote implements IDB {
         this.equipment.setBatch(batch);
         this.equipmentAction.setBatch(batch);
         this.document.setBatch(batch);
-        this.explosiveAction.setBatch(batch);
+        this.explosiveDeviceAction.setBatch(batch);
     }
 
     batchStart() {

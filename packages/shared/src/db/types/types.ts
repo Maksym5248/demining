@@ -10,7 +10,7 @@ import {
     type MIME_TYPE,
     type ASSET_TYPE,
     type MISSION_REQUEST_TYPE,
-    type EXPLOSIVE_TYPE,
+    type EXPLOSIVE_DEVICE_TYPE,
     type RANKS,
 } from '../enum';
 
@@ -145,15 +145,48 @@ export interface IDocumentDB extends IBaseDB {
     authorId: string;
 }
 
-export interface IExplosiveDB extends IBaseDB {
+export interface IExplosiveDeviceDB extends IBaseDB {
     name: string;
-    type: EXPLOSIVE_TYPE;
+    type: EXPLOSIVE_DEVICE_TYPE;
     authorId: string;
 }
 
-export interface IExplosiveActionDB extends IExplosiveDB, ILinkedToDocumentDB {
+export interface IExplosiveDeviceActionDB extends IExplosiveDeviceDB, ILinkedToDocumentDB {
     explosiveId: string;
     weight: number | null /* in kilograms */;
     quantity: number | null;
     executedAt: Timestamp;
+}
+
+export interface IExplosiveСompositionDB {
+    explosiveId: string | null;
+    name: string | null;
+    percent: number | null;
+    description: string | null;
+}
+
+export interface IExplosiveDB extends IBaseDB {
+    name: string;
+    imageUri: string | null;
+    fullName: string | null;
+    formula: string | null;
+    description: string | null;
+    composition: IExplosiveСompositionDB[] | null;
+    explosive: {
+        velocity: number | null; // m/s
+        brisantness: number | null; // мм
+        explosiveness: number | null; // см³
+        tnt: number | null; // см³
+    } | null;
+    sensitivity: {
+        shock: string | null;
+        temperature: string | null;
+        friction: string | null;
+    } | null;
+    physical: {
+        density: number | null; // г/см3
+        meltingPoint: number | null; // °C
+        ignitionPoint: number | null; // °C
+    } | null;
+    authorId: string;
 }

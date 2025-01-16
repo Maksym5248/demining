@@ -19,12 +19,16 @@ service firebase.storage {
         return request.resource.size < number * 1024 * 1024;
       }
 
+      function isAuthor() {
+        return request.auth.token.AUTHOR;
+      }
+
       function isMember(organizationId) {
         return request.auth.token.organizationId == organizationId;
       }
 
       match /{allPaths=**} {
-        allow read, write: if false;
+        allow read, write: if isAuthor();
       }
   }
 }

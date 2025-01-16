@@ -32,18 +32,18 @@ interface IApi {
 }
 
 interface IOrderStoreParams {
-    stores: IStores;
+    getStores: () => IStores;
     api: Pick<IApi, 'order'>;
     services: IServices;
 }
 
 export class OrderStore implements IOrderStore {
-    stores: IStores;
+    getStores: () => IStores;
     api: IApi;
     services: IServices;
 
-    constructor({ stores, api, services }: IOrderStoreParams) {
-        this.stores = stores;
+    constructor({ getStores, api, services }: IOrderStoreParams) {
+        this.getStores = getStores;
         this.api = api;
         this.services = services;
 
@@ -52,7 +52,7 @@ export class OrderStore implements IOrderStore {
 
     get collections() {
         return {
-            employeeAction: this.stores.employee.collectionActions,
+            employeeAction: this.getStores().employee.collectionActions,
         };
     }
 
@@ -68,7 +68,7 @@ export class OrderStore implements IOrderStore {
         run: async (data: ICreateValue<IOrderDataParams>) => {
             const res = await this.api.order.create(createOrderDTO(data));
 
-            this.stores.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
+            this.getStores().employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
             this.list.unshift(createOrder(res));
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
@@ -87,7 +87,7 @@ export class OrderStore implements IOrderStore {
     fetchItem = new RequestModel({
         run: async (id: string) => {
             const res = await this.api.order.get(id);
-            this.stores.employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
+            this.getStores().employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
             this.collection.set(res.id, createOrder(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),

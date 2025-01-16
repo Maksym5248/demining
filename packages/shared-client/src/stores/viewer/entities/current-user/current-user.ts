@@ -29,19 +29,22 @@ export class CurrentUser implements ICurrentUser {
     get isOrganizationAdmin() {
         return this.data.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.data.organization;
     }
+
     get isAuthor() {
         return this.data.roles.includes(ROLES.AUTHOR);
     }
+
     get isOrganizationMember() {
         return !!this.data.organization;
     }
 
     get isAuthorizedDSNS() {
-        return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember;
+        return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember || !!this.isAuthor;
     }
     get isWaitingApproved() {
-        return !!this.data.id && !this.data.organization;
+        return !!this.data.id && !this.data.organization && !this.isAuthor;
     }
+
     get isAuthorizedAmmo() {
         return !!this.data;
     }

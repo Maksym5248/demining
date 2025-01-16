@@ -12,6 +12,7 @@ export interface ICollectionModel<T, B> {
     exist: (id: string) => boolean;
     findBy(path: string, value: unknown): T | undefined;
     onRemoved?: (fn: (id: string) => void) => void;
+    onCreated?: (fn: (id: string, item: T) => void) => void;
 }
 
 interface ICollectionModelParams<T extends { data: B }, B> {
@@ -19,8 +20,9 @@ interface ICollectionModelParams<T extends { data: B }, B> {
     model?: new (data: B) => T;
 }
 
-interface CallBacks {
-    removed: ((id: string) => void)[];
+interface CallBacks<T> {
+    removed: ((id: string, item: T) => void)[];
+    created: ((id: string, item: T) => void)[];
 }
 
 export class CollectionModel<T extends { data: B }, B> implements ICollectionModel<T, B> {
@@ -28,8 +30,9 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
 
     model?: new (data: B) => T;
     factory: (data: B) => T;
-    private callBacks: CallBacks = {
+    private callBacks: CallBacks<T> = {
         removed: [],
+        created: [],
     };
     constructor({ factory, model }: ICollectionModelParams<T, B>) {
         const defaultFactory = model ? (data: B) => new model(data) : (data: B) => data as unknown as T;
@@ -52,7 +55,9 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
         if (this.exist(stringId)) {
             this.update(id, value);
         } else {
-            set(this.collection, stringId, this.factory(value));
+            const model = this.factory(value);
+            set(this.collection, stringId, model);
+            this.callBacks.created.forEach((fn) => fn(stringId, model));
         }
     }
 
@@ -76,7 +81,7 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
 
     remove(id: string) {
         remove(this.collection, id);
-        this.callBacks.removed.forEach((fn) => fn(id));
+        this.callBacks.removed.forEach((fn) => fn(id, get(this.collection, id)));
     }
 
     exist(id: string) {
@@ -85,5 +90,9 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
 
     onRemoved(fn: (id: string) => void) {
         this.callBacks.removed.push(fn);
+    }
+
+    onCreated(fn: (id: string, item: T) => void) {
+        this.callBacks.created.push(fn);
     }
 }

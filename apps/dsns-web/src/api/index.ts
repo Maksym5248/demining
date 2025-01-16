@@ -3,7 +3,7 @@ import {
     EmployeeAPI,
     EquipmentAPI,
     ExplosiveObjectAPI,
-    ExplosiveAPI,
+    ExplosiveDeviceAPI,
     MissionReportAPI,
     MissionRequestAPI,
     OrderAPI,
@@ -13,6 +13,10 @@ import {
     DocumentAPI,
     MapAPI,
     ExternalApi as ExternalApiClass,
+    ExplosiveObjectTypeAPI,
+    ExplosiveObjectClassAPI,
+    ExplosiveObjectClassItemAPI,
+    ExplosiveAPI,
 } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
@@ -28,8 +32,13 @@ const services = {
 export const Api = {
     employee: new EmployeeAPI(DB),
     equipment: new EquipmentAPI(DB),
+    explosiveObjectType: new ExplosiveObjectTypeAPI(DB, services),
+    explosiveObjectClass: new ExplosiveObjectClassAPI(DB),
+    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DB),
+
     explosiveObject: new ExplosiveObjectAPI(DB, services),
-    explosive: new ExplosiveAPI(DB),
+    explosiveDevice: new ExplosiveDeviceAPI(DB),
+    explosive: new ExplosiveAPI(DB, services),
     missionReport: new MissionReportAPI(DB),
     missionRequest: new MissionRequestAPI(DB),
     order: new OrderAPI(DB),

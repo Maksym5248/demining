@@ -15,12 +15,14 @@ import {
     type IUserDB,
     type IOrganizationDB,
     type IDocumentDB,
-    type IExplosiveActionDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceActionDB,
+    type IExplosiveDeviceDB,
     type IPointDB,
     type IAddressDB,
     type Timestamp,
     type IRankDB,
+    type IExplosiveObjectTypeDB,
+    type IExplosiveDB,
 } from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
@@ -53,9 +55,9 @@ export interface IExplosiveObjectActionSumDTO {
     destroyed: number;
 }
 
-export type IExplosiveDTO = IExplosiveDB;
+export type IExplosiveDeviceDTO = IExplosiveDeviceDB;
 
-export type IExplosiveActionDTO = IExplosiveActionDB;
+export type IExplosiveActionDTO = IExplosiveDeviceActionDB;
 
 export interface IExplosiveActionSumDTO {
     explosive: number;
@@ -63,6 +65,10 @@ export interface IExplosiveActionSumDTO {
 }
 
 export interface IExplosiveObjectDTOParams extends Omit<IExplosiveObjectDB, 'imageUri'> {
+    image?: File;
+}
+
+export interface IExplosiveObjectTypeDTOParams extends Omit<IExplosiveObjectTypeDB, 'imageUri'> {
     image?: File;
 }
 
@@ -185,4 +191,10 @@ export type ICreateOrganizationMembersDTO = Pick<IOrganizationDB, 'membersIds'>;
 export interface IGetAllInRectParams {
     topLeft: IPointDB;
     bottomRight: IPointDB;
+}
+
+export type IExplosiveDTO = IExplosiveDB;
+
+export interface IExplosiveDTOParams extends Omit<IExplosiveDTO, 'imageUri'> {
+    image?: File;
 }

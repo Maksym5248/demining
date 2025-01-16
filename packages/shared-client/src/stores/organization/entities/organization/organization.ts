@@ -33,27 +33,27 @@ interface IStores {
 }
 
 interface IOrganizationParams {
-    stores: IStores;
+    getStores: () => IStores;
     api: IApi;
     services: IServices;
 }
 
 export class Organization implements IOrganization {
-    stores: IStores;
+    getStores: () => IStores;
     api: IApi;
     services: IServices;
     data: IOrganizationValue;
 
     listMembers: IListModel<IUser, IUserData>;
 
-    constructor(value: IOrganizationValue, { stores, api, services }: IOrganizationParams) {
+    constructor(value: IOrganizationValue, { getStores, api, services }: IOrganizationParams) {
         this.data = value;
 
-        this.stores = stores;
+        this.getStores = getStores;
         this.api = api;
         this.services = services;
 
-        this.listMembers = new ListModel<IUser, IUserData>({ collection: this.stores.user.collection });
+        this.listMembers = new ListModel<IUser, IUserData>({ collection: this.getStores().user.collection });
 
         makeAutoObservable(this);
     }
@@ -82,7 +82,7 @@ export class Organization implements IOrganization {
                 this.data.id,
                 userId,
                 { isAdmin, isAuthor },
-                !!this.stores.viewer.user?.isRootAdmin,
+                !!this.getStores().viewer.user?.isRootAdmin,
             );
 
             this.listMembers.push(createUser(res));
@@ -97,11 +97,11 @@ export class Organization implements IOrganization {
                 this.data.id,
                 userId,
                 { isAdmin, isAuthor },
-                !!this.stores.viewer.user?.isRootAdmin,
+                !!this.getStores().viewer.user?.isRootAdmin,
             );
             const member = createUser(res);
 
-            this.stores.user.collection.update(member.id, member);
+            this.getStores().user.collection.update(member.id, member);
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -111,7 +111,7 @@ export class Organization implements IOrganization {
         run: async (userId: string) => {
             await this.api.organization.removeMember(this.data.id, userId);
 
-            this.stores.user.collection.remove(userId);
+            this.getStores().user.collection.remove(userId);
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось видалити'),

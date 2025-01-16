@@ -25,6 +25,13 @@ const toAddressString = (address: {
     return arr.join(', ');
 };
 
+export function prepareStringToSearch(str: string) {
+    return str.toLocaleLowerCase().trim();
+}
+
+export function filterByStringSearch(searchValue: string, value?: string) {
+    return !!value && prepareStringToSearch(value).includes(prepareStringToSearch(searchValue));
+}
 export const str = {
     getFullName,
     toUpper,
@@ -32,4 +39,5 @@ export const str = {
     toCamelCase,
     toUpperFirst,
     toAddressString,
+    prepareStringToSearch,
 };
