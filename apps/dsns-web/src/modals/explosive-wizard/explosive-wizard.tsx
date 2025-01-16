@@ -54,7 +54,7 @@ const getParams = ({
 };
 
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-    const { explosive } = useStore();
+    const { explosive, viewer } = useStore();
     const wizard = useWizard({ id, mode });
 
     const currentExplosive = explosive.collection.get(id as string);
@@ -82,6 +82,8 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         !!id && explosive.fetchItem.run(id);
     }, [id]);
 
+    const isEditable = !!viewer.user?.isAuthor || !!currentExplosive?.isCurrentOrganization;
+
     return (
         <Drawer
             open={isVisible}
@@ -90,7 +92,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
             placement="right"
             width={600}
             onClose={hide}
-            extra={<WizardButtons {...wizard} />}>
+            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (

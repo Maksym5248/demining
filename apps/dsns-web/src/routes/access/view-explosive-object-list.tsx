@@ -9,9 +9,9 @@ export const ViewExplosiveObjectList = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthor, isOrganizationAdmin } = store.viewer.user ?? {};
+    const { isAuthor, isAuthorizedDSNS } = store.viewer.user ?? {};
 
-    if (!isAuthor && !isOrganizationAdmin) {
+    if (!isAuthor && !isAuthorizedDSNS) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 
