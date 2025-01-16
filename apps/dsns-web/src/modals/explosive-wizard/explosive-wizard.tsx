@@ -8,6 +8,7 @@ import { UploadFile, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
+import { Сomposition } from './components';
 import { s } from './explosive-wizard.style';
 import { type IExplosiveForm } from './explosive-wizard.types';
 
@@ -28,6 +29,7 @@ const getParams = ({
     friction,
     meltingPoint,
     ignitionPoint,
+    tnt,
     ...value
 }: IExplosiveForm) => {
     return {
@@ -36,6 +38,7 @@ const getParams = ({
             velocity: velocity ?? null,
             brisantness: brisantness ?? null,
             explosiveness: explosiveness ?? null,
+            tnt: tnt ?? null,
         },
         sensitivity: {
             shock,
@@ -60,6 +63,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     const isLoading = explosive.fetchItem.isLoading;
 
     const onFinishCreate = async (values: IExplosiveForm) => {
+        console.log('onFinishCreate', values);
         await explosive.create.run(getParams(values));
         hide();
     };
@@ -126,7 +130,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                             }}
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Назва є обов'язковим полем" }]}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item label="Повна назва" name="fullName">
@@ -139,6 +143,8 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} />
                     </Form.Item>
                     <Divider />
+                    <Сomposition />
+                    <Divider />
                     <Form.Item label="Швидкість детонації, м/c" name="velocity">
                         <InputNumber min={0} />
                     </Form.Item>
@@ -146,6 +152,9 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         <InputNumber min={0} />
                     </Form.Item>
                     <Form.Item label="Фугасність, см³" name="explosiveness">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item label="Тротиловий еквівалент" name="tnt">
                         <InputNumber min={0} />
                     </Form.Item>
                     <Form.Item label="Чутливість до удару" name="shock">

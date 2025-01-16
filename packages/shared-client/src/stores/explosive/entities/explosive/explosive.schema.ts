@@ -4,10 +4,11 @@ import { type IExplosiveDTOParams, type IExplosiveDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
-export interface IExplosiveСompositionData {
+export interface IExplosiveCompositionData {
     explosiveId: string | null;
     name: string | null;
-    persent: number | null;
+    percent: number | null;
+    description: string | null;
 }
 
 export interface IExplosiveData {
@@ -17,11 +18,12 @@ export interface IExplosiveData {
     fullName: string | null;
     formula: string | null;
     description: string | null;
-    composition: IExplosiveСompositionData[] | null;
+    composition: IExplosiveCompositionData[] | null;
     explosive: {
         velocity: number | null; // m/s
         brisantness: number | null; // мм
         explosiveness: number | null; // см³
+        tnt: number | null; // см³
     } | null;
     sensitivity: {
         shock: string | null;
@@ -49,12 +51,20 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): I
     fullName: value.fullName ?? null,
     formula: value.formula ?? null,
     description: value.description ?? null,
-    composition: value.composition ?? null,
+    composition: value.composition
+        ? value.composition.map((item) => ({
+              explosiveId: item.explosiveId ?? null,
+              name: item.name ?? null,
+              percent: item.percent ?? null,
+              description: item.description ?? null,
+          }))
+        : null,
     explosive: value.explosive
         ? {
               velocity: value?.explosive?.velocity ?? null,
               brisantness: value?.explosive?.brisantness ?? null,
               explosiveness: value?.explosive?.explosiveness ?? null,
+              tnt: value?.explosive?.tnt ?? null,
           }
         : null,
     sensitivity: value.sensitivity
@@ -79,12 +89,20 @@ export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IEx
     fullName: value.fullName ?? null,
     formula: value.formula ?? null,
     description: value.description ?? null,
-    composition: value.composition ?? null,
+    composition: value.composition
+        ? value.composition.map((item) => ({
+              explosiveId: item.explosiveId ?? null,
+              percent: item.percent ?? null,
+              name: item.name ?? null,
+              description: item.description ?? null,
+          }))
+        : null,
     explosive: value.explosive
         ? {
               velocity: value?.explosive?.velocity ?? null,
               brisantness: value?.explosive?.brisantness ?? null,
               explosiveness: value?.explosive?.explosiveness ?? null,
+              tnt: value?.explosive?.tnt ?? null,
           }
         : null,
     sensitivity: value.sensitivity
@@ -110,12 +128,20 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
     fullName: value.fullName,
     formula: value.formula,
     description: value.description,
-    composition: value.composition,
+    composition: value.composition
+        ? value.composition.map((item) => ({
+              explosiveId: item.explosiveId ?? null,
+              name: item.name ?? null,
+              percent: item.percent ?? null,
+              description: item.description ?? null,
+          }))
+        : null,
     explosive: value.explosive
         ? {
               velocity: value?.explosive?.velocity ?? null,
               brisantness: value?.explosive?.brisantness ?? null,
               explosiveness: value?.explosive?.explosiveness ?? null,
+              tnt: value?.explosive?.tnt ?? null,
           }
         : null,
     sensitivity: value.sensitivity

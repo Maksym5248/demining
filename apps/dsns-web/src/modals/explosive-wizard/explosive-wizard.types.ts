@@ -1,4 +1,4 @@
-import { type IExplosiveСompositionData } from 'shared-my-client';
+import { type IExplosiveCompositionData } from 'shared-my-client';
 
 export interface IExplosiveForm {
     name: string;
@@ -6,12 +6,13 @@ export interface IExplosiveForm {
     fullName: string | null;
     formula: string | null;
     description: string | null;
-    composition: IExplosiveСompositionData[] | null;
+    composition: IExplosiveCompositionData[] | null;
 
-    //detonation
+    //explosive
     velocity: number | null; // m/s
     brisantness: number | null; // мм
     explosiveness: number | null; // см³
+    tnt: number | null;
 
     //sensitivity
     shock: string | null;

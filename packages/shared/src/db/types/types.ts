@@ -161,7 +161,8 @@ export interface IExplosiveDeviceActionDB extends IExplosiveDeviceDB, ILinkedToD
 export interface IExplosiveСompositionDB {
     explosiveId: string | null;
     name: string | null;
-    persent: number | null;
+    percent: number | null;
+    description: string | null;
 }
 
 export interface IExplosiveDB extends IBaseDB {
@@ -175,6 +176,7 @@ export interface IExplosiveDB extends IBaseDB {
         velocity: number | null; // m/s
         brisantness: number | null; // мм
         explosiveness: number | null; // см³
+        tnt: number | null; // см³
     } | null;
     sensitivity: {
         shock: string | null;

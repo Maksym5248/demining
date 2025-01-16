@@ -3,6 +3,7 @@ export * from './explosive-device-wizard';
 export * from './explosive-device-action-wizard';
 export * from './explosive-object-wizard';
 export * from './explosive-wizard';
+export * from './explosive-composition-wizard';
 export * from './explosive-object-action-wizard';
 export * from './explosive-object-type-wizard';
 export * from './explosive-object-class-wizard';
