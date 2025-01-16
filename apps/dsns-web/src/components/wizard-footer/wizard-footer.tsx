@@ -9,9 +9,10 @@ interface WizardFooterProps {
     isView?: boolean;
     isEdit?: boolean;
     loading?: boolean;
+    isLoading?: boolean;
 }
 
-export function WizardFooter({ onCancel, onRemove, isRemove, isView, isEdit, loading }: WizardFooterProps) {
+export function WizardFooter({ onCancel, onRemove, isRemove, isView, isEdit, loading, isLoading }: WizardFooterProps) {
     return isView ? (
         <div />
     ) : (
@@ -33,7 +34,7 @@ export function WizardFooter({ onCancel, onRemove, isRemove, isView, isEdit, loa
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                     <Button onClick={onCancel}>Скасувати</Button>
-                    <Button htmlType="submit" type="primary" loading={loading}>
+                    <Button htmlType="submit" type="primary" loading={loading || isLoading}>
                         {isEdit ? 'Зберегти' : 'Додати'}
                     </Button>
                 </div>

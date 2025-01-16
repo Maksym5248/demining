@@ -21,13 +21,8 @@ import {
 } from './entities';
 import { type IEmployeeStore, createEmployeeAction } from '../employee';
 import { type IEquipmentStore, createEquipmentAction } from '../equipment';
-import { type IExplosiveStore, createExplosiveAction } from '../explosive';
-import {
-    type IExplosiveObjectDetailsData,
-    type IExplosiveObjectStore,
-    createExplosiveObjectAction,
-    createExplosiveObjectDetails,
-} from '../explosive-object';
+import { type IExplosiveDeviceStore, createExplosiveDeviceAction } from '../explosive-device';
+import { type IExplosiveObjectStore, createExplosiveObjectAction } from '../explosive-object';
 import { createMapView, type IMapStore } from '../map';
 import { type ITransportStore, createTransportAction } from '../transport';
 
@@ -54,7 +49,7 @@ export interface IMissionReportStore {
 
 interface Stores {
     equipment: IEquipmentStore;
-    explosive: IExplosiveStore;
+    explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
@@ -68,13 +63,13 @@ interface IApi {
 }
 
 interface MissionReportParams {
-    stores: Stores;
+    getStores: () => Stores;
     api: IApi;
     services: IServices;
 }
 
 export class MissionReportStore implements IMissionReportStore {
-    stores: Stores;
+    getStores: () => Stores;
     api: IApi;
     services: IServices;
 
@@ -89,7 +84,7 @@ export class MissionReportStore implements IMissionReportStore {
     };
 
     constructor(params: MissionReportParams) {
-        this.stores = params.stores;
+        this.getStores = params.getStores;
         this.api = params.api;
         this.services = params.services;
 
@@ -100,21 +95,16 @@ export class MissionReportStore implements IMissionReportStore {
         this.sum = createMissionReportSum(sum);
     }
     appendToCollections(data: IMissionReportDTO) {
-        this.stores.employee.collectionActions.set(data.approvedByAction?.id, createEmployeeAction(data.approvedByAction));
-        this.stores.employee.collectionActions.set(data.squadLeaderAction?.id, createEmployeeAction(data.squadLeaderAction));
-        this.stores.map.collection.set(data.mapView.id, createMapView(data.mapView));
-        this.stores.employee.collectionActions.setArr(data.squadActions.map(createEmployeeAction));
-        this.stores.explosiveObject.collectionDetails.setArr(
-            data.explosiveObjectActions
-                .map(el => (el.details ? createExplosiveObjectDetails(el.id, el.details) : null))
-                .filter(Boolean) as IExplosiveObjectDetailsData[],
-        );
-        this.stores.explosiveObject.collectionActions.setArr(data.explosiveObjectActions.map(createExplosiveObjectAction));
-        this.stores.transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
-        this.stores.equipment.collectionActions.setArr(data.equipmentActions.map(createEquipmentAction));
-        this.stores.explosive.collectionActions.setArr(data.explosiveActions.map(createExplosiveAction));
-        this.stores.order.collection.set(data.order.id, createOrder(data.order));
-        this.stores.missionRequest.collection.set(data.missionRequest.id, createMissionRequest(data.missionRequest));
+        this.getStores().employee.collectionActions.set(data.approvedByAction?.id, createEmployeeAction(data.approvedByAction));
+        this.getStores().employee.collectionActions.set(data.squadLeaderAction?.id, createEmployeeAction(data.squadLeaderAction));
+        this.getStores().map.collection.set(data.mapView.id, createMapView(data.mapView));
+        this.getStores().employee.collectionActions.setArr(data.squadActions.map(createEmployeeAction));
+        this.getStores().explosiveObject.collectionActions.setArr(data.explosiveObjectActions.map(createExplosiveObjectAction));
+        this.getStores().transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
+        this.getStores().equipment.collectionActions.setArr(data.equipmentActions.map(createEquipmentAction));
+        this.getStores().explosiveDevice.collectionActions.setArr(data.explosiveActions.map(createExplosiveDeviceAction));
+        this.getStores().order.collection.set(data.order.id, createOrder(data.order));
+        this.getStores().missionRequest.collection.set(data.missionRequest.id, createMissionRequest(data.missionRequest));
         this.collection.set(data.id, createMissionReport(data));
     }
 

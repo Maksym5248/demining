@@ -15,7 +15,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
     const store = useStore();
     const _onRemove = () => onRemove?.(index);
 
-    const explosive = store.explosive.collectionActions.get(item?.id ?? '') || store.explosive.collection.get(item.explosiveId);
+    const explosive = store.explosiveDevice.collectionActions.get(item?.id ?? '') || store.explosiveDevice.collection.get(item.explosiveId);
 
     const weight = item?.weight ? `${item?.weight}кг;` : null;
     const quantity = item?.quantity ? `${item?.quantity} од.;` : null;
@@ -62,7 +62,7 @@ function Component() {
                                     block
                                     icon={<PlusOutlined />}
                                     onClick={() => {
-                                        Modal.show(MODALS.EXPLOSIVE_ACTION_WIZARD, {
+                                        Modal.show(MODALS.EXPLOSIVE_DEVICE_ACTION_WIZARD, {
                                             mode: WIZARD_MODE.CREATE,
                                             onSubmit: (value: IExplosiveActionDataParams) =>
                                                 setFieldValue('explosiveActions', [...data, value]),
@@ -79,4 +79,4 @@ function Component() {
     );
 }
 
-export const ExplosiveAction = Component;
+export const ExplosiveDeviceAction = Component;

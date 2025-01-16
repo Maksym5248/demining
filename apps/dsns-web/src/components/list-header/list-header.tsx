@@ -8,17 +8,17 @@ const { Title } = Typography;
 
 interface ListHeaderProps {
     title: string;
-    onCreate: (e: React.SyntheticEvent) => void;
+    onCreate?: (e: React.SyntheticEvent) => void;
     onSearch?: (value: string) => void;
-    searchBy: string;
-    setSearchBy: (value: string) => void;
+    searchBy?: string;
+    setSearchBy?: (value: string) => void;
     onOpenInfo?: () => void;
 }
 
 export function ListHeader({ onCreate, onSearch, title, searchBy, setSearchBy, onOpenInfo }: ListHeaderProps) {
     const onClickCreate = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        onCreate(e);
+        onCreate?.(e);
     };
 
     return (
@@ -27,10 +27,10 @@ export function ListHeader({ onCreate, onSearch, title, searchBy, setSearchBy, o
                 {title}
             </Title>
             <Space css={s.search} style={{ justifyContent: 'space-between' }}>
-                {!!onSearch && <Search onSearch={onSearch} value={searchBy} onChangeValue={setSearchBy} />}
+                {!!onSearch && !!setSearchBy && <Search onSearch={onSearch} value={searchBy} onChangeValue={setSearchBy} />}
                 <div css={s.buttons}>
                     {!!onOpenInfo && <Button icon={<Icon.InfoCircleOutlined />} onClick={onOpenInfo} />}
-                    <Button type="primary" icon={<Icon.PlusOutlined />} onClick={onClickCreate} />
+                    {!!onCreate && <Button type="primary" icon={<Icon.PlusOutlined />} onClick={onClickCreate} />}
                 </div>
             </Space>
         </Space>

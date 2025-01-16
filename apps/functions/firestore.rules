@@ -21,15 +21,39 @@ service cloud.firestore {
     }
     
     match /EXPLOSIVE_OBJECT/{explosiveObjectId} {
-    	allow read: if isAuth() && (isOrganization() || isRootAdmin());
-      allow create: if isRootAdmin() || isOrganizationAdmin();
-      allow update, delete: if isRootAdmin();
+    	allow read: if isAuth();
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAuthor();
+      allow update, delete: if isRootAdmin() || isAuthor();
+    }
+
+    match /EXPLOSIVE_OBJECT_TYPE/{explosiveObjectTypeId} {
+    	allow read: if isAuth();
+      allow create: if isAuthor() || isAuthor();
+      allow update, delete: if isAuthor();
+    }
+
+    match /EXPLOSIVE_OBJECT_CLASS/{explosiveObjectTypeId} {
+    	allow read: if isAuth();
+      allow create: if isAuthor() || isAuthor();
+      allow update, delete: if isAuthor();
+    }
+
+    match /EXPLOSIVE_OBJECT_CLASS_ITEM/{explosiveObjectTypeId} {
+    	allow read: if isAuth();
+      allow create: if isAuthor() || isAuthor();
+      allow update, delete: if isAuthor();
     }
     
     match /EXPLOSIVE/{explosiveId} {
-      allow read: if isAuth() && (isOrganization() || isRootAdmin());
-      allow create: if isRootAdmin() || isOrganizationAdmin();
-      allow update, delete: if isRootAdmin();
+      allow read: if isAuth();
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAuth();
+      allow update, delete: if isRootAdmin() || isAuth();
+    }
+
+    match /EXPLOSIVE_NEW/{explosiveId} {
+      allow read: if isAuth();
+      allow create: if isRootAdmin() || isAuth();
+      allow update, delete: if isRootAdmin() || isAuth();
     }
 
     function isAuth() {

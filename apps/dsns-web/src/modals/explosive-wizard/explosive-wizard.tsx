@@ -1,12 +1,14 @@
-import { Form, Drawer, Input, Spin } from 'antd';
-import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_TYPE } from 'shared-my';
-import { useItemStore } from 'shared-my-client';
+import { useEffect } from 'react';
 
-import { WizardButtons, Select, WizardFooter } from '~/components';
+import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
+import { observer } from 'mobx-react-lite';
+import { MIME_TYPE } from 'shared-my';
+
+import { UploadFile, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 
+import { Сomposition } from './components';
 import { s } from './explosive-wizard.style';
 import { type IExplosiveForm } from './explosive-wizard.types';
 
@@ -17,73 +19,166 @@ interface Props {
     hide: () => void;
 }
 
-const typeOptions = [
-    {
-        label: 'Вибухова речовна',
-        value: EXPLOSIVE_TYPE.EXPLOSIVE,
-    },
-    {
-        label: 'Засіб підриву',
-        value: EXPLOSIVE_TYPE.DETONATOR,
-    },
-];
+const getParams = ({
+    velocity,
+    brisantness,
+    explosiveness,
+    shock,
+    temperature,
+    density,
+    friction,
+    meltingPoint,
+    ignitionPoint,
+    tnt,
+    ...value
+}: IExplosiveForm) => {
+    return {
+        ...value,
+        explosive: {
+            velocity: velocity ?? null,
+            brisantness: brisantness ?? null,
+            explosiveness: explosiveness ?? null,
+            tnt: tnt ?? null,
+        },
+        sensitivity: {
+            shock,
+            temperature,
+            friction,
+        },
+        physical: {
+            density: density,
+            meltingPoint,
+            ignitionPoint,
+        },
+    };
+};
 
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-    const store = useStore();
+    const { explosive, viewer } = useStore();
     const wizard = useWizard({ id, mode });
 
-    const { isLoading, item } = useItemStore(store.explosive, id as string);
+    const currentExplosive = explosive.collection.get(id as string);
 
     const isEdit = !!id;
+    const isLoading = explosive.fetchItem.isLoading;
 
     const onFinishCreate = async (values: IExplosiveForm) => {
-        await store.explosive.create.run(values);
+        console.log('onFinishCreate', values);
+        await explosive.create.run(getParams(values));
         hide();
     };
 
     const onFinishUpdate = async (values: IExplosiveForm) => {
-        await item?.update.run(values);
+        await currentExplosive?.update.run(getParams(values));
         hide();
     };
 
-    const onRemove = async () => {
-        !!id && store.explosive.remove.run(id);
+    const onRemove = () => {
+        !!id && explosive.remove.run(id);
         hide();
     };
 
-    const isEditable = !!store.viewer.user?.isAuthor || !!item?.isCurrentOrganization;
+    useEffect(() => {
+        !!id && explosive.fetchItem.run(id);
+    }, [id]);
+
+    const isEditable = !!viewer.user?.isAuthor || !!currentExplosive?.isCurrentOrganization;
 
     return (
         <Drawer
             open={isVisible}
             destroyOnClose
-            title={`${isEdit ? 'Редагувати' : 'Створити'} ВР та ЗП`}
+            title={`${isEdit ? 'Редагувати' : 'Створити'} ВР`}
             placement="right"
-            width={500}
+            width={600}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (
                 <Form
-                    name="explosive-form"
+                    name="explosive-object-form"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item.data } : { type: EXPLOSIVE_TYPE.EXPLOSIVE }}>
-                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select options={typeOptions} />
+                    initialValues={
+                        currentExplosive
+                            ? {
+                                  ...currentExplosive.data,
+                                  ...currentExplosive.data.sensitivity,
+                                  ...currentExplosive.data.explosive,
+                                  ...currentExplosive.data.physical,
+                              }
+                            : {}
+                    }>
+                    <Form.Item name="image" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => {
+                                const image = getFieldValue('image');
+                                const imageUri = getFieldValue('imageUri');
+
+                                const onChangeFile = ({ file }: { file: File | null }) => setFieldValue('image', file);
+
+                                return (
+                                    <UploadFile
+                                        onChangeFile={onChangeFile}
+                                        file={image}
+                                        type="image"
+                                        accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
+                                        uri={imageUri}
+                                    />
+                                );
+                            }}
+                        </Form.Item>
                     </Form.Item>
-                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <WizardFooter
-                        {...wizard}
-                        onCancel={hide}
-                        onRemove={onRemove}
-                        loading={store.explosive.create.isLoading || item?.update.isLoading}
-                    />
+                    <Form.Item label="Повна назва" name="fullName">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Формула" name="formula">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Опис" name="description">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} />
+                    </Form.Item>
+                    <Divider />
+                    <Сomposition />
+                    <Divider />
+                    <Form.Item label="Швидкість детонації, м/c" name="velocity">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item label="Брезантність, мм" name="brisantness">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item label="Фугасність, см³" name="explosiveness">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item label="Тротиловий еквівалент" name="tnt">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item label="Чутливість до удару" name="shock">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="до температури" name="temperature">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="до тертя" name="friction">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item label="Плотність, г/см3" name="density">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <Form.Item label="Т плавлення, ºС" name="meltingPoint">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <Form.Item label="Т запалення, ºС" name="ignitionPoint">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>
             )}
         </Drawer>

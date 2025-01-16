@@ -1,10 +1,4 @@
-import {
-    type EXPLOSIVE_OBJECT_TYPE,
-    type EXPLOSIVE_OBJECT_STATUS,
-    type EXPLOSIVE_OBJECT_COMPONENT,
-    type EXPLOSIVE_OBJECT_CLASS,
-    type METHRIC,
-} from '~/db';
+import { type EXPLOSIVE_OBJECT_TYPE, type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_OBJECT_COMPONENT, type METHRIC } from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
@@ -20,25 +14,39 @@ export interface IExplosiveObjectDBv1 extends IBaseDB {
     caliber: number | null;
 }
 
-export interface IExplosiveObjectClassDB {
+export interface IExplosiveObjectDBv2 extends IBaseDB {
+    typeId: EXPLOSIVE_OBJECT_TYPE;
+    name: string | null;
+    caliber: number | null;
+    meta: {
+        copy: {
+            group: EXPLOSIVE_OBJECT_TYPE;
+            typeIds: string[];
+            caliber: number | null;
+        };
+    };
+}
+
+export interface IExplosiveObjectClassDB extends IBaseDB {
     id: string;
-    class: EXPLOSIVE_OBJECT_CLASS;
+    name: string;
+}
+
+export interface IExplosiveObjectClassItemDB extends IBaseDB {
+    id: string;
+    name: string;
+    shortName: string;
+    description?: string;
+    classId: string;
     typeId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
-    name: string;
+    parentId: string | null; // class item
 }
 
-export interface IExplosiveObjectClassItemDB {
-    id: string;
-    classId: string;
-    parentId: string | null;
-    name: string;
-    description?: string;
-}
-
-export interface IExplosiveObjectTypeDB {
+export interface IExplosiveObjectTypeDB extends IBaseDB {
     id: string;
     name: string;
+    imageUri: string | null;
     fullName: string;
     hasCaliber?: boolean;
     metricCaliber?: METHRIC;
@@ -49,13 +57,18 @@ export interface ICountryDB {
     name: string;
 }
 
+export interface IMaterialDB {
+    id: string;
+    name: string;
+}
+
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT | null; // Боєприпас
     typeId: string | null; // Інженерний
     countryId: string; // СССР
-    classIds: string[]; // протитанковий, протиднищевий; кумулятивний
+    classItemIds: string[]; // протитанковий, протиднищевий; кумулятивний
     imageUri: string | null;
     details: IExplosiveObjectDetailsDB | null;
 }

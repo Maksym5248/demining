@@ -13,7 +13,7 @@ import { useStore, useWizard } from '~/hooks';
 import { Modal, Image, Crashlytics, Template } from '~/services';
 
 import { ExplosiveObjectAction, Timer, Transport, Equipment, Approved, Documents, Act, Territory, Employees, Map } from './components';
-import { ExplosiveAction } from './components/explosive-action';
+import { ExplosiveDeviceAction } from './components/explosive-action';
 import { s } from './mission-report-wizard.styles';
 import { type IMissionReportProps, type IMissionReportForm } from './mission-report-wizard.types';
 import { createCopyValue, createCreateValue, createEditValue } from './mission-report-wizard.utils';
@@ -250,7 +250,7 @@ export const MissionReportWizardModal = observer(({ id, isVisible, hide, mode = 
                             <Documents key="Documents" initialValues={initialValues} />,
                             <Timer key="Timer" />,
                             <ExplosiveObjectAction key="ExplosiveObjectAction" />,
-                            <ExplosiveAction key="ExplosiveAction" />,
+                            <ExplosiveDeviceAction key="ExplosiveDeviceAction" />,
                             <Transport
                                 key="Transport"
                                 initialValues={initialValues}

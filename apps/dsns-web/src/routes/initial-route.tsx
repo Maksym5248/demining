@@ -8,14 +8,20 @@ export const InitialRoute = observer(() => {
     const location = useLocation();
     const store = useStore();
 
-    const { isRootAdmin, isOrganizationMember, isWaitingApproved } = store.viewer.user ?? {};
+    const { isRootAdmin, isOrganizationMember, isWaitingApproved, isAuthor } = store.viewer.user ?? {};
 
     if (isOrganizationMember) {
         return <Navigate to={ROUTES.MISSION_REPORT_LIST} state={{ from: location }} replace />;
     }
+
     if (isRootAdmin) {
         return <Navigate to={ROUTES.ORGANIZATIONS_LIST} state={{ from: location }} replace />;
     }
+
+    if (isAuthor) {
+        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
+    }
+
     if (isWaitingApproved) {
         return <Navigate to={ROUTES.WAITING_APPROVE} state={{ from: location }} replace />;
     }

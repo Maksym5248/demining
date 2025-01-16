@@ -3,6 +3,7 @@ export * from './document';
 export * from './employee';
 export * from './equipment';
 export * from './explosive';
+export * from './explosive-device';
 export * from './explosive-object';
 export * from './map';
 export * from './mission-report';

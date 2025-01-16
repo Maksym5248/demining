@@ -4,7 +4,7 @@ import {
     type IDocumentStore,
     type IAuthStore,
     type IEquipmentStore,
-    type IExplosiveStore,
+    type IExplosiveDeviceStore,
     type IEmployeeStore,
     type IMapStore,
     type IMissionReportStore,
@@ -18,7 +18,7 @@ import {
     AuthStore,
     DocumentStore,
     EquipmentStore,
-    ExplosiveStore,
+    ExplosiveDeviceStore,
     ExplosiveObjectStore,
     EmployeeStore,
     MapStore,
@@ -29,7 +29,9 @@ import {
     UserStore,
     OrganizationStore,
     ViewerStore,
+    type IAuthUser,
 } from 'shared-my-client';
+import { createCurrentUser, ExplosiveStore, type IExplosiveStore } from 'shared-my-client/stores';
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';
@@ -41,6 +43,7 @@ export interface IRootStore {
     document: IDocumentStore;
     equipment: IEquipmentStore;
     explosive: IExplosiveStore;
+    explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
@@ -63,6 +66,7 @@ export class RootStore implements IRootStore {
     document: IDocumentStore;
     equipment: IEquipmentStore;
     explosive: IExplosiveStore;
+    explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
@@ -75,14 +79,16 @@ export class RootStore implements IRootStore {
     viewer: IViewerStore;
 
     isLoaded = false;
+    isInitialized = false;
 
-    get stores() {
+    getStores = () => {
         return {
             viewer: this.viewer,
             auth: this.auth,
             document: this.document,
             equipment: this.equipment,
             explosive: this.explosive,
+            explosiveDevice: this.explosiveDevice,
             explosiveObject: this.explosiveObject,
             employee: this.employee,
             map: this.map,
@@ -93,7 +99,7 @@ export class RootStore implements IRootStore {
             user: this.user,
             organization: this.organization,
         };
-    }
+    };
 
     get services() {
         return {
@@ -117,6 +123,7 @@ export class RootStore implements IRootStore {
         this.document = new DocumentStore(this);
         this.equipment = new EquipmentStore(this);
         this.explosive = new ExplosiveStore(this);
+        this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
         this.employee = new EmployeeStore(this);
         this.map = new MapStore(this);
@@ -130,16 +137,36 @@ export class RootStore implements IRootStore {
         makeAutoObservable(this);
     }
 
-    setLoaded(value: boolean) {
-        this.isLoaded = value;
-    }
-    get isInitialized() {
-        return !!this.isLoaded && this.viewer.isInitialized;
+    setInitialized(value: boolean) {
+        this.isInitialized = value;
     }
 
     removeAllListeners() {
         SecureStorage.removeAllListeners();
         Storage.removeAllListeners();
+    }
+
+    private async onChangeUser(user: IAuthUser | null) {
+        try {
+            if (user) {
+                this.services.analytics.setUserId(user.uid);
+                await this.services.auth.refreshToken();
+                const res = await this.api.user.get(user.uid);
+
+                if (res) this.viewer.setUser(createCurrentUser(res));
+                await this.explosiveObject.fetchDeeps.run();
+            } else {
+                this.services.analytics.setUserId(null);
+                this.viewer.removeUser();
+            }
+        } catch (e) {
+            this.services.logger.error(e);
+            this.services.message.error('Bиникла помилка');
+            this.viewer.removeUser();
+        }
+
+        this.setInitialized(true);
+        this.viewer.setLoading(false);
     }
 
     async init() {
@@ -149,15 +176,14 @@ export class RootStore implements IRootStore {
         this.services.crashlytics.init();
 
         try {
+            this.viewer.setLoading(true);
             await DB.init();
 
-            await Promise.all([this.employee.fetchRanks.run(), this.explosiveObject.fetchDeeps.run()]);
+            this.services.auth.onAuthStateChanged((user) => this.onChangeUser(user));
 
-            this.viewer.initUser();
+            await this.employee.fetchRanks.run();
         } catch (e) {
             this.services.logger.error('init', e);
         }
-
-        this.setLoaded(true);
     }
 }

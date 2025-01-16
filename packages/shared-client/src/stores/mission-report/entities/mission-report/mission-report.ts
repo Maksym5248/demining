@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { toLower } from 'lodash';
 import { makeAutoObservable } from 'mobx';
-import { str, EQUIPMENT_TYPE, EXPLOSIVE_TYPE, TRANSPORT_TYPE } from 'shared-my';
+import { str, EQUIPMENT_TYPE, EXPLOSIVE_DEVICE_TYPE, TRANSPORT_TYPE } from 'shared-my';
 
 import { dates } from '~/common';
 import { type IPoint } from '~/map';
@@ -9,7 +9,7 @@ import { type IPoint } from '~/map';
 import { type IMissionReportData } from './mission-report.schema';
 import { type IEmployeeAction, type IEmployeeStore } from '../../../employee';
 import { type IEquipmentAction, type IEquipmentStore } from '../../../equipment';
-import { type IExplosiveAction, type IExplosiveStore } from '../../../explosive';
+import { type IExplosiveDeviceAction, type IExplosiveDeviceStore } from '../../../explosive-device';
 import { type IExplosiveObjectAction, type IExplosiveObjectStore } from '../../../explosive-object';
 import { type IMapViewAction, type IMapStore } from '../../../map';
 import { type IMissionRequest, type IMissionRequestStore } from '../../../mission-request';
@@ -30,7 +30,7 @@ export interface IMissionReport {
     squadLeaderAction: IEmployeeAction;
     squadActions: IEmployeeAction[];
     explosiveObjectActions: IExplosiveObjectAction[];
-    explosiveActions: IExplosiveAction[];
+    explosiveActions: IExplosiveDeviceAction[];
     docName: string;
     transportExplosiveObject?: ITransportAction;
     transportHumans?: ITransportAction;
@@ -77,7 +77,7 @@ export interface IMissionReport {
 }
 interface Stores {
     equipment: IEquipmentStore;
-    explosive: IExplosiveStore;
+    explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     employee: IEmployeeStore;
     map: IMapStore;
@@ -87,17 +87,17 @@ interface Stores {
 }
 
 interface MissionReportParams {
-    stores: Stores;
+    getStores: () => Stores;
 }
 
 export class MissionReport implements IMissionReport {
-    stores: Stores;
+    getStores: () => Stores;
     data: IMissionReportData;
 
-    constructor(data: IMissionReportData, { stores }: MissionReportParams) {
+    constructor(data: IMissionReportData, { getStores }: MissionReportParams) {
         this.data = data;
 
-        this.stores = stores;
+        this.getStores = getStores;
         makeAutoObservable(this);
     }
 
@@ -114,47 +114,51 @@ export class MissionReport implements IMissionReport {
     }
 
     get equipmentActions() {
-        return this.data.equipmentActionsIds?.map(id => this.stores.equipment.collectionActions.get(id) as IEquipmentAction) ?? [];
+        return this.data.equipmentActionsIds?.map(id => this.getStores().equipment.collectionActions.get(id) as IEquipmentAction) ?? [];
     }
 
     get order() {
-        return this.stores.order.collection.get(this.data.orderId) as IOrder;
+        return this.getStores().order.collection.get(this.data.orderId) as IOrder;
     }
 
     get missionRequest() {
-        return this.stores.missionRequest.collection.get(this.data.missionRequestId) as IMissionRequest;
+        return this.getStores().missionRequest.collection.get(this.data.missionRequestId) as IMissionRequest;
     }
 
     get mapView() {
-        return this.stores.map.collection.get(this.data.mapViewId) as IMapViewAction;
+        return this.getStores().map.collection.get(this.data.mapViewId) as IMapViewAction;
     }
 
     get approvedByAction() {
-        return this.stores.employee.collectionActions.get(this.data.approvedByActionId) as IEmployeeAction;
+        return this.getStores().employee.collectionActions.get(this.data.approvedByActionId) as IEmployeeAction;
     }
 
     get transportActions() {
-        return this.data.transportActionsIds?.map(id => this.stores.transport.collectionActions.get(id) as ITransportAction) ?? [];
+        return this.data.transportActionsIds?.map(id => this.getStores().transport.collectionActions.get(id) as ITransportAction) ?? [];
     }
 
     get squadLeaderAction() {
-        return this.stores.employee.collectionActions.get(this.data.squadLeaderActionId) as IEmployeeAction;
+        return this.getStores().employee.collectionActions.get(this.data.squadLeaderActionId) as IEmployeeAction;
     }
 
     get squadActions() {
-        return this.data.squadActionsIds?.map(id => this.stores.employee.collectionActions.get(id) as IEmployeeAction) ?? [];
+        return this.data.squadActionsIds?.map(id => this.getStores().employee.collectionActions.get(id) as IEmployeeAction) ?? [];
     }
 
     get explosiveObjectActions() {
         return (
             this.data.explosiveObjectActionsIds?.map(
-                id => this.stores.explosiveObject.collectionActions.get(id) as IExplosiveObjectAction,
+                id => this.getStores().explosiveObject.collectionActions.get(id) as IExplosiveObjectAction,
             ) ?? []
         );
     }
 
     get explosiveActions() {
-        return this.data.explosiveActionsIds?.map(id => this.stores.explosive.collectionActions.get(id) as IExplosiveAction) ?? [];
+        return (
+            this.data.explosiveActionsIds?.map(
+                id => this.getStores().explosiveDevice.collectionActions.get(id) as IExplosiveDeviceAction,
+            ) ?? []
+        );
     }
 
     get docName() {
@@ -215,8 +219,8 @@ export class MissionReport implements IMissionReport {
                 : 'з ---- по ----';
 
         const actNumber = `${number}${subNumber ? `/${subNumber}` : ''}`;
-        const explosive = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_TYPE.EXPLOSIVE);
-        const detonator = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_TYPE.DETONATOR);
+        const explosive = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE);
+        const detonator = explosiveActions.filter(el => el?.data.type === EXPLOSIVE_DEVICE_TYPE.DETONATOR);
 
         return {
             approvedAt: getDate(approvedAt),

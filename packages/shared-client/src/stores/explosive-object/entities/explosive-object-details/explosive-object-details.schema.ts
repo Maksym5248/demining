@@ -1,64 +1,80 @@
+import { MATERIAL } from 'shared-my';
+
 import {
     type IExplosiveObjectDetailsDTO,
-    type IMarkingDTO,
     type IStructureDTO,
     type IActionDTO,
-    type ILiquidatorDTO,
-    type IReductionDTO,
-    type INeutralizationDTO,
-    type IBodyDTO,
     type ISizeDTO,
-    type IWightDTO,
     type IPurposeDTO,
+    type IFillerDTO,
+    type ITempartureDTO,
 } from '~/api';
+import { data, type ICreateValue } from '~/common';
 
-export type IMarkingData = IMarkingDTO;
-export type IStructureData = IStructureDTO;
-export type INeutralizationData = INeutralizationDTO;
-export type IActionData = IActionDTO;
-export type IBodyData = IBodyDTO;
 export type ISizeData = ISizeDTO;
-export type IWightData = IWightDTO;
+export type IFillerData = IFillerDTO;
+export type ITempartureData = ITempartureDTO;
+
+export type IStructureData = IStructureDTO;
 export type IPurposeData = IPurposeDTO;
-export type ILiquidatorData = ILiquidatorDTO;
-export type IReductionData = IReductionDTO;
+export type IActionData = IActionDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
-    purpose: IPurposeData | null;
-    temperatureRange: [number, number] | null;
-    body: IBodyData | null;
-    size: ISizeData | null;
-    structure: IStructureData | null;
-    action: IActionData | null;
-    marking: IMarkingData[];
-    neutralization: INeutralizationDTO | null;
+    material: MATERIAL;
+    size: ISizeData | null; //мм;
+    weight: number | null; // kg;
+    temperature: ITempartureData | null;
+    filler: IFillerData | null; // спорядження ВР;
+    caliber: number | null; // ammo
+    fuseIds: string[]; // ammo
 
-    // ammo
-    weight: IWightData[];
-    caliber: number | null;
-    fuseIds: string[];
-
-    // fuse
-    liquidator: ILiquidatorData | false | null;
-    reduction: IReductionData | false | null;
+    // description
+    purpose: IPurposeData | null; // призначення;
+    structure: IStructureData | null; // будова;
+    action: IActionData | null; // принцип дії;
 }
 
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
     return {
-        id: id,
-        purpose: value.purpose,
-        temperatureRange: value.temperatureRange,
-        body: value.body,
+        id,
+        material: value.material,
         size: value.size,
+        weight: value.weight,
+        temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
+        filler: value.filler,
+        caliber: value.caliber,
+        fuseIds: value.fuseIds ?? [],
+        purpose: value.purpose,
         structure: value.structure,
         action: value.action,
-        marking: value.marking,
-        neutralization: value.neutralization,
-        weight: value.weight,
-        caliber: value.caliber,
-        fuseIds: value.fuseIds,
-        liquidator: value.liquidator,
-        reduction: value.reduction,
     };
 };
+
+export const createExplosiveObjectDetailsDTO = (
+    value?: ICreateValue<IExplosiveObjectDetailsData>,
+): ICreateValue<IExplosiveObjectDetailsDTO> => ({
+    material: value?.material ?? MATERIAL.METAL,
+    size: value?.size ?? null,
+    weight: value?.weight ?? null,
+    temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
+    filler: value?.filler ?? null,
+    caliber: value?.caliber ?? null,
+    fuseIds: value?.fuseIds ?? [],
+    purpose: value?.purpose ?? null,
+    structure: value?.structure ?? null,
+    action: value?.action ?? null,
+});
+
+export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>((value) => ({
+    material: value.material ?? MATERIAL.METAL,
+    size: value.size ?? null,
+    weight: value.weight ?? null,
+    temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
+    filler: value.filler ?? null,
+    caliber: value.caliber ?? null,
+    fuseIds: value.fuseIds ?? [],
+    purpose: value.purpose ?? null,
+    structure: value.structure ?? null,
+    action: value.action ?? null,
+}));

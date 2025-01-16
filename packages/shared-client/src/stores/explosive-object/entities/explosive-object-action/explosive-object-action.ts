@@ -45,7 +45,7 @@ interface IExplosiveObjectActionParams {
     collections: ICollections;
     api: IApi;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
 }
 
 export interface IExplosiveObjectAction {
@@ -59,15 +59,15 @@ export class ExplosiveObjectAction implements IExplosiveObjectAction {
     api: IApi;
     collections: ICollections;
     services: IServices;
-    stores: IStores;
+    getStores: () => IStores;
     data: IExplosiveObjectActionData;
 
-    constructor(value: IExplosiveObjectActionData, { collections, api, services, stores }: IExplosiveObjectActionParams) {
+    constructor(value: IExplosiveObjectActionData, { collections, api, services, getStores }: IExplosiveObjectActionParams) {
         this.data = value;
         this.collections = collections;
         this.api = api;
         this.services = services;
-        this.stores = stores;
+        this.getStores = getStores;
 
         makeAutoObservable(this);
     }

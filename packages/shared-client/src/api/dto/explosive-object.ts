@@ -4,9 +4,7 @@ import {
     type IStructureDB,
     type INeutralizationDB,
     type IActionDB,
-    type IBodyDB,
     type ISizeDB,
-    type IWightDB,
     type IPurposeDB,
     type ILiquidatorDB,
     type IReductionDB,
@@ -15,18 +13,20 @@ import {
     type IExplosiveObjectClassItemDB,
     type IExplosiveObjectTypeDB,
     type IExplosiveObjectDetailsDB,
+    type IFillerDB,
+    type ITempartureDB,
 } from 'shared-my';
 
 export type IMarkingDTO = IMarkingDB;
 export type IStructureDTO = IStructureDB;
 export type INeutralizationDTO = INeutralizationDB;
 export type IActionDTO = IActionDB;
-export type IBodyDTO = IBodyDB;
+export type ITempartureDTO = ITempartureDB;
 export type ISizeDTO = ISizeDB;
-export type IWightDTO = IWightDB;
 export type IPurposeDTO = IPurposeDB;
 export type ILiquidatorDTO = ILiquidatorDB;
 export type IReductionDTO = IReductionDB;
+export type IFillerDTO = IFillerDB;
 export type IExplosiveObjectDetailsDTO = IExplosiveObjectDetailsDB;
 
 export type ICountryDTO = ICountryDB;

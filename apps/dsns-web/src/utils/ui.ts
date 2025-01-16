@@ -1,5 +1,5 @@
 import { isArray } from 'lodash';
-import { type TreeNode } from 'shared-my-client';
+import { type ITreeNode } from 'shared-my-client';
 
 interface Option {
     label: string;
@@ -25,7 +25,7 @@ interface AntTreeNode {
     children: AntTreeNode[];
 }
 
-export function transformTreeNodeToTreeData<T>(treeNode: TreeNode<T>, getLabel: (value?: T) => string): AntTreeNode {
+export function transformTreeNodeToTreeData<T>(treeNode: ITreeNode<T>, getLabel: (value?: T) => string): AntTreeNode {
     return {
         value: treeNode.id,
         key: treeNode.id,
@@ -35,7 +35,7 @@ export function transformTreeNodeToTreeData<T>(treeNode: TreeNode<T>, getLabel: 
     };
 }
 
-export function transformTreeNodesToTreeData<T>(treeNodes: TreeNode<T>[], getLabel: (value?: T) => string): AntTreeNode[] {
+export function transformTreeNodesToTreeData<T>(treeNodes: ITreeNode<T>[], getLabel: (value?: T) => string): AntTreeNode[] {
     return treeNodes.map((el) => transformTreeNodeToTreeData(el, getLabel));
 }
 

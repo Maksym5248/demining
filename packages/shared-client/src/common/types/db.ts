@@ -3,7 +3,7 @@ import {
     type IBaseDB,
     type Timestamp,
     type IExplosiveObjectDB,
-    type IExplosiveDB,
+    type IExplosiveDeviceDB,
     type IEmployeeDB,
     type IEmployeeActionDB,
     type IMapViewActionDB,
@@ -16,8 +16,9 @@ import {
     type IEquipmentDB,
     type IEquipmentActionDB,
     type IDocumentDB,
-    type IExplosiveActionDB,
+    type IExplosiveDeviceActionDB,
     type IUserDB,
+    type IExplosiveDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -61,6 +62,7 @@ export interface IDB {
     user: IDBBase<IUserDB>;
     organization: IDBBase<IOrganizationDB>;
     explosiveObject: IDBBase<IExplosiveObjectDB>;
+    explosiveDevice: IDBBase<IExplosiveDeviceDB>;
     explosive: IDBBase<IExplosiveDB>;
     employee: IDBBase<IEmployeeDB>;
     employeeAction: IDBBase<IEmployeeActionDB>;
@@ -74,7 +76,7 @@ export interface IDB {
     equipment: IDBBase<IEquipmentDB>;
     equipmentAction: IDBBase<IEquipmentActionDB>;
     document: IDBBase<IDocumentDB>;
-    explosiveAction: IDBBase<IExplosiveActionDB>;
+    explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
     batchStart(): void;
     batchCommit(): Promise<void>;
     init(): void;

@@ -1,23 +1,13 @@
 import React, { useEffect } from 'react';
 
-import { Button, Typography, Space, Badge } from 'antd';
+import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import { EXPLOSIVE_TYPE } from 'shared-my';
 import { type IExplosive } from 'shared-my-client';
 
-import { Icon, List, ListHeader } from '~/components';
+import { Icon, List, ListHeader, Image } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
-
-import { s } from './explosive-list.styles';
-
-const { Text } = Typography;
-
-const types = {
-    [EXPLOSIVE_TYPE.EXPLOSIVE]: 'Вибухові речовини',
-    [EXPLOSIVE_TYPE.DETONATOR]: 'Засоб підриву',
-};
 
 const ListItem = observer(({ item }: { item: IExplosive }) => {
     const onOpen = (e: React.SyntheticEvent) => {
@@ -25,26 +15,10 @@ const ListItem = observer(({ item }: { item: IExplosive }) => {
         Modal.show(MODALS.EXPLOSIVE_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW });
     };
 
-    const children = (
+    return (
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
-            <List.Item.Meta
-                avatar={<Icon.FileTextOutlined />}
-                title={item.data.name}
-                description={
-                    <Space css={s.listItemDesc}>
-                        <Text type="secondary">{types[item.data.type]}</Text>
-                    </Space>
-                }
-            />
+            <List.Item.Meta title={item?.displayName} avatar={<Image src={item.data.imageUri ?? undefined} width={70} />} />
         </List.Item>
-    );
-
-    return item.isCurrentOrganization ? (
-        <Badge.Ribbon text="Власні" color="green">
-            {children}
-        </Badge.Ribbon>
-    ) : (
-        children
     );
 });
 
@@ -78,7 +52,7 @@ export const ExplosiveListPage = observer(() => {
             dataSource={explosive.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
-            renderItem={item => <ListItem item={item} />}
+            renderItem={(item) => <ListItem item={item} />}
         />
     );
 });
