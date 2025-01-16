@@ -11,6 +11,7 @@ import { type IExplosiveDeviceData, updateExplosiveDeviceDTO, createExplosiveDev
 export interface IExplosiveDevice {
     id: string;
     data: IExplosiveDeviceData;
+    isCurrentOrganization: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveDeviceData>]>;
 }
 

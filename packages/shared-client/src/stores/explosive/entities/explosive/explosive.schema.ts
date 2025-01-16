@@ -52,7 +52,7 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): I
     formula: value.formula ?? null,
     description: value.description ?? null,
     composition: value.composition
-        ? value.composition.map((item) => ({
+        ? value.composition.map(item => ({
               explosiveId: item.explosiveId ?? null,
               name: item.name ?? null,
               percent: item.percent ?? null,
@@ -90,7 +90,7 @@ export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IEx
     formula: value.formula ?? null,
     description: value.description ?? null,
     composition: value.composition
-        ? value.composition.map((item) => ({
+        ? value.composition.map(item => ({
               explosiveId: item.explosiveId ?? null,
               percent: item.percent ?? null,
               name: item.name ?? null,
@@ -129,7 +129,7 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
     formula: value.formula,
     description: value.description,
     composition: value.composition
-        ? value.composition.map((item) => ({
+        ? value.composition.map(item => ({
               explosiveId: item.explosiveId ?? null,
               name: item.name ?? null,
               percent: item.percent ?? null,

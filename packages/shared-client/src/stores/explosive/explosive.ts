@@ -7,6 +7,7 @@ import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IExplosive, type IExplosiveData, createExplosive, createExplosiveDTO, Explosive } from './entities';
+import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveStore {
     collection: CollectionModel<IExplosive, IExplosiveData>;
@@ -26,18 +27,23 @@ interface IServices {
     message: IMessage;
 }
 
+interface IStores {
+    viewer: IViewerStore;
+}
+
 export class ExplosiveStore implements IExplosiveStore {
     api: IApi;
     services: IServices;
-
+    getStores: () => IStores;
     collection = new CollectionModel<IExplosive, IExplosiveData>({
         factory: (data: IExplosiveData) => new Explosive(data, this),
     });
     list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
 
-    constructor(params: { api: IApi; services: IServices }) {
+    constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }
