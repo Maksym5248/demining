@@ -40,7 +40,7 @@ const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
     );
 
     return item.isCurrentOrganization ? (
-        <Badge.Ribbon text="Власні" color="green">
+        <Badge.Ribbon text="+" color="green">
             {children}
         </Badge.Ribbon>
     ) : (
