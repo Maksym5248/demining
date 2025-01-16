@@ -18,14 +18,21 @@ export interface IExplosiveData {
     formula: string | null;
     description: string | null;
     composition: IExplosiveСompositionData[] | null;
-    detonation: {
+    explosive: {
         velocity: number | null; // m/s
+        brisantness: number | null; // мм
+        explosiveness: number | null; // см³
     } | null;
     sensitivity: {
         shock: string | null;
-        tempurture: string | null;
+        temperature: string | null;
+        friction: string | null;
     } | null;
-    density: number | null; // г/см3
+    physical: {
+        density: number | null; // г/см3
+        meltingPoint: number | null; // °C
+        ignitionPoint: number | null; // °C
+    } | null;
     organizationId?: string;
     authorId: string;
     createdAt: Dayjs;
@@ -43,14 +50,27 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): I
     formula: value.formula ?? null,
     description: value.description ?? null,
     composition: value.composition ?? null,
-    detonation: value.detonation ? { velocity: value?.detonation?.velocity } : null,
-    sensitivity: value.sensitivity
+    explosive: value.explosive
         ? {
-              shock: value.sensitivity.shock,
-              tempurture: value.sensitivity.tempurture,
+              velocity: value?.explosive?.velocity ?? null,
+              brisantness: value?.explosive?.brisantness ?? null,
+              explosiveness: value?.explosive?.explosiveness ?? null,
           }
         : null,
-    density: value.density ?? null,
+    sensitivity: value.sensitivity
+        ? {
+              shock: value.sensitivity.shock ?? null,
+              temperature: value.sensitivity.temperature ?? null,
+              friction: value.sensitivity.friction ?? null,
+          }
+        : null,
+    physical: value.physical
+        ? {
+              density: value.physical.density ?? null,
+              meltingPoint: value.physical.meltingPoint ?? null,
+              ignitionPoint: value.physical.ignitionPoint ?? null,
+          }
+        : null,
 });
 
 export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IExplosiveDTOParams>(value => ({
@@ -60,14 +80,27 @@ export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IEx
     formula: value.formula ?? null,
     description: value.description ?? null,
     composition: value.composition ?? null,
-    detonation: value.detonation ? { velocity: value?.detonation?.velocity } : null,
-    sensitivity: value.sensitivity
+    explosive: value.explosive
         ? {
-              shock: value.sensitivity.shock,
-              tempurture: value.sensitivity.tempurture,
+              velocity: value?.explosive?.velocity ?? null,
+              brisantness: value?.explosive?.brisantness ?? null,
+              explosiveness: value?.explosive?.explosiveness ?? null,
           }
         : null,
-    density: value.density ?? null,
+    sensitivity: value.sensitivity
+        ? {
+              shock: value.sensitivity.shock ?? null,
+              temperature: value.sensitivity.temperature ?? null,
+              friction: value.sensitivity.friction ?? null,
+          }
+        : null,
+    physical: value.physical
+        ? {
+              density: value.physical.density ?? null,
+              meltingPoint: value.physical.meltingPoint ?? null,
+              ignitionPoint: value.physical.ignitionPoint ?? null,
+          }
+        : null,
 }));
 
 export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
@@ -78,14 +111,27 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
     formula: value.formula,
     description: value.description,
     composition: value.composition,
-    detonation: value.detonation ? { velocity: value?.detonation?.velocity } : null,
-    sensitivity: value.sensitivity
+    explosive: value.explosive
         ? {
-              shock: value.sensitivity.shock,
-              tempurture: value.sensitivity.tempurture,
+              velocity: value?.explosive?.velocity ?? null,
+              brisantness: value?.explosive?.brisantness ?? null,
+              explosiveness: value?.explosive?.explosiveness ?? null,
           }
         : null,
-    density: value.density,
+    sensitivity: value.sensitivity
+        ? {
+              shock: value.sensitivity.shock ?? null,
+              temperature: value.sensitivity.temperature ?? null,
+              friction: value.sensitivity.friction ?? null,
+          }
+        : null,
+    physical: value.physical
+        ? {
+              density: value.physical.density ?? null,
+              meltingPoint: value.physical.meltingPoint ?? null,
+              ignitionPoint: value.physical.ignitionPoint ?? null,
+          }
+        : null,
     authorId: value.authorId,
     organizationId: value?.organizationId ?? undefined,
     createdAt: dates.fromServerDate(value.createdAt),

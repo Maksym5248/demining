@@ -19,8 +19,15 @@ const inert = Theme.css(
 `,
 );
 
+const label = Theme.css(
+    (theme) => `
+    color: ${theme.token.colorInfoActive};
+`,
+);
+
 export const s = {
     spin,
     size,
     inert,
+    label,
 };

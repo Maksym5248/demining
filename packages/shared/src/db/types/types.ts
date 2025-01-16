@@ -171,13 +171,20 @@ export interface IExplosiveDB extends IBaseDB {
     formula: string | null;
     description: string | null;
     composition: IExplosiveСompositionDB[] | null;
-    detonation: {
+    explosive: {
         velocity: number | null; // m/s
+        brisantness: number | null; // мм
+        explosiveness: number | null; // см³
     } | null;
     sensitivity: {
         shock: string | null;
-        tempurture: string | null;
+        temperature: string | null;
+        friction: string | null;
     } | null;
-    density: number | null; // г/см3
+    physical: {
+        density: number | null; // г/см3
+        meltingPoint: number | null; // °C
+        ignitionPoint: number | null; // °C
+    } | null;
     authorId: string;
 }

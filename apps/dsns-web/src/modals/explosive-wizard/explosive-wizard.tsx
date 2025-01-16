@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
+import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE } from 'shared-my';
 
@@ -18,6 +18,38 @@ interface Props {
     hide: () => void;
 }
 
+const getParams = ({
+    velocity,
+    brisantness,
+    explosiveness,
+    shock,
+    temperature,
+    density,
+    friction,
+    meltingPoint,
+    ignitionPoint,
+    ...value
+}: IExplosiveForm) => {
+    return {
+        ...value,
+        explosive: {
+            velocity: velocity ?? null,
+            brisantness: brisantness ?? null,
+            explosiveness: explosiveness ?? null,
+        },
+        sensitivity: {
+            shock,
+            temperature,
+            friction,
+        },
+        physical: {
+            density: density,
+            meltingPoint,
+            ignitionPoint,
+        },
+    };
+};
+
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const { explosive } = useStore();
     const wizard = useWizard({ id, mode });
@@ -28,12 +60,12 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     const isLoading = explosive.fetchItem.isLoading;
 
     const onFinishCreate = async (values: IExplosiveForm) => {
-        await explosive.create.run(values);
+        await explosive.create.run(getParams(values));
         hide();
     };
 
     const onFinishUpdate = async (values: IExplosiveForm) => {
-        await currentExplosive?.update.run(values);
+        await currentExplosive?.update.run(getParams(values));
         hide();
     };
 
@@ -64,7 +96,16 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={currentExplosive ? { ...currentExplosive.data } : {}}>
+                    initialValues={
+                        currentExplosive
+                            ? {
+                                  ...currentExplosive.data,
+                                  ...currentExplosive.data.sensitivity,
+                                  ...currentExplosive.data.explosive,
+                                  ...currentExplosive.data.physical,
+                              }
+                            : {}
+                    }>
                     <Form.Item name="image" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
                         <Form.Item noStyle shouldUpdate={() => true}>
                             {({ getFieldValue, setFieldValue }) => {
@@ -97,51 +138,33 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     <Form.Item label="Опис" name="description">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} />
                     </Form.Item>
-                    <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue, setFieldValue }) => {
-                            const detonation = getFieldValue('detonation') as {
-                                velocity: number | null; // m/s
-                            } | null;
-
-                            return (
-                                <Form.Item label="Швидкість детонації, м/c">
-                                    <InputNumber
-                                        onChange={(velocity) => setFieldValue('detonation', { velocity })}
-                                        value={detonation?.velocity}
-                                        min={0}
-                                    />
-                                </Form.Item>
-                            );
-                        }}
+                    <Divider />
+                    <Form.Item label="Швидкість детонації, м/c" name="velocity">
+                        <InputNumber min={0} />
                     </Form.Item>
-                    <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue, setFieldValue }) => {
-                            const sensitivity = getFieldValue('sensitivity') as {
-                                shock: string | null;
-                                tempurture: string | null;
-                            } | null;
-
-                            return (
-                                <>
-                                    <Form.Item label="Чутливість: Удар">
-                                        <Input
-                                            placeholder="Введіть дані"
-                                            onChange={(shock) => setFieldValue('detonation', { ...sensitivity, shock })}
-                                            value={sensitivity?.shock ?? ''}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item label="Температура">
-                                        <Input
-                                            placeholder="Введіть дані"
-                                            onChange={(tempurture) => setFieldValue('detonation', { ...sensitivity, tempurture })}
-                                            value={sensitivity?.tempurture ?? ''}
-                                        />
-                                    </Form.Item>
-                                </>
-                            );
-                        }}
+                    <Form.Item label="Брезантність, мм" name="brisantness">
+                        <InputNumber min={0} />
                     </Form.Item>
+                    <Form.Item label="Фугасність, см³" name="explosiveness">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item label="Чутливість до удару" name="shock">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="до температури" name="temperature">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="до тертя" name="friction">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Divider />
                     <Form.Item label="Плотність, г/см3" name="density">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <Form.Item label="Т плавлення, ºС" name="meltingPoint">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <Form.Item label="Т запалення, ºС" name="ignitionPoint">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
