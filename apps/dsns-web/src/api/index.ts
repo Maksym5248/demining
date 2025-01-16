@@ -46,5 +46,5 @@ export const Api = {
     user: new UserAPI(DB, services),
     organization: new OrganizationAPI(DB),
     document: new DocumentAPI(DB, services),
-    map: new MapAPI(DB),
+    map: new MapAPI(DB), // test
 };
