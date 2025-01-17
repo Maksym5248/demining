@@ -12,6 +12,7 @@ export interface IExplosiveAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveDTO[]>;
     get: (id: string) => Promise<IExplosiveDTO>;
+    getByIds: (ids: string[]) => Promise<IExplosiveDTO[]>;
 }
 
 export class ExplosiveAPI implements IExplosiveAPI {
@@ -69,6 +70,12 @@ export class ExplosiveAPI implements IExplosiveAPI {
     get = async (id: string): Promise<IExplosiveDTO> => {
         const res = await this.db.explosive.get(id);
         if (!res) throw new Error('there is explosive with id');
+        return res;
+    };
+
+    getByIds = async (ids: string[]): Promise<IExplosiveDTO[]> => {
+        const res = await Promise.all(ids.map(id => this.get(id)));
+
         return res;
     };
 }

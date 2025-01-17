@@ -4,6 +4,7 @@ export interface IUseSelectStore<T extends { data: B }, B extends { id: string }
     fetchList: IRequestModel<any[]>;
     fetchMoreList?: IRequestModel<any[]>;
     fetchItem: IRequestModel<any[]>;
+    fetchItemDeeps?: IRequestModel<any[]>;
     collection: ICollectionModel<T, B>;
     list: IListModel<T, B>;
 }
