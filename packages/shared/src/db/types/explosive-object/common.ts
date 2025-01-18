@@ -24,9 +24,12 @@ export interface IActionDB {
 }
 
 export interface ISizeDB {
-    length: number | null;
-    width: number;
-    height: number;
+    /**
+     * length or radius
+     */
+    length: number | null; // m;
+    width: number | null; // m;
+    height: number | null; // m;
 }
 
 export interface IPurposeDB {

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE } from 'shared-my';
+import { MIME_TYPE, measurement } from 'shared-my';
 
 import { UploadFile, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -36,8 +36,8 @@ const getParams = ({
         ...value,
         explosive: {
             velocity: velocity ?? null,
-            brisantness: brisantness ?? null,
-            explosiveness: explosiveness ?? null,
+            brisantness: brisantness ? measurement.mmToM(brisantness) : null,
+            explosiveness: explosiveness ? measurement.cm3ToM3(explosiveness) : null,
             tnt: tnt ?? null,
         },
         sensitivity: {
@@ -109,6 +109,12 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                                   ...currentExplosive.data.sensitivity,
                                   ...currentExplosive.data.explosive,
                                   ...currentExplosive.data.physical,
+                                  explosiveness: currentExplosive.data.explosive?.explosiveness
+                                      ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness)
+                                      : null,
+                                  brisantness: currentExplosive.data.explosive?.brisantness
+                                      ? measurement.mToMm(currentExplosive.data.explosive.brisantness)
+                                      : null,
                               }
                             : {}
                     }>
@@ -169,7 +175,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Плотність, г/см3" name="density">
+                    <Form.Item label="Плотність, кг/м³" name="density">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
                     <Form.Item label="Т плавлення, ºС" name="meltingPoint">

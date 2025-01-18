@@ -21,9 +21,9 @@ export interface IExplosiveData {
     composition: IExplosiveCompositionData[] | null;
     explosive: {
         velocity: number | null; // m/s
-        brisantness: number | null; // мм
-        explosiveness: number | null; // см³
-        tnt: number | null; // см³
+        brisantness: number | null; // m
+        explosiveness: number | null; // m³
+        tnt: number | null; // TNT equivalent
     } | null;
     sensitivity: {
         shock: string | null;
@@ -31,7 +31,7 @@ export interface IExplosiveData {
         friction: string | null;
     } | null;
     physical: {
-        density: number | null; // г/см3
+        density: number | null; // kg/m³
         meltingPoint: number | null; // °C
         ignitionPoint: number | null; // °C
     } | null;
