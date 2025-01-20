@@ -11,28 +11,13 @@ apps:
 - ammo web admin
 - ammo mobile
 
-PRODUCT
-
-КАТЕГОРІЇ
-5. налаштування сатегорій боєприпасів та створення окремої сторінки для них
-6. налаштування категорій для створених боєприпасів
-
-ВИБУХОВІ РЕЧОВИНИ ТА ЗА ТА ВР
-7. переіменувати поточну таблицю на засоби підриву та засоби ініціювання
-8. створити окрему таблицю для вибухових речовин та засобів підриву
-
 TODO
 // DSNS WEB
 1.
-+ fix classification
-+ refactroing setting list data
-+ update prod with new schema
 - відображення на карті та при створенні документів
 - add confirmation email for autentication process
 - permission for verifying and editing explosivce objects
-- map = create single map for teritories
 - map = agregation 
-- map = select object on map and show details (act)
 - search, how to improve ? перенести поле _search до meta
 - cache on api level
 
@@ -52,7 +37,3 @@ TODO
 
 - побудувати кластеризацію для різних масштабів
 - при зближені до масштабу 17 відображати всі обєкти у видимій зоні
-Детальна класифікація боєприпасів та підривників
-ВР, ЗП
-
-привести все до однієї системи вимірювання і решту приводити
