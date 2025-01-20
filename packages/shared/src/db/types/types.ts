@@ -168,6 +168,7 @@ export interface IExplosiveСompositionDB {
 export interface IExplosiveDB extends IBaseDB {
     name: string;
     imageUri: string | null;
+    imageUris: string[] | null;
     fullName: string | null;
     formula: string | null;
     description: string | null;

@@ -11,6 +11,7 @@ export interface IExplosiveObjectForm {
     imageUri: string;
 
     // detail
+    imageUris: string[] | null;
     material: MATERIAL;
     size: ISizeData | null;
     weight: number | null;

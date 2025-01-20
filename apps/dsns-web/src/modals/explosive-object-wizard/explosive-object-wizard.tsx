@@ -44,10 +44,12 @@ const getParams = ({
     structureDescription,
     actionImageUris,
     actionDescription,
+    imageUris,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
     details: {
+        imageUris,
         caliber,
         material,
         size: {
@@ -152,6 +154,9 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   structureDescription: currentExplosiveObject.details?.data.structure?.description ?? '',
                                   actionImageUris: currentExplosiveObject.details?.data.action?.imageUris ?? [],
                                   actionDescription: currentExplosiveObject.details?.data.action?.description ?? '',
+                                  imageUris: currentExplosiveObject?.details?.data?.imageUris
+                                      ? currentExplosiveObject.details?.data.imageUris
+                                      : [],
                               }
                             : {
                                   typeId: firstType?.data.id,
@@ -177,6 +182,17 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                     />
                                 );
                             }}
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="imageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{ marginTop: 16 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('imageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('imageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
                         </Form.Item>
                     </Form.Item>
                     {viewer.user?.isAuthor && (
@@ -310,6 +326,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                     <UploadImages
                                         uris={getFieldValue('purposeImageUris')}
                                         onChange={(uris: string[]) => setFieldValue('purposeImageUris', uris)}
+                                        customRequest={customRequest}
                                     />
                                 )}
                             </Form.Item>
@@ -324,6 +341,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                     <UploadImages
                                         uris={getFieldValue('structureImageUris')}
                                         onChange={(uris: string[]) => setFieldValue('structureImageUris', uris)}
+                                        customRequest={customRequest}
                                     />
                                 )}
                             </Form.Item>

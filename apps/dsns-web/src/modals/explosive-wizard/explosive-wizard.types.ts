@@ -3,6 +3,7 @@ import { type IExplosiveCompositionData } from 'shared-my-client';
 export interface IExplosiveForm {
     name: string;
     imageUri: string | null;
+    imageUris: string[] | null;
     fullName: string | null;
     formula: string | null;
     description: string | null;

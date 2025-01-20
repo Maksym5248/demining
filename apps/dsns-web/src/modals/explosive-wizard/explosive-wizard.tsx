@@ -3,10 +3,12 @@ import { useEffect } from 'react';
 import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE, measurement } from 'shared-my';
+import uuid from 'uuid';
 
-import { UploadFile, WizardButtons, WizardFooter } from '~/components';
+import { UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
+import { AssetStorage } from '~/services';
 
 import { Сomposition } from './components';
 import { s } from './explosive-wizard.style';
@@ -82,6 +84,13 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         !!id && explosive.fetchItem.run(id);
     }, [id]);
 
+    const customRequest = async (file: File) => {
+        const id = uuid.v4();
+        await AssetStorage.image.save(id, file);
+        const downloadURL = await AssetStorage.image.getFileUrl(id);
+        return downloadURL;
+    };
+
     const isEditable = !!viewer.user?.isAuthor || !!currentExplosive?.isCurrentOrganization;
 
     return (
@@ -136,6 +145,17 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                                     />
                                 );
                             }}
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="imageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{ marginTop: 16 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('imageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('imageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
                         </Form.Item>
                     </Form.Item>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>

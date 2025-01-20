@@ -54,6 +54,7 @@ export interface ITempartureDB {
 }
 
 export interface IExplosiveObjectDetailsDB {
+    imageUris: string[] | null;
     // characteristics
     material: MATERIAL;
     size: ISizeDB | null; //мм;
