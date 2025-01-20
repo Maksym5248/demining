@@ -1,12 +1,5 @@
 import { type MATERIAL, type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
-import {
-    type IActionData,
-    type IPurposeData,
-    type IStructureData,
-    type IFillerData,
-    type ISizeData,
-    type ITempartureData,
-} from 'shared-my-client';
+import { type IFillerData, type ISizeData, type ITempartureData } from 'shared-my-client';
 
 export interface IExplosiveObjectForm {
     name: string;
@@ -23,14 +16,18 @@ export interface IExplosiveObjectForm {
     weight: number | null;
     temperature: ITempartureData | null;
 
-    // TODO:
     filler: IFillerData[] | null;
     caliber: number | null;
     fuseIds: string[];
 
-    purpose: IPurposeData | null;
-    structure: IStructureData | null;
-    action: IActionData | null;
+    purposeImageUris: string[];
+    purposeDescription: string;
+
+    structureImageUris: string[];
+    structureDescription: string;
+
+    actionImageUris: string[];
+    actionDescription: string;
 
     // additional
     image?: File;

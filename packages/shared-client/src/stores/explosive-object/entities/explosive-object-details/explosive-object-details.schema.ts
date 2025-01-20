@@ -45,9 +45,24 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         filler: value.filler,
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
-        purpose: value.purpose,
-        structure: value.structure,
-        action: value.action,
+        purpose: value?.purpose
+            ? {
+                  description: value.purpose.description ?? null,
+                  imageUris: value.purpose.imageUris ?? [],
+              }
+            : null,
+        structure: value?.structure
+            ? {
+                  description: value.structure.description ?? null,
+                  imageUris: value.structure.imageUris ?? [],
+              }
+            : null,
+        action: value?.action
+            ? {
+                  description: value.action.description ?? null,
+                  imageUris: value.action.imageUris ?? [],
+              }
+            : null,
     };
 };
 
@@ -66,9 +81,24 @@ export const createExplosiveObjectDetailsDTO = (
         })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
-    purpose: value?.purpose ?? null,
-    structure: value?.structure ?? null,
-    action: value?.action ?? null,
+    purpose: value?.purpose
+        ? {
+              description: value.purpose.description ?? null,
+              imageUris: value.purpose.imageUris ?? [],
+          }
+        : null,
+    structure: value?.structure
+        ? {
+              description: value.structure.description ?? null,
+              imageUris: value.structure.imageUris ?? [],
+          }
+        : null,
+    action: value?.action
+        ? {
+              description: value.action.description ?? null,
+              imageUris: value.action.imageUris ?? [],
+          }
+        : null,
 });
 
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
@@ -84,7 +114,22 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
         })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],
-    purpose: value.purpose ?? null,
-    structure: value.structure ?? null,
-    action: value.action ?? null,
+    purpose: value.purpose
+        ? {
+              description: value.purpose.description ?? null,
+              imageUris: value.purpose.imageUris ?? [],
+          }
+        : null,
+    structure: value.structure
+        ? {
+              description: value.structure.description ?? null,
+              imageUris: value.structure.imageUris ?? [],
+          }
+        : null,
+    action: value.action
+        ? {
+              description: value.action.description ?? null,
+              imageUris: value.action.imageUris ?? [],
+          }
+        : null,
 }));

@@ -5,6 +5,9 @@ import { MIME_TYPE } from 'shared-my';
 
 import { Icon } from '../icon';
 
+/**
+ * Do not use this component for loading images, use UploadImages instead
+ */
 interface SelectTemplateProps {
     file: File | null;
     onChangeFile: (options: { file: File | null }) => void;
@@ -24,7 +27,7 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
         <Dragger
             openFileDialogOnClick
             fileList={file ? [file as RcFile] : undefined}
-            customRequest={(value) => onChangeFile && onChangeFile(value as { file: File })}
+            customRequest={value => onChangeFile && onChangeFile(value as { file: File })}
             onRemove={() => onChangeFile({ file: null })}
             maxCount={1}
             accept={isArray(accept) ? accept.join(', ') : accept}>
