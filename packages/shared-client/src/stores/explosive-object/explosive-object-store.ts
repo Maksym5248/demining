@@ -38,6 +38,7 @@ import { ExplosiveObjectClassStore, type IExplosiveObjectClassStore } from './ex
 import { ExplosiveObjectClassItemStore, type IExplosiveObjectClassItemStore } from './explosive-object-class-item';
 import { ExplosiveObjectTypeStore, type IExplosiveObjectTypeStore } from './explosive-object-type';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
+import { type IExplosiveStore } from '../explosive';
 import { type IViewerStore } from '../viewer';
 
 interface IApi {
@@ -53,6 +54,7 @@ interface IServices {
 
 interface IStores {
     viewer: IViewerStore;
+    explosive: IExplosiveStore;
 }
 
 export interface IExplosiveObjectStore {
@@ -232,6 +234,16 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             }
 
             this.collection.set(res.id, createExplosiveObject(res));
+            this.fetchItemDeeps.run(id);
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchItemDeeps = new RequestModel({
+        run: async (id: string) => {
+            const item = this.collection.get(id);
+            const ids = (item?.details?.data.filler?.map(i => i.explosiveId).filter(Boolean) as string[]) || [];
+            await this.getStores().explosive.fetchByIds.run(ids);
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

@@ -317,7 +317,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Склад" name="structureDescription">
+                    <Form.Item label="Будова" name="structureDescription">
                         <Form.Item name="structureImageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
                             <Form.Item noStyle shouldUpdate={() => true}>
                                 {({ getFieldValue, setFieldValue }) => (
