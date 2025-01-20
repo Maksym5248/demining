@@ -17,7 +17,7 @@ import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { select } from '~/utils';
 
-import { Classification } from './components';
+import { Classification, Filler } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -250,6 +250,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Вага, кг" name="weight">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
+                    <Filler />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue, setFieldValue }) => {
                             const value = (getFieldValue('temperature') as ITempartureData) ?? {};

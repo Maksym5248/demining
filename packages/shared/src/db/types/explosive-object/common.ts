@@ -5,7 +5,8 @@ export interface IMarkingDB {
 }
 
 export interface IFillerDB {
-    explosiveId: string;
+    name: string | null;
+    explosiveId: string | null;
     weight: number;
 }
 
@@ -58,7 +59,7 @@ export interface IExplosiveObjectDetailsDB {
     size: ISizeDB | null; //мм;
     weight: number | null; // kg;
     temperature: ITempartureDB | null;
-    filler: IFillerDB | null; // спорядження ВР;
+    filler: IFillerDB[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
 

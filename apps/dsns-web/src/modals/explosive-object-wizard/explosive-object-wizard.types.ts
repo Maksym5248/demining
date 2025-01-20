@@ -16,8 +16,6 @@ export interface IExplosiveObjectForm {
     typeId: string;
     classItemIds: string[];
     imageUri: string;
-    // additional
-    image?: File;
 
     // detail
     material: MATERIAL;
@@ -26,11 +24,14 @@ export interface IExplosiveObjectForm {
     temperature: ITempartureData | null;
 
     // TODO:
-    filler: IFillerData | null;
+    filler: IFillerData[] | null;
     caliber: number | null;
     fuseIds: string[];
 
     purpose: IPurposeData | null;
     structure: IStructureData | null;
     action: IActionData | null;
+
+    // additional
+    image?: File;
 }

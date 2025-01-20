@@ -1,9 +1,9 @@
-import { Button, Form, Space, Drawer, Input } from 'antd';
+import { Button, Form, Space, Drawer, Input, InputNumber } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { removeFields } from 'shared-my';
 import { useSelectStore } from 'shared-my-client';
 
-import { SelectAsync } from '~/components';
+import { SelectAsync, Select } from '~/components';
 import { useStore } from '~/hooks';
 
 import { type IExplosiveObjectFillerForm } from './explosive-object-filler-wizard.types';
@@ -17,6 +17,22 @@ interface Props {
     max: number;
 }
 
+enum Type {
+    Explosive = 'explosive',
+    Other = 'other',
+}
+
+const types = [
+    {
+        value: Type.Explosive,
+        label: 'Вибухова речовина',
+    },
+    {
+        value: Type.Other,
+        label: 'інші',
+    },
+];
+
 export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
     const { explosive } = useStore();
     const explosiveProps = useSelectStore(explosive);
@@ -24,7 +40,11 @@ export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onS
     removeFields(explosiveProps, 'initialItem');
 
     const onFinish = async (values: IExplosiveObjectFillerForm) => {
-        onSubmit?.(values);
+        onSubmit?.({
+            explosiveId: values.explosiveId,
+            name: values.name,
+            weight: values.weight,
+        });
         hide();
     };
 
@@ -35,18 +55,50 @@ export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onS
                 onFinish={onFinish}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
-                initialValues={initialValue}>
-                <Form.Item label="Вибухова речовина" name="explosiveId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                    <SelectAsync
-                        {...explosiveProps}
-                        options={explosiveProps.list.map(el => ({
-                            label: el?.displayName,
-                            value: el.data.id,
-                        }))}
-                    />
+                initialValues={{
+                    type: Type.Explosive,
+                    ...(initialValue || {}),
+                }}>
+                <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Select options={types} />
+                </Form.Item>
+                <Form.Item noStyle shouldUpdate={() => true}>
+                    {({ getFieldValue }) => {
+                        const value = getFieldValue('type');
+
+                        return (
+                            value === Type.Explosive && (
+                                <Form.Item
+                                    label="Вибухова речовина"
+                                    name="explosiveId"
+                                    rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                                    <SelectAsync
+                                        {...explosiveProps}
+                                        options={explosiveProps.list.map(el => ({
+                                            label: el?.displayName,
+                                            value: el.data.id,
+                                        }))}
+                                    />
+                                </Form.Item>
+                            )
+                        );
+                    }}
+                </Form.Item>
+                <Form.Item noStyle shouldUpdate={() => true}>
+                    {({ getFieldValue }) => {
+                        const value = getFieldValue('type');
+
+                        return (
+                            value === Type.Other && (
+                                <Form.Item label="Назва" name="name">
+                                    <Input />
+                                </Form.Item>
+                            )
+                        );
+                    }}
                 </Form.Item>
                 <Form.Item label="Вага, кг" name="weight" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                    <Input.TextArea />
+                    <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item label=" " colon={false}>
                     <Space>

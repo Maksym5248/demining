@@ -1,10 +1,10 @@
-import { Button, Form, Space, InputNumber, Drawer, message, Input } from 'antd';
+import { Button, Form, Space, InputNumber, Drawer, Input } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { removeFields, EXPLOSIVE_OBJECT_CATEGORY } from 'shared-my';
+import { removeFields } from 'shared-my';
 import { useSelectStore } from 'shared-my-client';
 import { type IExplosiveObjectTypeData } from 'shared-my-client';
 
-import { SelectAsync } from '~/components';
+import { Select, SelectAsync } from '~/components';
 import { useStore } from '~/hooks';
 
 import { type IExplosiveCompositionForm } from './explosive-composition-wizard.types';
@@ -18,6 +18,22 @@ interface Props {
     max: number;
 }
 
+enum Type {
+    Explosive = 'explosive',
+    Other = 'other',
+}
+
+const types = [
+    {
+        value: Type.Explosive,
+        label: 'Вибухова речовина',
+    },
+    {
+        value: Type.Other,
+        label: 'інші',
+    },
+];
+
 export const ExplosiveCompositionWizardModal = observer(({ isVisible, hide, onSubmit, initialValue, max }: Props) => {
     const { explosive } = useStore();
     const explosiveProps = useSelectStore(explosive);
@@ -25,9 +41,6 @@ export const ExplosiveCompositionWizardModal = observer(({ isVisible, hide, onSu
     removeFields(explosiveProps, 'initialItem');
 
     const onFinish = async (values: IExplosiveCompositionForm) => {
-        if (!values.explosiveId && !values.name) {
-            message.error('Необхіднов ввести дані про вибухову речовину або назву');
-        }
         onSubmit?.(values);
         hide();
     };
@@ -39,27 +52,47 @@ export const ExplosiveCompositionWizardModal = observer(({ isVisible, hide, onSu
                 onFinish={onFinish}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
-                initialValues={
-                    initialValue ?? {
-                        explosiveObjectId: undefined,
-                        quantity: 1,
-                        category: EXPLOSIVE_OBJECT_CATEGORY.I,
-                        isDiscovered: true,
-                        isTransported: true,
-                        isDestroyed: true,
-                    }
-                }>
-                <Form.Item label="Вибухова речовина" name="explosiveId">
-                    <SelectAsync
-                        {...explosiveProps}
-                        options={explosiveProps.list.map((el) => ({
-                            label: el?.displayName,
-                            value: el.data.id,
-                        }))}
-                    />
+                initialValues={{
+                    type: Type.Explosive,
+                    ...(initialValue || {}),
+                }}>
+                <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <Select options={types} />
                 </Form.Item>
-                <Form.Item label="Назва" name="name">
-                    <Input />
+                <Form.Item noStyle shouldUpdate={() => true}>
+                    {({ getFieldValue }) => {
+                        const value = getFieldValue('type');
+
+                        return (
+                            value === Type.Explosive && (
+                                <Form.Item
+                                    label="Вибухова речовина"
+                                    name="explosiveId"
+                                    rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                                    <SelectAsync
+                                        {...explosiveProps}
+                                        options={explosiveProps.list.map(el => ({
+                                            label: el?.displayName,
+                                            value: el.data.id,
+                                        }))}
+                                    />
+                                </Form.Item>
+                            )
+                        );
+                    }}
+                </Form.Item>
+                <Form.Item noStyle shouldUpdate={() => true}>
+                    {({ getFieldValue }) => {
+                        const value = getFieldValue('type');
+
+                        return (
+                            value === Type.Other && (
+                                <Form.Item label="Назва" name="name">
+                                    <Input />
+                                </Form.Item>
+                            )
+                        );
+                    }}
                 </Form.Item>
                 <Form.Item label="Опис" name="description">
                     <Input.TextArea maxLength={300} />

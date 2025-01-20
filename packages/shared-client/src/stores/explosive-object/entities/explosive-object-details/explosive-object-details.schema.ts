@@ -25,7 +25,7 @@ export interface IExplosiveObjectDetailsData {
     size: ISizeData | null; //мм;
     weight: number | null; // kg;
     temperature: ITempartureData | null;
-    filler: IFillerData | null; // спорядження ВР;
+    filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
 
@@ -58,7 +58,12 @@ export const createExplosiveObjectDetailsDTO = (
     size: value?.size ?? null,
     weight: value?.weight ?? null,
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
-    filler: value?.filler ?? null,
+    filler:
+        value?.filler?.map(el => ({
+            explosiveId: el.explosiveId ?? null,
+            name: el.name ?? null,
+            weight: el.weight ?? null,
+        })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
     purpose: value?.purpose ?? null,
@@ -66,12 +71,17 @@ export const createExplosiveObjectDetailsDTO = (
     action: value?.action ?? null,
 });
 
-export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>((value) => ({
+export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
     material: value.material ?? MATERIAL.METAL,
     size: value.size ?? null,
     weight: value.weight ?? null,
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
-    filler: value.filler ?? null,
+    filler:
+        value.filler?.map(el => ({
+            explosiveId: el.explosiveId ?? null,
+            name: el.name ?? null,
+            weight: el.weight ?? null,
+        })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],
     purpose: value.purpose ?? null,
