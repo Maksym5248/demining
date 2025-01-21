@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import {
+    EXPLOSIVE_OBJECT_COMPONENT,
     EXPLOSIVE_OBJECT_STATUS,
     explosiveObjectComponentData,
     explosiveObjectStatuses,
@@ -19,7 +20,7 @@ import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification, Filler } from './components';
+import { Classification, Filler, Fuse } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -317,6 +318,10 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 </Form.Item>
                             );
                         }}
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
                     </Form.Item>
                     <Divider />
                     <Form.Item label="Призначення" name="purposeDescription">

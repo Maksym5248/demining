@@ -186,6 +186,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     }
 
     async getByIds(ids: string[]) {
+        if (!ids.length) return [];
+
         const q = query(this.collection, where('id', 'in', ids));
 
         const snapshot = await getDocs(q);

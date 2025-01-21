@@ -32,8 +32,8 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
                             <Select
                                 options={select.append(
                                     squadLeads
-                                        .filter((el) => !squadIds.includes(el.data.id))
-                                        .map((el) => ({ label: el.fullName, value: el.data.id })),
+                                        .filter(el => !squadIds.includes(el.data.id))
+                                        .map(el => ({ label: el.fullName, value: el.data.id })),
                                     {
                                         label: selectedSquadLead?.employee.fullName,
                                         value: selectedSquadLead?.data.employeeId,
@@ -57,18 +57,18 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
                                         const squadLeaderId = getFieldValue('squadLeaderId');
 
                                         const currentSelectedId = squadIds[name];
-                                        const selected = selectedWorkers?.find((el) => el.data.employeeId === currentSelectedId);
+                                        const selected = selectedWorkers?.find(el => el.data.employeeId === currentSelectedId);
 
                                         return (
                                             <Form.Item name={name} {...restField}>
                                                 <Select
                                                     options={select.append(
                                                         workers
-                                                            .filter((el) => el.data.id !== squadLeaderId)
+                                                            .filter(el => el.data.id !== squadLeaderId)
                                                             .filter(
-                                                                (el) => el.data.id === currentSelectedId || !squadIds.includes(el.data.id),
+                                                                el => el.data.id === currentSelectedId || !squadIds.includes(el.data.id),
                                                             )
-                                                            .map((el) => ({
+                                                            .map(el => ({
                                                                 label: el?.fullName,
                                                                 value: el.data.id,
                                                             })),
@@ -102,7 +102,7 @@ export function Employees({ squadLeads, workers, selectedSquadLead, selectedWork
                                     const squadLeaderId = getFieldValue('squadLeaderId');
 
                                     const freeWorkers = workers.filter(
-                                        (el) => !(el.data.id === squadLeaderId || squadIds.includes(el.data.id)),
+                                        el => !(el.data.id === squadLeaderId || squadIds.includes(el.data.id)),
                                     );
 
                                     return (
