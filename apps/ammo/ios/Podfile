@@ -19,6 +19,7 @@ target 'ammo' do
 
   use_react_native!(
     :path => config[:reactNativePath],
+    :hermes_enabled => true,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -36,5 +37,14 @@ target 'ammo' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    installer.pods_project.build_configurations.each do |config|
+      if config.name.include?("Debug")
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+        if !config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'].include? 'DEBUG=1'
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'DEBUG=1'
+        end
+      end
+    end
   end
 end
