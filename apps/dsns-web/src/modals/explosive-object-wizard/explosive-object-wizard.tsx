@@ -220,12 +220,29 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         />
                     </Form.Item>
                     <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select
-                            options={explosiveObjectComponentData.map(el => ({
-                                label: el.name,
-                                value: el.id,
-                            }))}
-                        />
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => {
+                                const value = getFieldValue('component');
+
+                                return (
+                                    <Select
+                                        options={explosiveObjectComponentData.map(el => ({
+                                            label: el.name,
+                                            value: el.id,
+                                        }))}
+                                        value={value}
+                                        onChange={value => {
+                                            setFieldValue('component', value);
+
+                                            if (EXPLOSIVE_OBJECT_COMPONENT.FUSE === value) {
+                                                setFieldValue('caliber', null);
+                                                setFieldValue('fuseIds', null);
+                                            }
+                                        }}
+                                    />
+                                );
+                            }}
+                        </Form.Item>
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
@@ -247,9 +264,11 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         {({ getFieldValue }) => {
                             const typeId = getFieldValue('typeId');
                             const type = explosiveObject.type.collection.get(typeId);
+                            const isVisibleForFuse = getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO;
 
                             return (
-                                !!type?.data.hasCaliber && (
+                                !!type?.data.hasCaliber &&
+                                isVisibleForFuse && (
                                     <Form.Item label="Калібр" name="caliber">
                                         <InputNumber size="middle" min={1} max={100000} />
                                     </Form.Item>
@@ -324,48 +343,48 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Призначення" name="purposeDescription">
-                        <Form.Item name="purposeImageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                            <Form.Item noStyle shouldUpdate={() => true}>
-                                {({ getFieldValue, setFieldValue }) => (
-                                    <UploadImages
-                                        uris={getFieldValue('purposeImageUris')}
-                                        onChange={(uris: string[]) => setFieldValue('purposeImageUris', uris)}
-                                        customRequest={customRequest}
-                                    />
-                                )}
-                            </Form.Item>
+                    <Form.Item label="Призначення" name="purposeImageUris">
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('purposeImageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('purposeImageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
                         </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="purposeDescription" wrapperCol={{ offset: 8, span: 16 }}>
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Будова" name="structureDescription">
-                        <Form.Item name="structureImageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                            <Form.Item noStyle shouldUpdate={() => true}>
-                                {({ getFieldValue, setFieldValue }) => (
-                                    <UploadImages
-                                        uris={getFieldValue('structureImageUris')}
-                                        onChange={(uris: string[]) => setFieldValue('structureImageUris', uris)}
-                                        customRequest={customRequest}
-                                    />
-                                )}
-                            </Form.Item>
+                    <Form.Item label="Будова" name="structureImageUris">
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('structureImageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('structureImageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
                         </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="structureDescription" wrapperCol={{ offset: 8, span: 16 }}>
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Принцип дії" name="actionDescription">
-                        <Form.Item name="actionImageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                            <Form.Item noStyle shouldUpdate={() => true}>
-                                {({ getFieldValue, setFieldValue }) => (
-                                    <UploadImages
-                                        uris={getFieldValue('actionImageUris')}
-                                        onChange={(uris: string[]) => setFieldValue('actionImageUris', uris)}
-                                        customRequest={customRequest}
-                                    />
-                                )}
-                            </Form.Item>
+                    <Form.Item label="Принцип дії" name="actionImageUris">
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('actionImageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('actionImageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
                         </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="actionDescription" wrapperCol={{ offset: 8, span: 16 }}>
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} loading={isSubmitting} />
