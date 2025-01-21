@@ -82,3 +82,5 @@ ios/tmp.xcconfig
 gradle.sign.properties
 ammo-dev.keystore
 ammo-prod.keystore
+google-services.json
+GoogleService-Info.plist
