@@ -23,7 +23,7 @@ class DBInitClass {
     removeAllDbs = () => {
         window.indexedDB
             .databases()
-            .then((r) => {
+            .then(r => {
                 for (let i = 0; i < r.length; i += 1) window.indexedDB.deleteDatabase(r[i].name as string);
             })
             .then(() => {
