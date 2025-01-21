@@ -5,6 +5,7 @@ import {
     type IExplosiveObjectDB,
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
+    type IExplosiveDB,
 } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
@@ -16,6 +17,7 @@ import {
     type IExplosiveObjectActionSumDTO,
     type IExplosiveObjectClassItemDTO,
     type ICountryDTO,
+    type IExplosiveObjectFullDTO,
 } from '../dto';
 import { createImage, updateImage } from '../image';
 
@@ -26,7 +28,7 @@ export interface IExplosiveObjectAPI {
     getList: (query?: IQuery) => Promise<IExplosiveObjectDTO[]>;
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     getCountriesList: () => Promise<ICountryDTO[]>;
-    get: (id: string) => Promise<IExplosiveObjectDTO>;
+    get: (id: string) => Promise<IExplosiveObjectFullDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
 }
 
@@ -38,6 +40,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
             explosiveObject: IDBBase<IExplosiveObjectDB>;
             explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
+            explosive: IDBBase<IExplosiveDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
         },
@@ -99,10 +102,16 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         return countries;
     }
 
-    get = async (id: string): Promise<IExplosiveObjectDTO> => {
+    get = async (id: string): Promise<IExplosiveObjectFullDTO> => {
         const res = await this.db.explosiveObject.get(id);
+        const explosiveIds = (res?.details?.filler?.map(el => el.explosiveId).filter(Boolean) as string[]) ?? [];
+        const explosive = await this.db.explosive.getByIds(explosiveIds);
         if (!res) throw new Error('there is explosiveObject with id');
-        return res;
+
+        return {
+            ...res,
+            explosive,
+        };
     };
 
     sum = async (query?: IQuery): Promise<IExplosiveObjectActionSumDTO> => {
