@@ -2,9 +2,9 @@ import { type Dayjs } from 'dayjs';
 
 import {
     type IExplosiveObjectActionDTOParams,
-    type IMissionReportDTO,
+    type IMissionReportFullDTO,
     type IMissionReportDTOParams,
-    type IMissionReportPreviewDTO,
+    type IMissionReportDTO,
     type IMissionReportSumDTO,
 } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -108,7 +108,7 @@ export const createMissionReportDTO = (value: ICreateValue<IMissionReportDataPar
     addressDetails: createAddressDTO(value?.addressDetails),
 });
 
-export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMissionReportData => ({
+export const createMissionReport = (value: IMissionReportDTO): IMissionReportData => ({
     id: value.id,
     approvedAt: dates.fromServerDate(value.approvedAt),
     number: value.number,
@@ -131,8 +131,8 @@ export const createMissionReportPreview = (value: IMissionReportPreviewDTO): IMi
     updatedAt: dates.fromServerDate(value.updatedAt),
 });
 
-export const createMissionReport = (value: IMissionReportDTO): IMissionReportData => ({
-    ...createMissionReportPreview(value),
+export const createMissionReportFull = (value: IMissionReportFullDTO): IMissionReportData => ({
+    ...createMissionReport(value),
     approvedByActionId: value.approvedByAction.id,
     orderId: value.order.id,
     missionRequestId: value.missionRequestId,

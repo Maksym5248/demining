@@ -1,22 +1,22 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
 
-import { type IMissionReportAPI, type IMissionReportDTO, type IMissionReportSumDTO } from '~/api';
+import { type IMissionReportAPI, type IMissionReportFullDTO, type IMissionReportSumDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { createMissionRequest, type IMissionRequestStore } from '~/stores/mission-request';
-import { createOrder, type IOrderStore } from '~/stores/order';
+import { createOrderFull, type IOrderStore } from '~/stores/order';
 
 import {
     type IMissionReport,
     type IMissionReportData,
     type IMissionReportDataParams,
     MissionReport,
-    createMissionReport,
+    createMissionReportFull,
     createMissionReportDTO,
-    createMissionReportPreview,
+    createMissionReport,
     createMissionReportSum,
 } from './entities';
 import { type IEmployeeStore, createEmployeeAction } from '../employee';
@@ -37,7 +37,7 @@ export interface IMissionReportStore {
         total: number;
     };
     setSum: (sum: IMissionReportSumDTO) => void;
-    appendToCollections: (data: IMissionReportDTO) => void;
+    appendToCollections: (data: IMissionReportFullDTO) => void;
     create: RequestModel<[ICreateValue<IMissionReportDataParams>]>;
     update: RequestModel<[string, ICreateValue<IMissionReportDataParams>]>;
     fetchList: RequestModel<[search?: string]>;
@@ -94,7 +94,7 @@ export class MissionReportStore implements IMissionReportStore {
     setSum(sum: IMissionReportSumDTO) {
         this.sum = createMissionReportSum(sum);
     }
-    appendToCollections(data: IMissionReportDTO) {
+    appendToCollections(data: IMissionReportFullDTO) {
         this.getStores().employee.collectionActions.set(data.approvedByAction?.id, createEmployeeAction(data.approvedByAction));
         this.getStores().employee.collectionActions.set(data.squadLeaderAction?.id, createEmployeeAction(data.squadLeaderAction));
         this.getStores().map.collection.set(data.mapView.id, createMapView(data.mapView));
@@ -103,16 +103,16 @@ export class MissionReportStore implements IMissionReportStore {
         this.getStores().transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
         this.getStores().equipment.collectionActions.setArr(data.equipmentActions.map(createEquipmentAction));
         this.getStores().explosiveDevice.collectionActions.setArr(data.explosiveActions.map(createExplosiveDeviceAction));
-        this.getStores().order.collection.set(data.order.id, createOrder(data.order));
+        this.getStores().order.collection.set(data.order.id, createOrderFull(data.order));
         this.getStores().missionRequest.collection.set(data.missionRequest.id, createMissionRequest(data.missionRequest));
-        this.collection.set(data.id, createMissionReport(data));
+        this.collection.set(data.id, createMissionReportFull(data));
     }
 
     create = new RequestModel({
         run: async (data: ICreateValue<IMissionReportDataParams>) => {
             const res = await this.api.missionReport.create(createMissionReportDTO(data));
             this.appendToCollections(res);
-            this.list.unshift(createMissionReport(res));
+            this.list.unshift(createMissionReportFull(res));
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Виникла помилка'),
@@ -134,7 +134,7 @@ export class MissionReportStore implements IMissionReportStore {
                 limit: this.list.pageSize,
             });
 
-            this.list.set(res.map(createMissionReportPreview));
+            this.list.set(res.map(createMissionReport));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -148,7 +148,7 @@ export class MissionReportStore implements IMissionReportStore {
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.list.push(res.map(createMissionReportPreview));
+            this.list.push(res.map(createMissionReport));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
