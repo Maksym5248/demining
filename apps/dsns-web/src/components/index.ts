@@ -14,3 +14,4 @@ export * from './upload-file';
 export * from './wizard-buttons';
 export * from './wizard-footer';
 export * from './loading';
+export * from './upload-images';

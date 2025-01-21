@@ -15,15 +15,16 @@ export interface IExplosiveData {
     id: string;
     name: string;
     imageUri: string | null;
+    imageUris: string[] | null;
     fullName: string | null;
     formula: string | null;
     description: string | null;
     composition: IExplosiveCompositionData[] | null;
     explosive: {
         velocity: number | null; // m/s
-        brisantness: number | null; // мм
-        explosiveness: number | null; // см³
-        tnt: number | null; // см³
+        brisantness: number | null; // m
+        explosiveness: number | null; // m³
+        tnt: number | null; // TNT equivalent
     } | null;
     sensitivity: {
         shock: string | null;
@@ -31,7 +32,7 @@ export interface IExplosiveData {
         friction: string | null;
     } | null;
     physical: {
-        density: number | null; // г/см3
+        density: number | null; // kg/m³
         meltingPoint: number | null; // °C
         ignitionPoint: number | null; // °C
     } | null;
@@ -48,6 +49,7 @@ export interface IExplosiveDataParams extends Omit<IExplosiveData, 'imageUri'> {
 export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): ICreateValue<IExplosiveDTOParams> => ({
     name: value.name,
     image: value.image ?? undefined,
+    imageUris: value?.imageUris ?? [],
     fullName: value.fullName ?? null,
     formula: value.formula ?? null,
     description: value.description ?? null,
@@ -84,6 +86,7 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): I
 });
 
 export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IExplosiveDTOParams>(value => ({
+    imageUris: value?.imageUris ?? [],
     name: value.name ?? '',
     image: value.image ?? undefined,
     fullName: value.fullName ?? null,
@@ -125,6 +128,7 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
     id: value.id,
     name: value.name,
     imageUri: value.imageUri,
+    imageUris: value?.imageUris ?? [],
     fullName: value.fullName,
     formula: value.formula,
     description: value.description,

@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE } from 'shared-my';
+import { MIME_TYPE, measurement } from 'shared-my';
+import uuid from 'uuid';
 
-import { UploadFile, WizardButtons, WizardFooter } from '~/components';
+import { UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
+import { AssetStorage } from '~/services';
 
 import { Сomposition } from './components';
 import { s } from './explosive-wizard.style';
@@ -36,8 +38,8 @@ const getParams = ({
         ...value,
         explosive: {
             velocity: velocity ?? null,
-            brisantness: brisantness ?? null,
-            explosiveness: explosiveness ?? null,
+            brisantness: brisantness ? measurement.mmToM(brisantness) : null,
+            explosiveness: explosiveness ? measurement.cm3ToM3(explosiveness) : null,
             tnt: tnt ?? null,
         },
         sensitivity: {
@@ -82,6 +84,13 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         !!id && explosive.fetchItem.run(id);
     }, [id]);
 
+    const customRequest = async (file: File) => {
+        const id = uuid.v4();
+        await AssetStorage.image.save(id, file);
+        const downloadURL = await AssetStorage.image.getFileUrl(id);
+        return downloadURL;
+    };
+
     const isEditable = !!viewer.user?.isAuthor || !!currentExplosive?.isCurrentOrganization;
 
     return (
@@ -109,6 +118,12 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                                   ...currentExplosive.data.sensitivity,
                                   ...currentExplosive.data.explosive,
                                   ...currentExplosive.data.physical,
+                                  explosiveness: currentExplosive.data.explosive?.explosiveness
+                                      ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness)
+                                      : null,
+                                  brisantness: currentExplosive.data.explosive?.brisantness
+                                      ? measurement.mToMm(currentExplosive.data.explosive.brisantness)
+                                      : null,
                               }
                             : {}
                     }>
@@ -130,6 +145,17 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                                     />
                                 );
                             }}
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="imageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{ marginTop: 16 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('imageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('imageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
                         </Form.Item>
                     </Form.Item>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
@@ -169,7 +195,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Плотність, г/см3" name="density">
+                    <Form.Item label="Плотність, кг/м³" name="density">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
                     <Form.Item label="Т плавлення, ºС" name="meltingPoint">

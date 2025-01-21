@@ -168,15 +168,16 @@ export interface IExplosiveСompositionDB {
 export interface IExplosiveDB extends IBaseDB {
     name: string;
     imageUri: string | null;
+    imageUris: string[] | null;
     fullName: string | null;
     formula: string | null;
     description: string | null;
     composition: IExplosiveСompositionDB[] | null;
     explosive: {
         velocity: number | null; // m/s
-        brisantness: number | null; // мм
-        explosiveness: number | null; // см³
-        tnt: number | null; // см³
+        brisantness: number | null; // m
+        explosiveness: number | null; // m³
+        tnt: number | null; // TNT equivalent
     } | null;
     sensitivity: {
         shock: string | null;
@@ -184,7 +185,7 @@ export interface IExplosiveDB extends IBaseDB {
         friction: string | null;
     } | null;
     physical: {
-        density: number | null; // г/см3
+        density: number | null; // kg/m³
         meltingPoint: number | null; // °C
         ignitionPoint: number | null; // °C
     } | null;

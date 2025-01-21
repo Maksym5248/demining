@@ -58,6 +58,17 @@ export class DBBase<T extends { id: string }> {
         return res;
     }
 
+    async getByIds(ids: string[]): Promise<T[]> {
+        return this.db.select<T>({
+            from: this.tableName,
+            where: {
+                id: {
+                    in: ids,
+                },
+            },
+        });
+    }
+
     async exist(field: keyof T, value: any): Promise<boolean> {
         const [res] = await this.db.select({
             from: this.tableName,
@@ -86,9 +97,9 @@ export class DBBase<T extends { id: string }> {
         values: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>[],
         checkField: keyof Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>,
     ): Promise<T[]> {
-        const filteredValues = await Promise.all(values.map((value) => this.exist(checkField, value[checkField])));
+        const filteredValues = await Promise.all(values.map(value => this.exist(checkField, value[checkField])));
 
-        const res = await Promise.all(values.filter((value, i) => !filteredValues[i]).map((value) => this.create(value)));
+        const res = await Promise.all(values.filter((value, i) => !filteredValues[i]).map(value => this.create(value)));
 
         // @ts-ignore
         return isArray(res) ? res : null;

@@ -16,6 +16,7 @@
         "apk:dev": "cd android && ./gradlew assembleDevReleaseLocal",
         "apk:prod": "cd android && ./gradlew assembleProdReleaseLocal",
         "bundle": "cd android && ./gradlew bundleProdReleaseLocal",
+        "prepare:ios": "yarn install && cd ios && pod install",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
         "check:eslint": "eslint --fix"

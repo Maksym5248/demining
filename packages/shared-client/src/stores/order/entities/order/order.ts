@@ -5,7 +5,7 @@ import { type IUpdateValue } from '~/common';
 import { type ICollectionModel, type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type IOrderData, type IOrderDataParams, createOrder, updateOrderDTO } from './order.schema';
+import { type IOrderData, type IOrderDataParams, createOrderFull, updateOrderDTO } from './order.schema';
 import { type IEmployeeAction, type IEmployeeActionData } from '../../../employee';
 
 export interface IOrder {
@@ -70,7 +70,7 @@ export class Order implements IOrder {
     update = new RequestModel({
         run: async (data: IUpdateValue<IOrderDataParams>) => {
             const res = await this.api.order.update(this.data.id, updateOrderDTO(data));
-            this.updateFields(createOrder(res));
+            this.updateFields(createOrderFull(res));
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),

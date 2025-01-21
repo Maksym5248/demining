@@ -20,7 +20,7 @@ import {
 
 import { type ICreateValue, type IDBBase, type IQuery } from '~/common';
 
-import { type IMissionReportDTO, type IMissionReportDTOParams, type IMissionReportPreviewDTO, type IMissionReportSumDTO } from '../dto';
+import { type IMissionReportFullDTO, type IMissionReportDTOParams, type IMissionReportDTO, type IMissionReportSumDTO } from '../dto';
 
 interface IItemId {
     id: string;
@@ -87,11 +87,11 @@ export interface ICreateList {
 }
 
 export interface IMissionReportAPI {
-    get: (id: string) => Promise<IMissionReportDTO>;
-    getList: (query?: IQuery) => Promise<IMissionReportPreviewDTO[]>;
+    get: (id: string) => Promise<IMissionReportFullDTO>;
+    getList: (query?: IQuery) => Promise<IMissionReportDTO[]>;
     remove: (id: string) => Promise<void>;
-    update: (id: string, value: ICreateValue<IMissionReportDTOParams>) => Promise<IMissionReportDTO>;
-    create: (value: ICreateValue<IMissionReportDTOParams>) => Promise<IMissionReportDTO>;
+    update: (id: string, value: ICreateValue<IMissionReportDTOParams>) => Promise<IMissionReportFullDTO>;
+    create: (value: ICreateValue<IMissionReportDTOParams>) => Promise<IMissionReportFullDTO>;
     sum: (query?: IQuery) => Promise<IMissionReportSumDTO>;
 }
 
@@ -144,7 +144,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         actions.explosiveActions.map(el => this.db.explosiveDeviceAction.batchUpdate(el.id, el));
     };
 
-    get = async (id: string): Promise<IMissionReportDTO> => {
+    get = async (id: string): Promise<IMissionReportFullDTO> => {
         const missionReport = await this.db.missionReport.get(id);
 
         if (!missionReport) {
@@ -224,7 +224,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         };
     };
 
-    getList = async (query?: IQuery): Promise<IMissionReportPreviewDTO[]> => {
+    getList = async (query?: IQuery): Promise<IMissionReportDTO[]> => {
         const list = await this.db.missionReport.select({
             order: {
                 by: 'createdAt',
@@ -375,7 +375,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         })) as T[];
     };
 
-    getRemoveList = (newActions: INewActions, missionReportDTO: IMissionReportDTO): IPrevActions => {
+    getRemoveList = (newActions: INewActions, missionReportDTO: IMissionReportFullDTO): IPrevActions => {
         const employeeActions = [
             ...missionReportDTO.squadActions,
             missionReportDTO.approvedByAction,
@@ -396,7 +396,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         };
     };
 
-    getCreateList = (newActions: INewActions, missionReportDTO: IMissionReportDTO): INewActions => {
+    getCreateList = (newActions: INewActions, missionReportDTO: IMissionReportFullDTO): INewActions => {
         const employeeActions = [
             ...missionReportDTO.squadActions,
             missionReportDTO.approvedByAction,
@@ -413,7 +413,7 @@ export class MissionReportAPI implements IMissionReportAPI {
         };
     };
 
-    getUpdateList = (newActions: INewActions, missionReportDTO: IMissionReportDTO, removeList: IPrevActions): IPrevActions => {
+    getUpdateList = (newActions: INewActions, missionReportDTO: IMissionReportFullDTO, removeList: IPrevActions): IPrevActions => {
         const employeeActions = [
             ...missionReportDTO.squadActions,
             missionReportDTO.approvedByAction,
@@ -460,7 +460,7 @@ export class MissionReportAPI implements IMissionReportAPI {
 
     updateController = async (
         value: ICreateValue<IMissionReportDTOParams>,
-        missionReportDTO: IMissionReportDTO,
+        missionReportDTO: IMissionReportFullDTO,
     ): Promise<IMissionReportDB> => {
         const newValue = { ...value };
 
@@ -499,13 +499,13 @@ export class MissionReportAPI implements IMissionReportAPI {
         return res;
     };
 
-    update = async (id: string, value: ICreateValue<IMissionReportDTOParams>): Promise<IMissionReportDTO> => {
+    update = async (id: string, value: ICreateValue<IMissionReportDTOParams>): Promise<IMissionReportFullDTO> => {
         const missionReportDTO = await this.get(id);
         await this.updateController(value, missionReportDTO);
         return this.get(missionReportDTO.id);
     };
 
-    create = async (value: ICreateValue<IMissionReportDTOParams>): Promise<IMissionReportDTO> => {
+    create = async (value: ICreateValue<IMissionReportDTOParams>): Promise<IMissionReportFullDTO> => {
         const newValue = { ...value };
 
         removeFields(newValue, [

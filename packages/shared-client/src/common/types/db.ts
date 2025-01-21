@@ -46,6 +46,7 @@ export interface IDBBase<T extends IBaseDB> {
     uuid(): string;
     select(args?: Partial<IQuery>): Promise<T[]>;
     get(id: string): Promise<T | null>;
+    getByIds(ids: string[]): Promise<T[]>;
     exist(field: keyof T, value: any): Promise<boolean>;
     create(value: ICreateData<T>): Promise<T>;
     update(id: string, value: Partial<T>): Promise<T>;

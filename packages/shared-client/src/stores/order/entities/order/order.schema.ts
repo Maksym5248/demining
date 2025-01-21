@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 
-import { type IOrderDTO, type IOrderDTOParams, type IOrderPreviewDTO } from '~/api';
+import { type IOrderFullDTO, type IOrderDTOParams, type IOrderDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
 
@@ -28,13 +28,13 @@ export const createOrderDTO = (order: ICreateValue<IOrderDataParams>): ICreateVa
     number: order.number,
 });
 
-export const updateOrderDTO = data.createUpdateDTO<IOrderDataParams, IOrderDTOParams>((value) => ({
+export const updateOrderDTO = data.createUpdateDTO<IOrderDataParams, IOrderDTOParams>(value => ({
     signedAt: dates.toDateServer(value?.signedAt ?? new Date()),
     signedById: value?.signedById ?? '',
     number: value?.number ?? 0,
 }));
 
-export const createOrderPreview = (order: IOrderPreviewDTO): IOrderData => ({
+export const createOrder = (order: IOrderDTO): IOrderData => ({
     id: order.id,
     signedAt: dates.fromServerDate(order.signedAt),
     number: order.number,
@@ -42,7 +42,7 @@ export const createOrderPreview = (order: IOrderPreviewDTO): IOrderData => ({
     updatedAt: dates.fromServerDate(order.updatedAt),
 });
 
-export const createOrder = (order: IOrderDTO): IOrderData => ({
-    ...createOrderPreview(order),
+export const createOrderFull = (order: IOrderFullDTO): IOrderData => ({
+    ...createOrder(order),
     signedByActionId: order?.signedByAction.id,
 });

@@ -31,9 +31,9 @@ export type IRankDTO = IRankDB;
 export type IEmployeeDTO = IEmployeeDB;
 export type IEmployeeActionDTO = IEmployeeActionDB;
 
-export type IOrderPreviewDTO = IOrderDB;
+export type IOrderDTO = IOrderDB;
 
-export interface IOrderDTO extends IOrderPreviewDTO {
+export interface IOrderFullDTO extends IOrderDTO {
     signedByAction: IEmployeeActionDTO;
 }
 
@@ -89,9 +89,9 @@ export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = Omit<IMapViewActionDB, 'geo'>;
 export type IDocumentDTO = IDocumentDB;
 
-export type IMissionReportPreviewDTO = IMissionReportDB;
-export interface IMissionReportDTO extends IMissionReportPreviewDTO {
-    order: IOrderDTO;
+export type IMissionReportDTO = IMissionReportDB;
+export interface IMissionReportFullDTO extends IMissionReportDTO {
+    order: IOrderFullDTO;
     missionRequest: IMissionRequestDTO;
     approvedByAction: IEmployeeActionDTO;
     mapView: IMapViewActionDTO;

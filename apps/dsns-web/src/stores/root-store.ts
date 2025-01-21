@@ -179,7 +179,7 @@ export class RootStore implements IRootStore {
             this.viewer.setLoading(true);
             await DB.init();
 
-            this.services.auth.onAuthStateChanged((user) => this.onChangeUser(user));
+            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
 
             await this.employee.fetchRanks.run();
         } catch (e) {

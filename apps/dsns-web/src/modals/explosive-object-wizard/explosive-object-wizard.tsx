@@ -1,16 +1,26 @@
 import { useEffect } from 'react';
 
-import { Form, Input, Drawer, InputNumber, Spin } from 'antd';
+import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_OBJECT_STATUS, explosiveObjectComponentData, explosiveObjectStatuses, materialsData, MIME_TYPE } from 'shared-my';
+import {
+    EXPLOSIVE_OBJECT_COMPONENT,
+    EXPLOSIVE_OBJECT_STATUS,
+    explosiveObjectComponentData,
+    explosiveObjectStatuses,
+    materialsData,
+    measurement,
+    MIME_TYPE,
+} from 'shared-my';
 import { type ITempartureData, type ISizeData } from 'shared-my-client';
+import uuid from 'uuid';
 
-import { Select, UploadFile, WizardButtons, WizardFooter } from '~/components';
+import { Select, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
+import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification } from './components';
+import { Classification, Filler, Fuse } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -29,23 +39,41 @@ const getParams = ({
     temperature,
     filler,
     fuseIds,
-    purpose,
-    structure,
-    action,
+    purposeImageUris,
+    purposeDescription,
+    structureImageUris,
+    structureDescription,
+    actionImageUris,
+    actionDescription,
+    imageUris,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
     details: {
+        imageUris,
         caliber,
         material,
-        size,
+        size: {
+            length: size?.length ? measurement.mmToM(size?.length) : null,
+            width: size?.width ? measurement.mmToM(size?.width) : null,
+            height: size?.height ? measurement.mmToM(size?.height) : null,
+        },
         weight,
         temperature,
         filler,
         fuseIds,
-        purpose,
-        structure,
-        action,
+        purpose: {
+            imageUris: purposeImageUris,
+            description: purposeDescription,
+        },
+        structure: {
+            imageUris: structureImageUris,
+            description: structureDescription,
+        },
+        action: {
+            imageUris: actionImageUris,
+            description: actionDescription,
+        },
     },
 });
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
@@ -73,11 +101,19 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
         hide();
     };
 
+    const customRequest = async (file: File) => {
+        const id = uuid.v4();
+        await AssetStorage.image.save(id, file);
+        const downloadURL = await AssetStorage.image.getFileUrl(id);
+        return downloadURL;
+    };
+
     useEffect(() => {
         !!id && explosiveObject.fetchItem.run(id);
     }, [id]);
 
     const isEditable = !!viewer.user?.isAuthor || !!currentExplosiveObject?.isCurrentOrganization;
+    const isSubmitting = explosiveObject.create.isLoading || !!currentExplosiveObject?.update?.isLoading;
 
     return (
         <Drawer
@@ -99,7 +135,30 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosiveObject
-                            ? { ...currentExplosiveObject.data, ...currentExplosiveObject.details?.data }
+                            ? {
+                                  ...currentExplosiveObject.data,
+                                  ...currentExplosiveObject.details?.data,
+                                  size: {
+                                      length: currentExplosiveObject.details?.data.size?.length
+                                          ? measurement.mToMm(currentExplosiveObject.details?.data.size?.length)
+                                          : null,
+                                      width: currentExplosiveObject.details?.data.size?.width
+                                          ? measurement.mToMm(currentExplosiveObject.details?.data.size?.width)
+                                          : null,
+                                      height: currentExplosiveObject.details?.data.size?.height
+                                          ? measurement.mToMm(currentExplosiveObject.details?.data.size?.height)
+                                          : null,
+                                  },
+                                  purposeImageUris: currentExplosiveObject.details?.data.purpose?.imageUris ?? [],
+                                  purposeDescription: currentExplosiveObject.details?.data.purpose?.description ?? '',
+                                  structureImageUris: currentExplosiveObject.details?.data.structure?.imageUris ?? [],
+                                  structureDescription: currentExplosiveObject.details?.data.structure?.description ?? '',
+                                  actionImageUris: currentExplosiveObject.details?.data.action?.imageUris ?? [],
+                                  actionDescription: currentExplosiveObject.details?.data.action?.description ?? '',
+                                  imageUris: currentExplosiveObject?.details?.data?.imageUris
+                                      ? currentExplosiveObject.details?.data.imageUris
+                                      : [],
+                              }
                             : {
                                   typeId: firstType?.data.id,
                                   status: EXPLOSIVE_OBJECT_STATUS.PENDING,
@@ -126,18 +185,30 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }}
                         </Form.Item>
                     </Form.Item>
+                    <Form.Item name="imageUris" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{ marginTop: 16 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('imageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('imageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
+                        </Form.Item>
+                    </Form.Item>
                     {viewer.user?.isAuthor && (
                         <Form.Item label="Статус" name="status">
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>
                     )}
+                    <Divider />
                     <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
                             options={select.append(
-                                explosiveObject.type.sortedListTypes.map((el) => ({
+                                explosiveObject.type.sortedListTypes.map(el => ({
                                     label: el.displayName,
                                     value: el.data.id,
                                 })),
@@ -149,16 +220,33 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         />
                     </Form.Item>
                     <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select
-                            options={explosiveObjectComponentData.map((el) => ({
-                                label: el.name,
-                                value: el.id,
-                            }))}
-                        />
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => {
+                                const value = getFieldValue('component');
+
+                                return (
+                                    <Select
+                                        options={explosiveObjectComponentData.map(el => ({
+                                            label: el.name,
+                                            value: el.id,
+                                        }))}
+                                        value={value}
+                                        onChange={value => {
+                                            setFieldValue('component', value);
+
+                                            if (EXPLOSIVE_OBJECT_COMPONENT.FUSE === value) {
+                                                setFieldValue('caliber', null);
+                                                setFieldValue('fuseIds', null);
+                                            }
+                                        }}
+                                    />
+                                );
+                            }}
+                        </Form.Item>
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveObject.listCountries.asArray.map((el) => ({
+                            options={explosiveObject.listCountries.asArray.map(el => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}
@@ -176,9 +264,11 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         {({ getFieldValue }) => {
                             const typeId = getFieldValue('typeId');
                             const type = explosiveObject.type.collection.get(typeId);
+                            const isVisibleForFuse = getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO;
 
                             return (
-                                !!type?.data.hasCaliber && (
+                                !!type?.data.hasCaliber &&
+                                isVisibleForFuse && (
                                     <Form.Item label="Калібр" name="caliber">
                                         <InputNumber size="middle" min={1} max={100000} />
                                     </Form.Item>
@@ -186,9 +276,10 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
+                    <Divider />
                     <Form.Item label="Корпус" name="material">
                         <Select
-                            options={materialsData.map((el) => ({
+                            options={materialsData.map(el => ({
                                 label: el.name,
                                 value: el.id,
                             }))}
@@ -200,21 +291,21 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             return (
                                 <Form.Item label="Розмір, мм" name="size">
                                     <InputNumber
-                                        placeholder="Довжина"
-                                        onChange={(length) => setFieldValue('size', { ...size, length })}
+                                        placeholder="Довжина/радіус"
+                                        onChange={length => setFieldValue('size', { ...size, length })}
                                         value={size?.length}
                                         min={0}
                                     />
                                     <InputNumber
                                         placeholder="Ширина"
                                         css={s.size}
-                                        onChange={(width) => setFieldValue('size', { ...size, width })}
+                                        onChange={width => setFieldValue('size', { ...size, width })}
                                         value={size?.width}
                                         min={0}
                                     />
                                     <InputNumber
                                         placeholder="Висота"
-                                        onChange={(height) => setFieldValue('size', { ...size, height })}
+                                        onChange={height => setFieldValue('size', { ...size, height })}
                                         value={size?.height}
                                         min={0}
                                     />
@@ -225,6 +316,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Вага, кг" name="weight">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
+                    <Filler />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue, setFieldValue }) => {
                             const value = (getFieldValue('temperature') as ITempartureData) ?? {};
@@ -233,12 +325,12 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 <Form.Item label="Температура, °C" name="temperature">
                                     <InputNumber
                                         placeholder="Макс"
-                                        onChange={(max) => setFieldValue('temperature', { ...value, max })}
+                                        onChange={max => setFieldValue('temperature', { ...value, max })}
                                         value={value?.max}
                                     />
                                     <InputNumber
                                         placeholder="Мін"
-                                        onChange={(min) => setFieldValue('temperature', { ...value, min })}
+                                        onChange={min => setFieldValue('temperature', { ...value, min })}
                                         value={value?.min}
                                         css={s.size}
                                     />
@@ -246,7 +338,56 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
-                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
+                    <Divider />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item label="Призначення" name="purposeImageUris">
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('purposeImageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('purposeImageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="purposeDescription" wrapperCol={{ offset: 8, span: 16 }}>
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item label="Будова" name="structureImageUris">
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('structureImageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('structureImageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="structureDescription" wrapperCol={{ offset: 8, span: 16 }}>
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item label="Принцип дії" name="actionImageUris">
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => (
+                                <UploadImages
+                                    uris={getFieldValue('actionImageUris')}
+                                    onChange={(uris: string[]) => setFieldValue('actionImageUris', uris)}
+                                    customRequest={customRequest}
+                                />
+                            )}
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="actionDescription" wrapperCol={{ offset: 8, span: 16 }}>
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
+                    </Form.Item>
+                    <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} loading={isSubmitting} />
                 </Form>
             )}
         </Drawer>

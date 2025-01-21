@@ -38,15 +38,23 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ammo/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ammo/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = ammo/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		19326D269D94501B8ACE26DF /* Pods-ammo-ammoTests.debug.dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.debug.dev.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.debug.dev.xcconfig"; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-ammo-ammoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ammo-ammoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E1ECECCF6BA8CD382AAAE53 /* Pods-ammo.release.prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.release.prod.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.release.prod.xcconfig"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-ammo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.debug.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.debug.xcconfig"; sourceTree = "<group>"; };
+		4AB4CC325B40696EAD8BAAE8 /* Pods-ammo.debug.dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.debug.dev.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.debug.dev.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-ammo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.release.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ammo-ammoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.debug.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ammo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ammo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EE36A6DD8749182FE436569 /* Pods-ammo-ammoTests.debug.prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.debug.prod.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.debug.prod.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ammo/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ammo-ammoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.release.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.release.xcconfig"; sourceTree = "<group>"; };
+		B092441C0A4E9FF140884F73 /* Pods-ammo-ammoTests.release.prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.release.prod.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.release.prod.xcconfig"; sourceTree = "<group>"; };
+		BA6B836450E23BCC6A067F35 /* Pods-ammo-ammoTests.release.dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.release.dev.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.release.dev.xcconfig"; sourceTree = "<group>"; };
 		BD7F37BA2C7FB71E00514747 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		C661DE906C0A05ABA8F5EBE1 /* Pods-ammo.debug.prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.debug.prod.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.debug.prod.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F5B17128440D322B99674338 /* Pods-ammo.release.dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.release.dev.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.release.dev.xcconfig"; sourceTree = "<group>"; };
 		FB4C25DEB1AA934786254EE7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = ammo/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -151,6 +159,14 @@
 				5709B34CF0A7D63546082F79 /* Pods-ammo.release.xcconfig */,
 				5B7EB9410499542E8C5724F5 /* Pods-ammo-ammoTests.debug.xcconfig */,
 				89C6BE57DB24E9ADA2F236DE /* Pods-ammo-ammoTests.release.xcconfig */,
+				C661DE906C0A05ABA8F5EBE1 /* Pods-ammo.debug.prod.xcconfig */,
+				4AB4CC325B40696EAD8BAAE8 /* Pods-ammo.debug.dev.xcconfig */,
+				1E1ECECCF6BA8CD382AAAE53 /* Pods-ammo.release.prod.xcconfig */,
+				F5B17128440D322B99674338 /* Pods-ammo.release.dev.xcconfig */,
+				7EE36A6DD8749182FE436569 /* Pods-ammo-ammoTests.debug.prod.xcconfig */,
+				19326D269D94501B8ACE26DF /* Pods-ammo-ammoTests.debug.dev.xcconfig */,
+				B092441C0A4E9FF140884F73 /* Pods-ammo-ammoTests.release.prod.xcconfig */,
+				BA6B836450E23BCC6A067F35 /* Pods-ammo-ammoTests.release.dev.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -418,7 +434,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug.prod */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-ammo-ammoTests.debug.xcconfig */;
+			baseConfigurationReference = 7EE36A6DD8749182FE436569 /* Pods-ammo-ammoTests.debug.prod.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -445,7 +461,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release.prod */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-ammo-ammoTests.release.xcconfig */;
+			baseConfigurationReference = B092441C0A4E9FF140884F73 /* Pods-ammo-ammoTests.release.prod.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -469,7 +485,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug.prod */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-ammo.debug.xcconfig */;
+			baseConfigurationReference = C661DE906C0A05ABA8F5EBE1 /* Pods-ammo.debug.prod.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -496,7 +512,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release.prod */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-ammo.release.xcconfig */;
+			baseConfigurationReference = 1E1ECECCF6BA8CD382AAAE53 /* Pods-ammo.release.prod.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -593,7 +609,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -666,7 +685,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -740,7 +762,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -750,7 +775,7 @@
 		};
 		BD8E88362CAD8FE000B1830C /* Release.dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-ammo.release.xcconfig */;
+			baseConfigurationReference = F5B17128440D322B99674338 /* Pods-ammo.release.dev.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -775,7 +800,7 @@
 		};
 		BD8E88372CAD8FE000B1830C /* Release.dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-ammo-ammoTests.release.xcconfig */;
+			baseConfigurationReference = BA6B836450E23BCC6A067F35 /* Pods-ammo-ammoTests.release.dev.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -871,7 +896,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -880,7 +908,7 @@
 		};
 		BD8E88392CAD8FE900B1830C /* Debug.dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-ammo.debug.xcconfig */;
+			baseConfigurationReference = 4AB4CC325B40696EAD8BAAE8 /* Pods-ammo.debug.dev.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -907,7 +935,7 @@
 		};
 		BD8E883A2CAD8FE900B1830C /* Debug.dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-ammo-ammoTests.debug.xcconfig */;
+			baseConfigurationReference = 19326D269D94501B8ACE26DF /* Pods-ammo-ammoTests.debug.dev.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (

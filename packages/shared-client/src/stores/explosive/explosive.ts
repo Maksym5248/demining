@@ -17,6 +17,7 @@ export interface IExplosiveStore {
     fetchList: RequestModel<[search?: string]>;
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
+    fetchByIds: RequestModel<[string[]]>;
 }
 
 interface IApi {
@@ -95,8 +96,26 @@ export class ExplosiveStore implements IExplosiveStore {
     fetchItem = new RequestModel({
         run: async (id: string) => {
             const res = await this.api.explosive.get(id);
-
             this.collection.set(res.id, createExplosive(res));
+            await this.fetchItemDeeps.run(id);
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchItemDeeps = new RequestModel({
+        run: async (id: string) => {
+            const item = this.collection.get(id);
+            const ids = (item?.data.composition?.map(i => i.explosiveId).filter(Boolean) as string[]) || [];
+            await this.fetchByIds.run(ids);
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchByIds = new RequestModel({
+        run: async (ids: string[]) => {
+            console.log('fetchByIds', ids);
+            const res = await this.api.explosive.getByIds(ids);
+            this.collection.setArr(res.map(createExplosive));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

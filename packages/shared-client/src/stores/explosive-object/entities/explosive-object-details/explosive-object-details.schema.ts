@@ -21,11 +21,12 @@ export type IActionData = IActionDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
+    imageUris: string[] | null;
     material: MATERIAL;
     size: ISizeData | null; //мм;
     weight: number | null; // kg;
     temperature: ITempartureData | null;
-    filler: IFillerData | null; // спорядження ВР;
+    filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
 
@@ -38,6 +39,7 @@ export interface IExplosiveObjectDetailsData {
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
     return {
         id,
+        imageUris: value.imageUris ?? [],
         material: value.material,
         size: value.size,
         weight: value.weight,
@@ -45,36 +47,93 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         filler: value.filler,
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
-        purpose: value.purpose,
-        structure: value.structure,
-        action: value.action,
+        purpose: value?.purpose
+            ? {
+                  description: value.purpose.description ?? null,
+                  imageUris: value.purpose.imageUris ?? [],
+              }
+            : null,
+        structure: value?.structure
+            ? {
+                  description: value.structure.description ?? null,
+                  imageUris: value.structure.imageUris ?? [],
+              }
+            : null,
+        action: value?.action
+            ? {
+                  description: value.action.description ?? null,
+                  imageUris: value.action.imageUris ?? [],
+              }
+            : null,
     };
 };
 
 export const createExplosiveObjectDetailsDTO = (
     value?: ICreateValue<IExplosiveObjectDetailsData>,
 ): ICreateValue<IExplosiveObjectDetailsDTO> => ({
+    imageUris: value?.imageUris ?? [],
     material: value?.material ?? MATERIAL.METAL,
     size: value?.size ?? null,
     weight: value?.weight ?? null,
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
-    filler: value?.filler ?? null,
+    filler:
+        value?.filler?.map(el => ({
+            explosiveId: el.explosiveId ?? null,
+            name: el.name ?? null,
+            weight: el.weight ?? null,
+        })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
-    purpose: value?.purpose ?? null,
-    structure: value?.structure ?? null,
-    action: value?.action ?? null,
+    purpose: value?.purpose
+        ? {
+              description: value.purpose.description ?? null,
+              imageUris: value.purpose.imageUris ?? [],
+          }
+        : null,
+    structure: value?.structure
+        ? {
+              description: value.structure.description ?? null,
+              imageUris: value.structure.imageUris ?? [],
+          }
+        : null,
+    action: value?.action
+        ? {
+              description: value.action.description ?? null,
+              imageUris: value.action.imageUris ?? [],
+          }
+        : null,
 });
 
-export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>((value) => ({
+export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
+    imageUris: value?.imageUris ?? [],
     material: value.material ?? MATERIAL.METAL,
     size: value.size ?? null,
     weight: value.weight ?? null,
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
-    filler: value.filler ?? null,
+    filler:
+        value.filler?.map(el => ({
+            explosiveId: el.explosiveId ?? null,
+            name: el.name ?? null,
+            weight: el.weight ?? null,
+        })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],
-    purpose: value.purpose ?? null,
-    structure: value.structure ?? null,
-    action: value.action ?? null,
+    purpose: value.purpose
+        ? {
+              description: value.purpose.description ?? null,
+              imageUris: value.purpose.imageUris ?? [],
+          }
+        : null,
+    structure: value.structure
+        ? {
+              description: value.structure.description ?? null,
+              imageUris: value.structure.imageUris ?? [],
+          }
+        : null,
+    action: value.action
+        ? {
+              description: value.action.description ?? null,
+              imageUris: value.action.imageUris ?? [],
+          }
+        : null,
 }));

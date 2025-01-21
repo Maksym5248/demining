@@ -1,20 +1,19 @@
-import { Button, Form, Space, InputNumber, Drawer, Input } from 'antd';
+import { Button, Form, Space, Drawer, Input, InputNumber } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { removeFields } from 'shared-my';
 import { useSelectStore } from 'shared-my-client';
-import { type IExplosiveObjectTypeData } from 'shared-my-client';
 
-import { Select, SelectAsync } from '~/components';
+import { SelectAsync, Select } from '~/components';
 import { useStore } from '~/hooks';
 
-import { type IExplosiveCompositionForm } from './explosive-composition-wizard.types';
+import { type IExplosiveObjectFillerForm } from './explosive-object-filler-wizard.types';
 
 interface Props {
     id?: string;
     isVisible: boolean;
     hide: () => void;
-    initialValue: IExplosiveObjectTypeData;
-    onSubmit: (value: IExplosiveCompositionForm) => void;
+    initialValue: IExplosiveObjectFillerForm;
+    onSubmit: (value: IExplosiveObjectFillerForm) => void;
     max: number;
 }
 
@@ -34,21 +33,25 @@ const types = [
     },
 ];
 
-export const ExplosiveCompositionWizardModal = observer(({ isVisible, hide, onSubmit, initialValue, max }: Props) => {
+export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onSubmit, initialValue }: Props) => {
     const { explosive } = useStore();
     const explosiveProps = useSelectStore(explosive);
 
     removeFields(explosiveProps, 'initialItem');
 
-    const onFinish = async (values: IExplosiveCompositionForm) => {
-        onSubmit?.(values);
+    const onFinish = async (values: IExplosiveObjectFillerForm) => {
+        onSubmit?.({
+            explosiveId: values.explosiveId,
+            name: values.name,
+            weight: values.weight,
+        });
         hide();
     };
 
     return (
         <Drawer open={isVisible} destroyOnClose title="Додати до складу" placement="right" width={500} onClose={hide}>
             <Form
-                name="explosive-composition--form"
+                name="explosive-filler-form"
                 onFinish={onFinish}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
@@ -94,11 +97,8 @@ export const ExplosiveCompositionWizardModal = observer(({ isVisible, hide, onSu
                         );
                     }}
                 </Form.Item>
-                <Form.Item label="Опис" name="description">
-                    <Input.TextArea maxLength={300} />
-                </Form.Item>
-                <Form.Item label="Кількість, %" name="percent" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                    <InputNumber max={max} min={0} />
+                <Form.Item label="Вага, кг" name="weight" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                    <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item label=" " colon={false}>
                     <Space>

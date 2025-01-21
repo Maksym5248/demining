@@ -3,14 +3,14 @@ import { type IEmployeeActionDB, type IOrderDB, type IEmployeeDB } from 'shared-
 
 import { type IUpdateValue, type IDBBase, type IQuery } from '~/common';
 
-import { type IOrderDTO, type IOrderDTOParams, type IOrderPreviewDTO } from '../dto';
+import { type IOrderFullDTO, type IOrderDTOParams, type IOrderDTO } from '../dto';
 
 export interface IOrderAPI {
-    create: (value: IOrderDTOParams) => Promise<IOrderDTO>;
-    update: (id: string, value: IUpdateValue<IOrderDTOParams>) => Promise<IOrderDTO>;
+    create: (value: IOrderDTOParams) => Promise<IOrderFullDTO>;
+    update: (id: string, value: IUpdateValue<IOrderDTOParams>) => Promise<IOrderFullDTO>;
     remove: (id: string) => Promise<string>;
-    getList: (query?: IQuery) => Promise<IOrderPreviewDTO[]>;
-    get: (id: string) => Promise<IOrderDTO>;
+    getList: (query?: IQuery) => Promise<IOrderDTO[]>;
+    get: (id: string) => Promise<IOrderFullDTO>;
 }
 
 export class OrderAPI implements IOrderAPI {
@@ -22,7 +22,7 @@ export class OrderAPI implements IOrderAPI {
         },
     ) {}
 
-    create = async (value: IOrderDTOParams): Promise<IOrderDTO> => {
+    create = async (value: IOrderDTOParams): Promise<IOrderFullDTO> => {
         const employee = await this.db.employee.get(value.signedById);
 
         if (!employee) {
@@ -53,7 +53,7 @@ export class OrderAPI implements IOrderAPI {
         };
     };
 
-    update = async (id: string, { signedById, ...value }: IUpdateValue<IOrderDTOParams>): Promise<IOrderDTO> => {
+    update = async (id: string, { signedById, ...value }: IUpdateValue<IOrderDTOParams>): Promise<IOrderFullDTO> => {
         const [order, signedByArr] = await Promise.all([
             this.db.order.update(id, value),
             this.db.employeeAction.select({
@@ -98,7 +98,7 @@ export class OrderAPI implements IOrderAPI {
         return id;
     };
 
-    getList = async (query?: IQuery): Promise<IOrderPreviewDTO[]> =>
+    getList = async (query?: IQuery): Promise<IOrderDTO[]> =>
         this.db.order.select({
             order: {
                 by: 'createdAt',
@@ -107,7 +107,7 @@ export class OrderAPI implements IOrderAPI {
             ...(query ?? {}),
         });
 
-    get = async (id: string): Promise<IOrderDTO> => {
+    get = async (id: string): Promise<IOrderFullDTO> => {
         const [order, employeeActionArr] = await Promise.all([
             this.db.order.get(id),
             this.db.employeeAction.select({

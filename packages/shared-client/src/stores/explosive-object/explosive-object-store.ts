@@ -1,5 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -38,6 +39,7 @@ import { ExplosiveObjectClassStore, type IExplosiveObjectClassStore } from './ex
 import { ExplosiveObjectClassItemStore, type IExplosiveObjectClassItemStore } from './explosive-object-class-item';
 import { ExplosiveObjectTypeStore, type IExplosiveObjectTypeStore } from './explosive-object-type';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
+import { createExplosive, type IExplosiveStore } from '../explosive';
 import { type IViewerStore } from '../viewer';
 
 interface IApi {
@@ -53,6 +55,7 @@ interface IServices {
 
 interface IStores {
     viewer: IViewerStore;
+    explosive: IExplosiveStore;
 }
 
 export interface IExplosiveObjectStore {
@@ -64,6 +67,7 @@ export interface IExplosiveObjectStore {
     collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
     collectionCountries: CollectionModel<ICountry, ICountryData>;
     list: IListModel<IExplosiveObject, IExplosiveObjectData>;
+    listFuse: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listCountries: IListModel<ICountry, ICountryData>;
     sum: SumExplosiveObjectActions;
     classifications: IClassifications;
@@ -71,8 +75,10 @@ export interface IExplosiveObjectStore {
     create: IRequestModel<[ICreateValue<IExplosiveObjectDataParams>]>;
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel<[search?: string]>;
+    fetchListFuse: IRequestModel<[search?: string]>;
     fetchSum: IRequestModel<[Dayjs, Dayjs]>;
     fetchMoreList: IRequestModel<[search?: string]>;
+    fetchMoreListFuse: IRequestModel<[search?: string]>;
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
 }
@@ -105,6 +111,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
 
     list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
+    listFuse = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
+
     sum = new SumExplosiveObjectActions();
 
     classifications: IClassifications;
@@ -207,6 +215,49 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
+    fetchListFuse = new RequestModel({
+        run: async (search?: string) => {
+            const res = await this.api.explosiveObject.getList({
+                search,
+                limit: this.list.pageSize,
+                where: {
+                    component: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
+                },
+            });
+
+            this.collectionDetails.setArr(
+                res
+                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
+                    .filter(Boolean) as IExplosiveObjectDetailsData[],
+            );
+
+            this.listFuse.set(res.map(createExplosiveObject));
+        },
+    });
+
+    fetchMoreListFuse = new RequestModel({
+        shouldRun: () => this.list.isMorePages,
+        run: async (search?: string) => {
+            const res = await this.api.explosiveObject.getList({
+                search,
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.listFuse.last.data.createdAt),
+                where: {
+                    component: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
+                },
+            });
+
+            this.collectionDetails.setArr(
+                res
+                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
+                    .filter(Boolean) as IExplosiveObjectDetailsData[],
+            );
+
+            this.listFuse.push(res.map(createExplosiveObject));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
     fetchSum = new RequestModel({
         run: async (startDate: Dayjs, endDate: Dayjs) => {
             const res = await this.api.explosiveObject.sum({
@@ -232,6 +283,10 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             }
 
             this.collection.set(res.id, createExplosiveObject(res));
+
+            if (res.explosive) {
+                this.getStores().explosive.collection.setArr(res.explosive.map(createExplosive));
+            }
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

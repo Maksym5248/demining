@@ -6,7 +6,7 @@ import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type IOrder, type IOrderData, type IOrderDataParams, Order, createOrder, createOrderDTO, createOrderPreview } from './entities';
+import { type IOrder, type IOrderData, type IOrderDataParams, Order, createOrderFull, createOrderDTO, createOrder } from './entities';
 import { type IEmployeeStore, createEmployeeAction } from '../employee';
 
 export interface IOrderStore {
@@ -69,7 +69,7 @@ export class OrderStore implements IOrderStore {
             const res = await this.api.order.create(createOrderDTO(data));
 
             this.getStores().employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
-            this.list.unshift(createOrder(res));
+            this.list.unshift(createOrderFull(res));
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -88,7 +88,7 @@ export class OrderStore implements IOrderStore {
         run: async (id: string) => {
             const res = await this.api.order.get(id);
             this.getStores().employee.collectionActions.set(res.signedByAction?.id, createEmployeeAction(res.signedByAction));
-            this.collection.set(res.id, createOrder(res));
+            this.collection.set(res.id, createOrderFull(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -100,7 +100,7 @@ export class OrderStore implements IOrderStore {
                 limit: this.list.pageSize,
             });
 
-            this.list.set(res.map(createOrderPreview));
+            this.list.set(res.map(createOrder));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -114,7 +114,7 @@ export class OrderStore implements IOrderStore {
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.list.push(res.map(createOrderPreview));
+            this.list.push(res.map(createOrder));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

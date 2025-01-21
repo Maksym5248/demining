@@ -185,6 +185,26 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         return !querySnapshot.empty;
     }
 
+    async getByIds(ids: string[]) {
+        if (!ids.length) return [];
+
+        const q = query(this.collection, where('id', 'in', ids));
+
+        const snapshot = await getDocs(q);
+
+        const data = snapshot.docs.map(d => {
+            const newData = d.data();
+            removeFields(newData, '_search');
+            return newData;
+        }) as (T & {
+            createdAt: Timestamp;
+            updatedAt: Timestamp;
+            _search: Record<keyof T, string>;
+        })[];
+
+        return data as T[];
+    }
+
     private createSearchField(value: Partial<T>) {
         const _search: string[] = [];
 
