@@ -12,13 +12,13 @@ prepare_react_native_project!
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => :static
-  $RNFirebaseAsStaticFramework = true
 end
 
 target 'ammo' do
   config = use_native_modules!
-
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
+  
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => true,
@@ -26,9 +26,6 @@ target 'ammo' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  pod 'FirebaseCoreInternal', :modular_headers => true
-  pod 'GoogleUtilities', :modular_headers => true
-  
   target 'ammoTests' do
     inherit! :complete
     # Pods for testing

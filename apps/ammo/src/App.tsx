@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
@@ -8,20 +8,23 @@ import { RootNavigation } from '~/navigation';
 import { Navigation } from '~/services';
 import { ThemeProvider } from '~/styles';
 
-import { s } from './App.style';
 import { appViewModel, type IAppViewModel } from './AppViewModel';
-import { MessageProvider } from './containers';
+// import { MessageProvider } from './containers';
 
 enableScreens(true);
 
 export function App(): React.JSX.Element {
-    useViewModel<IAppViewModel>(appViewModel);
+    const vm = useViewModel<IAppViewModel>(appViewModel);
+
+    useEffect(() => {
+        vm.fetch();
+    }, []);
 
     return (
-        <GestureHandlerRootView style={s.container}>
+        <GestureHandlerRootView>
             <ThemeProvider>
                 <RootNavigation ref={Navigation.init} />
-                <MessageProvider />
+                {/* <MessageProvider /> */}
             </ThemeProvider>
         </GestureHandlerRootView>
     );

@@ -6,8 +6,9 @@ import {
     ExplosiveObjectStore,
     type IRequestModel,
     RequestModel,
+    ExplosiveStore,
+    type IExplosiveStore,
 } from 'shared-my-client';
-import { ExplosiveStore, type IExplosiveStore } from 'shared-my-client/stores';
 
 import { Api } from '~/api';
 import { DB } from '~/db';
@@ -85,9 +86,8 @@ export class RootStore implements IRootStore {
                     this.explosive.fetchList.run(),
                 ]);
             } catch (e) {
-                this.services.logger.error('init', e);
+                /** SKIP */
             }
         },
-        onError: () => this.services.message.error('Виникла помилка'),
     });
 }

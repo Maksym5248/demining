@@ -14,6 +14,8 @@ export interface ILog {
 export interface ILogger {
     logLevel: LogLevel;
     logs: ILog[];
+    enable: () => void;
+    disable: () => void;
     setLevel: (level: LogLevel) => void;
     error: (message?: any, ...optionalParams: any[]) => void;
     log: (message?: any, ...optionalParams: any[]) => void;

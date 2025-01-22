@@ -24,6 +24,14 @@ export class Logger implements ILogger {
         eventEmitter.emit(EVENTS.ON_CHANGE, log);
     }
 
+    enable = () => {
+        this.isDebug = true;
+    };
+
+    disable = () => {
+        this.isDebug = false;
+    };
+
     getLogs() {
         return [...this.logs];
     }
@@ -34,25 +42,25 @@ export class Logger implements ILogger {
 
     error = (message?: any, ...optionalParams: any[]) => {
         if (this.logLevel >= LogLevel.Error) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            this.isDebug && console.log(message, ...optionalParams);
-            this._save(LogLevel.Error, `${message} ${optionalParams?.join(',')}`);
+            const msg = `ERROR: ${message} ${optionalParams?.join(',')}`;
+            this.isDebug && console.log(msg);
+            this._save(LogLevel.Error, msg);
         }
     };
 
     log = (message?: any, ...optionalParams: any[]) => {
         if (this.logLevel >= LogLevel.Info) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            this.isDebug && console.log(message, ...optionalParams);
-            this._save(LogLevel.Info, `${message} ${optionalParams?.join(',')}`);
+            const msg = `LOG: ${message} ${optionalParams?.join(',')}`;
+            this.isDebug && console.log(msg);
+            this._save(LogLevel.Info, msg);
         }
     };
 
     debug = (message?: any, ...optionalParams: any[]) => {
         if (this.logLevel >= LogLevel.Debug) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            this.isDebug && console.log(message, ...optionalParams);
-            this._save(LogLevel.Debug, `${message} ${optionalParams?.join(',')}`);
+            const msg = `DEBUG: ${message} ${optionalParams?.join(',')}`;
+            this.isDebug && console.log(msg);
+            this._save(LogLevel.Debug, msg);
         }
     };
 

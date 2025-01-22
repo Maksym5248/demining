@@ -12,6 +12,7 @@ module.exports = (api) => {
           '~/containers': './src/containers',
           '~/config': './src/config',
           '~/constants': './src/constants',
+          '~/db': './src/db',
           '~/hooks': './src/hooks',
           '~/localization': './src/localization',
           '~/modals': './src/modals',

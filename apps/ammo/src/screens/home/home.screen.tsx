@@ -3,13 +3,18 @@ import { useCallback } from 'react';
 import { View, Text } from 'react-native';
 
 import { Carousel, type IRenderItemParams } from '~/core';
+import { useViewModel } from '~/hooks';
 import { useDevice } from '~/styles';
 
 import { useStyles } from './home.style';
+import { homeVM, type IHomeVM } from './home.vm';
 
 export const HomeScreen = () => {
     const device = useDevice();
     const s = useStyles();
+    const vm = useViewModel<IHomeVM>(homeVM);
+
+    console.log('vm', vm.classes);
 
     const renderFooter = useCallback(() => {
         return <View />;

@@ -3770,26 +3770,26 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-11.3.2.tgz#e63201d0b87ad42d086d1003be48ae7b327f0594"
   integrity sha512-YsaS3Dutnzqd1BEoeC+DEcuNJedYRkN6Ef3kftT5Sm8ExnCF94C/nl4laNxuvFli3+Jz8Df3jO25Jn8A9S0h4w==
 
-"@react-native-firebase/app@^21.7.1":
+"@react-native-firebase/app@21.7.1":
   version "21.7.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-21.7.1.tgz#649db81616cbf474eff8b4fbbf0d8980360d771b"
   integrity sha512-sBXKJE+Uu2+G8SBQzUXMEIyWK932GqxfKsCAVOfzEegxknQuQ8l6qx/tIbMeEFuBJlo334GNctMa4ehePog5lQ==
   dependencies:
     firebase "10.13.2"
 
-"@react-native-firebase/auth@^21.7.1":
+"@react-native-firebase/auth@21.7.1":
   version "21.7.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-21.7.1.tgz#54791f6c3f9504dd8550d16feacb0fce6575337b"
   integrity sha512-aJ7e2xZvEupOsTk4dM8XwQUErJOn9NzA9ghCTN8ypkLAyOguGOdt/WSIQxAn/8o8xxPd5XSPyVkGDEvlhpIgDw==
   dependencies:
     plist "^3.1.0"
 
-"@react-native-firebase/firestore@^21.7.1":
+"@react-native-firebase/firestore@21.7.1":
   version "21.7.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-21.7.1.tgz#69292bfdfdfa8ec48a04718fe57227571146e875"
   integrity sha512-tW1nfya6q/OK0KvQv3/6dJlyeagPoWWGKIvAhPDxjun33ZvCPPsKDJdRkSluaE6cszsCa2IP7srg56FespaWJA==
 
-"@react-native-firebase/storage@^21.7.1":
+"@react-native-firebase/storage@21.7.1":
   version "21.7.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-21.7.1.tgz#4a96970e84b510c02b4e2020cf8f76ee90f9a3e4"
   integrity sha512-37l/agWMp/cxtRnxYvx1NaVxVzhHAx89PaWHlx3Wv5lby0Azh3/7csxyRKVKhID44rKCXbf0sH+iAkr+phdjBw==
@@ -15440,10 +15440,10 @@ react-native-config@1.5.3:
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.3.tgz#1286c0c117adb367a948b31005430146e88c9c2e"
   integrity sha512-3D05Abgk5DfDw9w258EzXvX5AkU7eqj3u9H0H0L4gUga4nYg/zuupcrpGbpF4QeXBcJ84jjs6g8JaEP6VBT7Pg==
 
-react-native-gesture-handler@2.18.1:
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.18.1.tgz#ec9206f34cd2f34a66c0430b2c416d31ee6dff17"
-  integrity sha512-WF2fxQ5kTaxHghlkBM4YxO86SyGWVwrSNgJ1E8z/ZtL2xD5B3bg5agvuVFfOzvceC114yq71s6E9vKPz94ZxRw==
+react-native-gesture-handler@2.21.0:
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.21.0.tgz#b8d8ed4bb4a1ade9d2071741b63f955831388969"
+  integrity sha512-8fR1a8EX1aP+TFGiF8pP3UJks2CcfEu7WZzctkJg1yu2DtbVu+uJB/kAPS1XuZxFBKn7pyJcwuQhzuhilzK4DA==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
@@ -15504,10 +15504,10 @@ react-native-svg@15.6.0:
     css-tree "^1.1.3"
     warn-once "0.1.1"
 
-react-native-theme-mk@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/react-native-theme-mk/-/react-native-theme-mk-0.1.5.tgz#f1264aa31db723a5885ffefa4412a17579c942bf"
-  integrity sha512-WqmOpqTR9Sot7umzTbXkbhy0zba+uAdqed7Ha8UwPUL7p7RroU4Q+FuwM8p90j0flUwMrpBJuQ+EQxhiXnTkcQ==
+react-native-theme-mk@0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/react-native-theme-mk/-/react-native-theme-mk-0.1.6.tgz#7cf909899bed897601d29989698d3d62a2c2125e"
+  integrity sha512-8h560Swrkv+vbDbjrEiT/yFQDA8YdrcPzo6/Eg0+YcG6kq6r/5xQ5fAeabBDFc5MvbTPFlLWjMNgnATDnA2NXw==
   dependencies:
     events "^3.3.0"
 

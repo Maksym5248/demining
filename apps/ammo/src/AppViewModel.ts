@@ -10,7 +10,7 @@ import { type ViewModel } from '~/types';
 export interface IAppViewModel extends ViewModel {
     isInitialized: boolean;
     isLoading: boolean;
-    init(): void;
+    fetch(): void;
 }
 
 export class AppViewModel implements IAppViewModel {
@@ -24,15 +24,12 @@ export class AppViewModel implements IAppViewModel {
         this.isInitialized = value;
     }
 
-    async init() {
-        try {
-            Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
-            ThemeManager.removeAllListeners();
-            await stores.init.run();
-            this.setInitialized(true);
-        } catch (error) {
-            Logger.error('AppViewModel.init', error);
-        }
+    async fetch() {
+        CONFIG.IS_DEBUG && Logger.enable();
+        Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
+        ThemeManager.removeAllListeners();
+        await stores.init.run();
+        this.setInitialized(true);
     }
 
     get isLoading() {
