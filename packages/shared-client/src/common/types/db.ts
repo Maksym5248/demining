@@ -19,6 +19,9 @@ import {
     type IExplosiveDeviceActionDB,
     type IUserDB,
     type IExplosiveDB,
+    type IExplosiveObjectTypeDB,
+    type IExplosiveObjectClassDB,
+    type IExplosiveObjectClassItemDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -63,6 +66,10 @@ export interface IDB {
     user: IDBBase<IUserDB>;
     organization: IDBBase<IOrganizationDB>;
     explosiveObject: IDBBase<IExplosiveObjectDB>;
+    explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
+    explosiveObjectType: IDBBase<IExplosiveObjectTypeDB>;
+    explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
+    explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
     explosiveDevice: IDBBase<IExplosiveDeviceDB>;
     explosive: IDBBase<IExplosiveDB>;
     employee: IDBBase<IEmployeeDB>;
@@ -71,7 +78,6 @@ export interface IDB {
     missionReport: IDBBase<IMissionReportDB>;
     missionRequest: IDBBase<IMissionRequestDB>;
     order: IDBBase<IOrderDB>;
-    explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
     transport: IDBBase<ITransportDB>;
     transportAction: IDBBase<ITransportActionDB>;
     equipment: IDBBase<IEquipmentDB>;

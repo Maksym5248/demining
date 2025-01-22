@@ -16,8 +16,6 @@ export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
     constructor(
         private db: {
             explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
-            batchStart(): void;
-            batchCommit(): Promise<void>;
         },
     ) {}
 

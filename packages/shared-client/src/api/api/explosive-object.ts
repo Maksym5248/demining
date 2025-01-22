@@ -41,8 +41,6 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             explosiveObject: IDBBase<IExplosiveObjectDB>;
             explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
             explosive: IDBBase<IExplosiveDB>;
-            batchStart(): void;
-            batchCommit(): Promise<void>;
         },
         private services: {
             assetStorage: IAssetStorage;
