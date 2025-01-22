@@ -10,6 +10,7 @@ import { ThemeProvider } from '~/styles';
 
 import { s } from './App.style';
 import { appViewModel, type IAppViewModel } from './AppViewModel';
+import { MessageProvider } from './containers';
 
 enableScreens(true);
 
@@ -20,6 +21,7 @@ export function App(): React.JSX.Element {
         <GestureHandlerRootView style={s.container}>
             <ThemeProvider>
                 <RootNavigation ref={Navigation.init} />
+                <MessageProvider />
             </ThemeProvider>
         </GestureHandlerRootView>
     );

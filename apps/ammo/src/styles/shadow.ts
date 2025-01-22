@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { type IShadow } from './types';
+import { type IShadowStyle } from './types';
 
 const light = Platform.select({
     ios: {
@@ -17,6 +17,6 @@ const light = Platform.select({
     },
 });
 
-export const shadow: Record<'light', IShadow> = {
+export const shadow: IShadowStyle = {
     light,
 };

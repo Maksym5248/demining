@@ -1,5 +1,7 @@
 import { Logger as LoggerClass, Modal as ModalClass } from 'shared-my-client';
 
+export type { IMessageState } from './ui/message';
+
 import { AnalyticsClass } from './analytics';
 import { AssetStorageClass } from './asset-storage';
 import { CrashlyticsClass } from './crashlytics';
