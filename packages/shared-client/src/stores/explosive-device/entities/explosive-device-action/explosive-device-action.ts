@@ -21,7 +21,7 @@ interface IServices {
     message: IMessage;
 }
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class ExplosiveDeviceAction implements IExplosiveDeviceAction {

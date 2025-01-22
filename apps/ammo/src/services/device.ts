@@ -35,7 +35,7 @@ export interface IDevice {
     screenAspectRatio: number;
 }
 
-class DeviceClass implements IDevice, IDeviceInternal {
+export class DeviceClass implements IDevice, IDeviceInternal {
     dimentsionSubscription: EmitterSubscription | null = null;
 
     get isAndroid() {
@@ -100,5 +100,3 @@ class DeviceClass implements IDevice, IDeviceInternal {
         this.dimentsionSubscription?.remove();
     }
 }
-
-export const Device = new DeviceClass();

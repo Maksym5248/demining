@@ -29,7 +29,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class ExplosiveStore implements IExplosiveStore {

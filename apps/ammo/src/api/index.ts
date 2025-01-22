@@ -18,7 +18,6 @@ export const Api = {
     explosiveObjectType: new ExplosiveObjectTypeAPI(DB, services),
     explosiveObjectClass: new ExplosiveObjectClassAPI(DB),
     explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DB),
-
     explosiveObject: new ExplosiveObjectAPI(DB, services),
     explosiveDevice: new ExplosiveDeviceAPI(DB),
     explosive: new ExplosiveAPI(DB, services),

@@ -38,7 +38,7 @@ interface ICollections {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 interface IExplosiveObjectActionParams {

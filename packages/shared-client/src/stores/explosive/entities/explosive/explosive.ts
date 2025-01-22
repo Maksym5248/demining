@@ -25,7 +25,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class Explosive implements IExplosive {
@@ -55,7 +55,7 @@ export class Explosive implements IExplosive {
     }
 
     get isCurrentOrganization() {
-        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
     }
 
     update = new RequestModel({

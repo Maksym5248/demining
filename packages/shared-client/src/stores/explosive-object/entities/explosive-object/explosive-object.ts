@@ -36,7 +36,7 @@ interface ICollections {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 interface IExplosiveObjectParams {
@@ -139,7 +139,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get isCurrentOrganization() {
-        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
     }
 
     update = new RequestModel({

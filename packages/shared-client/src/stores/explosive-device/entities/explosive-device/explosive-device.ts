@@ -24,7 +24,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class ExplosiveDevice implements IExplosiveDevice {
@@ -46,7 +46,7 @@ export class ExplosiveDevice implements IExplosiveDevice {
     }
 
     get isCurrentOrganization() {
-        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
     }
 
     updateFields(data: Partial<IExplosiveDeviceData>) {

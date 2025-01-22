@@ -43,7 +43,7 @@ interface IApi {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 interface IServices {

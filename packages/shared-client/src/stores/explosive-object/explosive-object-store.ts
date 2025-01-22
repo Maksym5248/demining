@@ -54,7 +54,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
     explosive: IExplosiveStore;
 }
 

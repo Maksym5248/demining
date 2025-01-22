@@ -8,6 +8,7 @@ import {
     type IExplosiveDB,
     type IExplosiveObjectActionDB,
     type IExplosiveDeviceActionDB,
+    type IUserDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -38,8 +39,11 @@ export class DBRemote
             | 'explosiveDevice'
             | 'explosiveDeviceAction'
             | 'explosive'
+            | 'user'
         >
 {
+    user = new DBBase<IUserDB>(TABLES.USER, ['email']);
+
     explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], getCreateData, undefined);
 
     explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, ['name'], getCreateData, undefined);

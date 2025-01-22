@@ -1,5 +1,10 @@
+export interface IMessageParams {
+    delay?: number;
+    time?: number;
+}
+
 export interface IMessage {
-    error: (text: string) => void;
-    success: (text: string) => void;
-    info: (text: string) => void;
+    error: (text: string, params?: IMessageParams) => void;
+    success: (text: string, params?: IMessageParams) => void;
+    info: (text: string, params?: IMessageParams) => void;
 }

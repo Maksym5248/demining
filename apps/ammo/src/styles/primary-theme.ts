@@ -1,4 +1,4 @@
-import { Device } from '~/utils';
+import { Device } from '~/services';
 
 import { createElementsStyles } from './elements';
 import { fonts } from './font-family';
