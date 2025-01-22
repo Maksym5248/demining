@@ -8,7 +8,7 @@ import {
     type NavigationContainerEventMap,
 } from '@react-navigation/native';
 
-export interface INavigation {
+export interface INavigationService {
     init: (navigatorRef: NavigationContainerRef<any>) => void;
     getPath: () => string;
     navigate: (routeName: string, params?: object) => void;
@@ -20,14 +20,14 @@ export interface INavigation {
     onChange: (name: keyof NavigationContainerEventMap, callBack: EventListenerCallback<NavigationContainerEventMap, any>) => () => void;
 }
 
-export class NavigationClass implements INavigation {
+export class NavigationClass implements INavigationService {
     private nav: NavigationContainerRef<any> | null = null;
 
     constructor() {
         this.nav = null;
     }
 
-    init = (navigatorRef: NavigationContainerRef<any>) => {
+    init = (navigatorRef: NavigationContainerRef<any> | null) => {
         this.nav = navigatorRef;
     };
 

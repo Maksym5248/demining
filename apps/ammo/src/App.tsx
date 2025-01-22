@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
+import { type NavigationContainerRef } from '@react-navigation/core';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 
@@ -9,7 +10,7 @@ import { Navigation } from '~/services';
 import { ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
-// import { MessageProvider } from './containers';
+import { MessageProvider } from './containers';
 
 enableScreens(true);
 
@@ -20,11 +21,15 @@ export function App(): React.JSX.Element {
         vm.fetch();
     }, []);
 
+    const setNavigationRef = useCallback((ref: NavigationContainerRef<any>) => {
+        Navigation.init(ref);
+    }, []);
+
     return (
         <GestureHandlerRootView>
             <ThemeProvider>
-                <RootNavigation ref={Navigation.init} />
-                {/* <MessageProvider /> */}
+                <RootNavigation ref={setNavigationRef} />
+                <MessageProvider />
             </ThemeProvider>
         </GestureHandlerRootView>
     );
