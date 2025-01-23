@@ -11,6 +11,10 @@ const getTabBar = ({ color, size }: { focused: boolean; color: string; size: num
     return <Icon name="dictionary" size={size} color={color} />;
 };
 
+const commonTabbarOptiosn = {
+    tabBarShowLabel: false,
+}
+
 export const TabNavigator = () => {
     const theme = useTheme();
 
@@ -18,11 +22,13 @@ export const TabNavigator = () => {
         tabBarIcon: getTabBar,
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.secondary,
+        headerShown: false,
+
     };
 
     return (
         <Tab.Navigator screenOptions={screenOptions}>
-            <Tab.Screen name={SCREENS.HOME} component={screens.HomeScreen} />
+            <Tab.Screen name={SCREENS.HOME} component={screens.HomeScreen} options={commonTabbarOptiosn}/>
         </Tab.Navigator>
     );
 };

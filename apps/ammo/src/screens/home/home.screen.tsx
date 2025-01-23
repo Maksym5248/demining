@@ -1,20 +1,24 @@
 import { useCallback } from 'react';
 
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { observer } from 'mobx-react';
 
-import { Carousel, type IRenderItemParams } from '~/core';
+import { Carousel, Header, type IRenderItemParams } from '~/core';
 import { useViewModel } from '~/hooks';
-import { useDevice } from '~/styles';
+import { Text } from '~/core';
+import { useDevice, useStylesCommon } from '~/styles';
 
 import { useStyles } from './home.style';
 import { homeVM, type IHomeVM } from './home.vm';
+import { useTranslate } from '~/localization';
 
-export const HomeScreen = () => {
+export const HomeScreen = observer(() => {
     const device = useDevice();
     const s = useStyles();
-    const vm = useViewModel<IHomeVM>(homeVM);
+    const styles = useStylesCommon();
+    const t = useTranslate("screens.home");
 
-    console.log('vm', vm.classes);
+    const vm = useViewModel<IHomeVM>(homeVM);
 
     const renderFooter = useCallback(() => {
         return <View />;
@@ -28,8 +32,8 @@ export const HomeScreen = () => {
     );
 
     return (
-        <View style={s.container}>
-            <Text>Sign Up Screen</Text>
+        <View style={styles.container}>
+            <Header title={t('title')} backButton="none"/>
             <Carousel
                 width={device.window.width}
                 itemWidth={device.window.width}
@@ -41,4 +45,4 @@ export const HomeScreen = () => {
             />
         </View>
     );
-};
+});
