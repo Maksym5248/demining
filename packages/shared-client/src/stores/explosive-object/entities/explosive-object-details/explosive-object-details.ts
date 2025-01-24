@@ -6,6 +6,7 @@ import { type IExplosiveObjectDetailsData } from './explosive-object-details.sch
 
 export interface IExplosiveObjectDetails {
     data: IExplosiveObjectDetailsData;
+    id: string;
     updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>): void;
 }
 
@@ -16,6 +17,10 @@ export class ExplosiveObjectDetails implements IExplosiveObjectDetails {
         this.data = data;
 
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>) {

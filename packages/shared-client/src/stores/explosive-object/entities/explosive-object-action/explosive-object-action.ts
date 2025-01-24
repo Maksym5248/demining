@@ -50,6 +50,7 @@ interface IExplosiveObjectActionParams {
 
 export interface IExplosiveObjectAction {
     data: IExplosiveObjectActionData;
+    id: string;
     type?: IExplosiveObjectType;
     explosiveObject: IExplosiveObject;
     updateFields(data: Partial<IExplosiveObjectActionData>): void;
@@ -70,6 +71,10 @@ export class ExplosiveObjectAction implements IExplosiveObjectAction {
         this.getStores = getStores;
 
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     get type() {

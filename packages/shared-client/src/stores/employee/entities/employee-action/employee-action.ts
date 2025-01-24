@@ -10,6 +10,7 @@ import { type IRank, type IRankData } from '../rank';
 
 export interface IEmployeeAction {
     data: IEmployeeActionData;
+    id: string;
     employee: IEmployee;
 }
 
@@ -39,6 +40,10 @@ export class EmployeeAction implements IEmployeeAction {
         this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     get employee() {

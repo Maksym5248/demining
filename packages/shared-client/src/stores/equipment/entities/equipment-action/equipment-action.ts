@@ -8,6 +8,7 @@ import { Equipment, type IEquipment } from '../equipment/equipment';
 
 export interface IEquipmentAction {
     data: IEquipmentActionData;
+    id: string;
     updateFields: (data: Partial<IEquipmentActionData>) => void;
     equipment: IEquipment;
 }
@@ -36,6 +37,10 @@ export class EquipmentAction implements IEquipmentAction {
         this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     updateFields(data: Partial<IEquipmentActionData>) {

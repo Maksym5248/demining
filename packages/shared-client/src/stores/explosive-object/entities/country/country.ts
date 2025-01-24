@@ -4,6 +4,7 @@ import { type ICountryData } from './country.schema';
 
 export interface ICountry {
     data: ICountryData;
+    id: string;
     displayName: string;
     updateFields(data: Partial<ICountryData>): void;
 }
@@ -15,6 +16,10 @@ export class Country implements ICountry {
         this.data = data;
 
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     get displayName() {

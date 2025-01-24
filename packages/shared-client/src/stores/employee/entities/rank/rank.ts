@@ -2,6 +2,7 @@ import { type IRankData } from './rank.schema';
 
 export interface IRank {
     data: IRankData;
+    id: string;
 }
 
 export class Rank implements IRank {
@@ -9,5 +10,9 @@ export class Rank implements IRank {
 
     constructor(data: IRankData) {
         this.data = data;
+    }
+
+    get id() {
+        return this.data.id;
     }
 }

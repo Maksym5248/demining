@@ -53,3 +53,8 @@ export interface Search<T> {
     setSearchBy: (searchBy: string, shouldRun?: boolean) => void;
     items: T[];
 }
+
+export enum OrderBy {
+    Asc = 'Asc',
+    Desc = 'Desc',
+}

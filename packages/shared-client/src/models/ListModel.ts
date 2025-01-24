@@ -1,6 +1,8 @@
 import { isArray } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 
+import { type Path } from '~/common';
+
 import { type ICollectionModel } from './CollectionModel';
 
 export interface IListModel<T extends { data: B }, B extends { id: string }> {
@@ -36,11 +38,13 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
 
     private collection: ICollectionModel<T, B>;
 
+    searchKeys?: Path<T>[];
+
     constructor(params: ListModelParams<T, B>) {
         this.pageSize = params?.pageSize ?? 10;
         this.collection = params.collection;
 
-        this.collection?.onRemoved?.((id) => {
+        this.collection?.onRemoved?.(id => {
             this.remove(id);
         });
 
@@ -57,7 +61,7 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
 
     set(arr: B[]) {
         this.collection.setArr(arr);
-        this.ids = arr.map((item) => item.id);
+        this.ids = arr.map(item => item.id);
 
         this.checkMore(arr.length);
     }
@@ -67,7 +71,7 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
         const items = newItems as (B & { id: string })[];
 
         this.collection.setArr(items);
-        this.ids.push(...items.map((el) => el.id));
+        this.ids.push(...items.map(el => el.id));
 
         if (isArray(value)) this.checkMore(value.length);
     }
@@ -77,7 +81,7 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
         const items = newItems as (B & { id: string })[];
 
         this.collection.setArr(items);
-        this.ids.unshift(...items.map((el) => el.id));
+        this.ids.unshift(...items.map(el => el.id));
 
         if (isArray(value)) this.checkMore(value.length);
     }
@@ -93,11 +97,11 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
 
     remove(ids: string | string[]) {
         const idsToRemove = Array.isArray(ids) ? ids : [ids];
-        this.ids = this.ids.filter((id) => !idsToRemove.includes(id));
+        this.ids = this.ids.filter(id => !idsToRemove.includes(id));
     }
 
     get asArray() {
-        return this.ids.map((id) => this.collection?.get(id) as T);
+        return this.ids.map(id => this.collection?.get(id) as T);
     }
 
     get length() {

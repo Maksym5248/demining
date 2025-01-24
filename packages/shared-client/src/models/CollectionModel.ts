@@ -1,13 +1,16 @@
-import { get, has, remove, set, makeAutoObservable } from 'mobx';
+import { get, has, remove, set, makeAutoObservable, values } from 'mobx';
 import { path } from 'shared-my';
 
-type ID = string | number;
+import { type Path } from '~/common';
+
+type ID = string;
 
 export interface ICollectionModel<T, B> {
     get: (id?: ID) => T | undefined;
     set: (id: ID, value: B) => void;
-    update: (id: ID, value: B) => void;
     setArr: (arr: (B & { id: string })[]) => void;
+    update: (id: ID, value: B) => void;
+    updateArr: (values: (B & { id: string })[]) => void;
     remove: (id: string) => void;
     exist: (id: string) => boolean;
     findBy(path: string, value: unknown): T | undefined;
@@ -15,7 +18,7 @@ export interface ICollectionModel<T, B> {
     onCreated?: (fn: (id: string, item: T) => void) => void;
 }
 
-interface ICollectionModelParams<T extends { data: B }, B> {
+interface ICollectionModelParams<T extends { data: B; id: ID }, B> {
     factory?: (data: B) => T;
     model?: new (data: B) => T;
 }
@@ -25,11 +28,17 @@ interface CallBacks<T> {
     created: ((id: string, item: T) => void)[];
 }
 
-export class CollectionModel<T extends { data: B }, B> implements ICollectionModel<T, B> {
+export interface SetParams<B> {
+    (id: ID, value: B): void;
+    (delta: number): void;
+}
+
+export class CollectionModel<T extends { data: B; id: ID }, B> implements ICollectionModel<T, B> {
     private collection: Record<string, T> = {};
 
     model?: new (data: B) => T;
     factory: (data: B) => T;
+
     private callBacks: CallBacks<T> = {
         removed: [],
         created: [],
@@ -41,23 +50,45 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
     }
 
     private get asArray() {
-        return Object.values(this.collection);
+        return values(this.collection);
     }
 
     setArr(values: (B & { id: string })[]) {
-        values.forEach((el) => {
-            this.set(el.id, el);
+        const updateData: Record<string, B & { id: string }> = {};
+        const createData: Record<string, T> = {};
+
+        let canUpdate = false;
+        let canCreate = false;
+
+        values.forEach(value => {
+            if (this.exist(value.id)) {
+                canUpdate = true;
+                updateData[value.id] = value;
+            } else {
+                canCreate = true;
+                createData[value.id] = this.factory(value);
+            }
         });
+
+        if (canUpdate) {
+            this.updateArr(Object.values(updateData));
+        }
+
+        if (canCreate) {
+            set(this.collection, createData);
+            Object.values(createData).forEach(item => {
+                this.callBacks.created.forEach(fn => fn(item.id, item));
+            });
+        }
     }
 
     set(id: ID, value: B) {
-        const stringId = String(id);
-        if (this.exist(stringId)) {
+        if (this.exist(id)) {
             this.update(id, value);
         } else {
             const model = this.factory(value);
-            set(this.collection, stringId, model);
-            this.callBacks.created.forEach((fn) => fn(stringId, model));
+            set(this.collection, { [id]: model });
+            this.callBacks.created.forEach(fn => fn(id, model));
         }
     }
 
@@ -68,20 +99,23 @@ export class CollectionModel<T extends { data: B }, B> implements ICollectionMod
         Object.assign(item.data, value);
     }
 
-    get(id?: ID): T | undefined {
-        if (typeof id === 'string') {
-            return get(this.collection, id) as T;
-        }
-        return this.findBy('id', id);
+    updateArr(values: (B & { id: string })[]) {
+        values.forEach(value => {
+            this.update(value.id, value);
+        });
     }
 
-    findBy(pathToItem: string, value: unknown): T | undefined {
+    get(id?: ID): T | undefined {
+        return id ? get(this.collection, id) : undefined;
+    }
+
+    findBy(pathToItem: Path<T>, value: unknown): T | undefined {
         return this.asArray.find((v: T) => path(v, pathToItem) === value);
     }
 
     remove(id: string) {
         remove(this.collection, id);
-        this.callBacks.removed.forEach((fn) => fn(id, get(this.collection, id)));
+        this.callBacks.removed.forEach(fn => fn(id, get(this.collection, id)));
     }
 
     exist(id: string) {
