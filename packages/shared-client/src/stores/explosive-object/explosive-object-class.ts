@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IExplosiveObjectClassAPI } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type IExplosiveObjectClassDTO, type IExplosiveObjectClassAPI } from '~/api';
+import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
 import {
     CollectionModel,
     type ICollectionModel,
@@ -48,6 +48,7 @@ export interface IExplosiveObjectClassStore {
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel;
     fetchItem: IRequestModel<[string]>;
+    subscribe: IRequestModel;
 }
 
 export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
@@ -108,5 +109,20 @@ export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
             this.collection.set(res.id, createExplosiveObjectClass(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObjectClass.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveObjectClassDTO, IExplosiveObjectClassData>(
+                    values,
+                    createExplosiveObjectClass,
+                );
+
+                this.list.push(create);
+                this.collection.updateArr(update);
+                this.collection.remove(remove);
+            });
+        },
     });
 }

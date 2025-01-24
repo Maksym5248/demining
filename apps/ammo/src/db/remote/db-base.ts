@@ -215,7 +215,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         const _search: string[] = [];
 
         this.searchFields.forEach(field => {
-            const arr = generateValueStartsWith(String(path(value, field as string) ?? ''));
+            //@ts-ignore
+            const arr = generateValueStartsWith(String(path(value as T, field) ?? ''));
             _search.push(...arr);
         });
 

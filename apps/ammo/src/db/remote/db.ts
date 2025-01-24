@@ -72,6 +72,8 @@ export class DBRemote
             cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
             ssl: true,
         });
+
+        return Promise.resolve();
     };
 
     dropDb = () => Promise.resolve();

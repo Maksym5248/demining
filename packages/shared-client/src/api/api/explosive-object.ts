@@ -30,7 +30,7 @@ export interface IExplosiveObjectAPI {
     getCountriesList: () => Promise<ICountryDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectFullDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
-    subscribe: (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
+    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {

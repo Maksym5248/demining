@@ -10,7 +10,10 @@ export interface IExplosiveObjectClassItemAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectClassItemDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectClassItemDTO>;
-    subscribe: (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectClassItemDTO>[]) => void) => Promise<void>;
+    subscribe: (
+        args: Partial<IQuery> | null,
+        callback: (data: ISubscriptionDocument<IExplosiveObjectClassItemDTO>[]) => void,
+    ) => Promise<void>;
 }
 
 export class ExplosiveObjectClassItemAPI implements IExplosiveObjectClassItemAPI {

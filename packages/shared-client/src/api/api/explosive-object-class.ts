@@ -10,7 +10,7 @@ export interface IExplosiveObjectClassAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectClassDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectClassDTO>;
-    subscribe: (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
+    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
@@ -51,7 +51,7 @@ export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
         return res;
     };
 
-    subscribe = (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
+    subscribe = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
         return this.db.explosiveObjectClass.subscribe(args, callback);
     };
 }

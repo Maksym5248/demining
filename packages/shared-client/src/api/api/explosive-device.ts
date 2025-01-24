@@ -14,7 +14,7 @@ export interface IExplosiveDeviceAPI {
     getListDetonators: (query?: IQuery) => Promise<IExplosiveDeviceDTO[]>;
     get: (id: string) => Promise<IExplosiveDeviceDTO>;
     sum: (query?: IQuery) => Promise<{ explosive: number; detonator: number }>;
-    subscribe: (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
+    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {

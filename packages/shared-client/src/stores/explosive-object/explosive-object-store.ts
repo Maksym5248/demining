@@ -8,8 +8,9 @@ import {
     type IExplosiveObjectActionSumDTO,
     type IExplosiveObjectClassAPI,
     type IExplosiveObjectClassItemAPI,
+    type IExplosiveObjectDTO,
 } from '~/api';
-import { type ICreateValue } from '~/common';
+import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -81,6 +82,8 @@ export interface IExplosiveObjectStore {
     fetchMoreListFuse: IRequestModel<[search?: string]>;
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
+    subscribe: IRequestModel;
+    subscribeDeeps: IRequestModel;
 }
 
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
@@ -305,5 +308,44 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             this.classifications.init();
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribeCountries = new RequestModel({
+        cachePolicy: 'cache-first',
+        run: async () => {
+            const countries = await this.api.explosiveObject.getCountriesList();
+
+            this.listCountries.set(countries.map(createCountry));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObject.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveObjectDTO, IExplosiveObjectData>(
+                    values,
+                    createExplosiveObject,
+                );
+
+                this.list.push(create);
+                this.collection.updateArr(update);
+                this.collection.remove(remove);
+            });
+        },
+    });
+
+    subscribeDeeps = new RequestModel({
+        run: async () => {
+            const [countries] = await Promise.all([
+                this.api.explosiveObject.getCountriesList(),
+                this.type.subscribe.run(),
+                this.class.subscribe.run(),
+                this.classItem.subscribe.run(),
+            ]);
+
+            this.listCountries.set(countries.map(createCountry));
+            this.classifications.init();
+        },
     });
 }

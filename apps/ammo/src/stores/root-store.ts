@@ -81,9 +81,9 @@ export class RootStore implements IRootStore {
             try {
                 await DB.init();
                 await Promise.all([
-                    this.explosiveObject.fetchDeeps.run(),
-                    this.explosiveObject.fetchList.run(),
-                    this.explosive.fetchList.run(),
+                    this.explosiveObject.subscribe.run(),
+                    this.explosiveDevice.subscribe.run(),
+                    this.explosive.subscribe.run(),
                 ]);
             } catch (e) {
                 /** SKIP */

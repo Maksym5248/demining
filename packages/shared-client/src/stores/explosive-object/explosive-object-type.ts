@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IExplosiveObjectTypeAPI } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type IExplosiveObjectTypeDTO, type IExplosiveObjectTypeAPI } from '~/api';
+import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
 import { CollectionModel, type IListModel, type IRequestModel, type ISearchModel, ListModel, RequestModel, SearchModel } from '~/models';
 import { type IMessage } from '~/services';
 
@@ -31,6 +31,7 @@ export interface IExplosiveObjectTypeStore {
     fetchList: IRequestModel;
     fetchItem: IRequestModel<[string]>;
     sortedListTypes: IExplosiveObjectType[];
+    subscribe: IRequestModel;
 }
 
 export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
@@ -101,4 +102,19 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
             }),
         );
     }
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObjectType.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveObjectTypeDTO, IExplosiveObjectTypeData>(
+                    values,
+                    createExplosiveObjectType,
+                );
+
+                this.list.push(create);
+                this.collection.updateArr(update);
+                this.collection.remove(remove);
+            });
+        },
+    });
 }

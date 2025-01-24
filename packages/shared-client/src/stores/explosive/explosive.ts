@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IExplosiveAPI } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type IExplosiveDTO, type IExplosiveAPI } from '~/api';
+import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -18,6 +18,7 @@ export interface IExplosiveStore {
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
     fetchByIds: RequestModel<[string[]]>;
+    subscribe: RequestModel;
 }
 
 interface IApi {
@@ -118,5 +119,17 @@ export class ExplosiveStore implements IExplosiveStore {
             this.collection.setArr(res.map(createExplosive));
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosive.subscribe(null, (values: ISubscriptionDocument<IExplosiveDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveDTO, IExplosiveData>(values, createExplosive);
+
+                this.list.push(create);
+                this.collection.updateArr(update);
+                this.collection.remove(remove);
+            });
+        },
     });
 }

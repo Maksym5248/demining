@@ -113,9 +113,14 @@ export class CollectionModel<T extends { data: B; id: ID }, B> implements IColle
         return this.asArray.find((v: T) => path(v, pathToItem) === value);
     }
 
-    remove(id: string) {
-        remove(this.collection, id);
-        this.callBacks.removed.forEach(fn => fn(id, get(this.collection, id)));
+    remove(id: string | string[]) {
+        const data = Array.isArray(id) ? id : [id];
+
+        data.forEach(id => {
+            const item = get(this.collection, id);
+            remove(this.collection, id);
+            this.callBacks.removed.forEach(fn => fn(id, item));
+        });
     }
 
     exist(id: string) {
