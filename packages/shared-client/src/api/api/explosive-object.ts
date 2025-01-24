@@ -8,7 +8,7 @@ import {
     type IExplosiveDB,
 } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import {
@@ -30,6 +30,7 @@ export interface IExplosiveObjectAPI {
     getCountriesList: () => Promise<ICountryDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectFullDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
+    subscribe: (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
@@ -141,5 +142,9 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             transported,
             destroyed,
         };
+    };
+
+    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => {
+        return this.db.explosiveObject.subscribe(args, callback);
     };
 }

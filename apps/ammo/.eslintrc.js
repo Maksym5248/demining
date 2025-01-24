@@ -16,7 +16,7 @@ module.exports = {
     '../../node_modules/shared-my-client/config/eslint-config-client.js',
     "../../node_modules/shared-my/config/eslint-config-prettier.js"
   ],
-  "rules": {
+  rules: {
     "react-native/no-unused-styles": 2,
     "react-native/split-platform-components": 2,
     "react-native/no-inline-styles": 2,

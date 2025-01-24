@@ -23,12 +23,21 @@ import {
     sum,
     startAt,
     endAt,
+    onSnapshot,
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
 import { path, removeFields } from 'shared-my';
 import { type IBaseDB } from 'shared-my';
-import { type IWhere, type IQuery, type IQueryOrder, type IDBBase, type ICreateData } from 'shared-my-client';
+import {
+    type IWhere,
+    type IQuery,
+    type IQueryOrder,
+    type IDBBase,
+    type ICreateData,
+    type ISubscriptionDocument,
+    Logger,
+} from 'shared-my-client';
 
 function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];
@@ -349,5 +358,37 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         });
 
         await Promise.all(deletePromises);
+    }
+
+    subscribe(args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<T>[]) => void): Promise<void> {
+        return new Promise((resolve, rejected) => {
+            const q = this.query(args ?? {});
+
+            onSnapshot(
+                q,
+                snapshot => {
+                    const res: ISubscriptionDocument<T>[] = [];
+
+                    snapshot.docChanges().forEach(change => {
+                        const data = change.doc.data();
+                        removeFields(data, '_search');
+
+                        res.push({
+                            type: change.type,
+                            newIndex: change.newIndex,
+                            oldIndex: change.oldIndex,
+                            data: data,
+                        });
+                    });
+
+                    callback(res);
+                    resolve();
+                },
+                error => {
+                    Logger.error('DB subscribe - ', error);
+                    rejected(error);
+                },
+            );
+        });
     }
 }

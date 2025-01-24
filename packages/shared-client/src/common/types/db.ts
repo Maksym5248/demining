@@ -1,3 +1,4 @@
+import { type DocumentChangeType } from '@firebase/firestore-types';
 import {
     type IOrganizationDB,
     type IBaseDB,
@@ -40,12 +41,19 @@ export type IQuery = {
     endAt?: string | number | Timestamp;
 };
 
+export type IDocumentChangeType = DocumentChangeType;
+export interface ISubscriptionDocument<T> {
+    type: IDocumentChangeType;
+    newIndex: number;
+    oldIndex: number;
+    data: T;
+}
 export type ICreateData<T extends IBaseDB> = Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'> & Partial<Pick<T, 'id'>>;
 
 export interface IDBBase<T extends IBaseDB> {
     setRootCollection(rootCollection: string): void;
     removeRootCollection(): void;
-    setBatch(batch: unknown | null): void;
+    setBatch(batch: any): void;
     uuid(): string;
     select(args?: Partial<IQuery>): Promise<T[]>;
     get(id: string): Promise<T | null>;
@@ -60,6 +68,7 @@ export interface IDBBase<T extends IBaseDB> {
     batchRemove(id: string): void;
     count(args?: Partial<IQuery>): Promise<number>;
     sum(field: keyof T, args?: Partial<IQuery>): Promise<number>;
+    subscribe(args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<T>[]) => void): Promise<void>;
 }
 
 export interface IDB {

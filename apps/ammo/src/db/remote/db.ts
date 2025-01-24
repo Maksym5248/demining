@@ -1,3 +1,4 @@
+import { firebase, getFirestore } from '@react-native-firebase/firestore';
 import {
     TABLES,
     type IExplosiveObjectTypeDB,
@@ -65,7 +66,13 @@ export class DBRemote
 
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
-    init = () => Promise.resolve();
+    init = () => {
+        getFirestore().settings({
+            persistence: true,
+            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+            ssl: true,
+        });
+    };
 
     dropDb = () => Promise.resolve();
 

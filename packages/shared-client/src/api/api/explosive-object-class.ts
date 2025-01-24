@@ -1,6 +1,6 @@
 import { type IExplosiveObjectClassDB } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
 
 import { type IExplosiveObjectClassDTO } from '../dto';
 
@@ -10,6 +10,7 @@ export interface IExplosiveObjectClassAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectClassDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectClassDTO>;
+    subscribe: (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
@@ -48,5 +49,9 @@ export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
         const res = await this.db.explosiveObjectClass.get(id);
         if (!res) throw new Error('there is explosiveObject with id');
         return res;
+    };
+
+    subscribe = (args: Partial<IQuery>, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
+        return this.db.explosiveObjectClass.subscribe(args, callback);
     };
 }
