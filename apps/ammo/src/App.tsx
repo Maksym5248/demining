@@ -3,6 +3,7 @@ import React, { useCallback, useEffect } from 'react';
 import { type NavigationContainerRef } from '@react-navigation/core';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
+import { LogLevel } from 'shared-my-client';
 
 import { useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
@@ -11,9 +12,8 @@ import { Logger, Navigation } from '~/services';
 import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
-import { MessageProvider } from './containers';
 import { CONFIG } from './config';
-import { LogLevel } from 'shared-my-client';
+import { MessageProvider } from './containers';
 
 enableScreens(true);
 

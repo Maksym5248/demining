@@ -1,7 +1,12 @@
 {
     "screens": {
         "home": {
-            "title": "Довідник"
+            "title": "Довідник",
+            "search": "Пошук",
+            "categories": "Категорії",
+            "explosive": "Вибухові речовини",
+            "explosive-object": "Боєприпаси",
+            "explosive-device": "Засоби підриву"
         }
     }
 }

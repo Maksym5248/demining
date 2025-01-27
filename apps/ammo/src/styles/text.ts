@@ -2,13 +2,13 @@ import { type ITextStyle, type IBaseThemeSchema } from './types';
 
 export const createTextStyles = ({ theme }: { theme: IBaseThemeSchema }): ITextStyle => ({
     h1: {
-        color: theme.colors.primary,
+        color: theme.colors.text,
         fontFamily: theme.fonts.medium,
         fontSize: theme.fontSize.H1,
         lineHeight: theme.lineHeight.H1,
     },
     h2: {
-        color: theme.colors.primary,
+        color: theme.colors.text,
         fontFamily: theme.fonts.medium,
         fontSize: theme.fontSize.H2,
         lineHeight: theme.lineHeight.H2,

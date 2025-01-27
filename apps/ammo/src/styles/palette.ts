@@ -4,6 +4,7 @@ export const palette: Record<IPalette, string> = {
     black: '#000000',
     grey4E: '#4E4E4E',
     grey92: '#8B8C92',
+    greyf2: '#f0f1f2',
     creamF5: '#F5F5F5',
     white: '#ffffff',
     green78: '#1E6478',

@@ -4,6 +4,7 @@ export type IPalette =
     | 'black'
     | 'grey4E'
     | 'grey92'
+    | 'greyf2'
     | 'creamF5'
     | 'white'
     | 'green78'
@@ -22,12 +23,12 @@ export type IColor =
     | 'border'
     | 'button'
     | 'background'
-    | 'backgroundChat'
     | 'backgroundModal'
     | 'textSecondary'
     | 'accent'
     | 'accentLight'
     | 'error'
+    | 'text'
     | 'transparent'
     | 'ripplePrimary';
 

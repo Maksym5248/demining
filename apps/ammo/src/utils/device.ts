@@ -100,3 +100,5 @@ export class DeviceClass implements IDevice, IDeviceInternal {
         this.dimentsionSubscription?.remove();
     }
 }
+
+export const Device = new DeviceClass();

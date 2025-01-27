@@ -6,7 +6,6 @@ export { Logger } from 'shared-my-client';
 import { AnalyticsClass } from './analytics';
 import { AssetStorageClass } from './asset-storage';
 import { CrashlyticsClass } from './crashlytics';
-import { DeviceClass } from './device';
 import { MessageClass } from './ui/message';
 import { NavigationClass } from './ui/navigation';
 
@@ -16,4 +15,3 @@ export const Crashlytics = new CrashlyticsClass(Logger);
 export const Analytics = new AnalyticsClass(Logger, Crashlytics);
 export const Modal = new ModalClass(Analytics);
 export const AssetStorage = new AssetStorageClass();
-export const Device = new DeviceClass();

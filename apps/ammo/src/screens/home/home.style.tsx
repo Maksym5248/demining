@@ -1,22 +1,65 @@
 import { ThemeManager } from '~/styles';
 
-export const useStyles = ThemeManager.createStyleSheet(() => ({
-    container: {
-        display: 'flex',
-        flex: 1,
+export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
+    header: {
+        backgroundColor: theme.colors.accent,
     },
-    carousel: {
-        flex: 1,
+    imageContainer: {
+        width: '100%',
+        height: '25%',
+        backgroundColor: theme.colors.accent,
+        justifyContent: 'center',
+        paddingBottom: theme.spacing.M,
     },
-    carouselContent: {
+    image: {
+        height: 150,
+    },
+    input: {
+        flex: 1,
+        height: 50,
+        color: theme.colors.primary,
+        fontFamily: theme.fonts.regular,
+        fontSize: theme.fontSize.P1,
+        paddingTop: 0,
+        paddingLeft: 0,
+        paddingBottom: 0,
+        marginLeft: 5,
+        borderRadius: theme.radius.M,
+    },
+    searchButton: {
+        height: 50,
+        marginHorizontal: theme.spacing.L,
+        backgroundColor: theme.colors.white,
+        transform: [{ translateY: -25 }],
+        ...theme.shadow.light,
+    },
+    searchButtonContent: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: theme.spacing.M,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    content: {
+        flex: 1,
+        padding: theme.spacing.L,
+    },
+    categories: {
+        flexWrap: 'wrap',
+        flex: 1,
+        flexDirection: 'row',
+        paddingVertical: theme.spacing.M,
+        gap: theme.spacing.S,
+    },
+    item: {
+        width: device.window.width / 2 - theme.spacing.L - theme.spacing.S / 2,
+        height: '50%',
+        padding: theme.spacing.S,
+        backgroundColor: theme.colors.white,
+        alignContent: 'flex-start',
         justifyContent: 'flex-end',
-    },
-    green: {
-        backgroundColor: 'green',
-        height: 300,
-    },
-    red: {
-        backgroundColor: 'red',
-        height: 300,
+        borderRadius: theme.radius.M,
     },
 }));

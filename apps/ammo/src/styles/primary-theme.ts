@@ -1,4 +1,4 @@
-import { Device } from '~/services';
+import { Device } from '~/utils';
 
 import { createElementsStyles } from './elements';
 import { fonts } from './font-family';
@@ -9,7 +9,7 @@ import { type IThemeSchema, type IBaseThemeSchema } from './types';
 
 export const themeBase: IBaseThemeSchema = {
     radius: {
-        M: 2,
+        M: 4,
     },
     colors: {
         white: palette.white,
@@ -19,10 +19,10 @@ export const themeBase: IBaseThemeSchema = {
         thirdiary: palette.grey92,
         border: palette.grey92,
         button: palette.creamF5,
-        background: palette.white,
-        backgroundChat: palette.creamF5,
+        background: palette.greyf2,
         backgroundModal: palette.transparent,
-        textSecondary: palette.white,
+        text: palette.black,
+        textSecondary: palette.grey92,
         accent: palette.blueB4,
         accentLight: palette.greenF7,
         error: palette.redEF,
