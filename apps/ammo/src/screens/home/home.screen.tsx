@@ -34,7 +34,7 @@ export const HomeScreen = observer(() => {
                 <Text type="h4" text={t('categories')} />
                 <View style={s.categories}>
                     {vm.categories.map(category => (
-                        <Card key={category.id} style={s.item} title={t(category.type)} />
+                        <Card key={category.id} style={s.item} title={t(category.type)} svg={category.svg} />
                     ))}
                 </View>
             </View>
