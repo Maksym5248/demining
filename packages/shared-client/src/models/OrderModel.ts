@@ -2,8 +2,6 @@ import { isFunction, isString, path } from 'shared-my';
 
 import { type Path, OrderBy } from '~/common';
 
-import { type IListModel } from './ListModel';
-
 interface IOrderSection<T> {
     key: string;
     compare: (item: T) => boolean;
@@ -12,8 +10,8 @@ interface IOrderSection<T> {
 }
 
 export interface IOrderModelParams<T> {
-    initialOrderField: Path<T>;
-    initialOrderBy?: OrderBy;
+    orderField: Path<T>;
+    orderBy?: OrderBy;
     sections?: IOrderSection<T>[];
     isMerged?: boolean;
 }
@@ -60,11 +58,11 @@ export class OrderModel<T extends { data: B }, B extends { id: string }> impleme
     isMerged?: boolean;
 
     constructor(
-        private list: IListModel<T, B>,
+        private arr: T[],
         private params?: IOrderModelParams<T>,
     ) {
-        this.orderField = params?.initialOrderField;
-        this.orderBy = params?.initialOrderBy ?? OrderBy.Desc;
+        this.orderField = params?.orderField;
+        this.orderBy = params?.orderBy ?? OrderBy.Desc;
         this.sections = params?.sections ?? [];
         this.isMerged = params?.isMerged;
     }
@@ -85,8 +83,8 @@ export class OrderModel<T extends { data: B }, B extends { id: string }> impleme
     };
 
     resetOrder() {
-        this.orderField = this.params?.initialOrderField;
-        this.orderBy = this.params?.initialOrderBy ?? OrderBy.Desc;
+        this.orderField = this.params?.orderField;
+        this.orderBy = this.params?.orderBy ?? OrderBy.Desc;
     }
 
     private mergeResult(data: IOrderSection<T>[], result: Record<string, T[]>) {
@@ -105,9 +103,9 @@ export class OrderModel<T extends { data: B }, B extends { id: string }> impleme
     }
 
     get asArray() {
-        if (!this.orderField) return this.list.asArray;
+        if (!this.orderField) return this.arr;
 
-        const values = this.list.asArray.slice();
+        const values = this.arr.slice();
 
         const result: Record<string, T[]> = {
             rest: [],

@@ -3,8 +3,6 @@ import { filterByItemFields } from 'shared-my';
 
 import { type Path, type ISearchParams } from '~/common';
 
-import { type IListModel } from './ListModel';
-
 export interface ISearchModel<T extends { data: B }, B extends { id: string }> {
     fields: Path<T>[];
     searchBy: string;
@@ -18,7 +16,7 @@ export class SearchModel<T extends { data: B }, B extends { id: string }> implem
     searchBy = '';
 
     constructor(
-        private list: IListModel<T, B>,
+        private arr: T[],
         private params?: ISearchParams<T>,
     ) {
         this.fields = params?.fields || ([] as Path<T>[]);
@@ -26,7 +24,7 @@ export class SearchModel<T extends { data: B }, B extends { id: string }> implem
     }
 
     get asArray() {
-        return filterByItemFields<T>(this.searchBy, this.fields, this.list.asArray, this.params?.minSearchLength);
+        return filterByItemFields<T>(this.searchBy, this.fields, this.arr, this.params?.minSearchLength);
     }
 
     setSearchFields(fields: Path<T> | Path<T>[]) {

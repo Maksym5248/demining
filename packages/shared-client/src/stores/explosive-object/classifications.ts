@@ -20,7 +20,7 @@ export interface IClassifications {
     getBy(params: { typeId: string; component?: EXPLOSIVE_OBJECT_COMPONENT }): INode[];
     getParents(id: string): INode[];
     flatten(typeId: string): INode[];
-    flattenSections(typeId?: string): (INode | ISectionNode)[];
+    flattenSections(typeId?: string): INode[];
 }
 
 interface IClassificationsParams {
@@ -110,7 +110,7 @@ class Node implements INode {
     }
 
     get path() {
-        return this.parents.map((item) => item.id).join('/');
+        return this.parents.map(item => item.id).join('/');
     }
 
     add(item: INode) {
@@ -118,7 +118,7 @@ class Node implements INode {
     }
 
     remove(id: string) {
-        this.children = this.children.filter((item) => item.id !== id);
+        this.children = this.children.filter(item => item.id !== id);
     }
 }
 
@@ -171,7 +171,7 @@ export class Classifications implements IClassifications {
         let res = this.roots[params.typeId] ?? [];
 
         if (params.component) {
-            res = res.filter((item) => item.component === params.component);
+            res = res.filter(item => item.component === params.component);
         }
 
         return res;
@@ -192,10 +192,10 @@ export class Classifications implements IClassifications {
 
     init() {
         if (this.isInitialized) return;
-        this.lists.classItem.asArray.forEach((item) => this.createNode(item));
-        this.lists.classItem.asArray.forEach((item) => this.bind(item.data.id));
+        this.lists.classItem.asArray.forEach(item => this.createNode(item));
+        this.lists.classItem.asArray.forEach(item => this.bind(item.data.id));
 
-        this.collections.classItem.onRemoved?.((id) => this.remove(id));
+        this.collections.classItem.onRemoved?.(id => this.remove(id));
         this.collections.classItem.onCreated?.((id, item) => this.create(item));
 
         this.isInitialized = true;
@@ -211,9 +211,9 @@ export class Classifications implements IClassifications {
 
         if (item.item.data.parentId) {
             const parent = this.getNode(item.item.data.parentId);
-            parent.children = parent.children.filter((node) => node.id !== id);
+            parent.children = parent.children.filter(node => node.id !== id);
         } else if (this.roots[item.item.data.typeId]) {
-            this.roots[item.item.data.typeId] = this.roots[item.item.data.typeId].filter((node) => node.id !== id);
+            this.roots[item.item.data.typeId] = this.roots[item.item.data.typeId].filter(node => node.id !== id);
         }
 
         this.removeNode(id);
@@ -242,10 +242,10 @@ export class Classifications implements IClassifications {
     flattenSections(typeId?: string) {
         if (!typeId) return [];
 
-        const res: (ISectionNode | INode)[] = [];
+        const res: ISectionNode[] = [];
         const sections: EXPLOSIVE_OBJECT_COMPONENT[] = [];
 
-        this.flatten(typeId).forEach((item) => {
+        this.flatten(typeId).forEach(item => {
             const prev = res[res.length - 1];
 
             if (item.component === EXPLOSIVE_OBJECT_COMPONENT.AMMO && !sections.includes(item.component)) {

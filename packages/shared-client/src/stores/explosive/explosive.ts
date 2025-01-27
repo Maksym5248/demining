@@ -3,7 +3,16 @@ import { makeAutoObservable } from 'mobx';
 import { type IExplosiveDTO, type IExplosiveAPI } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, ListModel, RequestModel } from '~/models';
+import {
+    CollectionModel,
+    type IListModel,
+    type IOrderModel,
+    type ISearchModel,
+    ListModel,
+    OrderModel,
+    RequestModel,
+    SearchModel,
+} from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IExplosive, type IExplosiveData, createExplosive, createExplosiveDTO, Explosive } from './entities';
@@ -11,7 +20,7 @@ import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveStore {
     collection: CollectionModel<IExplosive, IExplosiveData>;
-    list: ListModel<IExplosive, IExplosiveData>;
+    list: IListModel<IExplosive, IExplosiveData>;
     create: RequestModel<[ICreateValue<IExplosiveData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
@@ -19,6 +28,7 @@ export interface IExplosiveStore {
     fetchItem: RequestModel<[string]>;
     fetchByIds: RequestModel<[string[]]>;
     subscribe: RequestModel;
+    asArray: IExplosive[];
 }
 
 interface IApi {
@@ -40,14 +50,30 @@ export class ExplosiveStore implements IExplosiveStore {
     collection = new CollectionModel<IExplosive, IExplosiveData>({
         factory: (data: IExplosiveData) => new Explosive(data, this),
     });
-    list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
+    list: IListModel<IExplosive, IExplosiveData>;
+    search: ISearchModel<IExplosive, IExplosiveData>;
+    order: IOrderModel<IExplosive>;
 
     constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
         this.getStores = params.getStores;
 
+        this.list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
+
+        this.search = new SearchModel(this.list.asArray, {
+            fields: ['displayName'],
+        });
+
+        this.order = new OrderModel(this.search.asArray, {
+            orderField: 'displayName',
+        });
+
         makeAutoObservable(this);
+    }
+
+    get asArray() {
+        return this.order.asArray;
     }
 
     create = new RequestModel({
