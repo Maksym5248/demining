@@ -1,6 +1,7 @@
 export * from './card';
 export * from './carousel';
 export * from './icon';
+export * from './loading';
 export * from './svg';
 export * from './touchable';
 export * from './text';
