@@ -7,4 +7,7 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme }) => ({
         justifyContent: 'flex-start',
         backgroundColor: theme.colors.background,
     },
+    scrollViewContent: {
+        backgroundColor: theme.colors.background,
+    },
 }));

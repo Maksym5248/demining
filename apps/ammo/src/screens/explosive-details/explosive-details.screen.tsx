@@ -44,7 +44,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
     return (
         <View style={styles.container}>
             <Header title={t('title')} backButton="back" />
-            <ScrollView>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <Carousel
                     width={device.window.width}
                     itemWidth={device.window.width}
