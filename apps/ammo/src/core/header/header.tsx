@@ -23,7 +23,7 @@ export const Header: FunctionComponent<IHeaderProps> = ({
     style,
     centerStyle,
     isAnimated,
-    color = ThemeManager.theme.colors.primary,
+    color = ThemeManager.theme.colors.white,
     pointerEvents = 'auto',
     onPressBack,
     backButton = 'back',

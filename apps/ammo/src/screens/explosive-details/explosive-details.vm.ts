@@ -1,48 +1,36 @@
 import { makeAutoObservable } from 'mobx';
+import { type IExplosive } from 'shared-my-client';
 
-import { type ISvgName } from '~/core';
 import { stores } from '~/stores';
-import { DictionaryType, type ViewModel } from '~/types';
+import { type ViewModel } from '~/types';
 
-export interface IDictionary {
-    id: string;
-    type: string;
-    svg: ISvgName;
+export interface ISlide {
+    uri: string;
+    id: number;
 }
 
-const categories: IDictionary[] = [
-    {
-        id: '1',
-        type: DictionaryType.Explosive,
-        svg: 'explosive',
-    },
-    {
-        id: '2',
-        type: DictionaryType.ExplosiveObject,
-        svg: 'explosive-object',
-    },
-    {
-        id: '3',
-        type: DictionaryType.ExplosiveDevices,
-        svg: 'explosive-device',
-    },
-];
-
 export interface IExplosiveDetailsVM extends ViewModel {
-    categories: IDictionary[];
+    item: IExplosive | undefined;
+    slides: ISlide[];
 }
 
 export class ExplosiveDetailsVM implements IExplosiveDetailsVM {
+    currentId?: string = undefined;
+
     constructor() {
         makeAutoObservable(this);
     }
 
-    get classes() {
-        return stores.explosive.list.asArray;
+    init({ id }: { id: string }) {
+        this.currentId = id;
     }
 
-    get categories() {
-        return categories;
+    get item() {
+        return stores.explosive.collection.get(this.currentId);
+    }
+
+    get slides() {
+        return [this.item?.imageUri, ...(this.item?.data.imageUris ?? [])].filter(Boolean).map((uri, i) => ({ uri, id: i })) as ISlide[];
     }
 }
 

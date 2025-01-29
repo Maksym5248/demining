@@ -3,7 +3,7 @@ import { ThemeManager } from '~/styles';
 export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     container: {
         width: device.window.width,
-        backgroundColor: theme.colors.background,
+        backgroundColor: theme.colors.accent,
         height: (theme.element.header.height as number) + device.inset.top,
         flexDirection: 'row',
         justifyContent: 'center',

@@ -11,6 +11,7 @@ import {
     InfiniteScrollModel,
     type IOrderModel,
     type ISearchModel,
+    OrderBy,
     OrderModel,
     SearchModel,
 } from 'shared-my-client';
@@ -20,13 +21,19 @@ import { DictionaryType, type ViewModel } from '~/types';
 
 export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
 
+export interface DataItem {
+    id: string;
+    data: Item;
+    type: DictionaryType;
+    typeName?: string;
+    classItemsNames: string[];
+}
+
 export interface ISearchVM extends ViewModel {
     setSearchBy(value: string): void;
     loadMore(): void;
-    getClassficationNames(id: string, type: DictionaryType): string[];
-    getTypeName(id: string, type: DictionaryType): string | undefined;
     searchBy: string;
-    asArray: Item[];
+    asArray: DataItem[];
     isLoading: boolean;
     isLoadingMore: boolean;
     isEndReached: boolean;
@@ -54,15 +61,13 @@ export class SearchVM implements ISearchVM {
     value = '';
 
     constructor() {
-        this.search = new SearchModel(
-            { asArray: this.merged },
-            {
-                fields: ['displayName'],
-            },
-        );
+        this.search = new SearchModel(this.merged, {
+            fields: ['displayName'],
+        });
 
         this.order = new OrderModel(this.search, {
             orderField: 'displayName',
+            orderBy: OrderBy.Asc,
         });
 
         this.infiniteScroll = new InfiniteScrollModel(this.order);
@@ -92,7 +97,7 @@ export class SearchVM implements ISearchVM {
         });
     }
 
-    getTypeName(id: string, type: DictionaryType) {
+    private getTypeName(id: string, type: DictionaryType) {
         if (type === DictionaryType.ExplosiveObject) {
             const item = stores.explosiveObject.collection.get(id);
 
@@ -102,7 +107,7 @@ export class SearchVM implements ISearchVM {
         return undefined;
     }
 
-    getClassficationNames(id: string, type: DictionaryType) {
+    private getClassficationNames(id: string, type: DictionaryType) {
         if (type === DictionaryType.ExplosiveObject) {
             const item = stores.explosiveObject.collection.get(id);
             return item?.classItemsNames ?? [];
@@ -116,11 +121,19 @@ export class SearchVM implements ISearchVM {
     }
 
     get merged() {
-        return [...stores.explosive.list.asArray, ...stores.explosiveObject.list.asArray, ...stores.explosiveDevice.list.asArray];
+        return {
+            asArray: [...stores.explosive.list.asArray, ...stores.explosiveObject.list.asArray, ...stores.explosiveDevice.list.asArray],
+        };
     }
 
     get asArray() {
-        return this.infiniteScroll.asArray;
+        return this.infiniteScroll.asArray.map(item => ({
+            id: item.id,
+            data: item,
+            type: getType(item),
+            typeName: this.getTypeName(item.id, getType(item)),
+            classItemsNames: this.getClassficationNames(item.id, getType(item)),
+        }));
     }
 
     get isEndReached() {

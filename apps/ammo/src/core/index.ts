@@ -9,3 +9,4 @@ export * from './tag';
 export * from './header';
 export * from './input';
 export * from './list';
+export * from './image';

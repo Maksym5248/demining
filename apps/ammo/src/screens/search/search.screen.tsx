@@ -3,42 +3,50 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
+import { SCREENS } from '~/constants';
 import { Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
+import { Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './search.style';
-import { type Item, searchVM, type ISearchVM, getType } from './search.vm';
+import { searchVM, type ISearchVM, type DataItem } from './search.vm';
+
+const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => {
+    const tDictionaries = useTranslate('dictionaries');
+
+    const tags = [tDictionaries(item.type)];
+
+    if (item.typeName) {
+        tags.push(item.typeName);
+    }
+
+    const onOpenExplosive = (id: string) => {
+        Navigation.navigate(SCREENS.EXPLOSIVE_DETAILS, { id });
+    };
+
+    return (
+        <Card
+            type="image"
+            title={item.data.displayName}
+            uri={item.data.imageUri}
+            tags={tags}
+            subTitle={item.classItemsNames.join(', ')}
+            onPress={() => onOpenExplosive(item.id)}
+        />
+    );
+});
 
 export const SearchScreen = observer(() => {
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.search');
-    const tDictionaries = useTranslate('dictionaries');
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = ({ item }: IFlatListRenderedItem<Item>) => {
-        const type = getType(item);
-        const tags = [tDictionaries(type)];
-        const typeName = vm.getTypeName(item.id, type);
-
-        if (typeName) {
-            tags.push(typeName);
-        }
-
-        return (
-            <Card
-                type="image"
-                title={item.displayName}
-                uri={item.imageUri}
-                tags={tags}
-                subTitle={vm.getClassficationNames(item.id, type).join(', ')}
-            />
-        );
-    };
+    const renderItem = ({ item }: IFlatListRenderedItem<DataItem>) => <ListItem item={item} />;
 
     return (
         <View style={styles.container}>
@@ -52,7 +60,7 @@ export const SearchScreen = observer(() => {
                 isClearable
                 style={s.searchContainer}
             />
-            <List<Item>
+            <List<DataItem>
                 data={vm.asArray}
                 renderItem={renderItem}
                 style={s.flatList}
