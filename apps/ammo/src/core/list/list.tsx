@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { useTranslate } from '~/localization';
+import { useDevice } from '~/styles';
 
 import { useStyles } from './list.styles';
 import { type IFlatListProps } from './list.types';
@@ -20,6 +21,7 @@ function Component<T>(
     ref: React.Ref<FlatList>,
 ) {
     const s = useStyles();
+    const device = useDevice();
     const t = useTranslate('components.list');
 
     const _onEndReached = (info: { distanceFromEnd: number }) => {
@@ -38,6 +40,7 @@ function Component<T>(
             ref={ref}
             keyExtractor={keyExtractor}
             data={data}
+            contentInset={{ bottom: 20 + device.inset.bottom }}
             {...props}
             ItemSeparatorComponent={() => <View style={s.separator} />}
             ListEmptyComponent={() => (
