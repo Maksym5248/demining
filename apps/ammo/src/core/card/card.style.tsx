@@ -5,6 +5,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
         overflow: 'hidden',
+        position: 'relative',
         ...theme.shadow.light,
     },
     content: {
@@ -13,6 +14,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     },
     info: {
         flex: 1,
+        gap: theme.spacing.XXS,
         padding: theme.spacing.S,
         alignContent: 'flex-start',
         justifyContent: 'flex-end',
@@ -26,5 +28,15 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     image: {
         width: '100%',
         aspectRatio: 2,
+    },
+    tags: {
+        position: 'absolute',
+        width: '100%',
+        aspectRatio: 2,
+        padding: theme.spacing.XS,
+        gap: theme.spacing.XXS,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
     },
 }));

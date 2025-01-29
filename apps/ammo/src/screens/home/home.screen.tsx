@@ -18,6 +18,7 @@ export const HomeScreen = observer(() => {
     const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.home');
+    const tDictionaries = useTranslate('dictionaries');
 
     const vm = useViewModel<IHomeVM>(homeVM);
 
@@ -40,7 +41,7 @@ export const HomeScreen = observer(() => {
                 <Text type="h4" text={t('categories')} />
                 <View style={s.categories}>
                     {vm.categories.map(category => (
-                        <Card key={category.id} style={s.item} title={t(category.type)} svg={category.svg} />
+                        <Card key={category.id} style={s.item} title={tDictionaries(category.type)} svg={category.svg} />
                     ))}
                 </View>
             </View>

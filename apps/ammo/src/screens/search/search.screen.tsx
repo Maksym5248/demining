@@ -9,17 +9,36 @@ import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './search.style';
-import { type Item, searchVM, type ISearchVM } from './search.vm';
+import { type Item, searchVM, type ISearchVM, getType } from './search.vm';
 
 export const SearchScreen = observer(() => {
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.search');
+    const tDictionaries = useTranslate('dictionaries');
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = ({ item }: IFlatListRenderedItem<Item>) => <Card type="image" title={item.displayName} uri={item.imageUri} />;
+    const renderItem = ({ item }: IFlatListRenderedItem<Item>) => {
+        const type = getType(item);
+        const tags = [tDictionaries(type)];
+        const typeName = vm.getTypeName(item.id, type);
+
+        if (typeName) {
+            tags.push(typeName);
+        }
+
+        return (
+            <Card
+                type="image"
+                title={item.displayName}
+                uri={item.imageUri}
+                tags={tags}
+                subTitle={vm.getClassficationNames(item.id, type).join(', ')}
+            />
+        );
+    };
 
     return (
         <View style={styles.container}>

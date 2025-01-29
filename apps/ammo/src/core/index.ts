@@ -5,6 +5,7 @@ export * from './loading';
 export * from './svg';
 export * from './touchable';
 export * from './text';
+export * from './tag';
 export * from './header';
 export * from './input';
 export * from './list';

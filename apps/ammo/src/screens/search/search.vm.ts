@@ -1,45 +1,49 @@
 import { makeAutoObservable } from 'mobx';
 import {
     DebounceModel,
+    Explosive,
+    ExplosiveObject,
     type IDebounceModel,
     type IExplosive,
     type IExplosiveDevice,
     type IExplosiveObject,
     type IInfiniteScrollModel,
     InfiniteScrollModel,
+    type INode,
     type IOrderModel,
     type ISearchModel,
     OrderModel,
     SearchModel,
 } from 'shared-my-client';
 
-import { type ISvgName } from '~/core';
 import { stores } from '~/stores';
-import { type ViewModel } from '~/types';
-
-export enum IDictionaryType {
-    Explosive = 'explosive',
-    ExplosiveObject = 'explosive-object',
-    ExplosiveDevices = 'explosive-device',
-}
-
-export interface ICategory {
-    id: string;
-    type: string;
-    svg: ISvgName;
-}
+import { DictionaryType, type ViewModel } from '~/types';
 
 export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
 
 export interface ISearchVM extends ViewModel {
     setSearchBy(value: string): void;
     loadMore(): void;
+    getClassficationNames(id: string, type: DictionaryType): string[];
+    getTypeName(id: string, type: DictionaryType): string | undefined;
     searchBy: string;
     asArray: Item[];
     isLoading: boolean;
     isLoadingMore: boolean;
     isEndReached: boolean;
 }
+
+export const getType = (item: Item): DictionaryType => {
+    if (item instanceof Explosive) {
+        return DictionaryType.Explosive;
+    }
+
+    if (item instanceof ExplosiveObject) {
+        return DictionaryType.ExplosiveObject;
+    }
+
+    return DictionaryType.ExplosiveDevices;
+};
 
 export class SearchVM implements ISearchVM {
     search: ISearchModel<Item>;
@@ -87,6 +91,37 @@ export class SearchVM implements ISearchVM {
         this.debounceMore.run(() => {
             this.infiniteScroll.loadMore();
         });
+    }
+
+    getTypeName(id: string, type: DictionaryType) {
+        if (type === DictionaryType.ExplosiveObject) {
+            const item = stores.explosiveObject.collection.get(id);
+
+            return item?.type?.displayName;
+        }
+
+        return undefined;
+    }
+
+    getClassficationNames(id: string, type: DictionaryType) {
+        if (type === DictionaryType.ExplosiveObject) {
+            const item = stores.explosiveObject.collection.get(id);
+
+            const classification = item?.data?.classItemIds?.map(id => stores.explosiveObject.classifications.get(id));
+
+            return (
+                classification?.reduce((acc: string[], c: INode) => {
+                    c.parents?.forEach(parent => {
+                        acc.push(parent.item.displayName);
+                    });
+                    acc.push(c.item.displayName);
+
+                    return acc;
+                }, [] as string[]) ?? []
+            );
+        }
+
+        return [];
     }
 
     get searchBy() {

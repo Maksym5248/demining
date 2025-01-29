@@ -2,40 +2,34 @@ import { makeAutoObservable } from 'mobx';
 
 import { type ISvgName } from '~/core';
 import { stores } from '~/stores';
-import { type ViewModel } from '~/types';
+import { DictionaryType, type ViewModel } from '~/types';
 
-export enum IDictionaryType {
-    Explosive = 'explosive',
-    ExplosiveObject = 'explosive-object',
-    ExplosiveDevices = 'explosive-device',
-}
-
-export interface ICategory {
+export interface IDictionary {
     id: string;
     type: string;
     svg: ISvgName;
 }
 
-const categories: ICategory[] = [
+const categories: IDictionary[] = [
     {
         id: '1',
-        type: IDictionaryType.Explosive,
+        type: DictionaryType.Explosive,
         svg: 'explosive',
     },
     {
         id: '2',
-        type: IDictionaryType.ExplosiveObject,
+        type: DictionaryType.ExplosiveObject,
         svg: 'explosive-object',
     },
     {
         id: '3',
-        type: IDictionaryType.ExplosiveDevices,
+        type: DictionaryType.ExplosiveDevices,
         svg: 'explosive-device',
     },
 ];
 
 export interface IHomeVM extends ViewModel {
-    categories: ICategory[];
+    categories: IDictionary[];
 }
 
 export class HomeVM implements IHomeVM {

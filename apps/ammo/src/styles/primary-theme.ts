@@ -24,7 +24,7 @@ export const themeBase: IBaseThemeSchema = {
         text: palette.black,
         textSecondary: palette.grey92,
         accent: palette.blueB4,
-        accentLight: palette.greenF7,
+        accentLight: palette.blueF8,
         error: palette.redEF,
         transparent: palette.transparent,
         ripplePrimary: palette.blackTransparent01,

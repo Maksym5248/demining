@@ -10,7 +10,7 @@ export type IPalette =
     | 'green78'
     | 'redEF'
     | 'transparent'
-    | 'greenF7'
+    | 'blueF8'
     | 'blueB4'
     | 'blackTransparent01';
 

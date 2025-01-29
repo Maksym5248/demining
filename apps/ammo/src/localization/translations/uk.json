@@ -18,5 +18,10 @@
             "title": "Пошук",
             "search": "Пошук у всіх категоріях"
         }
+    },
+    "dictionaries": {
+        "explosive": "Вибухові речовини",
+        "explosive-object": "Боєприпаси",
+        "explosive-device": "Засоби підриву"
     }
 }
