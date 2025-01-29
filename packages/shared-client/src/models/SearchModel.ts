@@ -4,6 +4,8 @@ import { filterByItemFields } from 'shared-my';
 
 import { type Path, type ISearchParams } from '~/common';
 
+import { type IListModel } from './ListModel';
+
 export interface ISearchModel<T> {
     fields: Path<T>[];
     searchBy: string;
@@ -13,18 +15,16 @@ export interface ISearchModel<T> {
     clear(): void;
 }
 
-export class SearchModel<T> implements ISearchModel<T> {
+export class SearchModel<T extends { data: B }, B extends { id: string }> implements ISearchModel<T> {
     fields: Path<T>[] = [] as Path<T>[];
     searchBy = '';
-    asArray: T[] = [];
 
     constructor(
-        private arr: T[],
+        private list: Pick<IListModel<T, B>, 'asArray'>,
         private params?: ISearchParams<T>,
     ) {
         this.fields = params?.fields || ([] as Path<T>[]);
         this.searchBy = params?.searchBy || '';
-        this.asArray = filterByItemFields<T>(this.searchBy, this.fields, this.arr, this.params?.minSearchLength) ?? [];
 
         makeAutoObservable(this);
     }
@@ -35,6 +35,10 @@ export class SearchModel<T> implements ISearchModel<T> {
 
     setSearchBy(value: string) {
         this.searchBy = value;
+    }
+
+    get asArray() {
+        return filterByItemFields<T>(this.searchBy, this.fields, this.list.asArray, this.params?.minSearchLength);
     }
 
     clear() {

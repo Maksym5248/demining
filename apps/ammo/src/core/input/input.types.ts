@@ -13,6 +13,7 @@ export type IInputProps = ComponentPropsWithRef<typeof TextInput> & {
     label?: string;
     testID?: string;
     isValid?: boolean;
+    isClearable?: boolean;
     message?: string | ReactNode;
     right?: ReactNode;
     left?: ReactNode;

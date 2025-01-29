@@ -61,11 +61,11 @@ export class ExplosiveStore implements IExplosiveStore {
 
         this.list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
 
-        this.search = new SearchModel(this.list.asArray, {
+        this.search = new SearchModel(this.list, {
             fields: ['displayName'],
         });
 
-        this.order = new OrderModel(this.search.asArray, {
+        this.order = new OrderModel(this.search, {
             orderField: 'displayName',
         });
 

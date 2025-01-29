@@ -21,8 +21,6 @@ export const SearchScreen = observer(() => {
 
     const renderItem = ({ item }: IFlatListRenderedItem<Item>) => <Card title={item.displayName} />;
 
-    console.log('vm.isLoading', vm.isLoading);
-
     return (
         <View style={styles.container}>
             <Header title={t('title')} backButton="back" color={theme.colors.white} style={s.header} />
@@ -32,9 +30,18 @@ export const SearchScreen = observer(() => {
                 onChangeValue={value => vm.setSearchBy(value)}
                 value={vm.searchBy}
                 right={<Icon name="search" color={theme.colors.textSecondary} />}
+                isClearable
                 style={s.searchContainer}
             />
-            <List<Item> data={vm.asArray} renderItem={renderItem} style={s.flatList} />
+            <List<Item>
+                data={vm.asArray}
+                renderItem={renderItem}
+                style={s.flatList}
+                isLoading={vm.isLoading}
+                isLoadingMore={vm.isLoadingMore}
+                isEndReached={vm.isEndReached}
+                onEndReached={() => vm.loadMore()}
+            />
         </View>
     );
 });

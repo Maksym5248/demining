@@ -3,6 +3,8 @@ import { isFunction, isString, path } from 'shared-my';
 
 import { type Path, OrderBy } from '~/common';
 
+import { type IListModel } from './ListModel';
+
 interface IOrderSection<T> {
     key: string;
     compare: (item: T) => boolean;
@@ -59,7 +61,7 @@ export class OrderModel<T extends { data: B }, B extends { id: string }> impleme
     isMerged?: boolean;
 
     constructor(
-        private arr: T[],
+        private list: Pick<IListModel<T, B>, 'asArray'>,
         private params?: IOrderModelParams<T>,
     ) {
         this.orderField = params?.orderField;
@@ -106,9 +108,9 @@ export class OrderModel<T extends { data: B }, B extends { id: string }> impleme
     }
 
     get asArray() {
-        if (!this.orderField) return this.arr;
+        if (!this.orderField) return this.list.asArray;
 
-        const values = this.arr.slice();
+        const values = this.list.asArray.slice();
 
         const result: Record<string, T[]> = {
             rest: [],

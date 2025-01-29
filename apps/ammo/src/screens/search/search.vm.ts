@@ -5,6 +5,8 @@ import {
     type IExplosive,
     type IExplosiveDevice,
     type IExplosiveObject,
+    type IInfiniteScrollModel,
+    InfiniteScrollModel,
     type IOrderModel,
     type ISearchModel,
     OrderModel,
@@ -31,26 +33,36 @@ export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
 
 export interface ISearchVM extends ViewModel {
     setSearchBy(value: string): void;
+    loadMore(): void;
     searchBy: string;
     asArray: Item[];
     isLoading: boolean;
+    isLoadingMore: boolean;
+    isEndReached: boolean;
 }
 
 export class SearchVM implements ISearchVM {
     search: ISearchModel<Item>;
     order: IOrderModel<Item>;
     debounce: IDebounceModel = new DebounceModel();
+    debounceMore: IDebounceModel = new DebounceModel();
+    infiniteScroll: IInfiniteScrollModel<Item>;
 
     value = '';
 
     constructor() {
-        this.search = new SearchModel(this.merged, {
-            fields: ['displayName'],
-        });
+        this.search = new SearchModel(
+            { asArray: this.merged },
+            {
+                fields: ['displayName'],
+            },
+        );
 
-        this.order = new OrderModel(this.search.asArray, {
+        this.order = new OrderModel(this.search, {
             orderField: 'displayName',
         });
+
+        this.infiniteScroll = new InfiniteScrollModel(this.order);
 
         makeAutoObservable(this);
     }
@@ -58,6 +70,8 @@ export class SearchVM implements ISearchVM {
     unmount() {
         this.search.clear();
         this.debounce.clear();
+        this.infiniteScroll.clear();
+        this.value = '';
     }
 
     setSearchBy(value: string) {
@@ -65,6 +79,13 @@ export class SearchVM implements ISearchVM {
 
         this.debounce.run(() => {
             this.search.setSearchBy(value);
+            this.infiniteScroll.clear();
+        });
+    }
+
+    loadMore() {
+        this.debounceMore.run(() => {
+            this.infiniteScroll.loadMore();
         });
     }
 
@@ -77,11 +98,19 @@ export class SearchVM implements ISearchVM {
     }
 
     get asArray() {
-        return this.order.asArray;
+        return this.infiniteScroll.asArray;
+    }
+
+    get isEndReached() {
+        return this.infiniteScroll.isEndReached;
     }
 
     get isLoading() {
         return this.debounce.isLoading;
+    }
+
+    get isLoadingMore() {
+        return this.debounceMore.isLoading;
     }
 }
 

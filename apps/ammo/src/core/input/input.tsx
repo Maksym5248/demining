@@ -5,7 +5,7 @@ import { View, UIManager, LayoutAnimation, TextInput as RNTextInput, Text as RNT
 import { useSharedValue } from 'react-native-reanimated';
 import { useOnChange } from 'shared-my-client';
 
-import { useTheme } from '~/styles';
+import { ThemeManager, useTheme } from '~/styles';
 import { layoutConfig, toMaskPattern } from '~/utils';
 
 import { useStyles } from './input.styles';
@@ -51,6 +51,7 @@ const Component = (
         mask,
         pointerEvents,
         disabled = false,
+        isClearable,
         ...rest
     }: IInputProps,
     ref: ForwardedRef<RNTextInput>,
@@ -107,6 +108,16 @@ const Component = (
             };
 
             return secureEntry ? <Icon {...iconProps} name="eye" /> : <Icon {...iconProps} name="eye-hidden" />;
+        }
+
+        if (isClearable && !!value) {
+            const iconProps = {
+                onPress: () => onChangeValue?.(''),
+                hitSlop: s.hitSlop,
+                size: 24,
+            };
+
+            return <Icon {...iconProps} name="close" color={ThemeManager.theme.colors.textSecondary} />;
         }
 
         return right;

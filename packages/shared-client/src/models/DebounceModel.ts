@@ -17,7 +17,7 @@ export class DebounceModel implements IDebounceModel {
     public isLoading = false;
 
     constructor(params?: DebounceModelParams) {
-        this.delay = params?.delay ?? 300;
+        this.delay = params?.delay ?? 600;
 
         makeAutoObservable(this);
     }

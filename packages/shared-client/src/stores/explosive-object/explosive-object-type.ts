@@ -50,7 +50,7 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
         collection: this.collection,
     });
 
-    search = new SearchModel<IExplosiveObjectType>(this.list.asArray, { fields: ['displayName'] });
+    search = new SearchModel<IExplosiveObjectType, IExplosiveObjectTypeData>(this.list, { fields: ['displayName'] });
 
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;

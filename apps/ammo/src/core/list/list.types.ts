@@ -7,4 +7,7 @@ export interface IFlatListRenderedItem<T> {
 
 export interface IFlatListProps<T> extends FlatListProps<T> {
     isLoading?: boolean;
+    isLoadingMore?: boolean;
+    isSearch?: boolean;
+    isEndReached?: boolean;
 }
