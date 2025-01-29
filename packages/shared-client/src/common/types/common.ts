@@ -44,6 +44,7 @@ export interface ISearchParams<T> {
     fields?: Path<T>[];
     searchBy?: string;
     minSearchLength?: number;
+    debounce?: number;
 }
 
 export interface Search<T> {

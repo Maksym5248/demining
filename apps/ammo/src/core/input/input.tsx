@@ -49,7 +49,6 @@ const Component = (
         right,
         left,
         mask,
-        isSmallLabelSmall,
         pointerEvents,
         disabled = false,
         ...rest
@@ -121,7 +120,7 @@ const Component = (
 
     return (
         <View style={[s.container, style]} pointerEvents={pointerEvents}>
-            <Label text={label} isSmall={isFocused || !!value || !!isSmallLabelSmall} style={labelStyle} paddingLeft={paddingLeftLabel} />
+            {!!label && <Label text={label} isSmall={isFocused || !!value} style={labelStyle} paddingLeft={paddingLeftLabel} />}
             <View style={[s.inputContainer, getBorderStyle(theme, !!isValid, isFocused), contentStyle]}>
                 <View onLayout={onLayoutLeftIcon}>{renderLeftIcon()}</View>
                 {!!disabled && <RNText style={[s.input, s.inputText, inputStyle]}>{value}</RNText>}
@@ -130,6 +129,7 @@ const Component = (
                         blurOnSubmit={false}
                         returnKeyType="next"
                         autoCapitalize="none"
+                        placeholder=""
                         {...rest}
                         value={value}
                         secureTextEntry={secureEntry}
@@ -137,7 +137,7 @@ const Component = (
                         underlineColorAndroid={theme.colors.transparent}
                         testID={`input.${testID}`}
                         selectionColor={theme.colors.accent}
-                        placeholder=""
+                        placeholderTextColor={theme.colors.textSecondary}
                         onBlur={onBlurHandler}
                         onFocus={onFocusHandler}
                         style={[s.input, inputStyle]}

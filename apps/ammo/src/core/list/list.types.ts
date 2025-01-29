@@ -1,6 +1,10 @@
-import { type FlatList } from 'react-native-gesture-handler';
+import { type FlatListProps } from 'react-native';
 
-export interface IFlatListProps<T extends { id: string }> extends FlatList<T> {
-    data: T[];
-    renderItem: (props: { item: T; index: number }) => JSX.Element;
+export interface IFlatListRenderedItem<T> {
+    item: T;
+    index: number;
+}
+
+export interface IFlatListProps<T> extends FlatListProps<T> {
+    isLoading?: boolean;
 }

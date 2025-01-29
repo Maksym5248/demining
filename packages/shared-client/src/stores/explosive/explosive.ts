@@ -51,7 +51,7 @@ export class ExplosiveStore implements IExplosiveStore {
         factory: (data: IExplosiveData) => new Explosive(data, this),
     });
     list: IListModel<IExplosive, IExplosiveData>;
-    search: ISearchModel<IExplosive, IExplosiveData>;
+    search: ISearchModel<IExplosive>;
     order: IOrderModel<IExplosive>;
 
     constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {

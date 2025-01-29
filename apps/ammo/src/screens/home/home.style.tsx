@@ -24,13 +24,13 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         paddingLeft: 0,
         paddingBottom: 0,
         marginLeft: 5,
-        borderRadius: theme.radius.M,
     },
     searchButton: {
         height: 50,
         marginHorizontal: theme.spacing.L,
         backgroundColor: theme.colors.white,
         transform: [{ translateY: -25 }],
+        borderRadius: theme.radius.M,
         ...theme.shadow.light,
     },
     searchButtonContent: {

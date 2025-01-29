@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import {
     type IExplosiveDeviceStore,
     type IExplosiveObjectStore,
@@ -81,7 +82,12 @@ export class RootStore implements IRootStore {
             try {
                 await DB.init();
                 await Promise.all([
-                    this.explosiveObject.subscribe.run(),
+                    this.explosiveObject.subscribe.run({
+                        where: {
+                            status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        },
+                    }),
+                    this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),
                     this.explosive.subscribe.run(),
                 ]);

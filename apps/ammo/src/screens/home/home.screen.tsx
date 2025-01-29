@@ -3,9 +3,11 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
+import { SCREENS } from '~/constants';
 import { Card, Header, Icon, Svg, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
+import { Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './home.style';
@@ -19,13 +21,17 @@ export const HomeScreen = observer(() => {
 
     const vm = useViewModel<IHomeVM>(homeVM);
 
+    const onPressSearchButton = () => {
+        Navigation.navigate(SCREENS.SEARCH);
+    };
+
     return (
         <View style={styles.container}>
             <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
             <View style={s.imageContainer}>
                 <Svg name="logo" style={s.image} />
             </View>
-            <Touchable style={s.searchButton} contentStyle={s.searchButtonContent}>
+            <Touchable style={s.searchButton} contentStyle={s.searchButtonContent} onPress={onPressSearchButton}>
                 <Text type="p4" text={t('search')} color={theme.colors.textSecondary} />
                 <Icon name="search" color={theme.colors.textSecondary} />
             </Touchable>

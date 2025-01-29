@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx';
 import { isFunction, isString, path } from 'shared-my';
 
 import { type Path, OrderBy } from '~/common';
@@ -65,6 +66,8 @@ export class OrderModel<T extends { data: B }, B extends { id: string }> impleme
         this.orderBy = params?.orderBy ?? OrderBy.Desc;
         this.sections = params?.sections ?? [];
         this.isMerged = params?.isMerged;
+
+        makeAutoObservable(this);
     }
 
     setOrder = (newOrderField: Path<T> | undefined, newOrderBy: OrderBy) => {

@@ -25,7 +25,7 @@ interface IServices {
 export interface IExplosiveObjectTypeStore {
     collection: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     list: IListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
-    search: ISearchModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    search: ISearchModel<IExplosiveObjectType>;
     create: IRequestModel<[ICreateValue<IExplosiveObjectTypeDataParams>]>;
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel;
@@ -50,7 +50,7 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
         collection: this.collection,
     });
 
-    search = new SearchModel<IExplosiveObjectType, IExplosiveObjectTypeData>(this.list.asArray, { fields: ['displayName'] });
+    search = new SearchModel<IExplosiveObjectType>(this.list.asArray, { fields: ['displayName'] });
 
     constructor(params: { api: IApi; services: IServices }) {
         this.api = params.api;

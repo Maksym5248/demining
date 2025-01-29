@@ -10,7 +10,7 @@ import {
     type IExplosiveObjectClassItemAPI,
     type IExplosiveObjectDTO,
 } from '~/api';
-import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
+import { data, type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -82,7 +82,7 @@ export interface IExplosiveObjectStore {
     fetchMoreListFuse: IRequestModel<[search?: string]>;
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
-    subscribe: IRequestModel;
+    subscribe: IRequestModel<[query?: Partial<IQuery> | null]>;
     subscribeDeeps: IRequestModel;
 }
 
@@ -321,8 +321,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
 
     subscribe = new RequestModel({
-        run: async () => {
-            await this.api.explosiveObject.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
+        run: async (query?: Partial<IQuery> | null) => {
+            await this.api.explosiveObject.subscribe(query ?? null, (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
                 const { create, update, remove } = data.sortByType<IExplosiveObjectDTO, IExplosiveObjectData>(
                     values,
                     createExplosiveObject,

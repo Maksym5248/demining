@@ -13,7 +13,7 @@ const getTabBar = ({ color, size }: { focused: boolean; color: string; size: num
 
 const commonTabbarOptiosn = {
     tabBarShowLabel: false,
-}
+};
 
 export const TabNavigator = () => {
     const theme = useTheme();
@@ -23,12 +23,11 @@ export const TabNavigator = () => {
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.secondary,
         headerShown: false,
-
     };
 
     return (
         <Tab.Navigator screenOptions={screenOptions}>
-            <Tab.Screen name={SCREENS.HOME} component={screens.HomeScreen} options={commonTabbarOptiosn}/>
+            <Tab.Screen name={SCREENS.HOME} component={screens.HomeScreen} options={commonTabbarOptiosn} />
         </Tab.Navigator>
     );
 };

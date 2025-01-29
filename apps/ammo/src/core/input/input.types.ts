@@ -10,7 +10,7 @@ export type IInputProps = ComponentPropsWithRef<typeof TextInput> & {
     contentStyle?: IViewStyle;
     inputStyle?: IViewStyle;
     labelStyle?: ITextStyle;
-    label: string;
+    label?: string;
     testID?: string;
     isValid?: boolean;
     message?: string | ReactNode;
