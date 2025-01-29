@@ -13,6 +13,7 @@ import {
     updateExplosiveObjectDTO,
     createExplosiveObject,
 } from './explosive-object.schema';
+import { type INode, type IClassifications } from '../../classifications';
 import { type ICountryData, type ICountry } from '../country';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
@@ -44,6 +45,7 @@ interface IExplosiveObjectParams {
     api: IApi;
     services: IServices;
     getStores: () => IStores;
+    classifications: IClassifications;
 }
 
 export interface IExplosiveObject {
@@ -52,29 +54,31 @@ export interface IExplosiveObject {
     imageUri?: string | null;
     displayName: string;
     signName: string;
-    update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     type?: IExplosiveObjectType;
-    countries?: ICountry[];
     details?: IExplosiveObjectDetails;
-    class?: IExplosiveObjectClass[];
     isConfirmed: boolean;
     isCurrentOrganization: boolean;
+    update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
+    classItemsNames: string[];
 }
 
 export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
     collections: ICollections;
+    classifications: IClassifications;
+
     getStores: () => IStores;
     data: IExplosiveObjectData;
 
-    constructor(data: IExplosiveObjectData, { collections, api, services, getStores }: IExplosiveObjectParams) {
+    constructor(data: IExplosiveObjectData, { collections, api, services, getStores, classifications }: IExplosiveObjectParams) {
         this.data = data;
 
         this.collections = collections;
         this.api = api;
         this.services = services;
         this.getStores = getStores;
+        this.classifications = classifications;
 
         makeAutoObservable(this);
     }
@@ -145,6 +149,21 @@ export class ExplosiveObject implements IExplosiveObject {
 
     get isCurrentOrganization() {
         return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
+    }
+
+    get classItemsNames() {
+        const classification = this?.data?.classItemIds?.map(id => this.classifications.get(id));
+
+        return (
+            classification?.reduce((acc: string[], c: INode) => {
+                c.parents?.forEach(parent => {
+                    acc.push(parent.item.displayName);
+                });
+                acc.push(c.item.displayName);
+
+                return acc;
+            }, [] as string[]) ?? []
+        );
     }
 
     update = new RequestModel({

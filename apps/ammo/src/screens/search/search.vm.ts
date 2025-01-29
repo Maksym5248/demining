@@ -9,7 +9,6 @@ import {
     type IExplosiveObject,
     type IInfiniteScrollModel,
     InfiniteScrollModel,
-    type INode,
     type IOrderModel,
     type ISearchModel,
     OrderModel,
@@ -106,19 +105,7 @@ export class SearchVM implements ISearchVM {
     getClassficationNames(id: string, type: DictionaryType) {
         if (type === DictionaryType.ExplosiveObject) {
             const item = stores.explosiveObject.collection.get(id);
-
-            const classification = item?.data?.classItemIds?.map(id => stores.explosiveObject.classifications.get(id));
-
-            return (
-                classification?.reduce((acc: string[], c: INode) => {
-                    c.parents?.forEach(parent => {
-                        acc.push(parent.item.displayName);
-                    });
-                    acc.push(c.item.displayName);
-
-                    return acc;
-                }, [] as string[]) ?? []
-            );
+            return item?.classItemsNames ?? [];
         }
 
         return [];

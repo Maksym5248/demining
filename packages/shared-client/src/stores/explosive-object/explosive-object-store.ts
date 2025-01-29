@@ -125,7 +125,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.services = params.services;
         this.getStores = params.getStores;
 
-        this.classifications = new Classifications(this);
         this.type = new ExplosiveObjectTypeStore(this);
         this.class = new ExplosiveObjectClassStore(this);
         this.classItem = new ExplosiveObjectClassItemStore(this);
