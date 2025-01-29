@@ -11,6 +11,7 @@ import { type IExplosiveDeviceData, updateExplosiveDeviceDTO, createExplosiveDev
 export interface IExplosiveDevice {
     id: string;
     data: IExplosiveDeviceData;
+    imageUri?: string | null;
     displayName: string;
     isCurrentOrganization: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveDeviceData>]>;
@@ -52,6 +53,10 @@ export class ExplosiveDevice implements IExplosiveDevice {
 
     get displayName() {
         return this.data.name;
+    }
+
+    get imageUri() {
+        return null;
     }
 
     updateFields(data: Partial<IExplosiveDeviceData>) {

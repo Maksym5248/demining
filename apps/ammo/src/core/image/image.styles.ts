@@ -5,6 +5,7 @@ import { ThemeManager } from '~/styles';
 export const useStyles = ThemeManager.createStyleSheet(() => ({
     container: {
         overflow: 'hidden',
+        position: 'relative',
     },
     image: {
         height: undefined,
@@ -14,6 +15,8 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
     absolute: {
         justifyContent: 'center',
         alignItems: 'center',
+        maxWidth: '100%',
+        maxHeight: '100%',
         ...StyleSheet.absoluteFillObject,
     },
 }));

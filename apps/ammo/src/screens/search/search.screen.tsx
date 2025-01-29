@@ -19,7 +19,7 @@ export const SearchScreen = observer(() => {
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = ({ item }: IFlatListRenderedItem<Item>) => <Card title={item.displayName} />;
+    const renderItem = ({ item }: IFlatListRenderedItem<Item>) => <Card type="image" title={item.displayName} uri={item.imageUri} />;
 
     return (
         <View style={styles.container}>

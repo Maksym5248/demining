@@ -1,9 +1,9 @@
-import { type ImageSourcePropType, type Image as Img } from 'react-native';
+import { type ImageSourcePropType, type ImageProps as RNImageProps } from 'react-native';
 
 import { type IViewStyle, type IImageStyle } from '~/types';
 
-export interface IImageProps extends Img {
-    uri?: string;
+export interface IImageProps extends Omit<RNImageProps, 'source' | 'style'> {
+    uri?: string | null;
     style?: IViewStyle;
     imageStyle?: IImageStyle;
     placeholderStyle?: IImageStyle;

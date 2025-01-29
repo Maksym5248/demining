@@ -1,1 +1,1 @@
-export * from './card.screen';
+export * from './card';

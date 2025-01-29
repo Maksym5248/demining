@@ -2,12 +2,18 @@ import { ThemeManager } from '~/styles';
 
 export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     container: {
-        padding: theme.spacing.S,
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
+        overflow: 'hidden',
+        ...theme.shadow.light,
     },
     content: {
-        display: 'flex',
+        flex: 1,
+        padding: 0,
+    },
+    info: {
+        flex: 1,
+        padding: theme.spacing.S,
         alignContent: 'flex-start',
         justifyContent: 'flex-end',
     },
@@ -17,7 +23,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         marginBottom: theme.spacing.XS,
         alignSelf: 'center',
     },
-    titleSvg: {
-        alignSelf: 'center',
+    image: {
+        width: '100%',
+        aspectRatio: 2,
     },
 }));

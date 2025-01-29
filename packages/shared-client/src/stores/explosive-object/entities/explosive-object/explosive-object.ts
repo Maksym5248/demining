@@ -49,6 +49,7 @@ interface IExplosiveObjectParams {
 export interface IExplosiveObject {
     id: string;
     data: IExplosiveObjectData;
+    imageUri?: string | null;
     displayName: string;
     signName: string;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
@@ -110,6 +111,10 @@ export class ExplosiveObject implements IExplosiveObject {
         }
 
         return String(this.data.name);
+    }
+
+    get imageUri() {
+        return this?.data.imageUri ?? '';
     }
 
     get signName() {

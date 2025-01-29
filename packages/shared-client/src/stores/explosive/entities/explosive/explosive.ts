@@ -10,7 +10,7 @@ import { type IExplosiveData, updateExplosiveDTO, createExplosive } from './expl
 
 export interface IExplosive {
     id: string;
-    image?: string | null;
+    imageUri?: string | null;
     data: IExplosiveData;
     isCurrentOrganization: boolean;
     displayName: string;
@@ -45,6 +45,10 @@ export class Explosive implements IExplosive {
 
     get id() {
         return this.data.id;
+    }
+
+    get imageUri() {
+        return this.data.imageUri;
     }
 
     get displayName() {

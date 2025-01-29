@@ -55,11 +55,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     },
     item: {
         width: device.window.width / 2 - theme.spacing.L - theme.spacing.S / 2,
-        height: '50%',
-        padding: theme.spacing.S,
-        backgroundColor: theme.colors.white,
-        alignContent: 'flex-start',
-        justifyContent: 'flex-end',
-        borderRadius: theme.radius.M,
+        aspectRatio: 1,
+        alignItems: 'center',
     },
 }));

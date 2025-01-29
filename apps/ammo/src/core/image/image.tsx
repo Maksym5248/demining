@@ -64,7 +64,7 @@ export function Image({
             )}
             {(!!uri || !!source) && (
                 <AnimatedImage
-                    source={source || { uri }}
+                    source={source || { uri: uri ?? undefined }}
                     style={[s.image, { opacity: animatedValue }, imageStyle]}
                     resizeMode={resizeMode}
                     onLoad={_onLoad}
