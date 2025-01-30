@@ -19,7 +19,26 @@
             "search": "Пошук у всіх категоріях"
         },
         "explosive-details": {
-            "title": "Деталі"
+            "title": "Деталі",
+            "details": "Деталі",
+            "name": "Назва",
+            "fullName": "Повна назва",
+            "formula": "Формула",
+            "description": "Опис",
+            "composition": "Склад",
+            "container": "Склад",
+            "explosiveCharacteristic": "Вибухові характеристики",
+            "detonationSpeed": "Швидкість детонації, м/с",
+            "brisance": "Брезантність, мм",
+            "explosiveVolume": "Фугасність, см³",
+            "trotylEquivalent": "Тротиловий еквівалент",
+            "sensitivityToImpact": "Чутливість до удару",
+            "sensitivityToTemperature": "Чутливість до температури",
+            "sensitivityToFriction": "Чутливість до тертя",
+            "phisicalCharacteristic": "Фізико-хімічні характеристики",
+            "density": "Плотність, кг/м",
+            "meltingPoint": "Т плавлення, ºС",
+            "ignitionPoint": "Т запалення, ºС"
         }
     },
     "dictionaries": {

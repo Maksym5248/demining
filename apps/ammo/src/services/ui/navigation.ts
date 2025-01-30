@@ -12,6 +12,7 @@ export interface INavigationService {
     init: (navigatorRef: NavigationContainerRef<any>) => void;
     getPath: () => string;
     navigate: (routeName: string, params?: object) => void;
+    push: (routeName: string, params?: object) => void;
     popToTop: () => void;
     goBack: () => void;
     reset: (state: PartialState<NavigationState>) => void;
@@ -37,6 +38,10 @@ export class NavigationClass implements INavigationService {
 
     navigate = (routeName: string, params = {}) => {
         !!this.nav && this.nav.dispatch(CommonActions.navigate(routeName, params));
+    };
+
+    push = (routeName: string, params = {}) => {
+        !!this.nav && this.nav.dispatch(StackActions.push(routeName, params));
     };
 
     popToTop = () => {

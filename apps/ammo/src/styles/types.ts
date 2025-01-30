@@ -30,6 +30,7 @@ export type IColor =
     | 'error'
     | 'text'
     | 'transparent'
+    | 'link'
     | 'ripplePrimary';
 
 export interface IThemeTextStyle {
@@ -59,7 +60,7 @@ export type IShadow =
       }
     | undefined;
 
-export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5';
+export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'label';
 
 export interface IBaseThemeSchema {
     radius: Record<'M', number>;

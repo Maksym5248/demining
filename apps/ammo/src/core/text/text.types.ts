@@ -6,7 +6,7 @@ import { type ITextStyleType } from '~/styles';
 
 export type ITextProps = ComponentPropsWithRef<typeof Text> & {
     type?: ITextStyleType;
-    text?: string;
+    text?: string | number;
     children?: ReactNode;
     style?: StyleProp<TextStyle> | undefined;
     color?: string;

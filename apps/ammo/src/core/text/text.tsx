@@ -10,7 +10,7 @@ import { useStyles } from './text.styles';
 import { type ITextProps } from './text.types';
 
 export const Text = ({
-    type = 'p2',
+    type = 'p3',
     text,
     children,
     color,
@@ -41,7 +41,7 @@ export const Text = ({
     return (
         // @ts-ignore
         <Txt {...props} testID={testID} onPress={onPress} style={[typeStyle, ...(isArray(style) ? style : [style]), additionalStyles]}>
-            {(!!uppercase && !!text ? toUpper(text) : text) || children}
+            {(!!uppercase && !!text ? toUpper(String(text)) : text) || children}
         </Txt>
     );
 };

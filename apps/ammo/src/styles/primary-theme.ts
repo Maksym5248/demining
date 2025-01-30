@@ -28,6 +28,7 @@ export const themeBase: IBaseThemeSchema = {
         error: palette.redEF,
         transparent: palette.transparent,
         ripplePrimary: palette.blackTransparent01,
+        link: palette.blueB4,
     },
     fonts: Device.isIOS
         ? {
