@@ -38,7 +38,10 @@ export class ExplosiveDetailsVM implements IExplosiveDetailsVM {
     }
 
     get slides() {
-        return [this.item?.imageUri, ...(this.item?.data.imageUris ?? [])].filter(Boolean).map((uri, i) => ({ uri, id: i })) as ISlide[];
+        return (
+            [this.item?.imageUri, ...(this.item?.data.imageUris ?? [])].filter(Boolean).map((uri, i) => ({ uri, id: i }) as ISlide) ??
+            ([] as ISlide[])
+        );
     }
 }
 

@@ -46,21 +46,23 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     }
 
     get slides() {
-        return [this.item?.imageUri, ...(this.item?.details?.data.imageUris ?? [])]
-            .filter(Boolean)
-            .map((uri, i) => ({ uri, id: i })) as ISlide[];
+        return (
+            [this.item?.imageUri, ...(this.item?.details?.data.imageUris ?? [])]
+                .filter(Boolean)
+                .map((uri, i) => ({ uri, id: i }) as ISlide) ?? ([] as ISlide[])
+        );
     }
 
     get slidesPurpose() {
-        return this.item?.details?.data.purpose?.imageUris.map((uri, i) => ({ uri, id: i })) as ISlide[];
+        return this.item?.details?.data.purpose?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 
     get slidesStructure() {
-        return this.item?.details?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) as ISlide[];
+        return this.item?.details?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 
     get slidesAction() {
-        return this.item?.details?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) as ISlide[];
+        return this.item?.details?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 }
 
