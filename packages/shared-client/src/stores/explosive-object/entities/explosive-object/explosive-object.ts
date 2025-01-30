@@ -1,5 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS, EXPLOSIVE_OBJECT_TYPE } from 'shared-my';
+import {
+    EXPLOSIVE_OBJECT_STATUS,
+    EXPLOSIVE_OBJECT_TYPE,
+    explosiveObjectComponentData,
+    type IExplosiveObjectComponentNotDB,
+} from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -55,7 +60,9 @@ export interface IExplosiveObject {
     displayName: string;
     signName: string;
     type?: IExplosiveObjectType;
+    component?: IExplosiveObjectComponentNotDB;
     details?: IExplosiveObjectDetails;
+    country?: ICountry;
     isConfirmed: boolean;
     isCurrentOrganization: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
@@ -87,6 +94,10 @@ export class ExplosiveObject implements IExplosiveObject {
         Object.assign(this.data, data);
     }
 
+    get component() {
+        return explosiveObjectComponentData.find(({ id }) => id === this.data.component);
+    }
+
     get details() {
         return this.collections.details.get(this.data.detailsId);
     }
@@ -97,6 +108,10 @@ export class ExplosiveObject implements IExplosiveObject {
 
     get type() {
         return this.collections.type.get(this.data.typeId);
+    }
+
+    get country() {
+        return this.collections.country.get(this.data.countryId);
     }
 
     get displayName() {

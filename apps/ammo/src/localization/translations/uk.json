@@ -39,6 +39,27 @@
             "density": "Плотність, кг/м",
             "meltingPoint": "Т плавлення, ºС",
             "ignitionPoint": "Т запалення, ºС"
+        },
+        "explosive-object-details": {
+            "title": "Деталі",
+            "details": "Деталі",
+            "name": "Маркування",
+            "type": "Тип",
+            "component": "Частина",
+            "classification": "Класифікація",
+            "country": "Країна",
+            "characteristic": "Характеристики",
+            "caliber": "Калібр",
+            "material": "Матеріал",
+            "fuse": "Підривники",
+            "size": "Розмір, довжина/ширина/висота, мм",
+            "size2": "Розмір, діаметр/висота, мм",
+            "weight": "Вага, кг",
+            "fillers": "Спорядження, кг",
+            "temperature": "Температура, °C",
+            "purpose": "Призначення",
+            "structure": "Будова",
+            "action": "Принцип дії"
         }
     },
     "dictionaries": {

@@ -1,10 +1,21 @@
-import { type EXPLOSIVE_OBJECT_TYPE, type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_OBJECT_COMPONENT, type METHRIC } from '~/db';
+import {
+    type EXPLOSIVE_OBJECT_TYPE,
+    type EXPLOSIVE_OBJECT_STATUS,
+    type EXPLOSIVE_OBJECT_COMPONENT,
+    type METHRIC,
+    type MATERIAL,
+} from '~/db';
 
 import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
 
 export interface IExplosiveObjectComponentNotDB {
     id: EXPLOSIVE_OBJECT_COMPONENT;
+    name: string;
+}
+
+export interface IMaterialNotDB {
+    id: MATERIAL;
     name: string;
 }
 

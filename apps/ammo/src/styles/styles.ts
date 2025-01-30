@@ -20,6 +20,9 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         marginTop: theme.spacing.S,
         paddingBottom: theme.spacing.S,
     },
+    hidden: {
+        overflow: 'hidden',
+    },
     section: {
         marginTop: theme.spacing.S,
         marginBottom: theme.spacing.XXS,
@@ -35,5 +38,11 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: theme.spacing.XXS,
+    },
+    rowStart: {
+        justifyContent: 'flex-start',
+    },
+    marginVerticalS: {
+        marginVertical: theme.spacing.S,
     },
 }));

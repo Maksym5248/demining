@@ -30,7 +30,10 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
         Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
     }, []);
 
-    const renderItem = useCallback(({ item }: IRenderItemParams<ISlide>) => <Image style={s.image} uri={item.uri} />, []);
+    const renderItem = useCallback(
+        ({ item }: IRenderItemParams<ISlide>) => <Image style={s.image} uri={item.uri} placeholder={images.placeholder} />,
+        [],
+    );
 
     const renderFooter = useCallback(
         ({ data, animatedIndex }: IRenderFooterParams) => {
@@ -59,7 +62,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                 <Carousel
                     width={device.window.width}
                     itemWidth={device.window.width}
-                    data={vm.slides.length ? vm.slides : [images.placeholder]}
+                    data={vm.slides.length ? vm.slides : [{ uri: undefined }]}
                     renderItem={renderItem}
                     renderFooter={vm.slides.length > 1 ? renderFooter : undefined}
                     isFooterInsideTouchable
@@ -105,7 +108,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                     <Text text={friction ?? '-'} />
                 </View>
                 <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('explosiveCharacteristic')} />
+                    <Text type="h3" style={styles.label} text={t('phisicalCharacteristic')} />
                     <Text type="label" style={styles.label} text={t('density')} />
                     <Text text={density ?? '-'} />
                     <Text type="label" style={styles.label} text={t('meltingPoint')} />

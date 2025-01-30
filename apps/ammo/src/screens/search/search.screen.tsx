@@ -9,6 +9,7 @@ import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
+import { DictionaryType } from '~/types';
 
 import { useStyles } from './search.style';
 import { searchVM, type ISearchVM, type DataItem } from './search.vm';
@@ -22,8 +23,12 @@ const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item
         tags.push(item.typeName);
     }
 
-    const onOpenExplosive = (id: string) => {
-        Navigation.navigate(SCREENS.EXPLOSIVE_DETAILS, { id });
+    const onOpenExplosive = () => {
+        if (item.type === DictionaryType.Explosive) {
+            Navigation.navigate(SCREENS.EXPLOSIVE_DETAILS, { id: item.id });
+        } else if (item.type === DictionaryType.ExplosiveObject) {
+            Navigation.navigate(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id: item.id });
+        }
     };
 
     return (
@@ -33,7 +38,7 @@ const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item
             uri={item.data.imageUri}
             tags={tags}
             subTitle={item.classItemsNames.join(', ')}
-            onPress={() => onOpenExplosive(item.id)}
+            onPress={onOpenExplosive}
         />
     );
 });

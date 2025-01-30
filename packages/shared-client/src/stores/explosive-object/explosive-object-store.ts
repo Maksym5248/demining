@@ -10,7 +10,7 @@ import {
     type IExplosiveObjectClassItemAPI,
     type IExplosiveObjectDTO,
 } from '~/api';
-import { data, type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
+import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -322,13 +322,28 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     subscribe = new RequestModel({
         run: async (query?: Partial<IQuery> | null) => {
             await this.api.explosiveObject.subscribe(query ?? null, (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
-                const { create, update, remove } = data.sortByType<IExplosiveObjectDTO, IExplosiveObjectData>(
-                    values,
-                    createExplosiveObject,
-                );
+                const create: IExplosiveObjectData[] = [];
+                const createDetails: IExplosiveObjectDetailsData[] = [];
+                const update: IExplosiveObjectData[] = [];
+                const updateDetails: IExplosiveObjectDetailsData[] = [];
+                const remove: string[] = [];
+
+                values.forEach(value => {
+                    if (value.type === 'removed') {
+                        remove.push(value.data.id);
+                    } else if (value.type === 'added') {
+                        create.push(createExplosiveObject(value.data));
+                        !!value.data.details && createDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
+                    } else if (value.type === 'modified') {
+                        update.push(createExplosiveObject(value.data));
+                        !!value.data.details && updateDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
+                    }
+                });
 
                 this.list.push(create);
+                this.collectionDetails.setArr(createDetails);
                 this.collection.updateArr(update);
+                this.collectionDetails.updateArr(updateDetails);
                 this.collection.remove(remove);
             });
         },
