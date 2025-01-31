@@ -5,8 +5,8 @@
     "build-number": 1,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
-        "ios": "react-native run-ios --scheme=\"ammo.dev\"",
-        "ios:prod": "react-native run-ios --scheme=\"ammo.prod\" --simulator=\"iPhone 8\"",
+        "ios": "react-native run-ios --scheme=\"ammo.dev\" --simulator=\"iPhone 16\"",
+        "ios:prod": "react-native run-ios --scheme=\"ammo.prod\" --simulator=\"iPhone 16\"",
         "ios-device": "react-native run-ios --scheme=\"ammo.dev\" --configuration=\"Debug.dev\" --device=\"Max\"",
         "lint": "eslint .",
         "start": "react-native start",

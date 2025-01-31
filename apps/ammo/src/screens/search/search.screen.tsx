@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
@@ -53,7 +53,7 @@ export const SearchScreen = observer(() => {
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = ({ item }: IFlatListRenderedItem<DataItem>) => <ListItem item={item} />;
+    const renderItem = useCallback(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => <ListItem item={item} />, []);
 
     return (
         <View style={styles.container}>
