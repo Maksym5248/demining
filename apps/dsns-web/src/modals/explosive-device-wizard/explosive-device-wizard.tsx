@@ -1,6 +1,6 @@
 import { Form, Drawer, Input, Spin, InputNumber, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData, measurement, MIME_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData, explosiveObjectStatuses, measurement, MIME_TYPE } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
 import { WizardButtons, Select, WizardFooter, UploadFile, FieldSize, FieldSection, FieldImageUris, FieldFiller } from '~/components';
@@ -71,8 +71,6 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
         hide();
     };
 
-    const isEditable = !!store.viewer.user?.isAuthor || !!item?.isCurrentOrganization;
-
     return (
         <Drawer
             open={isVisible}
@@ -81,7 +79,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
             placement="right"
             width={500}
             onClose={hide}
-            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
+            extra={<WizardButtons {...wizard} isEditable={!!item?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (
@@ -137,6 +135,11 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select options={explosiveDeviceTypeData} />
                     </Form.Item>
+                    {store.viewer.user?.isAuthor && (
+                        <Form.Item label="Статус" name="status">
+                            <Select options={explosiveObjectStatuses} />
+                        </Form.Item>
+                    )}
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

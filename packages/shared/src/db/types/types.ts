@@ -13,6 +13,7 @@ import {
     type MISSION_REQUEST_TYPE,
     type EXPLOSIVE_DEVICE_TYPE,
     type RANKS,
+    type EXPLOSIVE_OBJECT_STATUS,
 } from '../enum';
 
 export interface IAddressDB {
@@ -147,6 +148,7 @@ export interface IDocumentDB extends IBaseDB {
 }
 
 export interface IExplosiveDeviceDB extends IBaseDB {
+    status?: EXPLOSIVE_OBJECT_STATUS;
     name: string;
     type: EXPLOSIVE_DEVICE_TYPE;
     size?: ISizeDB | null; //мм;
@@ -175,6 +177,7 @@ export interface IExplosiveCompositionDB {
 }
 
 export interface IExplosiveDB extends IBaseDB {
+    status?: EXPLOSIVE_OBJECT_STATUS;
     name: string;
     imageUri: string | null;
     imageUris: string[] | null;

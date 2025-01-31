@@ -1,3 +1,4 @@
+import { type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import { type IExplosiveCompositionData } from 'shared-my-client';
 
 export interface IExplosiveForm {
@@ -8,7 +9,7 @@ export interface IExplosiveForm {
     formula: string | null;
     description: string | null;
     composition: IExplosiveCompositionData[] | null;
-
+    status: EXPLOSIVE_OBJECT_STATUS;
     //explosive
     velocity: number | null; // m/s
     brisantness: number | null; // m

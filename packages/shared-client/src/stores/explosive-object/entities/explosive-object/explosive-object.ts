@@ -64,7 +64,9 @@ export interface IExplosiveObject {
     details?: IExplosiveObjectDetails;
     country?: ICountry;
     isConfirmed: boolean;
+    isPending: boolean;
     isCurrentOrganization: boolean;
+    isEditable: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     classItemsNames: string[];
 }
@@ -162,8 +164,16 @@ export class ExplosiveObject implements IExplosiveObject {
         return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
     }
 
+    get isPending() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.PENDING;
+    }
+
     get isCurrentOrganization() {
         return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
+    }
+
+    get isEditable() {
+        return !!this.getStores()?.viewer?.user?.isAuthor;
     }
 
     get classItemsNames() {

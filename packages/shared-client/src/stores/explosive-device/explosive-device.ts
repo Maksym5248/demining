@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO } from '~/api';
 import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
@@ -20,6 +20,7 @@ import {
     createExplosiveDeviceActionSum,
 } from './entities';
 import { SumExplosiveDeviceActions } from './sum-explosive-actions';
+import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveDeviceStore {
@@ -108,6 +109,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveDevice.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
             });
 
@@ -120,6 +122,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveDevice.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -156,16 +159,23 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
 
     subscribe = new RequestModel({
         run: async () => {
-            await this.api.explosiveDevice.subscribe(null, (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {
-                const { create, update, remove } = data.sortByType<IExplosiveDeviceDTO, IExplosiveDeviceData>(
-                    values,
-                    createExplosiveDevice,
-                );
+            await this.api.explosiveDevice.subscribe(
+                {
+                    where: {
+                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                    },
+                },
+                (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {
+                    const { create, update, remove } = data.sortByType<IExplosiveDeviceDTO, IExplosiveDeviceData>(
+                        values,
+                        createExplosiveDevice,
+                    );
 
-                this.list.push(create);
-                this.collection.updateArr(update);
-                this.collection.remove(remove);
-            });
+                    this.list.push(create);
+                    this.collection.updateArr(update);
+                    this.collection.remove(remove);
+                },
+            );
         },
     });
 }

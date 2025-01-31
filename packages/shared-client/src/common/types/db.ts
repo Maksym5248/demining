@@ -32,6 +32,7 @@ export type IQueryOrder = {
 };
 
 export type IQuery = {
+    or?: IWhere[];
     search?: string;
     where?: IWhere;
     order?: IQueryOrder;

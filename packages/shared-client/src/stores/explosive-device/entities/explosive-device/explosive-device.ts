@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IExplosiveDeviceAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -14,6 +15,9 @@ export interface IExplosiveDevice {
     imageUri?: string | null;
     displayName: string;
     isCurrentOrganization: boolean;
+    isEditable: boolean;
+    isPending: boolean;
+    isConfirmed: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveDeviceData>]>;
 }
 
@@ -49,6 +53,18 @@ export class ExplosiveDevice implements IExplosiveDevice {
 
     get isCurrentOrganization() {
         return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
+    }
+
+    get isConfirmed() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
+    }
+
+    get isPending() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.PENDING;
+    }
+
+    get isEditable() {
+        return !!this.getStores()?.viewer?.user?.isAuthor;
     }
 
     get displayName() {

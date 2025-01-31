@@ -21,6 +21,8 @@ import {
     sum,
     startAt,
     endAt,
+    or,
+    and,
 } from '@react-native-firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
@@ -59,19 +61,23 @@ const getWhere = (values: IWhere) => {
             res.push(where(key, 'in', value.in));
         }
 
-        if (value?.['>=']) {
+        if (value?.['>='] && value['>='] !== undefined) {
             res.push(where(key, '>=', value['>=']));
         }
 
-        if (value?.['<=']) {
+        if (value?.['<='] && value['<='] !== undefined) {
             res.push(where(key, '<=', value['<=']));
+        }
+
+        if (value?.['!='] && value['!='] !== undefined) {
+            res.push(where(key, '!=', value['!=']));
         }
 
         if (!!value && value['array-contains-any']) {
             res.push(where(key, 'array-contains-any', value['array-contains-any']));
         }
 
-        if (!isObject(value) && !isArray(value)) {
+        if (!isObject(value) && !isArray(value) && value !== undefined) {
             res.push(where(key, '==', value));
         }
     });
@@ -80,6 +86,7 @@ const getWhere = (values: IWhere) => {
 };
 
 const getOrder = (value: IQueryOrder) => orderBy(value.by, value.type);
+const getOr = (value: IWhere[]) => [or(...value.map((v: IWhere) => and(...getWhere(v))))] as unknown as QueryFieldFilterConstraint[];
 
 export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     tableName: string;
@@ -137,6 +144,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
             this.collection,
             ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
             ...(args?.where ? getWhere(args.where) : []),
+            ...(args?.or ? getOr(args.or) : []),
             ...(args?.order ? [getOrder(args?.order)] : []),
             ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
             ...(args?.startAt ? [startAt(args?.startAt)] : []),

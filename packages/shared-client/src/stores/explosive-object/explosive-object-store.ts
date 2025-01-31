@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
+import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -41,6 +41,7 @@ import { ExplosiveObjectClassItemStore, type IExplosiveObjectClassItemStore } fr
 import { ExplosiveObjectTypeStore, type IExplosiveObjectTypeStore } from './explosive-object-type';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 import { createExplosive, type IExplosiveStore } from '../explosive';
+import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 interface IApi {
@@ -185,6 +186,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const res = await this.api.explosiveObject.getList({
                 search,
                 limit: this.list.pageSize,
+                ...getDictionaryFilter(this),
             });
 
             this.collectionDetails.setArr(
@@ -202,6 +204,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveObject.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -222,9 +225,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const res = await this.api.explosiveObject.getList({
                 search,
                 limit: this.list.pageSize,
-                where: {
-                    component: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
-                },
+                ...getDictionaryFilter(this),
             });
 
             this.collectionDetails.setArr(
@@ -244,9 +245,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 search,
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.listFuse.last.data.createdAt),
-                where: {
-                    component: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
-                },
+                ...getDictionaryFilter(this),
             });
 
             this.collectionDetails.setArr(
@@ -320,32 +319,39 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
 
     subscribe = new RequestModel({
-        run: async (query?: Partial<IQuery> | null) => {
-            await this.api.explosiveObject.subscribe(query ?? null, (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
-                const create: IExplosiveObjectData[] = [];
-                const createDetails: IExplosiveObjectDetailsData[] = [];
-                const update: IExplosiveObjectData[] = [];
-                const updateDetails: IExplosiveObjectDetailsData[] = [];
-                const remove: string[] = [];
+        run: async () => {
+            await this.api.explosiveObject.subscribe(
+                {
+                    where: {
+                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                    },
+                },
+                (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
+                    const create: IExplosiveObjectData[] = [];
+                    const createDetails: IExplosiveObjectDetailsData[] = [];
+                    const update: IExplosiveObjectData[] = [];
+                    const updateDetails: IExplosiveObjectDetailsData[] = [];
+                    const remove: string[] = [];
 
-                values.forEach(value => {
-                    if (value.type === 'removed') {
-                        remove.push(value.data.id);
-                    } else if (value.type === 'added') {
-                        create.push(createExplosiveObject(value.data));
-                        !!value.data.details && createDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
-                    } else if (value.type === 'modified') {
-                        update.push(createExplosiveObject(value.data));
-                        !!value.data.details && updateDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
-                    }
-                });
+                    values.forEach(value => {
+                        if (value.type === 'removed') {
+                            remove.push(value.data.id);
+                        } else if (value.type === 'added') {
+                            create.push(createExplosiveObject(value.data));
+                            !!value.data.details && createDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
+                        } else if (value.type === 'modified') {
+                            update.push(createExplosiveObject(value.data));
+                            !!value.data.details && updateDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
+                        }
+                    });
 
-                this.list.push(create);
-                this.collectionDetails.setArr(createDetails);
-                this.collection.updateArr(update);
-                this.collectionDetails.updateArr(updateDetails);
-                this.collection.remove(remove);
-            });
+                    this.list.push(create);
+                    this.collectionDetails.setArr(createDetails);
+                    this.collection.updateArr(update);
+                    this.collectionDetails.updateArr(updateDetails);
+                    this.collection.remove(remove);
+                },
+            );
         },
     });
 

@@ -106,7 +106,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
         !!id && explosiveObject.fetchItem.run(id);
     }, [id]);
 
-    const isEditable = !!viewer.user?.isAuthor || !!currentExplosiveObject?.isCurrentOrganization;
     const isSubmitting = explosiveObject.create.isLoading || !!currentExplosiveObject?.update?.isLoading;
 
     return (
@@ -117,7 +116,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
             placement="right"
             width={600}
             onClose={hide}
-            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
+            extra={<WizardButtons {...wizard} isEditable={currentExplosiveObject?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Button } from 'antd';
+import { Badge, Button } from 'antd';
 import { observer } from 'mobx-react';
 import { type IExplosive } from 'shared-my-client';
 
@@ -15,10 +15,18 @@ const ListItem = observer(({ item }: { item: IExplosive }) => {
         Modal.show(MODALS.EXPLOSIVE_WIZARD, { id: item.id, mode: WIZARD_MODE.VIEW });
     };
 
-    return (
+    const children = (
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta title={item?.displayName} avatar={<Image src={item.data.imageUri ?? undefined} width={70} />} />
         </List.Item>
+    );
+
+    return !item.isConfirmed ? (
+        <Badge.Ribbon text={item.isPending ? 'Очікує' : 'Відхилено'} color={item.isPending ? 'yellow' : 'red'}>
+            {children}
+        </Badge.Ribbon>
+    ) : (
+        children
     );
 });
 
@@ -52,7 +60,7 @@ export const ExplosiveListPage = observer(() => {
             dataSource={explosive.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
-            renderItem={(item) => <ListItem item={item} />}
+            renderItem={item => <ListItem item={item} />}
         />
     );
 });
