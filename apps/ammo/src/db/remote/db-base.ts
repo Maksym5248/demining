@@ -140,13 +140,14 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     }
 
     query(args?: Partial<IQuery>) {
+        const arr = [
+            ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
+            ...(args?.where ? getWhere(args.where) : []),
+            ...(args?.or ? getOr(args.or) : []),
+        ];
         return query(
             this.collection,
-            and(
-                ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
-                ...(args?.where ? getWhere(args.where) : []),
-                ...(args?.or ? getOr(args.or) : []),
-            ),
+            arr.length >= 2 ? and(...arr) : arr[0],
             ...(args?.order ? [getOrder(args?.order)] : []),
             ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
             ...(args?.startAt ? [startAt(args?.startAt)] : []),
