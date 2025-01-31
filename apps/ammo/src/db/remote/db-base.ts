@@ -142,9 +142,11 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     query(args?: Partial<IQuery>) {
         return query(
             this.collection,
-            ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
-            ...(args?.where ? getWhere(args.where) : []),
-            ...(args?.or ? getOr(args.or) : []),
+            and(
+                ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
+                ...(args?.where ? getWhere(args.where) : []),
+                ...(args?.or ? getOr(args.or) : []),
+            ),
             ...(args?.order ? [getOrder(args?.order)] : []),
             ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
             ...(args?.startAt ? [startAt(args?.startAt)] : []),

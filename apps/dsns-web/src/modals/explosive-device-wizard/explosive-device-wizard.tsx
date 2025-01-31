@@ -132,14 +132,14 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                         </Form.Item>
                     </Form.Item>
                     <FieldImageUris name="imageUris" />
-                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select options={explosiveDeviceTypeData} />
-                    </Form.Item>
                     {store.viewer.user?.isAuthor && (
                         <Form.Item label="Статус" name="status">
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>
                     )}
+                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Select options={explosiveDeviceTypeData} />
+                    </Form.Item>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

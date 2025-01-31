@@ -18,15 +18,11 @@ interface ISelf {
 export const getDictionaryFilter = (self: ISelf) => {
     if (self?.getStores()?.viewer?.user?.isAuthor) return {};
 
-    if (self?.getStores()?.viewer?.user?.data?.organization?.id) {
+    if (!self?.getStores()?.viewer?.user?.data?.organization?.id) {
         return {
-            status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
-        };
-    }
-
-    if (self?.getStores()?.viewer?.user?.data?.organization?.id) {
-        return {
-            status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+            where: {
+                status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+            },
         };
     }
 
