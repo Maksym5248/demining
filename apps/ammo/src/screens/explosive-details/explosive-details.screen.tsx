@@ -6,6 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { measurement } from 'shared-my';
 
 import { images } from '~/assets';
+import { type ISlide } from '~/components';
 import { SCREENS } from '~/constants';
 import { Carousel, CarouselPagination, Header, type IRenderItemParams, type IRenderFooterParams, Image, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -15,7 +16,7 @@ import { ThemeManager, useDevice, useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './explosive-details.style';
 import { type IExplosiveDetailsScreenProps } from './explosive-details.types';
-import { createVM, type ISlide, type IExplosiveDetailsVM } from './explosive-details.vm';
+import { createVM, type IExplosiveDetailsVM } from './explosive-details.vm';
 
 export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScreenProps) => {
     const theme = useTheme();

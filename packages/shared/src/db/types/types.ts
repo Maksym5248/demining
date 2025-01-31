@@ -203,3 +203,8 @@ export interface IExplosiveDB extends IBaseDB {
     } | null;
     authorId: string;
 }
+
+export interface IExplosiveDeviceTypeNotDB {
+    id: EXPLOSIVE_DEVICE_TYPE;
+    name: string;
+}

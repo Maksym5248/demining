@@ -28,6 +28,8 @@ const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item
             Navigation.navigate(SCREENS.EXPLOSIVE_DETAILS, { id: item.id });
         } else if (item.type === DictionaryType.ExplosiveObject) {
             Navigation.navigate(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id: item.id });
+        } else if (item.type === DictionaryType.ExplosiveDevices) {
+            Navigation.navigate(SCREENS.EXPLOSIVE_DEVICE_DETAILS, { id: item.id });
         }
     };
 

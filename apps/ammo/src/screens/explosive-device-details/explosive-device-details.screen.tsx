@@ -3,10 +3,9 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { images } from '~/assets';
-import { Block } from '~/components';
+import { Block, type ISlide } from '~/components';
 import { SCREENS } from '~/constants';
 import { Carousel, CarouselPagination, Header, type IRenderItemParams, type IRenderFooterParams, Image, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -15,25 +14,21 @@ import { Navigation } from '~/services';
 import { ThemeManager, useDevice, useStylesCommon, useTheme } from '~/styles';
 import { viewSize } from '~/utils';
 
-import { useStyles } from './explosive-object-details.style';
-import { type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
-import { createVM, type ISlide, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
+import { useStyles } from './explosive-device-details.style';
+import { type IExplosiveDeviceDetailsScreenProps } from './explosive-device-details.types';
+import { createVM, type IExplosiveObjectDetailsVM } from './explosive-device-details.vm';
 
-export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjectDetailsScreenProps) => {
+export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDeviceDetailsScreenProps) => {
     const theme = useTheme();
     const device = useDevice();
     const s = useStyles();
     const styles = useStylesCommon();
-    const t = useTranslate('screens.explosive-object-details');
+    const t = useTranslate('screens.explosive-device-details');
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
 
     const onOpenExplosive = useCallback((id: string) => {
         Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
-    }, []);
-
-    const onOpenExplosiveObject = useCallback((id: string) => {
-        Navigation.push(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id });
     }, []);
 
     const renderItem = useCallback(
@@ -57,8 +52,6 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
         [theme, s],
     );
 
-    const { details } = vm.item ?? {};
-
     return (
         <View style={styles.container}>
             <Header title={t('title')} backButton="back" />
@@ -76,38 +69,14 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     <Text type="label" style={styles.label} text={t('name')} />
                     <Text text={vm.item?.data.name ?? '-'} />
                     <Text type="label" style={styles.label} text={t('type')} />
-                    <Text text={vm.item?.type?.displayName ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('component')} />
-                    <Text text={vm.item?.component?.name ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('classification')} />
-                    <Text text={vm.item?.classItemsNames.join(', ') ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('country')} />
-                    <Text text={vm.item?.country?.displayName ?? '-'} />
-                    {vm.item?.component?.id === EXPLOSIVE_OBJECT_COMPONENT.AMMO && (
-                        <>
-                            <Text type="label" style={styles.label} text={t('fuse')} />
-                            {vm.fuses?.length ? (
-                                vm.fuses?.map(el => (
-                                    <Touchable key={el.id} onPress={() => onOpenExplosiveObject(el.data.id ?? '')}>
-                                        <Text color={ThemeManager.theme.colors.link} text={el?.displayName} />
-                                    </Touchable>
-                                ))
-                            ) : (
-                                <Text text={'-'} />
-                            )}
-                        </>
-                    )}
+                    <Text text={vm.item?.type?.name ?? '-'} />
                 </View>
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('characteristic')} />
-                    <Text type="label" style={styles.label} text={t('caliber')} />
-                    <Text text={details?.data.caliber ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('material')} />
-                    <Text text={details?.material?.name ?? '-'} />
-                    <Text type="label" style={styles.label} text={details?.data?.size?.width ? t('size') : t('size2')} />
-                    <Text text={viewSize(details?.data?.size) ?? '-'} />
+                    <Text type="label" style={styles.label} text={vm.item?.data?.size?.width ? t('size') : t('size2')} />
+                    <Text text={viewSize(vm.item?.data?.size) ?? '-'} />
                     <Text type="label" style={styles.label} text={t('weight')} />
-                    <Text text={details?.data?.weight || '-'} />
+                    <Text text={vm.item?.data?.chargeWeight || '-'} />
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
                         <View key={i} style={styles.row}>
@@ -120,16 +89,10 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                             <Text text={`${el.weight}`} />
                         </View>
                     )) ?? <Text text={'-'} />}
-                    <Text type="label" style={styles.label} text={t('temperature')} />
-                    <View style={[styles.row, styles.rowStart]}>
-                        <Text text={details?.data.temperature?.max ? `max. ${details?.data.temperature?.max}` : '-'} />
-                        <Text text={', '} />
-                        <Text text={details?.data.temperature?.min ? `min. ${details?.data.temperature?.min}` : '-'} />
-                    </View>
                 </View>
-                <Block.Slider label={t('purpose')} description={details?.data.purpose?.description} slides={vm.slidesPurpose} />
-                <Block.Slider label={t('structure')} description={details?.data.structure?.description} slides={vm.slidesStructure} />
-                <Block.Slider label={t('action')} description={details?.data.action?.description} slides={vm.slidesAction} />
+                <Block.Slider label={t('purpose')} description={vm.item?.data.purpose?.description} slides={vm.slidesPurpose} />
+                <Block.Slider label={t('structure')} description={vm.item?.data.structure?.description} slides={vm.slidesStructure} />
+                <Block.Slider label={t('action')} description={vm.item?.data.action?.description} slides={vm.slidesAction} />
             </ScrollView>
         </View>
     );

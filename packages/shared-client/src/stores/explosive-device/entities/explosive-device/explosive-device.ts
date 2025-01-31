@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_OBJECT_STATUS, explosiveDeviceTypeData, type IExplosiveDeviceTypeNotDB } from 'shared-my';
 
 import { type IExplosiveDeviceAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -12,6 +12,7 @@ import { type IExplosiveDeviceData, updateExplosiveDeviceDTO, createExplosiveDev
 export interface IExplosiveDevice {
     id: string;
     data: IExplosiveDeviceData;
+    type?: IExplosiveDeviceTypeNotDB;
     imageUri?: string | null;
     displayName: string;
     isCurrentOrganization: boolean;
@@ -49,6 +50,10 @@ export class ExplosiveDevice implements IExplosiveDevice {
 
     get id() {
         return this.data.id;
+    }
+
+    get type() {
+        return explosiveDeviceTypeData.find(item => item.id === this.data.type);
     }
 
     get isCurrentOrganization() {

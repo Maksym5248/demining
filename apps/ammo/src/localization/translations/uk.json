@@ -60,6 +60,20 @@
             "purpose": "Призначення",
             "structure": "Будова",
             "action": "Принцип дії"
+        },
+        "explosive-device-details": {
+            "title": "Деталі",
+            "details": "Деталі",
+            "name": "Назва",
+            "type": "Тип",
+            "characteristic": "Характеристики",
+            "size": "Розмір, довжина/ширина/висота, мм",
+            "size2": "Розмір, діаметр/висота, мм",
+            "weight": "Вага, кг",
+            "fillers": "Спорядження, кг",
+            "purpose": "Призначення",
+            "structure": "Будова",
+            "action": "Принцип дії"
         }
     },
     "dictionaries": {

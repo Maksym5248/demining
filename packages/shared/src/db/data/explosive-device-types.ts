@@ -1,12 +1,13 @@
 import { EXPLOSIVE_DEVICE_TYPE } from '../enum';
+import { type IExplosiveDeviceTypeNotDB } from '../types';
 
-export const explosiveDeviceTypeData = [
+export const explosiveDeviceTypeData: IExplosiveDeviceTypeNotDB[] = [
     {
-        label: 'Заряд ВР',
-        value: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
+        name: 'Заряд ВР',
+        id: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
     },
     {
-        label: 'Детонатор',
-        value: EXPLOSIVE_DEVICE_TYPE.DETONATOR,
+        name: 'Детонатор',
+        id: EXPLOSIVE_DEVICE_TYPE.DETONATOR,
     },
 ];

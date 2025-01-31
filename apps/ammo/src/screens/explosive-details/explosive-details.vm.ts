@@ -1,13 +1,9 @@
 import { makeAutoObservable } from 'mobx';
 import { type IExplosiveCompositionData, type IExplosive } from 'shared-my-client';
 
+import { type ISlide } from '~/components';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
-
-export interface ISlide {
-    uri: string;
-    id: number;
-}
 
 export interface IExplosiveDetailsVM extends ViewModel {
     item: IExplosive | undefined;

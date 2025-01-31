@@ -138,7 +138,12 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                         </Form.Item>
                     )}
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select options={explosiveDeviceTypeData} />
+                        <Select
+                            options={explosiveDeviceTypeData.map(el => ({
+                                value: el.id,
+                                label: el.name,
+                            }))}
+                        />
                     </Form.Item>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
