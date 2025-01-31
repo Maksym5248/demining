@@ -3,6 +3,7 @@ import { getStorage, ref, uploadBytes, deleteObject, getBlob, getDownloadURL } f
 import { type ASSET_TYPE } from 'shared-my';
 import { Cache } from 'shared-my-client';
 import { type IAssetStorageBase } from 'shared-my-client';
+import uuid from 'uuid';
 
 export class AssetStorageBase implements IAssetStorageBase {
     rootCollection?: string;
@@ -64,5 +65,12 @@ export class AssetStorageBase implements IAssetStorageBase {
         await this.remove(id);
         await this.save(id, file);
         this.cache.set(id, file);
+    }
+
+    async create(file: File) {
+        const id = uuid.v4();
+        await this.save(id, file);
+        const downloadURL = await this.getFileUrl(id);
+        return downloadURL;
     }
 }

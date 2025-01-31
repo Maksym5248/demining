@@ -29,9 +29,14 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 }
 const ObservedListItem = observer(ListItem);
 
-export function Filler() {
+interface Props {
+    label: string;
+    name: string;
+}
+
+export function FieldFiller({ name, label }: Props) {
     return (
-        <Form.Item label="Спорядження" name="filler">
+        <Form.Item label={label} name={name}>
             <Form.Item noStyle shouldUpdate={() => true}>
                 {({ getFieldValue, setFieldValue }) => {
                     const data = getFieldValue('filler') ?? [];

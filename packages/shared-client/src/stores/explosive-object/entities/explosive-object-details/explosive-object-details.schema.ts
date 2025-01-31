@@ -44,7 +44,12 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         size: value.size,
         weight: value.weight,
         temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
-        filler: value.filler,
+        filler:
+            value.filler?.map(item => ({
+                name: item.name,
+                explosiveId: item.explosiveId,
+                weight: item.weight,
+            })) ?? [],
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
         purpose: value?.purpose
