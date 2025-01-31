@@ -29,12 +29,13 @@ export const createExplosiveDeviceDTO = (value: ICreateValue<IExplosiveDeviceDat
     name: value.name,
     size: value.size,
     chargeWeight: value.chargeWeight,
+    imageUri: value.imageUri ?? null,
     imageUris: value.imageUris ?? [],
     filler:
         value.filler?.map(item => ({
-            name: item.name,
-            explosiveId: item.explosiveId,
-            weight: item.weight,
+            name: item?.name ?? null,
+            explosiveId: item?.explosiveId ?? null,
+            weight: item?.weight ?? null,
         })) ?? [],
     purpose: value?.purpose
         ? {
@@ -61,12 +62,13 @@ export const updateExplosiveDeviceDTO = data.createUpdateDTO<IExplosiveDeviceDat
     name: value?.name ?? '',
     size: value.size ?? null,
     chargeWeight: value.chargeWeight ?? null,
+    imageUri: value.imageUri ?? null,
     imageUris: value.imageUris ?? [],
     filler:
         value.filler?.map(item => ({
-            name: item.name,
-            explosiveId: item.explosiveId,
-            weight: item.weight,
+            name: item?.name ?? null,
+            explosiveId: item?.explosiveId ?? null,
+            weight: item?.weight ?? null,
         })) ?? [],
     purpose: value?.purpose
         ? {
@@ -94,12 +96,13 @@ export const createExplosiveDevice = (value: IExplosiveDeviceDTO): IExplosiveDev
     name: value?.name ?? '',
     chargeWeight: value.chargeWeight ?? null,
     size: value.size ?? null,
+    imageUri: value.imageUri ?? null,
     imageUris: value.imageUris ?? [],
     filler:
         value.filler?.map(item => ({
-            name: item.name,
-            explosiveId: item.explosiveId,
-            weight: item.weight,
+            name: item?.name ?? null,
+            explosiveId: item?.explosiveId ?? null,
+            weight: item?.weight ?? null,
         })) ?? [],
     purpose: value?.purpose
         ? {

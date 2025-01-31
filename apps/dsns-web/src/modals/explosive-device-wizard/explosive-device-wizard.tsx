@@ -110,7 +110,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                               }
                             : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }
                     }>
-                    <Form.Item name="image" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+                    <Form.Item name="imageUri" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
                         <Form.Item noStyle shouldUpdate={() => true}>
                             {({ getFieldValue, setFieldValue }) => {
                                 const imageUri = getFieldValue('imageUri');
