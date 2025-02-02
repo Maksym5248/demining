@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import { type IModalTypeInternal, type IAnalytics, type IModalsMapInternal, type IModalsMap } from './types';
+import { type IModalTypeInternal, type IAnalytics, type IModalsMapInternal, type IModalsMap, type IModal } from './types';
 
 const eventEmitter = new EventEmitter();
 
@@ -8,7 +8,7 @@ enum Events {
     Change = 'change',
 }
 
-export class Modal {
+export class Modal implements IModal {
     private _modals: IModalTypeInternal[];
 
     visibleModals: IModalsMapInternal;
@@ -21,7 +21,7 @@ export class Modal {
     registerModals(modals: IModalsMap) {
         const arr = Object.entries(modals);
 
-        this._modals = arr.map((current) => {
+        this._modals = arr.map(current => {
             const [key, value] = current;
 
             return {

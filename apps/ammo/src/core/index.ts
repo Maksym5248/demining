@@ -10,3 +10,4 @@ export * from './header';
 export * from './input';
 export * from './list';
 export * from './image';
+export * from './modal';

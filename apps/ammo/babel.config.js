@@ -18,6 +18,7 @@ module.exports = (api) => {
           '~/modals': './src/modals',
           '~/stores': './src/stores',
           '~/navigation': './src/navigation',
+          '~/modals': './src/modals',
           '~/screens': './src/screens',
           '~/services': './src/services',
           '~/styles': './src/styles',

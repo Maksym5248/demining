@@ -7,13 +7,13 @@ import { LogLevel } from 'shared-my-client';
 
 import { useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
-import { RootNavigation } from '~/navigation';
+import { modals, RootNavigation } from '~/navigation';
 import { Logger, Navigation } from '~/services';
 import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
 import { CONFIG } from './config';
-import { MessageProvider } from './containers';
+import { MessageProvider, ModalProvider } from './containers';
 
 enableScreens(true);
 
@@ -43,6 +43,7 @@ export function App(): React.JSX.Element {
                 <ThemeProvider>
                     <RootNavigation ref={setNavigationRef} />
                     <MessageProvider />
+                    <ModalProvider modals={modals} />
                 </ThemeProvider>
             </LocalizationProvider>
         </GestureHandlerRootView>
