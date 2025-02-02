@@ -1,11 +1,8 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-import { View } from 'react-native';
 import { type IModalsMapInternal, type IModalTypeInternal, type IModalsMap } from 'shared-my-client';
 
 import { Modal } from '~/services';
-
-import { s } from './modal.styles';
 
 interface IModalProviderProps {
     modals: IModalsMap;
@@ -43,7 +40,7 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
     }
 
     onModalHide = (name: string) => {
-        Modal.removeVisibleModal(name);
+        Modal.hide(name);
     };
 
     onModalShow = (name: string, propsForComponent = {}) => {
@@ -65,7 +62,7 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
             };
 
             return (
-                <View key={modal.name} style={s.container}>
+                <Fragment key={modal.name}>
                     {visibleModal?.isRendered &&
                         modal.renderComponent({
                             ...propsForComponent,
@@ -73,7 +70,7 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
                             hide: () => this.onModalHide(modal.name),
                             open: () => this.onModalShow(modal.name),
                         })}
-                </View>
+                </Fragment>
             );
         });
     }

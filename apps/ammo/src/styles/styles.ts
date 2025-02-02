@@ -7,6 +7,13 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         justifyContent: 'flex-start',
         backgroundColor: theme.colors.background,
     },
+    modal: {
+        height: device.window.height,
+        width: device.window.width,
+        padding: 0,
+        margin: 0,
+        backgroundColor: theme.colors.backgroundModal,
+    },
     scrollViewContent: {
         backgroundColor: theme.colors.background,
         paddingBottom: device.inset.bottom + 20,

@@ -20,7 +20,7 @@ export const themeBase: IBaseThemeSchema = {
         border: palette.grey92,
         button: palette.creamF5,
         background: palette.greyf2,
-        backgroundModal: palette.transparent,
+        backgroundModal: palette.blackTransparent01,
         text: palette.black,
         textSecondary: palette.grey92,
         accent: palette.blueB4,

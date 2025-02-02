@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { Loading as LoadingComponent, Modal } from '~/core';
+import { Loading, Modal } from '~/core';
+import { useStylesCommon } from '~/styles';
 
-import { useStyles } from './loading.styles';
 import { type ILoadingProps } from './loading.type';
 
 export const LoadingModal = (props: ILoadingProps) => {
-    const s = useStyles();
+    const s = useStylesCommon();
 
     return (
-        <Modal style={s.container} {...props}>
-            <LoadingComponent isVisible />
+        <Modal style={s.modal} {...props}>
+            <Loading isVisible size="large" />
         </Modal>
     );
 };

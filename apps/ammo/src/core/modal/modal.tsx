@@ -19,10 +19,11 @@ export const Modal = ({ children, isVisible, hide, ...rest }: IModalProps) => {
             style={s.container}
             {...rest}
             useNativeDriver
+            animationIn={'fadeIn'}
+            animationOut={'fadeOut'}
             coverScreen={false}
             backdropOpacity={0}
             isVisible={isVisible}
-            onModalHide={hide}
             onBackdropPress={hide}>
             {children}
         </ModalUI>
