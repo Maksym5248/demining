@@ -3,11 +3,11 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { SCREENS } from '~/constants';
+import { MODALS, SCREENS } from '~/constants';
 import { Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
+import { Modal, Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 import { DictionaryType } from '~/types';
 
@@ -55,9 +55,19 @@ export const SearchScreen = observer(() => {
 
     const renderItem = useCallback(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => <ListItem item={item} />, []);
 
+    const onPressFilter = () => {
+        Modal.show(MODALS.FILTER_DICTIONARY);
+    };
+
     return (
         <View style={styles.container}>
-            <Header title={t('title')} backButton="back" color={theme.colors.white} style={s.header} />
+            <Header
+                title={t('title')}
+                backButton="back"
+                color={theme.colors.white}
+                style={s.header}
+                right={<Icon name="filter" color={theme.colors.white} size={24} onPress={onPressFilter} />}
+            />
             <View style={s.filler} />
             <TextInput
                 placeholder={t('search')}

@@ -14,6 +14,12 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         margin: 0,
         backgroundColor: theme.colors.backgroundModal,
     },
+    modalBottomSheet: {
+        height: device.window.height,
+        width: device.window.width,
+        padding: 0,
+        margin: 0,
+    },
     scrollViewContent: {
         backgroundColor: theme.colors.background,
         paddingBottom: device.inset.bottom + 20,

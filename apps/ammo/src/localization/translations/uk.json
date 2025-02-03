@@ -1,7 +1,8 @@
 {
     "core": {
         "bottom-sheet": {
-            "cancel": "Скасувати"
+            "cancel": "Скасувати",
+            "close": "Закрити"
         }
     },
     "components": {

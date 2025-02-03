@@ -6,10 +6,10 @@ import { useStylesCommon } from '~/styles';
 import { type ILoadingProps } from './loading.type';
 
 export const LoadingModal = (props: ILoadingProps) => {
-    const s = useStylesCommon();
+    const styles = useStylesCommon();
 
     return (
-        <Modal style={s.modal} {...props}>
+        <Modal style={styles.modal} {...props}>
             <Loading isVisible size="large" />
         </Modal>
     );

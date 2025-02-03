@@ -3,10 +3,13 @@ import React from 'react';
 import { type IModalsMap } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
-import { LoadingModal } from '~/modals';
+import * as modalsComponents from '~/modals';
 
 export const modals: IModalsMap = {
     [MODALS.LOADING]: {
-        renderComponent: (props: any) => <LoadingModal {...props} />,
+        renderComponent: (props: any) => <modalsComponents.LoadingModal {...props} />,
+    },
+    [MODALS.FILTER_DICTIONARY]: {
+        renderComponent: (props: any) => <modalsComponents.FilterDictionariesModal {...props} />,
     },
 };
