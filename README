@@ -25,11 +25,14 @@ TODO
 - використати один спосіб завантаження даних для всіх картинок (видалити передавання в api картинок)
 
 // AMMO MOBILE
-- upp updater
 - filters
+- upp updater
 - classification
+- modal for view images in carousel
 - integrate analitics
 - integrate crashlitics
 - touchable feedback
+- save image locally
+- check initialization app with internet connection
 
 
