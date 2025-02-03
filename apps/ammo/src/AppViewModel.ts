@@ -1,10 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { Modal } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
-
-import { MODALS } from './constants';
 
 export interface IAppViewModel extends ViewModel {
     isInitialized: boolean;
@@ -28,10 +25,8 @@ export class AppViewModel implements IAppViewModel {
     }
 
     async fetch() {
-        Modal.show(MODALS.LOADING);
         await stores.init.run();
         this.setInitialized(true);
-        Modal.hide(MODALS.LOADING);
     }
 
     get isLoading() {
