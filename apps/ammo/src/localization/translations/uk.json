@@ -1,4 +1,9 @@
 {
+    "core": {
+        "bottom-sheet": {
+            "cancel": "Скасувати"
+        }
+    },
     "components": {
         "list": {
             "empty": "Усписку немає даних",

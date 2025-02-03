@@ -11,3 +11,4 @@ export * from './input';
 export * from './list';
 export * from './image';
 export * from './modal';
+export * from './bottom-sheet';
