@@ -5,24 +5,20 @@ import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
-import { images } from '~/assets';
-import { Block } from '~/components';
+import { Block, CarouselImage } from '~/components';
 import { SCREENS } from '~/constants';
-import { Carousel, CarouselPagination, Header, type IRenderItemParams, type IRenderFooterParams, Image, Text, Touchable } from '~/core';
+import { Header, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { Navigation } from '~/services';
-import { ThemeManager, useDevice, useStylesCommon, useTheme } from '~/styles';
+import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
 import { viewSize } from '~/utils';
 
-import { useStyles } from './explosive-object-details.style';
 import { type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
-import { createVM, type ISlide, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
+import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
 
 export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjectDetailsScreenProps) => {
-    const theme = useTheme();
     const device = useDevice();
-    const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.explosive-object-details');
 
@@ -36,41 +32,13 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
         Navigation.push(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id });
     }, []);
 
-    const renderItem = useCallback(
-        ({ item }: IRenderItemParams<ISlide>) => <Image style={s.image} uri={item?.uri} placeholder={images.placeholder} />,
-        [],
-    );
-
-    const renderFooter = useCallback(
-        ({ data, animatedIndex }: IRenderFooterParams) => {
-            return (
-                <CarouselPagination
-                    style={s.pagination}
-                    animatedIndex={animatedIndex}
-                    number={data.length}
-                    color={theme.colors.accent}
-                    dotSize={5}
-                    opacity={0.3}
-                />
-            );
-        },
-        [theme, s],
-    );
-
     const { details } = vm.item ?? {};
 
     return (
         <View style={styles.container}>
             <Header title={t('title')} backButton="back" />
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                <Carousel
-                    width={device.window.width}
-                    itemWidth={device.window.width}
-                    data={vm.slides.length ? vm.slides : [{ uri: undefined }]}
-                    renderItem={renderItem}
-                    renderFooter={vm.slides.length > 1 ? renderFooter : undefined}
-                    isFooterInsideTouchable
-                />
+                <CarouselImage width={device.window.width} data={vm.slides} />
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('details')} />
                     <Text type="label" style={styles.label} text={t('name')} />
@@ -127,9 +95,9 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         <Text text={details?.data.temperature?.min ? `min. ${details?.data.temperature?.min}` : '-'} />
                     </View>
                 </View>
-                <Block.Slider label={t('purpose')} description={details?.data.purpose?.description} slides={vm.slidesPurpose} />
-                <Block.Slider label={t('structure')} description={details?.data.structure?.description} slides={vm.slidesStructure} />
-                <Block.Slider label={t('action')} description={details?.data.action?.description} slides={vm.slidesAction} />
+                <Block.Slider label={t('purpose')} description={details?.data.purpose?.description} data={vm.slidesPurpose} />
+                <Block.Slider label={t('structure')} description={details?.data.structure?.description} data={vm.slidesStructure} />
+                <Block.Slider label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
             </ScrollView>
         </View>
     );

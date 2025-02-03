@@ -16337,6 +16337,11 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-awesome-gallery@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/react-native-awesome-gallery/-/react-native-awesome-gallery-0.4.3.tgz#ea15f27a8558ce0c433fb928c55ae13638ca8187"
+  integrity sha512-Q1dONPP5i8S/fSqxZKnSs3SMaGNp+89e97i6pzkHMcylRXttsN8m3BaVco9WxZEKhvBFRFw+Ay0Ft0u9Q6h2qA==
+
 react-native-config@1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.3.tgz#1286c0c117adb367a948b31005430146e88c9c2e"

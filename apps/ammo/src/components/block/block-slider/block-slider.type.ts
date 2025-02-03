@@ -5,6 +5,6 @@ export interface ISlide {
 
 export interface IBlockSliderProps {
     description?: string;
-    slides: ISlide[];
+    data: ISlide[];
     label: string;
 }

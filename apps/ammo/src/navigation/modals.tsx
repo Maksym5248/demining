@@ -9,6 +9,9 @@ export const modals: IModalsMap = {
     [MODALS.LOADING]: {
         renderComponent: (props: any) => <modalsComponents.LoadingModal {...props} />,
     },
+    [MODALS.GALLERY]: {
+        renderComponent: (props: any) => <modalsComponents.GalleryModal {...props} />,
+    },
     [MODALS.FILTER_DICTIONARY]: {
         renderComponent: (props: any) => <modalsComponents.FilterDictionariesModal {...props} />,
     },

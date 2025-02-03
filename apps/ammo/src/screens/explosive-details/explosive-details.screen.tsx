@@ -5,23 +5,19 @@ import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { measurement } from 'shared-my';
 
-import { images } from '~/assets';
-import { type ISlide } from '~/components';
+import { CarouselImage } from '~/components';
 import { SCREENS } from '~/constants';
-import { Carousel, CarouselPagination, Header, type IRenderItemParams, type IRenderFooterParams, Image, Text, Touchable } from '~/core';
+import { Header, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { Navigation } from '~/services';
-import { ThemeManager, useDevice, useStylesCommon, useTheme } from '~/styles';
+import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
 
-import { useStyles } from './explosive-details.style';
 import { type IExplosiveDetailsScreenProps } from './explosive-details.types';
 import { createVM, type IExplosiveDetailsVM } from './explosive-details.vm';
 
 export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScreenProps) => {
-    const theme = useTheme();
     const device = useDevice();
-    const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.explosive-details');
 
@@ -31,27 +27,6 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
         Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
     }, []);
 
-    const renderItem = useCallback(
-        ({ item }: IRenderItemParams<ISlide>) => <Image style={s.image} uri={item.uri} placeholder={images.placeholder} />,
-        [],
-    );
-
-    const renderFooter = useCallback(
-        ({ data, animatedIndex }: IRenderFooterParams) => {
-            return (
-                <CarouselPagination
-                    style={s.pagination}
-                    animatedIndex={animatedIndex}
-                    number={data.length}
-                    color={theme.colors.accent}
-                    dotSize={5}
-                    opacity={0.3}
-                />
-            );
-        },
-        [theme, s],
-    );
-
     const { brisantness, velocity, explosiveness, tnt } = vm.item?.data?.explosive ?? {};
     const { shock, temperature, friction } = vm.item?.data?.sensitivity ?? {};
     const { density, meltingPoint, ignitionPoint } = vm.item?.data?.physical ?? {};
@@ -60,14 +35,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
         <View style={styles.container}>
             <Header title={t('title')} backButton="back" />
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                <Carousel
-                    width={device.window.width}
-                    itemWidth={device.window.width}
-                    data={vm.slides.length ? vm.slides : [{ uri: undefined }]}
-                    renderItem={renderItem}
-                    renderFooter={vm.slides.length > 1 ? renderFooter : undefined}
-                    isFooterInsideTouchable
-                />
+                <CarouselImage width={device.window.width} data={vm.slides} />
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('details')} />
                     <Text type="label" style={styles.label} text={t('name')} />

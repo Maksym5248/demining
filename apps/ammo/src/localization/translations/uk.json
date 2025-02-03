@@ -82,6 +82,11 @@
             "action": "Принцип дії"
         }
     },
+    "modals": {
+        "gallery": {
+            "of": "з"
+        }
+    },
     "dictionaries": {
         "explosive": "Вибухові речовини",
         "explosive-object": "Боєприпаси",

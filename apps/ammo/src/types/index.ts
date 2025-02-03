@@ -27,3 +27,8 @@ export enum DictionaryType {
     ExplosiveObject = 'explosive-object',
     ExplosiveDevices = 'explosive-device',
 }
+
+export interface ISlide {
+    uri: string;
+    id: number;
+}

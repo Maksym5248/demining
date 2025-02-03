@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import _ from 'lodash';
-import { View, Animated, ActivityIndicator, Easing, Image as Img } from 'react-native';
+import { View, Animated, ActivityIndicator, Easing, Image as Img, type NativeSyntheticEvent, type ImageLoadEventData } from 'react-native';
 import Reanimated from 'react-native-reanimated';
 
 import { useVar } from '~/hooks';
@@ -33,7 +33,7 @@ export function Image({
     const [isVisiblePlaceholder, setVisiblePlaceholder] = useState(true);
     const [isLoading, setLoading] = useState(!!uri);
 
-    const _onLoad = () => {
+    const _onLoad = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
         Animated.timing(animatedValue, {
             toValue: 1,
             duration: 200,
@@ -42,7 +42,7 @@ export function Image({
         }).start(() => {
             setLoading(false);
             setVisiblePlaceholder(false);
-            !!onLoad && onLoad();
+            onLoad?.(e);
         });
     };
 

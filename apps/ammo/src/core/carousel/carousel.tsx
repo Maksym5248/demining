@@ -185,6 +185,6 @@ const CarouselComponent = forwardRef<ICarouselRef, ICarouselProps>((props: ICaro
     );
 });
 
-CarouselComponent.displayName = 'Carousel';
+CarouselComponent.displayName = 'CarouselContainer';
 
-export const Carousel = memo(CarouselComponent);
+export const CarouselContainer = memo(CarouselComponent);
