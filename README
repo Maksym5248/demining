@@ -25,11 +25,10 @@ TODO
 - використати один спосіб завантаження даних для всіх картинок (видалити передавання в api картинок)
 
 // AMMO MOBILE
-- mobile app initial setup
-- create shared theme
-- map
-- form to useFormik
-- validation yup
-- normalize data, all data should be the same as we have in db not in dto
-- token expiration
+- upp updater
+- filters
+- classification
+- integrate analitics
+- integrate crashlitics
+
 
