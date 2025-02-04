@@ -27,9 +27,9 @@ TODO
 // AMMO MOBILE
 + modal for view images in carousel
 + create account in google play
++ automanage version and build numbers
 - integrate analitics
 - integrate crashlitics
-- automanage version and build numbers
 - automatic deploy
 - upp updater
 - filters
