@@ -14,6 +14,7 @@ import { ThemeManager, ThemeProvider } from '~/styles';
 import { appViewModel, type IAppViewModel } from './AppViewModel';
 import { CONFIG } from './config';
 import { MessageProvider, ModalProvider } from './containers';
+import { Device } from './utils';
 
 enableScreens(true);
 
@@ -35,6 +36,7 @@ export function App(): React.JSX.Element {
 
         try {
             Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
+            Logger.log('VERSION:', Device.appInfo);
             AppState.init();
             await Promise.allSettled([NetInfo.init(), Localization.init()]);
 

@@ -115,8 +115,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         resValue "string", "build_config_package", "com.demining.ammo"
-        versionName "1.0.1"
-        versionCode 1
+        versionName getVersion()
+        versionCode getBuildNumber()
     }
     signingConfigs {
         universal {

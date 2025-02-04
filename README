@@ -25,18 +25,18 @@ TODO
 - використати один спосіб завантаження даних для всіх картинок (видалити передавання в api картинок)
 
 // AMMO MOBILE
-- filters
-- upp updater
-- classification
-- modal for view images in carousel
++ modal for view images in carousel
++ create account in google play
 - integrate analitics
 - integrate crashlitics
-- touchable feedback
-- save image locally
-- check initialization app with internet connection
 - automanage version and build numbers
 - automatic deploy
-- create account in google play
+- upp updater
+- filters
+- classification
+- touchable feedback
+- save image locally
+- check initialization app with internet connection, how this flow should work ? at first need to load images and check which images are laoded?
 
 
 
