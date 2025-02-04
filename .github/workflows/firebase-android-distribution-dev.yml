@@ -25,8 +25,8 @@ jobs:
     - name: Create envoirment files
       working-directory: ./apps/ammo
       run: |
-        echo "${{ secrets.AMMO_ENV_DEV }}" | base64 --decode >  .env
-        echo "${{ secrets.AMMO_KEY_KEYSTORE_DEV }}" | base64 --decode > ./android/app/ammo-dev.keystore
+        echo "${{ secrets.AMMO_ENV_DEV }}" | base64 --decode > .env
+        echo "${{ secrets.AMMO_KEY_KEYSTORE_DEV }}" | base64 --decode > ./android/app/ammo.keystore
         echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_DEV }}" | base64 --decode >  ./android/app/google-services.json
         echo "${{ secrets.AMMO_SIGNING_DEV }}" | base64 --decode >  ./android/app/gradle.sign.properties
     - name: Cache Gradle packages
@@ -37,6 +37,8 @@ jobs:
           ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle
+    - name: Install Firebase CLI
+      run: yarn global add firebase-tools
     - name: Build APK
       working-directory: apps/ammo
       run: yarn apk:dev

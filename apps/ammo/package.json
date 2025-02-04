@@ -15,7 +15,7 @@
         "clean:android": "cd android && ./gradlew clean && rm -rf ./.gradle && cd app && rm -rf ./build",
         "apk:dev": "cd android && ./gradlew assembleDevRelease",
         "apk:prod": "cd android && ./gradlew assembleProdRelease",
-        "bundle": "cd android && ./gradlew bundleProdRelease",
+        "bundle:prod": "cd android && ./gradlew bundleProdRelease",
         "prepare:ios": "yarn install && cd ios && pod install",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
