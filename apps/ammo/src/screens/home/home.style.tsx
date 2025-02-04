@@ -28,8 +28,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     searchButton: {
         height: 50,
         marginHorizontal: theme.spacing.L,
-        backgroundColor: theme.colors.white,
-        transform: [{ translateY: -25 }],
+        marginTop: -25,
         borderRadius: theme.radius.M,
         ...theme.shadow.light,
     },
@@ -39,8 +38,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: theme.spacing.M,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        backgroundColor: theme.colors.white,
+        borderRadius: 4,
     },
     content: {
         flex: 1,

@@ -4,7 +4,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     container: {
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
-        overflow: 'hidden',
         position: 'relative',
         ...theme.shadow.light,
     },
@@ -18,6 +17,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         padding: theme.spacing.S,
         alignContent: 'flex-start',
         justifyContent: 'flex-end',
+        backgroundColor: theme.colors.white,
+        borderBottomLeftRadius: theme.radius.M,
+        borderBottomRightRadius: theme.radius.M,
     },
     svg: {
         width: 80,
@@ -28,6 +30,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     image: {
         width: '100%',
         aspectRatio: 2,
+        borderTopLeftRadius: theme.radius.M,
+        borderTopRightRadius: theme.radius.M,
     },
     tags: {
         position: 'absolute',

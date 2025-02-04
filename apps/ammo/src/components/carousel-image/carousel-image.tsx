@@ -17,6 +17,7 @@ export const CarouselImage = ({ data, width }: ICarouselImageProps) => {
     const slides = data.length ? data : [{ uri: undefined }];
 
     const onOpenGallery = useCallback((index: number) => {
+        if (data.length === 0) return;
         Modal.show(MODALS.GALLERY, { images: data, index });
     }, []);
 

@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 import { LogLevel, useAsyncEffect } from 'shared-my-client';
 
-import { useViewModel } from '~/hooks';
+import { useStatusBar, useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
 import { modals, RootNavigation } from '~/navigation';
 import { AppState, Logger, Navigation, NetInfo } from '~/services';
@@ -20,6 +20,13 @@ enableScreens(true);
 
 export function App(): React.JSX.Element {
     const vm = useViewModel<IAppViewModel>(appViewModel);
+
+    useStatusBar(
+        {
+            barStyle: 'light-content',
+        },
+        false,
+    );
 
     useEffect(
         () => () => {
