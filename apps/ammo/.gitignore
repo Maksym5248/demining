@@ -84,3 +84,4 @@ ammo-dev.keystore
 ammo-prod.keystore
 google-services.json
 GoogleService-Info.plist
+clone/*

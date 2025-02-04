@@ -13,13 +13,15 @@
         "test": "jest",
         "clean:js": "/bin/sh ./bin/clean-js.sh",
         "clean:android": "cd android && ./gradlew clean && rm -rf ./.gradle && cd app && rm -rf ./build",
-        "apk:dev": "cd android && ./gradlew assembleDevReleaseLocal",
-        "apk:prod": "cd android && ./gradlew assembleProdReleaseLocal",
-        "bundle": "cd android && ./gradlew bundleProdReleaseLocal",
+        "apk:dev": "cd android && ./gradlew assembleDevRelease",
+        "apk:prod": "cd android && ./gradlew assembleProdRelease",
+        "bundle": "cd android && ./gradlew bundleProdRelease",
         "prepare:ios": "yarn install && cd ios && pod install",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
-        "check:eslint": "eslint --fix"
+        "check:eslint": "eslint --fix",
+        "update:build-number": "node ./bin/update-build-number.js",
+        "clone": "/bin/sh ./bin/clone-base64.sh"
     },
     "dependencies": {
         "@firebase/firestore-types": "^3.0.3",

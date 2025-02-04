@@ -25,10 +25,10 @@ jobs:
     - name: Create envoirment files
       working-directory: ./apps/ammo
       run: |
-        echo "${{ secrets.AMMO_ENV_DEV }}" > .env
-        echo "${{ secrets.AMMO_KEY_KEYSTORE_DEV }}" | base64 --decode >  ./android/app/ammo-dev.keystore
-        echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_DEV }}" > ./android/app/google-services.json
-        echo "${{ secrets.AMMO_SIGNING_DEV }}" > ./android/app/gradle.sign.properties
+        echo "${{ secrets.AMMO_ENV_DEV }}" | base64 --decode >  .env
+        echo "${{ secrets.AMMO_KEY_KEYSTORE_DEV }}" | base64 --decode > ./android/app/ammo-dev.keystore
+        echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_DEV }}" | base64 --decode >  ./android/app/google-services.json
+        echo "${{ secrets.AMMO_SIGNING_DEV }}" | base64 --decode >  ./android/app/gradle.sign.properties
     - name: Cache Gradle packages
       uses: actions/cache@v3
       with:
@@ -45,4 +45,4 @@ jobs:
       with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
     - name: Upload to Firebase App Distribution
-      run: firebase appdistribution:distribute app/build/outputs/apk/releaseLocal/app-dev-releaseLocal.apk --app "${{ secrets.FIREBASE_AMMO_APP_ID_ANDROID_DEV }}" --groups testers
+      run: firebase appdistribution:distribute app/build/outputs/apk/release/app-dev-release.apk --app "${{ secrets.FIREBASE_AMMO_APP_ID_ANDROID_DEV }}" --groups testers

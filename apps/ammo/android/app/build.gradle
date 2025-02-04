@@ -157,14 +157,10 @@ android {
             signingConfig signingConfigs.universal
         }
         release {
+            signingConfig signingConfigs.universal
             shrinkResources enableProguardInReleaseBuilds
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-        releaseLocal {
-            initWith release
-            signingConfig signingConfigs.universal
-            matchingFallbacks = ['release']
         }
     }
     flavorDimensions "env"
