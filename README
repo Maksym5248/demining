@@ -31,7 +31,8 @@ TODO
 - integrate analitics
 - integrate crashlitics
 - automatic deploy
-- upp updater
+- create modules in firestore for app info, user info (exist), permissions
+- app updater
 - filters
 - classification
 - touchable feedback
