@@ -48,4 +48,4 @@ jobs:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
     - name: Upload to Firebase App Distribution
       working-directory: ./apps/ammo
-      run: firebase appdistribution:distribute ./android/app/build/outputs/apk/release/app-dev-release.apk --app "${{ secrets.FIREBASE_AMMO_APP_ID_ANDROID_DEV }}" --groups testers
+      run: firebase appdistribution:distribute ./android/app/build/outputs/apk/dev/release/app-dev-release.apk --app "${{ secrets.FIREBASE_AMMO_APP_ID_ANDROID_DEV }}" --groups testers
