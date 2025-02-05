@@ -3,8 +3,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
-
+// apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
+apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json', { paths: ['$rootDir/node_modules'] })"].execute().text.trim(), "../sentry.gradle")
 import groovy.json.JsonSlurper
 
 /**
