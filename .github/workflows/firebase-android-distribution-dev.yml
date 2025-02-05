@@ -42,6 +42,8 @@ jobs:
       run: yarn global add firebase-tools
     - name: Build APK
       working-directory: apps/ammo
+      env:
+       SENTRY_LOG_LEVEL: debug
       run: yarn apk:dev
     - name: Create service account
       uses: 'google-github-actions/auth@v2'
