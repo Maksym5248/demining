@@ -4,14 +4,10 @@ import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
 export interface IAppViewModel extends ViewModel {
-    isInitialized: boolean;
-    isLoading: boolean;
-    fetch(): void;
+    fetch(): Promise<void>;
 }
 
 export class AppViewModel implements IAppViewModel {
-    isInitialized = false;
-
     constructor() {
         makeAutoObservable(this);
     }
@@ -20,13 +16,8 @@ export class AppViewModel implements IAppViewModel {
         stores.removeAllListeners();
     }
 
-    setInitialized(value: boolean) {
-        this.isInitialized = value;
-    }
-
     async fetch() {
         await stores.init.run();
-        this.setInitialized(true);
     }
 
     get isLoading() {

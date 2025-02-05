@@ -8,11 +8,12 @@ import { LogLevel, useAsyncEffect } from 'shared-my-client';
 import { useStatusBar, useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
 import { modals, RootNavigation } from '~/navigation';
-import { AppState, Logger, Navigation, NetInfo } from '~/services';
+import { AppState, Logger, Modal, Navigation, NetInfo } from '~/services';
 import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
 import { CONFIG } from './config';
+import { MODALS } from './constants';
 import { MessageProvider, ModalProvider } from './containers';
 import { Device } from './utils';
 
@@ -40,10 +41,11 @@ export function App(): React.JSX.Element {
 
     useAsyncEffect(async () => {
         CONFIG.IS_DEBUG && Logger.enable();
+        Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
+        Logger.log('VERSION:', Device.appInfo);
 
+        Modal.show(MODALS.LOADING);
         try {
-            Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
-            Logger.log('VERSION:', Device.appInfo);
             AppState.init();
             await Promise.allSettled([NetInfo.init(), Localization.init()]);
 
@@ -53,9 +55,11 @@ export function App(): React.JSX.Element {
                 }
             });
 
-            vm.fetch();
+            await vm.fetch();
         } catch (error) {
             Logger.error(error);
+        } finally {
+            Modal.hide(MODALS.LOADING);
         }
     }, []);
 
