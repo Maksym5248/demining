@@ -29,7 +29,7 @@ TODO
 + create account in google play
 + automanage version and build numbers
 + integrate analitics
-- integrate crashlitics
++ integrate crashlitics
 - automatic deploy
 - create modules in firestore for app info, user info (exist), permissions
 - app updater
