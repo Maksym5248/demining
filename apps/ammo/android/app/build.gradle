@@ -54,7 +54,11 @@ react {
     //
     //   The list of flags to pass to the Hermes compiler. By default is "-O", "-output-source-map"
     // hermesFlags = ["-O", "-output-source-map"]
-     
+    reactNativeDir = file("../../../../node_modules/react-native")
+    codegenDir = file("../../../../node_modules/@react-native/codegen")
+    cliFile = file("../../../../node_modules/react-native/cli.js")
+    hermesCommand = file("$rootDir/../../../node_modules/react-native/sdks/hermesc/osx-bin/hermesc").absolutePath
+    debuggableVariants = ["devDebug", "prodDebug"]
     /* Autolinking */
     autolinkLibrariesWithApp()
 }
@@ -105,13 +109,6 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.demining.ammo"
-    react {
-        reactNativeDir = file("../../../../node_modules/react-native")
-        codegenDir = file("../../../../node_modules/@react-native/codegen")
-        cliFile = file("../../../../node_modules/react-native/cli.js")
-        hermesCommand = file("$rootDir/../../../node_modules/react-native/sdks/hermesc/osx-bin/hermesc").absolutePath
-        debuggableVariants = ["devDebug", "prodDebug"]
-    }
     defaultConfig {
         applicationId "com.demining.ammo"
         minSdkVersion rootProject.ext.minSdkVersion
