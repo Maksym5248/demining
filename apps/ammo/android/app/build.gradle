@@ -107,8 +107,8 @@ android {
         reactNativeDir = file("../../../../node_modules/react-native")
         codegenDir = file("../../../../node_modules/@react-native/codegen")
         cliFile = file("../../../../node_modules/react-native/cli.js")
-        hermesCommand = "../../../../node_modules/react-native/sdks/hermesc/%OS-BIN%/hermesc"
-        debuggableVariants = ["devDebug", "prodDebug", "devRelease", "prodRelease"]
+        hermesCommand = file("$rootDir/../../../node_modules/react-native/sdks/hermesc/osx-bin/hermesc").absolutePath
+        debuggableVariants = ["devDebug", "prodDebug"]
     }
     defaultConfig {
         applicationId "com.demining.ammo"
