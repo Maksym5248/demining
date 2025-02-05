@@ -3,14 +3,17 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-// apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
-apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json', { paths: ['$rootDir/node_modules'] })"].execute().text.trim(), "../sentry.gradle")
+apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
 import groovy.json.JsonSlurper
 
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
+
+def hermesPath = "../../../../node_modules/react-native/sdks/hermesc"
+def hermesBinary = file(hermesPath + (org.gradle.internal.os.OperatingSystem.current().isMacOsX() ? "/osx-bin/hermesc" : "/linux64-bin/hermesc")).absolutePath
+
 react {
     /* Folders */
     //   The root of your project, i.e. where "package.json" lives. Default is '..'
@@ -57,7 +60,7 @@ react {
     reactNativeDir = file("../../../../node_modules/react-native")
     codegenDir = file("../../../../node_modules/@react-native/codegen")
     cliFile = file("../../../../node_modules/react-native/cli.js")
-    hermesCommand = file("$rootDir/../../../node_modules/react-native/sdks/hermesc/osx-bin/hermesc").absolutePath
+    hermesCommand = hermesBinary
     debuggableVariants = ["devDebug", "prodDebug"]
     /* Autolinking */
     autolinkLibrariesWithApp()
