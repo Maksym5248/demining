@@ -8,7 +8,7 @@ export class AnalyticsClass implements IAnalytics {
     ) {}
 
     init() {
-        this.event('INITIALIZATION APP');
+        this.event('INITIALIZATION_APP');
     }
 
     page(name: string) {

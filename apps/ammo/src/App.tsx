@@ -8,7 +8,7 @@ import { LogLevel, useAsyncEffect } from 'shared-my-client';
 import { useStatusBar, useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
 import { modals, RootNavigation } from '~/navigation';
-import { AppState, Logger, Modal, Navigation, NetInfo } from '~/services';
+import { AppState, Crashlytics, Logger, Modal, Navigation, NetInfo } from '~/services';
 import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
@@ -18,6 +18,8 @@ import { MessageProvider, ModalProvider } from './containers';
 import { Device } from './utils';
 
 enableScreens(true);
+
+Crashlytics.init();
 
 export function App(): React.JSX.Element {
     const vm = useViewModel<IAppViewModel>(appViewModel);

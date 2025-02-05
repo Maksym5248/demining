@@ -26,6 +26,7 @@
     "dependencies": {
         "@firebase/firestore-types": "^3.0.3",
         "@react-native-community/netinfo": "11.4.1",
+        "@react-native-firebase/analytics": "^21.7.1",
         "@react-native-firebase/app": "21.7.1",
         "@react-native-firebase/auth": "21.7.1",
         "@react-native-firebase/firestore": "21.7.1",
@@ -33,6 +34,7 @@
         "@react-navigation/bottom-tabs": "6.6.1",
         "@react-navigation/native": "6.0.6",
         "@react-navigation/native-stack": "6.11.0",
+        "@sentry/react-native": "^6.6.0",
         "axios": "1.6.5",
         "dayjs": "1.11.10",
         "formik": "2.4.5",

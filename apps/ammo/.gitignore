@@ -84,3 +84,4 @@ ammo.keystore
 google-services.json
 GoogleService-Info.plist
 clone/*
+sentry.properties
