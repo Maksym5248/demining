@@ -28,7 +28,7 @@ TODO
 + modal for view images in carousel
 + create account in google play
 + automanage version and build numbers
-- integrate analitics
++ integrate analitics
 - integrate crashlitics
 - automatic deploy
 - create modules in firestore for app info, user info (exist), permissions
