@@ -1,4 +1,4 @@
-import { type NavigationContainerRef, getPathFromState } from '@react-navigation/core';
+import { type NavigationContainerRef, type Route, getPathFromState } from '@react-navigation/core';
 import {
     CommonActions,
     StackActions,
@@ -8,9 +8,12 @@ import {
     type NavigationContainerEventMap,
 } from '@react-navigation/native';
 
+import { Analytics } from '..';
+
 export interface INavigationService {
     init: (navigatorRef: NavigationContainerRef<any>) => void;
     getPath: () => string;
+    getCurrentRoute: () => Route<string> | null | undefined;
     navigate: (routeName: string, params?: object) => void;
     push: (routeName: string, params?: object) => void;
     popToTop: () => void;
@@ -32,28 +35,37 @@ export class NavigationClass implements INavigationService {
         this.nav = navigatorRef;
     };
 
+    getCurrentRoute = () => {
+        return this.nav ? this.nav.getCurrentRoute() : null;
+    };
+
     getPath = () => {
         return this.nav ? getPathFromState(this.nav.getRootState()) : '';
     };
 
     navigate = (routeName: string, params = {}) => {
         !!this.nav && this.nav.dispatch(CommonActions.navigate(routeName, params));
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     push = (routeName: string, params = {}) => {
         !!this.nav && this.nav.dispatch(StackActions.push(routeName, params));
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     popToTop = () => {
         !!this.nav && this.nav.dispatch(StackActions.popToTop());
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     goBack = () => {
         !!this.nav && this.nav.dispatch(CommonActions.goBack());
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     reset = (state: PartialState<NavigationState>) => {
         !!this.nav && this.nav.dispatch(CommonActions.reset(state));
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     resetOn = (name: string, params?: object) => {
@@ -64,10 +76,12 @@ export class NavigationClass implements INavigationService {
                     routes: [{ name, params }],
                 }),
             );
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     replace = (name: string, params?: object | undefined) => {
         !!this.nav && this.nav.dispatch(StackActions.replace(name, params));
+        Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
     onChange = (name: keyof NavigationContainerEventMap, callBack: EventListenerCallback<NavigationContainerEventMap, any>) => {

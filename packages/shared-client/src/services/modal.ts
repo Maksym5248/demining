@@ -43,7 +43,6 @@ export class Modal implements IModal {
     }
 
     show(name: string, propsForComponent = {}, propsForModal = {}) {
-        this.analytics.modal(name);
         Object.assign(this.visibleModals, {
             [name]: {
                 name,
