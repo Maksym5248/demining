@@ -8,13 +8,13 @@ platform :android do
     # Build the release AAB
     gradle(
       task: "bundleProdRelease",
-      project_dir: "./apps/ammo/android"
+      project_dir: "./android"
     )
     
     # Upload to Google Play
     upload_to_play_store(
       track: 'alpha',
-      aab: './apps/ammo/android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
+      aab: './android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
       skip_upload_images: true,
       skip_upload_screenshots: true
     )
