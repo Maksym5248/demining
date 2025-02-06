@@ -15,7 +15,9 @@ platform :android do
       aab: './android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
       json_key: "./config/google-play-service-account.json",
       skip_upload_images: true,
-      skip_upload_screenshots: true
+      skip_upload_screenshots: true,
+      skip_upload_apk: true,
+      package_name: 'com.demining.ammo.prod'
     )
   end
 end
