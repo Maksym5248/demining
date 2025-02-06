@@ -41,7 +41,7 @@ jobs:
           echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_PROD }}" | base64 --decode > ./config/google-services.json
           echo "${{ secrets.AMMO_SIGNING_PROD }}" | base64 --decode > ./config/gradle.sign.properties
           echo "${{ secrets.SENTRY_PROPERTIES }}" | base64 --decode > ./config/sentry.properties
-          echo "${{ secrets.GOOGLE_PLAY_ACCOUNT }}" > ./config/google-play-service-account.json
+          echo "${{ secrets.GOOGLE_PLAY_ACCOUNT }}" | base64 --decode > ./config/google-play-service-account.json
     - name: Run progject configuration file
       working-directory: ./apps/ammo
       run: yarn prepare:env
