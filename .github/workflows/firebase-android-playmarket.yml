@@ -33,6 +33,7 @@ jobs:
     - name: Create envoirment files
       working-directory: ./apps/ammo
       run: |
+          mkdir ./config
           echo "${{ secrets.AMMO_ENV_PROD }}" | base64 --decode > ./config/env
           echo "${{ secrets.AMMO_KEY_KEYSTORE_PROD }}" | base64 --decode > ./config/ammo.keystore
           echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_PROD }}" | base64 --decode > ./config/google-services.json
