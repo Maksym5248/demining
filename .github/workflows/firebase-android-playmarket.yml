@@ -22,6 +22,14 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: '17'
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+          ruby-version: '3.0'
+          bundler-cache: true
+    - name: Install dependencies
+      working-directory: ./apps/ammo
+      run: bundle install        
     - name: Create envoirment files
       working-directory: ./apps/ammo
       run: |
@@ -41,15 +49,15 @@ jobs:
           ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle
-    - name: Install Firebase CLI
-      run: yarn global add firebase-tools
-    - name: Build APK
-      working-directory: apps/ammo
-      run: yarn bundle:prod
-    - name: Create service account
-      uses: 'google-github-actions/auth@v2'
-      with:
-          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
-    - name: Upload to Firebase App Distribution
+    - name: Set up Google Play credentials
       working-directory: ./apps/ammo
-      run: firebase appdistribution:distribute ./android/app/build/outputs/apk/dev/release/app-dev-release.apk --app "${{ secrets.FIREBASE_AMMO_APP_ID_ANDROID_DEV }}" --groups testers
+      run: |
+        mkdir -p ~/.fastlane
+        echo "${{ secrets.GOOGLE_PLAY_ACCOUNT }}" > ~/.fastlane/google-play-service-account.json
+      env:
+        GOOGLE_PLAY_ACCOUNT: ${{ secrets.GOOGLE_PLAY_ACCOUNT }}
+    - name: Build and deploy to Google Play
+      working-directory: ./apps/ammo
+      run: bundle exec fastlane android deploy_to_playstore
+      env:
+        GOOGLE_PLAY_ACCOUNT: ${{ secrets.GOOGLE_PLAY_ACCOUNT }}
