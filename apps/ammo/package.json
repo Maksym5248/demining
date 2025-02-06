@@ -2,7 +2,7 @@
     "name": "ammo",
     "private": true,
     "version": "1.0.2",
-    "build-number": 14,
+    "build-number": 15,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
         "ios": "react-native run-ios --scheme=\"ammo.dev\" --simulator=\"iPhone 16\"",
