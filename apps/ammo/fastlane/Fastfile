@@ -13,9 +13,9 @@ platform :android do
     upload_to_play_store(
       track: 'alpha',
       aab: './android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
-      json_key: "./config/google-play-service-account.json"
+      json_key: "./config/google-play-service-account.json",
       skip_upload_images: true,
-      skip_upload_screenshots: true,
+      skip_upload_screenshots: true
     )
   end
 end
