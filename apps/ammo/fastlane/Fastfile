@@ -1,5 +1,3 @@
-google_play_service_account_json_key_file = ENV["GOOGLE_PLAY_ACCOUNT"] || "~/.fastlane/google-play-service-account.json"
-
 default_platform(:android)
 
 platform :android do
@@ -15,9 +13,9 @@ platform :android do
     upload_to_play_store(
       track: 'alpha',
       aab: './android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
+      json_key: "./config/google-play-service-account.json"
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      json_key: google_play_service_account_json_key_file
     )
   end
 end
