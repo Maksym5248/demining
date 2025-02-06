@@ -1,8 +1,8 @@
-name: Publish Android App to Firebase App Distribution
+name: Publish Android App to playmarket
 on:
     push:
         branches:
-          - dev
+          - main
         paths:
           - 'apps/ammo/**'
 jobs:
@@ -25,11 +25,11 @@ jobs:
     - name: Create envoirment files
       working-directory: ./apps/ammo
       run: |
-        echo "${{ secrets.AMMO_ENV_DEV }}" | base64 --decode > ./config/env
-        echo "${{ secrets.AMMO_KEY_KEYSTORE_DEV }}" | base64 --decode > ./config/ammo.keystore
-        echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_DEV }}" | base64 --decode > ./config/google-services.json
-        echo "${{ secrets.AMMO_SIGNING_DEV }}" | base64 --decode > ./config/gradle.sign.properties
-        echo "${{ secrets.SENTRY_PROPERTIES }}" | base64 --decode > ./config/sentry.properties
+          echo "${{ secrets.AMMO_ENV_PROD }}" | base64 --decode > ./config/env
+          echo "${{ secrets.AMMO_KEY_KEYSTORE_PROD }}" | base64 --decode > ./config/ammo.keystore
+          echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_PROD }}" | base64 --decode > ./config/google-services.json
+          echo "${{ secrets.AMMO_SIGNING_PROD }}" | base64 --decode > ./config/gradle.sign.properties
+          echo "${{ secrets.SENTRY_PROPERTIES }}" | base64 --decode > ./config/sentry.properties
     - name: Run progject configuration file
       working-directory: ./apps/ammo
       run: yarn prepare:env
@@ -45,7 +45,7 @@ jobs:
       run: yarn global add firebase-tools
     - name: Build APK
       working-directory: apps/ammo
-      run: yarn apk:dev
+      run: yarn bundle:prod
     - name: Create service account
       uses: 'google-github-actions/auth@v2'
       with:

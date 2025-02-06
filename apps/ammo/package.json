@@ -21,7 +21,8 @@
         "check:prettier": "prettier --write",
         "check:eslint": "eslint --fix",
         "update:build-number": "/bin/sh ./bin/update-build-number.sh",
-        "clone": "/bin/sh ./bin/clone-base64.sh"
+        "clone": "/bin/sh ./bin/clone-base64.sh",
+        "prepare:env": "/bin/sh ./bin/prepare-env.sh"
     },
     "dependencies": {
         "@firebase/firestore-types": "^3.0.3",
