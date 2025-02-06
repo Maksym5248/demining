@@ -14,7 +14,7 @@ platform :android do
     # Upload to Google Play
     upload_to_play_store(
       track: 'alpha',
-      aab: './android/app/build/outputs/bundle/release/prod/app-prodRelease.aab',
+      aab: './android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
       skip_upload_images: true,
       skip_upload_screenshots: true
     )
