@@ -1,0 +1,46 @@
+import { ThemeManager } from '~/styles';
+
+export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
+    container: {
+        backgroundColor: theme.colors.white,
+        borderRadius: theme.radius.M,
+        position: 'relative',
+        ...theme.shadow.light,
+    },
+    content: {
+        flex: 1,
+        padding: 0,
+    },
+    info: {
+        flex: 1,
+        gap: theme.spacing.XXS,
+        padding: theme.spacing.S,
+        alignContent: 'flex-start',
+        justifyContent: 'flex-end',
+        backgroundColor: theme.colors.white,
+        borderBottomLeftRadius: theme.radius.M,
+        borderBottomRightRadius: theme.radius.M,
+    },
+    svg: {
+        width: 80,
+        height: 80,
+        marginBottom: theme.spacing.XS,
+        alignSelf: 'center',
+    },
+    image: {
+        width: '100%',
+        aspectRatio: 2,
+        borderTopLeftRadius: theme.radius.M,
+        borderTopRightRadius: theme.radius.M,
+    },
+    tags: {
+        position: 'absolute',
+        width: '100%',
+        aspectRatio: 2,
+        padding: theme.spacing.XS,
+        gap: theme.spacing.XXS,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+    },
+}));

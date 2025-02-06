@@ -30,8 +30,10 @@ import {
     OrganizationStore,
     ViewerStore,
     type IAuthUser,
+    createCurrentUser,
+    ExplosiveStore,
+    type IExplosiveStore,
 } from 'shared-my-client';
-import { createCurrentUser, ExplosiveStore, type IExplosiveStore } from 'shared-my-client/stores';
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';

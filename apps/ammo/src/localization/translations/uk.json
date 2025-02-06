@@ -1,0 +1,95 @@
+{
+    "core": {
+        "bottom-sheet": {
+            "cancel": "Скасувати",
+            "close": "Закрити"
+        }
+    },
+    "components": {
+        "list": {
+            "empty": "Усписку немає даних",
+            "emptySearch": "Немає співпадінь за результатом пошуку"
+        }
+    },
+    "screens": {
+        "home": {
+            "title": "Довідник",
+            "search": "Пошук у всіх категоріях",
+            "categories": "Категорії",
+            "explosive": "Вибухові речовини",
+            "explosive-object": "Боєприпаси",
+            "explosive-device": "Засоби підриву"
+        },
+        "search": {
+            "title": "Пошук",
+            "search": "Пошук у всіх категоріях"
+        },
+        "explosive-details": {
+            "title": "Деталі",
+            "details": "Деталі",
+            "name": "Назва",
+            "fullName": "Повна назва",
+            "formula": "Формула",
+            "description": "Опис",
+            "composition": "Склад",
+            "container": "Склад",
+            "explosiveCharacteristic": "Вибухові характеристики",
+            "detonationSpeed": "Швидкість детонації, м/с",
+            "brisance": "Брезантність, мм",
+            "explosiveVolume": "Фугасність, см³",
+            "trotylEquivalent": "Тротиловий еквівалент",
+            "sensitivityToImpact": "Чутливість до удару",
+            "sensitivityToTemperature": "Чутливість до температури",
+            "sensitivityToFriction": "Чутливість до тертя",
+            "phisicalCharacteristic": "Фізико-хімічні характеристики",
+            "density": "Плотність, кг/м",
+            "meltingPoint": "Т плавлення, ºС",
+            "ignitionPoint": "Т запалення, ºС"
+        },
+        "explosive-object-details": {
+            "title": "Деталі",
+            "details": "Деталі",
+            "name": "Маркування",
+            "type": "Тип",
+            "component": "Частина",
+            "classification": "Класифікація",
+            "country": "Країна",
+            "characteristic": "Характеристики",
+            "caliber": "Калібр",
+            "material": "Матеріал",
+            "fuse": "Підривники",
+            "size": "Розмір, довжина/ширина/висота, мм",
+            "size2": "Розмір, діаметр/висота, мм",
+            "weight": "Вага, кг",
+            "fillers": "Спорядження, кг",
+            "temperature": "Температура, °C",
+            "purpose": "Призначення",
+            "structure": "Будова",
+            "action": "Принцип дії"
+        },
+        "explosive-device-details": {
+            "title": "Деталі",
+            "details": "Деталі",
+            "name": "Назва",
+            "type": "Тип",
+            "characteristic": "Характеристики",
+            "size": "Розмір, довжина/ширина/висота, мм",
+            "size2": "Розмір, діаметр/висота, мм",
+            "weight": "Вага, кг",
+            "fillers": "Спорядження, кг",
+            "purpose": "Призначення",
+            "structure": "Будова",
+            "action": "Принцип дії"
+        }
+    },
+    "modals": {
+        "gallery": {
+            "of": "з"
+        }
+    },
+    "dictionaries": {
+        "explosive": "Вибухові речовини",
+        "explosive-object": "Боєприпаси",
+        "explosive-device": "Засоби підриву"
+    }
+}

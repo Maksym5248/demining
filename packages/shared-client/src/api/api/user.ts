@@ -24,7 +24,7 @@ export class UserAPI {
     constructor(
         private db: {
             user: IDBBase<IUserDB>;
-            organization: IDBBase<IOrganizationDB>;
+            organization?: IDBBase<IOrganizationDB>;
             setOrganizationId: (id: string) => void;
             removeOrganizationId: () => void;
         },
@@ -33,14 +33,14 @@ export class UserAPI {
         },
     ) {}
 
-    getIds = <T>(arr: T[], key: string) => uniq(map(arr, key).filter((el) => !!el)) as string[];
+    getIds = <T>(arr: T[], key: string) => uniq(map(arr, key).filter(el => !!el)) as string[];
 
     getUserOrganization = async (user: IUserDB | null): Promise<IUserOrganizationDTO | null> => {
         if (!user || !user?.organizationId) {
             return null;
         }
 
-        const res = await this.db.organization.get(user.organizationId);
+        const res = await this.db.organization?.get(user.organizationId);
 
         if (!res) {
             return null;
@@ -77,7 +77,7 @@ export class UserAPI {
         const organizationIds = this.getIds(users, 'organizationId');
 
         const organizations = (await Promise.all(
-            organizationIds.map((organizationId) => this.db.organization.get(organizationId)),
+            organizationIds.map(organizationId => this.db.organization?.get(organizationId)),
         )) as IOrganizationDB[];
 
         const collection = keyBy(organizations, 'id');

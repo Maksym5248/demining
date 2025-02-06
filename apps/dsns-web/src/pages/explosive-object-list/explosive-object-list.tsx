@@ -25,8 +25,8 @@ const ListItem = observer(({ item }: { item: IExplosiveObject }) => {
         </List.Item>
     );
 
-    return item.isCurrentOrganization ? (
-        <Badge.Ribbon text="+" color="green">
+    return !item.isConfirmed ? (
+        <Badge.Ribbon text={item.isPending ? 'Очікує' : 'Відхилено'} color={item.isPending ? 'yellow' : 'red'}>
             {children}
         </Badge.Ribbon>
     ) : (

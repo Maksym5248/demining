@@ -15,6 +15,7 @@ import { CONFIG } from './config';
 
 import './index.css';
 
+!!CONFIG.IS_DEBUG && Logger.enable();
 Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
 dates.init(Timestamp);
 const store = new RootStore();

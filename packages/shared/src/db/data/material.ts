@@ -1,6 +1,7 @@
 import { MATERIAL } from '../enum';
+import { type IMaterialNotDB } from '../types';
 
-export const materialsData = [
+export const materialsData: IMaterialNotDB[] = [
     {
         id: MATERIAL.METAL,
         name: 'Метал',

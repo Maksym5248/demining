@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type ErrorInner } from '~/common';
+import { Logger } from '~/services';
 
 import { RequestStateModel } from './RequestStateModel';
 
@@ -56,9 +57,9 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
             this._onSuccuss?.();
             this.requestState.success();
         } catch (e) {
-            console.log('TEST: ERROR', e);
             this._onError?.(e as Error);
             this.requestState.failure(e as Error);
+            Logger.error((e as Error)?.message);
             throw e;
         }
 

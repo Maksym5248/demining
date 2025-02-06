@@ -1,39 +1,50 @@
-import { useCallback } from 'react';
+import React from 'react';
 
-import { View, Text } from 'react-native';
+import { observer } from 'mobx-react';
+import { View } from 'react-native';
 
-import { Carousel, type IRenderItemParams } from '~/core';
-import { useDevice } from '~/styles';
+import { SCREENS } from '~/constants';
+import { Card, Header, Icon, Svg, Text, Touchable } from '~/core';
+import { useViewModel } from '~/hooks';
+import { useTranslate } from '~/localization';
+import { Navigation } from '~/services';
+import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './home.style';
+import { homeVM, type IHomeVM } from './home.vm';
 
-export const HomeScreen = () => {
-    const device = useDevice();
+export const HomeScreen = observer(() => {
+    const theme = useTheme();
     const s = useStyles();
+    const styles = useStylesCommon();
+    const t = useTranslate('screens.home');
+    const tDictionaries = useTranslate('dictionaries');
 
-    const renderFooter = useCallback(() => {
-        return <View />;
-    }, []);
+    const vm = useViewModel<IHomeVM>(homeVM);
 
-    const renderItem = useCallback(
-        ({ index }: IRenderItemParams<object>) => {
-            return <View style={index % 2 ? s.green : s.red} />;
-        },
-        [s],
-    );
+    const onPressSearchButton = () => {
+        Navigation.navigate(SCREENS.SEARCH);
+    };
 
     return (
-        <View style={s.container}>
-            <Text>Sign Up Screen</Text>
-            <Carousel
-                width={device.window.width}
-                itemWidth={device.window.width}
-                style={s.carousel}
-                containerStyle={s.carouselContent}
-                data={[{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]}
-                renderItem={renderItem}
-                renderFooter={renderFooter}
-            />
+        <View style={styles.container}>
+            <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
+            <View style={s.imageContainer}>
+                <Svg name="logo" style={s.image} />
+            </View>
+            <Touchable style={s.searchButton} contentStyle={s.searchButtonContent} onPress={onPressSearchButton}>
+                <Text type="p4" text={t('search')} color={theme.colors.textSecondary} />
+                <Icon name="search" color={theme.colors.textSecondary} />
+            </Touchable>
+
+            <View style={s.content}>
+                <Text type="h4" text={t('categories')} />
+                <View style={s.categories}>
+                    {vm.categories.map(category => (
+                        <Card key={category.id} style={s.item} title={tDictionaries(category.type)} svg={category.svg} />
+                    ))}
+                </View>
+            </View>
         </View>
     );
-};
+});

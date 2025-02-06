@@ -4,12 +4,13 @@ export type IPalette =
     | 'black'
     | 'grey4E'
     | 'grey92'
+    | 'greyf2'
     | 'creamF5'
     | 'white'
     | 'green78'
     | 'redEF'
     | 'transparent'
-    | 'greenF7'
+    | 'blueF8'
     | 'blueB4'
     | 'blackTransparent01';
 
@@ -22,13 +23,14 @@ export type IColor =
     | 'border'
     | 'button'
     | 'background'
-    | 'backgroundChat'
     | 'backgroundModal'
     | 'textSecondary'
     | 'accent'
     | 'accentLight'
     | 'error'
+    | 'text'
     | 'transparent'
+    | 'link'
     | 'ripplePrimary';
 
 export interface IThemeTextStyle {
@@ -58,6 +60,8 @@ export type IShadow =
       }
     | undefined;
 
+export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'label';
+
 export interface IBaseThemeSchema {
     radius: Record<'M', number>;
     colors: Record<IColor, string>;
@@ -66,10 +70,14 @@ export interface IBaseThemeSchema {
     spacing: Record<'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL', number>;
     fontSize: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5', number>;
 }
+export type ITextStyle = Record<ITextStyleType, IThemeTextStyle>;
+export type IElementStyle = Record<'header', IStyle>;
+export type IPaletteStyle = Record<IPalette, string>;
+export type IShadowStyle = Record<'light', IShadow>;
 
 export interface IThemeSchema extends IBaseThemeSchema {
-    palette: Record<IPalette, string>;
-    element: Record<'header', IStyle>;
-    text: Record<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5', IThemeTextStyle>;
-    shadow: Record<'light', IShadow>;
+    palette: IPaletteStyle;
+    element: IElementStyle;
+    text: ITextStyle;
+    shadow: IShadowStyle;
 }

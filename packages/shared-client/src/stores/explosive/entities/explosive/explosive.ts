@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IExplosiveAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -10,10 +11,14 @@ import { type IExplosiveData, updateExplosiveDTO, createExplosive } from './expl
 
 export interface IExplosive {
     id: string;
+    imageUri?: string | null;
     data: IExplosiveData;
     isCurrentOrganization: boolean;
     displayName: string;
+    isEditable: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveData>]>;
+    isConfirmed: boolean;
+    isPending: boolean;
 }
 
 interface IApi {
@@ -25,7 +30,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class Explosive implements IExplosive {
@@ -46,6 +51,10 @@ export class Explosive implements IExplosive {
         return this.data.id;
     }
 
+    get imageUri() {
+        return this.data.imageUri;
+    }
+
     get displayName() {
         return this.data.name;
     }
@@ -54,8 +63,20 @@ export class Explosive implements IExplosive {
         Object.assign(this.data, data);
     }
 
+    get isConfirmed() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
+    }
+
+    get isPending() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.PENDING;
+    }
+
     get isCurrentOrganization() {
-        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
+    }
+
+    get isEditable() {
+        return !!this.getStores()?.viewer?.user?.isAuthor;
     }
 
     update = new RequestModel({

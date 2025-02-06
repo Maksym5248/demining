@@ -1,6 +1,6 @@
-import { type IStyle } from 'react-native-theme-mk';
+import { type IElementStyle } from './types';
 
-export const createElementsStyles = (): Record<string, IStyle> => ({
+export const createElementsStyles = (): IElementStyle => ({
     header: {
         height: 52,
     },

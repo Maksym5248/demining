@@ -1,7 +1,7 @@
 import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 import { type IExplosiveDeviceActionDB, type IExplosiveDeviceDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
 
 import { type IExplosiveDeviceDTO } from '../dto';
 
@@ -14,6 +14,7 @@ export interface IExplosiveDeviceAPI {
     getListDetonators: (query?: IQuery) => Promise<IExplosiveDeviceDTO[]>;
     get: (id: string) => Promise<IExplosiveDeviceDTO>;
     sum: (query?: IQuery) => Promise<{ explosive: number; detonator: number }>;
+    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
@@ -108,5 +109,9 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
             explosive,
             detonator,
         };
+    };
+
+    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => {
+        return this.db.explosiveDevice.subscribe(args, callback);
     };
 }

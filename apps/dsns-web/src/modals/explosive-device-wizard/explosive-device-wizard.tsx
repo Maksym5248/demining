@@ -1,14 +1,15 @@
-import { Form, Drawer, Input, Spin } from 'antd';
+import { Form, Drawer, Input, Spin, InputNumber, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData, explosiveObjectStatuses, measurement, MIME_TYPE } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
-import { WizardButtons, Select, WizardFooter } from '~/components';
+import { WizardButtons, Select, WizardFooter, UploadFile, FieldSize, FieldSection, FieldImageUris, FieldFiller } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
+import { AssetStorage } from '~/services';
 
 import { s } from './explosive-device-wizard.style';
-import { type IExplosiveForm } from './explosive-device-wizard.types';
+import { type IExplosiveDeviceForm } from './explosive-device-wizard.types';
 
 interface Props {
     id?: string;
@@ -17,16 +18,35 @@ interface Props {
     hide: () => void;
 }
 
-const typeOptions = [
-    {
-        label: 'Вибухова речовна',
-        value: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
+const getParams = ({
+    size,
+    purposeImageUris,
+    purposeDescription,
+    structureImageUris,
+    structureDescription,
+    actionImageUris,
+    actionDescription,
+    ...values
+}: IExplosiveDeviceForm) => ({
+    ...values,
+    size: {
+        length: size?.length ? measurement.mmToM(size?.length) : null,
+        width: size?.width ? measurement.mmToM(size?.width) : null,
+        height: size?.height ? measurement.mmToM(size?.height) : null,
     },
-    {
-        label: 'Засіб підриву',
-        value: EXPLOSIVE_DEVICE_TYPE.DETONATOR,
+    purpose: {
+        imageUris: purposeImageUris,
+        description: purposeDescription,
     },
-];
+    structure: {
+        imageUris: structureImageUris,
+        description: structureDescription,
+    },
+    action: {
+        imageUris: actionImageUris,
+        description: actionDescription,
+    },
+});
 
 export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const store = useStore();
@@ -36,13 +56,13 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
 
     const isEdit = !!id;
 
-    const onFinishCreate = async (values: IExplosiveForm) => {
-        await store.explosiveDevice.create.run(values);
+    const onFinishCreate = async (values: IExplosiveDeviceForm) => {
+        await store.explosiveDevice.create.run(getParams(values));
         hide();
     };
 
-    const onFinishUpdate = async (values: IExplosiveForm) => {
-        await item?.update.run(values);
+    const onFinishUpdate = async (values: IExplosiveDeviceForm) => {
+        await item?.update.run(getParams(values));
         hide();
     };
 
@@ -50,8 +70,6 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
         !!id && store.explosiveDevice.remove.run(id);
         hide();
     };
-
-    const isEditable = !!store.viewer.user?.isAuthor || !!item?.isCurrentOrganization;
 
     return (
         <Drawer
@@ -61,7 +79,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
             placement="right"
             width={500}
             onClose={hide}
-            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
+            extra={<WizardButtons {...wizard} isEditable={!!item?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (
@@ -71,13 +89,76 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={item ? { ...item.data } : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }}>
+                    initialValues={
+                        item
+                            ? {
+                                  ...item.data,
+                                  size: {
+                                      length: item?.data.size?.length ? measurement.mToMm(item?.data.size?.length) : null,
+                                      width: item?.data.size?.width ? measurement.mToMm(item?.data.size?.width) : null,
+                                      height: item?.data.size?.height ? measurement.mToMm(item?.data.size?.height) : null,
+                                  },
+                                  purposeImageUris: item?.data.purpose?.imageUris ?? [],
+                                  purposeDescription: item?.data.purpose?.description ?? '',
+                                  structureImageUris: item?.data.structure?.imageUris ?? [],
+                                  structureDescription: item?.data.structure?.description ?? '',
+                                  actionImageUris: item?.data.action?.imageUris ?? [],
+                                  actionDescription: item?.data.action?.description ?? '',
+                                  imageUris: item?.data?.imageUris ? item?.data.imageUris : [],
+                              }
+                            : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }
+                    }>
+                    <Form.Item name="imageUri" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            {({ getFieldValue, setFieldValue }) => {
+                                const imageUri = getFieldValue('imageUri');
+
+                                const onChangeFile = async ({ file }: { file: File | null }) => {
+                                    if (!file) return;
+
+                                    const uri = await AssetStorage.image.create(file);
+                                    setFieldValue('imageUri', uri);
+                                };
+
+                                return (
+                                    <UploadFile
+                                        onChangeFile={onChangeFile}
+                                        type="image"
+                                        accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
+                                        uri={imageUri}
+                                    />
+                                );
+                            }}
+                        </Form.Item>
+                    </Form.Item>
+                    <FieldImageUris name="imageUris" />
+                    {store.viewer.user?.isAuthor && (
+                        <Form.Item label="Статус" name="status">
+                            <Select options={explosiveObjectStatuses} />
+                        </Form.Item>
+                    )}
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select options={typeOptions} />
+                        <Select
+                            options={explosiveDeviceTypeData.map(el => ({
+                                value: el.id,
+                                label: el.name,
+                            }))}
+                        />
                     </Form.Item>
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
+                    <FieldSize name="size" />
+                    <Form.Item label="Вага, кг" name="chargeWeight">
+                        <InputNumber placeholder="Ввести" />
+                    </Form.Item>
+                    <FieldFiller label="Спорядження" name="filler" />
+                    <Divider />
+                    <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
+                    <Divider />
+                    <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
+                    <Divider />
+                    <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
                     <WizardFooter
                         {...wizard}
                         onCancel={hide}

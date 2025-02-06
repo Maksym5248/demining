@@ -9,7 +9,7 @@ import { Icon } from '../icon';
  * Do not use this component for loading images, use UploadImages instead
  */
 interface SelectTemplateProps {
-    file: File | null;
+    file?: File | null;
     onChangeFile: (options: { file: File | null }) => void;
     accept?: string | string[];
     type?: 'document' | 'image';

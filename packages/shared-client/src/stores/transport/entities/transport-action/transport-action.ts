@@ -8,6 +8,7 @@ import { type ITransport, Transport } from '../transport/transport';
 
 export interface ITransportAction {
     data: ITransportActionData;
+    id: string;
     updateFields(data: Partial<ITransportActionData>): void;
     transport: ITransport;
 }
@@ -33,6 +34,10 @@ export class TransportAction implements ITransportAction {
         this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     updateFields(data: Partial<ITransportActionData>) {

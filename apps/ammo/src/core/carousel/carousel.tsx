@@ -87,7 +87,7 @@ const CarouselComponent = forwardRef<ICarouselRef, ICarouselProps>((props: ICaro
         onStart: () => {
             runOnJS(onCancelUpdateIndex)();
         },
-        onActive: (e) => {
+        onActive: e => {
             const maxIndex = dataLength.value - 1;
             if ((currentIndex.value === 0 && e.translationX > 0) || (currentIndex.value === maxIndex && e.translationX < 0)) {
                 const translationX = e.translationX / 3;
@@ -96,7 +96,7 @@ const CarouselComponent = forwardRef<ICarouselRef, ICarouselProps>((props: ICaro
                 offset.value = e.translationX;
             }
         },
-        onEnd: (e) => {
+        onEnd: e => {
             const { velocityX = 0, translationX = 0 } = e;
 
             const nextIndex = Math.round(translationX > 0 ? currentIndex.value - 1 : currentIndex.value + 1);
@@ -146,7 +146,7 @@ const CarouselComponent = forwardRef<ICarouselRef, ICarouselProps>((props: ICaro
     );
 
     useImperativeHandle(ref, () => ({
-        animatedToIdex: (nextIndex) => {
+        animatedToIdex: nextIndex => {
             if (currentIndex.value === nextIndex) {
                 return;
             }
@@ -185,6 +185,6 @@ const CarouselComponent = forwardRef<ICarouselRef, ICarouselProps>((props: ICaro
     );
 });
 
-CarouselComponent.displayName = 'Carousel';
+CarouselComponent.displayName = 'CarouselContainer';
 
-export const Carousel = memo(CarouselComponent);
+export const CarouselContainer = memo(CarouselComponent);

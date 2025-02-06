@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 import { type IExplosiveDevice } from 'shared-my-client';
 
-import { Icon, List, ListHeader } from '~/components';
+import { Icon, List, ListHeader, Image } from '~/components';
 import { MODALS, WIZARD_MODE } from '~/constants';
 import { useStore, useRouteTitle, useSearch } from '~/hooks';
 import { Modal } from '~/services';
@@ -28,7 +28,7 @@ const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
     const children = (
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
-                avatar={<Icon.FileTextOutlined />}
+                avatar={<Image src={item.data.imageUri ?? undefined} width={70} />}
                 title={item.data.name}
                 description={
                     <Space css={s.listItemDesc}>
@@ -39,8 +39,8 @@ const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
         </List.Item>
     );
 
-    return item.isCurrentOrganization ? (
-        <Badge.Ribbon text="+" color="green">
+    return !item.isConfirmed ? (
+        <Badge.Ribbon text={item.isPending ? 'Очікує' : 'Відхилено'} color={item.isPending ? 'yellow' : 'red'}>
             {children}
         </Badge.Ribbon>
     ) : (

@@ -44,6 +44,7 @@ export interface ISearchParams<T> {
     fields?: Path<T>[];
     searchBy?: string;
     minSearchLength?: number;
+    debounce?: number;
 }
 
 export interface Search<T> {
@@ -52,4 +53,9 @@ export interface Search<T> {
     setSearchFields: (fields: string[]) => void;
     setSearchBy: (searchBy: string, shouldRun?: boolean) => void;
     items: T[];
+}
+
+export enum OrderBy {
+    Asc = 'Asc',
+    Desc = 'Desc',
 }

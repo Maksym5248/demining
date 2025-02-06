@@ -27,8 +27,8 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
     }
 
     componentDidMount() {
-        this._removeListener = Modal.onChange(async (nextState) => {
-            this.setState((prev) => ({
+        this._removeListener = Modal.onChange(async nextState => {
+            this.setState(prev => ({
                 ...prev,
                 visibleModals: nextState,
             }));
@@ -40,7 +40,7 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
     }
 
     onModalHide = (name: string) => {
-        Modal.removeVisibleModal(name);
+        Modal.hide(name);
     };
 
     onModalShow = (name: string, propsForComponent = {}) => {

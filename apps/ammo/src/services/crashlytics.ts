@@ -1,20 +1,32 @@
-import { type ICrashlytics, type ILogger } from 'shared-my-client';
+import { setTag, captureException, addBreadcrumb, setUser, init, type Breadcrumb } from '@sentry/react-native';
+import { type IPrimitive, type ICrashlytics, type ILogger, type ICrashlyticsUser } from 'shared-my-client';
+
+import { CONFIG } from '~/config';
 
 export class CrashlyticsClass implements ICrashlytics {
     constructor(private logger: ILogger) {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    init() {}
+
+    init() {
+        init({
+            dsn: CONFIG.SENTRY_DSN,
+            environment: CONFIG.ENV,
+        });
+    }
 
     error = (message: string, e: any) => {
-        this.logger.error(e?.message);
+        this.logger.error(message, e?.message);
+        captureException(message, e);
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    addBreadcrumb = () => {};
+    addBreadcrumb = (breadcrumb: Breadcrumb) => {
+        addBreadcrumb(breadcrumb);
+    };
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setUser = async () => {};
+    setUser = (user: ICrashlyticsUser | null) => {
+        setUser(user);
+    };
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setTag = async () => {};
+    setTag = (key: string, value: IPrimitive) => {
+        setTag(key, value);
+    };
 }

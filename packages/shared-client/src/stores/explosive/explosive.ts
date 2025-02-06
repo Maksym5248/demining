@@ -1,23 +1,36 @@
 import { makeAutoObservable } from 'mobx';
+import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
-import { type IExplosiveAPI } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type IExplosiveDTO, type IExplosiveAPI } from '~/api';
+import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, ListModel, RequestModel } from '~/models';
+import {
+    CollectionModel,
+    type IListModel,
+    type IOrderModel,
+    type ISearchModel,
+    ListModel,
+    OrderModel,
+    RequestModel,
+    SearchModel,
+} from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IExplosive, type IExplosiveData, createExplosive, createExplosiveDTO, Explosive } from './entities';
+import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveStore {
     collection: CollectionModel<IExplosive, IExplosiveData>;
-    list: ListModel<IExplosive, IExplosiveData>;
+    list: IListModel<IExplosive, IExplosiveData>;
     create: RequestModel<[ICreateValue<IExplosiveData>]>;
     remove: RequestModel<[string]>;
     fetchList: RequestModel<[search?: string]>;
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
     fetchByIds: RequestModel<[string[]]>;
+    subscribe: RequestModel;
+    asArray: IExplosive[];
 }
 
 interface IApi {
@@ -29,7 +42,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class ExplosiveStore implements IExplosiveStore {
@@ -39,14 +52,30 @@ export class ExplosiveStore implements IExplosiveStore {
     collection = new CollectionModel<IExplosive, IExplosiveData>({
         factory: (data: IExplosiveData) => new Explosive(data, this),
     });
-    list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
+    list: IListModel<IExplosive, IExplosiveData>;
+    search: ISearchModel<IExplosive>;
+    order: IOrderModel<IExplosive>;
 
     constructor(params: { api: IApi; services: IServices; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
         this.getStores = params.getStores;
 
+        this.list = new ListModel<IExplosive, IExplosiveData>({ collection: this.collection });
+
+        this.search = new SearchModel(this.list, {
+            fields: ['displayName'],
+        });
+
+        this.order = new OrderModel(this.search, {
+            orderField: 'displayName',
+        });
+
         makeAutoObservable(this);
+    }
+
+    get asArray() {
+        return this.order.asArray;
     }
 
     create = new RequestModel({
@@ -71,6 +100,7 @@ export class ExplosiveStore implements IExplosiveStore {
     fetchList = new RequestModel({
         run: async (search?: string) => {
             const res = await this.api.explosive.getList({
+                ...getDictionaryFilter(this),
                 search,
                 limit: this.list.pageSize,
             });
@@ -84,6 +114,7 @@ export class ExplosiveStore implements IExplosiveStore {
         run: async (search?: string) => {
             const res = await this.api.explosive.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -113,10 +144,28 @@ export class ExplosiveStore implements IExplosiveStore {
 
     fetchByIds = new RequestModel({
         run: async (ids: string[]) => {
-            console.log('fetchByIds', ids);
             const res = await this.api.explosive.getByIds(ids);
             this.collection.setArr(res.map(createExplosive));
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosive.subscribe(
+                {
+                    where: {
+                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                    },
+                },
+                (values: ISubscriptionDocument<IExplosiveDTO>[]) => {
+                    const { create, update, remove } = data.sortByType<IExplosiveDTO, IExplosiveData>(values, createExplosive);
+
+                    this.list.push(create);
+                    this.collection.updateArr(update);
+                    this.collection.remove(remove);
+                },
+            );
+        },
     });
 }

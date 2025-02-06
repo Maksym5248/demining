@@ -1,6 +1,8 @@
 import { type ViewStyle } from 'react-native';
 
-export type ISvgName = 'logo';
+import { type svgImages } from '~/assets';
+
+export type ISvgName = keyof typeof svgImages;
 
 export interface ISvgProps {
     name: ISvgName;

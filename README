@@ -25,11 +25,19 @@ TODO
 - використати один спосіб завантаження даних для всіх картинок (видалити передавання в api картинок)
 
 // AMMO MOBILE
-- mobile app initial setup
-- create shared theme
-- map
-- form to useFormik
-- validation yup
-- normalize data, all data should be the same as we have in db not in dto
-- token expiration
++ modal for view images in carousel
++ create account in google play
++ automanage version and build numbers
++ integrate analitics
++ integrate crashlitics
+- automatic deploy
+- create modules in firestore for app info, user info (exist), permissions
+- app updater
+- filters
+- classification
+- touchable feedback
+- save image locally
+- check initialization app with internet connection, how this flow should work ? at first need to load images and check which images are laoded?
+
+
 

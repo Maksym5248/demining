@@ -6,6 +6,7 @@ export interface IAssetStorageBase {
     remove(id: string): Promise<void>;
     update(id: string, file: File): Promise<void>;
     getFileUrl(id: string): Promise<string>;
+    create(file: File): Promise<string>;
 }
 
 export interface IAssetStorage {

@@ -1,5 +1,10 @@
 import { Dimensions, Platform, type EmitterSubscription } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { initialWindowMetrics } from 'react-native-safe-area-context';
+
+import { CONFIG } from '~/config';
+
+import { toUpperFirst } from './string';
 
 function getOrientation(height: number, width: number) {
     return width < height ? Orientation.Portrait : Orientation.Landscape;
@@ -33,9 +38,10 @@ export interface IDevice {
     isSmallScreen: boolean;
     isShortScreen: boolean;
     screenAspectRatio: number;
+    appInfo: string;
 }
 
-class DeviceClass implements IDevice, IDeviceInternal {
+export class DeviceClass implements IDevice, IDeviceInternal {
     dimentsionSubscription: EmitterSubscription | null = null;
 
     get isAndroid() {
@@ -90,6 +96,16 @@ class DeviceClass implements IDevice, IDeviceInternal {
     }
     get screenAspectRatio() {
         return this.isPortrait ? this.window.height / this.window.width : this.window.width / this.window.height;
+    }
+
+    get appInfo() {
+        const name = DeviceInfo.getApplicationName();
+        const version = DeviceInfo.getVersion();
+        const buildId = DeviceInfo.getBuildNumber();
+
+        const envName = CONFIG.ENV === 'prod' ? ' ' : ` ${toUpperFirst(CONFIG.ENV)} `;
+
+        return `${toUpperFirst(name)}${envName}v${version} (${buildId})`;
     }
 
     addDimensionsEventListener(callback: any) {

@@ -1,4 +1,5 @@
 import { type Dayjs } from 'dayjs';
+import { isArray } from 'lodash';
 import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api';
@@ -41,7 +42,7 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
     typeId: value.typeId ?? null,
     component: value.component ?? null,
     countryId: value.countryId ?? null,
-    classItemIds: value.classItemIds ?? [],
+    classItemIds: (isArray(value.classItemIds) ? value.classItemIds : [value.classItemIds]).filter(Boolean),
     image: value.image,
     details: createExplosiveObjectDetailsDTO(value.details),
 });
@@ -52,7 +53,7 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,
     typeId: value.typeId ?? '',
     countryId: value.countryId ?? '',
-    classItemIds: value.classItemIds ?? [],
+    classItemIds: (isArray(value.classItemIds) ? value.classItemIds : [value.classItemIds]).filter(Boolean) as string[],
     image: value.image,
     details: createExplosiveObjectDetailsDTO(value.details),
 }));
@@ -63,7 +64,7 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
     typeId: value.typeId ?? '',
-    classItemIds: value.classItemIds ?? [],
+    classItemIds: (isArray(value.classItemIds) ? value.classItemIds : [value.classItemIds]).filter(Boolean),
     countryId: value.countryId ?? '',
     name: value?.name ?? '',
     status: value.status,

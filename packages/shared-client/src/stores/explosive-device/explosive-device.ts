@@ -1,9 +1,9 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
-import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO } from '~/api';
+import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -20,6 +20,7 @@ import {
     createExplosiveDeviceActionSum,
 } from './entities';
 import { SumExplosiveDeviceActions } from './sum-explosive-actions';
+import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveDeviceStore {
@@ -36,6 +37,7 @@ export interface IExplosiveDeviceStore {
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
+    subscribe: RequestModel;
 }
 
 interface IApi {
@@ -43,7 +45,7 @@ interface IApi {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 interface IServices {
@@ -107,6 +109,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveDevice.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
             });
 
@@ -119,6 +122,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveDevice.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -151,5 +155,27 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
             this.setSum(res);
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosiveDevice.subscribe(
+                {
+                    where: {
+                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                    },
+                },
+                (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {
+                    const { create, update, remove } = data.sortByType<IExplosiveDeviceDTO, IExplosiveDeviceData>(
+                        values,
+                        createExplosiveDevice,
+                    );
+
+                    this.list.push(create);
+                    this.collection.updateArr(update);
+                    this.collection.remove(remove);
+                },
+            );
+        },
     });
 }

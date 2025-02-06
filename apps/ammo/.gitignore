@@ -80,5 +80,15 @@ tsconfig.tsbuildinfo
 ios/tmp.xcconfig
 
 gradle.sign.properties
-ammo-dev.keystore
-ammo-prod.keystore
+ammo.keystore
+google-services.json
+GoogleService-Info.plist
+config/*
+sentry.properties
+
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+**/fastlane/.env.default
+**/android/app/api.json

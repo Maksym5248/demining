@@ -7,8 +7,6 @@ import { SCREENS } from '~/constants';
 import * as screens from '~/screens';
 import { useTheme } from '~/styles';
 
-import { TabNavigator } from './tab-navigator';
-
 const Stack = createNativeStackNavigator();
 
 export const StackNavigator = () => {
@@ -21,7 +19,7 @@ export const StackNavigator = () => {
             animation: 'slide_from_right' as StackAnimationTypes,
             animationTypeForReplace: 'push' as const,
         },
-        initialRouteName: SCREENS.MAIN,
+        initialRouteName: SCREENS.HOME,
     };
 
     return (
@@ -31,7 +29,11 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.SIGN_UP} component={screens.SignUpScreen} />
 
             {/* HOME */}
-            <Stack.Screen name={SCREENS.MAIN} component={TabNavigator} />
+            <Stack.Screen name={SCREENS.HOME} component={screens.HomeScreen} />
+            <Stack.Screen name={SCREENS.SEARCH} component={screens.SearchScreen} />
+            <Stack.Screen name={SCREENS.EXPLOSIVE_DETAILS} component={screens.ExplosiveDetailsScreen} />
+            <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_DETAILS} component={screens.ExplosiveObjectDetailsScreen} />
+            <Stack.Screen name={SCREENS.EXPLOSIVE_DEVICE_DETAILS} component={screens.ExplosiveDeviceDetailsScreen} />
         </Stack.Navigator>
     );
 };

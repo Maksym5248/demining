@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
+import { Form, Input, Drawer, InputNumber, Spin, Divider, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE, measurement } from 'shared-my';
+import { MIME_TYPE, explosiveObjectStatuses, measurement } from 'shared-my';
 import uuid from 'uuid';
 
 import { UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
@@ -65,7 +65,6 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     const isLoading = explosive.fetchItem.isLoading;
 
     const onFinishCreate = async (values: IExplosiveForm) => {
-        console.log('onFinishCreate', values);
         await explosive.create.run(getParams(values));
         hide();
     };
@@ -91,8 +90,6 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         return downloadURL;
     };
 
-    const isEditable = !!viewer.user?.isAuthor || !!currentExplosive?.isCurrentOrganization;
-
     return (
         <Drawer
             open={isVisible}
@@ -101,7 +98,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
             placement="right"
             width={600}
             onClose={hide}
-            extra={<WizardButtons {...wizard} isEditable={isEditable} />}>
+            extra={<WizardButtons {...wizard} isEditable={!!currentExplosive?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (
@@ -158,6 +155,11 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                             )}
                         </Form.Item>
                     </Form.Item>
+                    {viewer.user?.isAuthor && (
+                        <Form.Item label="Статус" name="status">
+                            <Select options={explosiveObjectStatuses} />
+                        </Form.Item>
+                    )}
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>

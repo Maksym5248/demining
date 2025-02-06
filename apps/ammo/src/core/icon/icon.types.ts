@@ -1,6 +1,8 @@
 import { type ViewStyle } from 'react-native';
 
-export type IIconName = 'dictionary';
+import { type svgIcons } from '~/assets';
+
+export type IIconName = keyof typeof svgIcons;
 
 export interface IIconProps {
     name: IIconName;

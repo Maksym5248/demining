@@ -9,6 +9,7 @@ import { ExplosiveDevice } from '../explosive-device';
 
 export interface IExplosiveDeviceAction {
     data: IExplosiveDeviceActionData;
+    id: string;
     explosive: ExplosiveDevice;
     updateFields(data: Partial<IExplosiveDeviceActionData>): void;
 }
@@ -21,7 +22,7 @@ interface IServices {
     message: IMessage;
 }
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 export class ExplosiveDeviceAction implements IExplosiveDeviceAction {
@@ -35,6 +36,10 @@ export class ExplosiveDeviceAction implements IExplosiveDeviceAction {
         this.services = params.services;
         this.getStores = params.getStores;
         makeAutoObservable(this);
+    }
+
+    get id() {
+        return this.data.id;
     }
 
     get explosive() {

@@ -23,12 +23,23 @@ import {
     sum,
     startAt,
     endAt,
+    onSnapshot,
+    or,
+    and,
 } from 'firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
 import { path, removeFields } from 'shared-my';
 import { type IBaseDB } from 'shared-my';
-import { type IWhere, type IQuery, type IQueryOrder, type IDBBase, type ICreateData } from 'shared-my-client';
+import {
+    type IWhere,
+    type IQuery,
+    type IQueryOrder,
+    type IDBBase,
+    type ICreateData,
+    type ISubscriptionDocument,
+    Logger,
+} from 'shared-my-client';
 
 function generateValueStartsWith(value: string): string[] {
     const prefixes: string[] = [];
@@ -53,19 +64,23 @@ const getWhere = (values: IWhere) => {
             res.push(where(key, 'in', value.in));
         }
 
-        if (value?.['>=']) {
+        if (value?.['>='] && value['>='] !== undefined) {
             res.push(where(key, '>=', value['>=']));
         }
 
-        if (value?.['<=']) {
+        if (value?.['<='] && value['<='] !== undefined) {
             res.push(where(key, '<=', value['<=']));
+        }
+
+        if (value?.['!='] && value['!='] !== undefined) {
+            res.push(where(key, '!=', value['!=']));
         }
 
         if (!!value && value['array-contains-any']) {
             res.push(where(key, 'array-contains-any', value['array-contains-any']));
         }
 
-        if (!isObject(value) && !isArray(value)) {
+        if (!isObject(value) && !isArray(value) && value !== undefined) {
             res.push(where(key, '==', value));
         }
     });
@@ -74,6 +89,7 @@ const getWhere = (values: IWhere) => {
 };
 
 const getOrder = (value: IQueryOrder) => orderBy(value.by, value.type);
+const getOr = (value: IWhere[]) => [or(...value.map((v: IWhere) => and(...getWhere(v))))] as unknown as QueryFieldFilterConstraint[];
 
 export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     tableName: string;
@@ -129,8 +145,11 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     query(args?: Partial<IQuery>) {
         return query(
             this.collection,
-            ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
-            ...(args?.where ? getWhere(args.where) : []),
+            and(
+                ...(args?.search ? getWhere(this.createSearchWhere(args?.search)) : []),
+                ...(args?.where ? getWhere(args.where) : []),
+                ...(args?.or ? getOr(args.or) : []),
+            ),
             ...(args?.order ? [getOrder(args?.order)] : []),
             ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
             ...(args?.startAt ? [startAt(args?.startAt)] : []),
@@ -209,7 +228,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         const _search: string[] = [];
 
         this.searchFields.forEach(field => {
-            const arr = generateValueStartsWith(String(path(value, field as string) ?? ''));
+            //@ts-ignore
+            const arr = generateValueStartsWith(String(path(value as T, field) ?? ''));
             _search.push(...arr);
         });
 
@@ -225,7 +245,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         return { _search };
     }
 
-    private createSearchWhere(search: string) {
+    private createSearchWhere(search: string): IWhere {
         const searchLower = String(search ?? '')
             .toLowerCase()
             .split(/\s+/);
@@ -349,5 +369,37 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         });
 
         await Promise.all(deletePromises);
+    }
+
+    subscribe(args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<T>[]) => void): Promise<void> {
+        return new Promise((resolve, rejected) => {
+            const q = this.query(args ?? {});
+
+            onSnapshot(
+                q,
+                snapshot => {
+                    const res: ISubscriptionDocument<T>[] = [];
+
+                    snapshot.docChanges().forEach(change => {
+                        const data = change.doc.data();
+                        removeFields(data, '_search');
+
+                        res.push({
+                            type: change.type,
+                            newIndex: change.newIndex,
+                            oldIndex: change.oldIndex,
+                            data: data,
+                        });
+                    });
+
+                    callback(res);
+                    resolve();
+                },
+                error => {
+                    Logger.error('DB subscribe - ', error);
+                    rejected(error);
+                },
+            );
+        });
     }
 }

@@ -1,4 +1,5 @@
 import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp } from './common';
+import { type IActionDB, type IPurposeDB, type IStructureDB, type IFillerDB, type ISizeDB } from './explosive-object';
 import { type IExplosiveObjectDBv1, type IExplosiveObjectDB } from './explosive-object/explosive-object';
 import {
     type EMPLOYEE_TYPE,
@@ -12,6 +13,7 @@ import {
     type MISSION_REQUEST_TYPE,
     type EXPLOSIVE_DEVICE_TYPE,
     type RANKS,
+    type EXPLOSIVE_OBJECT_STATUS,
 } from '../enum';
 
 export interface IAddressDB {
@@ -146,8 +148,17 @@ export interface IDocumentDB extends IBaseDB {
 }
 
 export interface IExplosiveDeviceDB extends IBaseDB {
+    status?: EXPLOSIVE_OBJECT_STATUS;
     name: string;
     type: EXPLOSIVE_DEVICE_TYPE;
+    size?: ISizeDB | null; //мм;
+    imageUri?: string | null;
+    imageUris?: string[] | null;
+    filler?: IFillerDB[] | null; // спорядження ВР;
+    chargeWeight?: number | null;
+    purpose?: IPurposeDB | null; // призначення;
+    structure?: IStructureDB | null; // будова;
+    action?: IActionDB | null; // принцип дії;
     authorId: string;
 }
 
@@ -158,7 +169,7 @@ export interface IExplosiveDeviceActionDB extends IExplosiveDeviceDB, ILinkedToD
     executedAt: Timestamp;
 }
 
-export interface IExplosiveСompositionDB {
+export interface IExplosiveCompositionDB {
     explosiveId: string | null;
     name: string | null;
     percent: number | null;
@@ -166,13 +177,14 @@ export interface IExplosiveСompositionDB {
 }
 
 export interface IExplosiveDB extends IBaseDB {
+    status?: EXPLOSIVE_OBJECT_STATUS;
     name: string;
     imageUri: string | null;
     imageUris: string[] | null;
     fullName: string | null;
     formula: string | null;
     description: string | null;
-    composition: IExplosiveСompositionDB[] | null;
+    composition: IExplosiveCompositionDB[] | null;
     explosive: {
         velocity: number | null; // m/s
         brisantness: number | null; // m
@@ -190,4 +202,9 @@ export interface IExplosiveDB extends IBaseDB {
         ignitionPoint: number | null; // °C
     } | null;
     authorId: string;
+}
+
+export interface IExplosiveDeviceTypeNotDB {
+    id: EXPLOSIVE_DEVICE_TYPE;
+    name: string;
 }

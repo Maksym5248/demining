@@ -1,5 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS, EXPLOSIVE_OBJECT_TYPE } from 'shared-my';
+import {
+    EXPLOSIVE_OBJECT_STATUS,
+    EXPLOSIVE_OBJECT_TYPE,
+    explosiveObjectComponentData,
+    type IExplosiveObjectComponentNotDB,
+} from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -13,6 +18,7 @@ import {
     updateExplosiveObjectDTO,
     createExplosiveObject,
 } from './explosive-object.schema';
+import { type INode, type IClassifications } from '../../classifications';
 import { type ICountryData, type ICountry } from '../country';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
@@ -36,7 +42,7 @@ interface ICollections {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
 }
 
 interface IExplosiveObjectParams {
@@ -44,42 +50,54 @@ interface IExplosiveObjectParams {
     api: IApi;
     services: IServices;
     getStores: () => IStores;
+    classifications: IClassifications;
 }
 
 export interface IExplosiveObject {
     id: string;
     data: IExplosiveObjectData;
+    imageUri?: string | null;
     displayName: string;
     signName: string;
-    update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     type?: IExplosiveObjectType;
-    countries?: ICountry[];
+    component?: IExplosiveObjectComponentNotDB;
     details?: IExplosiveObjectDetails;
-    class?: IExplosiveObjectClass[];
+    country?: ICountry;
     isConfirmed: boolean;
+    isPending: boolean;
     isCurrentOrganization: boolean;
+    isEditable: boolean;
+    update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
+    classItemsNames: string[];
 }
 
 export class ExplosiveObject implements IExplosiveObject {
     api: IApi;
     services: IServices;
     collections: ICollections;
+    classifications: IClassifications;
+
     getStores: () => IStores;
     data: IExplosiveObjectData;
 
-    constructor(data: IExplosiveObjectData, { collections, api, services, getStores }: IExplosiveObjectParams) {
+    constructor(data: IExplosiveObjectData, { collections, api, services, getStores, classifications }: IExplosiveObjectParams) {
         this.data = data;
 
         this.collections = collections;
         this.api = api;
         this.services = services;
         this.getStores = getStores;
+        this.classifications = classifications;
 
         makeAutoObservable(this);
     }
 
     updateFields(data: IUpdateValue<IExplosiveObjectDataParams>) {
         Object.assign(this.data, data);
+    }
+
+    get component() {
+        return explosiveObjectComponentData.find(({ id }) => id === this.data.component);
     }
 
     get details() {
@@ -92,6 +110,10 @@ export class ExplosiveObject implements IExplosiveObject {
 
     get type() {
         return this.collections.type.get(this.data.typeId);
+    }
+
+    get country() {
+        return this.collections.country.get(this.data.countryId);
     }
 
     get displayName() {
@@ -110,6 +132,10 @@ export class ExplosiveObject implements IExplosiveObject {
         }
 
         return String(this.data.name);
+    }
+
+    get imageUri() {
+        return this?.data.imageUri ?? '';
     }
 
     get signName() {
@@ -138,8 +164,31 @@ export class ExplosiveObject implements IExplosiveObject {
         return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
     }
 
+    get isPending() {
+        return this.data.status === EXPLOSIVE_OBJECT_STATUS.PENDING;
+    }
+
     get isCurrentOrganization() {
-        return this.data.organizationId === this.getStores().viewer.user?.data.organization?.id;
+        return this.data.organizationId === this.getStores()?.viewer?.user?.data.organization?.id;
+    }
+
+    get isEditable() {
+        return !!this.getStores()?.viewer?.user?.isAuthor;
+    }
+
+    get classItemsNames() {
+        const classification = this?.data?.classItemIds?.map(id => this.classifications.get(id));
+
+        return (
+            classification?.reduce((acc: string[], c: INode) => {
+                c.parents?.forEach(parent => {
+                    acc.push(parent.item.displayName);
+                });
+                acc.push(c.item.displayName);
+
+                return acc;
+            }, [] as string[]) ?? []
+        );
     }
 
     update = new RequestModel({

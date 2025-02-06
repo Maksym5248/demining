@@ -1,0 +1,64 @@
+name: Publish Android App to playmarket
+on:
+    push:
+        branches:
+          - main
+        paths:
+          - 'apps/ammo/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+          node-version: 22.11.0
+    - name: Install dependencies
+      run: yarn install
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+          ruby-version: '3.0'
+          bundler-cache: true
+    - name: Install dependencies
+      working-directory: ./apps/ammo
+      run: bundle install        
+    - name: Create envoirment files
+      working-directory: ./apps/ammo
+      run: |
+          mkdir ./config
+          echo "${{ secrets.AMMO_ENV_PROD }}" | base64 --decode > ./config/env
+          echo "${{ secrets.AMMO_KEY_KEYSTORE_PROD }}" | base64 --decode > ./config/ammo.keystore
+          echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_PROD }}" | base64 --decode > ./config/google-services.json
+          echo "${{ secrets.AMMO_SIGNING_PROD }}" | base64 --decode > ./config/gradle.sign.properties
+          echo "${{ secrets.SENTRY_PROPERTIES }}" | base64 --decode > ./config/sentry.properties
+    - name: Run progject configuration file
+      working-directory: ./apps/ammo
+      run: yarn prepare:env
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - name: Set up Google Play credentials
+      working-directory: ./apps/ammo
+      run: |
+        mkdir -p ~/.fastlane
+        echo "${{ secrets.GOOGLE_PLAY_ACCOUNT }}" > ~/.fastlane/google-play-service-account.json
+      env:
+        GOOGLE_PLAY_ACCOUNT: ${{ secrets.GOOGLE_PLAY_ACCOUNT }}
+    - name: Build and deploy to Google Play
+      working-directory: ./apps/ammo
+      run: bundle exec fastlane android deploy_to_playstore
+      env:
+        GOOGLE_PLAY_ACCOUNT: ${{ secrets.GOOGLE_PLAY_ACCOUNT }}

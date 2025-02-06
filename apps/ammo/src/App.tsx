@@ -1,32 +1,83 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
+import { type NavigationContainerRef } from '@react-navigation/core';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
-import { LogLevel } from 'shared-my-client';
+import { LogLevel, useAsyncEffect } from 'shared-my-client';
 
-import { RootNavigation } from '~/navigation';
+import { useStatusBar, useViewModel } from '~/hooks';
+import { Localization, LocalizationProvider } from '~/localization';
+import { modals, RootNavigation } from '~/navigation';
+import { AppState, Crashlytics, Logger, Modal, Navigation, NetInfo } from '~/services';
+import { ThemeManager, ThemeProvider } from '~/styles';
 
-import { s } from './App.style';
+import { appViewModel, type IAppViewModel } from './AppViewModel';
 import { CONFIG } from './config';
-import { Logger, Navigation } from './services';
-import { ThemeProvider, ThemeManager } from './styles';
+import { MODALS } from './constants';
+import { MessageProvider, ModalProvider } from './containers';
+import { Device } from './utils';
 
 enableScreens(true);
-Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
+
+Crashlytics.init();
 
 export function App(): React.JSX.Element {
-    useEffect(() => {
-        console.log('ENV: ', CONFIG.ENV);
-        return () => {
+    const vm = useViewModel<IAppViewModel>(appViewModel);
+
+    useStatusBar(
+        {
+            barStyle: 'light-content',
+        },
+        false,
+    );
+
+    useEffect(
+        () => () => {
+            AppState.removeAllListeners();
+            NetInfo.removeAllListeners();
             ThemeManager.removeAllListeners();
-        };
+            Localization.removeAllListeners();
+        },
+        [],
+    );
+
+    useAsyncEffect(async () => {
+        CONFIG.IS_DEBUG && Logger.enable();
+        Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
+        Logger.log('VERSION:', Device.appInfo);
+
+        Modal.show(MODALS.LOADING);
+        try {
+            AppState.init();
+            await Promise.allSettled([NetInfo.init(), Localization.init()]);
+
+            AppState.onChange(state => {
+                if (state === 'active') {
+                    NetInfo.pingInfo();
+                }
+            });
+
+            await vm.fetch();
+        } catch (error) {
+            Logger.error(error);
+        } finally {
+            Modal.hide(MODALS.LOADING);
+        }
+    }, []);
+
+    const setNavigationRef = useCallback((ref: NavigationContainerRef<any>) => {
+        Navigation.init(ref);
     }, []);
 
     return (
-        <GestureHandlerRootView style={s.container}>
-            <ThemeProvider>
-                <RootNavigation ref={Navigation.init} />
-            </ThemeProvider>
+        <GestureHandlerRootView>
+            <LocalizationProvider>
+                <ThemeProvider>
+                    <RootNavigation ref={setNavigationRef} />
+                    <MessageProvider />
+                    <ModalProvider modals={modals} />
+                </ThemeProvider>
+            </LocalizationProvider>
         </GestureHandlerRootView>
     );
 }

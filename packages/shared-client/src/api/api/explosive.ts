@@ -1,6 +1,6 @@
 import { type IExplosiveDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import { type IExplosiveDTO, type IExplosiveDTOParams } from '../dto';
@@ -13,6 +13,7 @@ export interface IExplosiveAPI {
     getList: (query?: IQuery) => Promise<IExplosiveDTO[]>;
     get: (id: string) => Promise<IExplosiveDTO>;
     getByIds: (ids: string[]) => Promise<IExplosiveDTO[]>;
+    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveAPI implements IExplosiveAPI {
@@ -77,5 +78,9 @@ export class ExplosiveAPI implements IExplosiveAPI {
         const res = await Promise.all(ids.map(id => this.get(id)));
 
         return res;
+    };
+
+    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDTO>[]) => void) => {
+        return this.db.explosive.subscribe(args, callback);
     };
 }

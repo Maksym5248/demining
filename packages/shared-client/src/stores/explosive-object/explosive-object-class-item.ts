@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IExplosiveObjectClassItemAPI } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type IExplosiveObjectClassItemDTO, type IExplosiveObjectClassItemAPI } from '~/api';
+import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
@@ -36,6 +36,7 @@ export interface IExplosiveObjectClassItemStore {
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel;
     fetchItem: IRequestModel<[string]>;
+    subscribe: IRequestModel;
 }
 
 export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemStore {
@@ -98,5 +99,20 @@ export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemS
             this.collection.set(res.id, createExplosiveObjectClassItem(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObjectClassItem.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectClassItemDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveObjectClassItemDTO, IExplosiveObjectClassItemData>(
+                    values,
+                    createExplosiveObjectClassItem,
+                );
+
+                this.list.push(create);
+                this.collection.updateArr(update);
+                this.collection.remove(remove);
+            });
+        },
     });
 }

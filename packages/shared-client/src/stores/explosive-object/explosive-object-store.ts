@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
+import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -8,8 +8,9 @@ import {
     type IExplosiveObjectActionSumDTO,
     type IExplosiveObjectClassAPI,
     type IExplosiveObjectClassItemAPI,
+    type IExplosiveObjectDTO,
 } from '~/api';
-import { type ICreateValue } from '~/common';
+import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
@@ -40,6 +41,7 @@ import { ExplosiveObjectClassItemStore, type IExplosiveObjectClassItemStore } fr
 import { ExplosiveObjectTypeStore, type IExplosiveObjectTypeStore } from './explosive-object-type';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 import { createExplosive, type IExplosiveStore } from '../explosive';
+import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 interface IApi {
@@ -54,7 +56,7 @@ interface IServices {
 }
 
 interface IStores {
-    viewer: IViewerStore;
+    viewer?: IViewerStore;
     explosive: IExplosiveStore;
 }
 
@@ -81,6 +83,8 @@ export interface IExplosiveObjectStore {
     fetchMoreListFuse: IRequestModel<[search?: string]>;
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
+    subscribe: IRequestModel<[query?: Partial<IQuery> | null]>;
+    subscribeDeeps: IRequestModel;
 }
 
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
@@ -122,7 +126,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         this.services = params.services;
         this.getStores = params.getStores;
 
-        this.classifications = new Classifications(this);
         this.type = new ExplosiveObjectTypeStore(this);
         this.class = new ExplosiveObjectClassStore(this);
         this.classItem = new ExplosiveObjectClassItemStore(this);
@@ -183,6 +186,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const res = await this.api.explosiveObject.getList({
                 search,
                 limit: this.list.pageSize,
+                ...getDictionaryFilter(this),
             });
 
             this.collectionDetails.setArr(
@@ -200,6 +204,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveObject.getList({
                 search,
+                ...getDictionaryFilter(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -220,9 +225,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const res = await this.api.explosiveObject.getList({
                 search,
                 limit: this.list.pageSize,
-                where: {
-                    component: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
-                },
+                ...getDictionaryFilter(this),
             });
 
             this.collectionDetails.setArr(
@@ -242,9 +245,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 search,
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.listFuse.last.data.createdAt),
-                where: {
-                    component: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
-                },
+                ...getDictionaryFilter(this),
             });
 
             this.collectionDetails.setArr(
@@ -305,5 +306,66 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             this.classifications.init();
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribeCountries = new RequestModel({
+        cachePolicy: 'cache-first',
+        run: async () => {
+            const countries = await this.api.explosiveObject.getCountriesList();
+
+            this.listCountries.set(countries.map(createCountry));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribe = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObject.subscribe(
+                {
+                    where: {
+                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                    },
+                },
+                (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
+                    const create: IExplosiveObjectData[] = [];
+                    const createDetails: IExplosiveObjectDetailsData[] = [];
+                    const update: IExplosiveObjectData[] = [];
+                    const updateDetails: IExplosiveObjectDetailsData[] = [];
+                    const remove: string[] = [];
+
+                    values.forEach(value => {
+                        if (value.type === 'removed') {
+                            remove.push(value.data.id);
+                        } else if (value.type === 'added') {
+                            create.push(createExplosiveObject(value.data));
+                            !!value.data.details && createDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
+                        } else if (value.type === 'modified') {
+                            update.push(createExplosiveObject(value.data));
+                            !!value.data.details && updateDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
+                        }
+                    });
+
+                    this.list.push(create);
+                    this.collectionDetails.setArr(createDetails);
+                    this.collection.updateArr(update);
+                    this.collectionDetails.updateArr(updateDetails);
+                    this.collection.remove(remove);
+                },
+            );
+        },
+    });
+
+    subscribeDeeps = new RequestModel({
+        run: async () => {
+            const [countries] = await Promise.all([
+                this.api.explosiveObject.getCountriesList(),
+                this.type.subscribe.run(),
+                this.class.subscribe.run(),
+                this.classItem.subscribe.run(),
+            ]);
+
+            this.listCountries.set(countries.map(createCountry));
+            this.classifications.init();
+        },
     });
 }

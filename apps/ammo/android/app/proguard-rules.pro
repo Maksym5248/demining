@@ -19,6 +19,9 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+# save class Install Referrer API
+-keep class com.android.installreferrer.** { *; }
+-dontwarn com.android.installreferrer.**
 
 # react-native-config
 -keep class com.demining.ammo.BuildConfig { *; }

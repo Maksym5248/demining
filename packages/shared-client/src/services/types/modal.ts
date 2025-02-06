@@ -4,9 +4,15 @@ export interface IIModalPropsForComponent {
     hide?: () => void;
 }
 
+export interface IModalView {
+    isVisible: boolean;
+    hide: () => void;
+    open: () => void;
+}
+
 export interface IModalType {
     propsForComponent?: IIModalPropsForComponent;
-    renderComponent: (props: any) => ReactNode;
+    renderComponent: (props: IModalView & Record<string, unknown>) => ReactNode;
 }
 
 export interface IModalTypeInternal extends IModalType {
@@ -24,10 +30,7 @@ export interface IModalsMapInternal {
 }
 
 export interface IModal {
-    show: (name: string, propsForComponent?: any, propsForModal?: any) => void;
+    show: (name: string, props?: any) => void;
     hide: (name: string) => void;
-    removeVisibleModal: (name: string) => void;
     hideAll: () => void;
-    onChange: (callBack: (visibleModals: IModalsMapInternal) => void) => () => void;
-    removeAllListeners: () => void;
 }
