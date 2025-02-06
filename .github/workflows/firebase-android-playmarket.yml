@@ -41,6 +41,7 @@ jobs:
           echo "${{ secrets.AMMO_GOOGLE_SERVICES_ANDROID_PROD }}" | base64 --decode > ./config/google-services.json
           echo "${{ secrets.AMMO_SIGNING_PROD }}" | base64 --decode > ./config/gradle.sign.properties
           echo "${{ secrets.SENTRY_PROPERTIES }}" | base64 --decode > ./config/sentry.properties
+          echo "${{ secrets.GOOGLE_PLAY_ACCOUNT }}" > ./config/google-play-service-account.json
     - name: Run progject configuration file
       working-directory: ./apps/ammo
       run: yarn prepare:env
@@ -52,15 +53,6 @@ jobs:
           ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle
-    - name: Set up Google Play credentials
-      working-directory: ./apps/ammo
-      run: |
-        mkdir -p ~/.fastlane
-        echo "${{ secrets.GOOGLE_PLAY_ACCOUNT }}" > ~/.fastlane/google-play-service-account.json
-      env:
-        GOOGLE_PLAY_ACCOUNT: ${{ secrets.GOOGLE_PLAY_ACCOUNT }}
     - name: Build and deploy to Google Play
       working-directory: ./apps/ammo
       run: bundle exec fastlane android deploy_to_playstore
-      env:
-        GOOGLE_PLAY_ACCOUNT: ${{ secrets.GOOGLE_PLAY_ACCOUNT }}
