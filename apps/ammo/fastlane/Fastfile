@@ -8,7 +8,7 @@ platform :android do
     # Build the release AAB
     gradle(
       task: "bundleProdRelease",
-      project_dir: "../android"
+      project_dir: "../apps/ammo/android"
     )
     
     # Upload to Google Play
