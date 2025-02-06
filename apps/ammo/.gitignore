@@ -82,6 +82,6 @@ ios/tmp.xcconfig
 gradle.sign.properties
 ammo.keystore
 google-services.json
-./ios/GoogleService-Info.plist
+GoogleService-Info.plist
 config/*
 sentry.properties
