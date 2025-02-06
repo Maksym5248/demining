@@ -16,7 +16,8 @@ platform :android do
       track: 'alpha',
       aab: './android/app/build/outputs/bundle/prodRelease/app-prod-release.aab',
       skip_upload_images: true,
-      skip_upload_screenshots: true
+      skip_upload_screenshots: true,
+      json_key: google_play_service_account_json_key_file
     )
   end
 end
