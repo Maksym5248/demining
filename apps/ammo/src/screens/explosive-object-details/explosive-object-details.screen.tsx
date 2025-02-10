@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
@@ -6,11 +6,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { Block, CarouselImage } from '~/components';
-import { SCREENS } from '~/constants';
 import { Header, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
 import { viewSize } from '~/utils';
 
@@ -23,14 +21,6 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
     const t = useTranslate('screens.explosive-object-details');
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
-
-    const onOpenExplosive = useCallback((id: string) => {
-        Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
-    }, []);
-
-    const onOpenExplosiveObject = useCallback((id: string) => {
-        Navigation.push(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id });
-    }, []);
 
     const { details } = vm.item ?? {};
 
@@ -56,7 +46,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                             <Text type="label" style={styles.label} text={t('fuse')} />
                             {vm.fuses?.length ? (
                                 vm.fuses?.map(el => (
-                                    <Touchable key={el.id} onPress={() => onOpenExplosiveObject(el.data.id ?? '')}>
+                                    <Touchable key={el.id} onPress={() => vm.openExplosiveObject(el.data.id ?? '')}>
                                         <Text color={ThemeManager.theme.colors.link} text={el?.displayName} />
                                     </Touchable>
                                 ))
@@ -79,7 +69,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
                         <View key={i} style={styles.row}>
-                            <Touchable onPress={el.explosiveId ? () => onOpenExplosive(el.explosiveId ?? '') : undefined}>
+                            <Touchable onPress={el.explosiveId ? () => vm.openExplosive(el.explosiveId ?? '') : undefined}>
                                 <Text
                                     color={el.explosive ? ThemeManager.theme.colors.link : undefined}
                                     text={el.explosive?.displayName ?? el.name ?? '-'}

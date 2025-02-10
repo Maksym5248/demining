@@ -30,12 +30,12 @@ TODO
 + automanage version and build numbers
 + integrate analitics
 + integrate crashlitics
-- automatic deploy
++ automatic deploy
+- filters
+- touchable feedback
 - create modules in firestore for app info, user info (exist), permissions
 - app updater
-- filters
-- classification
-- touchable feedback
+- screens with classification
 - save image locally
 - check initialization app with internet connection, how this flow should work ? at first need to load images and check which images are laoded?
 

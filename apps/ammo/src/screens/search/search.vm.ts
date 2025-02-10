@@ -1,12 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import {
     DebounceModel,
-    Explosive,
-    ExplosiveObject,
     type IDebounceModel,
-    type IExplosive,
-    type IExplosiveDevice,
-    type IExplosiveObject,
     type IInfiniteScrollModel,
     InfiniteScrollModel,
     type IOrderModel,
@@ -17,39 +12,19 @@ import {
 } from 'shared-my-client';
 
 import { stores } from '~/stores';
-import { DictionaryType, type ViewModel } from '~/types';
+import { type ViewModel } from '~/types';
 
-export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
-
-export interface DataItem {
-    id: string;
-    data: Item;
-    type: DictionaryType;
-    typeName?: string;
-    classItemsNames: string[];
-}
+import { SearchItem, type Item, type ISearchItem } from './search-item.model';
 
 export interface ISearchVM extends ViewModel {
     setSearchBy(value: string): void;
     loadMore(): void;
     searchBy: string;
-    asArray: DataItem[];
+    asArray: ISearchItem[];
     isLoading: boolean;
     isLoadingMore: boolean;
     isEndReached: boolean;
 }
-
-export const getType = (item: Item): DictionaryType => {
-    if (item instanceof Explosive) {
-        return DictionaryType.Explosive;
-    }
-
-    if (item instanceof ExplosiveObject) {
-        return DictionaryType.ExplosiveObject;
-    }
-
-    return DictionaryType.ExplosiveDevices;
-};
 
 export class SearchVM implements ISearchVM {
     search: ISearchModel<Item>;
@@ -97,25 +72,6 @@ export class SearchVM implements ISearchVM {
         });
     }
 
-    private getTypeName(id: string, type: DictionaryType) {
-        if (type === DictionaryType.ExplosiveObject) {
-            const item = stores.explosiveObject.collection.get(id);
-
-            return item?.type?.displayName;
-        }
-
-        return undefined;
-    }
-
-    private getClassficationNames(id: string, type: DictionaryType) {
-        if (type === DictionaryType.ExplosiveObject) {
-            const item = stores.explosiveObject.collection.get(id);
-            return item?.classItemsNames ?? [];
-        }
-
-        return [];
-    }
-
     get searchBy() {
         return this.value;
     }
@@ -127,13 +83,7 @@ export class SearchVM implements ISearchVM {
     }
 
     get asArray() {
-        return this.infiniteScroll.asArray.map(item => ({
-            id: item.id,
-            data: item,
-            type: getType(item),
-            typeName: this.getTypeName(item.id, getType(item)),
-            classItemsNames: this.getClassficationNames(item.id, getType(item)),
-        }));
+        return this.infiniteScroll.asArray.map(item => new SearchItem(item));
     }
 
     get isEndReached() {

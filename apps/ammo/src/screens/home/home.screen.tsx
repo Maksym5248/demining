@@ -3,11 +3,9 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { SCREENS } from '~/constants';
 import { Card, Header, Icon, Svg, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './home.style';
@@ -23,7 +21,7 @@ export const HomeScreen = observer(() => {
     const vm = useViewModel<IHomeVM>(homeVM);
 
     const onPressSearchButton = () => {
-        Navigation.navigate(SCREENS.SEARCH);
+        vm.openSearch();
     };
 
     return (

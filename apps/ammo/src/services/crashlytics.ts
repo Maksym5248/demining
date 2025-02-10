@@ -7,26 +7,27 @@ export class CrashlyticsClass implements ICrashlytics {
     constructor(private logger: ILogger) {}
 
     init() {
-        init({
-            dsn: CONFIG.SENTRY_DSN,
-            environment: CONFIG.ENV,
-        });
+        CONFIG.IS_DEBUG &&
+            init({
+                dsn: CONFIG.SENTRY_DSN,
+                environment: CONFIG.ENV,
+            });
     }
 
     error = (message: string, e: any) => {
         this.logger.error(message, e?.message);
-        captureException(message, e);
+        CONFIG.IS_DEBUG && captureException(message, e);
     };
 
     addBreadcrumb = (breadcrumb: Breadcrumb) => {
-        addBreadcrumb(breadcrumb);
+        CONFIG.IS_DEBUG && addBreadcrumb(breadcrumb);
     };
 
     setUser = (user: ICrashlyticsUser | null) => {
-        setUser(user);
+        CONFIG.IS_DEBUG && setUser(user);
     };
 
     setTag = (key: string, value: IPrimitive) => {
-        setTag(key, value);
+        CONFIG.IS_DEBUG && setTag(key, value);
     };
 }

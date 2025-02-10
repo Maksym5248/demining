@@ -1,6 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 
+import { SCREENS } from '~/constants';
 import { type ISvgName } from '~/core';
+import { Navigation } from '~/services';
 import { stores } from '~/stores';
 import { DictionaryType, type ViewModel } from '~/types';
 
@@ -30,11 +32,16 @@ const categories: IDictionary[] = [
 
 export interface IHomeVM extends ViewModel {
     categories: IDictionary[];
+    openSearch(): void;
 }
 
 export class HomeVM implements IHomeVM {
     constructor() {
         makeAutoObservable(this);
+    }
+
+    openSearch() {
+        Navigation.navigate(SCREENS.SEARCH);
     }
 
     get classes() {

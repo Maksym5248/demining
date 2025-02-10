@@ -3,18 +3,18 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { MODALS, SCREENS } from '~/constants';
-import { Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
+import { MODALS } from '~/constants';
+import { Card, Header, Icon, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Modal, Navigation } from '~/services';
+import { Modal } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
-import { DictionaryType } from '~/types';
 
+import { type ISearchItem } from './search-item.model';
 import { useStyles } from './search.style';
-import { searchVM, type ISearchVM, type DataItem } from './search.vm';
+import { searchVM, type ISearchVM } from './search.vm';
 
-const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => {
+const ListItem = observer(({ item }: { item: ISearchItem }) => {
     const tDictionaries = useTranslate('dictionaries');
 
     const tags = [tDictionaries(item.type)];
@@ -23,15 +23,7 @@ const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item
         tags.push(item.typeName);
     }
 
-    const onOpenExplosive = () => {
-        if (item.type === DictionaryType.Explosive) {
-            Navigation.navigate(SCREENS.EXPLOSIVE_DETAILS, { id: item.id });
-        } else if (item.type === DictionaryType.ExplosiveObject) {
-            Navigation.navigate(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id: item.id });
-        } else if (item.type === DictionaryType.ExplosiveDevices) {
-            Navigation.navigate(SCREENS.EXPLOSIVE_DEVICE_DETAILS, { id: item.id });
-        }
-    };
+    const onOpenExplosive = () => item.openItem();
 
     return (
         <Card
@@ -53,7 +45,7 @@ export const SearchScreen = observer(() => {
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = useCallback(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => <ListItem item={item} />, []);
+    const renderItem = useCallback(({ item }: { item: ISearchItem }) => <ListItem item={item} />, []);
 
     const onPressFilter = () => {
         Modal.show(MODALS.FILTER_DICTIONARY);
@@ -77,7 +69,7 @@ export const SearchScreen = observer(() => {
                 isClearable
                 style={s.searchContainer}
             />
-            <List<DataItem>
+            <List
                 data={vm.asArray}
                 renderItem={renderItem}
                 style={s.flatList}

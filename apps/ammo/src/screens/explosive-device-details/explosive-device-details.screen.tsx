@@ -5,11 +5,9 @@ import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { Block, CarouselImage } from '~/components';
-import { SCREENS } from '~/constants';
 import { Header, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
 import { viewSize } from '~/utils';
 
@@ -24,7 +22,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
 
     const onOpenExplosive = useCallback((id: string) => {
-        Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
+        vm.openExplosive(id);
     }, []);
 
     return (
