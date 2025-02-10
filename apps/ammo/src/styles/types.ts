@@ -67,7 +67,7 @@ export interface IBaseThemeSchema {
     colors: Record<IColor, string>;
     fonts: Record<'bold' | 'medium' | 'regular' | 'light', string>;
     lineHeight: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5', number>;
-    spacing: Record<'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL', number>;
+    spacing: Record<'XXXS' | 'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL', number>;
     fontSize: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5', number>;
 }
 export type ITextStyle = Record<ITextStyleType, IThemeTextStyle>;

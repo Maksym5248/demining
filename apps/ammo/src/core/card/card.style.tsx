@@ -14,7 +14,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     info: {
         flex: 1,
         gap: theme.spacing.XXS,
-        padding: theme.spacing.S,
+        padding: theme.spacing.XS,
         alignContent: 'flex-start',
         justifyContent: 'flex-end',
         backgroundColor: theme.colors.white,
@@ -24,12 +24,12 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     svg: {
         width: 80,
         height: 80,
-        marginBottom: theme.spacing.XS,
+        marginBottom: theme.spacing.S,
         alignSelf: 'center',
     },
     image: {
         width: '100%',
-        aspectRatio: 2,
+        aspectRatio: 1.2,
         borderTopLeftRadius: theme.radius.M,
         borderTopRightRadius: theme.radius.M,
     },
@@ -38,7 +38,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         width: '100%',
         aspectRatio: 2,
         padding: theme.spacing.XS,
-        gap: theme.spacing.XXS,
+        gap: theme.spacing.XS,
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'flex-start',

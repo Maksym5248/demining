@@ -52,7 +52,7 @@ export class SearchItem implements ISearchItem {
         if (this.type === DictionaryType.ExplosiveObject) {
             const item = stores.explosiveObject.collection.get(this.id);
 
-            return item?.type?.displayName;
+            return item?.type?.data.name;
         }
 
         return undefined;

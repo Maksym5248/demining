@@ -41,7 +41,7 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         marginBottom: theme.spacing.XXS,
     },
     label: {
-        marginTop: theme.spacing.S,
+        marginTop: theme.spacing.XXS,
         marginBottom: 2,
     },
     row: {

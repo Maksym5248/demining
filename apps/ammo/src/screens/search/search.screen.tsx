@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Card, Header, Icon, List, TextInput } from '~/core';
+import { Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -12,10 +12,12 @@ import { type ISearchItem } from './search-item.model';
 import { useStyles } from './search.style';
 import { searchVM, type ISearchVM } from './search.vm';
 
-const ListItem = observer(({ item }: { item: ISearchItem }) => {
+const ListItem = observer(({ item, index }: { item: ISearchItem; index: number }) => {
     const tDictionaries = useTranslate('dictionaries');
+    const s = useStyles();
 
     const tags = [tDictionaries(item.type)];
+    const isLeft = index % 2 === 0;
 
     if (item.typeName) {
         tags.push(item.typeName);
@@ -31,6 +33,7 @@ const ListItem = observer(({ item }: { item: ISearchItem }) => {
             tags={tags}
             subTitle={item.classItemsNames.join(', ')}
             onPress={onOpenExplosive}
+            style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
         />
     );
 });
@@ -43,7 +46,7 @@ export const SearchScreen = observer(() => {
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = useCallback(({ item }: { item: ISearchItem }) => <ListItem item={item} />, []);
+    const renderItem = useCallback((params: IFlatListRenderedItem<ISearchItem>) => <ListItem {...params} />, []);
 
     const onPressFilter = () => vm.openFilters();
 
@@ -73,6 +76,7 @@ export const SearchScreen = observer(() => {
                 isLoadingMore={vm.isLoadingMore}
                 isEndReached={vm.isEndReached}
                 onEndReached={() => vm.loadMore()}
+                numColumns={2}
             />
         </View>
     );
