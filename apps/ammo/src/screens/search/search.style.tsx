@@ -16,11 +16,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         paddingHorizontal: theme.spacing.L,
         transform: [{ translateY: -25 }],
     },
-    flatList: {
-        flex: 1,
-        backgroundColor: theme.colors.background,
-        paddingHorizontal: theme.spacing.S,
-    },
     card: {
         width: device.window.width / 2 - theme.spacing.S * 1.5,
     },

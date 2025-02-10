@@ -10,6 +10,7 @@ export interface IDictionary {
     id: string;
     type: string;
     svg: ISvgName;
+    screen?: SCREENS;
 }
 
 const categories: IDictionary[] = [
@@ -22,6 +23,7 @@ const categories: IDictionary[] = [
         id: '2',
         type: DictionaryType.ExplosiveObject,
         svg: 'explosive-object',
+        screen: SCREENS.EXPLOSIVE_OBJECT_TYPE,
     },
     {
         id: '3',
@@ -33,6 +35,7 @@ const categories: IDictionary[] = [
 export interface IHomeVM extends ViewModel {
     categories: IDictionary[];
     openSearch(): void;
+    openCategory(id: string): void;
 }
 
 export class HomeVM implements IHomeVM {
@@ -42,6 +45,12 @@ export class HomeVM implements IHomeVM {
 
     openSearch() {
         Navigation.navigate(SCREENS.SEARCH);
+    }
+
+    openCategory(id: string) {
+        const item = categories.find(category => category.id === id);
+        if (!item?.screen) return;
+        Navigation.navigate(item?.screen);
     }
 
     get classes() {

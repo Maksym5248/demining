@@ -3,6 +3,7 @@ export enum SCREENS {
     EXPLOSIVE_DETAILS = 'ExplosiveDetails',
     EXPLOSIVE_OBJECT_DETAILS = 'ExplosiveObjectDetails',
     EXPLOSIVE_OBJECT_CLASSIFICATION = 'ExplosiveObjectClassification',
+    EXPLOSIVE_OBJECT_TYPE = 'ExplosiveObjectType',
     EXPLOSIVE_DEVICE_DETAILS = 'ExplosiveDeviceDetails',
     SEARCH = 'Search',
     MAIN = 'Main',

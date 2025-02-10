@@ -8,16 +8,17 @@ import { DictionaryType } from '~/types';
 
 export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
 
-export interface ISearchItem {
+export interface IDataItem {
     id: string;
-    data: Item;
+    displayName: string;
+    imageUri?: string;
     type: DictionaryType;
     typeName?: string;
     classItemsNames: string[];
     openItem(): void;
 }
 
-export class SearchItem implements ISearchItem {
+export class DataItem implements IDataItem {
     constructor(public data: Item) {
         makeAutoObservable(this);
     }
@@ -34,6 +35,14 @@ export class SearchItem implements ISearchItem {
 
     get id() {
         return this.data.id;
+    }
+
+    get displayName() {
+        return this.data.displayName;
+    }
+
+    get imageUri() {
+        return this.data.imageUri ?? undefined;
     }
 
     get type() {

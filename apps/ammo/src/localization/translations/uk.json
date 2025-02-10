@@ -80,6 +80,9 @@
             "purpose": "Призначення",
             "structure": "Будова",
             "action": "Принцип дії"
+        },
+        "explosive-object-type": {
+            "title": "Типи боєприпасів"
         }
     },
     "modals": {

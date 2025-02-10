@@ -10,6 +10,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     content: {
         flex: 1,
         padding: 0,
+        flexDirection: 'row',
     },
     info: {
         flex: 1,
@@ -27,17 +28,11 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         marginBottom: theme.spacing.S,
         alignSelf: 'center',
     },
-    imageBox: {
-        width: '100%',
+    image: {
+        height: 70,
         aspectRatio: 1.2,
         borderTopLeftRadius: theme.radius.M,
-        borderTopRightRadius: theme.radius.M,
-    },
-    image: {
-        width: '100%',
-        aspectRatio: 2,
-        borderTopLeftRadius: theme.radius.M,
-        borderTopRightRadius: theme.radius.M,
+        borderBottomLeftRadius: theme.radius.M,
     },
     tags: {
         position: 'absolute',

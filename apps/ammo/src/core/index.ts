@@ -9,6 +9,7 @@ export * from './tag';
 export * from './header';
 export * from './input';
 export * from './list';
+export * from './list-item';
 export * from './image';
 export * from './modal';
 export * from './bottom-sheet';

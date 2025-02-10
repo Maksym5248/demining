@@ -45,6 +45,7 @@ export const HomeScreen = observer(() => {
                             title={tDictionaries(category.type)}
                             svg={category.svg}
                             styleInfo={s.styleInfo}
+                            onPress={() => vm.openCategory(category.id)}
                         />
                     ))}
                 </View>

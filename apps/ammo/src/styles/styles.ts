@@ -24,6 +24,11 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         backgroundColor: theme.colors.background,
         paddingBottom: device.inset.bottom + 20,
     },
+    flatList: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: theme.spacing.S,
+    },
     block: {
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,

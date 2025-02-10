@@ -12,7 +12,7 @@ export interface IListModel<T extends { data: B }, B extends { id: string }> {
     clear: () => void;
     checkMore: (length: number) => void;
     setMore: (isMore: boolean) => void;
-
+    map: <U>(callback: (value: T, index: number, array: T[]) => U) => U[];
     // remove: (ids: string | string[]) => void;
     remove: (ids: string | string[]) => void;
     pageSize: number;
@@ -98,6 +98,10 @@ export class ListModel<T extends { data: B }, B extends { id: string }> implemen
     remove(ids: string | string[]) {
         const idsToRemove = Array.isArray(ids) ? ids : [ids];
         this.ids = this.ids.filter(id => !idsToRemove.includes(id));
+    }
+
+    map<U>(callback: (value: T, index: number, array: T[]) => U) {
+        return this.asArray.map(callback);
     }
 
     get asArray() {

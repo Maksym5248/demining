@@ -52,6 +52,8 @@ function Component<T>(
                 isLoadingMore && isDataEmpty && !isLoading ? () => <Loading isVisible size="small" style={s.loadingMore} /> : undefined
             }
             onEndReached={_onEndReached}
+            style={[s.container, props.style]}
+            contentContainerStyle={s.contentContainer}
         />
     );
 }

@@ -16,14 +16,14 @@ import { Modal } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
-import { SearchItem, type Item, type ISearchItem } from './search-item.model';
+import { type IDataItem, type Item, DataItem } from './search-item.model';
 
 export interface ISearchVM extends ViewModel {
     openFilters(): void;
     setSearchBy(value: string): void;
     loadMore(): void;
     searchBy: string;
-    asArray: ISearchItem[];
+    asArray: IDataItem[];
     isLoading: boolean;
     isLoadingMore: boolean;
     isEndReached: boolean;
@@ -90,7 +90,7 @@ export class SearchVM implements ISearchVM {
     }
 
     get asArray() {
-        return this.infiniteScroll.asArray.map(item => new SearchItem(item));
+        return this.infiniteScroll.asArray.map(item => new DataItem(item));
     }
 
     get isEndReached() {

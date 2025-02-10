@@ -8,11 +8,11 @@ import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
-import { type ISearchItem } from './search-item.model';
+import { type IDataItem } from './search-item.model';
 import { useStyles } from './search.style';
 import { searchVM, type ISearchVM } from './search.vm';
 
-const ListItem = observer(({ item, index }: { item: ISearchItem; index: number }) => {
+const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) => {
     const tDictionaries = useTranslate('dictionaries');
     const s = useStyles();
 
@@ -27,9 +27,9 @@ const ListItem = observer(({ item, index }: { item: ISearchItem; index: number }
 
     return (
         <Card
-            type="image"
-            title={item.data.displayName}
-            uri={item.data.imageUri}
+            type="imageBox"
+            title={item.displayName}
+            uri={item.imageUri}
             tags={tags}
             subTitle={item.classItemsNames.join(', ')}
             onPress={onOpenExplosive}
@@ -46,7 +46,7 @@ export const SearchScreen = observer(() => {
 
     const vm = useViewModel<ISearchVM>(searchVM);
 
-    const renderItem = useCallback((params: IFlatListRenderedItem<ISearchItem>) => <ListItem {...params} />, []);
+    const renderItem = useCallback((params: IFlatListRenderedItem<IDataItem>) => <ListItem {...params} />, []);
 
     const onPressFilter = () => vm.openFilters();
 
@@ -71,7 +71,6 @@ export const SearchScreen = observer(() => {
             <List
                 data={vm.asArray}
                 renderItem={renderItem}
-                style={s.flatList}
                 isLoading={vm.isLoading}
                 isLoadingMore={vm.isLoadingMore}
                 isEndReached={vm.isEndReached}
