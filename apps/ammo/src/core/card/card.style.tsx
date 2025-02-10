@@ -8,14 +8,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         padding: 0,
         ...theme.shadow.light,
     },
-    touchable: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        right: 0,
-        bottom: 0,
-        borderRadius: theme.radius.M,
-    },
     info: {
         flex: 1,
         position: 'relative',

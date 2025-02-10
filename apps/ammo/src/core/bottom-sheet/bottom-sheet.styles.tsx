@@ -26,6 +26,7 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: '#aeaeb2',
         justifyContent: 'center',
+        alignItems: 'flex-start',
         paddingHorizontal: 20,
     },
     backgroundButton: {
@@ -35,5 +36,7 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
         color: '#0a84ff',
         fontWeight: '500',
         fontSize: 16,
+        alignSelf: 'flex-start',
+        flex: 0,
     },
 }));

@@ -17,7 +17,7 @@ export const Card = ({ title, subTitle, type = 'default', tags, uri, svg, styleI
     const s = useStyles();
 
     return (
-        <View {...props} style={[s.container, props.style]}>
+        <Touchable {...props} type="rect" style={[s.container, props.style]}>
             {type === 'image' && <Image style={s.image} uri={uri} placeholder={images.placeholder} />}
             {type === 'imageBox' && <Image style={s.imageBox} uri={uri} placeholder={images.placeholder} />}
             {!!tags?.length && <View style={s.tags}>{tags?.map(tag => <Tag text={tag} key={tag} />)}</View>}
@@ -26,7 +26,6 @@ export const Card = ({ title, subTitle, type = 'default', tags, uri, svg, styleI
                 <Text type="h6" text={title} />
                 {!!subTitle && <Text type="p5" text={subTitle} />}
             </View>
-            <Touchable {...props} type="rect" style={s.touchable} />
-        </View>
+        </Touchable>
     );
 };

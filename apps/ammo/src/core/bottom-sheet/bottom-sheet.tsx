@@ -94,6 +94,7 @@ export const BottomSheet = forwardRef<IBottomSheetRef, IBottomSheetProps>(
             }
 
             const maxHeight = layout?.height > MAX_HEIGHT ? MAX_HEIGHT : layout?.height;
+
             offset.value = maxHeight;
             height.value = maxHeight;
 
@@ -102,7 +103,6 @@ export const BottomSheet = forwardRef<IBottomSheetRef, IBottomSheetProps>(
             });
 
             isVisible.value = true;
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []);
 
         const contentStyles = useAnimatedStyle(() => {

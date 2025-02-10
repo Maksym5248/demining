@@ -16,7 +16,7 @@ export const ListItem = ({ title, subTitle, type = 'default', uri, svg, children
     const s = useStyles();
 
     return (
-        <View {...props} style={[s.container, props.style]}>
+        <Touchable {...props} type="rect" style={[s.container, props.style]}>
             {type === 'image' && <Image style={s.image} uri={uri} placeholder={images.placeholder} />}
             <View style={[s.info, styleInfo]}>
                 {children}
@@ -24,7 +24,6 @@ export const ListItem = ({ title, subTitle, type = 'default', uri, svg, children
                 <Text type="h6" text={title} />
                 {!!subTitle && <Text type="p5" text={subTitle} />}
             </View>
-            <Touchable {...props} type="rect" style={s.touchable} />
-        </View>
+        </Touchable>
     );
 };

@@ -13,7 +13,7 @@ export const FilterDictionariesModal = (props: ILoadingProps) => {
     const s = useStyles();
 
     return (
-        <Modal style={styles.modalBottomSheet} {...props}>
+        <Modal style={styles.modalBottomSheet} {...props} animationInTiming={1}>
             <BottomSheet onClose={props.hide}>
                 <View style={s.container}>
                     <Text>filter</Text>

@@ -9,14 +9,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         backgroundColor: theme.colors.backgroundSecondary,
         ...theme.shadow.light,
     },
-    touchable: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        right: 0,
-        bottom: 0,
-        borderRadius: theme.radius.M,
-    },
     info: {
         flex: 1,
         gap: theme.spacing.XXS,
