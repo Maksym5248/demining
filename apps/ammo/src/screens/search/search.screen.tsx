@@ -3,11 +3,9 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { MODALS } from '~/constants';
 import { Card, Header, Icon, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Modal } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { type ISearchItem } from './search-item.model';
@@ -47,9 +45,7 @@ export const SearchScreen = observer(() => {
 
     const renderItem = useCallback(({ item }: { item: ISearchItem }) => <ListItem item={item} />, []);
 
-    const onPressFilter = () => {
-        Modal.show(MODALS.FILTER_DICTIONARY);
-    };
+    const onPressFilter = () => vm.openFilters();
 
     return (
         <View style={styles.container}>

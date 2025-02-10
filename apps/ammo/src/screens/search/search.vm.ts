@@ -11,12 +11,15 @@ import {
     SearchModel,
 } from 'shared-my-client';
 
+import { MODALS } from '~/constants';
+import { Modal } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
 import { SearchItem, type Item, type ISearchItem } from './search-item.model';
 
 export interface ISearchVM extends ViewModel {
+    openFilters(): void;
     setSearchBy(value: string): void;
     loadMore(): void;
     searchBy: string;
@@ -55,6 +58,10 @@ export class SearchVM implements ISearchVM {
         this.debounce.clear();
         this.infiniteScroll.clear();
         this.value = '';
+    }
+
+    openFilters() {
+        Modal.show(MODALS.FILTER_DICTIONARY);
     }
 
     setSearchBy(value: string) {
