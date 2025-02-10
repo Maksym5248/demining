@@ -8,6 +8,7 @@ export interface ICardProps extends Omit<ITouchable, 'children' | 'type'> {
     title?: string;
     subTitle?: string;
     style?: IViewStyle;
+    styleInfo?: IViewStyle;
     children?: React.ReactNode;
     svg?: ISvgName;
     uri?: string | null;
