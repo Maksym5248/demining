@@ -82,7 +82,10 @@
             "action": "Принцип дії"
         },
         "explosive-object-type": {
-            "title": "Типи боєприпасів"
+            "title": "Типи"
+        },
+        "explosive-object-classification": {
+            "title": "Класифікація"
         }
     },
     "modals": {

@@ -1,9 +1,31 @@
 import { ThemeManager } from '~/styles';
 
+export const ITEM_HEIGHT = 50;
+
 export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
-    flatList: {
+    listItem: {
+        position: 'relative',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        paddingVertical: theme.spacing.XXS,
+        height: ITEM_HEIGHT,
+    },
+    listItemContent: {
         flex: 1,
-        backgroundColor: theme.colors.background,
-        paddingHorizontal: theme.spacing.L,
+    },
+    prefixHorizaontal: {
+        position: 'absolute',
+        left: 0,
+        height: 1,
+        backgroundColor: theme.colors.textSecondary,
+        alignSelf: 'center',
+    },
+    prefixVertical: {
+        position: 'absolute',
+        top: -theme.spacing.XXS,
+        bottom: 0,
+        width: 1,
+        backgroundColor: theme.colors.textSecondary,
     },
 }));

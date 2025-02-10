@@ -11,6 +11,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         flex: 1,
         padding: 0,
         flexDirection: 'row',
+        borderRadius: theme.radius.M,
     },
     info: {
         flex: 1,
@@ -19,8 +20,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         alignContent: 'flex-start',
         justifyContent: 'flex-start',
         backgroundColor: theme.colors.white,
-        borderBottomLeftRadius: theme.radius.M,
-        borderBottomRightRadius: theme.radius.M,
+        borderRadius: theme.radius.M,
     },
     svg: {
         width: 80,

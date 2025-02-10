@@ -21,6 +21,7 @@ export interface IClassifications {
     getParents(id: string): INode[];
     flatten(typeId: string): INode[];
     flattenSections(typeId?: string): INode[];
+    flattenSectionsSimple(typeId?: string): INode[];
 }
 
 interface IClassificationsParams {
@@ -272,6 +273,47 @@ export class Classifications implements IClassifications {
                     type: TypeNodeClassification.Class,
                     deep: item.deep,
                 } as IClassNode);
+            }
+
+            res.push(item);
+        });
+
+        return res;
+    }
+
+    flattenSectionsSimple(typeId?: string) {
+        if (!typeId) return [];
+
+        const res: ISectionNode[] = [];
+        const sections: EXPLOSIVE_OBJECT_COMPONENT[] = [];
+        const classes: Record<string, boolean> = {};
+
+        this.flatten(typeId).forEach(item => {
+            if (item.component === EXPLOSIVE_OBJECT_COMPONENT.AMMO && !sections.includes(item.component)) {
+                res.push({
+                    id: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+                    displayName: 'Боєприпаси',
+                    type: TypeNodeClassification.Section,
+                } as ISectionNode);
+                sections.push(item.component);
+            } else if (item.component === EXPLOSIVE_OBJECT_COMPONENT.FUSE && !sections.includes(item.component)) {
+                res.push({
+                    id: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
+                    displayName: 'Підривники',
+                    type: TypeNodeClassification.Section,
+                } as ISectionNode);
+                sections.push(item.component);
+            }
+
+            if (!item?.deep && !classes[item.classId]) {
+                const classification = this.collections.class.get(item.classId);
+                res.push({
+                    id: item.classId,
+                    displayName: classification?.displayName,
+                    type: TypeNodeClassification.Class,
+                    deep: item.deep,
+                } as IClassNode);
+                classes[item.classId] = true;
             }
 
             res.push(item);

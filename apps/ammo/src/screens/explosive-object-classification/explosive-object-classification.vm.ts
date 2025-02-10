@@ -1,21 +1,13 @@
 import { makeAutoObservable } from 'mobx';
-import { type IExplosive, type IExplosiveDevice, type IExplosiveObject, type INode } from 'shared-my-client';
+import { TypeNodeClassification } from 'shared-my-client';
 
 import { stores } from '~/stores';
-import { type DictionaryType, type ViewModel } from '~/types';
+import { type ViewModel } from '~/types';
 
-export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
-
-export interface DataItem {
-    id: string;
-    data: Item;
-    type: DictionaryType;
-    typeName?: string;
-    classItemsNames: string[];
-}
+import { DataItem, type IDataItem } from './data-item.model';
 
 export interface IExplosiveObjectClassificationVM extends ViewModel {
-    asArray: INode[];
+    asArray: IDataItem[];
 }
 
 export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassificationVM {
@@ -34,7 +26,16 @@ export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassifi
     }
 
     get asArray() {
-        return stores.explosiveObject.classifications.flattenSections(this.typeId);
+        const items = stores.explosiveObject.classifications.flattenSectionsSimple(this.typeId);
+        const lastRootIndex = items.findLastIndex(item => item.type === TypeNodeClassification.Class);
+
+        return items.map((item, i) => {
+            const next = items[i + 1];
+            const isLast = !next || next.deep < item.deep || next.type === TypeNodeClassification.Class;
+            const isLastRoot = lastRootIndex ? i > lastRootIndex : false;
+            const isNextLastRoot = lastRootIndex ? i + 1 > lastRootIndex : false;
+            return new DataItem(item, isLast, isLastRoot, isNextLastRoot);
+        });
     }
 }
 
