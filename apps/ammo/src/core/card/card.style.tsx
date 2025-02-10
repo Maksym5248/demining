@@ -16,7 +16,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         gap: theme.spacing.XXS,
         padding: theme.spacing.XS,
         alignContent: 'flex-start',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         backgroundColor: theme.colors.white,
         borderBottomLeftRadius: theme.radius.M,
         borderBottomRightRadius: theme.radius.M,

@@ -57,4 +57,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         aspectRatio: 1,
         alignItems: 'center',
     },
+    styleInfo: {
+        justifyContent: 'center',
+    },
 }));

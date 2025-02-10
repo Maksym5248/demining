@@ -39,7 +39,13 @@ export const HomeScreen = observer(() => {
                 <Text type="h4" text={t('categories')} />
                 <View style={s.categories}>
                     {vm.categories.map(category => (
-                        <Card key={category.id} style={s.item} title={tDictionaries(category.type)} svg={category.svg} />
+                        <Card
+                            key={category.id}
+                            style={s.item}
+                            title={tDictionaries(category.type)}
+                            svg={category.svg}
+                            styleInfo={s.styleInfo}
+                        />
                     ))}
                 </View>
             </View>
