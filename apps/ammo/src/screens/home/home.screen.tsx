@@ -30,7 +30,7 @@ export const HomeScreen = observer(() => {
             <View style={s.imageContainer}>
                 <Svg name="logo" style={s.image} />
             </View>
-            <Touchable style={s.searchButton} contentStyle={s.searchButtonContent} onPress={onPressSearchButton}>
+            <Touchable type="rect" style={s.searchButton} onPress={onPressSearchButton}>
                 <Text type="p4" text={t('search')} color={theme.colors.textSecondary} />
                 <Icon name="search" color={theme.colors.textSecondary} />
             </Touchable>
@@ -44,7 +44,7 @@ export const HomeScreen = observer(() => {
                             style={s.item}
                             title={tDictionaries(category.type)}
                             svg={category.svg}
-                            styleInfo={s.styleInfo}
+                            styleInfo={styles.contentCenter}
                             onPress={() => vm.openCategory(category.id)}
                         />
                     ))}

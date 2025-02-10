@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { View } from 'react-native';
-import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
+import { RectButton, BaseButton } from 'react-native-gesture-handler';
 
 import { ThemeManager } from '~/styles';
 
@@ -23,7 +23,6 @@ export function Touchable({
     rippleColor = ThemeManager.theme.colors.ripplePrimary,
     onPress,
     disabled,
-    contentStyle,
     type = 'borderLess',
     ...rest
 }: ITouchable) {
@@ -32,7 +31,7 @@ export function Touchable({
     if (!onPress) {
         Component = View;
     } else if (type === 'borderLess') {
-        Component = BorderlessButton;
+        Component = BaseButton;
     }
 
     return (
@@ -40,14 +39,13 @@ export function Touchable({
             hitSlop={type === 'borderLess' ? hitSlop : undefined}
             underlayColor={rippleColor}
             activeOpacity={type === 'borderLess' ? 0.3 : 1}
+            borderless={type === 'borderLess'}
             enabled={!disabled}
             // @ts-ignore
             onPress={disabled ? undefined : onPress}
             rippleColor={rippleColor}
             {...rest}>
-            <View accessible accessibilityRole="button" style={contentStyle}>
-                {children}
-            </View>
+            {children}
         </Component>
     );
 }

@@ -30,16 +30,12 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         marginHorizontal: theme.spacing.XL,
         marginTop: -25,
         borderRadius: theme.radius.M,
-        ...theme.shadow.light,
-    },
-    searchButtonContent: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: theme.spacing.L,
-        backgroundColor: theme.colors.white,
-        borderRadius: 4,
+        backgroundColor: theme.colors.backgroundSecondary,
+        ...theme.shadow.light,
     },
     content: {
         flex: 1,
@@ -56,8 +52,5 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         width: device.window.width / 2 - theme.spacing.XL - theme.spacing.M / 2,
         aspectRatio: 1,
         alignItems: 'center',
-    },
-    styleInfo: {
-        justifyContent: 'center',
     },
 }));

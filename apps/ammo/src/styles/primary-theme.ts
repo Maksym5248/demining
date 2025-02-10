@@ -21,6 +21,7 @@ export const themeBase: IBaseThemeSchema = {
         button: palette.creamF5,
         background: palette.greyf2,
         backgroundModal: palette.blackTransparent01,
+        backgroundSecondary: palette.white,
         text: palette.black,
         textSecondary: palette.grey92,
         accent: palette.blueB4,

@@ -23,6 +23,7 @@ export type IColor =
     | 'border'
     | 'button'
     | 'background'
+    | 'backgroundSecondary'
     | 'backgroundModal'
     | 'textSecondary'
     | 'accent'

@@ -2,15 +2,19 @@ import { ThemeManager } from '~/styles';
 
 export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     container: {
-        backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
         position: 'relative',
-        ...theme.shadow.light,
-    },
-    content: {
-        flex: 1,
         padding: 0,
         flexDirection: 'row',
+        backgroundColor: theme.colors.backgroundSecondary,
+        ...theme.shadow.light,
+    },
+    touchable: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
         borderRadius: theme.radius.M,
     },
     info: {
@@ -19,13 +23,12 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         padding: theme.spacing.XS,
         alignContent: 'flex-start',
         justifyContent: 'flex-start',
-        backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
     },
     svg: {
         width: 80,
         height: 80,
-        marginBottom: theme.spacing.S,
+        marginTop: theme.spacing.XS,
         alignSelf: 'center',
     },
     image: {
