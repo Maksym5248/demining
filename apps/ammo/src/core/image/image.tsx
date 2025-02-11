@@ -34,6 +34,8 @@ export function Image({
     const [isLoading, setLoading] = useState(!!uri);
 
     const _onLoad = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
+        e.persist();
+
         Animated.timing(animatedValue, {
             toValue: 1,
             duration: 200,
