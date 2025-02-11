@@ -14,3 +14,4 @@ export * from './image';
 export * from './modal';
 export * from './bottom-sheet';
 export * from './tree-item';
+export * from './button';

@@ -32,3 +32,8 @@ export interface ISlide {
     uri: string;
     id: number;
 }
+
+export interface IDictionatyFilter {
+    type?: DictionaryType;
+    classItemIds: string[];
+}
