@@ -5,7 +5,7 @@ import { type ITouchable } from '../touchable';
 
 export interface ICardProps extends Omit<ITouchable, 'children' | 'type'> {
     type?: 'default' | 'image' | 'imageBox';
-    title?: string;
+    title?: string | React.ReactNode;
     subTitle?: string;
     style?: IViewStyle;
     styleInfo?: IViewStyle;
@@ -13,4 +13,5 @@ export interface ICardProps extends Omit<ITouchable, 'children' | 'type'> {
     svg?: ISvgName;
     uri?: string | null;
     tags?: string[];
+    arrow?: boolean;
 }

@@ -20,9 +20,9 @@ export interface IDataItem {
     displayName: string;
     deep: number;
     lines: IDataItemDeepLine[];
-    isLast: boolean;
-    isSectionVisible: boolean;
-    isClassVisible: boolean;
+    isClassItem: boolean;
+    isSection: boolean;
+    isClass: boolean;
     setSectionVisible(value: boolean): void;
     setClassVisible(value: boolean): void;
     openItem(): void;
@@ -32,6 +32,7 @@ export class DataItem implements IDataItem {
     isSectionVisible = false;
     isClassVisible = false;
     isClassLast = false;
+    isChildrenVisible = true;
 
     // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
     constructor(public node: ISectionNode | IClassNode | INode) {
@@ -39,6 +40,8 @@ export class DataItem implements IDataItem {
     }
 
     openItem() {
+        if (!this.isClassItem) return;
+
         Navigation.navigate(SCREENS.SEARCH, {
             filters: {
                 classItemIds: [this.node.id],

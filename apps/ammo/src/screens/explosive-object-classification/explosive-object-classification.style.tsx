@@ -11,6 +11,10 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         paddingVertical: theme.spacing.XXS,
         height: ITEM_HEIGHT,
     },
+    notClassItem: {
+        backgroundColor: theme.colors.background,
+        ...theme.shadow.none,
+    },
     listItemContent: {
         flex: 1,
     },

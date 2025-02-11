@@ -39,4 +39,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         flexDirection: 'row',
         justifyContent: 'flex-start',
     },
+    arrow: {
+        transform: [{ rotate: '180deg' }],
+        marginRight: theme.spacing.XS,
+    },
 }));

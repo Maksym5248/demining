@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List } from '~/core';
+import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -29,6 +29,11 @@ const ListItem = observer(({ item }: { item: IDataItem }) => {
     });
 
     const onPress = useCallback(() => item.openItem(), [item]);
+    const getTitleType = () => {
+        if (item.isSection) return 'h4';
+        if (item.isClass) return 'h5';
+        return 'h6';
+    };
 
     return (
         <View style={s.listItem}>
@@ -41,7 +46,12 @@ const ListItem = observer(({ item }: { item: IDataItem }) => {
                 </>
             )}
 
-            <ListItemCore title={item.displayName} style={[s.listItemContent, { marginLeft: offsetHorizontal }]} onPress={onPress} />
+            <ListItemCore
+                title={<Text type={getTitleType()} text={item.displayName} />}
+                arrow={item.isClassItem}
+                style={[s.listItemContent, { marginLeft: offsetHorizontal }, !item.isClassItem ? s.notClassItem : undefined]}
+                onPress={onPress}
+            />
         </View>
     );
 });
