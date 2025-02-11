@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { TypeNodeClassification } from 'shared-my-client';
 
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
@@ -26,16 +25,27 @@ export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassifi
     }
 
     get asArray() {
-        const items = stores.explosiveObject.classifications.flattenSectionsSimple(this.typeId);
-        const lastRootIndex = items.findLastIndex(item => item.type === TypeNodeClassification.Class);
+        const sections = stores.explosiveObject.classifications.getSections(this.typeId);
+        const data: IDataItem[] = [];
 
-        return items.map((item, i) => {
-            const next = items[i + 1];
-            const isLast = !next || next.deep < item.deep || next.type === TypeNodeClassification.Class;
-            const isLastRoot = lastRootIndex ? i > lastRootIndex : false;
-            const isNextLastRoot = lastRootIndex ? i + 1 > lastRootIndex : false;
-            return new DataItem(item, isLast, isLastRoot, isNextLastRoot);
+        sections.forEach(section => {
+            data.push(new DataItem(section));
+
+            section?.children?.forEach(classification => {
+                data.push(new DataItem(classification));
+                const lastIndex = classification?.children?.findLastIndex(node => node.deep === 0) ?? -1;
+
+                classification?.children?.forEach((node, i) => {
+                    const item = new DataItem(node);
+                    item.setSectionVisible(classification.isLast);
+                    item.setClassVisible(i > lastIndex);
+                    item.setClassLast(i === lastIndex);
+                    data.push(item);
+                });
+            });
         });
+
+        return data;
     }
 }
 

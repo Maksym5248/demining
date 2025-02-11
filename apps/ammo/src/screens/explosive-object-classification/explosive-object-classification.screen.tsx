@@ -28,24 +28,20 @@ const ListItem = observer(({ item }: { item: IDataItem }) => {
         bottom: isLast ? ITEM_HEIGHT / 2 : START_BOTTOM,
     });
 
+    const onPress = useCallback(() => item.openItem(), [item]);
+
     return (
         <View style={s.listItem}>
             {!!item.deep && (
                 <>
                     <View style={[s.prefixHorizaontal, styleHorizontal]} />
-                    {new Array(item.deep).fill(0).map((_, index) => {
-                        const isLast = index === item.deep - 1 && !!item.isDeepLast;
-                        const isRootLast = index === 0 && !!item.isRootLast;
-                        const isNextLastRoot = index === 0 && !!item.isNextLastRoot;
-
-                        return isRootLast ? undefined : (
-                            <View key={index} style={[s.prefixVertical, getStyleHorizontal(index, isLast || isNextLastRoot)]} />
-                        );
+                    {item.lines.map(({ isLast, isVisible }, index) => {
+                        return isVisible ? <View key={index} style={[s.prefixVertical, getStyleHorizontal(index, isLast)]} /> : undefined;
                     })}
                 </>
             )}
 
-            <ListItemCore title={item.displayName} style={[s.listItemContent, { marginLeft: offsetHorizontal }]} />
+            <ListItemCore title={item.displayName} style={[s.listItemContent, { marginLeft: offsetHorizontal }]} onPress={onPress} />
         </View>
     );
 });

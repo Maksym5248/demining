@@ -19,9 +19,10 @@ export interface IClassifications {
     move(id: string, newParentId?: string | null, oldParentId?: string | null): void;
     getBy(params: { typeId: string; component?: EXPLOSIVE_OBJECT_COMPONENT }): INode[];
     getParents(id: string): INode[];
+    getParent(id: string): INode;
     flatten(typeId: string): INode[];
-    flattenSections(typeId?: string): INode[];
-    flattenSectionsSimple(typeId?: string): INode[];
+    flattenSections(typeId?: string): (ISectionNode | INode | IClassNode)[];
+    getSections(typeId?: string): (ISectionNode | INode | IClassNode)[];
 }
 
 interface IClassificationsParams {
@@ -51,11 +52,17 @@ export interface INode extends ITreeNode<IExplosiveObjectClassItem> {
     parents: INode[];
     children: INode[];
     flatten: INode[];
+    lastChild: INode;
+    isLast: boolean;
     add(item: INode): void;
 }
 
-export type ISectionNode = INode;
-export type IClassNode = INode;
+export interface IClassNode extends Pick<INode, 'id' | 'displayName' | 'type' | 'deep' | 'isLast'> {
+    children?: INode[];
+}
+export interface ISectionNode extends Pick<INode, 'id' | 'displayName' | 'type' | 'deep' | 'isLast'> {
+    children?: IClassNode[];
+}
 
 class Node implements INode {
     item: IExplosiveObjectClassItem;
@@ -106,12 +113,24 @@ class Node implements INode {
         return this.classifications.getParents(this.id);
     }
 
+    get parent() {
+        return this.parents[0];
+    }
+
     get deep() {
         return this.parents.length;
     }
 
     get path() {
         return this.parents.map(item => item.id).join('/');
+    }
+
+    get lastChild() {
+        return this.children[this.children.length - 1];
+    }
+
+    get isLast() {
+        return this.parent?.lastChild.id === this.id;
     }
 
     add(item: INode) {
@@ -191,6 +210,10 @@ export class Classifications implements IClassifications {
         return path;
     }
 
+    getParent(id: string) {
+        return this.getParents(id)[0];
+    }
+
     init() {
         if (this.isInitialized) return;
         this.lists.classItem.asArray.forEach(item => this.createNode(item));
@@ -243,7 +266,7 @@ export class Classifications implements IClassifications {
     flattenSections(typeId?: string) {
         if (!typeId) return [];
 
-        const res: ISectionNode[] = [];
+        const res: (ISectionNode | INode | IClassNode)[] = [];
         const sections: EXPLOSIVE_OBJECT_COMPONENT[] = [];
 
         this.flatten(typeId).forEach(item => {
@@ -265,7 +288,7 @@ export class Classifications implements IClassifications {
                 sections.push(item.component);
             }
 
-            if (prev?.classId !== item.classId) {
+            if ((prev as INode)?.classId !== item.classId) {
                 const classification = this.collections.class.get(item.classId);
                 res.push({
                     id: item.classId,
@@ -281,44 +304,67 @@ export class Classifications implements IClassifications {
         return res;
     }
 
-    flattenSectionsSimple(typeId?: string) {
+    getSections(typeId?: string) {
         if (!typeId) return [];
 
-        const res: ISectionNode[] = [];
-        const sections: EXPLOSIVE_OBJECT_COMPONENT[] = [];
-        const classes: Record<string, boolean> = {};
+        const sections: ISectionNode[] = [
+            {
+                id: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
+                displayName: 'Боєприпаси',
+                type: TypeNodeClassification.Section,
+                deep: 0,
+                children: [],
+                isLast: false,
+            },
+            {
+                id: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
+                displayName: 'Підривники',
+                type: TypeNodeClassification.Section,
+                deep: 0,
+                children: [],
+                isLast: false,
+            },
+        ];
 
-        this.flatten(typeId).forEach(item => {
-            if (item.component === EXPLOSIVE_OBJECT_COMPONENT.AMMO && !sections.includes(item.component)) {
-                res.push({
-                    id: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
-                    displayName: 'Боєприпаси',
-                    type: TypeNodeClassification.Section,
-                } as ISectionNode);
-                sections.push(item.component);
-            } else if (item.component === EXPLOSIVE_OBJECT_COMPONENT.FUSE && !sections.includes(item.component)) {
-                res.push({
-                    id: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
-                    displayName: 'Підривники',
-                    type: TypeNodeClassification.Section,
-                } as ISectionNode);
-                sections.push(item.component);
-            }
+        const getSection = (component: EXPLOSIVE_OBJECT_COMPONENT) => sections.find(item => item.id === component?.valueOf());
+        const getClassification = (section?: ISectionNode, classId?: string) => section?.children?.find(item => item.id === classId);
 
-            if (!item?.deep && !classes[item.classId]) {
-                const classification = this.collections.class.get(item.classId);
-                res.push({
-                    id: item.classId,
-                    displayName: classification?.displayName,
+        const createClassification = (section?: ISectionNode, classId?: string) => {
+            const classification = getClassification(section, classId);
+
+            if (!classification) {
+                const res = this.collections.class.get(classId);
+                if (!res) return;
+
+                section?.children?.push({
+                    id: res.id,
+                    displayName: res?.displayName,
                     type: TypeNodeClassification.Class,
-                    deep: item.deep,
-                } as IClassNode);
-                classes[item.classId] = true;
+                    deep: 1,
+                    children: [],
+                    isLast: false,
+                });
             }
+        };
 
-            res.push(item);
+        const items = this.getBy({ typeId });
+
+        items.forEach(item => {
+            const section = getSection(item.component);
+            createClassification(section, item.classId);
         });
 
-        return res;
+        sections.forEach(section => {
+            const last = section.children?.[section.children.length - 1];
+            last && (last.isLast = true);
+        });
+
+        items.forEach(item => {
+            const section = getSection(item.component);
+            const classs = getClassification(section, item.classId);
+            classs?.children?.push(...item.flatten);
+        });
+
+        return sections.filter(el => !!el.children?.length);
     }
 }
