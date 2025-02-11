@@ -3,6 +3,7 @@ import { TypeNodeClassification, type INode, type IClassNode, type ISectionNode 
 
 import { SCREENS } from '~/constants';
 import { Navigation } from '~/services';
+import { DictionaryType } from '~/types';
 
 export interface ITree {
     id: string;
@@ -45,6 +46,7 @@ export class DataItem implements IDataItem {
         Navigation.navigate(SCREENS.SEARCH, {
             filters: {
                 classItemIds: [this.node.id],
+                type: DictionaryType.ExplosiveObject,
             },
         });
     }

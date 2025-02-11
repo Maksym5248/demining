@@ -18,6 +18,7 @@ const categories: IDictionary[] = [
         id: '1',
         type: DictionaryType.Explosive,
         svg: 'explosive',
+        screen: SCREENS.SEARCH,
     },
     {
         id: '2',
@@ -29,6 +30,7 @@ const categories: IDictionary[] = [
         id: '3',
         type: DictionaryType.ExplosiveDevices,
         svg: 'explosive-device',
+        screen: SCREENS.SEARCH,
     },
 ];
 
@@ -50,7 +52,11 @@ export class HomeVM implements IHomeVM {
     openCategory(id: string) {
         const item = categories.find(category => category.id === id);
         if (!item?.screen) return;
-        Navigation.navigate(item?.screen);
+        Navigation.navigate(item?.screen, {
+            filters: {
+                type: item.type,
+            },
+        });
     }
 
     get classes() {
