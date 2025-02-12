@@ -145,7 +145,7 @@ export const BottomSheet = forwardRef<IBottomSheetRef, IBottomSheetProps>(
                         <View style={s.header}>
                             <View style={s.headerCenter}>{header?.center}</View>
                             <Touchable onPress={onPressClose || onPressCancel} hitSlop={hitSlopClose}>
-                                {<Text style={s.textClose}>{t('close')}</Text>}
+                                {header?.left ?? <Text style={s.textClose}>{t('close')}</Text>}
                             </Touchable>
                             <View>{header?.right}</View>
                         </View>
