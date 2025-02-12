@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { DictionaryType, type ViewModel } from '~/types';
+import { type DictionaryType, type ViewModel } from '~/types';
 
 import { sections } from './filter-dictionaries.type';
 
@@ -11,14 +11,16 @@ export interface IFilterDictionariesVM extends ViewModel {
 }
 
 export class FilterDictionariesVM implements IFilterDictionariesVM {
-    section?: DictionaryType = DictionaryType.ExplosiveObject;
+    section?: DictionaryType = undefined;
 
     constructor() {
         makeAutoObservable(this);
     }
 
     setSection(value?: DictionaryType) {
+        console.log('option', value);
         this.section = value;
+        console.log('option 1', this.section);
     }
 
     get sections() {

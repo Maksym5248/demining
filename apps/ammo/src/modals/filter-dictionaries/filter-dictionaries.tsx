@@ -1,49 +1,40 @@
-import React, { useCallback, useRef } from 'react';
+import React from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { BottomSheet, Modal, Button, Carousel, type IRenderItemParams, type ICarouselRef } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon } from '~/core';
 import { type IOption } from '~/core/button/buttons-radio/buttons-radio.type';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { useDevice, useStylesCommon } from '~/styles';
+import { useStylesCommon, useTheme } from '~/styles';
 import { DictionaryType } from '~/types';
 
 import { ExplosiveObject } from './containers';
-import { getContentHeight, useStyles } from './filter-dictionaries.style';
+import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
 
+const getContent = (section?: DictionaryType) => {
+    switch (section) {
+        case DictionaryType.ExplosiveObject:
+            return <ExplosiveObject />;
+        default:
+            return null;
+    }
+};
+
 export const FilterDictionariesModal = observer((props: IFilterDictionariesProps) => {
     const styles = useStylesCommon();
-    const device = useDevice();
     const s = useStyles();
+    const theme = useTheme();
     const vm = useViewModel<IFilterDictionariesVM>(filterDictionariesVM);
     const tDictionaries = useTranslate('dictionaries');
-    const carouselRef = useRef<ICarouselRef>(null);
+    const t = useTranslate('modals.filter-dictionaries');
 
-    const contentHeight = getContentHeight(device);
-
-    const renderItem = useCallback(({ item, itemWidth }: IRenderItemParams<{ section: DictionaryType }>) => {
-        if (item.section === DictionaryType.ExplosiveObject) {
-            return (
-                <View style={{ height: contentHeight, width: itemWidth }}>
-                    <ExplosiveObject />
-                </View>
-            );
-        }
-    }, []);
-
-    const onChangedIndex = useCallback((index: number) => {
-        vm.setSection(vm.sections[index]);
-    }, []);
-
-    const onPressSection = useCallback((option: IOption<DictionaryType>) => {
+    const onPressSection = (option: IOption<DictionaryType>) => {
         vm.setSection(option.value);
-        const index = vm.sections.findIndex(el => el === option.value);
-        carouselRef.current?.animatedToIdex(index);
-    }, []);
+    };
 
     const options = vm.sections.map(section => ({
         value: section,
@@ -52,21 +43,21 @@ export const FilterDictionariesModal = observer((props: IFilterDictionariesProps
 
     return (
         <Modal style={styles.modalBottomSheet} {...props} animationInTiming={1}>
-            <BottomSheet onClose={props.hide}>
+            <BottomSheet
+                header={{
+                    left: <Icon name="back" onPress={props.hide} color={theme.colors.accent} />,
+                    center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,
+                    right: <Text text={t('reset')} color={theme.colors.accent} />,
+                }}
+                onClose={props.hide}>
                 <View style={s.container}>
-                    <Button.Radio options={options} value={vm.section} onPress={onPressSection} />
-                    <Carousel.Container
-                        ref={carouselRef}
-                        initialIndex={vm.sections.findIndex(el => el === vm.section)}
-                        width={device.window.width}
-                        itemWidth={device.window.width}
-                        data={vm.sections.map(section => ({ section }))}
-                        renderItem={renderItem}
-                        style={styles.hidden}
-                        onChangedIndex={onChangedIndex}
-                        delayChangeIndexCallBack={0}
-                        lazy
-                    />
+                    <View style={s.categories}>
+                        <Text type="h5" style={styles.label} color={theme.colors.accent}>
+                            {t('label-dictionaries')}
+                        </Text>
+                        <Button.Radio options={options} value={vm.section} onPress={onPressSection} />
+                    </View>
+                    <View style={s.content}>{getContent(vm.section)}</View>
                 </View>
             </BottomSheet>
         </Modal>

@@ -18,7 +18,7 @@ export function ButtonsRadio<T>({ style, options, value, onPress }: IButtonsRadi
 
                 return (
                     <View key={option.title} style={[s.button, isActive ? s.active : undefined]}>
-                        <Text type="p4" style={[s.text, isActive ? s.activeText : undefined]}>
+                        <Text type="radio" style={[s.text, isActive ? s.activeText : undefined]}>
                             {option.title}
                         </Text>
                         <Touchable type="rect" style={styles.touchable} onPress={() => onPress(option)} />

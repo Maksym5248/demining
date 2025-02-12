@@ -10,6 +10,9 @@ import { type IThemeSchema, type IBaseThemeSchema } from './types';
 export const themeBase: IBaseThemeSchema = {
     radius: {
         M: 4,
+        L: 8,
+        XL: 16,
+        XXL: 24,
     },
     colors: {
         white: palette.white,
@@ -56,6 +59,7 @@ export const themeBase: IBaseThemeSchema = {
         P3: 18,
         P4: 18,
         P5: 16,
+        P6: 12,
     },
     spacing: {
         XXXS: 2,

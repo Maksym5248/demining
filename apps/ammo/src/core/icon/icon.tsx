@@ -11,7 +11,7 @@ import { Touchable } from '../touchable';
 
 export const Icon = ({
     name,
-    size,
+    size = 22,
     color = ThemeManager.theme.colors.primary,
     style,
     svgStyle,

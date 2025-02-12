@@ -63,6 +63,8 @@ export function App(): React.JSX.Element {
         } finally {
             Modal.hide(MODALS.LOADING);
         }
+
+        Modal.show(MODALS.FILTER_DICTIONARY);
     }, []);
 
     const setNavigationRef = useCallback((ref: NavigationContainerRef<any>) => {

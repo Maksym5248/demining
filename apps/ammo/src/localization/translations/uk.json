@@ -91,6 +91,12 @@
     "modals": {
         "gallery": {
             "of": "з"
+        },
+        "filter-dictionaries": {
+            "title": "Фільтри",
+            "reset": "Скинути",
+            "apply": "Застосувати",
+            "label-dictionaries": "Довідники"
         }
     },
     "dictionaries": {

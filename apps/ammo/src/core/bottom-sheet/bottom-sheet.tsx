@@ -34,7 +34,7 @@ export const BottomSheet = forwardRef<IBottomSheetRef, IBottomSheetProps>(
             enabledSwipe = true,
             enableHideOnPressBackground = true,
             children,
-            isHeader = true,
+            header,
         }: IBottomSheetProps,
         ref: Ref<IBottomSheetRef>,
     ) => {
@@ -142,13 +142,13 @@ export const BottomSheet = forwardRef<IBottomSheetRef, IBottomSheetProps>(
                 </Animated.View>
                 <PanGestureHandler enabled={enabledSwipe} onGestureEvent={eventHandler}>
                     <Animated.View style={[s.content, contentStyle, contentStyles]} onLayout={onLayout}>
-                        {!!isHeader && (
-                            <View style={s.header}>
-                                <Touchable onPress={onPressClose || onPressCancel} hitSlop={hitSlopClose}>
-                                    <Text style={s.textClose}>{t('close')}</Text>
-                                </Touchable>
-                            </View>
-                        )}
+                        <View style={s.header}>
+                            <Touchable onPress={onPressClose || onPressCancel} hitSlop={hitSlopClose}>
+                                {header?.left ?? <Text style={s.textClose}>{t('close')}</Text>}
+                            </Touchable>
+                            <View style={s.headerCenter}>{header?.center}</View>
+                            <View>{header?.right}</View>
+                        </View>
                         {children}
                     </Animated.View>
                 </PanGestureHandler>

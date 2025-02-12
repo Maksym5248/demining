@@ -4,13 +4,13 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     container: {
         position: 'relative',
         flexDirection: 'row',
-        padding: theme.spacing.XS,
+        flexWrap: 'wrap',
         gap: theme.spacing.XS,
     },
     button: {
-        height: 40,
+        height: 25,
         paddingHorizontal: theme.spacing.S,
-        borderRadius: theme.radius.M,
+        borderRadius: theme.radius.L,
         backgroundColor: theme.colors.backgroundSecondary,
         borderColor: theme.colors.accent,
         borderWidth: 1,
