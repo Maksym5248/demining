@@ -96,7 +96,8 @@
             "title": "Фільтри",
             "reset": "Скинути",
             "apply": "Застосувати",
-            "label-dictionaries": "Довідники"
+            "label-dictionaries": "Довідники",
+            "empty": "Виберіть довідник"
         }
     },
     "dictionaries": {

@@ -18,9 +18,7 @@ export class FilterDictionariesVM implements IFilterDictionariesVM {
     }
 
     setSection(value?: DictionaryType) {
-        console.log('option', value);
-        this.section = value;
-        console.log('option 1', this.section);
+        this.section = value === this.section ? undefined : value;
     }
 
     get sections() {

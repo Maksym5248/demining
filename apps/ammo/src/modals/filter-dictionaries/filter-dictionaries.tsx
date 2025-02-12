@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { BottomSheet, Modal, Button, Text, Icon } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon, ListEmpty } from '~/core';
 import { type IOption } from '~/core/button/buttons-radio/buttons-radio.type';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
@@ -15,7 +15,7 @@ import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
 
-const getContent = (section?: DictionaryType) => {
+const getContent = (section: DictionaryType | undefined) => {
     switch (section) {
         case DictionaryType.ExplosiveObject:
             return <ExplosiveObject />;
@@ -45,7 +45,7 @@ export const FilterDictionariesModal = observer((props: IFilterDictionariesProps
         <Modal style={styles.modalBottomSheet} {...props} animationInTiming={1}>
             <BottomSheet
                 header={{
-                    left: <Icon name="back" onPress={props.hide} color={theme.colors.accent} />,
+                    left: <Icon name="back" color={theme.colors.accent} />,
                     center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,
                     right: <Text text={t('reset')} color={theme.colors.accent} />,
                 }}
@@ -57,7 +57,9 @@ export const FilterDictionariesModal = observer((props: IFilterDictionariesProps
                         </Text>
                         <Button.Radio options={options} value={vm.section} onPress={onPressSection} />
                     </View>
-                    <View style={s.content}>{getContent(vm.section)}</View>
+                    <View style={s.content}>
+                        {getContent(vm.section) ?? <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
+                    </View>
                 </View>
             </BottomSheet>
         </Modal>

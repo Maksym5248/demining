@@ -15,4 +15,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         paddingHorizontal: theme.spacing.S,
         gap: theme.spacing.XS,
     },
+    empty: {
+        justifyContent: 'flex-start',
+        marginTop: device.window.height * 0.1,
+    },
 }));
