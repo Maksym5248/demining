@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Link, Text } from '~/core';
+import { Chips, Link, Text } from '~/core';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
@@ -18,15 +18,20 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
         model.openSelect();
     };
 
+    const onRemoveType = () => {
+        model.removeType();
+    };
+
     return (
         <View style={s.container}>
-            <View style={styles.gapXS}>
-                <View style={[styles.row, styles.marginHorizontalS]}>
+            <View style={[styles.gapXS, styles.marginHorizontalS]}>
+                <View style={styles.row}>
                     <Text type="h6" color={theme.colors.accent}>
                         {t('type')}
                     </Text>
                     <Link text={t('viewAll')} onPress={onPressSelect} arrow />
                 </View>
+                <Chips options={model.type} onRemove={onRemoveType} />
             </View>
         </View>
     );

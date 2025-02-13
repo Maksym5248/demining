@@ -19,3 +19,4 @@ export * from './tree-item';
 export * from './button';
 export * from './list-empty';
 export * from './separator';
+export * from './chips';

@@ -9,7 +9,8 @@ export interface IExplosiveObjectModel {
     openSelect(): void;
     setFilters(filters?: IDictionatyFilterExplosviveObject): void;
     filters: IDictionatyFilterExplosviveObject;
-    typeName?: string;
+    type?: IOption<string>;
+    removeType: () => void;
 }
 
 export class ExplosiveObjectModel implements IExplosiveObjectModel {
@@ -29,8 +30,19 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         }));
     }
 
-    get typeName() {
-        return stores.explosiveObject.type.collection.get(this.filters.typeId)?.displayName;
+    get type() {
+        const type = stores.explosiveObject.type.collection.get(this.filters.typeId);
+
+        return type
+            ? {
+                  value: type.id,
+                  title: type.displayName,
+              }
+            : undefined;
+    }
+
+    removeType() {
+        this.setFilters({ typeId: undefined });
     }
 
     setFilters(filters?: Partial<IDictionatyFilterExplosviveObject>) {
