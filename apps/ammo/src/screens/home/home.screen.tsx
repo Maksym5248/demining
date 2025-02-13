@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Card, Header, Icon, Svg, Text, Touchable } from '~/core';
+import { Card, Header, Icon, Select, Svg, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -30,11 +30,12 @@ export const HomeScreen = observer(() => {
             <View style={s.imageContainer}>
                 <Svg name="logo" style={s.image} />
             </View>
-            <Touchable type="rect" style={s.searchButton} onPress={onPressSearchButton}>
-                <Text type="p4" text={t('search')} color={theme.colors.textSecondary} />
-                <Icon name="search" color={theme.colors.textSecondary} />
-            </Touchable>
-
+            <Select
+                style={s.searchButton}
+                onPress={onPressSearchButton}
+                placeholder={t('search')}
+                right={<Icon name="search" color={theme.colors.textSecondary} />}
+            />
             <View style={s.content}>
                 <Text type="h4" text={t('categories')} />
                 <View style={s.categories}>

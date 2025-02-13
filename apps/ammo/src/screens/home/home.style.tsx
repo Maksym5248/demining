@@ -14,28 +14,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     image: {
         height: 150,
     },
-    input: {
-        flex: 1,
-        height: 50,
-        color: theme.colors.primary,
-        fontFamily: theme.fonts.regular,
-        fontSize: theme.fontSize.P1,
-        paddingTop: 0,
-        paddingLeft: 0,
-        paddingBottom: 0,
-        marginLeft: 5,
-    },
     searchButton: {
-        height: 50,
-        marginHorizontal: theme.spacing.XL,
         marginTop: -25,
-        borderRadius: theme.radius.M,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: theme.spacing.L,
-        backgroundColor: theme.colors.backgroundSecondary,
-        ...theme.shadow.light,
     },
     content: {
         flex: 1,

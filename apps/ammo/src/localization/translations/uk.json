@@ -3,6 +3,9 @@
         "bottom-sheet": {
             "cancel": "Скасувати",
             "close": "Закрити"
+        },
+        "select": {
+            "placeholder": "Вибрати"
         }
     },
     "components": {

@@ -72,7 +72,7 @@ export interface IBaseThemeSchema {
     fontSize: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5', number>;
 }
 export type ITextStyle = Record<ITextStyleType, IThemeTextStyle>;
-export type IElementStyle = Record<'header', IStyle>;
+export type IElementStyle = Record<'header' | 'input' | 'radio', IStyle>;
 export type IPaletteStyle = Record<IPalette, string>;
 export type IShadowStyle = Record<'light' | 'none', IShadow>;
 

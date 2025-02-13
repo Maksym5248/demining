@@ -8,7 +8,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         gap: theme.spacing.XS,
     },
     button: {
-        height: 25,
+        ...theme.element.radio,
         paddingHorizontal: theme.spacing.S,
         borderRadius: theme.radius.L,
         backgroundColor: theme.colors.backgroundSecondary,

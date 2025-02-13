@@ -3,6 +3,7 @@ export * from './carousel';
 export * from './icon';
 export * from './loading';
 export * from './svg';
+export * from './select';
 export * from './touchable';
 export * from './text';
 export * from './tag';

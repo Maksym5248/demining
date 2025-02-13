@@ -5,7 +5,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         height: 80,
     },
     inputContainer: {
-        height: 50,
+        ...theme.element.input,
         flexDirection: 'row',
         overflow: 'hidden',
         alignItems: 'center',
@@ -16,7 +16,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         ...theme.shadow.light,
     },
     input: {
-        height: 50,
+        ...theme.element.input,
         width: '100%',
         ...theme.text.p4,
         color: theme.colors.primary,
