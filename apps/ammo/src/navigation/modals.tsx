@@ -15,4 +15,7 @@ export const modals: IModalsMap = {
     [MODALS.FILTER_DICTIONARY]: {
         renderComponent: (props: any) => <modalsComponents.FilterDictionariesModal {...props} />,
     },
+    [MODALS.SELECT]: {
+        renderComponent: (props: any) => <modalsComponents.SelectModal {...props} />,
+    },
 };

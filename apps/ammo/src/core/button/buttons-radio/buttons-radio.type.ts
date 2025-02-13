@@ -1,9 +1,4 @@
-import { type IViewStyle } from '~/types';
-
-export interface IOption<T> {
-    value: T;
-    title: string;
-}
+import { type IOption, type IViewStyle } from '~/types';
 
 export interface IButtonsRadioProps<T> {
     value?: T;

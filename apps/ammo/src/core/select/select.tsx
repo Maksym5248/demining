@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { View } from 'react-native';
-
 import { Icon, Text, Touchable } from '~/core';
 import { useTranslate } from '~/localization';
-import { useStylesCommon, useTheme } from '~/styles';
+import { useTheme } from '~/styles';
 
 import { useStyles } from './select.style';
 import { type ISelectProps } from './select.types';
@@ -12,11 +10,10 @@ import { type ISelectProps } from './select.types';
 export const Select = ({ onPress, placeholder, value, right, style }: ISelectProps) => {
     const theme = useTheme();
     const s = useStyles();
-    const styles = useStylesCommon();
     const t = useTranslate('core.select');
 
     return (
-        <View style={[s.container, style]}>
+        <Touchable type="rect" style={[s.container, style]} onPress={onPress}>
             <Text
                 type="p4"
                 text={value ?? placeholder ?? t('placeholder')}
@@ -25,7 +22,6 @@ export const Select = ({ onPress, placeholder, value, right, style }: ISelectPro
             {right}
             {!right && !!value && <Icon name="close" color={theme.colors.textSecondary} />}
             {!right && !value && <Icon name="arrow-down" color={theme.colors.textSecondary} />}
-            <Touchable type="rect" style={styles.touchable} onPress={onPress} />
-        </View>
+        </Touchable>
     );
 };

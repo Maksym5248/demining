@@ -37,3 +37,8 @@ export interface IDictionatyFilter {
     type?: DictionaryType;
     classItemIds: string[];
 }
+
+export interface IOption<T> {
+    value: T;
+    title: string;
+}

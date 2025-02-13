@@ -5,6 +5,7 @@
             "close": "Закрити"
         },
         "select": {
+            "title": "Вибір",
             "placeholder": "Вибрати"
         }
     },
@@ -101,6 +102,9 @@
             "apply": "Застосувати",
             "label-dictionaries": "Довідники",
             "empty": "Виберіть довідник"
+        },
+        "select": {
+            "title": "Вибір"
         }
     },
     "dictionaries": {

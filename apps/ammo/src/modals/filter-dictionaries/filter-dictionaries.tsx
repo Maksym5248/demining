@@ -4,11 +4,10 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
 import { BottomSheet, Modal, Button, Text, Icon, ListEmpty } from '~/core';
-import { type IOption } from '~/core/button/buttons-radio/buttons-radio.type';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
-import { DictionaryType } from '~/types';
+import { DictionaryType, type IOption } from '~/types';
 
 import { ExplosiveObject } from './containers';
 import { useStyles } from './filter-dictionaries.style';

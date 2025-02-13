@@ -9,6 +9,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         backgroundColor: theme.colors.backgroundSecondary,
         ...theme.shadow.light,
     },
+    containerActive: {
+        backgroundColor: theme.colors.accent,
+    },
     info: {
         flex: 1,
         gap: theme.spacing.XXS,
@@ -42,5 +45,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     arrow: {
         transform: [{ rotate: '180deg' }],
         marginRight: theme.spacing.XS,
+    },
+    titleActive: {
+        backgroundColor: theme.colors.backgroundSecondary,
     },
 }));
