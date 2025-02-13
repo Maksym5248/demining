@@ -77,7 +77,7 @@ export const themeBase: IBaseThemeSchema = {
         H3: 20,
         H4: 18,
         H5: 16,
-        H6: 12,
+        H6: 14,
         P1: 18,
         P2: 18,
         P3: 16,

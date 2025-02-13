@@ -2,6 +2,7 @@ import React from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import { BottomSheet, Modal, Button, Text, Icon, ListEmpty } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -13,15 +14,6 @@ import { ExplosiveObject } from './containers';
 import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
-
-const getContent = (section: DictionaryType | undefined) => {
-    switch (section) {
-        case DictionaryType.ExplosiveObject:
-            return <ExplosiveObject />;
-        default:
-            return null;
-    }
-};
 
 export const FilterDictionariesModal = observer((props: IFilterDictionariesProps) => {
     const styles = useStylesCommon();
@@ -49,17 +41,18 @@ export const FilterDictionariesModal = observer((props: IFilterDictionariesProps
                     right: <Text text={t('reset')} color={theme.colors.accent} />,
                 }}
                 onClose={props.hide}>
-                <View style={s.container}>
+                <ScrollView style={s.container}>
                     <View style={s.categories}>
-                        <Text type="h5" style={styles.label} color={theme.colors.accent}>
+                        <Text type="h6" style={styles.label} color={theme.colors.accent}>
                             {t('label-dictionaries')}
                         </Text>
                         <Button.Radio options={options} value={vm.section} onPress={onPressSection} />
                     </View>
                     <View style={s.content}>
-                        {getContent(vm.section) ?? <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
+                        {vm.section === DictionaryType.ExplosiveObject && <ExplosiveObject model={vm.explosiveObject} />}
+                        {!vm.section && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
                     </View>
-                </View>
+                </ScrollView>
             </BottomSheet>
         </Modal>
     );

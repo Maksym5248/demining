@@ -36,7 +36,10 @@ export class DataItem implements IDataItem {
     isChildrenVisible = true;
 
     // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
-    constructor(public node: ISectionNode | IClassNode | INode) {
+    constructor(
+        public node: ISectionNode | IClassNode | INode,
+        public typeId: string,
+    ) {
         makeAutoObservable(this);
     }
 
@@ -45,6 +48,7 @@ export class DataItem implements IDataItem {
 
         Navigation.navigate(SCREENS.SEARCH, {
             filters: {
+                typeId: 's',
                 classItemIds: [this.node.id],
                 type: DictionaryType.ExplosiveObject,
             },

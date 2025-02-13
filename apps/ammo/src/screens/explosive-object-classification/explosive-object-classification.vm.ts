@@ -29,14 +29,14 @@ export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassifi
         const data: IDataItem[] = [];
 
         sections.forEach(section => {
-            data.push(new DataItem(section));
+            data.push(new DataItem(section, this.typeId));
 
             section?.children?.forEach(classification => {
-                data.push(new DataItem(classification));
+                data.push(new DataItem(classification, this.typeId));
                 const lastIndex = classification?.children?.findLastIndex(node => node.deep === 0) ?? -1;
 
                 classification?.children?.forEach((node, i) => {
-                    const item = new DataItem(node);
+                    const item = new DataItem(node, this.typeId);
                     item.setSectionVisible(classification.isLast);
                     item.setClassVisible(i > lastIndex);
                     item.setClassLast(i === lastIndex);

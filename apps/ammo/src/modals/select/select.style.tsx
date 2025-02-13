@@ -5,14 +5,8 @@ export const getContentHeight = (device: { window: { height: number } }) => getH
 
 export const useStyles = ThemeManager.createStyleSheet(({ device }) => ({
     container: {
-        height: getHeight(device),
         width: device.window.width,
-    },
-    content: {
-        flex: 1,
-    },
-    empty: {
-        justifyContent: 'flex-start',
-        marginTop: device.window.height * 0.1,
+        paddingBottom: device.inset.bottom,
+        flex: 0,
     },
 }));

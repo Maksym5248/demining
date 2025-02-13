@@ -10,6 +10,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     },
     content: {
         flex: 1,
+        marginTop: theme.spacing.M,
     },
     categories: {
         paddingHorizontal: theme.spacing.S,

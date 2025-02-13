@@ -1,22 +1,21 @@
+import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
 import { Select } from '~/core';
-import { useViewModel } from '~/hooks';
 
 import { useStyles } from './explosive-object.style';
-import { explosiveObjectVM, type IExplosiveObjectVM } from './explosive-object.vm';
+import { type IExplosiveObjectProps } from './explosive-object.type';
 
-export const ExplosiveObject = () => {
+export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
     const s = useStyles();
-    const vm = useViewModel<IExplosiveObjectVM>(explosiveObjectVM);
 
     const onPressSelect = () => {
-        vm.openSelect();
+        model.openSelect();
     };
 
     return (
         <View style={s.container}>
-            <Select onPress={onPressSelect} />
+            <Select onPress={onPressSelect} value={model.typeName} />
         </View>
     );
-};
+});
