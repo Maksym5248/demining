@@ -2,7 +2,7 @@ import { type DictionaryType } from './common';
 
 export interface IDictionatyFilterExplosviveObject {
     typeId?: string;
-    classItemIds: string[];
+    classItemId?: string;
 }
 
 export interface IDictionatyFilter {

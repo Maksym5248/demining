@@ -14,8 +14,10 @@ export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassifi
         makeAutoObservable(this);
     }
 
-    init({ typeId }: { typeId: string }) {
+    init({ typeId, classItemId }: { typeId: string; classItemId?: string }) {
         typeId && this.classification.setType(typeId);
+        const item = this.classification.get(classItemId);
+        item?.setSelected(true);
     }
 
     unmount() {

@@ -18,4 +18,7 @@ export const modals: IModalsMap = {
     [MODALS.SELECT]: {
         renderComponent: (props: any) => <modalsComponents.SelectModal {...props} />,
     },
+    [MODALS.EXPLOSIVE_OBJECT_CLASSIFICATION]: {
+        renderComponent: (props: any) => <modalsComponents.ExplosiveObjectClassificationModal {...props} />,
+    },
 };

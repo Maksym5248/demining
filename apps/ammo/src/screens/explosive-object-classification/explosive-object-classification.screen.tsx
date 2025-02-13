@@ -6,14 +6,14 @@ import { View } from 'react-native';
 import { Header, type IFlatListRenderedItem, List, TreeItem } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
+import { type IClassificationItem } from '~/models';
 import { useStylesCommon, useTheme } from '~/styles';
 
-import { type IDataItem } from './data-item.model';
 import { type IExplosiveDeviceClassificationScreenProps } from './explosive-device-classification.types';
 import { explosiveObjectClassificationVM, type IExplosiveObjectClassificationVM } from './explosive-object-classification.vm';
 
-const ListItem = observer(({ item }: { item: IDataItem }) => {
-    const onPress = useCallback(() => item.openItem(), [item]);
+const ListItem = observer(({ item }: { item: IClassificationItem }) => {
+    const onPress = useCallback(() => item.openSearch(), [item]);
 
     return (
         <TreeItem
@@ -24,6 +24,7 @@ const ListItem = observer(({ item }: { item: IDataItem }) => {
             isClass={item.isClass}
             isClassItem={item.isClassItem}
             deep={item.deep}
+            arrow
         />
     );
 });
@@ -35,7 +36,7 @@ export const ExplosiveObjectClassificationScreen = observer(({ route }: IExplosi
 
     const vm = useViewModel<IExplosiveObjectClassificationVM>(explosiveObjectClassificationVM, route?.params);
 
-    const renderItem = useCallback(({ item }: IFlatListRenderedItem<IDataItem>) => <ListItem item={item} />, []);
+    const renderItem = useCallback(({ item }: IFlatListRenderedItem<IClassificationItem>) => <ListItem item={item} />, []);
 
     return (
         <View style={styles.container}>

@@ -110,6 +110,9 @@
         },
         "select": {
             "title": "Вибір"
+        },
+        "explosive-object-classification": {
+            "title": "Класифікація"
         }
     },
     "dictionaries": {

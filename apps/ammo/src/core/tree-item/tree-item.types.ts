@@ -10,5 +10,7 @@ export interface ITreeItemProps {
     isSection: boolean;
     isClass: boolean;
     title: string;
+    arrow?: boolean;
     onPress: () => void;
+    state?: 'active' | 'default';
 }

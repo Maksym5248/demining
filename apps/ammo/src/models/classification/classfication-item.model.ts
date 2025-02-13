@@ -7,7 +7,7 @@ import { DictionaryType } from '~/types';
 
 export interface ITree {
     id: string;
-    node: IDataItem | null;
+    node: IClassificationItem | null;
     children: ITree[];
 }
 
@@ -16,7 +16,7 @@ export interface IDataItemDeepLine {
     isVisible: boolean;
 }
 
-export interface IDataItem {
+export interface IClassificationItem {
     id: string;
     displayName: string;
     deep: number;
@@ -24,16 +24,19 @@ export interface IDataItem {
     isClassItem: boolean;
     isSection: boolean;
     isClass: boolean;
+    isSelected: boolean;
+    setSelected(value: boolean): void;
     setSectionVisible(value: boolean): void;
     setClassVisible(value: boolean): void;
-    openItem(): void;
+    openSearch(): void;
 }
 
-export class DataItem implements IDataItem {
+export class ClassificationItem implements IClassificationItem {
     isSectionVisible = false;
     isClassVisible = false;
     isClassLast = false;
     isChildrenVisible = true;
+    isSelected = false;
 
     // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
     constructor(
@@ -43,13 +46,17 @@ export class DataItem implements IDataItem {
         makeAutoObservable(this);
     }
 
-    openItem() {
+    setSelected(value: boolean) {
+        this.isSelected = value;
+    }
+
+    openSearch() {
         if (!this.isClassItem) return;
 
         Navigation.navigate(SCREENS.SEARCH, {
             filters: {
                 typeId: 's',
-                classItemIds: [this.node.id],
+                classItemIds: this.node.id,
                 type: DictionaryType.ExplosiveObject,
             },
         });

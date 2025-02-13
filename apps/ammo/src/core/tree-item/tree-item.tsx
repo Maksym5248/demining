@@ -10,7 +10,7 @@ import { type ITreeItemProps } from './tree-item.types';
 
 const START_BOTTOM = 0;
 
-export const TreeItem = ({ onPress, title, lines, isSection, isClass, isClassItem, deep }: ITreeItemProps) => {
+export const TreeItem = ({ onPress, title, lines, isSection, isClass, isClassItem, deep, arrow, state = 'default' }: ITreeItemProps) => {
     const theme = useTheme();
     const s = useStyles();
 
@@ -29,6 +29,8 @@ export const TreeItem = ({ onPress, title, lines, isSection, isClass, isClassIte
         return 'h6';
     };
 
+    const isActive = state === 'active';
+
     return (
         <View style={s.listItem}>
             {!!deep && (
@@ -41,10 +43,11 @@ export const TreeItem = ({ onPress, title, lines, isSection, isClass, isClassIte
             )}
 
             <ListItemCore
-                title={<Text type={getTitleType()} text={title} />}
-                arrow={isClassItem}
+                title={<Text type={getTitleType()} text={title} color={isActive ? theme.colors.backgroundSecondary : theme.colors.text} />}
+                arrow={isClassItem && arrow}
                 style={[s.listItemContent, { marginLeft: offsetHorizontal }, !isClassItem ? s.notClassItem : undefined]}
                 onPress={onPress}
+                state={state}
             />
         </View>
     );

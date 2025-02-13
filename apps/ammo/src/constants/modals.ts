@@ -3,4 +3,5 @@ export enum MODALS {
     FILTER_DICTIONARY = 'FilterDictionary',
     GALLERY = 'Gallery',
     SELECT = 'Select',
+    EXPLOSIVE_OBJECT_CLASSIFICATION = 'ExplosiveObjectClassification',
 }

@@ -26,6 +26,10 @@ export class FilterDictionariesVM implements IFilterDictionariesVM {
     }
 
     setType(value?: DictionaryType) {
+        if (value !== this.type) {
+            this.explosiveObject.clear();
+        }
+
         this.type = value === this.type ? undefined : value;
     }
 
