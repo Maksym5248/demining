@@ -68,7 +68,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     <Text text={details?.data?.weight || '-'} />
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
-                        <View key={i} style={styles.row}>
+                        <View key={i} style={[styles.row, styles.marginHorizontalXXS]}>
                             <Touchable onPress={el.explosiveId ? () => vm.openExplosive(el.explosiveId ?? '') : undefined}>
                                 <Text
                                     color={el.explosive ? ThemeManager.theme.colors.link : undefined}
@@ -79,7 +79,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         </View>
                     )) ?? <Text text={'-'} />}
                     <Text type="label" style={styles.label} text={t('temperature')} />
-                    <View style={[styles.row, styles.rowStart]}>
+                    <View style={[styles.row, styles.start, styles.marginHorizontalXXS]}>
                         <Text text={details?.data.temperature?.max ? `max. ${details?.data.temperature?.max}` : '-'} />
                         <Text text={', '} />
                         <Text text={details?.data.temperature?.min ? `min. ${details?.data.temperature?.min}` : '-'} />

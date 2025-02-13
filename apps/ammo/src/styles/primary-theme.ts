@@ -30,6 +30,7 @@ export const themeBase: IBaseThemeSchema = {
         accent: palette.blueB4,
         accentLight: palette.blueF8,
         error: palette.redEF,
+        inert: palette.greyD3,
         transparent: palette.transparent,
         ripplePrimary: palette.blackTransparent01,
         link: palette.blueB4,

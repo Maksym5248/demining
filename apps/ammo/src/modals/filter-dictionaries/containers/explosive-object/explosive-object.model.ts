@@ -7,6 +7,7 @@ import { type IDictionatyFilterExplosviveObject, type IOption } from '~/types';
 
 export interface IExplosiveObjectModel {
     openSelect(): void;
+    setFilters(filters?: IDictionatyFilterExplosviveObject): void;
     filters: IDictionatyFilterExplosviveObject;
     typeName?: string;
 }
@@ -32,15 +33,15 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         return stores.explosiveObject.type.collection.get(this.filters.typeId)?.displayName;
     }
 
-    selectType(value: string) {
-        this.filters.typeId = value;
+    setFilters(filters?: Partial<IDictionatyFilterExplosviveObject>) {
+        filters && Object.assign(this.filters, filters);
     }
 
     openSelect() {
         const onSelect = (option: IOption<string>) => {
-            this.selectType(option.value);
+            this.setFilters({ typeId: option.value });
         };
-        console.log('typeOptions', this.typeOptions);
+
         Modal.show(MODALS.SELECT, {
             value: this.filters.typeId,
             options: this.typeOptions,

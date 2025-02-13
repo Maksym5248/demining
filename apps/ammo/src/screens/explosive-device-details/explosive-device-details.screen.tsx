@@ -45,7 +45,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                     <Text text={vm.item?.data?.chargeWeight || '-'} />
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
-                        <View key={i} style={styles.row}>
+                        <View key={i} style={[styles.row, styles.marginHorizontalXXS]}>
                             <Touchable onPress={el.explosiveId ? () => onOpenExplosive(el.explosiveId ?? '') : undefined}>
                                 <Text
                                     color={el.explosive ? ThemeManager.theme.colors.link : undefined}

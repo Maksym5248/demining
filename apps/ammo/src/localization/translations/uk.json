@@ -101,7 +101,12 @@
             "reset": "Скинути",
             "apply": "Застосувати",
             "label-dictionaries": "Довідники",
-            "empty": "Виберіть довідник"
+            "empty": "Виберіть довідник",
+            "explosive-object": {
+                "type": "Тип",
+                "classification": "Класифікація",
+                "viewAll": "Показати всі"
+            }
         },
         "select": {
             "title": "Вибір"

@@ -62,16 +62,23 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
     },
     row: {
         display: 'flex',
-        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: theme.spacing.XXS,
     },
-    rowStart: {
+    start: {
         justifyContent: 'flex-start',
     },
     marginVerticalS: {
         marginVertical: theme.spacing.S,
+    },
+    marginHorizontalS: {
+        marginHorizontal: theme.spacing.S,
+    },
+    marginHorizontalXXS: {
+        marginHorizontal: theme.spacing.XXS,
+    },
+    gapXS: {
+        gap: theme.spacing.XS,
     },
 }));

@@ -1,30 +1,35 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type DictionaryType, type ViewModel } from '~/types';
+import { type IDictionatyFilter, type DictionaryType, type ViewModel } from '~/types';
 
 import { type IExplosiveObjectModel, ExplosiveObjectModel } from './containers';
 import { sections } from './filter-dictionaries.type';
 
 export interface IFilterDictionariesVM extends ViewModel {
-    sections: DictionaryType[];
-    section?: DictionaryType;
-    setSection(id?: DictionaryType): void;
+    types: DictionaryType[];
+    type?: DictionaryType;
+    setType(id?: DictionaryType): void;
     explosiveObject: IExplosiveObjectModel;
 }
 
 export class FilterDictionariesVM implements IFilterDictionariesVM {
-    section?: DictionaryType = undefined;
+    type?: DictionaryType = undefined;
     explosiveObject: IExplosiveObjectModel = new ExplosiveObjectModel();
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    setSection(value?: DictionaryType) {
-        this.section = value === this.section ? undefined : value;
+    init(filter: Partial<IDictionatyFilter>) {
+        this.type = filter?.type;
+        this.explosiveObject.setFilters(filter?.explosiveObject);
     }
 
-    get sections() {
+    setType(value?: DictionaryType) {
+        this.type = value === this.type ? undefined : value;
+    }
+
+    get types() {
         return sections;
     }
 }

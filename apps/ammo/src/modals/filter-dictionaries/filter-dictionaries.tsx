@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { BottomSheet, Modal, Button, Text, Icon, ListEmpty } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon, ListEmpty, Separator } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -15,19 +15,19 @@ import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
 
-export const FilterDictionariesModal = observer((props: IFilterDictionariesProps) => {
+export const FilterDictionariesModal = observer(({ filter, ...props }: IFilterDictionariesProps) => {
     const styles = useStylesCommon();
     const s = useStyles();
     const theme = useTheme();
-    const vm = useViewModel<IFilterDictionariesVM>(filterDictionariesVM);
+    const vm = useViewModel<IFilterDictionariesVM>(filterDictionariesVM, filter);
     const tDictionaries = useTranslate('dictionaries');
     const t = useTranslate('modals.filter-dictionaries');
 
     const onPressSection = (option: IOption<DictionaryType>) => {
-        vm.setSection(option.value);
+        vm.setType(option.value);
     };
 
-    const options = vm.sections.map(section => ({
+    const options = vm.types.map(section => ({
         value: section,
         title: tDictionaries(section),
     }));
@@ -42,15 +42,16 @@ export const FilterDictionariesModal = observer((props: IFilterDictionariesProps
                 }}
                 onClose={props.hide}>
                 <ScrollView style={s.container}>
-                    <View style={s.categories}>
+                    <View style={[s.categories, styles.marginHorizontalS]}>
                         <Text type="h6" style={styles.label} color={theme.colors.accent}>
                             {t('label-dictionaries')}
                         </Text>
-                        <Button.Radio options={options} value={vm.section} onPress={onPressSection} />
+                        <Button.Radio options={options} value={vm.type} onPress={onPressSection} />
                     </View>
+                    <Separator />
                     <View style={s.content}>
-                        {vm.section === DictionaryType.ExplosiveObject && <ExplosiveObject model={vm.explosiveObject} />}
-                        {!vm.section && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
+                        {vm.type === DictionaryType.ExplosiveObject && <ExplosiveObject model={vm.explosiveObject} />}
+                        {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
                     </View>
                 </ScrollView>
             </BottomSheet>
