@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { observer } from 'mobx-react';
 
-import { BottomSheet, Text, Icon, type IFlatListRenderedItem, List, Modal, TreeItem } from '~/core';
+import { BottomSheet, Text, Icon, type IFlatListRenderedItem, List, Modal, TreeItem, type IBottomSheetRef } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { type IClassificationItem } from '~/models';
@@ -35,13 +35,14 @@ export const ExplosiveObjectClassificationModal = observer(
         const styles = useStylesCommon();
         const s = useStyles();
         const t = useTranslate('modals.explosive-object-classification');
+        const refBootomSheet = useRef<IBottomSheetRef>(null);
 
         const vm = useViewModel<IExplosiveObjectClassificationVM>(explosiveObjectClassificationVM, { typeId, classItemId });
 
         const _onSelect = useCallback(
             (id: string) => {
+                refBootomSheet.current?.close();
                 onSelect?.(id);
-                props.hide();
             },
             [vm],
         );
@@ -54,6 +55,7 @@ export const ExplosiveObjectClassificationModal = observer(
         return (
             <Modal style={styles.modalBottomSheet} {...props} animationInTiming={1}>
                 <BottomSheet
+                    ref={refBootomSheet}
                     header={{
                         left: <Icon name="back" color={theme.colors.accent} />,
                         center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,

@@ -1,6 +1,6 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 
-import { BottomSheet, Icon, Text, Modal, ListItem, List } from '~/core';
+import { BottomSheet, Icon, Text, Modal, ListItem, List, type IBottomSheetRef } from '~/core';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 import { type IOption } from '~/types';
@@ -13,11 +13,12 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, ...res
     const s = useStyles();
     const theme = useTheme();
     const t = useTranslate('modals.select');
+    const refBootomSheet = useRef<IBottomSheetRef>(null);
 
     const _onSelect = useCallback(
         (value: IOption<unknown>) => {
+            refBootomSheet.current?.close();
             onSelect?.(value);
-            hide();
         },
         [onSelect, hide],
     );
@@ -33,6 +34,7 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, ...res
     return (
         <Modal style={styles.modalBottomSheet} hide={hide} {...rest} animationInTiming={1}>
             <BottomSheet
+                ref={refBootomSheet}
                 header={{
                     left: <Icon name="back" color={theme.colors.accent} />,
                     center: <Text type="h5" text={title ?? t('title')} color={theme.colors.accent} />,

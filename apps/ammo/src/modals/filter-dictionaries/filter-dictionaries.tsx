@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { BottomSheet, Modal, Button, Text, Icon, ListEmpty, Separator } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon, ListEmpty, Separator, type IBottomSheetRef } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -15,10 +15,11 @@ import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
 
-export const FilterDictionariesModal = observer(({ filter, onSelect, ...props }: IFilterDictionariesProps) => {
+export const FilterDictionariesModal = observer(({ filter, onSelect, onClear, ...props }: IFilterDictionariesProps) => {
     const styles = useStylesCommon();
     const s = useStyles();
     const theme = useTheme();
+    const refBootomSheet = useRef<IBottomSheetRef>(null);
     const vm = useViewModel<IFilterDictionariesVM>(filterDictionariesVM, filter);
     const tDictionaries = useTranslate('dictionaries');
     const t = useTranslate('modals.filter-dictionaries');
@@ -28,8 +29,13 @@ export const FilterDictionariesModal = observer(({ filter, onSelect, ...props }:
     };
 
     const onPressSubmit = () => {
-        props.hide();
+        refBootomSheet.current?.close();
         onSelect?.(vm.filters);
+    };
+
+    const onPressClear = () => {
+        refBootomSheet.current?.close();
+        onClear?.();
     };
 
     const options = vm.types.map(section => ({
@@ -40,11 +46,13 @@ export const FilterDictionariesModal = observer(({ filter, onSelect, ...props }:
     return (
         <Modal style={styles.modalBottomSheet} {...props} animationInTiming={1}>
             <BottomSheet
+                ref={refBootomSheet}
                 header={{
                     left: <Icon name="back" color={theme.colors.accent} />,
                     center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,
-                    right: <Text text={t('reset')} color={theme.colors.accent} />,
+                    right: <Text text={t('reset')} color={theme.colors.accent} onPress={onPressClear} />,
                 }}
+                {...props}
                 onClose={props.hide}>
                 <ScrollView style={s.container}>
                     <View style={[s.categories, styles.marginHorizontalS]}>
