@@ -3,13 +3,14 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
+import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { type IDataItem } from './search-item.model';
 import { useStyles } from './search.style';
+import { type ISearchScreenProps } from './search.types';
 import { searchVM, type ISearchVM } from './search.vm';
 
 const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) => {
@@ -38,13 +39,14 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
     );
 });
 
-export const SearchScreen = observer(() => {
+export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
+    const { filters } = route?.params || {};
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.search');
 
-    const vm = useViewModel<ISearchVM>(searchVM);
+    const vm = useViewModel<ISearchVM>(searchVM, filters);
 
     const renderItem = useCallback((params: IFlatListRenderedItem<IDataItem>) => <ListItem {...params} />, []);
 
@@ -57,7 +59,11 @@ export const SearchScreen = observer(() => {
                 backButton="back"
                 color={theme.colors.white}
                 style={s.header}
-                right={<Icon name="filter" color={theme.colors.white} size={24} onPress={onPressFilter} />}
+                right={
+                    <Badge count={vm.filtersCount}>
+                        <Icon name="filter" color={theme.colors.white} size={24} onPress={onPressFilter} />
+                    </Badge>
+                }
             />
             <View style={s.filler} />
             <TextInput

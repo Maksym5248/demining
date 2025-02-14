@@ -10,17 +10,17 @@ import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 import { DictionaryType, type IOption } from '~/types';
 
-import { ExplosiveObject } from './containers';
+import { ExplosiveDevice, ExplosiveObject } from './containers';
 import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
 
-export const FilterDictionariesModal = observer(({ filter, onSelect, onClear, ...props }: IFilterDictionariesProps) => {
+export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }: IFilterDictionariesProps) => {
     const styles = useStylesCommon();
     const s = useStyles();
     const theme = useTheme();
     const refBootomSheet = useRef<IBottomSheetRef>(null);
-    const vm = useViewModel<IFilterDictionariesVM>(filterDictionariesVM, filter);
+    const vm = useViewModel<IFilterDictionariesVM>(filterDictionariesVM, filters);
     const tDictionaries = useTranslate('dictionaries');
     const t = useTranslate('modals.filter-dictionaries');
 
@@ -34,8 +34,7 @@ export const FilterDictionariesModal = observer(({ filter, onSelect, onClear, ..
     };
 
     const onPressClear = () => {
-        refBootomSheet.current?.close();
-        onClear?.();
+        vm.clear();
     };
 
     const options = vm.types.map(section => ({
@@ -64,6 +63,7 @@ export const FilterDictionariesModal = observer(({ filter, onSelect, onClear, ..
                     <Separator />
                     <View style={s.content}>
                         {vm.type === DictionaryType.ExplosiveObject && <ExplosiveObject model={vm.explosiveObject} />}
+                        {vm.type === DictionaryType.ExplosiveDevices && <ExplosiveDevice model={vm.explosiveDevice} />}
                         {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
                     </View>
                 </ScrollView>

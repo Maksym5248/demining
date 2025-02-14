@@ -64,7 +64,7 @@ export type IShadow =
       }
     | undefined;
 
-export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'label' | 'radio';
+export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'label' | 'radio' | 'badge';
 
 export interface IBaseThemeSchema {
     radius: Record<'M' | 'L' | 'XL' | 'XXL', number>;

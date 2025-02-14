@@ -14,7 +14,7 @@ import {
 import { MODALS } from '~/constants';
 import { Modal } from '~/services';
 import { stores } from '~/stores';
-import { type ViewModel } from '~/types';
+import { type IDictionatyFilter, type ViewModel } from '~/types';
 
 import { type IDataItem, type Item, DataItem } from './search-item.model';
 
@@ -27,6 +27,7 @@ export interface ISearchVM extends ViewModel {
     isLoading: boolean;
     isLoadingMore: boolean;
     isEndReached: boolean;
+    filtersCount: number;
 }
 
 export class SearchVM implements ISearchVM {
@@ -37,6 +38,7 @@ export class SearchVM implements ISearchVM {
     infiniteScroll: IInfiniteScrollModel<Item>;
 
     value = '';
+    filters: IDictionatyFilter = {};
 
     constructor() {
         this.search = new SearchModel(this.merged, {
@@ -53,15 +55,36 @@ export class SearchVM implements ISearchVM {
         makeAutoObservable(this);
     }
 
+    setFilters(filters?: IDictionatyFilter) {
+        Object.assign(this.filters, filters ?? {});
+    }
+
+    clearFilters() {
+        this.setFilters({});
+    }
+
+    init(filters?: IDictionatyFilter) {
+        this.setFilters(filters);
+    }
+
     unmount() {
         this.search.clear();
         this.debounce.clear();
         this.infiniteScroll.clear();
         this.value = '';
+        this.filters = {};
     }
 
     openFilters() {
-        Modal.show(MODALS.FILTER_DICTIONARY);
+        const onSelect = (filters: IDictionatyFilter) => {
+            this.setFilters(filters);
+            this.infiniteScroll.clear();
+        };
+
+        Modal.show(MODALS.FILTER_DICTIONARY, {
+            filters: this.filters,
+            onSelect,
+        });
     }
 
     setSearchBy(value: string) {
@@ -77,6 +100,13 @@ export class SearchVM implements ISearchVM {
         this.debounceMore.run(() => {
             this.infiniteScroll.loadMore();
         });
+    }
+
+    get filtersCount() {
+        const countExplosiveObject = Object.values(this.filters.explosiveObject ?? {}).filter(el => !!el).length;
+        const countExplosiveDevice = Object.values(this.filters.explosiveDevice ?? {}).filter(el => !!el).length;
+        const countType = this.filters.type ? 1 : 0;
+        return countExplosiveObject + countExplosiveDevice + countType;
     }
 
     get searchBy() {

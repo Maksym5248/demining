@@ -4,11 +4,11 @@ import { SCREENS } from '~/constants';
 import { type ISvgName } from '~/core';
 import { Navigation } from '~/services';
 import { stores } from '~/stores';
-import { DictionaryType, type ViewModel } from '~/types';
+import { DictionaryType, type IDictionatyFilter, type ViewModel } from '~/types';
 
 export interface IDictionary {
     id: string;
-    type: string;
+    type: DictionaryType;
     svg: ISvgName;
     screen?: SCREENS;
 }
@@ -52,10 +52,13 @@ export class HomeVM implements IHomeVM {
     openCategory(id: string) {
         const item = categories.find(category => category.id === id);
         if (!item?.screen) return;
+
+        const filters: IDictionatyFilter = {
+            type: item.type,
+        };
+
         Navigation.navigate(item?.screen, {
-            filters: {
-                type: item.type,
-            },
+            filters,
         });
     }
 

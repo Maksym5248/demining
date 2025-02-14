@@ -107,6 +107,11 @@
                 "classification": "Класифікація",
                 "viewAll": "Показати всі",
                 "notSelected": "Не вибрано"
+            },
+            "explosive-device": {
+                "type": "Тип",
+                "viewAll": "Показати всі",
+                "notSelected": "Не вибрано"
             }
         },
         "select": {

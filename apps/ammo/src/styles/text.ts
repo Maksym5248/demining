@@ -79,4 +79,10 @@ export const createTextStyles = ({ theme }: { theme: IBaseThemeSchema }): ITextS
         fontSize: theme.fontSize.P4,
         lineHeight: 0,
     },
+    badge: {
+        color: theme.colors.white,
+        fontFamily: theme.fonts.bold,
+        fontSize: 10,
+        lineHeight: 0,
+    },
 });

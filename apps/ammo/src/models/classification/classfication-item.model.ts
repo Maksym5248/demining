@@ -3,7 +3,7 @@ import { TypeNodeClassification, type INode, type IClassNode, type ISectionNode 
 
 import { SCREENS } from '~/constants';
 import { Navigation } from '~/services';
-import { DictionaryType } from '~/types';
+import { DictionaryType, type IDictionatyFilter } from '~/types';
 
 export interface ITree {
     id: string;
@@ -52,13 +52,16 @@ export class ClassificationItem implements IClassificationItem {
 
     openSearch() {
         if (!this.isClassItem) return;
+        const filters: IDictionatyFilter = {
+            type: DictionaryType.ExplosiveObject,
+            explosiveObject: {
+                typeId: this.typeId,
+                classItemId: this.node.id,
+            },
+        };
 
         Navigation.navigate(SCREENS.SEARCH, {
-            filters: {
-                typeId: 's',
-                classItemIds: this.node.id,
-                type: DictionaryType.ExplosiveObject,
-            },
+            filters,
         });
     }
 
