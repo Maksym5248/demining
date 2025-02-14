@@ -11,7 +11,6 @@ export interface IIconProps {
     secondColor?: string;
     style?: ViewStyle;
     svgStyle?: ViewStyle;
-    contentStyle?: ViewStyle;
     onPress?: () => void;
     disabled?: boolean;
 }

@@ -1,3 +1,4 @@
+import dictionary from './dictionary.svg';
 import explosiveDevice from './explosive-device.svg';
 import explosiveObject from './explosive-object.svg';
 import explosive from './explosive.svg';
@@ -8,4 +9,5 @@ export const svgImages = {
     ['explosive-device']: explosiveDevice,
     ['explosive-object']: explosiveObject,
     explosive,
+    dictionary,
 };

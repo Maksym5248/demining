@@ -73,4 +73,16 @@ export const createTextStyles = ({ theme }: { theme: IBaseThemeSchema }): ITextS
         fontSize: theme.fontSize.P5,
         lineHeight: theme.lineHeight.P5,
     },
+    radio: {
+        color: theme.colors.textSecondary,
+        fontFamily: theme.fonts.regular,
+        fontSize: theme.fontSize.P4,
+        lineHeight: 0,
+    },
+    badge: {
+        color: theme.colors.white,
+        fontFamily: theme.fonts.bold,
+        fontSize: 10,
+        lineHeight: 0,
+    },
 });

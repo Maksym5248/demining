@@ -24,6 +24,11 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         backgroundColor: theme.colors.background,
         paddingBottom: device.inset.bottom + 20,
     },
+    flatList: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: theme.spacing.S,
+    },
     block: {
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
@@ -33,6 +38,17 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         marginTop: theme.spacing.S,
         paddingBottom: theme.spacing.S,
     },
+    touchable: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+    },
+    contentCenter: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     hidden: {
         overflow: 'hidden',
     },
@@ -41,21 +57,28 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         marginBottom: theme.spacing.XXS,
     },
     label: {
-        marginTop: theme.spacing.S,
+        marginTop: theme.spacing.XXS,
         marginBottom: 2,
     },
     row: {
         display: 'flex',
-        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: theme.spacing.XXS,
     },
-    rowStart: {
+    start: {
         justifyContent: 'flex-start',
     },
     marginVerticalS: {
         marginVertical: theme.spacing.S,
+    },
+    marginHorizontalS: {
+        marginHorizontal: theme.spacing.S,
+    },
+    marginHorizontalXXS: {
+        marginHorizontal: theme.spacing.XXS,
+    },
+    gapXS: {
+        gap: theme.spacing.XS,
     },
 }));

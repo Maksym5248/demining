@@ -23,7 +23,7 @@ export const CarouselImage = ({ data, width }: ICarouselImageProps) => {
 
     const renderItem = useCallback(
         ({ item, index }: IRenderItemParams<ISlide>) => (
-            <Touchable onPress={() => onOpenGallery(index)}>
+            <Touchable type="rect" onPress={() => onOpenGallery(index)}>
                 <Image style={s.image} uri={item.uri} placeholder={images.placeholder} />
             </Touchable>
         ),

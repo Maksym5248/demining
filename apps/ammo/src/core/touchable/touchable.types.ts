@@ -11,9 +11,8 @@ type Optional<T extends ElementType> = Omit<ComponentPropsWithRef<T>, 'onPress'>
 export type ITouchable = Optional<typeof RectButton> &
     Optional<typeof BorderlessButton> &
     Optional<typeof View> & {
-        children: ReactNode;
+        children?: ReactNode;
         style?: StyleProp<ViewStyle> | undefined;
-        contentStyle?: StyleProp<ViewStyle> | undefined;
         type?: 'rect' | 'borderLess';
         disabled?: boolean;
         onPress?: (e?: React.FormEvent<any> | undefined) => void;

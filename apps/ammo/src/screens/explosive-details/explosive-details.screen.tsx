@@ -6,11 +6,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { measurement } from 'shared-my';
 
 import { CarouselImage } from '~/components';
-import { SCREENS } from '~/constants';
 import { Header, Text, Touchable } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
 
 import { type IExplosiveDetailsScreenProps } from './explosive-details.types';
@@ -24,7 +22,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
     const vm = useViewModel<IExplosiveDetailsVM>(createVM(route?.params?.id), route?.params);
 
     const onOpenExplosive = useCallback((id: string) => {
-        Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
+        vm.openExplosive(id);
     }, []);
 
     const { brisantness, velocity, explosiveness, tnt } = vm.item?.data?.explosive ?? {};
@@ -48,7 +46,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                     <Text text={vm.item?.data.description ?? '-'} />
                     <Text type="label" style={styles.label} text={t('composition')} />
                     {vm.composition?.map((el, i) => (
-                        <View key={i} style={styles.row}>
+                        <View key={i} style={[styles.row, styles.marginHorizontalXXS]}>
                             <Touchable onPress={el.explosiveId ? () => onOpenExplosive(el.explosiveId ?? '') : undefined}>
                                 <Text
                                     color={el.explosive ? ThemeManager.theme.colors.link : undefined}

@@ -11,8 +11,20 @@ import { useStylesCommon } from '~/styles';
 import { useStyles } from './gallery.style';
 import { type IGalleryProps } from './gallery.type';
 
-const renderItem = ({ item }: RenderItemInfo<{ uri: string }>) => {
-    return <Image uri={item.uri} style={StyleSheet.absoluteFillObject} resizeMode="contain" />;
+const renderItem = ({ item, setImageDimensions }: RenderItemInfo<{ uri: string }>) => {
+    return (
+        <Image
+            uri={item.uri}
+            style={StyleSheet.absoluteFillObject}
+            resizeMode="contain"
+            onLoad={e => {
+                e.persist();
+                const { width, height } = e?.nativeEvent?.source ?? { height: 0, width: 0 };
+                console.log('onLoad', width, height);
+                setImageDimensions({ width, height });
+            }}
+        />
+    );
 };
 
 export const GalleryModal = ({ images, index: initialIndex, hide, ...rest }: IGalleryProps) => {
@@ -60,9 +72,9 @@ export const GalleryModal = ({ images, index: initialIndex, hide, ...rest }: IGa
                     numToRender={3}
                     doubleTapInterval={150}
                     onIndexChange={onIndexChange}
-                    onSwipeToClose={hide}
                     onTap={onTap}
                     loop
+                    keyExtractor={item => item.uri}
                     onScaleEnd={onScaleEnd}
                 />
             </View>

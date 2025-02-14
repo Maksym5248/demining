@@ -1,6 +1,6 @@
 import { ThemeManager } from '~/styles';
 
-export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
+export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     header: {
         backgroundColor: theme.colors.accent,
     },
@@ -9,16 +9,21 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         height: '5%',
         backgroundColor: theme.colors.accent,
         justifyContent: 'center',
-        paddingBottom: theme.spacing.M,
+        paddingBottom: theme.spacing.S,
     },
     searchContainer: {
         height: 50,
         paddingHorizontal: theme.spacing.L,
         transform: [{ translateY: -25 }],
     },
-    flatList: {
-        flex: 1,
-        backgroundColor: theme.colors.background,
-        paddingHorizontal: theme.spacing.L,
+    card: {
+        width: device.window.width / 2 - theme.spacing.S * 1.5,
+    },
+    cardLeft: {
+        marginRight: theme.spacing.S / 2,
+    },
+
+    cardRight: {
+        marginLeft: theme.spacing.S / 2,
     },
 }));

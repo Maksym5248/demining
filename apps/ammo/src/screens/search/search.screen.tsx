@@ -3,61 +3,54 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { MODALS, SCREENS } from '~/constants';
-import { Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
+import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Modal, Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
-import { DictionaryType } from '~/types';
 
+import { type IDataItem } from './search-item.model';
 import { useStyles } from './search.style';
-import { searchVM, type ISearchVM, type DataItem } from './search.vm';
+import { type ISearchScreenProps } from './search.types';
+import { searchVM, type ISearchVM } from './search.vm';
 
-const ListItem = observer(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => {
+const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) => {
     const tDictionaries = useTranslate('dictionaries');
+    const s = useStyles();
 
     const tags = [tDictionaries(item.type)];
+    const isLeft = index % 2 === 0;
 
     if (item.typeName) {
         tags.push(item.typeName);
     }
 
-    const onOpenExplosive = () => {
-        if (item.type === DictionaryType.Explosive) {
-            Navigation.navigate(SCREENS.EXPLOSIVE_DETAILS, { id: item.id });
-        } else if (item.type === DictionaryType.ExplosiveObject) {
-            Navigation.navigate(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id: item.id });
-        } else if (item.type === DictionaryType.ExplosiveDevices) {
-            Navigation.navigate(SCREENS.EXPLOSIVE_DEVICE_DETAILS, { id: item.id });
-        }
-    };
+    const onOpenExplosive = () => item.openItem();
 
     return (
         <Card
-            type="image"
-            title={item.data.displayName}
-            uri={item.data.imageUri}
+            type="imageBox"
+            title={item.displayName}
+            uri={item.imageUri}
             tags={tags}
             subTitle={item.classItemsNames.join(', ')}
             onPress={onOpenExplosive}
+            style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
         />
     );
 });
 
-export const SearchScreen = observer(() => {
+export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
+    const { filters } = route?.params || {};
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.search');
 
-    const vm = useViewModel<ISearchVM>(searchVM);
+    const vm = useViewModel<ISearchVM>(searchVM, filters);
 
-    const renderItem = useCallback(({ item }: Pick<IFlatListRenderedItem<DataItem>, 'item'>) => <ListItem item={item} />, []);
+    const renderItem = useCallback((params: IFlatListRenderedItem<IDataItem>) => <ListItem {...params} />, []);
 
-    const onPressFilter = () => {
-        Modal.show(MODALS.FILTER_DICTIONARY);
-    };
+    const onPressFilter = () => vm.openFilters();
 
     return (
         <View style={styles.container}>
@@ -66,7 +59,11 @@ export const SearchScreen = observer(() => {
                 backButton="back"
                 color={theme.colors.white}
                 style={s.header}
-                right={<Icon name="filter" color={theme.colors.white} size={24} onPress={onPressFilter} />}
+                right={
+                    <Badge count={vm.filtersCount}>
+                        <Icon name="filter" color={theme.colors.white} size={24} onPress={onPressFilter} />
+                    </Badge>
+                }
             />
             <View style={s.filler} />
             <TextInput
@@ -77,14 +74,14 @@ export const SearchScreen = observer(() => {
                 isClearable
                 style={s.searchContainer}
             />
-            <List<DataItem>
+            <List
                 data={vm.asArray}
                 renderItem={renderItem}
-                style={s.flatList}
                 isLoading={vm.isLoading}
                 isLoadingMore={vm.isLoadingMore}
                 isEndReached={vm.isEndReached}
                 onEndReached={() => vm.loadMore()}
+                numColumns={2}
             />
         </View>
     );

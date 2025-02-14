@@ -3,11 +3,9 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { SCREENS } from '~/constants';
-import { Card, Header, Icon, Svg, Text, Touchable } from '~/core';
+import { Card, Header, Icon, Select, Svg, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './home.style';
@@ -23,7 +21,7 @@ export const HomeScreen = observer(() => {
     const vm = useViewModel<IHomeVM>(homeVM);
 
     const onPressSearchButton = () => {
-        Navigation.navigate(SCREENS.SEARCH);
+        vm.openSearch();
     };
 
     return (
@@ -32,16 +30,24 @@ export const HomeScreen = observer(() => {
             <View style={s.imageContainer}>
                 <Svg name="logo" style={s.image} />
             </View>
-            <Touchable style={s.searchButton} contentStyle={s.searchButtonContent} onPress={onPressSearchButton}>
-                <Text type="p4" text={t('search')} color={theme.colors.textSecondary} />
-                <Icon name="search" color={theme.colors.textSecondary} />
-            </Touchable>
-
+            <Select
+                style={s.searchButton}
+                onPress={onPressSearchButton}
+                placeholder={t('search')}
+                right={<Icon name="search" color={theme.colors.textSecondary} />}
+            />
             <View style={s.content}>
                 <Text type="h4" text={t('categories')} />
                 <View style={s.categories}>
                     {vm.categories.map(category => (
-                        <Card key={category.id} style={s.item} title={tDictionaries(category.type)} svg={category.svg} />
+                        <Card
+                            key={category.id}
+                            style={s.item}
+                            title={tDictionaries(category.type)}
+                            svg={category.svg}
+                            styleInfo={styles.contentCenter}
+                            onPress={() => vm.openCategory(category.id)}
+                        />
                     ))}
                 </View>
             </View>

@@ -11,11 +11,10 @@ import { Touchable } from '../touchable';
 
 export const Icon = ({
     name,
-    size,
+    size = 22,
     color = ThemeManager.theme.colors.primary,
     style,
     svgStyle,
-    contentStyle,
     onPress,
     disabled,
     secondColor,
@@ -36,11 +35,7 @@ export const Icon = ({
     }
 
     return (
-        <Touchable
-            contentStyle={[s.container, ...(_.isArray(contentStyle) ? contentStyle : [contentStyle])]}
-            style={style}
-            onPress={onPress}
-            disabled={disabled}>
+        <Touchable style={[s.container, style]} onPress={onPress} disabled={disabled}>
             <Component {...props} style={[s.svg, ...(_.isArray(svgStyle) ? svgStyle : [svgStyle])]} color={color} />
         </Touchable>
     );

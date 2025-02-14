@@ -17,6 +17,22 @@ const light = Platform.select({
     },
 });
 
+const none = Platform.select({
+    ios: {
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOffset: {
+            width: 0,
+            height: 0,
+        },
+        shadowRadius: 0,
+        shadowOpacity: 0,
+    },
+    android: {
+        elevation: 0,
+    },
+});
+
 export const shadow: IShadowStyle = {
     light,
+    none,
 };

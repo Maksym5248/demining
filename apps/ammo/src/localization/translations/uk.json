@@ -3,6 +3,10 @@
         "bottom-sheet": {
             "cancel": "Скасувати",
             "close": "Закрити"
+        },
+        "select": {
+            "title": "Вибір",
+            "placeholder": "Вибрати"
         }
     },
     "components": {
@@ -22,7 +26,7 @@
         },
         "search": {
             "title": "Пошук",
-            "search": "Пошук у всіх категоріях"
+            "search": "Пошук"
         },
         "explosive-details": {
             "title": "Деталі",
@@ -80,11 +84,41 @@
             "purpose": "Призначення",
             "structure": "Будова",
             "action": "Принцип дії"
+        },
+        "explosive-object-type": {
+            "title": "Типи"
+        },
+        "explosive-object-classification": {
+            "title": "Класифікація"
         }
     },
     "modals": {
         "gallery": {
             "of": "з"
+        },
+        "filter-dictionaries": {
+            "title": "Фільтри",
+            "reset": "Скинути",
+            "apply": "Застосувати",
+            "label-dictionaries": "Довідники",
+            "empty": "Виберіть довідник",
+            "explosive-object": {
+                "type": "Тип",
+                "classification": "Класифікація",
+                "viewAll": "Показати всі",
+                "notSelected": "Не вибрано"
+            },
+            "explosive-device": {
+                "type": "Тип",
+                "viewAll": "Показати всі",
+                "notSelected": "Не вибрано"
+            }
+        },
+        "select": {
+            "title": "Вибір"
+        },
+        "explosive-object-classification": {
+            "title": "Класифікація"
         }
     },
     "dictionaries": {

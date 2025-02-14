@@ -9,6 +9,7 @@ export type IPalette =
     | 'white'
     | 'green78'
     | 'redEF'
+    | 'greyD3'
     | 'transparent'
     | 'blueF8'
     | 'blueB4'
@@ -23,15 +24,18 @@ export type IColor =
     | 'border'
     | 'button'
     | 'background'
+    | 'backgroundSecondary'
     | 'backgroundModal'
     | 'textSecondary'
     | 'accent'
     | 'accentLight'
     | 'error'
+    | 'inert'
     | 'text'
     | 'transparent'
     | 'link'
-    | 'ripplePrimary';
+    | 'ripplePrimary'
+    | 'disabled';
 
 export interface IThemeTextStyle {
     color: string;
@@ -60,20 +64,20 @@ export type IShadow =
       }
     | undefined;
 
-export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'label';
+export type ITextStyleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'label' | 'radio' | 'badge';
 
 export interface IBaseThemeSchema {
-    radius: Record<'M', number>;
+    radius: Record<'M' | 'L' | 'XL' | 'XXL', number>;
     colors: Record<IColor, string>;
     fonts: Record<'bold' | 'medium' | 'regular' | 'light', string>;
-    lineHeight: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5', number>;
-    spacing: Record<'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL', number>;
+    lineHeight: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6', number>;
+    spacing: Record<'XXXS' | 'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL', number>;
     fontSize: Record<'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5', number>;
 }
 export type ITextStyle = Record<ITextStyleType, IThemeTextStyle>;
-export type IElementStyle = Record<'header', IStyle>;
+export type IElementStyle = Record<'header' | 'input' | 'radio' | 'button', IStyle>;
 export type IPaletteStyle = Record<IPalette, string>;
-export type IShadowStyle = Record<'light', IShadow>;
+export type IShadowStyle = Record<'light' | 'none', IShadow>;
 
 export interface IThemeSchema extends IBaseThemeSchema {
     palette: IPaletteStyle;

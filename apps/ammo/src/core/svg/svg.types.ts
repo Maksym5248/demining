@@ -11,7 +11,6 @@ export interface ISvgProps {
     secondColor?: string;
     style?: ViewStyle;
     svgStyle?: ViewStyle;
-    contentStyle?: ViewStyle;
     onPress?: () => void;
     disabled?: boolean;
 }

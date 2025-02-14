@@ -1,12 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import {
     DebounceModel,
-    Explosive,
-    ExplosiveObject,
     type IDebounceModel,
-    type IExplosive,
-    type IExplosiveDevice,
-    type IExplosiveObject,
     type IInfiniteScrollModel,
     InfiniteScrollModel,
     type IOrderModel,
@@ -16,40 +11,24 @@ import {
     SearchModel,
 } from 'shared-my-client';
 
+import { MODALS } from '~/constants';
+import { Modal } from '~/services';
 import { stores } from '~/stores';
-import { DictionaryType, type ViewModel } from '~/types';
+import { type IDictionatyFilter, type ViewModel } from '~/types';
 
-export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
-
-export interface DataItem {
-    id: string;
-    data: Item;
-    type: DictionaryType;
-    typeName?: string;
-    classItemsNames: string[];
-}
+import { type IDataItem, type Item, DataItem } from './search-item.model';
 
 export interface ISearchVM extends ViewModel {
+    openFilters(): void;
     setSearchBy(value: string): void;
     loadMore(): void;
     searchBy: string;
-    asArray: DataItem[];
+    asArray: IDataItem[];
     isLoading: boolean;
     isLoadingMore: boolean;
     isEndReached: boolean;
+    filtersCount: number;
 }
-
-export const getType = (item: Item): DictionaryType => {
-    if (item instanceof Explosive) {
-        return DictionaryType.Explosive;
-    }
-
-    if (item instanceof ExplosiveObject) {
-        return DictionaryType.ExplosiveObject;
-    }
-
-    return DictionaryType.ExplosiveDevices;
-};
 
 export class SearchVM implements ISearchVM {
     search: ISearchModel<Item>;
@@ -59,6 +38,7 @@ export class SearchVM implements ISearchVM {
     infiniteScroll: IInfiniteScrollModel<Item>;
 
     value = '';
+    filters: IDictionatyFilter = {};
 
     constructor() {
         this.search = new SearchModel(this.merged, {
@@ -75,11 +55,36 @@ export class SearchVM implements ISearchVM {
         makeAutoObservable(this);
     }
 
+    setFilters(filters?: IDictionatyFilter) {
+        Object.assign(this.filters, filters ?? {});
+    }
+
+    clearFilters() {
+        this.setFilters({});
+    }
+
+    init(filters?: IDictionatyFilter) {
+        this.setFilters(filters);
+    }
+
     unmount() {
         this.search.clear();
         this.debounce.clear();
         this.infiniteScroll.clear();
         this.value = '';
+        this.filters = {};
+    }
+
+    openFilters() {
+        const onSelect = (filters: IDictionatyFilter) => {
+            this.setFilters(filters);
+            this.infiniteScroll.clear();
+        };
+
+        Modal.show(MODALS.FILTER_DICTIONARY, {
+            filters: this.filters,
+            onSelect,
+        });
     }
 
     setSearchBy(value: string) {
@@ -97,23 +102,11 @@ export class SearchVM implements ISearchVM {
         });
     }
 
-    private getTypeName(id: string, type: DictionaryType) {
-        if (type === DictionaryType.ExplosiveObject) {
-            const item = stores.explosiveObject.collection.get(id);
-
-            return item?.type?.displayName;
-        }
-
-        return undefined;
-    }
-
-    private getClassficationNames(id: string, type: DictionaryType) {
-        if (type === DictionaryType.ExplosiveObject) {
-            const item = stores.explosiveObject.collection.get(id);
-            return item?.classItemsNames ?? [];
-        }
-
-        return [];
+    get filtersCount() {
+        const countExplosiveObject = Object.values(this.filters.explosiveObject ?? {}).filter(el => !!el).length;
+        const countExplosiveDevice = Object.values(this.filters.explosiveDevice ?? {}).filter(el => !!el).length;
+        const countType = this.filters.type ? 1 : 0;
+        return countExplosiveObject + countExplosiveDevice + countType;
     }
 
     get searchBy() {
@@ -127,13 +120,7 @@ export class SearchVM implements ISearchVM {
     }
 
     get asArray() {
-        return this.infiniteScroll.asArray.map(item => ({
-            id: item.id,
-            data: item,
-            type: getType(item),
-            typeName: this.getTypeName(item.id, getType(item)),
-            classItemsNames: this.getClassficationNames(item.id, getType(item)),
-        }));
+        return this.infiniteScroll.asArray.map(item => new DataItem(item));
     }
 
     get isEndReached() {

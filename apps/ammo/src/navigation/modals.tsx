@@ -15,4 +15,10 @@ export const modals: IModalsMap = {
     [MODALS.FILTER_DICTIONARY]: {
         renderComponent: (props: any) => <modalsComponents.FilterDictionariesModal {...props} />,
     },
+    [MODALS.SELECT]: {
+        renderComponent: (props: any) => <modalsComponents.SelectModal {...props} />,
+    },
+    [MODALS.EXPLOSIVE_OBJECT_CLASSIFICATION]: {
+        renderComponent: (props: any) => <modalsComponents.ExplosiveObjectClassificationModal {...props} />,
+    },
 };

@@ -41,7 +41,6 @@ function Component<T>(
             keyExtractor={keyExtractor}
             data={data}
             contentInset={{ bottom: 20 + device.inset.bottom }}
-            {...props}
             ItemSeparatorComponent={() => <View style={s.separator} />}
             ListEmptyComponent={() => (
                 <View style={s.emptyContainer}>
@@ -51,7 +50,10 @@ function Component<T>(
             ListFooterComponent={
                 isLoadingMore && isDataEmpty && !isLoading ? () => <Loading isVisible size="small" style={s.loadingMore} /> : undefined
             }
+            {...props}
             onEndReached={_onEndReached}
+            style={[s.container, props.style]}
+            contentContainerStyle={s.contentContainer}
         />
     );
 }

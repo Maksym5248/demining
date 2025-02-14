@@ -2,30 +2,32 @@ import { ThemeManager } from '~/styles';
 
 export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     container: {
-        backgroundColor: theme.colors.white,
-        borderRadius: theme.radius.M,
         position: 'relative',
-        ...theme.shadow.light,
-    },
-    content: {
-        flex: 1,
+        borderRadius: theme.radius.M,
+        backgroundColor: theme.colors.backgroundSecondary,
         padding: 0,
+        ...theme.shadow.light,
     },
     info: {
         flex: 1,
+        position: 'relative',
         gap: theme.spacing.XXS,
-        padding: theme.spacing.S,
+        padding: theme.spacing.XS,
         alignContent: 'flex-start',
-        justifyContent: 'flex-end',
-        backgroundColor: theme.colors.white,
-        borderBottomLeftRadius: theme.radius.M,
-        borderBottomRightRadius: theme.radius.M,
+        justifyContent: 'flex-start',
     },
     svg: {
         width: 80,
         height: 80,
-        marginBottom: theme.spacing.XS,
+        padding: theme.spacing.XS,
+        marginBottom: theme.spacing.S,
         alignSelf: 'center',
+    },
+    imageBox: {
+        width: '100%',
+        aspectRatio: 1.2,
+        borderTopLeftRadius: theme.radius.M,
+        borderTopRightRadius: theme.radius.M,
     },
     image: {
         width: '100%',
@@ -38,7 +40,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         width: '100%',
         aspectRatio: 2,
         padding: theme.spacing.XS,
-        gap: theme.spacing.XXS,
+        gap: theme.spacing.XS,
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'flex-start',

@@ -1,3 +1,5 @@
+import arrowDown from './arrow-down.svg';
+import arrowRight from './arrow-right.svg';
 import back from './back.svg';
 import close from './close.svg';
 import dictionary from './dictionary.svg';
@@ -14,4 +16,6 @@ export const svgIcons = {
     eye,
     filter,
     search,
+    ['arrow-down']: arrowDown,
+    ['arrow-right']: arrowRight,
 };
