@@ -10,6 +10,7 @@ export interface IFilterDictionariesVM extends ViewModel {
     type?: DictionaryType;
     setType(id?: DictionaryType): void;
     explosiveObject: IExplosiveObjectModel;
+    filters: IDictionatyFilter;
 }
 
 export class FilterDictionariesVM implements IFilterDictionariesVM {
@@ -31,6 +32,13 @@ export class FilterDictionariesVM implements IFilterDictionariesVM {
         }
 
         this.type = value === this.type ? undefined : value;
+    }
+
+    get filters() {
+        return {
+            type: this.type,
+            explosiveObject: this.explosiveObject.filters,
+        };
     }
 
     get types() {

@@ -15,7 +15,7 @@ import { useStyles } from './filter-dictionaries.style';
 import { type IFilterDictionariesProps } from './filter-dictionaries.type';
 import { filterDictionariesVM, type IFilterDictionariesVM } from './filter-dictionaries.vm';
 
-export const FilterDictionariesModal = observer(({ filter, ...props }: IFilterDictionariesProps) => {
+export const FilterDictionariesModal = observer(({ filter, onSelect, ...props }: IFilterDictionariesProps) => {
     const styles = useStylesCommon();
     const s = useStyles();
     const theme = useTheme();
@@ -25,6 +25,11 @@ export const FilterDictionariesModal = observer(({ filter, ...props }: IFilterDi
 
     const onPressSection = (option: IOption<DictionaryType>) => {
         vm.setType(option.value);
+    };
+
+    const onPressSubmit = () => {
+        props.hide();
+        onSelect?.(vm.filters);
     };
 
     const options = vm.types.map(section => ({
@@ -54,6 +59,7 @@ export const FilterDictionariesModal = observer(({ filter, ...props }: IFilterDi
                         {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
                     </View>
                 </ScrollView>
+                <Button.Base title={t('apply')} onPress={onPressSubmit} style={s.button} disabled />
             </BottomSheet>
         </Modal>
     );

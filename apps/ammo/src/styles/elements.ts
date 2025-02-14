@@ -10,4 +10,7 @@ export const createElementsStyles = (): IElementStyle => ({
     radio: {
         height: 24,
     },
+    button: {
+        height: 50,
+    },
 });

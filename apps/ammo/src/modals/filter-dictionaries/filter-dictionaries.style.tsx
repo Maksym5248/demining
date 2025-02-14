@@ -7,6 +7,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     container: {
         height: getHeight(device),
         width: device.window.width,
+        paddingBottom: device.inset.bottom + Number(theme.element.button.height),
     },
     content: {
         flex: 1,
@@ -17,5 +18,11 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     empty: {
         justifyContent: 'flex-start',
         marginTop: device.window.height * 0.1,
+    },
+    button: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: device.inset.bottom,
     },
 }));
