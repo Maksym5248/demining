@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { useStylesCommon } from '~/styles';
+import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './buttons-radio.style';
 import { type IButtonsRadioProps } from './buttons-radio.type';
@@ -9,6 +9,7 @@ import { Touchable } from '../../touchable';
 
 export function ButtonsRadio<T>({ style, options, value, onPress }: IButtonsRadioProps<T>) {
     const s = useStyles();
+    const theme = useTheme();
     const styles = useStylesCommon();
 
     return (
@@ -18,9 +19,7 @@ export function ButtonsRadio<T>({ style, options, value, onPress }: IButtonsRadi
 
                 return (
                     <View key={option.title} style={[s.button, isActive ? s.active : undefined]}>
-                        <Text type="radio" style={[s.text, isActive ? s.activeText : undefined]}>
-                            {option.title}
-                        </Text>
+                        <Text type="radio" color={isActive ? theme.colors.white : theme.colors.accent} text={option.title} />
                         <Touchable type="rect" style={styles.touchable} onPress={() => onPress(option)} />
                     </View>
                 );

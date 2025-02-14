@@ -20,10 +20,4 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     active: {
         backgroundColor: theme.colors.accent,
     },
-    text: {
-        color: theme.colors.accent,
-    },
-    activeText: {
-        color: theme.colors.backgroundSecondary,
-    },
 }));

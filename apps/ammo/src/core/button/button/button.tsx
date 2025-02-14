@@ -17,7 +17,7 @@ export const Button = ({ onPress, title, style, right, left, disabled }: IButton
         <View style={[s.container, style, disabled && s.disabled]}>
             <Touchable type="rect" disabled={disabled} onPress={onPress} style={styles.touchable} />
             <View>{left}</View>
-            <Text type="p3" text={title} color={theme.colors.backgroundSecondary} />
+            <Text type="p3" text={title} color={theme.colors.white} />
             <View>{right}</View>
         </View>
     );
