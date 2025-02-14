@@ -14,9 +14,7 @@ export function Chips<T>({ style, options, placeholder, onRemove }: IChipsProps<
     if (!options && !!placeholder) {
         return (
             <View style={s.placeholder}>
-                <Text type="radio" color={theme.colors.thirdiary} style={s.placeholderText}>
-                    {placeholder}
-                </Text>
+                <Text type="radio" color={theme.colors.thirdiary} style={s.placeholderText} text={placeholder} />
             </View>
         );
     }
@@ -32,9 +30,7 @@ export function Chips<T>({ style, options, placeholder, onRemove }: IChipsProps<
             {value.map(option => {
                 return (
                     <View key={option.title} style={s.button}>
-                        <Text type="radio" color={theme.colors.backgroundSecondary}>
-                            {option.title}
-                        </Text>
+                        <Text type="radio" color={theme.colors.backgroundSecondary} text={option.title} />
                         <Icon
                             name="close"
                             color={theme.colors.backgroundSecondary}

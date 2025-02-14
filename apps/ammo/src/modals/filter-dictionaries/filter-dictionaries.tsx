@@ -55,9 +55,7 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
                 onClose={props.hide}>
                 <ScrollView style={s.container}>
                     <View style={[s.categories, styles.marginHorizontalS]}>
-                        <Text type="h6" style={styles.label} color={theme.colors.accent}>
-                            {t('label-dictionaries')}
-                        </Text>
+                        <Text type="h6" style={styles.label} color={theme.colors.accent} text={t('label-dictionaries')} />
                         <Button.Radio options={options} value={vm.type} onPress={onPressSection} />
                     </View>
                     <Separator />

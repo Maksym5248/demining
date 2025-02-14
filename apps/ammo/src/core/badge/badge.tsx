@@ -15,9 +15,7 @@ export function Badge({ count, children, style }: IBadgeProps) {
             {children}
             {!!count && (
                 <View style={s.badge}>
-                    <Text type="badge" color={theme.colors.backgroundSecondary}>
-                        {count}
-                    </Text>
+                    <Text type="badge" color={theme.colors.white} text={count} />
                 </View>
             )}
         </View>

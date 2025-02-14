@@ -15,9 +15,7 @@ export const ListEmpty = ({ title, name, style }: IListEmptyProps) => {
 
     return (
         <View style={[s.container, style]}>
-            <Text style={s.text} color={theme.colors.accent}>
-                {title}
-            </Text>
+            <Text style={s.text} color={theme.colors.accent} text={title} />
             <Svg name={name} style={s.svg} color={theme.colors.accent} />
         </View>
     );

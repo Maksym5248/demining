@@ -58,9 +58,7 @@ export const GalleryModal = ({ images, index: initialIndex, hide, ...rest }: IGa
                 {infoVisible && (
                     <View style={s.toolbar}>
                         <View style={s.textContainer}>
-                            <Text style={s.headerText}>
-                                {index + 1} {t('of')} {images.length}
-                            </Text>
+                            <Text style={s.headerText} text={`${index + 1} ${t('of')} ${images.length}`} />
                         </View>
                         <Icon style={s.close} name="close" size={24} color="white" onPress={hide} />
                     </View>
