@@ -38,7 +38,7 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
                 <Text type="h6" color={theme.colors.accent} text={t('type')} />
                 <Link text={t('viewAll')} onPress={onPressTypeSelect} arrow />
             </View>
-            <Chips options={model.type} onRemove={onRemoveType} />
+            <Chips options={model.type} onRemove={onRemoveType} placeholder={t('notSelected')} />
         </View>,
     ];
 
@@ -49,7 +49,7 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
                     <Text type="h6" color={theme.colors.accent} text={t('classification')} />
                     <Link text={t('viewAll')} onPress={onPressClassificationSelect} arrow />
                 </View>
-                <Chips options={model.classItem} onRemove={onRemoveClassItem} />
+                <Chips options={model.classItem} onRemove={onRemoveClassItem} placeholder={t('notSelected')} />
             </View>,
         );
     }

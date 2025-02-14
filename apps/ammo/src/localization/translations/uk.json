@@ -105,7 +105,8 @@
             "explosive-object": {
                 "type": "Тип",
                 "classification": "Класифікація",
-                "viewAll": "Показати всі"
+                "viewAll": "Показати всі",
+                "notSelected": "Не вибрано"
             }
         },
         "select": {

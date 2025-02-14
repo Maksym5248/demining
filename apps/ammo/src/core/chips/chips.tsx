@@ -7,9 +7,19 @@ import { type IChipsProps } from './chips.type';
 import { Icon } from '../icon';
 import { Text } from '../text';
 
-export function Chips<T>({ style, options, onRemove }: IChipsProps<T>) {
+export function Chips<T>({ style, options, placeholder, onRemove }: IChipsProps<T>) {
     const s = useStyles();
     const theme = useTheme();
+
+    if (!options && !!placeholder) {
+        return (
+            <View style={s.placeholder}>
+                <Text type="radio" color={theme.colors.thirdiary} style={s.placeholderText}>
+                    {placeholder}
+                </Text>
+            </View>
+        );
+    }
 
     if (!options) {
         return null;
@@ -22,7 +32,7 @@ export function Chips<T>({ style, options, onRemove }: IChipsProps<T>) {
             {value.map(option => {
                 return (
                     <View key={option.title} style={s.button}>
-                        <Text type="radio" style={s.text}>
+                        <Text type="radio" color={theme.colors.backgroundSecondary}>
                             {option.title}
                         </Text>
                         <Icon

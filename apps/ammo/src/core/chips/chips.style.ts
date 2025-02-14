@@ -19,7 +19,12 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         gap: theme.spacing.XXS,
         backgroundColor: theme.colors.accent,
     },
-    text: {
-        color: theme.colors.backgroundSecondary,
+    placeholder: {
+        ...theme.element.radio,
+        paddingHorizontal: theme.spacing.S,
+        alighItems: 'center',
+    },
+    placeholderText: {
+        textAlign: 'center',
     },
 }));

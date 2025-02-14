@@ -59,7 +59,7 @@ export const FilterDictionariesModal = observer(({ filter, onSelect, ...props }:
                         {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
                     </View>
                 </ScrollView>
-                <Button.Base title={t('apply')} onPress={onPressSubmit} style={s.button} disabled />
+                <Button.Base title={t('apply')} onPress={onPressSubmit} style={s.button} />
             </BottomSheet>
         </Modal>
     );
