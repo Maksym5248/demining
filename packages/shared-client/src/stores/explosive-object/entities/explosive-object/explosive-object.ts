@@ -1,3 +1,4 @@
+import { uniq } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 import {
     EXPLOSIVE_OBJECT_STATUS,
@@ -69,6 +70,7 @@ export interface IExplosiveObject {
     isEditable: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     classItemsNames: string[];
+    classItemIds: string[];
 }
 
 export class ExplosiveObject implements IExplosiveObject {
@@ -176,19 +178,27 @@ export class ExplosiveObject implements IExplosiveObject {
         return !!this.getStores()?.viewer?.user?.isAuthor;
     }
 
-    get classItemsNames() {
-        const classification = this?.data?.classItemIds?.map(id => this.classifications.get(id));
+    get classItemIds() {
+        const arr =
+            this?.data.classItemIds?.map(id => {
+                const item = this.classifications.get(id);
+                const parentsIds = item.parents?.map(parent => parent.item.id);
+                return [...parentsIds, item.item.id];
+            }) ?? [];
 
-        return (
-            classification?.reduce((acc: string[], c: INode) => {
-                c.parents?.forEach(parent => {
-                    acc.push(parent.item.displayName);
-                });
-                acc.push(c.item.displayName);
-
+        const merged =
+            arr?.reduce((acc: string[], c: string[]) => {
+                acc.push(...c);
                 return acc;
-            }, [] as string[]) ?? []
-        );
+            }, [] as string[]) ?? [];
+
+        return uniq(merged);
+    }
+
+    get classItemsNames() {
+        const classification = this?.classItemIds?.map(id => this.classifications.get(id));
+
+        return classification?.map((item: INode) => item.displayName) ?? [];
     }
 
     update = new RequestModel({

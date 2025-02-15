@@ -6,7 +6,7 @@ export const filterByItemFields = <T>(searchBy: string, searchFields: string[], 
         return items;
     }
 
-    return items.filter((item) =>
+    return items.filter(item =>
         searchFields.reduce((acc, field) => {
             const value = path(item as Record<string, unknown>, field) as string;
 

@@ -1,3 +1,5 @@
+import { Device } from '~/utils';
+
 import { type ITextStyle, type IBaseThemeSchema } from './types';
 
 export const createTextStyles = ({ theme }: { theme: IBaseThemeSchema }): ITextStyle => ({
@@ -77,12 +79,12 @@ export const createTextStyles = ({ theme }: { theme: IBaseThemeSchema }): ITextS
         color: theme.colors.textSecondary,
         fontFamily: theme.fonts.regular,
         fontSize: theme.fontSize.P4,
-        lineHeight: theme.fontSize.P4,
+        lineHeight: theme.fontSize.P4 + (Device.isAndroid ? 2 : 4),
     },
     badge: {
         color: theme.colors.white,
         fontFamily: theme.fonts.bold,
         fontSize: 10,
-        lineHeight: 10,
+        lineHeight: 10 + (Device.isAndroid ? 2 : 4),
     },
 });
