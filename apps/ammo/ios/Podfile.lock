@@ -2889,6 +2889,8 @@ PODS:
     - React-perflogger (= 0.75.4)
     - React-utils (= 0.75.4)
   - RecaptchaInterop (100.0.0)
+  - RNBootSplash (6.1.5):
+    - React-Core
   - RNDeviceInfo (14.0.4):
     - React-Core
   - RNFBAnalytics (21.7.1):
@@ -3116,6 +3118,7 @@ DEPENDENCIES:
   - React-utils (from `../../../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../../../node_modules/react-native/ReactCommon`)
+  - RNBootSplash (from `../../../node_modules/react-native-bootsplash`)
   - RNDeviceInfo (from `../../../node_modules/react-native-device-info`)
   - "RNFBAnalytics (from `../../../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../../../node_modules/@react-native-firebase/app`)"
@@ -3289,6 +3292,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../../../node_modules/react-native/ReactCommon"
+  RNBootSplash:
+    :path: "../../../node_modules/react-native-bootsplash"
   RNDeviceInfo:
     :path: "../../../node_modules/react-native-device-info"
   RNFBAnalytics:
@@ -3405,6 +3410,7 @@ SPEC CHECKSUMS:
   ReactCodegen: a243ce4dbebafa5856b155a605f5d1cb615913a9
   ReactCommon: 1007c09a406a451ddbd874e51511aa541d6034f6
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
+  RNBootSplash: b9d938ef4429e62ed29bcd5d5fb0b59841979c01
   RNDeviceInfo: feea80a690d2bde1fe51461cf548039258bd03f2
   RNFBAnalytics: db74fdddc25c9aeb509a0b9bb912c1c3f114e453
   RNFBApp: e0a2811ca35292b19d390e327612ada2bd115d0a

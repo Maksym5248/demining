@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 
 import { type NavigationContainerRef } from '@react-navigation/core';
+import BootSplash from 'react-native-bootsplash';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 import { LogLevel, useAsyncEffect } from 'shared-my-client';
@@ -62,6 +63,7 @@ export function App(): React.JSX.Element {
             Logger.error(error);
         } finally {
             Modal.hide(MODALS.LOADING);
+            BootSplash.hide();
         }
     }, []);
 
