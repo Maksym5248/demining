@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { observer } from 'mobx-react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 
-import { Card, Header, Icon, Select, Svg, Text } from '~/core';
+import { images } from '~/assets';
+import { Card, Header, Icon, Select, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -28,7 +29,7 @@ export const HomeScreen = observer(() => {
         <View style={styles.container}>
             <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
             <View style={s.imageContainer}>
-                <Svg name="logo" style={s.image} />
+                <Image source={images.logo} style={s.image} />
             </View>
             <Select
                 style={s.searchButton}

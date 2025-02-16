@@ -58,7 +58,6 @@ export class SearchVM implements ISearchVM {
                 {
                     key: 'type',
                     rule: (item, value) => {
-                        console.log('item', value, value === DictionaryType.Explosive);
                         if (isExplosive(item)) return value === DictionaryType.Explosive;
                         if (isExplosiveObject(item)) return value === DictionaryType.ExplosiveObject;
                         return value === DictionaryType.ExplosiveDevices;

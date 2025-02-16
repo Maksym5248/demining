@@ -27,12 +27,18 @@ export const Splash = memo(({ onAnimationEnd, isReady }: Props) => {
             Animated.timing(value, {
                 useNativeDriver: true,
                 toValue: 1,
-                duration: 2600,
+                duration: 600,
             }).start(() => {
                 onAnimationEnd();
             });
         },
     });
+
+    const headerHeight = (theme.element.header.height as number) + device.inset.top;
+    const imageHeight = 200;
+    const imageContainerHeight = 225;
+    const imageContainerPadding = (imageContainerHeight - imageHeight) / 2;
+    const distance = headerHeight + imageHeight / 2 + imageContainerPadding;
 
     const opacity = value.interpolate({
         inputRange: [0.5, 1],
@@ -41,10 +47,7 @@ export const Splash = memo(({ onAnimationEnd, isReady }: Props) => {
 
     const translateY = value.interpolate({
         inputRange: [0, 0.5],
-        outputRange: [
-            0,
-            -(device.window.height * 0.5 - 150 - (theme.element.header.height as number) + (device.isAndroid ? device.inset.top : -2)),
-        ],
+        outputRange: [0, -(device.window.height / 2 - distance)],
         extrapolate: 'clamp',
     });
 
