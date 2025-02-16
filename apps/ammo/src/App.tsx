@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { type NavigationContainerRef } from '@react-navigation/core';
-import BootSplash from 'react-native-bootsplash';
+import { observer } from 'mobx-react-lite';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 import { LogLevel, useAsyncEffect } from 'shared-my-client';
@@ -9,21 +9,21 @@ import { LogLevel, useAsyncEffect } from 'shared-my-client';
 import { useStatusBar, useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
 import { modals, RootNavigation } from '~/navigation';
-import { AppState, Crashlytics, Logger, Modal, Navigation, NetInfo } from '~/services';
+import { AppState, Crashlytics, Logger, Navigation, NetInfo } from '~/services';
 import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
 import { CONFIG } from './config';
-import { MODALS } from './constants';
-import { MessageProvider, ModalProvider } from './containers';
+import { MessageProvider, ModalProvider, Splash } from './containers';
 import { Device } from './utils';
 
 enableScreens(true);
 
 Crashlytics.init();
 
-export function App(): React.JSX.Element {
+export const App = observer(() => {
     const vm = useViewModel<IAppViewModel>(appViewModel);
+    const [visible, setVisible] = useState(true);
 
     useStatusBar(
         {
@@ -47,7 +47,6 @@ export function App(): React.JSX.Element {
         Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
         Logger.log('VERSION:', Device.appInfo);
 
-        Modal.show(MODALS.LOADING);
         try {
             AppState.init();
             await Promise.allSettled([NetInfo.init(), Localization.init()]);
@@ -58,13 +57,14 @@ export function App(): React.JSX.Element {
                 }
             });
 
-            await vm.fetch();
+            await vm.fetch.run();
         } catch (error) {
             Logger.error(error);
-        } finally {
-            Modal.hide(MODALS.LOADING);
-            BootSplash.hide();
         }
+    }, []);
+
+    const onAnimationEnd = useCallback(() => {
+        setVisible(false);
     }, []);
 
     const setNavigationRef = useCallback((ref: NavigationContainerRef<any>) => {
@@ -78,8 +78,9 @@ export function App(): React.JSX.Element {
                     <RootNavigation ref={setNavigationRef} />
                     <MessageProvider />
                     <ModalProvider modals={modals} />
+                    {visible && <Splash onAnimationEnd={onAnimationEnd} isReady={vm.fetch.isLoaded} />}
                 </ThemeProvider>
             </LocalizationProvider>
         </GestureHandlerRootView>
     );
-}
+});

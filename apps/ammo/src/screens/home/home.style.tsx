@@ -6,13 +6,13 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     },
     imageContainer: {
         width: '100%',
-        height: '25%',
+        height: device.window.height / 4,
         backgroundColor: theme.colors.accent,
-        justifyContent: 'center',
+        alignItems: 'center',
         paddingBottom: theme.spacing.L,
     },
     image: {
-        height: 150,
+        width: 150,
     },
     searchButton: {
         marginTop: -25,
