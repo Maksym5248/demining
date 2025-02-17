@@ -17,10 +17,11 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     },
     searchButton: {
         marginTop: -25,
+        marginHorizontal: theme.spacing.L,
     },
     content: {
         flex: 1,
-        padding: theme.spacing.XL,
+        padding: theme.spacing.L,
     },
     categories: {
         flexWrap: 'wrap',

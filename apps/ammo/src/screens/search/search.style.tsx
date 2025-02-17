@@ -6,10 +6,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     },
     filler: {
         width: '100%',
-        height: '5%',
+        height: 30,
         backgroundColor: theme.colors.accent,
         justifyContent: 'center',
-        paddingBottom: theme.spacing.S,
     },
     searchContainer: {
         height: 50,

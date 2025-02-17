@@ -2889,7 +2889,7 @@ PODS:
     - React-perflogger (= 0.75.4)
     - React-utils (= 0.75.4)
   - RecaptchaInterop (100.0.0)
-  - RNBootSplash (6.1.5):
+  - RNBootSplash (6.3.3):
     - React-Core
   - RNDeviceInfo (14.0.4):
     - React-Core
@@ -3000,7 +3000,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.1.0):
+  - RNScreens (4.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3410,7 +3410,7 @@ SPEC CHECKSUMS:
   ReactCodegen: a243ce4dbebafa5856b155a605f5d1cb615913a9
   ReactCommon: 1007c09a406a451ddbd874e51511aa541d6034f6
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
-  RNBootSplash: b9d938ef4429e62ed29bcd5d5fb0b59841979c01
+  RNBootSplash: ced7b181afb7fd80a570cd8c5a3d89d04e2fc245
   RNDeviceInfo: feea80a690d2bde1fe51461cf548039258bd03f2
   RNFBAnalytics: db74fdddc25c9aeb509a0b9bb912c1c3f114e453
   RNFBApp: e0a2811ca35292b19d390e327612ada2bd115d0a
@@ -3420,7 +3420,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 5cf4d43fd8d31b236a6d8e392aa48432f01650aa
   RNLocalize: 4f22418187ecd5ca693231093ff1d912d1b3c9bc
   RNReanimated: 0ae0900c1bac7ffdd3af67740f83f7d503f10e00
-  RNScreens: 906192367b418a8d644090d7375d4657d5a5aab0
+  RNScreens: 67c6c2d9f4c917508c0414167fba805976e634f4
   RNSentry: e3daa5b783ff66135ab4262de7fc1004195cda25
   RNSVG: 5da7a24f31968ec74f0b091e3440080f347e279b
   Sentry: 0f9bc9adfc0b960e7f3bb5ec67e9a3d8193f3bdb

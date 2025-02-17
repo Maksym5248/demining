@@ -52,10 +52,8 @@ export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
     const renderItem = useCallback((params: IFlatListRenderedItem<IDataItem>) => <ListItem {...params} />, []);
 
     const onPressFilter = () => vm.openFilters();
-    console.log('autoFocus', !!inputRef.current);
 
     useEffect(() => {
-        console.log('useEffect', !!inputRef.current);
         if (autoFocus) {
             setTimeout(() => inputRef.current?.focus(), 300);
         }
