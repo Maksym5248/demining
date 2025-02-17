@@ -4,6 +4,7 @@ export interface ISearchScreenProps {
     route?: {
         params?: {
             filters?: IDictionatyFilter;
+            autoFocus?: boolean;
         };
     };
 }

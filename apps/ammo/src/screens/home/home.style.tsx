@@ -6,7 +6,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     },
     imageContainer: {
         width: '100%',
-        height: 225,
+        height: device.screen.height / 4,
         backgroundColor: theme.colors.accent,
         alignItems: 'center',
         justifyContent: 'center',

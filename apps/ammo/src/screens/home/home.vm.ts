@@ -46,7 +46,9 @@ export class HomeVM implements IHomeVM {
     }
 
     openSearch() {
-        Navigation.navigate(SCREENS.SEARCH);
+        Navigation.push(SCREENS.SEARCH_ANIMATED, {
+            autoFocus: true,
+        });
     }
 
     openCategory(id: string) {

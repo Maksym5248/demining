@@ -27,7 +27,7 @@ export const Splash = memo(({ onAnimationEnd, isReady }: Props) => {
             Animated.timing(value, {
                 useNativeDriver: true,
                 toValue: 1,
-                duration: 600,
+                duration: 1000,
             }).start(() => {
                 onAnimationEnd();
             });
@@ -36,7 +36,7 @@ export const Splash = memo(({ onAnimationEnd, isReady }: Props) => {
 
     const headerHeight = (theme.element.header.height as number) + device.inset.top;
     const imageHeight = 200;
-    const imageContainerHeight = 225;
+    const imageContainerHeight = device.screen.height / 4;
     const imageContainerPadding = (imageContainerHeight - imageHeight) / 2;
     const distance = headerHeight + imageHeight / 2 + imageContainerPadding;
 
@@ -47,7 +47,7 @@ export const Splash = memo(({ onAnimationEnd, isReady }: Props) => {
 
     const translateY = value.interpolate({
         inputRange: [0, 0.5],
-        outputRange: [0, -(device.window.height / 2 - distance)],
+        outputRange: [0, -(device.screen.height / 2 - distance)],
         extrapolate: 'clamp',
     });
 

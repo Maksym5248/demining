@@ -37,6 +37,7 @@ export const HomeScreen = observer(() => {
                 placeholder={t('search')}
                 right={<Icon name="search" color={theme.colors.textSecondary} />}
             />
+
             <View style={s.content}>
                 <Text type="h4" text={t('categories')} />
                 <View style={s.categories}>

@@ -9,6 +9,7 @@
 
     <style name="BootTheme" parent="Theme.BootSplash">
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/bootsplash_background</item> <!-- Set status bar color to bootsplash background -->
         <item name="bootSplashBackground">@color/bootsplash_background</item>
         <item name="bootSplashLogo">@drawable/bootsplash_logo</item>
         <item name="postBootSplashTheme">@style/AppTheme</item>

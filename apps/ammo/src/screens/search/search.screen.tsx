@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { observer } from 'mobx-react';
-import { View } from 'react-native';
+import { View, type TextInput as TextInputRN } from 'react-native';
 
 import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -40,17 +40,26 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
 });
 
 export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
-    const { filters } = route?.params || {};
+    const { filters, autoFocus } = route?.params || {};
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
     const t = useTranslate('screens.search');
+    const inputRef = useRef<TextInputRN>(null);
 
     const vm = useViewModel<ISearchVM>(searchVM, filters);
 
     const renderItem = useCallback((params: IFlatListRenderedItem<IDataItem>) => <ListItem {...params} />, []);
 
     const onPressFilter = () => vm.openFilters();
+    console.log('autoFocus', !!inputRef.current);
+
+    useEffect(() => {
+        console.log('useEffect', !!inputRef.current);
+        if (autoFocus) {
+            setTimeout(() => inputRef.current?.focus(), 300);
+        }
+    }, [autoFocus, inputRef]);
 
     return (
         <View style={styles.container}>
@@ -67,6 +76,7 @@ export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
             />
             <View style={s.filler} />
             <TextInput
+                ref={inputRef}
                 placeholder={t('search')}
                 onChangeValue={value => vm.setSearchBy(value)}
                 value={vm.searchBy}
@@ -74,6 +84,7 @@ export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
                 isClearable
                 style={s.searchContainer}
             />
+
             <List
                 data={vm.asArray}
                 renderItem={renderItem}
