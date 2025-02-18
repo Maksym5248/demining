@@ -99,7 +99,11 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
 
     return (
         <>
-            <ImgCrop aspect={1.2}>
+            <ImgCrop
+                aspect={1.2}
+                minZoom={0.5}
+                // @ts-ignore
+                cropperProps={{ restrictPosition: false }}>
                 <Upload
                     accept="image/*"
                     fileList={fileList}

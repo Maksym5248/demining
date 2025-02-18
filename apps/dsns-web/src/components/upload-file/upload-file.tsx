@@ -29,7 +29,13 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
     const Container = isImage ? ImgCrop : React.Fragment;
 
     return (
-        <Container aspect={1.2}>
+        <Container
+            aspect={1.2}
+            minZoom={0.5}
+            rotationSlider={isImage}
+            zoomSlider={isImage}
+            // @ts-ignore
+            cropperProps={{ restrictPosition: false }}>
             <Dragger
                 openFileDialogOnClick
                 fileList={file ? [file as RcFile] : undefined}
