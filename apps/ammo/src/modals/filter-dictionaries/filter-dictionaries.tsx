@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { BottomSheet, Modal, Button, Text, Icon, ListEmpty, Separator, type IBottomSheetRef } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon, Separator, type IBottomSheetRef } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -62,7 +62,7 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
                     <View style={s.content}>
                         {vm.type === DictionaryType.ExplosiveObject && <ExplosiveObject model={vm.explosiveObject} />}
                         {vm.type === DictionaryType.ExplosiveDevices && <ExplosiveDevice model={vm.explosiveDevice} />}
-                        {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
+                        {/* {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />} */}
                     </View>
                 </ScrollView>
                 <Button.Base title={t('apply')} onPress={onPressSubmit} style={s.button} />

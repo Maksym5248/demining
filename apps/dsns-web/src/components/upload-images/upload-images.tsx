@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Upload, Image, message, type UploadFile } from 'antd';
 import { type UploadChangeParam, type UploadFileStatus } from 'antd/es/upload/interface';
+import ImgCrop from 'antd-img-crop';
 import { type BeforeUploadFileType, type RcFile, type UploadProgressEvent, type UploadRequestError } from 'rc-upload/lib/interface';
 
 interface UploadImagesProps {
@@ -98,16 +99,18 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
 
     return (
         <>
-            <Upload
-                accept="image/*"
-                fileList={fileList}
-                beforeUpload={beforeUpload}
-                customRequest={hundleCustomRequest}
-                onPreview={handlePreview}
-                listType="picture-card"
-                onChange={handleChange}>
-                {fileList.length >= max ? null : uploadButton}
-            </Upload>
+            <ImgCrop aspect={1.2}>
+                <Upload
+                    accept="image/*"
+                    fileList={fileList}
+                    beforeUpload={beforeUpload}
+                    customRequest={hundleCustomRequest}
+                    onPreview={handlePreview}
+                    listType="picture-card"
+                    onChange={handleChange}>
+                    {fileList.length >= max ? null : uploadButton}
+                </Upload>
+            </ImgCrop>
             {previewImage && (
                 <Image
                     wrapperStyle={{ display: 'none' }}
