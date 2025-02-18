@@ -87,6 +87,7 @@
         "@react-google-maps/api": "^2.19.2",
         "@sentry/react": "^7.98.0",
         "antd": "^5.11.0",
+        "antd-img-crop": "^4.24.0",
         "axios": "^1.6.5",
         "dayjs": "^1.11.10",
         "docx-preview": "^0.3.0",

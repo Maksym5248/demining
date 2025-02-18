@@ -5,9 +5,9 @@ export const getContentHeight = (device: { window: { height: number } }) => getH
 
 export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     container: {
-        height: getHeight(device),
+        // height: getHeight(device),
         width: device.window.width,
-        paddingBottom: device.inset.bottom + Number(theme.element.button.height),
+        paddingBottom: device.inset.bottom + Number(theme.element.button.height) + theme.spacing.L,
     },
     content: {
         flex: 1,

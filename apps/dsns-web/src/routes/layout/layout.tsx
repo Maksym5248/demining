@@ -16,6 +16,12 @@ import { nav } from '../../utils/routes';
 
 const { Sider, Content } = Lay;
 
+enum VericalMenu {
+    MANAGMENT = 'managment',
+    DOCUMENTS = 'documents',
+    DICTIONARY = 'dictionary',
+}
+
 export const Layout = observer(() => {
     const store = useStore();
     const navigate = useNavigate();
@@ -23,6 +29,9 @@ export const Layout = observer(() => {
     const params = useParams();
 
     const [collapsed, setCollapsed] = useState(false);
+    const { isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor } = store.viewer.user ?? {};
+
+    const [selectedVerticalMenu, setSelectedVerticalMenu] = useState(isAuthor ? VericalMenu.DICTIONARY : VericalMenu.DOCUMENTS);
 
     const routes = nav.getRoutes(location.pathname, params as { [key: string]: string });
     const itemsBreadcrumb = routes.map(el => ({
@@ -30,14 +39,29 @@ export const Layout = observer(() => {
         onClick: () => navigate(el.route, params),
     }));
 
-    const { isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor } = store.viewer.user ?? {};
-
     const onSignOut = async () => {
         await store.auth.signInOut.run();
         navigate(ROUTES.LOGIN);
     };
 
-    const items = useMemo(() => {
+    const menuManagment = useMemo(() => {
+        const arr = [
+            ...(isRootAdmin
+                ? [
+                      {
+                          key: ROUTES.ORGANIZATIONS_LIST,
+                          icon: <Icon.BankOutlined />,
+                          label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
+                          onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST),
+                      },
+                  ]
+                : []),
+        ];
+
+        return arr;
+    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+
+    const menuDocuments = useMemo(() => {
         const arr = [
             ...(isOrganizationAdmin || isOrganizationMember
                 ? [
@@ -85,18 +109,6 @@ export const Layout = observer(() => {
                           onClick: () => navigate(ROUTES.STATISTICS),
                       },
                       {
-                          key: ROUTES.EXPLOSIVE_OBJECT_LIST,
-                          icon: <Icon.FireOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
-                      },
-                      {
-                          key: ROUTES.EXPLOSIVE_DEVICE_LIST,
-                          icon: <Icon.CodeSandboxOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_DEVICE_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_DEVICE_LIST),
-                      },
-                      {
                           key: ROUTES.EMPLOYEES_LIST,
                           icon: <Icon.TeamOutlined />,
                           label: nav.getRouteTitle(ROUTES.EMPLOYEES_LIST),
@@ -116,23 +128,26 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            ...(isRootAdmin
+        ];
+
+        return arr;
+    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+
+    const menuDictionary = useMemo(() => {
+        const arr = [
+            ...(isOrganizationAdmin || isOrganizationMember || isAuthor
                 ? [
                       {
-                          key: ROUTES.ORGANIZATIONS_LIST,
-                          icon: <Icon.BankOutlined />,
-                          label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
-                          onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST),
+                          key: ROUTES.EXPLOSIVE_OBJECT_LIST,
+                          icon: <Icon.FireOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
                       },
-                  ]
-                : []),
-            ...(isOrganizationAdmin
-                ? [
                       {
-                          key: ROUTES.ORGANIZATIONS_LIST,
-                          icon: <Icon.BankOutlined />,
-                          label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
-                          onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST),
+                          key: ROUTES.EXPLOSIVE_DEVICE_LIST,
+                          icon: <Icon.CodeSandboxOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_DEVICE_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_DEVICE_LIST),
                       },
                   ]
                 : []),
@@ -151,22 +166,41 @@ export const Layout = observer(() => {
                           onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_CLASS),
                       },
                       {
-                          key: ROUTES.EXPLOSIVE_OBJECT_LIST,
-                          icon: <Icon.FireOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
-                      },
-                      {
-                          key: ROUTES.EXPLOSIVE_DEVICE_LIST,
-                          icon: <Icon.FireOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_DEVICE_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_DEVICE_LIST),
-                      },
-                      {
                           key: ROUTES.EXPLOSIVE_LIST,
                           icon: <Icon.FireOutlined />,
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
                           onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
+                      },
+                  ]
+                : []),
+        ];
+
+        return arr;
+    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+
+    const menuVertical = useMemo(() => {
+        const arr = [
+            ...(isOrganizationAdmin || isOrganizationMember
+                ? [
+                      {
+                          key: VericalMenu.DOCUMENTS,
+                          icon: <Icon.FileTextOutlined style={{ marginLeft: 10 }} />,
+                          label: null,
+                          onClick: () => setSelectedVerticalMenu(VericalMenu.DOCUMENTS),
+                      },
+                  ]
+                : []),
+            {
+                key: VericalMenu.DICTIONARY,
+                icon: <Icon.FireOutlined style={{ marginLeft: 10 }} />,
+                onClick: () => setSelectedVerticalMenu(VericalMenu.DICTIONARY),
+            },
+            ...(isRootAdmin
+                ? [
+                      {
+                          key: VericalMenu.MANAGMENT,
+                          icon: <Icon.BankOutlined style={{ marginLeft: 10 }} />,
+                          onClick: () => setSelectedVerticalMenu(VericalMenu.MANAGMENT),
                       },
                   ]
                 : []),
@@ -183,7 +217,7 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember]);
+    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
 
     const defaultSelectedKeys = useMemo(() => {
         const [, initialRoute] = location.pathname.split('/');
@@ -201,6 +235,14 @@ export const Layout = observer(() => {
                         {CONFIG.APP_NAME_TRANSLATION}
                     </Typography.Title>
                 </div>
+                <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={['1']}
+                    items={menuVertical}
+                    style={{ flex: 1, minWidth: 0 }}
+                    selectedKeys={[selectedVerticalMenu]}
+                />
                 <Dropdown
                     menu={{
                         items: [
@@ -234,13 +276,33 @@ export const Layout = observer(() => {
                         bottom: 0,
                     }}>
                     <div className="demo-logo-vertical" />
-                    <Menu
-                        theme="dark"
-                        defaultSelectedKeys={defaultSelectedKeys}
-                        defaultOpenKeys={['Documents']}
-                        mode="inline"
-                        items={items}
-                    />
+                    {VericalMenu.DOCUMENTS === selectedVerticalMenu && (
+                        <Menu
+                            theme="dark"
+                            defaultSelectedKeys={defaultSelectedKeys}
+                            defaultOpenKeys={['Documents']}
+                            mode="inline"
+                            items={menuDocuments}
+                        />
+                    )}
+                    {VericalMenu.DICTIONARY === selectedVerticalMenu && (
+                        <Menu
+                            theme="dark"
+                            defaultSelectedKeys={defaultSelectedKeys}
+                            defaultOpenKeys={[ROUTES.EXPLOSIVE_OBJECT_LIST]}
+                            mode="inline"
+                            items={menuDictionary}
+                        />
+                    )}
+                    {VericalMenu.MANAGMENT === selectedVerticalMenu && (
+                        <Menu
+                            theme="dark"
+                            defaultSelectedKeys={defaultSelectedKeys}
+                            defaultOpenKeys={[ROUTES.ORGANIZATIONS_LIST]}
+                            mode="inline"
+                            items={menuManagment}
+                        />
+                    )}
                 </Sider>
                 <Lay
                     style={{

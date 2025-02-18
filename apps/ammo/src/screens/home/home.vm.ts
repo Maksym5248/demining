@@ -24,7 +24,7 @@ const categories: IDictionary[] = [
         id: '2',
         type: DictionaryType.ExplosiveObject,
         svg: 'explosive-object',
-        screen: SCREENS.EXPLOSIVE_OBJECT_TYPE,
+        screen: SCREENS.SEARCH,
     },
     {
         id: '3',
@@ -46,7 +46,9 @@ export class HomeVM implements IHomeVM {
     }
 
     openSearch() {
-        Navigation.navigate(SCREENS.SEARCH);
+        Navigation.push(SCREENS.SEARCH_ANIMATED, {
+            autoFocus: true,
+        });
     }
 
     openCategory(id: string) {

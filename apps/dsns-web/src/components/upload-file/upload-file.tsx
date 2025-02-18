@@ -1,5 +1,8 @@
+import React from 'react';
+
 import { Image, Upload } from 'antd';
 import { type RcFile } from 'antd/es/upload';
+import ImgCrop from 'antd-img-crop';
 import { isArray } from 'lodash';
 import { MIME_TYPE } from 'shared-my';
 
@@ -23,30 +26,40 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
     const isDocument = type === 'document';
     const isImage = type === 'image';
 
+    const Container = isImage ? ImgCrop : React.Fragment;
+
     return (
-        <Dragger
-            openFileDialogOnClick
-            fileList={file ? [file as RcFile] : undefined}
-            customRequest={value => onChangeFile && onChangeFile(value as { file: File })}
-            onRemove={() => onChangeFile({ file: null })}
-            maxCount={1}
-            accept={isArray(accept) ? accept.join(', ') : accept}>
-            {isDocument && (
-                <>
+        <Container
+            aspect={1.2}
+            minZoom={0.5}
+            rotationSlider={isImage}
+            zoomSlider={isImage}
+            // @ts-ignore
+            cropperProps={{ restrictPosition: false }}>
+            <Dragger
+                openFileDialogOnClick
+                fileList={file ? [file as RcFile] : undefined}
+                customRequest={value => onChangeFile && onChangeFile(value as { file: File })}
+                onRemove={() => onChangeFile({ file: null })}
+                maxCount={1}
+                accept={isArray(accept) ? accept.join(', ') : accept}>
+                {isDocument && (
+                    <>
+                        <p className="ant-upload-drag-icon">
+                            <Icon.InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">Натисніть або перетягніть файл у цю область, щоб завантажити</p>
+                        <p className="ant-upload-hint">Вибрати шаблон</p>
+                    </>
+                )}
+                {!isPreview && isImage && (
                     <p className="ant-upload-drag-icon">
+                        <p className="ant-upload-text">Натисніть або перетягніть картинку у цю область, щоб завантажити</p>
                         <Icon.InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Натисніть або перетягніть файл у цю область, щоб завантажити</p>
-                    <p className="ant-upload-hint">Вибрати шаблон</p>
-                </>
-            )}
-            {!isPreview && isImage && (
-                <p className="ant-upload-drag-icon">
-                    <p className="ant-upload-text">Натисніть або перетягніть картинку у цю область, щоб завантажити</p>
-                    <Icon.InboxOutlined />
-                </p>
-            )}
-            {isPreview && isImage && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
-        </Dragger>
+                )}
+                {isPreview && isImage && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
+            </Dragger>
+        </Container>
     );
 }

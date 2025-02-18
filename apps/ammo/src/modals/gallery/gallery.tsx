@@ -20,7 +20,6 @@ const renderItem = ({ item, setImageDimensions }: RenderItemInfo<{ uri: string }
             onLoad={e => {
                 e.persist();
                 const { width, height } = e?.nativeEvent?.source ?? { height: 0, width: 0 };
-                console.log('onLoad', width, height);
                 setImageDimensions({ width, height });
             }}
         />

@@ -26,6 +26,13 @@ const logo = Theme.css(`
     align-items: center;
 `);
 
+const topNavButtons = Theme.css(`
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`);
+
 const user = Theme.css(`
     display: flex;
     flex-direction: row;
@@ -65,4 +72,5 @@ export const s = {
     breadcrumb,
     appName,
     user,
+    topNavButtons,
 };

@@ -56,16 +56,9 @@ const Component = (
     }: IInputProps,
     ref: ForwardedRef<RNTextInput>,
 ) => {
-    const innerRef = useRef(null);
-
-    const inputRef = innerRef as React.MutableRefObject<RNTextInput | null>;
-    if (ref) {
-        if (typeof ref === 'function') {
-            ref(innerRef.current);
-        } else {
-            ref.current = innerRef.current;
-        }
-    }
+    const innerRef = useRef<RNTextInput>(null);
+    const outerRef = typeof ref === 'function' ? { current: null } : ref;
+    const inputRef = outerRef || innerRef;
 
     const s = useStyles();
     const theme = useTheme();
