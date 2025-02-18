@@ -55,7 +55,7 @@ export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
 
     useEffect(() => {
         if (autoFocus) {
-            setTimeout(() => inputRef.current?.focus(), 300);
+            setTimeout(() => inputRef.current?.focus(), 50);
         }
     }, [autoFocus, inputRef]);
 

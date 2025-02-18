@@ -29,7 +29,7 @@ export const useTransition = () => {
         }).start(() => {
             setTimeout(() => {
                 value.setValue(0);
-            }, 1000);
+            }, 700);
         });
         setTimeout(() => {
             callBack();
