@@ -5,6 +5,7 @@
     "build-number": 32,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
+        "android:prod": "react-native run-android --mode=proddebug --appIdSuffix=prod",
         "ios": "react-native run-ios --scheme=\"ammo.dev\" --simulator=\"iPhone 16\"",
         "ios:prod": "react-native run-ios --scheme=\"ammo.prod\" --simulator=\"iPhone 16\"",
         "ios-device": "react-native run-ios --scheme=\"ammo.dev\" --configuration=\"Debug.dev\" --device=\"Max\"",

@@ -14,7 +14,7 @@ import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
 import { CONFIG } from './config';
-import { MessageProvider, ModalProvider, Splash } from './containers';
+import { MessageProvider, ModalProvider, Splash, TooltipProvider } from './containers';
 import { Device } from './utils';
 
 enableScreens(true);
@@ -75,10 +75,12 @@ export const App = observer(() => {
         <GestureHandlerRootView>
             <LocalizationProvider>
                 <ThemeProvider>
-                    <RootNavigation ref={setNavigationRef} />
-                    <MessageProvider />
-                    <ModalProvider modals={modals} />
-                    {visible && <Splash onAnimationEnd={onAnimationEnd} isReady={vm.fetch.isLoaded} />}
+                    <TooltipProvider>
+                        <RootNavigation ref={setNavigationRef} />
+                        <MessageProvider />
+                        <ModalProvider modals={modals} />
+                        {visible && <Splash onAnimationEnd={onAnimationEnd} isReady={vm.fetch.isLoaded} />}
+                    </TooltipProvider>
                 </ThemeProvider>
             </LocalizationProvider>
         </GestureHandlerRootView>

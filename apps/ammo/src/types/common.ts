@@ -1,3 +1,5 @@
+import { type RefObject } from 'react';
+
 import { type NetInfoState } from '@react-native-community/netinfo';
 import { type ImageStyle, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
@@ -21,6 +23,15 @@ export type IViewStyle = StyleProp<ViewStyle>;
 export type IImageStyle = StyleProp<ImageStyle>;
 export type Mask = '9' | 'A' | 'S' | '*';
 export type INetInfoState = NetInfoState;
+export interface ITooltipContext {
+    show: (value: { id: string; text: string }, aref: RefObject<any>) => void;
+    hide: (value: { id: string }) => void;
+}
+
+export interface ITooltipRootContext {
+    onScrollBegin: () => void;
+    hide: () => void;
+}
 
 export enum DictionaryType {
     Explosive = 'explosive',

@@ -2,10 +2,9 @@ import React, { useCallback } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
 import { Block, CarouselImage } from '~/components';
-import { Header, Text, Touchable } from '~/core';
+import { Header, Text, Touchable, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
@@ -28,7 +27,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
     return (
         <View style={styles.container}>
             <Header title={t('title')} backButton="back" />
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('details')} />
@@ -59,7 +58,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                 <Block.Slider label={t('purpose')} description={vm.item?.data.purpose?.description} data={vm.slidesPurpose} />
                 <Block.Slider label={t('structure')} description={vm.item?.data.structure?.description} data={vm.slidesStructure} />
                 <Block.Slider label={t('action')} description={vm.item?.data.action?.description} data={vm.slidesAction} />
-            </ScrollView>
+            </Scroll>
         </View>
     );
 });
