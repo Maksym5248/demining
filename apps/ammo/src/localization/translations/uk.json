@@ -48,7 +48,7 @@
             "sensitivityToTemperature": "Чутливість до температури",
             "sensitivityToFriction": "Чутливість до тертя",
             "phisicalCharacteristic": "Фізико-хімічні характеристики",
-            "density": "Плотність, кг/м",
+            "density": "Плотність, кг/м³",
             "meltingPoint": "Т плавлення, ºС",
             "ignitionPoint": "Т запалення, ºС"
         },
