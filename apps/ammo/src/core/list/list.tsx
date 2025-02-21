@@ -1,8 +1,9 @@
 import React, { forwardRef } from 'react';
 
-import { View } from 'react-native';
+import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
+import { useTooltipRoot } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice } from '~/styles';
 
@@ -17,12 +18,13 @@ function keyExtractor<T>(item: T, index: number): string {
 }
 
 function Component<T>(
-    { isLoading, isLoadingMore, isSearch, isEndReached, onEndReached, data, ...props }: IFlatListProps<T>,
+    { isLoading, isLoadingMore, isSearch, isEndReached, onEndReached, data, onScrollBeginDrag, ...props }: IFlatListProps<T>,
     ref: React.Ref<FlatList>,
 ) {
     const s = useStyles();
     const device = useDevice();
     const t = useTranslate('components.list');
+    const tooltip = useTooltipRoot();
 
     const _onEndReached = (info: { distanceFromEnd: number }) => {
         if (!isEndReached) onEndReached?.(info);
@@ -34,6 +36,11 @@ function Component<T>(
 
     const text = isSearch ? t('emptySearch') : t('empty');
     const isDataEmpty = !!data?.length;
+
+    const _onScrollBeginDrag = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        tooltip.onScrollBegin();
+        onScrollBeginDrag?.(event);
+    };
 
     return (
         <FlatList
@@ -54,6 +61,7 @@ function Component<T>(
             onEndReached={_onEndReached}
             style={[s.container, props.style]}
             contentContainerStyle={s.contentContainer}
+            onScrollBeginDrag={_onScrollBeginDrag}
         />
     );
 }

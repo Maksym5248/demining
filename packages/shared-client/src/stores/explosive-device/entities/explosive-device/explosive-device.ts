@@ -77,7 +77,7 @@ export class ExplosiveDevice implements IExplosiveDevice {
     }
 
     get imageUri() {
-        return null;
+        return this.data.imageUri ?? null;
     }
 
     updateFields(data: Partial<IExplosiveDeviceData>) {

@@ -75,7 +75,6 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
         try {
             const downloadURL = await customRequest?.(file as File);
             onSuccess?.(downloadURL);
-            setFileList(prev => prev.map(file => (file.uid === file.uid ? { ...file, url: downloadURL } : file)));
         } catch (error) {
             onError?.(error as Error);
         }

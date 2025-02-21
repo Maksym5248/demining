@@ -2,9 +2,8 @@ import React, { useRef } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
-import { BottomSheet, Modal, Button, Text, Icon, Separator, type IBottomSheetRef } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon, Separator, type IBottomSheetRef, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -53,7 +52,7 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
                 }}
                 {...props}
                 onClose={props.hide}>
-                <ScrollView style={s.container}>
+                <Scroll style={s.container}>
                     <View style={[s.categories, styles.marginHorizontalS]}>
                         <Text type="h6" style={styles.label} color={theme.colors.accent} text={t('label-dictionaries')} />
                         <Button.Radio options={options} value={vm.type} onPress={onPressSection} />
@@ -64,7 +63,7 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
                         {vm.type === DictionaryType.ExplosiveDevices && <ExplosiveDevice model={vm.explosiveDevice} />}
                         {/* {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />} */}
                     </View>
-                </ScrollView>
+                </Scroll>
                 <Button.Base title={t('apply')} onPress={onPressSubmit} style={s.button} />
             </BottomSheet>
         </Modal>

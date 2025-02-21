@@ -6,6 +6,7 @@ import dictionary from './dictionary.svg';
 import eyeHidden from './eye-hidden.svg';
 import eye from './eye.svg';
 import filter from './filter.svg';
+import info from './info.svg';
 import search from './search.svg';
 
 export const svgIcons = {
@@ -16,6 +17,7 @@ export const svgIcons = {
     eye,
     filter,
     search,
+    info,
     ['arrow-down']: arrowDown,
     ['arrow-right']: arrowRight,
 };
