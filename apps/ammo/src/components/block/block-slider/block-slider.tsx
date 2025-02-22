@@ -13,6 +13,8 @@ export const BlockSlider = ({ description, data, label }: IBlockSliderProps) => 
     const theme = useTheme();
     const device = useDevice();
 
+    if (!description || !data || !data.length) return null;
+
     const itemWidth = device.window.width - theme.spacing.S * 4;
 
     return (

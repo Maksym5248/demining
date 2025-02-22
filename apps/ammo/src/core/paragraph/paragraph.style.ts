@@ -7,10 +7,12 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
         margin: 0,
         flexWrap: 'wrap',
         textAlign: 'auto',
+        width: '100%',
     },
     line: {
         flexWrap: 'wrap',
         textAlign: 'auto',
+        width: '100%',
     },
     firstLineMargin: {
         marginLeft: 10,

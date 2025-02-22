@@ -33,8 +33,6 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
         paddingHorizontal: theme.spacing.S,
-        marginLeft: theme.spacing.S,
-        marginRight: theme.spacing.S,
         marginTop: theme.spacing.S,
         paddingBottom: theme.spacing.S,
     },

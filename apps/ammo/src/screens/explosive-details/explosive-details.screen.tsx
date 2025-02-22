@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { measurement } from 'shared-my';
 
-import { CarouselImage, Field } from '~/components';
+import { Block, CarouselImage, Field } from '~/components';
 import { Header, Text, Touchable, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
@@ -33,8 +33,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
             <Header title={vm.item?.data.name} backButton="back" />
             <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('details')} />
+                <Block.View title={t('details')}>
                     <Field.View label={t('name')} text={vm.item?.data.name} />
                     <Field.View label={t('fullName')} text={vm.item?.data.fullName} />
                     <Field.View label={t('formula')} text={vm.item?.data.formula} />
@@ -52,9 +51,8 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                             <Text text={`${el.percent}%`} />
                         </View>
                     ))}
-                </View>
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('explosiveCharacteristic')} />
+                </Block.View>
+                <Block.View title={t('explosiveCharacteristic')}>
                     <Field.View label={t('detonationSpeed')} text={velocity} />
                     <Field.View
                         label={t('brisance')}
@@ -70,13 +68,12 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                     <Field.View label={t('sensitivityToImpact')} text={shock} />
                     <Field.View label={t('sensitivityToTemperature')} text={temperature} />
                     <Field.View label={t('sensitivityToFriction')} text={friction} />
-                </View>
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('phisicalCharacteristic')} />
+                </Block.View>
+                <Block.View title={t('phisicalCharacteristic')}>
                     <Field.View label={t('density')} text={density} />
                     <Field.View label={t('meltingPoint')} text={meltingPoint} />
                     <Field.View label={t('ignitionPoint')} text={ignitionPoint} />
-                </View>
+                </Block.View>
             </Scroll>
         </View>
     );

@@ -10,12 +10,17 @@ export const Paragraph = ({ style, text, ...props }: IParagraphProps) => {
 
     return (
         <Text style={[s.text, style]} {...props}>
-            {str?.split('\n').map((line, index) => (
-                <RNText key={index} style={[s.line, index === 0 && line.trim() === '' ? s.firstLineMargin : null]}>
-                    {line}
-                    {index < str.split('\n').length - 1 && '\n'}
-                </RNText>
-            ))}
+            {str?.split('\n').map((line, index) => {
+                const trimmedLine = '      ';
+
+                return (
+                    <RNText key={index} style={[s.line, index === 0 && line.trim() === '' ? s.firstLineMargin : null]}>
+                        {trimmedLine}
+                        {line}
+                        {index < str.split('\n').length - 1 && '\n'}
+                    </RNText>
+                );
+            })}
         </Text>
     );
 };

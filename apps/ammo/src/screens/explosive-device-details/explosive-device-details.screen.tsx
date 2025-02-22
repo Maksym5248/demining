@@ -29,14 +29,12 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
             <Header title={vm.item?.data.name} backButton="back" />
             <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('details')} />
+                <Block.View title={t('details')}>
                     <Field.View label={t('name')} text={vm.item?.data.name} />
                     <Field.View label={t('type')} text={vm.item?.type?.name} />
-                </View>
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('characteristic')} />
-                    <Field.View label={vm.item?.data?.size?.width ? t('size') : t('size2')} text={viewSize(vm.item?.data?.size)} />
+                </Block.View>
+                <Block.View title={t('characteristic')}>
+                    <Field.View label={t('size')} text={viewSize(vm.item?.data?.size)} />
                     <Field.View label={t('weight')} text={vm.item?.data?.chargeWeight} />
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
@@ -50,7 +48,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                             <Text text={`${el.weight}`} />
                         </View>
                     )) ?? <Text text={'-'} />}
-                </View>
+                </Block.View>
                 <Block.Slider label={t('purpose')} description={vm.item?.data.purpose?.description} data={vm.slidesPurpose} />
                 <Block.Slider label={t('structure')} description={vm.item?.data.structure?.description} data={vm.slidesStructure} />
                 <Block.Slider label={t('action')} description={vm.item?.data.action?.description} data={vm.slidesAction} />

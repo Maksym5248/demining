@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { Block, CarouselImage, Field } from '~/components';
-import { Header, Paragraph, Scroll, Text } from '~/core';
+import { Header, Paragraph, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
@@ -28,8 +28,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
             <Header title={vm.item?.data.name} backButton="back" />
             <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('details')} />
+                <Block.View title={t('details')}>
                     <Field.View label={t('name')} text={vm.item?.data.name} />
                     <Field.View label={t('fullName')} text={vm.item?.data.fullName} />
                     <Field.View label={t('type')} text={vm.item?.type?.displayName} />
@@ -59,13 +58,11 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         />
                     )}
                     <Field.View label={t('description')} text={vm.item?.data.description} />
-                </View>
-
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('characteristic')} />
+                </Block.View>
+                <Block.View title={t('characteristic')}>
                     <Field.View label={t('caliber')} text={details?.data.caliber} />
                     <Field.View label={t('material')} text={details?.material?.name} />
-                    <Field.View label={details?.data?.size?.width ? t('size') : t('size2')} text={viewSize(details?.data?.size)} />
+                    <Field.View label={t('size')} text={viewSize(details?.data?.size)} />
                     <Field.View label={t('weight')} text={details?.data?.weight} />
                     <Field.List
                         label={t('fillers')}
@@ -77,11 +74,10 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         }))}
                     />
                     <Field.Range label={t('temperature')} value={[details?.data.temperature?.min, details?.data.temperature?.max]} />
-                </View>
-                <View style={styles.block}>
-                    <Text type="h3" style={styles.label} text={t('fullDescription')} />
+                </Block.View>
+                <Block.View title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />
-                </View>
+                </Block.View>
                 <Block.Slider label={t('purpose')} description={details?.data.purpose?.description} data={vm.slidesPurpose} />
                 <Block.Slider label={t('structure')} description={details?.data.structure?.description} data={vm.slidesStructure} />
                 <Block.Slider label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
