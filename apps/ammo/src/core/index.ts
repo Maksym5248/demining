@@ -23,3 +23,4 @@ export * from './list-empty';
 export * from './separator';
 export * from './chips';
 export * from './tooltip';
+export * from './paragraph';

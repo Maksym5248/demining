@@ -21,6 +21,7 @@ export type IActionData = IActionDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
+    fullDescription: string | null;
     imageUris: string[] | null;
     material: MATERIAL;
     size: ISizeData | null; //мм;
@@ -29,6 +30,7 @@ export interface IExplosiveObjectDetailsData {
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
+    fervorIds: string[]; // запал
 
     // description
     purpose: IPurposeData | null; // призначення;
@@ -39,6 +41,7 @@ export interface IExplosiveObjectDetailsData {
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
     return {
         id,
+        fullDescription: value.fullDescription ?? null,
         imageUris: value.imageUris ?? [],
         material: value.material,
         size: value.size,
@@ -52,6 +55,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
             })) ?? [],
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
+        fervorIds: value.fervorIds ?? [],
         purpose: value?.purpose
             ? {
                   description: value.purpose.description ?? null,
@@ -77,6 +81,7 @@ export const createExplosiveObjectDetailsDTO = (
     value?: ICreateValue<IExplosiveObjectDetailsData>,
 ): ICreateValue<IExplosiveObjectDetailsDTO> => ({
     imageUris: value?.imageUris ?? [],
+    fullDescription: value?.fullDescription ?? null,
     material: value?.material ?? MATERIAL.METAL,
     size: value?.size ?? null,
     weight: value?.weight ?? null,
@@ -89,6 +94,7 @@ export const createExplosiveObjectDetailsDTO = (
         })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
+    fervorIds: value?.fervorIds ?? [],
     purpose: value?.purpose
         ? {
               description: value.purpose.description ?? null,
@@ -111,6 +117,7 @@ export const createExplosiveObjectDetailsDTO = (
 
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
     imageUris: value?.imageUris ?? [],
+    fullDescription: value?.fullDescription ?? null,
     material: value.material ?? MATERIAL.METAL,
     size: value.size ?? null,
     weight: value.weight ?? null,
@@ -123,6 +130,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
         })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],
+    fervorIds: value.fervorIds ?? [],
     purpose: value.purpose
         ? {
               description: value.purpose.description ?? null,

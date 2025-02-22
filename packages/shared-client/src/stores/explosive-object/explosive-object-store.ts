@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -70,6 +70,7 @@ export interface IExplosiveObjectStore {
     collectionCountries: CollectionModel<ICountry, ICountryData>;
     list: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listFuse: IListModel<IExplosiveObject, IExplosiveObjectData>;
+    listFevor: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listCountries: IListModel<ICountry, ICountryData>;
     sum: SumExplosiveObjectActions;
     classifications: IClassifications;
@@ -78,9 +79,11 @@ export interface IExplosiveObjectStore {
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel<[search?: string]>;
     fetchListFuse: IRequestModel<[search?: string]>;
+    fetchListFevor: IRequestModel<[search?: string]>;
     fetchSum: IRequestModel<[Dayjs, Dayjs]>;
     fetchMoreList: IRequestModel<[search?: string]>;
     fetchMoreListFuse: IRequestModel<[search?: string]>;
+    fetchMoreListFevor: IRequestModel<[search?: string]>;
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
     subscribe: IRequestModel<[query?: Partial<IQuery> | null]>;
@@ -116,6 +119,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
     listFuse = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
+    listFevor = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
 
     sum = new SumExplosiveObjectActions();
 
@@ -224,8 +228,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveObject.getList({
                 search,
-                limit: this.list.pageSize,
-                ...getDictionaryFilter(this),
+                limit: this.listFuse.pageSize,
+                ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FUSE),
             });
 
             this.collectionDetails.setArr(
@@ -239,13 +243,13 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
 
     fetchMoreListFuse = new RequestModel({
-        shouldRun: () => this.list.isMorePages,
+        shouldRun: () => this.listFuse.isMorePages,
         run: async (search?: string) => {
             const res = await this.api.explosiveObject.getList({
                 search,
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.listFuse.last.data.createdAt),
-                ...getDictionaryFilter(this),
+                ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FUSE),
             });
 
             this.collectionDetails.setArr(
@@ -255,6 +259,45 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             );
 
             this.listFuse.push(res.map(createExplosiveObject));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchListFevor = new RequestModel({
+        run: async (search?: string) => {
+            const res = await this.api.explosiveObject.getList({
+                search,
+                limit: this.listFevor.pageSize,
+                ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FERVOR),
+            });
+
+            this.collectionDetails.setArr(
+                res
+                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
+                    .filter(Boolean) as IExplosiveObjectDetailsData[],
+            );
+
+            this.listFevor.set(res.map(createExplosiveObject));
+        },
+    });
+
+    fetchMoreListFevor = new RequestModel({
+        shouldRun: () => this.listFevor.isMorePages,
+        run: async (search?: string) => {
+            const res = await this.api.explosiveObject.getList({
+                search,
+                limit: this.list.pageSize,
+                startAfter: dates.toDateServer(this.listFevor.last.data.createdAt),
+                ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FERVOR),
+            });
+
+            this.collectionDetails.setArr(
+                res
+                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
+                    .filter(Boolean) as IExplosiveObjectDetailsData[],
+            );
+
+            this.listFevor.push(res.map(createExplosiveObject));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

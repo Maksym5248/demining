@@ -19,6 +19,7 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     slidesAction: ISlide[];
     fillers: ({ explosive: IExplosive | undefined } & IFillerData)[] | undefined;
     fuses: IExplosiveObject[];
+    fervor: IExplosiveObject[];
     openExplosive(id: string): void;
     openExplosiveObject(id: string): void;
 }
@@ -55,6 +56,10 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
 
     get fuses() {
         return (this.item?.details?.data?.fuseIds?.map(item => stores.explosiveObject.collection.get(item)) as IExplosiveObject[]) ?? [];
+    }
+
+    get fervor() {
+        return (this.item?.details?.data?.fervorIds?.map(item => stores.explosiveObject.collection.get(item)) as IExplosiveObject[]) ?? [];
     }
 
     get slides() {

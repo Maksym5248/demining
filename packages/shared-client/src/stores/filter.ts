@@ -1,4 +1,4 @@
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { type EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 interface ISelf {
     getStores: () => {
@@ -15,13 +15,21 @@ interface ISelf {
     } | null;
 }
 
-export const getDictionaryFilter = (self: ISelf) => {
-    if (self?.getStores()?.viewer?.user?.isAuthor) return {};
+export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_COMPONENT) => {
+    if (self?.getStores()?.viewer?.user?.isAuthor)
+        return component
+            ? {
+                  where: {
+                      component: component,
+                  },
+              }
+            : {};
 
     if (!self?.getStores()?.viewer?.user?.data?.organization?.id) {
         return {
             where: {
                 status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                component: component,
             },
         };
     }
@@ -30,10 +38,12 @@ export const getDictionaryFilter = (self: ISelf) => {
         or: [
             {
                 status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                component: component,
             },
             {
                 organizationId: self.getStores()?.viewer?.user?.data?.organization?.id,
                 status: { '!=': EXPLOSIVE_OBJECT_STATUS.CONFIRMED },
+                component: component,
             },
         ],
     };

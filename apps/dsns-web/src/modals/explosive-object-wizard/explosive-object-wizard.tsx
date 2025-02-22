@@ -19,7 +19,7 @@ import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification, Fuse } from './components';
+import { Classification, Fervor, Fuse } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -38,6 +38,7 @@ const getParams = ({
     temperature,
     filler,
     fuseIds,
+    fervorIds,
     purposeImageUris,
     purposeDescription,
     structureImageUris,
@@ -45,6 +46,7 @@ const getParams = ({
     actionImageUris,
     actionDescription,
     imageUris,
+    fullDescription,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
@@ -52,6 +54,7 @@ const getParams = ({
         imageUris,
         caliber,
         material,
+        fullDescription,
         size: {
             length: size?.length ? measurement.mmToM(size?.length) : null,
             width: size?.width ? measurement.mmToM(size?.width) : null,
@@ -60,7 +63,8 @@ const getParams = ({
         weight,
         temperature,
         filler,
-        fuseIds,
+        fuseIds: fuseIds?.filter(el => !!el) ?? [],
+        fervorIds: fervorIds?.filter(el => !!el) ?? [],
         purpose: {
             imageUris: purposeImageUris,
             description: purposeDescription,
@@ -195,7 +199,10 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         </Form.Item>
                     )}
                     <Divider />
-                    <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Повна назва" name="fullName" rules={[{ message: "Є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
@@ -269,6 +276,9 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
+                    <Form.Item label="Скорочений опис" name="description">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
+                    </Form.Item>
                     <Divider />
                     <Form.Item label="Корпус" name="material">
                         <Select
@@ -290,15 +300,15 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             return (
                                 <Form.Item label="Температура, °C" name="temperature">
                                     <InputNumber
-                                        placeholder="Макс"
-                                        onChange={max => setFieldValue('temperature', { ...value, max })}
-                                        value={value?.max}
-                                    />
-                                    <InputNumber
                                         placeholder="Мін"
                                         onChange={min => setFieldValue('temperature', { ...value, min })}
                                         value={value?.min}
                                         css={s.size}
+                                    />
+                                    <InputNumber
+                                        placeholder="Макс"
+                                        onChange={max => setFieldValue('temperature', { ...value, max })}
+                                        value={value?.max}
                                     />
                                 </Form.Item>
                             );
@@ -307,6 +317,14 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => getFieldValue('component') !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && <Fervor />}
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item label="Повний опис" name="fullDescription">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={2000} rows={8} />
                     </Form.Item>
                     <Divider />
                     <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />

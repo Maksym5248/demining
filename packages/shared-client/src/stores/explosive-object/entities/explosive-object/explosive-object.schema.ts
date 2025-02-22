@@ -11,6 +11,8 @@ import { createExplosiveObjectDetailsDTO, type IExplosiveObjectDetailsData } fro
 export interface IExplosiveObjectData {
     id: string;
     name: string;
+    fullName: string | null;
+    description: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
     component?: EXPLOSIVE_OBJECT_COMPONENT;
     typeId: string;
@@ -27,6 +29,8 @@ export interface IExplosiveObjectData {
 
 export interface IExplosiveObjectDataParams {
     name: string;
+    fullName: string | null;
+    description: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     typeId: string;
@@ -38,6 +42,8 @@ export interface IExplosiveObjectDataParams {
 
 export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDataParams>): ICreateValue<IExplosiveObjectDTOParams> => ({
     name: value?.name ?? null,
+    fullName: value?.fullName ?? null,
+    description: value?.description ?? null,
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     typeId: value.typeId ?? null,
     component: value.component ?? null,
@@ -49,6 +55,8 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
 
 export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDataParams, IExplosiveObjectDTOParams>(value => ({
     name: value.name ?? null,
+    fullName: value?.fullName ?? null,
+    description: value?.description ?? null,
     status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,
     typeId: value.typeId ?? '',
@@ -60,6 +68,8 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
 
 export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObjectData => ({
     id: value.id,
+    fullName: value?.fullName ?? null,
+    description: value?.description ?? null,
     component: value.component ?? undefined,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),

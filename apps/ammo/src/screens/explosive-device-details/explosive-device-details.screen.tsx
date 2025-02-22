@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Block, CarouselImage } from '~/components';
+import { Block, CarouselImage, Field } from '~/components';
 import { Header, Text, Touchable, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
@@ -26,22 +26,18 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
 
     return (
         <View style={styles.container}>
-            <Header title={t('title')} backButton="back" />
+            <Header title={vm.item?.data.name} backButton="back" />
             <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('details')} />
-                    <Text type="label" style={styles.label} text={t('name')} />
-                    <Text text={vm.item?.data.name ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('type')} />
-                    <Text text={vm.item?.type?.name ?? '-'} />
+                    <Field.View label={t('name')} text={vm.item?.data.name} />
+                    <Field.View label={t('type')} text={vm.item?.type?.name} />
                 </View>
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('characteristic')} />
-                    <Text type="label" style={styles.label} text={vm.item?.data?.size?.width ? t('size') : t('size2')} />
-                    <Text text={viewSize(vm.item?.data?.size) ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('weight')} />
-                    <Text text={vm.item?.data?.chargeWeight || '-'} />
+                    <Field.View label={vm.item?.data?.size?.width ? t('size') : t('size2')} text={viewSize(vm.item?.data?.size)} />
+                    <Field.View label={t('weight')} text={vm.item?.data?.chargeWeight} />
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
                         <View key={i} style={[styles.row, styles.marginHorizontalXXS]}>

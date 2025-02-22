@@ -75,6 +75,8 @@ export interface IMaterialDB {
 
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
+    fullName: string | null;
+    description: string | null;
     status: EXPLOSIVE_OBJECT_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT | null; // Боєприпас
     typeId: string | null; // Інженерний
