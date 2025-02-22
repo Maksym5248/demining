@@ -19,7 +19,7 @@ import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification, Fuse } from './components';
+import { Classification, Fervor, Fuse } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -38,6 +38,7 @@ const getParams = ({
     temperature,
     filler,
     fuseIds,
+    fervorIds,
     purposeImageUris,
     purposeDescription,
     structureImageUris,
@@ -62,7 +63,8 @@ const getParams = ({
         weight,
         temperature,
         filler,
-        fuseIds,
+        fuseIds: fuseIds?.filter(el => !!el) ?? [],
+        fervorIds: fervorIds?.filter(el => !!el) ?? [],
         purpose: {
             imageUris: purposeImageUris,
             description: purposeDescription,
@@ -274,6 +276,9 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
+                    <Form.Item label="Скорочений опис" name="description">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
+                    </Form.Item>
                     <Divider />
                     <Form.Item label="Корпус" name="material">
                         <Select
@@ -314,11 +319,12 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
                     </Form.Item>
                     <Divider />
-                    <Form.Item name="description" wrapperCol={{ offset: 8, span: 16 }}>
-                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => getFieldValue('component') !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && <Fervor />}
                     </Form.Item>
-                    <Form.Item name="fullDescription" wrapperCol={{ offset: 8, span: 16 }}>
-                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
+                    <Divider />
+                    <Form.Item label="Повний опис" name="fullDescription">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={2000} rows={8} />
                     </Form.Item>
                     <Divider />
                     <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />

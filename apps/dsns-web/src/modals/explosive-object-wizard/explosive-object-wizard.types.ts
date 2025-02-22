@@ -24,6 +24,7 @@ export interface IExplosiveObjectForm {
     filler: IFillerData[] | null;
     caliber: number | null;
     fuseIds: string[];
+    fervorIds: string[];
 
     purposeImageUris: string[];
     purposeDescription: string;

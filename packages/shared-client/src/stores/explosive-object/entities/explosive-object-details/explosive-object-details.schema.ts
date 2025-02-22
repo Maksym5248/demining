@@ -30,6 +30,7 @@ export interface IExplosiveObjectDetailsData {
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
+    fervorIds: string[]; // запал
 
     // description
     purpose: IPurposeData | null; // призначення;
@@ -54,6 +55,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
             })) ?? [],
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
+        fervorIds: value.fervorIds ?? [],
         purpose: value?.purpose
             ? {
                   description: value.purpose.description ?? null,
@@ -92,6 +94,7 @@ export const createExplosiveObjectDetailsDTO = (
         })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
+    fervorIds: value?.fervorIds ?? [],
     purpose: value?.purpose
         ? {
               description: value.purpose.description ?? null,
@@ -127,6 +130,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
         })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],
+    fervorIds: value.fervorIds ?? [],
     purpose: value.purpose
         ? {
               description: value.purpose.description ?? null,

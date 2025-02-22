@@ -10,4 +10,8 @@ export const explosiveObjectComponentData: IExplosiveObjectComponentNotDB[] = [
         id: EXPLOSIVE_OBJECT_COMPONENT.FUSE,
         name: 'Підривник',
     },
+    {
+        id: EXPLOSIVE_OBJECT_COMPONENT.FERVOR,
+        name: 'Запал',
+    },
 ];

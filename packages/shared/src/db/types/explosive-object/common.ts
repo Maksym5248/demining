@@ -64,6 +64,7 @@ export interface IExplosiveObjectDetailsDB {
     filler: IFillerDB[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
+    fervorIds: string[] | null; // підривник
 
     // description
     purpose: IPurposeDB | null; // призначення;
