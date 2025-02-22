@@ -45,6 +45,7 @@ const getParams = ({
     actionImageUris,
     actionDescription,
     imageUris,
+    fullDescription,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
@@ -52,6 +53,7 @@ const getParams = ({
         imageUris,
         caliber,
         material,
+        fullDescription,
         size: {
             length: size?.length ? measurement.mmToM(size?.length) : null,
             width: size?.width ? measurement.mmToM(size?.width) : null,
@@ -195,7 +197,10 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         </Form.Item>
                     )}
                     <Divider />
-                    <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                    <Form.Item label="Маркування" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Повна назва" name="fullName" rules={[{ message: "Є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Form.Item label="Тип" name="typeId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
@@ -307,6 +312,13 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item name="description" wrapperCol={{ offset: 8, span: 16 }}>
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
+                    </Form.Item>
+                    <Form.Item name="fullDescription" wrapperCol={{ offset: 8, span: 16 }}>
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
                     </Form.Item>
                     <Divider />
                     <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />

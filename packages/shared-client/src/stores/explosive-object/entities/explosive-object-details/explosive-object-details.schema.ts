@@ -21,6 +21,7 @@ export type IActionData = IActionDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
+    fullDescription: string | null;
     imageUris: string[] | null;
     material: MATERIAL;
     size: ISizeData | null; //мм;
@@ -39,6 +40,7 @@ export interface IExplosiveObjectDetailsData {
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
     return {
         id,
+        fullDescription: value.fullDescription ?? null,
         imageUris: value.imageUris ?? [],
         material: value.material,
         size: value.size,
@@ -77,6 +79,7 @@ export const createExplosiveObjectDetailsDTO = (
     value?: ICreateValue<IExplosiveObjectDetailsData>,
 ): ICreateValue<IExplosiveObjectDetailsDTO> => ({
     imageUris: value?.imageUris ?? [],
+    fullDescription: value?.fullDescription ?? null,
     material: value?.material ?? MATERIAL.METAL,
     size: value?.size ?? null,
     weight: value?.weight ?? null,
@@ -111,6 +114,7 @@ export const createExplosiveObjectDetailsDTO = (
 
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
     imageUris: value?.imageUris ?? [],
+    fullDescription: value?.fullDescription ?? null,
     material: value.material ?? MATERIAL.METAL,
     size: value.size ?? null,
     weight: value.weight ?? null,

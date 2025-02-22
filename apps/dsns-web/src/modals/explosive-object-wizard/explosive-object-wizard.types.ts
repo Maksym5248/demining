@@ -3,6 +3,10 @@ import { type IFillerData, type ISizeData, type ITempartureData } from 'shared-m
 
 export interface IExplosiveObjectForm {
     name: string;
+    fullName: string | null;
+    description: string | null;
+    fullDescription: string | null;
+
     status: EXPLOSIVE_OBJECT_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     countryId: string;
