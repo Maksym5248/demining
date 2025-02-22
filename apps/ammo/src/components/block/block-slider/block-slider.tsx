@@ -1,27 +1,27 @@
 import React from 'react';
 
-import { View } from 'react-native';
-
 import { Text } from '~/core';
 import { useDevice, useStylesCommon, useTheme } from '~/styles';
 
 import { type IBlockSliderProps } from './block-slider.type';
 import { CarouselImage } from '../../carousel-image';
+import { BlockView } from '../block-view';
 
-export const BlockSlider = ({ description, data, label }: IBlockSliderProps) => {
+export const BlockSlider = ({ description, data, label, hidden, require = true }: IBlockSliderProps) => {
     const styles = useStylesCommon();
     const theme = useTheme();
     const device = useDevice();
 
-    if (!description || !data || !data.length) return null;
+    if (hidden || (!require && !description && !data?.length)) {
+        return null;
+    }
 
     const itemWidth = device.window.width - theme.spacing.S * 4;
 
     return (
-        <View style={styles.block}>
-            <Text type="h3" style={styles.label} text={label} />
+        <BlockView title={label}>
             <Text text={description ?? '-'} style={styles.marginVerticalS} />
             <CarouselImage width={itemWidth} data={data} />
-        </View>
+        </BlockView>
     );
 };

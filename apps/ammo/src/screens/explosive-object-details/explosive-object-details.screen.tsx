@@ -75,12 +75,22 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     />
                     <Field.Range label={t('temperature')} value={[details?.data.temperature?.min, details?.data.temperature?.max]} />
                 </Block.View>
-                <Block.View title={t('fullDescription')}>
+                <Block.View hidden={!details?.data?.fullDescription} title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />
                 </Block.View>
-                <Block.Slider label={t('purpose')} description={details?.data.purpose?.description} data={vm.slidesPurpose} />
-                <Block.Slider label={t('structure')} description={details?.data.structure?.description} data={vm.slidesStructure} />
-                <Block.Slider label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
+                <Block.Slider
+                    require={false}
+                    label={t('purpose')}
+                    description={details?.data.purpose?.description}
+                    data={vm.slidesPurpose}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('structure')}
+                    description={details?.data.structure?.description}
+                    data={vm.slidesStructure}
+                />
+                <Block.Slider require={false} label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
             </Scroll>
         </View>
     );

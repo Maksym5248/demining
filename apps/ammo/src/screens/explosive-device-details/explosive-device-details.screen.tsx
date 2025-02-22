@@ -49,9 +49,19 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                         </View>
                     )) ?? <Text text={'-'} />}
                 </Block.View>
-                <Block.Slider label={t('purpose')} description={vm.item?.data.purpose?.description} data={vm.slidesPurpose} />
-                <Block.Slider label={t('structure')} description={vm.item?.data.structure?.description} data={vm.slidesStructure} />
-                <Block.Slider label={t('action')} description={vm.item?.data.action?.description} data={vm.slidesAction} />
+                <Block.Slider
+                    require={false}
+                    label={t('purpose')}
+                    description={vm.item?.data.purpose?.description}
+                    data={vm.slidesPurpose}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('structure')}
+                    description={vm.item?.data.structure?.description}
+                    data={vm.slidesStructure}
+                />
+                <Block.Slider require={false} label={t('action')} description={vm.item?.data.action?.description} data={vm.slidesAction} />
             </Scroll>
         </View>
     );

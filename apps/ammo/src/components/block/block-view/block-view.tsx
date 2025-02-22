@@ -5,8 +5,12 @@ import { useStylesCommon } from '~/styles';
 
 import { type IBlockViewProps } from './block-view.type';
 
-export const BlockView = ({ title, children }: IBlockViewProps) => {
+export const BlockView = ({ title, children, hidden, require = true }: IBlockViewProps) => {
     const styles = useStylesCommon();
+
+    if (hidden || (!require && !children && !title)) {
+        return null;
+    }
 
     return (
         <View style={styles.block}>
