@@ -7,7 +7,7 @@ export enum EXPLOSIVE_OBJECT_STATUS {
 export enum EXPLOSIVE_OBJECT_COMPONENT {
     AMMO = 'AMMO',
     FUSE = 'FUSE',
-    FERVOR = 'FERVOR',
+    FERVOR = 'FERVOR', // Запал
 }
 
 export enum EXPLOSIVE_OBJECT_TYPE {

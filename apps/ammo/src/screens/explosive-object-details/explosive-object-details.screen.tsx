@@ -4,11 +4,11 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
-import { Block, CarouselImage } from '~/components';
-import { Header, Scroll, Text, Touchable } from '~/core';
+import { Block, CarouselImage, Field } from '~/components';
+import { Header, Paragraph, Scroll, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
+import { useDevice, useStylesCommon } from '~/styles';
 import { viewSize } from '~/utils';
 
 import { type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
@@ -25,64 +25,62 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
 
     return (
         <View style={styles.container}>
-            <Header title={t('title')} backButton="back" />
+            <Header title={vm.item?.data.name} backButton="back" />
             <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('details')} />
-                    <Text type="label" style={styles.label} text={t('name')} />
-                    <Text text={vm.item?.data.name ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('type')} />
-                    <Text text={vm.item?.type?.displayName ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('component')} />
-                    <Text text={vm.item?.component?.name ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('classification')} />
-                    <Text text={vm.item?.classItemsNames.join(', ') ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('country')} />
-                    <Text text={vm.item?.country?.displayName ?? '-'} />
+                    <Field.View label={t('name')} text={vm.item?.data.name} />
+                    <Field.View label={t('fullName')} text={vm.item?.data.fullName} />
+                    <Field.View label={t('type')} text={vm.item?.type?.displayName} />
+                    <Field.View label={t('component')} text={vm.item?.component?.name} />
+                    <Field.View label={t('classification')} text={vm.item?.classItemsNames.join(', ')} />
+                    <Field.View label={t('country')} text={vm.item?.country?.displayName} />
                     {vm.item?.component?.id === EXPLOSIVE_OBJECT_COMPONENT.AMMO && (
-                        <>
-                            <Text type="label" style={styles.label} text={t('fuse')} />
-                            {vm.fuses?.length ? (
-                                vm.fuses?.map(el => (
-                                    <Touchable key={el.id} onPress={() => vm.openExplosiveObject(el.data.id ?? '')}>
-                                        <Text color={ThemeManager.theme.colors.link} text={el?.displayName} />
-                                    </Touchable>
-                                ))
-                            ) : (
-                                <Text text={'-'} />
-                            )}
-                        </>
+                        <Field.List
+                            label={t('fuse')}
+                            splitterItem=", "
+                            type="horizontal"
+                            items={vm.fuses?.map(el => ({
+                                title: el?.displayName,
+                                onPress: () => vm.openExplosiveObject(el.data.id ?? ''),
+                            }))}
+                        />
                     )}
+                    {vm.item?.component?.id !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && (
+                        <Field.List
+                            label={t('fervor')}
+                            splitterItem=", "
+                            type="horizontal"
+                            items={vm.fervor?.map(el => ({
+                                title: el?.displayName,
+                                onPress: () => vm.openExplosiveObject(el.data.id ?? ''),
+                            }))}
+                        />
+                    )}
+                    <Field.View label={t('description')} text={vm.item?.data.description} />
                 </View>
+
                 <View style={styles.block}>
                     <Text type="h3" style={styles.label} text={t('characteristic')} />
-                    <Text type="label" style={styles.label} text={t('caliber')} />
-                    <Text text={details?.data.caliber ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('material')} />
-                    <Text text={details?.material?.name ?? '-'} />
-                    <Text type="label" style={styles.label} text={details?.data?.size?.width ? t('size') : t('size2')} />
-                    <Text text={viewSize(details?.data?.size) ?? '-'} />
-                    <Text type="label" style={styles.label} text={t('weight')} />
-                    <Text text={details?.data?.weight || '-'} />
-                    <Text type="label" style={styles.label} text={t('fillers')} />
-                    {vm.fillers?.map((el, i) => (
-                        <View key={i} style={[styles.row, styles.marginHorizontalXXS]}>
-                            <Touchable onPress={el.explosiveId ? () => vm.openExplosive(el.explosiveId ?? '') : undefined}>
-                                <Text
-                                    color={el.explosive ? ThemeManager.theme.colors.link : undefined}
-                                    text={el.explosive?.displayName ?? el.name ?? '-'}
-                                />
-                            </Touchable>
-                            <Text text={`${el.weight}`} />
-                        </View>
-                    )) ?? <Text text={'-'} />}
-                    <Text type="label" style={styles.label} text={t('temperature')} />
-                    <View style={[styles.row, styles.start, styles.marginHorizontalXXS]}>
-                        <Text text={details?.data.temperature?.max ? `max. ${details?.data.temperature?.max}` : '-'} />
-                        <Text text={', '} />
-                        <Text text={details?.data.temperature?.min ? `min. ${details?.data.temperature?.min}` : '-'} />
-                    </View>
+                    <Field.View label={t('caliber')} text={details?.data.caliber} />
+                    <Field.View label={t('material')} text={details?.material?.name} />
+                    <Field.View label={details?.data?.size?.width ? t('size') : t('size2')} text={viewSize(details?.data?.size)} />
+                    <Field.View label={t('weight')} text={details?.data?.weight} />
+                    <Field.List
+                        label={t('fillers')}
+                        splitter=" - "
+                        items={vm.fillers?.map(el => ({
+                            title: el.explosive?.displayName ?? el.name ?? '-',
+                            text: el.weight,
+                            onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
+                        }))}
+                    />
+                    <Field.Range label={t('temperature')} value={[details?.data.temperature?.min, details?.data.temperature?.max]} />
+                </View>
+                <View style={styles.block}>
+                    <Text type="h3" style={styles.label} text={t('fullDescription')} />
+                    <Paragraph text={details?.data?.fullDescription ?? '-'} />
                 </View>
                 <Block.Slider label={t('purpose')} description={details?.data.purpose?.description} data={vm.slidesPurpose} />
                 <Block.Slider label={t('structure')} description={details?.data.structure?.description} data={vm.slidesStructure} />

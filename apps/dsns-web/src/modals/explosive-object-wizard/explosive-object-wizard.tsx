@@ -300,15 +300,15 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             return (
                                 <Form.Item label="Температура, °C" name="temperature">
                                     <InputNumber
-                                        placeholder="Макс"
-                                        onChange={max => setFieldValue('temperature', { ...value, max })}
-                                        value={value?.max}
-                                    />
-                                    <InputNumber
                                         placeholder="Мін"
                                         onChange={min => setFieldValue('temperature', { ...value, min })}
                                         value={value?.min}
                                         css={s.size}
+                                    />
+                                    <InputNumber
+                                        placeholder="Макс"
+                                        onChange={max => setFieldValue('temperature', { ...value, max })}
+                                        value={value?.max}
                                     />
                                 </Form.Item>
                             );
