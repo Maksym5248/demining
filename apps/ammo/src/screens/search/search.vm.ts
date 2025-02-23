@@ -87,7 +87,9 @@ export class SearchVM implements ISearchVM {
             orderBy: OrderBy.Asc,
         });
 
-        this.infiniteScroll = new InfiniteScrollModel(this.order);
+        this.infiniteScroll = new InfiniteScrollModel(this.order, {
+            size: 10,
+        });
 
         makeAutoObservable(this);
     }

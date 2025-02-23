@@ -6,6 +6,8 @@ export enum SCREENS {
     EXPLOSIVE_OBJECT_TYPE = 'ExplosiveObjectType',
     EXPLOSIVE_DEVICE_DETAILS = 'ExplosiveDeviceDetails',
     SEARCH = 'Search',
+    SETTINGS = 'Settings',
+    ABOUT = 'About',
     SEARCH_ANIMATED = 'SearchAnimated',
     MAIN = 'Main',
     SIGN_IN = 'SignIn',

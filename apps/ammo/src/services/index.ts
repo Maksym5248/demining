@@ -1,11 +1,15 @@
+import { ASSET_TYPE } from 'shared-my';
 import { Logger, Modal as ModalClass } from 'shared-my-client';
 
 export type { IMessageState } from './ui/message';
 export { Logger } from 'shared-my-client';
 
+import { FILE_SYSTEM, FILE_FORMAT } from '~/constants';
+
 import { AnalyticsClass } from './analytics';
 import { AssetStorageClass } from './asset-storage';
 import { CrashlyticsClass } from './crashlytics';
+import { FileSystemClass } from './file-system';
 import { NetInfoClass } from './state';
 import { AppStateClass } from './state/app-state';
 import { MessageClass } from './ui/message';
@@ -19,3 +23,4 @@ export const Modal = new ModalClass(Analytics);
 export const AssetStorage = new AssetStorageClass();
 export const AppState = new AppStateClass();
 export const NetInfo = new NetInfoClass();
+export const ImageChache = new FileSystemClass(FILE_SYSTEM.IMAGE_CACHE, FILE_FORMAT.PNG, ASSET_TYPE.IMAGE);

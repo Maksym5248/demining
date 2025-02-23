@@ -4,6 +4,8 @@ export * from './explosive-object-classification';
 export * from './explosive-device-details';
 export * from './explosive-object-type';
 export * from './home';
+export * from './settings';
 export * from './search';
 export * from './sign-in';
 export * from './sign-up';
+export * from './about';

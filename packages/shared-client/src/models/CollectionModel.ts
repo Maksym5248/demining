@@ -16,6 +16,7 @@ export interface ICollectionModel<T, B> {
     findBy(path: string, value: unknown): T | undefined;
     onRemoved?: (fn: (id: string) => void) => void;
     onCreated?: (fn: (id: string, item: T) => void) => void;
+    asArray: readonly T[];
 }
 
 interface ICollectionModelParams<T extends { data: B; id: ID }, B> {
@@ -49,7 +50,7 @@ export class CollectionModel<T extends { data: B; id: ID }, B> implements IColle
         makeAutoObservable(this);
     }
 
-    private get asArray() {
+    get asArray() {
         return values(this.collection);
     }
 

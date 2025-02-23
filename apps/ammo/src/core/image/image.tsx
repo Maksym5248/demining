@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import { View, Animated, ActivityIndicator, Easing, Image as Img, type NativeSyntheticEvent, type ImageLoadEventData } from 'react-native';
 import Reanimated from 'react-native-reanimated';
+import { Logger, useAsyncEffect } from 'shared-my-client';
 
 import { useVar } from '~/hooks';
+import { ImageChache } from '~/services';
 import { useTheme } from '~/styles';
 
 import { useStyles } from './image.styles';
@@ -32,8 +34,11 @@ export function Image({
 
     const [isVisiblePlaceholder, setVisiblePlaceholder] = useState(true);
     const [isLoading, setLoading] = useState(!!uri);
+    const [localUri, setLocalUri] = useState<string | undefined>();
 
     const _onLoad = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
+        console.log('_onLoad');
+
         e.persist();
 
         Animated.timing(animatedValue, {
@@ -48,9 +53,30 @@ export function Image({
         });
     };
 
-    const onError = () => {
+    const onError = (e?: unknown) => {
+        Logger.error('Component Image:', {
+            e,
+            uri,
+            localUri,
+        });
         setLoading(false);
     };
+
+    useAsyncEffect(async () => {
+        if (!uri) return;
+
+        try {
+            const fileExists = await ImageChache.exists(uri);
+
+            if (!fileExists) {
+                await ImageChache.download(uri);
+            }
+
+            setLocalUri(ImageChache.getLocalPath(uri));
+        } catch (e) {
+            onError(e);
+        }
+    }, [uri]);
 
     const Container = isAnimated ? Reanimated.View : View;
 
@@ -64,9 +90,9 @@ export function Image({
                     <ActivityIndicator size="small" color={theme.colors.accent} />
                 </View>
             )}
-            {(!!uri || !!source) && (
+            {(!!localUri || !!source) && (
                 <AnimatedImage
-                    source={source || { uri: uri ?? undefined }}
+                    source={source || { uri: localUri ?? undefined }}
                     style={[s.image, { opacity: animatedValue }, imageStyle]}
                     resizeMode={resizeMode}
                     onLoad={_onLoad}

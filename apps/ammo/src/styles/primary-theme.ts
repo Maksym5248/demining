@@ -29,12 +29,14 @@ export const themeBase: IBaseThemeSchema = {
         textSecondary: palette.grey92,
         accent: palette.blueB4,
         accentLight: palette.blueF8,
-        error: palette.redEF,
+        error: palette.red53,
+        success: palette.green4C,
         inert: palette.greyD3,
         transparent: palette.transparent,
         ripplePrimary: palette.blackTransparent01,
         link: palette.blueB4,
         disabled: palette.grey92,
+        inertDark: palette.grey92,
     },
     fonts: Device.isIOS
         ? {

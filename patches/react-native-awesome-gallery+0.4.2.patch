@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-awesome-gallery/src/index.tsx b/node_modules/react-native-awesome-gallery/src/index.tsx
+index fe9e317..4095da7 100644
+--- a/node_modules/react-native-awesome-gallery/src/index.tsx
++++ b/node_modules/react-native-awesome-gallery/src/index.tsx
+@@ -409,7 +409,7 @@ const ResizableImage = React.memo(
+ 
+         scale.value = nextScale;
+ 
+-        setAdjustedFocal({ focalX, focalY });
++        // setAdjustedFocal({ focalX, focalY });
+ 
+         translation.x.value =
+           adjustedFocal.x.value +

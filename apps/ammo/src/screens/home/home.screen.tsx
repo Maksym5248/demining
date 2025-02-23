@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { View, Animated } from 'react-native';
 
 import { images } from '~/assets';
-import { Card, Header, Icon, Select, Text } from '~/core';
+import { Card, Header, Icon, Scroll, Select, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -30,7 +30,7 @@ export const HomeScreen = observer(() => {
     };
 
     return (
-        <View style={styles.container}>
+        <Scroll contentContainerStyle={styles.container} bounces={false}>
             <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
             <View style={s.imageContainer}>
                 <Animated.Image source={images.logo} style={[s.image, transition.styles.image]} />
@@ -50,7 +50,7 @@ export const HomeScreen = observer(() => {
                         <Card
                             key={category.id}
                             style={s.item}
-                            title={tDictionaries(category.type)}
+                            title={category.type ? tDictionaries(category.type) : t('settings')}
                             svg={category.svg}
                             styleInfo={styles.contentCenter}
                             onPress={() => vm.openCategory(category.id)}
@@ -58,6 +58,6 @@ export const HomeScreen = observer(() => {
                     ))}
                 </View>
             </View>
-        </View>
+        </Scroll>
     );
 });

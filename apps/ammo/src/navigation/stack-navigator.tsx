@@ -43,6 +43,8 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.EXPLOSIVE_DEVICE_DETAILS} component={screens.ExplosiveDeviceDetailsScreen} />
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_CLASSIFICATION} component={screens.ExplosiveObjectClassificationScreen} />
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_TYPE} component={screens.ExplosiveObjectTypeScreen} />
+            <Stack.Screen name={SCREENS.SETTINGS} component={screens.SettingsScreen} />
+            <Stack.Screen name={SCREENS.ABOUT} component={screens.AboutScreen} />
         </Stack.Navigator>
     );
 };

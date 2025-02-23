@@ -21,7 +21,7 @@ const Component = () => {
     }).current;
     const [data, setData] = useState<IMessageState>();
 
-    const { isVisible, text } = data ?? { isVisible: false, text: '' };
+    const { isVisible, text, type } = data ?? { isVisible: false, text: '', type: 'info' };
 
     const clearTimer = useCallback(() => {
         if (self.timer) {
@@ -85,12 +85,23 @@ const Component = () => {
 
     useEffect(() => clearTimer, [clearTimer]);
 
+    const getColor = () => {
+        switch (type) {
+            case 'error':
+                return theme.colors.white;
+            case 'success':
+                return theme.colors.white;
+            default:
+                return theme.colors.white;
+        }
+    };
+
     return (
         isVisible && (
-            <Animated.View style={[s.container, containerStyle]}>
+            <Animated.View style={[s.container, type === 'error' && s.error, type === 'success' && s.success, containerStyle]}>
                 <View style={s.content}>
-                    <Text type="p4" color={theme.colors.textSecondary} text={text} />
-                    <Icon size={14} name="close" style={s.icon} color={theme.colors.textSecondary} onPress={onHide} />
+                    <Text type="p4" color={getColor()} text={text} />
+                    <Icon size={14} name="close" style={s.icon} color={getColor()} onPress={onHide} />
                 </View>
             </Animated.View>
         )

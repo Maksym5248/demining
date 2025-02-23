@@ -43,7 +43,7 @@ export class Logger implements ILogger {
     error = (message?: any, ...optionalParams: any[]) => {
         if (this.logLevel >= LogLevel.Error) {
             const msg = `ERROR: ${message} ${optionalParams?.join(',')}`;
-            this.isDebug && console.log(msg);
+            this.isDebug && console.log(`ERROR:`, optionalParams);
             this._save(LogLevel.Error, msg);
         }
     };

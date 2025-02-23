@@ -7,7 +7,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         right: 0,
         top: 0,
         paddingTop: device.inset.top,
-        backgroundColor: theme.colors.accent,
+        backgroundColor: theme.colors.inertDark,
     },
     content: {
         flexDirection: 'row',
@@ -24,5 +24,11 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         bottom: 0,
         alignItems: 'flex-end',
         justifyContent: 'center',
+    },
+    error: {
+        backgroundColor: theme.colors.error,
+    },
+    success: {
+        backgroundColor: theme.colors.success,
     },
 }));
