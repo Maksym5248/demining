@@ -8,7 +8,7 @@ import { DictionaryType, type IDictionatyFilter, type ViewModel } from '~/types'
 
 export interface IDictionary {
     id: string;
-    type: DictionaryType;
+    type?: DictionaryType;
     svg: ISvgName;
     screen?: SCREENS;
 }
@@ -31,6 +31,11 @@ const categories: IDictionary[] = [
         type: DictionaryType.ExplosiveDevices,
         svg: 'explosive-device',
         screen: SCREENS.SEARCH,
+    },
+    {
+        id: '4',
+        svg: 'settings',
+        screen: SCREENS.SETTINGS,
     },
 ];
 
@@ -55,13 +60,17 @@ export class HomeVM implements IHomeVM {
         const item = categories.find(category => category.id === id);
         if (!item?.screen) return;
 
-        const filters: IDictionatyFilter = {
-            type: item.type,
-        };
+        if (id === '4') {
+            Navigation.navigate(item?.screen);
+        } else {
+            const filters: IDictionatyFilter = {
+                type: item.type,
+            };
 
-        Navigation.navigate(item?.screen, {
-            filters,
-        });
+            Navigation.navigate(item?.screen, {
+                filters,
+            });
+        }
     }
 
     get classes() {

@@ -76,6 +76,9 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
     marginHorizontalXXS: {
         marginHorizontal: theme.spacing.XXS,
     },
+    marginBottomS: {
+        marginBottom: theme.spacing.S,
+    },
     gapXS: {
         gap: theme.spacing.XS,
     },

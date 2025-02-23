@@ -8,11 +8,12 @@ export type IPalette =
     | 'creamF5'
     | 'white'
     | 'green78'
-    | 'redEF'
+    | 'red53'
     | 'greyD3'
     | 'transparent'
     | 'blueF8'
     | 'blueB4'
+    | 'green4C'
     | 'blackTransparent01';
 
 export type IColor =
@@ -31,11 +32,13 @@ export type IColor =
     | 'accentLight'
     | 'error'
     | 'inert'
+    | 'inertDark'
     | 'text'
     | 'transparent'
     | 'link'
     | 'ripplePrimary'
-    | 'disabled';
+    | 'disabled'
+    | 'success';
 
 export interface IThemeTextStyle {
     color: string;

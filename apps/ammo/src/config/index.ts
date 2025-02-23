@@ -4,4 +4,5 @@ export const CONFIG = {
     IS_DEBUG: !!__DEV__,
     ENV: Config.ENV ?? 'UNKNOWN',
     SENTRY_DSN: Config.SENTRY_DSN,
+    SUPPORT_EMAIL: 'demining.user@gmail.com',
 };
