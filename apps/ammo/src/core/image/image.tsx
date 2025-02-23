@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import { View, Animated, ActivityIndicator, Easing, Image as Img, type NativeSyntheticEvent, type ImageLoadEventData } from 'react-native';
 import Reanimated from 'react-native-reanimated';
+import { Logger, useAsyncEffect } from 'shared-my-client';
 
 import { useVar } from '~/hooks';
+import { ImageChache } from '~/services';
 import { useTheme } from '~/styles';
 
 import { useStyles } from './image.styles';
@@ -32,6 +34,7 @@ export function Image({
 
     const [isVisiblePlaceholder, setVisiblePlaceholder] = useState(true);
     const [isLoading, setLoading] = useState(!!uri);
+    const [localUri, setLocalUri] = useState<string | undefined>();
 
     const _onLoad = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
         e.persist();
@@ -52,6 +55,22 @@ export function Image({
         setLoading(false);
     };
 
+    useAsyncEffect(async () => {
+        if (uri) {
+            try {
+                const fileExists = await ImageChache.exists(uri);
+
+                if (!fileExists) {
+                    await ImageChache.download(uri);
+                }
+                setLocalUri(ImageChache.getLocalPath(uri));
+            } catch (e) {
+                Logger.error('Failed to cache image:', e);
+                onError();
+            }
+        }
+    }, [uri]);
+    console.log('uri', uri);
     const Container = isAnimated ? Reanimated.View : View;
 
     return (
@@ -64,9 +83,9 @@ export function Image({
                     <ActivityIndicator size="small" color={theme.colors.accent} />
                 </View>
             )}
-            {(!!uri || !!source) && (
+            {(!!localUri || !!source) && (
                 <AnimatedImage
-                    source={source || { uri: uri ?? undefined }}
+                    source={source || { uri: localUri ?? undefined }}
                     style={[s.image, { opacity: animatedValue }, imageStyle]}
                     resizeMode={resizeMode}
                     onLoad={_onLoad}

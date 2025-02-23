@@ -73,6 +73,33 @@ export class RootStore implements IRootStore {
          */
     }
 
+    getImagesUrls() {
+        const urls: string[] = [];
+
+        this.explosiveObject.collection.asArray.forEach(item => {
+            !!item?.data?.imageUri && urls.push(item?.data?.imageUri);
+            urls.push(...(item.details?.data?.imageUris ?? []));
+            urls.push(...(item.details?.data?.purpose?.imageUris ?? []));
+            urls.push(...(item.details?.data?.structure?.imageUris ?? []));
+            urls.push(...(item.details?.data?.action?.imageUris ?? []));
+        });
+
+        this.explosive.collection.asArray.forEach(item => {
+            !!item?.data?.imageUri && urls.push(item?.data?.imageUri);
+            urls.push(...(item?.data?.imageUris ?? []));
+        });
+
+        this.explosiveDevice.collection.asArray.forEach(item => {
+            !!item?.data?.imageUri && urls.push(item?.data?.imageUri);
+            urls.push(...(item?.data?.imageUris ?? []));
+            urls.push(...(item?.data?.purpose?.imageUris ?? []));
+            urls.push(...(item?.data?.structure?.imageUris ?? []));
+            urls.push(...(item?.data?.action?.imageUris ?? []));
+        });
+
+        return urls;
+    }
+
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
