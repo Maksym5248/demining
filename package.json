@@ -28,7 +28,7 @@
     "link:web": "yarn workspace dsns-web add ./packages/shared && yarn workspace dsns-web add ./packages/shared-client",
     "link:functions": "workspace functions add shared-my",
     "link:ammo": "yarn workspace ammo add ./packages/shared && yarn workspace ammo add ./packages/shared-client",
-    "postinstall": "yarn build:shared && yarn build:shared-client",
+    "postinstall": "yarn build:shared && yarn build:shared-client && patch-package",
     "clean:all": "lerna run watch && lerna run clean",
     "clean:build:packages": "yarn clean:build:shared && yarn clean:build:shared-client",
     "clean:build:shared": "lerna run clean:build --scope=shared-my",

@@ -23,7 +23,8 @@
         "check:eslint": "eslint --fix",
         "update:build-number": "/bin/sh ./bin/update-build-number.sh",
         "clone": "/bin/sh ./bin/clone-base64.sh",
-        "prepare:env": "/bin/sh ./bin/prepare-env.sh"
+        "prepare:env": "/bin/sh ./bin/prepare-env.sh",
+        "postinstall": "cd ../../ && yarn patch-package"
     },
     "dependencies": {
         "@firebase/firestore-types": "^3.0.3",
@@ -48,7 +49,7 @@
         "mobx-react-lite": "4.0.7",
         "react": "18.3.1",
         "react-native": "0.75.4",
-        "react-native-awesome-gallery": "^0.4.3",
+        "react-native-awesome-gallery": "0.4.2",
         "react-native-bootsplash": "6.3.3",
         "react-native-config": "1.5.3",
         "react-native-device-info": "^14.0.4",
@@ -90,6 +91,7 @@
         "husky": "4.3.0",
         "jest": "^29.6.3",
         "lint-staged": "14.0.1",
+        "patch-package": "^8.0.0",
         "prettier": "2.8.8",
         "react-test-renderer": "18.3.1",
         "reactotron-react-native": "^5.1.12",

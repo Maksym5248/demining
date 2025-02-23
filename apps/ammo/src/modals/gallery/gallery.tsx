@@ -46,7 +46,7 @@ export const GalleryModal = ({ images, index: initialIndex, hide, ...rest }: IGa
     };
 
     const onScaleEnd = (scale: number) => {
-        if (scale < 0.8) {
+        if (scale < 0.5) {
             hide();
         }
     };
@@ -65,7 +65,7 @@ export const GalleryModal = ({ images, index: initialIndex, hide, ...rest }: IGa
                 <AwesomeGallery
                     data={images}
                     renderItem={renderItem}
-                    initialIndex={index}
+                    initialIndex={initialIndex}
                     numToRender={3}
                     doubleTapInterval={150}
                     onIndexChange={onIndexChange}
@@ -73,6 +73,10 @@ export const GalleryModal = ({ images, index: initialIndex, hide, ...rest }: IGa
                     loop
                     keyExtractor={item => item.uri}
                     onScaleEnd={onScaleEnd}
+                    onSwipeToClose={hide}
+                    disableTransitionOnScaledImage={true}
+                    hideAdjacentImagesOnScaledImage={true}
+                    disableSwipeUp={true}
                 />
             </View>
         </Modal>
