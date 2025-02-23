@@ -14,11 +14,13 @@ export class FileSystemClass {
     constructor(
         private dir: string,
         private fileFormat?: string,
+        private table?: string,
     ) {}
 
     async init(): Promise<void> {
         const dirPath = `${Dirs.CacheDir}/${this.dir}`;
         const dirExists = await FileSystem.exists(dirPath);
+        Logger.log(`FileSystem dir (${this.dir}) init: `, dirExists);
 
         if (!dirExists) {
             await FileSystem.mkdir(dirPath);
@@ -30,7 +32,6 @@ export class FileSystemClass {
             uris.map(async uri => {
                 try {
                     const fileExists = await this.exists(uri);
-                    console.log('File exists:', fileExists);
                     return fileExists ? null : uri;
                 } catch (error) {
                     return null;
@@ -38,13 +39,13 @@ export class FileSystemClass {
             }),
         );
 
-        Logger.log('Images: ', urls.length);
+        Logger.log(`FileSystem dir (${this.dir}): `, urls.length);
 
         const unsevedUrls = urls
             .filter((result): result is PromiseFulfilledResult<string | null> => result.status === 'fulfilled' && !!result.value)
             .map(result => result.value as string);
 
-        Logger.log('Images - loading unsaved: ', unsevedUrls.length);
+        Logger.log(`FileSystem dir(${this.dir}) - loading unsaved: `, unsevedUrls.length);
 
         await Promise.allSettled(unsevedUrls.map(uri => this.download(uri)));
     }
@@ -77,7 +78,8 @@ export class FileSystemClass {
 
     private getFileName(uri: string) {
         const value = uri.split('/').pop();
-        return value?.split('?')[0];
+        const name = value?.split('?')[0];
+        return this.table ? name?.replace(`${this.table}%`, '') : name;
     }
 
     getPath(uri: string): string {

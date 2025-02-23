@@ -92,6 +92,7 @@
         "lint-staged": "14.0.1",
         "prettier": "2.8.8",
         "react-test-renderer": "18.3.1",
+        "reactotron-react-native": "^5.1.12",
         "typescript": "~5.3.3"
     }
 }

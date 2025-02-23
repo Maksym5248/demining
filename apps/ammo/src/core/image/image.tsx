@@ -37,6 +37,8 @@ export function Image({
     const [localUri, setLocalUri] = useState<string | undefined>();
 
     const _onLoad = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
+        console.log('_onLoad');
+
         e.persist();
 
         Animated.timing(animatedValue, {
@@ -51,26 +53,31 @@ export function Image({
         });
     };
 
-    const onError = () => {
+    const onError = (e?: unknown) => {
+        Logger.error('Component Image:', {
+            e,
+            uri,
+            localUri,
+        });
         setLoading(false);
     };
 
     useAsyncEffect(async () => {
-        if (uri) {
-            try {
-                const fileExists = await ImageChache.exists(uri);
-                console.log('File exists:', fileExists);
-                if (!fileExists) {
-                    await ImageChache.download(uri);
-                }
-                setLocalUri(ImageChache.getLocalPath(uri));
-            } catch (e) {
-                Logger.error('Failed to cache image:', e);
-                onError();
+        if (!uri) return;
+
+        try {
+            const fileExists = await ImageChache.exists(uri);
+
+            if (!fileExists) {
+                await ImageChache.download(uri);
             }
+
+            setLocalUri(ImageChache.getLocalPath(uri));
+        } catch (e) {
+            onError(e);
         }
     }, [uri]);
-    console.log('uri', uri);
+
     const Container = isAnimated ? Reanimated.View : View;
 
     return (
