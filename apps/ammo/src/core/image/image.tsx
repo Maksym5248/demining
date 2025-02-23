@@ -59,7 +59,7 @@ export function Image({
         if (uri) {
             try {
                 const fileExists = await ImageChache.exists(uri);
-
+                console.log('File exists:', fileExists);
                 if (!fileExists) {
                     await ImageChache.download(uri);
                 }

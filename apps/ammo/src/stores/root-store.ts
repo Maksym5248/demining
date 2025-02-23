@@ -23,6 +23,7 @@ export interface IRootStore {
     isLoaded: boolean;
     removeAllListeners(): void;
     init: IRequestModel;
+    getImagesUrls(): string[];
 }
 
 export class RootStore implements IRootStore {

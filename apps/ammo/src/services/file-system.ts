@@ -1,9 +1,11 @@
 import { Dirs, FileSystem } from 'react-native-file-access';
 import { type ProgressListener } from 'react-native-file-access/lib/typescript/types';
+import { Logger } from 'shared-my-client';
 
 export interface IFileSystem {
     exists(filePath: string): Promise<boolean>;
     download(fromUrl: string, onProgress?: ProgressListener): Promise<void>;
+    preload(uris: string[]): Promise<void>;
     getPath(uri: string): string;
     getLocalPath(uri: string): string;
 }
@@ -23,12 +25,37 @@ export class FileSystemClass {
         }
     }
 
+    async preload(uris: string[]): Promise<void> {
+        const urls = await Promise.allSettled(
+            uris.map(async uri => {
+                try {
+                    const fileExists = await this.exists(uri);
+                    console.log('File exists:', fileExists);
+                    return fileExists ? null : uri;
+                } catch (error) {
+                    return null;
+                }
+            }),
+        );
+
+        Logger.log('Images: ', urls.length);
+
+        const unsevedUrls = urls
+            .filter((result): result is PromiseFulfilledResult<string | null> => result.status === 'fulfilled' && !!result.value)
+            .map(result => result.value as string);
+
+        Logger.log('Images - loading unsaved: ', unsevedUrls.length);
+
+        await Promise.allSettled(unsevedUrls.map(uri => this.download(uri)));
+    }
+
     async exists(uri: string): Promise<boolean> {
         const path = this.getPath(uri);
         try {
-            return await FileSystem.exists(path);
+            const res = await FileSystem.exists(path);
+            return res;
         } catch (error) {
-            console.error('Failed to check if file exists:', error);
+            Logger.error('Images - failed to check if file exists:', error);
             return false;
         }
     }
@@ -39,7 +66,7 @@ export class FileSystemClass {
                 url,
                 {
                     method: 'GET',
-                    path: this.fileFormat ? `${this.getPath(url)}.${this.fileFormat}` : this.getPath(url),
+                    path: this.getPath(url),
                 },
                 onProgress,
             );
@@ -55,7 +82,8 @@ export class FileSystemClass {
 
     getPath(uri: string): string {
         const fileName = this.getFileName(uri);
-        return `${Dirs.CacheDir}/${this.dir}/${fileName}`;
+        const format = this.fileFormat ? `.${this.fileFormat}` : '';
+        return `${Dirs.CacheDir}/${this.dir}/${fileName}${format}`;
     }
 
     getLocalPath(uri: string): string {

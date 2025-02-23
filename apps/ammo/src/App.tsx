@@ -58,6 +58,10 @@ export const App = observer(() => {
             });
 
             await vm.fetch.run();
+
+            NetInfo.onChange(info => {
+                info.isConnected && vm.preloadImages.run();
+            });
         } catch (error) {
             Logger.error(error);
         }
