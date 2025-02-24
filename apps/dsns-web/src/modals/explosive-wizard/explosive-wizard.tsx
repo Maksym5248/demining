@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { Form, Input, Drawer, InputNumber, Spin, Divider, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE, explosiveObjectStatuses, measurement } from 'shared-my';
-import uuid from 'uuid';
 
 import { UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -83,12 +82,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         !!id && explosive.fetchItem.run(id);
     }, [id]);
 
-    const customRequest = async (file: File) => {
-        const id = uuid.v4();
-        await AssetStorage.image.save(id, file);
-        const downloadURL = await AssetStorage.image.getFileUrl(id);
-        return downloadURL;
-    };
+    const customRequest = (file: File) => AssetStorage.image.create(file);
 
     return (
         <Drawer
