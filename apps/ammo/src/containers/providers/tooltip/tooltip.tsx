@@ -12,9 +12,16 @@ import { measureSize } from '~/utils';
 import { useStyles } from './tooltip.styles';
 import { type ITooltipProviderProps } from './tooltip.types';
 
-const initialData = {
+interface ITooltipData {
+    text?: string;
+    isVisible: boolean;
+    id?: string;
+}
+
+const initialData: ITooltipData = {
     text: '',
     isVisible: false,
+    id: undefined,
 };
 
 const getLeftOffset = (childrenSize: { width: number }, size: { height: number; width: number }) => ({
@@ -37,11 +44,11 @@ export const TooltipProvider = memo(({ children }: ITooltipProviderProps) => {
     const theme = useTheme();
     const aref = useAnimatedRef();
     const self = useRef<{
-        id?: string;
         childRef: AnimatedRef<Component<any>> | null;
+        isVisible?: boolean;
     }>({
-        id: undefined,
         childRef: null,
+        isVisible: false,
     }).current;
     const device = useDevice();
 
@@ -73,7 +80,6 @@ export const TooltipProvider = memo(({ children }: ITooltipProviderProps) => {
                 () => runOnJS(onHide)(),
             );
 
-            self.id = undefined;
             self.childRef = null;
         } else {
             requestAnimationFrame(async () => {
@@ -104,21 +110,25 @@ export const TooltipProvider = memo(({ children }: ITooltipProviderProps) => {
                 }
             });
         }
-    }, [data?.isVisible]);
+    }, [data?.isVisible, data.id]);
 
     const value = useMemo(
         () => ({
             hide: () => {
-                setData({ isVisible: false, text: '' });
+                setData({ isVisible: false, text: '', id: undefined });
             },
             show: async ({ id, text }: { id: string; text: string }, ref: any) => {
-                setData({ isVisible: true, text });
-                self.id = id;
+                setData({ isVisible: true, text, id });
+                //@ts-ignore
+                self.childRef = ref;
+            },
+            toggle: async ({ id, text }: { id: string; text?: string }, ref: any) => {
+                setData(prev => ({ isVisible: prev.id === id ? !prev.isVisible : true, text, id }));
                 //@ts-ignore
                 self.childRef = ref;
             },
         }),
-        [setData, onHide, opacity, x, y, aref, self, xContent],
+        [setData, self],
     );
 
     const containerStyle = useAnimatedStyle(() => ({

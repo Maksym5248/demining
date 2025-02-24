@@ -14,6 +14,7 @@ export const NetInfoContext = createContext<INetInfoState>({
 export const TooltipContext = createContext<ITooltipContext>({
     show: () => undefined,
     hide: () => undefined,
+    toggle: () => undefined,
 });
 
 export const TooltipRootContext = createContext<ITooltipRootContext>({

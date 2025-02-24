@@ -26,6 +26,7 @@ export type INetInfoState = NetInfoState;
 export interface ITooltipContext {
     show: (value: { id: string; text: string }, aref: RefObject<any>) => void;
     hide: (value: { id: string }) => void;
+    toggle: (value: { id: string; text?: string }, aref: RefObject<any>) => void;
 }
 
 export interface ITooltipRootContext {

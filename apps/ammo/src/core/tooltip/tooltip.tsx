@@ -23,10 +23,10 @@ export const Tooltip = ({ children, text, style, delay = 0, ...props }: ITooltip
     const onPress = () => {
         if (delay) {
             self.timer = setTimeout(() => {
-                tooltip.show({ id: self?.id, text }, aref);
+                tooltip.toggle({ id: self?.id, text }, aref);
             }, delay);
         } else if (!delay) {
-            tooltip.show({ id: self?.id, text }, aref);
+            tooltip.toggle({ id: self?.id, text }, aref);
         }
     };
 
