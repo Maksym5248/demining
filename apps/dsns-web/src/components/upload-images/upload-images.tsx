@@ -46,7 +46,7 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
             info.isInitialized = true;
             return;
         }
-        onChange?.(fileList.map(file => file.url as string).filter(Boolean));
+        onChange?.(fileList.map(file => file?.url as string).filter(Boolean));
     }, [fileList]);
 
     const beforeUpload = (file: { type: string }) => {
@@ -59,11 +59,15 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
 
     const handleChange = async (info: UploadChangeParam<UploadFile>) => {
         if (info.file.status === 'uploading') {
-            setFileList(info.fileList);
+            setFileList(prev => [...prev, info.file]);
         } else if (info.file.status === 'done') {
-            setFileList(prev => prev.map(file => (file.uid === info.file.uid ? { ...file, status: info.file.status } : file)));
+            setFileList(prev =>
+                prev.map(file =>
+                    file.uid === info.file.uid ? { ...info.file, url: info.file.response.url, status: info.file.status } : file,
+                ),
+            );
         } else if (info.file.status === 'error') {
-            setFileList(prev => prev.map(file => (file.uid === info.file.uid ? { ...file, status: info.file.status } : file)));
+            setFileList(prev => prev.map(file => (file.uid === info.file.uid ? { ...info.file, status: info.file.status } : file)));
         } else if (info.file.status === 'removed') {
             setFileList(prev => prev.filter(file => file.uid !== info.file.uid));
         }
@@ -74,7 +78,8 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
 
         try {
             const downloadURL = await customRequest?.(file as File);
-            onSuccess?.(downloadURL);
+            console.log('downloadURL', downloadURL);
+            onSuccess?.({ url: downloadURL });
         } catch (error) {
             onError?.(error as Error);
         }

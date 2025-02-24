@@ -104,7 +104,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
         hide();
     };
 
-    const customRequest = async (file: File) => AssetStorage.image.create(file);
+    const customRequest = (file: File) => AssetStorage.image.create(file);
 
     useEffect(() => {
         !!id && explosiveObject.fetchItem.run(id);
