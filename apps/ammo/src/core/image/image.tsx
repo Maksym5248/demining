@@ -37,8 +37,6 @@ export function Image({
     const [localUri, setLocalUri] = useState<string | undefined>();
 
     const _onLoad = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
-        console.log('_onLoad');
-
         e.persist();
 
         Animated.timing(animatedValue, {

@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { BottomSheet, Modal, Button, Text, Icon, Separator, type IBottomSheetRef, Scroll } from '~/core';
+import { BottomSheet, Modal, Button, Text, Icon, Separator, type IBottomSheetRef, Scroll, ListEmpty } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -28,8 +28,11 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
     };
 
     const onPressSubmit = () => {
+        console.log('vm.filters 1', vm.filters);
         refBootomSheet.current?.close();
+        console.log('vm.filters 2', vm.filters);
         onSelect?.(vm.filters);
+        console.log('vm.filters 3', vm.filters);
     };
 
     const onPressClear = () => {
@@ -61,7 +64,7 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
                     <View style={s.content}>
                         {vm.type === DictionaryType.ExplosiveObject && <ExplosiveObject model={vm.explosiveObject} />}
                         {vm.type === DictionaryType.ExplosiveDevices && <ExplosiveDevice model={vm.explosiveDevice} />}
-                        {/* {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />} */}
+                        {!vm.type && <ListEmpty title={t('empty')} name="dictionary" style={s.empty} />}
                     </View>
                 </Scroll>
                 <Button.Base title={t('apply')} onPress={onPressSubmit} style={s.button} />
