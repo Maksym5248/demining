@@ -28,11 +28,8 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
     };
 
     const onPressSubmit = () => {
-        console.log('vm.filters 1', vm.filters);
         refBootomSheet.current?.close();
-        console.log('vm.filters 2', vm.filters);
         onSelect?.(vm.filters);
-        console.log('vm.filters 3', vm.filters);
     };
 
     const onPressClear = () => {

@@ -27,10 +27,10 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         flex: 1,
         flexDirection: 'row',
         paddingVertical: theme.spacing.L,
-        gap: theme.spacing.M,
+        gap: theme.spacing.L,
     },
     item: {
-        width: device.window.width / 2 - theme.spacing.XL - theme.spacing.M / 2,
+        width: (device.window.width - theme.spacing.L * 3) / 2,
         aspectRatio: 1,
         alignItems: 'center',
     },
