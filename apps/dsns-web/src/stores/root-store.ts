@@ -33,6 +33,8 @@ import {
     createCurrentUser,
     ExplosiveStore,
     type IExplosiveStore,
+    type IBookStore,
+    BookStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -56,7 +58,7 @@ export interface IRootStore {
     user: IUserStore;
     organization: IOrganizationStore;
     viewer: IViewerStore;
-
+    book: IBookStore;
     isInitialized: boolean;
     isLoaded: boolean;
     removeAllListeners(): void;
@@ -79,6 +81,7 @@ export class RootStore implements IRootStore {
     user: IUserStore;
     organization: IOrganizationStore;
     viewer: IViewerStore;
+    book: IBookStore;
 
     isLoaded = false;
     isInitialized = false;
@@ -100,6 +103,7 @@ export class RootStore implements IRootStore {
             transport: this.transport,
             user: this.user,
             organization: this.organization,
+            book: this.book,
         };
     };
 
@@ -135,6 +139,7 @@ export class RootStore implements IRootStore {
         this.user = new UserStore(this);
         this.organization = new OrganizationStore(this);
         this.missionReport = new MissionReportStore(this);
+        this.book = new BookStore(this);
 
         makeAutoObservable(this);
     }

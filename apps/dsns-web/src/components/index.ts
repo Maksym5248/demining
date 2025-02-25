@@ -19,3 +19,4 @@ export * from './field-size';
 export * from './field-section';
 export * from './field-image-uris';
 export * from './field-filler';
+export * from './upload';

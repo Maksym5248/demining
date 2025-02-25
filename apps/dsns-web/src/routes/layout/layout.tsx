@@ -171,6 +171,12 @@ export const Layout = observer(() => {
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
                           onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
                       },
+                      {
+                          key: ROUTES.BOOKS_LIST,
+                          icon: <Icon.BookOutlined />,
+                          label: nav.getRouteTitle(ROUTES.BOOKS_LIST),
+                          onClick: () => navigate(ROUTES.BOOKS_LIST),
+                      },
                   ]
                 : []),
         ];

@@ -20,3 +20,4 @@ export * from './organization-wizard';
 export * from './template-data-preview';
 export * from './template-wizard';
 export * from './map-editor';
+export * from './book-wizard';

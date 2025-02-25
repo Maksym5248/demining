@@ -20,6 +20,7 @@ export enum TABLES {
     USER = 'USER',
     ORGANIZATION = 'ORGANIZATION',
     DOCUMENT = 'DOCUMENT',
+    BOOK = 'BOOK',
 }
 
 export enum TABLES_DIR {

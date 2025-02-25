@@ -14,6 +14,7 @@ import {
     type EXPLOSIVE_DEVICE_TYPE,
     type RANKS,
     type EXPLOSIVE_OBJECT_STATUS,
+    type BOOK_TYPE,
 } from '../enum';
 
 export interface IAddressDB {
@@ -207,4 +208,19 @@ export interface IExplosiveDB extends IBaseDB {
 export interface IExplosiveDeviceTypeNotDB {
     id: EXPLOSIVE_DEVICE_TYPE;
     name: string;
+}
+
+export interface IBookTypeNotDB {
+    id: BOOK_TYPE;
+    name: string;
+}
+
+export interface IBookDB extends IBaseDB {
+    status: EXPLOSIVE_OBJECT_STATUS;
+    name: string;
+    type: BOOK_TYPE;
+    mime: MIME_TYPE;
+    imageUri: string;
+    size: number;
+    uri: string;
 }

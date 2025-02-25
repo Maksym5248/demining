@@ -1,3 +1,4 @@
+export * from './book-types';
 export * from './ranks-data';
 export * from './mission-request-types';
 export * from './explosive-device-types';
