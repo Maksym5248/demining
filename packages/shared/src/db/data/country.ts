@@ -29,4 +29,8 @@ export const countries: ICountryDB[] = [
         id: 'GreatBritain',
         name: 'Великобританія',
     },
+    {
+        id: 'Germany',
+        name: 'Німеччина',
+    },
 ];
