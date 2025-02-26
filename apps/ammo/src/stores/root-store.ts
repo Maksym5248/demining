@@ -123,6 +123,7 @@ export class RootStore implements IRootStore {
                     this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),
                     this.explosive.subscribe.run(),
+                    this.book.subscribe.run(),
                 ]);
             } catch (e) {
                 /** SKIP */

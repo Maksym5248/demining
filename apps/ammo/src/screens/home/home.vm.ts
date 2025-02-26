@@ -5,7 +5,7 @@ import { SCREENS } from '~/constants';
 import { type ISvgName } from '~/core';
 import { Navigation } from '~/services';
 import { stores } from '~/stores';
-import { DictionaryType, type IDictionatyFilter, type ViewModel } from '~/types';
+import { DictionaryType, type IBookFilter, type IDictionatyFilter, type ViewModel } from '~/types';
 
 export interface IItem {
     id: string;
@@ -18,17 +18,17 @@ const dictionaries: IItem[] = [
     {
         id: DictionaryType.ExplosiveObject,
         svg: 'explosive-object',
-        screen: SCREENS.SEARCH,
+        screen: SCREENS.DICTIONARIES,
     },
     {
         id: DictionaryType.Explosive,
         svg: 'explosive',
-        screen: SCREENS.SEARCH,
+        screen: SCREENS.DICTIONARIES,
     },
     {
         id: DictionaryType.ExplosiveDevices,
         svg: 'explosive-device',
-        screen: SCREENS.SEARCH,
+        screen: SCREENS.DICTIONARIES,
     },
 ];
 
@@ -95,7 +95,7 @@ export class HomeVM implements IHomeVM {
     }
 
     openSearch() {
-        Navigation.push(SCREENS.SEARCH_ANIMATED, {
+        Navigation.push(SCREENS.DICTIONARIES_ANIMATED, {
             autoFocus: true,
         });
     }
@@ -116,7 +116,12 @@ export class HomeVM implements IHomeVM {
     openBook(id: string) {
         const item = books.find(el => el.id === id);
         if (!item?.screen) return;
-        Navigation.navigate(item?.screen);
+
+        const filters: IBookFilter = {
+            type: item.id as BOOK_TYPE,
+        };
+
+        Navigation.navigate(item?.screen, { filters });
     }
 
     openRest(id: string) {

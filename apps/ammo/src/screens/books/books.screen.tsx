@@ -8,43 +8,35 @@ import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
-import { type IDataItem } from './search-item.model';
-import { useStyles } from './search.style';
-import { type ISearchScreenProps } from './search.types';
-import { searchVM, type ISearchVM } from './search.vm';
+import { type IDataItem } from './books-item.model';
+import { useStyles } from './books.style';
+import { type IBookScreenProps } from './books.types';
+import { searchVM, type ISearchVM } from './books.vm';
 
 const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) => {
-    const tDictionaries = useTranslate('dictionaries');
     const s = useStyles();
 
-    const tags = [tDictionaries(item.type)];
     const isLeft = index % 2 === 0;
 
-    if (item.typeName) {
-        tags.push(item.typeName);
-    }
-
-    const onOpenExplosive = () => item.openItem();
+    const onPress = () => item.openItem();
 
     return (
         <Card
             type="imageBox"
             title={item.displayName}
             uri={item.imageUri}
-            tags={tags}
-            subTitle={item.classItemsNames.join(', ')}
-            onPress={onOpenExplosive}
+            onPress={onPress}
             style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
         />
     );
 });
 
-export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
+export const BooksScreen = observer(({ route }: IBookScreenProps) => {
     const { filters, autoFocus } = route?.params || {};
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
-    const t = useTranslate('screens.search');
+    const t = useTranslate('screens.books');
     const inputRef = useRef<TextInputRN>(null);
 
     const vm = useViewModel<ISearchVM>(searchVM, filters);

@@ -70,7 +70,7 @@ export const HomeScreen = observer(() => {
                                 title={item.name}
                                 svg={item.svg}
                                 styleInfo={styles.contentCenter}
-                                onPress={() => vm.openDictionary(item.id)}
+                                onPress={() => vm.openBook(item.id)}
                             />
                         ))}
                     </Scroll>

@@ -9,7 +9,7 @@ import { LogLevel, useAsyncEffect } from 'shared-my-client';
 import { useStatusBar, useViewModel } from '~/hooks';
 import { Localization, LocalizationProvider } from '~/localization';
 import { modals, RootNavigation } from '~/navigation';
-import { AppState, Crashlytics, ImageChache, Logger, Navigation, NetInfo } from '~/services';
+import { AppState, BookCache, Crashlytics, mageChahe, Logger, Navigation, NetInfo } from '~/services';
 import { ThemeManager, ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
@@ -49,7 +49,7 @@ export const App = observer(() => {
 
         try {
             AppState.init();
-            await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChache.init()]);
+            await Promise.allSettled([NetInfo.init(), Localization.init(), mageChahe.init(), BookCache.init()]);
 
             AppState.onChange(state => {
                 if (state === 'active') {
