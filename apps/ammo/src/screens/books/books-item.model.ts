@@ -10,7 +10,8 @@ import {
     delay,
 } from 'shared-my-client';
 
-import { BookCache } from '~/services';
+import { SCREENS } from '~/constants';
+import { BookCache, Navigation } from '~/services';
 
 export type Item = IExplosive | IExplosiveObject | IExplosiveDevice;
 
@@ -44,7 +45,12 @@ export class DataItem implements IDataItem {
         makeAutoObservable(this);
     }
 
-    openItem() {}
+    openItem() {
+        Navigation.push(SCREENS.READER, {
+            uri: BookCache.getLocalPath(this.data.uri),
+            title: this.displayName,
+        });
+    }
 
     setStatus(status: STATUS) {
         this.status = status;
