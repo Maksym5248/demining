@@ -4,35 +4,52 @@ import { observer } from 'mobx-react';
 import { View, type TextInput as TextInputRN } from 'react-native';
 import { measurement } from 'shared-my';
 
-import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
+import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, Progress, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
-import { type IDataItem } from './books-item.model';
+import { STATUS, type IDataItem } from './books-item.model';
 import { useStyles } from './books.style';
 import { type IBookScreenProps } from './books.types';
 import { searchVM, type ISearchVM } from './books.vm';
 
 const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) => {
     const s = useStyles();
-
+    const theme = useTheme();
     const isLeft = index % 2 === 0;
 
     const onPress = () => item.openItem();
+    const onPressLoad = () => item.load.run();
 
-    console.log('item.data.size', item.data.size);
+    useEffect(() => {
+        item.checkLoaded.run();
+    }, []);
 
     return (
-        <Card
-            type="imageBox"
-            tags={[item.typeName]}
-            title={item.displayName}
-            uri={item.imageUri}
-            onPress={onPress}
-            subTitle={measurement.formatBytes(item.data.size)}
-            style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
-        />
+        <View style={s.cardContainer}>
+            <Card
+                type="imageBox"
+                tags={[item.typeName]}
+                title={item.displayName}
+                uri={item.imageUri}
+                onPress={onPress}
+                subTitle={measurement.formatBytes(item.data.size)}
+                style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
+            />
+            {item.status === STATUS.IDDLE && <Icon name="download" style={s.icon} color={theme.colors.accent} onPress={onPressLoad} />}
+            {item.status === STATUS.SUCCESS && <Icon name="success" size={24} style={s.icon} color={theme.colors.success} />}
+            {item.status === STATUS.LOADING && (
+                <Progress.Circle
+                    style={s.icon}
+                    size={24}
+                    progress={item.progress}
+                    color={theme.colors.accent}
+                    strokeWidth={3}
+                    backgroundColor={theme.colors.inert}
+                />
+            )}
+        </View>
     );
 });
 

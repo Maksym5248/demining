@@ -108,7 +108,6 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                                 const onChangeFile = ({ url, size }: { url: string | null; size: number | null }) => {
                                     setFieldValue('uri', url);
                                     setFieldValue('size', size);
-                                    console.log('size', size);
                                 };
 
                                 return (

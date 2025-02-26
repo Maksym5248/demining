@@ -13,7 +13,7 @@ import { Tag } from '../tag';
 import { Text } from '../text';
 import { Touchable } from '../touchable';
 
-export const Card = ({ title, subTitle, type = 'default', tags, uri, svg, styleInfo, ...props }: ICardProps) => {
+export const Card = ({ title, subTitle, type = 'default', tags, uri, svg, styleInfo, children, ...props }: ICardProps) => {
     const s = useStyles();
 
     return (
@@ -26,6 +26,7 @@ export const Card = ({ title, subTitle, type = 'default', tags, uri, svg, styleI
                 <Text type="h6" text={title} />
                 {!!subTitle && <Text type="p5" text={subTitle} />}
             </View>
+            {children}
         </Touchable>
     );
 };

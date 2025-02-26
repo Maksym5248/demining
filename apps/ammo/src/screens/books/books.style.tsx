@@ -1,6 +1,14 @@
 import { ThemeManager } from '~/styles';
 
 export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
+    cardContainer: {
+        position: 'relative',
+    },
+    icon: {
+        position: 'absolute',
+        right: theme.spacing.M,
+        top: theme.spacing.S,
+    },
     header: {
         backgroundColor: theme.colors.accent,
     },

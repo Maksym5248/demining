@@ -18,7 +18,7 @@ import { Modal } from '~/services';
 import { stores } from '~/stores';
 import { BookLoadedState, type IBookFilter, type ViewModel } from '~/types';
 
-import { type IDataItem, DataItem } from './books-item.model';
+import { type IDataItem, DataItem, STATUS } from './books-item.model';
 
 export interface ISearchVM extends ViewModel {
     openFilters(): void;
@@ -52,8 +52,8 @@ export class SearchVM implements ISearchVM {
                 {
                     key: 'loadState',
                     rule: (item, value: BookLoadedState) => {
-                        if (value === BookLoadedState.NOT_LOADED) return !item.isLoaded;
-                        if (value === BookLoadedState.LOADED) return item.isLoaded;
+                        if (value === BookLoadedState.NOT_LOADED) return item.status !== STATUS.LOADED;
+                        if (value === BookLoadedState.LOADED) return item.status === STATUS.LOADED;
 
                         return true;
                     },
