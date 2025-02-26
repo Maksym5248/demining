@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { bookTypesMap } from 'shared-my';
 import { type IBookData, type IBook, type IExplosive, type IExplosiveDevice, type IExplosiveObject, RequestModel } from 'shared-my-client';
 
 import { BookCache } from '~/services';
@@ -11,6 +12,7 @@ export interface IDataItem {
     imageUri: string;
     displayName: string;
     isLoaded: boolean;
+    typeName: string;
     openItem(): void;
 }
 
@@ -48,5 +50,9 @@ export class DataItem implements IDataItem {
 
     get id() {
         return this.item.id;
+    }
+
+    get typeName() {
+        return bookTypesMap?.[this.data.type]?.name;
     }
 }

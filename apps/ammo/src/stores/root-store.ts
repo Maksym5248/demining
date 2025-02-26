@@ -103,6 +103,10 @@ export class RootStore implements IRootStore {
             urls.push(...(item?.data?.action?.imageUris ?? []));
         });
 
+        this.book.collection.asArray.forEach(item => {
+            !!item?.data?.imageUri && urls.push(item?.data?.imageUri);
+        });
+
         return urls;
     }
 

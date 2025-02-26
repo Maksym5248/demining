@@ -23,7 +23,7 @@ export const createBookDTO = (value: ICreateValue<IBookData>): ICreateValue<IBoo
     mime: value.mime ?? null,
     status: value.status ?? null,
     imageUri: value.imageUri ?? null,
-    size: value.size ?? null,
+    size: value.size ?? 0,
     uri: value.uri ?? null,
 });
 
@@ -43,7 +43,7 @@ export const createBook = (value: IBookDTO): IBookData => ({
     type: value.type ?? null,
     status: value.status,
     imageUri: value.imageUri,
-    size: value.size,
+    size: value.size ?? 0,
     uri: value.uri,
     mime: value.mime,
     createdAt: dates.fromServerDate(value.createdAt),

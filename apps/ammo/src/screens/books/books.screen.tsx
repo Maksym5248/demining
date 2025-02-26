@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 
 import { observer } from 'mobx-react';
 import { View, type TextInput as TextInputRN } from 'react-native';
+import { measurement } from 'shared-my';
 
 import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -20,12 +21,16 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
 
     const onPress = () => item.openItem();
 
+    console.log('item.data.size', item.data.size);
+
     return (
         <Card
             type="imageBox"
+            tags={[item.typeName]}
             title={item.displayName}
             uri={item.imageUri}
             onPress={onPress}
+            subTitle={measurement.formatBytes(item.data.size)}
             style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
         />
     );

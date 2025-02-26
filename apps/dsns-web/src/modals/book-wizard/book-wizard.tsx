@@ -108,6 +108,7 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                                 const onChangeFile = ({ url, size }: { url: string | null; size: number | null }) => {
                                     setFieldValue('uri', url);
                                     setFieldValue('size', size);
+                                    console.log('size', size);
                                 };
 
                                 return (
@@ -137,6 +138,9 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                                 value: el.id,
                             }))}
                         />
+                    </Form.Item>
+                    <Form.Item label="Розмір" name="size">
+                        <Input placeholder="Розмір" disabled />
                     </Form.Item>
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>

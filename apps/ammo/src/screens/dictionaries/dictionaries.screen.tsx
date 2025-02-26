@@ -44,7 +44,7 @@ export const DictionariesScreen = observer(({ route }: IDictionariesScreenProps)
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
-    const t = useTranslate('screens.search');
+    const t = useTranslate('screens.dictionaries');
     const inputRef = useRef<TextInputRN>(null);
 
     const vm = useViewModel<IDictionariesVM>(dictionariesVM, filters);
