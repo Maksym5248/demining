@@ -11,6 +11,7 @@ export enum SCREENS {
     ABOUT = 'About',
     DICTIONARIES_ANIMATED = 'DictionariesAnimated',
     MAIN = 'Main',
+    READER = 'Reader',
     SIGN_IN = 'SignIn',
     SIGN_UP = 'SignUp',
 }

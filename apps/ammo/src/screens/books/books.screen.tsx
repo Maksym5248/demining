@@ -19,7 +19,7 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
     const theme = useTheme();
     const isLeft = index % 2 === 0;
 
-    const onPress = () => item.openItem();
+    const onPress = () => item.status === STATUS.LOADED && item.openItem();
     const onPressLoad = () => item.load.run();
 
     useEffect(() => {

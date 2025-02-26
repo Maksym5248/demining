@@ -10,3 +10,4 @@ export * from './sign-in';
 export * from './sign-up';
 export * from './about';
 export * from './books';
+export * from './reader';
