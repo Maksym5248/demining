@@ -9,6 +9,8 @@ import {
     RequestModel,
     ExplosiveStore,
     type IExplosiveStore,
+    type IBookStore,
+    BookStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -19,6 +21,7 @@ export interface IRootStore {
     explosive: IExplosiveStore;
     explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
+    book: IBookStore;
     isInitialized: boolean;
     isLoaded: boolean;
     removeAllListeners(): void;
@@ -30,6 +33,7 @@ export class RootStore implements IRootStore {
     explosive: IExplosiveStore;
     explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
+    book: IBookStore;
 
     isLoaded = false;
     isInitialized = false;
@@ -60,6 +64,7 @@ export class RootStore implements IRootStore {
         this.explosive = new ExplosiveStore(this);
         this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
+        this.book = new BookStore(this);
 
         makeAutoObservable(this);
     }

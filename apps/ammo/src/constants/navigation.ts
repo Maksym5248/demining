@@ -7,6 +7,7 @@ export enum SCREENS {
     EXPLOSIVE_DEVICE_DETAILS = 'ExplosiveDeviceDetails',
     SEARCH = 'Search',
     SETTINGS = 'Settings',
+    BOOKS = 'Books',
     ABOUT = 'About',
     SEARCH_ANIMATED = 'SearchAnimated',
     MAIN = 'Main',

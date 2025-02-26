@@ -46,6 +46,7 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
     contentCenter: {
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 0,
     },
     hidden: {
         overflow: 'hidden',

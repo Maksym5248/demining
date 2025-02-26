@@ -10,6 +10,7 @@ import {
     type IExplosiveObjectActionDB,
     type IExplosiveDeviceActionDB,
     type IUserDB,
+    type IBookDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -65,6 +66,8 @@ export class DBRemote
     explosiveDeviceAction = new DBBase<IExplosiveDeviceActionDB>(TABLES.EXPLOSIVE_DEVICE_ACTION, [], getCreateData);
 
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
+
+    book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
 
     init = () => {
         getFirestore().settings({

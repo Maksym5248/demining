@@ -21,8 +21,10 @@
     "screens": {
         "home": {
             "title": "Довідник",
-            "search": "Пошук у всіх категоріях",
-            "categories": "Категорії",
+            "search": "Пошук у всіх довідниках",
+            "dictionaries": "Довідники",
+            "book": "Література",
+            "rest": "Інші",
             "explosive": "Вибухові речовини",
             "explosive-object": "Боєприпаси",
             "explosive-device": "Засоби підриву",
@@ -143,7 +145,12 @@
         }
     },
     "dictionaries": {
-        "explosive": "Вибухові речовини",
+        "explosive": "ВР речовини",
+        "explosive-object": "Боєприпаси",
+        "explosive-device": "Засоби підриву"
+    },
+    "books": {
+        "explosive": "ВР речовини",
         "explosive-object": "Боєприпаси",
         "explosive-device": "Засоби підриву"
     }

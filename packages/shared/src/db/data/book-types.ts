@@ -8,7 +8,11 @@ export const bookTypes: IBookTypeNotDB[] = [
     },
     {
         id: BOOK_TYPE.EXPLOSIVE,
-        name: 'Вибухові речовини',
+        name: 'ВР речовини',
+    },
+    {
+        id: BOOK_TYPE.MINING,
+        name: 'Підривна справа',
     },
     {
         id: BOOK_TYPE.DEMINING,
@@ -21,6 +25,10 @@ export const bookTypes: IBookTypeNotDB[] = [
     {
         id: BOOK_TYPE.ORDER_MO,
         name: 'Накази МО',
+    },
+    {
+        id: BOOK_TYPE.BLASTING,
+        name: 'Вибухові роботи',
     },
 ];
 

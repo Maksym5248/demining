@@ -78,7 +78,6 @@ export const UploadImages = ({ uris, onChange, customRequest, max = 8 }: UploadI
 
         try {
             const downloadURL = await customRequest?.(file as File);
-            console.log('downloadURL', downloadURL);
             onSuccess?.({ url: downloadURL });
         } catch (error) {
             onError?.(error as Error);

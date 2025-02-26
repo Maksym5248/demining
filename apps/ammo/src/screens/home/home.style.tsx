@@ -4,6 +4,21 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     header: {
         backgroundColor: theme.colors.accent,
     },
+    container: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        backgroundColor: theme.colors.background,
+        paddingBottom: device.inset.bottom + theme.spacing.S,
+    },
+    background: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: device.screen.height / 2,
+        backgroundColor: theme.colors.accent,
+    },
     imageContainer: {
         width: '100%',
         height: device.screen.height / 4,
@@ -20,18 +35,22 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         marginHorizontal: theme.spacing.L,
     },
     content: {
-        padding: theme.spacing.L,
+        paddingTop: theme.spacing.M,
+        gap: theme.spacing.M,
+    },
+    scroll: {
+        paddingHorizontal: theme.spacing.L,
     },
     categories: {
-        flexWrap: 'wrap',
-        flex: 1,
-        flexDirection: 'row',
-        paddingVertical: theme.spacing.L,
         gap: theme.spacing.L,
     },
+    sctionTitle: {
+        paddingLeft: theme.spacing.L,
+    },
     item: {
-        width: (device.window.width - theme.spacing.L * 3) / 2,
+        width: device.window.width / 2.6,
         aspectRatio: 1,
         alignItems: 'center',
+        marginRight: 10,
     },
 }));
