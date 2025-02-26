@@ -93,6 +93,7 @@ export interface IDB {
     equipment: IDBBase<IEquipmentDB>;
     equipmentAction: IDBBase<IEquipmentActionDB>;
     document: IDBBase<IDocumentDB>;
+    book: IDBBase<IBaseDB>;
     explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
     batchStart(): void;
     batchCommit(): Promise<void>;

@@ -23,6 +23,7 @@ import {
     type IRankDB,
     type IExplosiveObjectTypeDB,
     type IExplosiveDB,
+    type IBookDB,
 } from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
@@ -88,6 +89,7 @@ export type IEquipmentDTO = IEquipmentDB;
 export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = Omit<IMapViewActionDB, 'geo'>;
 export type IDocumentDTO = IDocumentDB;
+export type IBookDTO = IBookDB;
 
 export type IMissionReportDTO = IMissionReportDB;
 export interface IMissionReportFullDTO extends IMissionReportDTO {

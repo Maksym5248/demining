@@ -28,6 +28,7 @@ import {
     ExplosiveObjectClassPage,
     ExplosiveObjectClassItemTreePage,
     ExplosiveListPage,
+    BooksListPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
@@ -127,6 +128,10 @@ const router = createBrowserRouter([
                                 {
                                     path: ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM,
                                     Component: ExplosiveObjectClassItemTreePage,
+                                },
+                                {
+                                    path: ROUTES.BOOKS_LIST,
+                                    Component: BooksListPage,
                                 },
                             ],
                             <ViewAuthorManagment />,

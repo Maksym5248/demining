@@ -20,16 +20,22 @@
     },
     "screens": {
         "home": {
-            "title": "Довідник",
-            "search": "Пошук у всіх категоріях",
-            "categories": "Категорії",
+            "title": "Довідники",
+            "search": "Пошук у всіх довідниках",
+            "dictionaries": "Довідники",
+            "book": "Література",
+            "rest": "Інші",
             "explosive": "Вибухові речовини",
             "explosive-object": "Боєприпаси",
             "explosive-device": "Засоби підриву",
             "settings": "Налаштування"
         },
-        "search": {
-            "title": "Пошук",
+        "dictionaries": {
+            "title": "Довідник",
+            "search": "Пошук"
+        },
+        "books": {
+            "title": "Література",
             "search": "Пошук"
         },
         "explosive-details": {
@@ -135,6 +141,22 @@
                 "notSelected": "Не вибрано"
             }
         },
+        "filter-books": {
+            "title": "Фільтри",
+            "reset": "Скинути",
+            "apply": "Застосувати",
+            "type": {
+                "type": "Тема",
+                "viewAll": "Показати всі",
+                "notSelected": "Не вибрано"
+            },
+            "loaded": {
+                "label-type": "Завантаження",
+                "all": "Всі",
+                "loaded": "Завантажені",
+                "not-loaded": "Не завантажені"
+            }
+        },
         "select": {
             "title": "Вибір"
         },
@@ -143,7 +165,12 @@
         }
     },
     "dictionaries": {
-        "explosive": "Вибухові речовини",
+        "explosive": "ВР речовини",
+        "explosive-object": "Боєприпаси",
+        "explosive-device": "Засоби підриву"
+    },
+    "books": {
+        "explosive": "ВР речовини",
         "explosive-object": "Боєприпаси",
         "explosive-device": "Засоби підриву"
     }

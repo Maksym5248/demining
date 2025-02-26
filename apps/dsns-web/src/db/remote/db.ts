@@ -24,6 +24,7 @@ import {
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
     type IExplosiveDB,
+    type IBookDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -103,6 +104,8 @@ export class DBRemote implements IDB {
     equipmentAction = new DBBase<IEquipmentActionDB>(TABLES.EQUIPMENT_ACTION, [], getCreateData);
 
     document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ['name'], getCreateData);
+
+    book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
 
     batch: WriteBatch | null = null;
 

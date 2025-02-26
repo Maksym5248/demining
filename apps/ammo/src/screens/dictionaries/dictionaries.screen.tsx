@@ -8,10 +8,10 @@ import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
 
-import { type IDataItem } from './search-item.model';
-import { useStyles } from './search.style';
-import { type ISearchScreenProps } from './search.types';
-import { searchVM, type ISearchVM } from './search.vm';
+import { type IDataItem } from './dictionaries-item.model';
+import { useStyles } from './dictionaries.style';
+import { type IDictionariesScreenProps } from './dictionaries.types';
+import { dictionariesVM, type IDictionariesVM } from './dictionaries.vm';
 
 const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) => {
     const tDictionaries = useTranslate('dictionaries');
@@ -39,15 +39,15 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
     );
 });
 
-export const SearchScreen = observer(({ route }: ISearchScreenProps) => {
+export const DictionariesScreen = observer(({ route }: IDictionariesScreenProps) => {
     const { filters, autoFocus } = route?.params || {};
     const theme = useTheme();
     const s = useStyles();
     const styles = useStylesCommon();
-    const t = useTranslate('screens.search');
+    const t = useTranslate('screens.dictionaries');
     const inputRef = useRef<TextInputRN>(null);
 
-    const vm = useViewModel<ISearchVM>(searchVM, filters);
+    const vm = useViewModel<IDictionariesVM>(dictionariesVM, filters);
 
     const renderItem = useCallback((params: IFlatListRenderedItem<IDataItem>) => <ListItem {...params} />, []);
 

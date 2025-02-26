@@ -1,6 +1,6 @@
 import { type IDictionatyFilter } from '~/types';
 
-export interface ISearchScreenProps {
+export interface IDictionariesScreenProps {
     route?: {
         params?: {
             filters?: IDictionatyFilter;

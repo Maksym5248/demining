@@ -4,7 +4,7 @@ import { type IRequestModel, RequestModel } from 'shared-my-client';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
-import { ImageChache } from './services';
+import { mageChahe } from './services';
 
 export interface IAppViewModel extends ViewModel {
     fetch: IRequestModel;
@@ -23,7 +23,7 @@ export class AppViewModel implements IAppViewModel {
     preloadImages = new RequestModel({
         returnIfLoaded: true,
         run: async () => {
-            await ImageChache.preload(stores.getImagesUrls());
+            await mageChahe.preload(stores.getImagesUrls());
         },
     });
 

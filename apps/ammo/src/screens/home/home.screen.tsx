@@ -30,34 +30,67 @@ export const HomeScreen = observer(() => {
     };
 
     return (
-        <Scroll contentContainerStyle={styles.container} bounces={false}>
-            <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
-            <View style={s.imageContainer}>
-                <Animated.Image source={images.logo} style={[s.image, transition.styles.image]} />
-            </View>
-            <Animated.View style={[s.searchButton, transition.styles.input]}>
-                <Select
-                    onPress={onPressSearchButton}
-                    placeholder={t('search')}
-                    right={<Icon name="search" color={theme.colors.textSecondary} />}
-                />
-            </Animated.View>
-
-            <View style={s.content}>
-                <Text type="h4" text={t('categories')} />
-                <View style={s.categories}>
-                    {vm.categories.map(category => (
-                        <Card
-                            key={category.id}
-                            style={s.item}
-                            title={category.type ? tDictionaries(category.type) : t('settings')}
-                            svg={category.svg}
-                            styleInfo={styles.contentCenter}
-                            onPress={() => vm.openCategory(category.id)}
-                        />
-                    ))}
+        <View style={styles.container}>
+            <View style={s.background} />
+            <Scroll contentContainerStyle={s.container} onScroll={transition.onScroll}>
+                <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
+                <View style={s.imageContainer}>
+                    <Animated.Image source={images.logo} style={[s.image, transition.styles.image]} />
                 </View>
-            </View>
-        </Scroll>
+                <Animated.View style={[s.searchButton, transition.styles.input]}>
+                    <Select
+                        onPress={onPressSearchButton}
+                        placeholder={t('search')}
+                        right={<Icon name="search" color={theme.colors.textSecondary} />}
+                    />
+                </Animated.View>
+
+                <View style={s.content}>
+                    <Text type="h4" text={t('dictionaries')} style={s.sctionTitle} />
+                    <Scroll horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scroll}>
+                        {vm.dictionaries.map(item => (
+                            <Card
+                                key={item.id}
+                                style={s.item}
+                                title={tDictionaries(item.id)}
+                                svg={item.svg}
+                                styleInfo={styles.contentCenter}
+                                onPress={() => vm.openDictionary(item.id)}
+                            />
+                        ))}
+                    </Scroll>
+                </View>
+                <View style={s.content}>
+                    <Text type="h4" text={t('book')} style={s.sctionTitle} />
+                    <Scroll horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scroll}>
+                        {vm.books.map(item => (
+                            <Card
+                                key={item.id}
+                                style={s.item}
+                                title={item.name}
+                                svg={item.svg}
+                                styleInfo={styles.contentCenter}
+                                onPress={() => vm.openBook(item.id)}
+                            />
+                        ))}
+                    </Scroll>
+                </View>
+                <View style={s.content}>
+                    <Text type="h4" text={t('rest')} style={s.sctionTitle} />
+                    <Scroll horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scroll}>
+                        {vm.rest.map(el => (
+                            <Card
+                                key={el.id}
+                                style={s.item}
+                                title={t(el.id)}
+                                svg={el.svg}
+                                styleInfo={styles.contentCenter}
+                                onPress={() => vm.openRest(el.id)}
+                            />
+                        ))}
+                    </Scroll>
+                </View>
+            </Scroll>
+        </View>
     );
 });

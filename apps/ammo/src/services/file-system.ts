@@ -4,6 +4,7 @@ import { Logger } from 'shared-my-client';
 
 export interface IFileSystem {
     exists(filePath: string): Promise<boolean>;
+    existsMany(filePaths: string[]): Promise<boolean[]>;
     download(fromUrl: string, onProgress?: ProgressListener): Promise<void>;
     preload(uris: string[]): Promise<void>;
     getPath(uri: string): string;
@@ -59,6 +60,10 @@ export class FileSystemClass {
             Logger.error('Images - failed to check if file exists:', error);
             return false;
         }
+    }
+
+    async existsMany(uris: string[]): Promise<boolean[]> {
+        return Promise.all(uris.map(uri => this.exists(uri)));
     }
 
     async download(url: string, onProgress?: ProgressListener): Promise<void> {

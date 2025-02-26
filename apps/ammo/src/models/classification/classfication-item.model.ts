@@ -60,7 +60,7 @@ export class ClassificationItem implements IClassificationItem {
             },
         };
 
-        Navigation.navigate(SCREENS.SEARCH, {
+        Navigation.navigate(SCREENS.DICTIONARIES, {
             filters,
         });
     }

@@ -30,10 +30,10 @@ export const StackNavigator = () => {
 
             {/* HOME */}
             <Stack.Screen name={SCREENS.HOME} component={screens.HomeScreen} />
-            <Stack.Screen name={SCREENS.SEARCH} component={screens.SearchScreen} />
+            <Stack.Screen name={SCREENS.DICTIONARIES} component={screens.DictionariesScreen} />
             <Stack.Screen
-                name={SCREENS.SEARCH_ANIMATED}
-                component={screens.SearchScreen}
+                name={SCREENS.DICTIONARIES_ANIMATED}
+                component={screens.DictionariesScreen}
                 options={{
                     animation: 'fade' as StackAnimationTypes,
                 }}
@@ -45,6 +45,7 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_TYPE} component={screens.ExplosiveObjectTypeScreen} />
             <Stack.Screen name={SCREENS.SETTINGS} component={screens.SettingsScreen} />
             <Stack.Screen name={SCREENS.ABOUT} component={screens.AboutScreen} />
+            <Stack.Screen name={SCREENS.BOOKS} component={screens.BooksScreen} />
         </Stack.Navigator>
     );
 };

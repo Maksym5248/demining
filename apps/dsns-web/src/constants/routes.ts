@@ -11,6 +11,7 @@ export enum ROUTES {
     SETTINGS = '/settings',
     TEMPLATES = '/templates',
     STATISTICS = '/statistics',
+    BOOKS_LIST = '/books-list',
 
     ORGANIZATIONS_LIST = '/organization-list',
     MEMBERS_LIST = '/organization-list/:organizationId/members-list',
@@ -88,6 +89,9 @@ export const routesInfo = {
     },
     [ROUTES.EXPLOSIVE_OBJECT_CLASS_ITEM]: {
         title: 'Класифікація',
+    },
+    [ROUTES.BOOKS_LIST]: {
+        title: 'Книги',
     },
     [ROUTES.EXPLOSIVE_LIST]: {
         title: 'Речовини',

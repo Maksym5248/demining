@@ -24,9 +24,9 @@ import { Modal } from '~/services';
 import { stores } from '~/stores';
 import { DictionaryType, type IDictionatyFilter, type ViewModel } from '~/types';
 
-import { type IDataItem, type Item, DataItem } from './search-item.model';
+import { type IDataItem, type Item, DataItem } from './dictionaries-item.model';
 
-export interface ISearchVM extends ViewModel {
+export interface IDictionariesVM extends ViewModel {
     openFilters(): void;
     setSearchBy(value: string): void;
     loadMore(): void;
@@ -42,7 +42,7 @@ const isExplosiveDevice = (item: Item): item is IExplosiveDevice => item instanc
 const isExplosiveObject = (item: Item): item is IExplosiveObject => item instanceof ExplosiveObject;
 const isExplosive = (item: Item): item is IExplosive => item instanceof Explosive;
 
-export class SearchVM implements ISearchVM {
+export class DictionariesVM implements IDictionariesVM {
     filters: IFiltersModel<IDictionatyFilter, Item>;
     search: ISearchModel<Item>;
     order: IOrderModel<Item>;
@@ -168,4 +168,4 @@ export class SearchVM implements ISearchVM {
     }
 }
 
-export const searchVM = new SearchVM();
+export const dictionariesVM = new DictionariesVM();

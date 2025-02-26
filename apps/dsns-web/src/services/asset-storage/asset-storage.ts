@@ -8,6 +8,8 @@ export class AssetStorageClass implements IAssetStorage {
 
     image = new AssetStorageBase(ASSET_TYPE.IMAGE);
 
+    book = new AssetStorageBase(ASSET_TYPE.BOOK);
+
     setOrganizationId(organizationId: string) {
         const rootCollection = `${ASSET_DIR.ORGANIZATION_DATA}/${organizationId}`;
 
