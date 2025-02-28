@@ -11,6 +11,8 @@ export const FieldRange = ({ label, value, info }: IFieldRangeProps) => {
     const styles = useStylesCommon();
     const theme = useTheme();
 
+    const filtered = value?.filter(el => !!el);
+
     return (
         <View style={s.item}>
             <View style={s.row}>
@@ -22,8 +24,8 @@ export const FieldRange = ({ label, value, info }: IFieldRangeProps) => {
                 )}
             </View>
             <View style={[styles.row, styles.start, styles.marginHorizontalXXS]}>
-                {(!value || !value?.length) && <Text text="-" />}
-                {!!value?.length && <Text text={value.filter(el => !!el).join(' - ')} />}
+                {(!filtered || !filtered?.length) && <Text text="-" />}
+                {!!filtered?.length && <Text text={filtered.filter(el => !!el).join(' - ')} />}
             </View>
         </View>
     );

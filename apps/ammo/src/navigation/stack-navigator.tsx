@@ -46,7 +46,7 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.SETTINGS} component={screens.SettingsScreen} />
             <Stack.Screen name={SCREENS.ABOUT} component={screens.AboutScreen} />
             <Stack.Screen name={SCREENS.BOOKS} component={screens.BooksScreen} />
-            <Stack.Screen name={SCREENS.READER} component={screens.ReaderScreen} />
+            <Stack.Screen name={SCREENS.READER} component={screens.ReaderScreen} options={{ orientation: 'all' }} />
         </Stack.Navigator>
     );
 };

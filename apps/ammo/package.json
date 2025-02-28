@@ -2,7 +2,7 @@
     "name": "ammo",
     "private": true,
     "version": "1.2.0",
-    "build-number": 39,
+    "build-number": 40,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
         "android:prod": "react-native run-android --mode=proddebug --appIdSuffix=prod",
@@ -57,6 +57,7 @@
         "react-native-file-access": "^3.1.1",
         "react-native-gesture-handler": "2.21.2",
         "react-native-localize": "3.2.1",
+        "react-native-mmkv": "^3.2.0",
         "react-native-modal": "^13.0.1",
         "react-native-pdf": "6.7.7",
         "react-native-reanimated": "3.15.0",

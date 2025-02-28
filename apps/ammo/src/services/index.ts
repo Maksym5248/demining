@@ -1,3 +1,4 @@
+import { MMKV } from 'react-native-mmkv';
 import { ASSET_TYPE } from 'shared-my';
 import { Logger, Modal as ModalClass } from 'shared-my-client';
 
@@ -15,6 +16,7 @@ import { AppStateClass } from './state/app-state';
 import { MessageClass } from './ui/message';
 import { NavigationClass } from './ui/navigation';
 
+export const LocalStorage = new MMKV();
 export const Navigation = new NavigationClass();
 export const Message = new MessageClass();
 export const Crashlytics = new CrashlyticsClass(Logger);
