@@ -2,7 +2,7 @@ import { ThemeManager } from '~/styles';
 
 export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     container: {
-        width: device.window.width,
+        width: '100%',
         backgroundColor: theme.colors.accent,
         height: (theme.element.header.height as number) + device.inset.top,
         flexDirection: 'row',

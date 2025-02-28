@@ -7,6 +7,13 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         justifyContent: 'flex-start',
         backgroundColor: theme.colors.background,
     },
+    fillAbsolute: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+    },
     modal: {
         height: device.window.height,
         width: device.window.width,
