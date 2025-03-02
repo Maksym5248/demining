@@ -8,6 +8,7 @@ import {
     type IPurposeDTO,
     type IFillerDTO,
     type ITempartureDTO,
+    type IWeightDTO,
 } from '~/api';
 import { data, type ICreateValue } from '~/common';
 
@@ -18,14 +19,15 @@ export type ITempartureData = ITempartureDTO;
 export type IStructureData = IStructureDTO;
 export type IPurposeData = IPurposeDTO;
 export type IActionData = IActionDTO;
+export type IWeightData = IWeightDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
     fullDescription: string | null;
     imageUris: string[] | null;
     material: MATERIAL;
-    size: ISizeData | null; //мм;
-    weight: number | null; // kg;
+    size: ISizeData[] | null; //мм;
+    weight: IWeightData[] | null; // kg;
     temperature: ITempartureData | null;
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
@@ -44,14 +46,33 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         fullDescription: value.fullDescription ?? null,
         imageUris: value.imageUris ?? [],
         material: value.material,
-        size: value.size,
-        weight: value.weight,
+        size:
+            value.sizeV2 ??
+            (value.size
+                ? [
+                      {
+                          ...value.size,
+                          variant: 1,
+                      },
+                  ]
+                : []),
+        weight:
+            value.weightV2 ??
+            (value.weight
+                ? [
+                      {
+                          weight: value.weight,
+                          variant: 1,
+                      },
+                  ]
+                : []),
         temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
         filler:
             value.filler?.map(item => ({
                 name: item.name,
                 explosiveId: item.explosiveId,
                 weight: item.weight,
+                variant: item.variant ?? 1,
             })) ?? [],
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
@@ -83,14 +104,22 @@ export const createExplosiveObjectDetailsDTO = (
     imageUris: value?.imageUris ?? [],
     fullDescription: value?.fullDescription ?? null,
     material: value?.material ?? MATERIAL.METAL,
-    size: value?.size ?? null,
-    weight: value?.weight ?? null,
+    sizeV2:
+        value?.size?.map(el => ({
+            name: el.name ?? null,
+            length: el.length ?? null,
+            width: el.width ?? null,
+            height: el.height ?? null,
+            variant: el.variant ?? 1,
+        })) ?? [],
+    weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
     filler:
         value?.filler?.map(el => ({
             explosiveId: el.explosiveId ?? null,
             name: el.name ?? null,
             weight: el.weight ?? null,
+            variant: el.variant ?? 1,
         })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
@@ -119,14 +148,22 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
     imageUris: value?.imageUris ?? [],
     fullDescription: value?.fullDescription ?? null,
     material: value.material ?? MATERIAL.METAL,
-    size: value.size ?? null,
-    weight: value.weight ?? null,
+    sizeV2:
+        value?.size?.map(el => ({
+            name: el.name ?? null,
+            length: el.length ?? null,
+            width: el.width ?? null,
+            height: el.height ?? null,
+            variant: el.variant ?? 1,
+        })) ?? [],
+    weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
     filler:
         value.filler?.map(el => ({
             explosiveId: el.explosiveId ?? null,
             name: el.name ?? null,
             weight: el.weight ?? null,
+            variant: el.variant ?? 1,
         })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],

@@ -4,18 +4,19 @@ import { type ISizeData } from 'shared-my-client';
 import { s } from './field-size.style';
 
 interface Props {
-    name: string;
+    name: string | number;
+    label?: string;
 }
 
-export const FieldSize = ({ name }: Props) => {
+export const FieldSize = ({ name, label = 'Розмір, мм' }: Props) => {
     return (
         <Form.Item noStyle shouldUpdate={() => true}>
             {({ getFieldValue, setFieldValue }) => {
                 const size = (getFieldValue(name) as ISizeData) ?? {};
                 return (
-                    <Form.Item label="Розмір, мм" name="size">
+                    <Form.Item label={label} name={name}>
                         <InputNumber
-                            placeholder="Довжина/радіус"
+                            placeholder="Довжина/діаметр"
                             onChange={length => setFieldValue(name, { ...size, length })}
                             value={size?.length}
                             min={0}

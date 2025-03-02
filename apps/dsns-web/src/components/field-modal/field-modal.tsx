@@ -1,62 +1,64 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, List } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { type IFillerData } from 'shared-my-client';
 
 import { Icon } from '~/components';
-import { MODALS, WIZARD_MODE } from '~/constants';
-import { useStore } from '~/hooks';
+import { type MODALS, WIZARD_MODE } from '~/constants';
 import { Modal } from '~/services';
 
-export interface ListItemProps {
-    item: IFillerData;
+export interface FieldModalListItemProps<T> {
+    item: T;
     index: number;
+    getTitle: (item: T) => string;
+    getDescription?: (item: T) => string | undefined | null;
     onRemove: (index: number) => void;
 }
 
-function ListItem({ item, index, onRemove }: ListItemProps) {
-    const store = useStore();
+function ListItem<T>({ item, index, getTitle, getDescription, onRemove }: FieldModalListItemProps<T>) {
     const _onRemove = () => onRemove?.(index);
-
-    const explosive = store.explosive.collection.get(item?.explosiveId ?? '');
-    const label = explosive?.displayName ?? item.name;
 
     return (
         <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
-            <List.Item.Meta title={`${label} (${item?.variant})`} description={`${item.weight} кг`} />
+            <List.Item.Meta title={getTitle(item)} description={getDescription?.(item)} />
         </List.Item>
     );
 }
+
 const ObservedListItem = observer(ListItem);
 
-interface Props {
+interface Props<T> {
     label: string;
     name: string;
+    modal: MODALS;
+    getTitle: (item: T) => string;
+    getDescription?: (item: T) => string | undefined | null;
 }
 
-export function FieldFiller({ name, label }: Props) {
+export function FieldModal<T>({ name, label, modal, getTitle, getDescription }: Props<T>) {
     return (
         <Form.Item label={label} name={name}>
             <Form.Item noStyle shouldUpdate={() => true}>
                 {({ getFieldValue, setFieldValue }) => {
-                    const data = getFieldValue('filler') ?? [];
+                    const data = getFieldValue(name) ?? [];
 
                     return (
                         <List
                             size="small"
                             pagination={false}
-                            dataSource={data.map((el: IFillerData, i: number) => ({
+                            dataSource={data.map((el: T, i: number) => ({
                                 ...el,
                                 index: `${i}`,
                             }))}
-                            renderItem={(item: IFillerData & { id: string }, i: number) => (
+                            renderItem={(item: T & { id: string }, i: number) => (
                                 <ObservedListItem
                                     item={item}
                                     index={i}
+                                    getTitle={getTitle}
+                                    getDescription={getDescription}
                                     onRemove={(index: number) => {
                                         setFieldValue(
-                                            'filler',
-                                            data.filter((el: IFillerData, c: number) => c !== index),
+                                            name,
+                                            data.filter((el: T, c: number) => c !== index),
                                         );
                                     }}
                                 />
@@ -67,9 +69,9 @@ export function FieldFiller({ name, label }: Props) {
                                     block
                                     icon={<PlusOutlined />}
                                     onClick={() => {
-                                        Modal.show(MODALS.EXPLOSIVE_OBJECT_FILLER, {
+                                        Modal.show(modal, {
                                             mode: WIZARD_MODE.CREATE,
-                                            onSubmit: (value: IFillerData) => setFieldValue('filler', [...data, value]),
+                                            onSubmit: (value: T) => setFieldValue(name, [...data, value]),
                                         });
                                     }}>
                                     Додати

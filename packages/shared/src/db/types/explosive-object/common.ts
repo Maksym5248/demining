@@ -1,13 +1,10 @@
 import { type MATERIAL } from '~/db';
 
-export interface IMarkingDB {
-    name: string;
-}
-
 export interface IFillerDB {
     name: string | null;
     explosiveId: string | null;
     weight: number;
+    variant: number;
 }
 
 export interface IStructureDB {
@@ -31,6 +28,8 @@ export interface ISizeDB {
     length: number | null; // m;
     width: number | null; // m;
     height: number | null; // m;
+    variant: number | null;
+    name?: string | null;
 }
 
 export interface IPurposeDB {
@@ -53,13 +52,26 @@ export interface ITempartureDB {
     max: number | null;
 }
 
+export interface IWeightDB {
+    weight: number; // kg;
+    variant: number;
+}
+
 export interface IExplosiveObjectDetailsDB {
     fullDescription: string | null;
     imageUris: string[] | null;
     // characteristics
     material: MATERIAL;
-    size: ISizeDB | null; //мм;
-    weight: number | null; // kg;
+    /**
+     * @deprecated
+     */
+    size?: ISizeDB | null; //мм;
+    /**
+     * @deprecated
+     */
+    weight?: number | null; // kg
+    sizeV2: ISizeDB[] | null; //мм;
+    weightV2: IWeightDB[] | null;
     temperature: ITempartureDB | null;
     filler: IFillerDB[] | null; // спорядження ВР;
     caliber: number | null; // ammo
@@ -76,6 +88,5 @@ export interface IExplosiveObjectDetailsDB {
     // reduction: IReductionDB | false | null;
 
     // TODO: investigate it
-    // marking: IMarkingDB[] // do we need it ? if we have name;
     // neutralization: INeutralizationDB | null;
 }
