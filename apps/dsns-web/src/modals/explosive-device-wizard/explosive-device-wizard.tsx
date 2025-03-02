@@ -155,7 +155,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <FieldFiller label="Спорядження" name="filler" />
                     <Divider />
-                    <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
+                    <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
                     <Divider />
                     <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
                     <Divider />

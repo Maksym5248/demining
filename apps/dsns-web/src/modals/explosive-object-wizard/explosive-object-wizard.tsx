@@ -63,6 +63,14 @@ const getParams = ({
     actionDescription,
     imageUris,
     fullDescription,
+    liquidatorImageUris,
+    liquidatorDescription,
+    extractionImageUris,
+    extractionDescription,
+    foldingImageUris,
+    foldingDescription,
+    installationDescription,
+    installationImageUris,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
@@ -91,6 +99,18 @@ const getParams = ({
         filler,
         fuseIds: fuseIds?.filter(el => !!el) ?? [],
         fervorIds: fervorIds?.filter(el => !!el) ?? [],
+        liquidator: {
+            imageUris: liquidatorImageUris,
+            description: liquidatorDescription,
+        },
+        extraction: {
+            imageUris: extractionImageUris,
+            description: extractionDescription,
+        },
+        folding: {
+            imageUris: foldingImageUris,
+            description: foldingDescription,
+        },
         purpose: {
             imageUris: purposeImageUris,
             description: purposeDescription,
@@ -102,6 +122,10 @@ const getParams = ({
         action: {
             imageUris: actionImageUris,
             description: actionDescription,
+        },
+        installation: {
+            imageUris: installationImageUris,
+            description: installationDescription,
         },
     },
 });
@@ -121,7 +145,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
     };
 
     const onFinishUpdate = async (values: IExplosiveObjectForm) => {
-        console.log('onFinishUpdate', getParams(values));
         await currentExplosiveObject?.update.run(getParams(values));
         hide();
     };
@@ -138,7 +161,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
     }, [id]);
 
     const isSubmitting = explosiveObject.create.isLoading || !!currentExplosiveObject?.update?.isLoading;
-    console.log('isSubmitting', currentExplosiveObject?.details?.data?.size);
+
     return (
         <Drawer
             open={isVisible}
@@ -175,6 +198,12 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   structureDescription: currentExplosiveObject.details?.data.structure?.description ?? '',
                                   actionImageUris: currentExplosiveObject.details?.data.action?.imageUris ?? [],
                                   actionDescription: currentExplosiveObject.details?.data.action?.description ?? '',
+                                  liquidatorImageUris: currentExplosiveObject.details?.data.liquidator?.imageUris ?? [],
+                                  liquidatorDescription: currentExplosiveObject.details?.data.liquidator?.description ?? '',
+                                  extractionImageUris: currentExplosiveObject.details?.data.extraction?.imageUris ?? [],
+                                  extractionDescription: currentExplosiveObject.details?.data.extraction?.description ?? '',
+                                  foldingImageUris: currentExplosiveObject.details?.data.folding?.imageUris ?? [],
+                                  foldingDescription: currentExplosiveObject.details?.data.folding?.description ?? '',
                                   imageUris: currentExplosiveObject?.details?.data?.imageUris
                                       ? currentExplosiveObject.details?.data.imageUris
                                       : [],
@@ -351,12 +380,20 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Divider />
                     <Form.Item label="Повний опис" name="fullDescription">
-                        <Input.TextArea placeholder="Введіть дані" maxLength={2000} rows={8} />
+                        <Input.TextArea placeholder="Введіть дані" rows={8} />
                     </Form.Item>
                     <Divider />
-                    <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
+                    <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
+                    <Divider />
+                    <FieldSection label="Встановлення" name="installationImageUris" nameDesc="installationDescription" />
                     <Divider />
                     <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
+                    <Divider />
+                    <FieldSection label="Ліквідатор" name="liquidatorImageUris" nameDesc="liquidatorDescription" />
+                    <Divider />
+                    <FieldSection label="Невилучення" name="extractionImageUris" nameDesc="extractionDescription" />
+                    <Divider />
+                    <FieldSection label="Зведення" name="foldingImageUris" nameDesc="foldingDescription" />
                     <Divider />
                     <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} loading={isSubmitting} />

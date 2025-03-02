@@ -9,6 +9,10 @@ import {
     type IFillerDTO,
     type ITempartureDTO,
     type IWeightDTO,
+    type ILiquidatorDTO,
+    type IExtractionDTO,
+    type IFoldingDTO,
+    type IInstallationDTO,
 } from '~/api';
 import { data, type ICreateValue } from '~/common';
 
@@ -20,6 +24,10 @@ export type IStructureData = IStructureDTO;
 export type IPurposeData = IPurposeDTO;
 export type IActionData = IActionDTO;
 export type IWeightData = IWeightDTO;
+export type ILiquidatorData = ILiquidatorDTO;
+export type IExtractionData = IExtractionDTO;
+export type IFoldingData = IFoldingDTO;
+export type IInstallationData = IInstallationDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
@@ -33,8 +41,11 @@ export interface IExplosiveObjectDetailsData {
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
     fervorIds: string[]; // запал
+    liquidator: ILiquidatorData | null; // ліквідатор;
+    extraction: IExtractionData | null; // вилучення / невилучення;
+    folding: IFoldingData | null; // складання;
+    installation: IInstallationData | null; // спосіб встановлення
 
-    // description
     purpose: IPurposeData | null; // призначення;
     structure: IStructureData | null; // будова;
     action: IActionData | null; // принцип дії;
@@ -77,6 +88,30 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
         fervorIds: value.fervorIds ?? [],
+        liquidator: value?.liquidator
+            ? {
+                  description: value.liquidator.description ?? null,
+                  imageUris: value.liquidator.imageUris ?? [],
+              }
+            : null,
+        installation: value?.installation
+            ? {
+                  description: value.installation.description ?? null,
+                  imageUris: value.installation.imageUris ?? [],
+              }
+            : null,
+        extraction: value?.extraction
+            ? {
+                  description: value.extraction.description ?? null,
+                  imageUris: value.extraction.imageUris ?? [],
+              }
+            : null,
+        folding: value?.folding
+            ? {
+                  description: value.folding.description ?? null,
+                  imageUris: value.folding.imageUris ?? [],
+              }
+            : null,
         purpose: value?.purpose
             ? {
                   description: value.purpose.description ?? null,
@@ -124,6 +159,30 @@ export const createExplosiveObjectDetailsDTO = (
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
     fervorIds: value?.fervorIds ?? [],
+    liquidator: value?.liquidator
+        ? {
+              description: value.liquidator.description ?? null,
+              imageUris: value.liquidator.imageUris ?? [],
+          }
+        : null,
+    installation: value?.installation
+        ? {
+              description: value.installation.description ?? null,
+              imageUris: value.installation.imageUris ?? [],
+          }
+        : null,
+    extraction: value?.extraction
+        ? {
+              description: value.extraction.description ?? null,
+              imageUris: value.extraction.imageUris ?? [],
+          }
+        : null,
+    folding: value?.folding
+        ? {
+              description: value.folding.description ?? null,
+              imageUris: value.folding.imageUris ?? [],
+          }
+        : null,
     purpose: value?.purpose
         ? {
               description: value.purpose.description ?? null,
@@ -168,6 +227,30 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],
     fervorIds: value.fervorIds ?? [],
+    liquidator: value?.liquidator
+        ? {
+              description: value.liquidator.description ?? null,
+              imageUris: value.liquidator.imageUris ?? [],
+          }
+        : null,
+    installation: value?.installation
+        ? {
+              description: value.installation.description ?? null,
+              imageUris: value.installation.imageUris ?? [],
+          }
+        : null,
+    extraction: value?.extraction
+        ? {
+              description: value.extraction.description ?? null,
+              imageUris: value.extraction.imageUris ?? [],
+          }
+        : null,
+    folding: value?.folding
+        ? {
+              description: value.folding.description ?? null,
+              imageUris: value.folding.imageUris ?? [],
+          }
+        : null,
     purpose: value.purpose
         ? {
               description: value.purpose.description ?? null,

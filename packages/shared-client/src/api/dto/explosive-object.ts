@@ -6,7 +6,6 @@ import {
     type ISizeDB,
     type IPurposeDB,
     type ILiquidatorDB,
-    type IReductionDB,
     type ICountryDB,
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
@@ -16,6 +15,9 @@ import {
     type ITempartureDB,
     type IExplosiveDB,
     type IWeightDB,
+    type IExtractionDB,
+    type IFoldingDB,
+    type IInstallationDB,
 } from 'shared-my';
 
 export type IWeightDTO = IWeightDB;
@@ -26,8 +28,10 @@ export type ITempartureDTO = ITempartureDB;
 export type ISizeDTO = ISizeDB;
 export type IPurposeDTO = IPurposeDB;
 export type ILiquidatorDTO = ILiquidatorDB;
-export type IReductionDTO = IReductionDB;
+export type IExtractionDTO = IExtractionDB;
+export type IFoldingDTO = IFoldingDB;
 export type IFillerDTO = IFillerDB;
+export type IInstallationDTO = IInstallationDB;
 export type IExplosiveObjectDetailsDTO = IExplosiveObjectDetailsDB;
 
 export type ICountryDTO = ICountryDB;

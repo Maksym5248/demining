@@ -38,13 +38,23 @@ export interface IPurposeDB {
 }
 
 export interface ILiquidatorDB {
-    type: string;
-    times: number[];
+    imageUris: string[];
+    description: string;
 }
 
-export interface IReductionDB {
-    type: string;
-    times: number[];
+export interface IFoldingDB {
+    imageUris: string[];
+    description: string;
+}
+
+export interface IExtractionDB {
+    imageUris: string[];
+    description: string;
+}
+
+export interface IInstallationDB {
+    imageUris: string[];
+    description: string;
 }
 
 export interface ITempartureDB {
@@ -79,14 +89,11 @@ export interface IExplosiveObjectDetailsDB {
     fervorIds: string[] | null; // підривник
 
     // description
-    purpose: IPurposeDB | null; // призначення;
+    purpose: IPurposeDB | null; // призначення/ураження;
     structure: IStructureDB | null; // будова;
     action: IActionDB | null; // принцип дії;
-
-    // fuse
-    // liquidator: ILiquidatorDB | false | null;
-    // reduction: IReductionDB | false | null;
-
-    // TODO: investigate it
-    // neutralization: INeutralizationDB | null;
+    installation: IInstallationDB | null; // спосіб встановлення
+    liquidator?: ILiquidatorDB | null; // самоліквідатор
+    extraction?: IExtractionDB | null; // механізм невилучення
+    folding?: IFoldingDB | null; // механізм зведення
 }
