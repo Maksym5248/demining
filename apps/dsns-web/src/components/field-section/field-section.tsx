@@ -27,7 +27,7 @@ export const FieldSection = ({ label, name, nameDesc }: Props) => {
                 </Form.Item>
             </Form.Item>
             <Form.Item name={nameDesc} wrapperCol={{ offset: 8, span: 16 }}>
-                <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={4} />
+                <Input.TextArea placeholder="Введіть дані" rows={4} />
             </Form.Item>
         </>
     );

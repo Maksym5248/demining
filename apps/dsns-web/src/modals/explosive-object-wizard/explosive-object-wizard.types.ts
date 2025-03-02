@@ -35,6 +35,18 @@ export interface IExplosiveObjectForm {
     actionImageUris: string[];
     actionDescription: string;
 
+    liquidatorImageUris: string[];
+    liquidatorDescription: string;
+
+    extractionImageUris: string[];
+    extractionDescription: string;
+
+    foldingImageUris: string[];
+    foldingDescription: string;
+
+    installationImageUris: string[];
+    installationDescription: string;
+
     // additional
     image?: File;
 }
