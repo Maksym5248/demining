@@ -25,15 +25,17 @@ function Component<T>({ label, name: rootName, renderField }: Props<T>) {
                                     const removeValue = () => remove(i);
 
                                     return (
-                                        <Form.Item name={i} {...restField}>
-                                            {renderField({ value, remove: removeValue })}
+                                        <div style={{ display: 'flex' }}>
+                                            <Form.Item name={i} {...restField}>
+                                                {renderField({ value, remove: removeValue })}
+                                            </Form.Item>
                                             <Button
                                                 key="list-remove"
                                                 icon={<Icon.DeleteOutlined style={{ color: 'red' }} />}
                                                 onClick={removeValue}
                                                 style={{ marginLeft: 5 }}
                                             />
-                                        </Form.Item>
+                                        </div>
                                     );
                                 }}
                             </Form.Item>

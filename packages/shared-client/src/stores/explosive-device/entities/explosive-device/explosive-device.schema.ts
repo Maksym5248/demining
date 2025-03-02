@@ -38,6 +38,7 @@ export const createExplosiveDeviceDTO = (value: ICreateValue<IExplosiveDeviceDat
             name: item?.name ?? null,
             explosiveId: item?.explosiveId ?? null,
             weight: item?.weight ?? null,
+            variant: item?.variant ?? null,
         })) ?? [],
     purpose: value?.purpose
         ? {
@@ -72,6 +73,7 @@ export const updateExplosiveDeviceDTO = data.createUpdateDTO<IExplosiveDeviceDat
             name: item?.name ?? null,
             explosiveId: item?.explosiveId ?? null,
             weight: item?.weight ?? null,
+            variant: item?.variant ?? null,
         })) ?? [],
     purpose: value?.purpose
         ? {
@@ -107,6 +109,7 @@ export const createExplosiveDevice = (value: IExplosiveDeviceDTO): IExplosiveDev
             name: item?.name ?? null,
             explosiveId: item?.explosiveId ?? null,
             weight: item?.weight ?? null,
+            variant: item?.variant ?? null,
         })) ?? [],
     purpose: value?.purpose
         ? {
