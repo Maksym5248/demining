@@ -25,6 +25,7 @@ import {
     ExplosiveCompositionWizardModal,
     ExplosiveObjectFillerWizardModal,
     BookWizardModal,
+    SizeWizardModal,
 } from '~/modals';
 
 export const modals: IModalsMap = {
@@ -96,5 +97,8 @@ export const modals: IModalsMap = {
     },
     [MODALS.MAP_EDITOR]: {
         renderComponent: (props: any) => <MapEditorModal {...props} />,
+    },
+    [MODALS.SIZE_WIZARD]: {
+        renderComponent: (props: any) => <SizeWizardModal {...props} />,
     },
 };

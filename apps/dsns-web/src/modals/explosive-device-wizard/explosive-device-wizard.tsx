@@ -33,6 +33,7 @@ const getParams = ({
         length: size?.length ? measurement.mmToM(size?.length) : null,
         width: size?.width ? measurement.mmToM(size?.width) : null,
         height: size?.height ? measurement.mmToM(size?.height) : null,
+        variant: size?.variant ?? 1,
     },
     purpose: {
         imageUris: purposeImageUris,

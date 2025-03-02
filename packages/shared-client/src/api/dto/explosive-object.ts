@@ -1,6 +1,5 @@
 import {
     type IExplosiveObjectDB,
-    type IMarkingDB,
     type IStructureDB,
     type INeutralizationDB,
     type IActionDB,
@@ -16,9 +15,10 @@ import {
     type IFillerDB,
     type ITempartureDB,
     type IExplosiveDB,
+    type IWeightDB,
 } from 'shared-my';
 
-export type IMarkingDTO = IMarkingDB;
+export type IWeightDTO = IWeightDB;
 export type IStructureDTO = IStructureDB;
 export type INeutralizationDTO = INeutralizationDB;
 export type IActionDTO = IActionDB;

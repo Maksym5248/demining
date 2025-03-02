@@ -1,0 +1,53 @@
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Form } from 'antd';
+import { observer } from 'mobx-react-lite';
+
+import { Icon } from '../icon';
+
+interface Props<T> {
+    name: string;
+    label: string;
+    renderField: (params: { value: T; remove: () => void }) => JSX.Element;
+}
+
+function Component<T>({ label, name: rootName, renderField }: Props<T>) {
+    return (
+        <Form.Item label={label} name={rootName}>
+            <Form.List name={rootName}>
+                {(fields, { add, remove }) => (
+                    <>
+                        {fields.map(({ key, name: i, ...restField }) => (
+                            <Form.Item key={key} noStyle shouldUpdate={() => true}>
+                                {({ getFieldValue }) => {
+                                    const values = getFieldValue(rootName);
+                                    const value = values[i];
+
+                                    const removeValue = () => remove(i);
+
+                                    return (
+                                        <Form.Item name={i} {...restField}>
+                                            {renderField({ value, remove: removeValue })}
+                                            <Button
+                                                key="list-remove"
+                                                icon={<Icon.DeleteOutlined style={{ color: 'red' }} />}
+                                                onClick={removeValue}
+                                                style={{ marginLeft: 5 }}
+                                            />
+                                        </Form.Item>
+                                    );
+                                }}
+                            </Form.Item>
+                        ))}
+                        <Form.Item noStyle shouldUpdate={() => true}>
+                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                Додати
+                            </Button>
+                        </Form.Item>
+                    </>
+                )}
+            </Form.List>
+        </Form.Item>
+    );
+}
+
+export const FieldMulty = observer(Component);

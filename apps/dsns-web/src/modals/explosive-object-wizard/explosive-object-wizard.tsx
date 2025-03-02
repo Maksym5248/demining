@@ -11,10 +11,20 @@ import {
     measurement,
     MIME_TYPE,
 } from 'shared-my';
-import { type ITempartureData } from 'shared-my-client';
+import { type ISizeData, type ITempartureData } from 'shared-my-client';
 
-import { FieldFiller, FieldSection, FieldSize, Select, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
-import { type WIZARD_MODE } from '~/constants';
+import {
+    FieldFiller,
+    FieldModal,
+    FieldMulty,
+    FieldSection,
+    Select,
+    UploadFile,
+    UploadImages,
+    WizardButtons,
+    WizardFooter,
+} from '~/components';
+import { MODALS, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
@@ -29,6 +39,12 @@ interface Props {
     mode: WIZARD_MODE;
     hide: () => void;
 }
+
+const getSizeLabel = (item: ISizeData) => {
+    if (!item.length && !item.width && !item.height) return 'невідомо';
+
+    return item.width ? `${item.length}x${item.width}x${item.height}` : `${item.length}x${item.height}`;
+};
 
 const getParams = ({
     caliber,
@@ -55,12 +71,22 @@ const getParams = ({
         caliber,
         material,
         fullDescription,
-        size: {
-            length: size?.length ? measurement.mmToM(size?.length) : null,
-            width: size?.width ? measurement.mmToM(size?.width) : null,
-            height: size?.height ? measurement.mmToM(size?.height) : null,
-        },
-        weight,
+        size:
+            size?.map(
+                el =>
+                    ({
+                        name: el.name ?? null,
+                        length: el.length ? measurement.mmToM(el.length) : null,
+                        width: el.width ? measurement.mmToM(el.width) : null,
+                        height: el.height ? measurement.mmToM(el.height) : null,
+                        variant: el.variant,
+                    }) as ISizeData,
+            ) ?? [],
+        weight:
+            weight?.map((el, i) => ({
+                weight: el ?? null,
+                variant: i + 1,
+            })) ?? [],
         temperature,
         filler,
         fuseIds: fuseIds?.filter(el => !!el) ?? [],
@@ -95,6 +121,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
     };
 
     const onFinishUpdate = async (values: IExplosiveObjectForm) => {
+        console.log('onFinishUpdate', getParams(values));
         await currentExplosiveObject?.update.run(getParams(values));
         hide();
     };
@@ -111,7 +138,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
     }, [id]);
 
     const isSubmitting = explosiveObject.create.isLoading || !!currentExplosiveObject?.update?.isLoading;
-
+    console.log('isSubmitting', currentExplosiveObject?.details?.data?.size);
     return (
         <Drawer
             open={isVisible}
@@ -135,17 +162,13 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             ? {
                                   ...currentExplosiveObject.data,
                                   ...currentExplosiveObject.details?.data,
-                                  size: {
-                                      length: currentExplosiveObject.details?.data.size?.length
-                                          ? measurement.mToMm(currentExplosiveObject.details?.data.size?.length)
-                                          : null,
-                                      width: currentExplosiveObject.details?.data.size?.width
-                                          ? measurement.mToMm(currentExplosiveObject.details?.data.size?.width)
-                                          : null,
-                                      height: currentExplosiveObject.details?.data.size?.height
-                                          ? measurement.mToMm(currentExplosiveObject.details?.data.size?.height)
-                                          : null,
-                                  },
+                                  size: currentExplosiveObject.details?.data.size?.map(el => ({
+                                      ...el,
+                                      length: el.length ? measurement.mToMm(el.length) : null,
+                                      width: el.width ? measurement.mToMm(el.width) : null,
+                                      height: el.height ? measurement.mToMm(el.height) : null,
+                                  })),
+                                  weight: currentExplosiveObject.details?.data.weight?.map(el => el.weight),
                                   purposeImageUris: currentExplosiveObject.details?.data.purpose?.imageUris ?? [],
                                   purposeDescription: currentExplosiveObject.details?.data.purpose?.description ?? '',
                                   structureImageUris: currentExplosiveObject.details?.data.structure?.imageUris ?? [],
@@ -288,10 +311,14 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             }))}
                         />
                     </Form.Item>
-                    <FieldSize name="size" />
-                    <Form.Item label="Вага, кг" name="weight">
-                        <InputNumber placeholder="Ввести" />
-                    </Form.Item>
+                    <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
+                    <FieldModal
+                        label="Розмір, мм"
+                        name="size"
+                        modal={MODALS.SIZE_WIZARD}
+                        getTitle={(item: ISizeData) => `${getSizeLabel(item)} (${item?.variant})`}
+                        getDescription={item => item.name}
+                    />
                     <FieldFiller label="Спорядження" name="filler" />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue, setFieldValue }) => {
