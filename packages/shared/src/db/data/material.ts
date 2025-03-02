@@ -7,6 +7,10 @@ export const materialsData: IMaterialNotDB[] = [
         name: 'Метал',
     },
     {
+        id: MATERIAL.STEEL,
+        name: 'Сталь',
+    },
+    {
         id: MATERIAL.PLASTIC,
         name: 'Пластик',
     },

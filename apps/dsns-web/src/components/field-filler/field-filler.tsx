@@ -23,7 +23,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 
     return (
         <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
-            <List.Item.Meta title={label} description={`${item.weight} кг`} />
+            <List.Item.Meta title={`${label} (${item?.variant})`} description={`${item.weight} кг`} />
         </List.Item>
     );
 }

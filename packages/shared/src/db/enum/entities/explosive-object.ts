@@ -29,6 +29,7 @@ export enum EXPLOSIVE_OBJECT_TYPE {
 
 export enum MATERIAL {
     METAL = 'METAL',
+    STEEL = 'STEEL',
     PLASTIC = 'PLASTIC',
     WOOD = 'WOOD',
     BALEKIT = 'BALEKIT',

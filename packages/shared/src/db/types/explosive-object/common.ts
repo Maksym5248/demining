@@ -8,6 +8,7 @@ export interface IFillerDB {
     name: string | null;
     explosiveId: string | null;
     weight: number;
+    variant: number;
 }
 
 export interface IStructureDB {
