@@ -64,7 +64,7 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
             placement="right"
             width={600}
             onClose={hide}
-            extra={<WizardButtons {...wizard} isEditable />}>
+            extra={<WizardButtons {...wizard} isEditable={currentBook?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (

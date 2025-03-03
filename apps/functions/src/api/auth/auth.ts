@@ -27,7 +27,7 @@ const customUserClaims = async (userData: IUserDB) => {
     }
 };
 
-export const processSignUp = auth.user().onCreate(async (user) => {
+export const processSignUp = auth.user().onCreate(async user => {
     if (!user.email) {
         logger.info('User email does not exist', user);
         return;

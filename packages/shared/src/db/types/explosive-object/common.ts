@@ -66,7 +66,12 @@ export interface ITempartureDB {
 
 export interface IWeightDB {
     weight: number; // kg;
-    variant: number;
+    variant: number | null;
+}
+
+export interface IEdditionalCharacteristcDB {
+    name: string;
+    value: string;
 }
 
 export interface IExplosiveObjectDetailsDB {
@@ -109,4 +114,5 @@ export interface IExplosiveObjectDetailsDB {
     targetSensor: string | null; // датчик цілі
     sensitivity: string | null; // чутливість
     timeWork: string | null; // час роботи
+    additional: IEdditionalCharacteristcDB[] | null; // додатково
 }

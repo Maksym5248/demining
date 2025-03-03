@@ -10,7 +10,7 @@ import {
     measurement,
     MIME_TYPE,
 } from 'shared-my';
-import { type ISizeData } from 'shared-my-client';
+import { type IEdditionalCharacteristicData, type ISizeData } from 'shared-my-client';
 
 import {
     FieldFiller,
@@ -76,10 +76,12 @@ const getParams = ({
     installationImageUris,
     neutralizationDescription,
     neutralizationImageUris,
+    additional,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
     details: {
+        additional: additional?.filter(el => !!el) ?? [],
         imageUris,
         caliber,
         material: material.filter(el => !!el),
@@ -257,7 +259,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             )}
                         </Form.Item>
                     </Form.Item>
-                    {viewer.user?.isAuthor && (
+                    {viewer.user?.isContentAdmin && (
                         <Form.Item label="Статус" name="status">
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>
@@ -354,6 +356,42 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
                     <FieldRange label="Температура, °C" name="temperature" />
+                    <FieldMulty
+                        label="Додаткові"
+                        name="additional"
+                        manual
+                        renderField={({
+                            value,
+                            update,
+                        }: {
+                            value: IEdditionalCharacteristicData;
+                            update: (v: IEdditionalCharacteristicData) => void;
+                        }) => (
+                            <div css={s.additional}>
+                                <Input
+                                    css={s.input}
+                                    placeholder="Назва"
+                                    value={value?.name}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            name: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    placeholder="Значення"
+                                    value={value?.value}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            value: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
                     <Divider />
                     <Material />
                     <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />

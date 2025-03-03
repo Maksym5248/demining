@@ -9,6 +9,7 @@ export interface IExplosiveObjectTypeData {
     fullName: string;
     hasCaliber?: boolean;
     imageUri?: string;
+    authorId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
@@ -26,6 +27,7 @@ export const createExplosiveObjectType = (value: IExplosiveObjectTypeDTO): IExpl
     fullName: value.fullName,
     hasCaliber: !!value.hasCaliber,
     imageUri: value.imageUri ?? '',
+    authorId: value.authorId,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });

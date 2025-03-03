@@ -7,6 +7,7 @@ import { CollectionModel, type IRequestModel, ListModel, RequestModel } from '~/
 import { type IMessage } from '~/services';
 
 import { type IBook, Book, createBook, createBookDTO, type IBookData } from './entities';
+import { type IViewerStore } from '../viewer';
 
 export interface IBookStore {
     collection: CollectionModel<IBook, IBookData>;
@@ -27,9 +28,20 @@ interface IServices {
     message: IMessage;
 }
 
+interface IStores {
+    viewer?: IViewerStore;
+}
+
+interface IBookParams {
+    api: IApi;
+    services: IServices;
+    getStores: () => IStores;
+}
+
 export class BookStore implements IBookStore {
     api: IApi;
     services: IServices;
+    getStores: () => IStores;
 
     collection = new CollectionModel<IBook, IBookData>({
         factory: (data: IBookData) => new Book(data, this),
@@ -37,9 +49,10 @@ export class BookStore implements IBookStore {
 
     list = new ListModel<IBook, IBookData>({ collection: this.collection });
 
-    constructor({ api, services }: { api: IApi; services: IServices }) {
+    constructor({ api, services, getStores }: IBookParams) {
         this.api = api;
         this.services = services;
+        this.getStores = getStores;
 
         makeAutoObservable(this);
     }

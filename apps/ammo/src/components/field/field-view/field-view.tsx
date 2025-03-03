@@ -6,10 +6,14 @@ import { useStylesCommon, useTheme } from '~/styles';
 import { useStyles } from './field-view.style';
 import { type IFieldViewProps } from './field-view.type';
 
-export const FieldView = ({ label, text, info }: IFieldViewProps) => {
+export const FieldView = ({ label, text, info, require = true }: IFieldViewProps) => {
     const s = useStyles();
     const styles = useStylesCommon();
     const theme = useTheme();
+
+    if (!require && !text) {
+        return null;
+    }
 
     return (
         <View style={s.item}>

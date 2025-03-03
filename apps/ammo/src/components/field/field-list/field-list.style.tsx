@@ -14,6 +14,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     },
     column: {
         flexDirection: 'column',
+        alignItems: 'flex-start',
     },
     iconTooltip: {
         marginLeft: theme.spacing.XS,

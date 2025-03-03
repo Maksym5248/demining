@@ -133,7 +133,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                         </Form.Item>
                     </Form.Item>
                     <FieldImageUris name="imageUris" />
-                    {store.viewer.user?.isAuthor && (
+                    {store.viewer.user?.isContentAdmin && (
                         <Form.Item label="Статус" name="status">
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>

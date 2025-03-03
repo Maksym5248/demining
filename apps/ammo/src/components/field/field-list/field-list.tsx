@@ -6,11 +6,17 @@ import { ThemeManager, useStylesCommon, useTheme } from '~/styles';
 import { useStyles } from './field-list.style';
 import { type IFieldListProps } from './field-list.type';
 
-export const FieldList = ({ label, items, info, type = 'vertical', splitter, splitterItem }: IFieldListProps) => {
+export const FieldList = ({ label, items, info, type = 'vertical', splitter, splitterItem, require }: IFieldListProps) => {
     const s = useStyles();
     const styles = useStylesCommon();
     const theme = useTheme();
     const isVertical = type === 'vertical';
+
+    const filtered = items?.filter(el => !!el.title);
+
+    if (!require && (!items?.length || !filtered?.length)) {
+        return null;
+    }
 
     return (
         <View style={s.item}>
@@ -26,6 +32,7 @@ export const FieldList = ({ label, items, info, type = 'vertical', splitter, spl
             <View style={[s.content, isVertical ? s.column : s.row]}>
                 {items?.map((el, i) => (
                     <View key={i} style={styles.row}>
+                        {!!el.prefix && <Text text={el.prefix} />}
                         <Touchable onPress={el.onPress} style={s.button}>
                             <Text color={el.onPress ? ThemeManager.theme.colors.link : undefined} text={el.title ?? '-'} />
                         </Touchable>

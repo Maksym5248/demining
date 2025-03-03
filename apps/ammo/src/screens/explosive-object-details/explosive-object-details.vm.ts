@@ -17,6 +17,11 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     slidesPurpose: ISlide[];
     slidesStructure: ISlide[];
     slidesAction: ISlide[];
+    slidesInstallation: ISlide[];
+    slidesLiquidator: ISlide[];
+    slidesExtraction: ISlide[];
+    slidesFolding: ISlide[];
+    slidesNeutralization: ISlide[];
     fillers: ({ explosive: IExplosive | undefined } & IFillerData)[] | undefined;
     fuses: IExplosiveObject[];
     fervor: IExplosiveObject[];
@@ -76,6 +81,26 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
 
     get slidesStructure() {
         return this.item?.details?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    }
+
+    get slidesInstallation() {
+        return this.item?.details?.data.installation?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    }
+
+    get slidesLiquidator() {
+        return this.item?.details?.data.liquidator?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    }
+
+    get slidesExtraction() {
+        return this.item?.details?.data.extraction?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    }
+
+    get slidesFolding() {
+        return this.item?.details?.data.folding?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    }
+
+    get slidesNeutralization() {
+        return this.item?.details?.data.neutralization?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 
     get slidesAction() {

@@ -26,4 +26,8 @@ export const materialsData: IMaterialNotDB[] = [
         id: MATERIAL.TEXTOLITE,
         name: 'Текстоліт',
     },
+    {
+        id: MATERIAL.RUBER,
+        name: 'Резина',
+    },
 ];

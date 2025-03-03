@@ -12,6 +12,7 @@ import {
     createExplosiveObjectClassItem,
     ExplosiveObjectClassItem,
 } from './entities';
+import { type IViewerStore } from '../viewer';
 
 interface IApi {
     explosiveObjectClassItem: IExplosiveObjectClassItemAPI;
@@ -39,29 +40,31 @@ export interface IExplosiveObjectClassItemStore {
     subscribe: IRequestModel;
 }
 
+interface IStores {
+    viewer?: IViewerStore;
+}
+
 export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemStore {
     api: IApi;
     services: IServices;
     lists: ILists;
     collections: ICollections;
+    getStores: () => IStores;
 
     collection = new CollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
-        factory: (data: IExplosiveObjectClassItemData) =>
-            new ExplosiveObjectClassItem(data, {
-                api: this.api,
-                services: this.services,
-            }),
+        factory: (data: IExplosiveObjectClassItemData) => new ExplosiveObjectClassItem(data, this),
     });
 
     list = new ListModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>({
         collection: this.collection,
     });
 
-    constructor(params: { api: IApi; services: IServices; lists: ILists; collections: ICollections }) {
+    constructor(params: { api: IApi; services: IServices; lists: ILists; collections: ICollections; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
         this.lists = params.lists;
         this.collections = params.collections;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }

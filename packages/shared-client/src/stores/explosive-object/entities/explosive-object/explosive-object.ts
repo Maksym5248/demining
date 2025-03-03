@@ -175,7 +175,10 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get isEditable() {
-        return !!this.getStores()?.viewer?.user?.isAuthor;
+        return (
+            !!this.getStores()?.viewer?.user?.isContentAdmin ||
+            !!(this.getStores()?.viewer?.user?.isAuthor && this.data.authorId === this.getStores()?.viewer?.user?.data.id)
+        );
     }
 
     get classItemIds() {

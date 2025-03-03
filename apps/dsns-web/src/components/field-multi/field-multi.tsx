@@ -7,10 +7,11 @@ import { Icon } from '../icon';
 interface Props<T> {
     name: string;
     label: string;
-    renderField: (params: { value: T; remove: () => void }) => JSX.Element;
+    manual?: boolean;
+    renderField: (params: { value: T; remove: () => void; update: (newValue: T) => void; i: number }) => JSX.Element;
 }
 
-function Component<T>({ label, name: rootName, renderField }: Props<T>) {
+function Component<T>({ label, name: rootName, manual = false, renderField }: Props<T>) {
     return (
         <Form.Item label={label} name={rootName}>
             <Form.List name={rootName}>
@@ -18,16 +19,22 @@ function Component<T>({ label, name: rootName, renderField }: Props<T>) {
                     <>
                         {fields.map(({ key, name: i, ...restField }) => (
                             <Form.Item key={key} noStyle shouldUpdate={() => true}>
-                                {({ getFieldValue }) => {
-                                    const values = getFieldValue(rootName);
+                                {({ getFieldValue, setFieldValue }) => {
+                                    const values = getFieldValue(rootName) as T[];
                                     const value = values[i];
 
                                     const removeValue = () => remove(i);
+                                    const updateValue = (newValue: T) => {
+                                        const newValues = values.map((v, index) => (index === i ? newValue : v));
+                                        setFieldValue(rootName, newValues);
+                                    };
+
+                                    console.log('value', value);
 
                                     return (
                                         <div style={{ display: 'flex' }}>
-                                            <Form.Item name={i} {...restField}>
-                                                {renderField({ value, remove: removeValue })}
+                                            <Form.Item name={manual ? undefined : i} {...restField}>
+                                                {renderField({ value, remove: removeValue, update: updateValue, i })}
                                             </Form.Item>
                                             <Button
                                                 key="list-remove"
