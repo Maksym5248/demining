@@ -61,9 +61,9 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                 </Block.View>
                 <Block.View title={t('characteristic')}>
                     <Field.View label={t('caliber')} text={details?.data.caliber} />
-                    <Field.View label={t('material')} text={details?.material?.name} />
-                    <Field.View label={t('size')} text={viewSize(details?.data?.size)} />
-                    <Field.View label={t('weight')} text={details?.data?.weight} />
+                    <Field.Range label={t('material')} value={details?.materials?.map(el => el.name)} />
+                    <Field.Range label={t('size')} value={details?.data?.size?.map(el => viewSize(el))} />
+                    <Field.Range label={t('weight')} value={details?.data?.weight?.map(el => el?.weight)} />
                     <Field.List
                         label={t('fillers')}
                         splitter=" - "
