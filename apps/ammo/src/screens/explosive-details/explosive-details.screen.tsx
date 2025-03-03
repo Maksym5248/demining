@@ -53,26 +53,32 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                     ))}
                 </Block.View>
                 <Block.View title={t('explosiveCharacteristic')}>
-                    <Field.View label={t('detonationSpeed')} text={velocity} />
-                    <Field.View
+                    <Field.Range label={t('detonationSpeed')} value={[velocity?.min, velocity?.max]} />
+                    <Field.Range
                         label={t('brisance')}
                         info={t('brisanceTooltip')}
-                        text={brisantness ? measurement.mToMm(brisantness) : undefined}
+                        value={[
+                            brisantness?.min ? measurement.mToMm(brisantness.min) : undefined,
+                            brisantness?.max ? measurement.mToMm(brisantness.max) : undefined,
+                        ]}
                     />
-                    <Field.View
+                    <Field.Range
                         label={t('explosiveVolume')}
                         info={t('explosiveVolumeTooltip')}
-                        text={explosiveness ? measurement.m3ToCm3(explosiveness) : undefined}
+                        value={[
+                            explosiveness?.min ? measurement.m3ToCm3(explosiveness.min) : undefined,
+                            explosiveness?.max ? measurement.m3ToCm3(explosiveness.max) : undefined,
+                        ]}
                     />
-                    <Field.View label={t('trotylEquivalent')} text={tnt} />
+                    <Field.Range label={t('trotylEquivalent')} value={[tnt?.min, tnt?.max]} />
                     <Field.View label={t('sensitivityToImpact')} text={shock} />
                     <Field.View label={t('sensitivityToTemperature')} text={temperature} />
                     <Field.View label={t('sensitivityToFriction')} text={friction} />
                 </Block.View>
                 <Block.View title={t('phisicalCharacteristic')}>
-                    <Field.View label={t('density')} text={density} />
-                    <Field.View label={t('meltingPoint')} text={meltingPoint} />
-                    <Field.View label={t('ignitionPoint')} text={ignitionPoint} />
+                    <Field.Range label={t('density')} value={[density?.min, density?.max]} />
+                    <Field.Range label={t('meltingPoint')} value={[meltingPoint?.min, meltingPoint?.max]} />
+                    <Field.Range label={t('ignitionPoint')} value={[ignitionPoint?.min, ignitionPoint?.max]} />
                 </Block.View>
             </Scroll>
         </View>

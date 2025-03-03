@@ -7,7 +7,7 @@ import { type IExplosiveObjectDetailsData } from './explosive-object-details.sch
 
 export interface IExplosiveObjectDetails {
     data: IExplosiveObjectDetailsData;
-    material?: IMaterialNotDB;
+    materials?: IMaterialNotDB[];
     id: string;
     updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>): void;
 }
@@ -25,8 +25,8 @@ export class ExplosiveObjectDetails implements IExplosiveObjectDetails {
         return this.data.id;
     }
 
-    get material() {
-        return materialsData.find(el => el.id === this.data.material);
+    get materials() {
+        return materialsData.filter(el => this.data.material.includes(el.id));
     }
 
     updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>) {
