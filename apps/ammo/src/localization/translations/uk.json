@@ -82,9 +82,17 @@
             "weight": "Вага, кг",
             "fillers": "Спорядження, кг",
             "temperature": "Температура, °C",
+            "targetSensor": "Датчик цілі",
+            "sensitivity": "Чутливість",
+            "timeWork": "Час роботи",
             "purpose": "Ураження",
             "structure": "Будова",
-            "action": "Принцип дії"
+            "action": "Принцип дії",
+            "installation": "Спосіб встановлення",
+            "liquidator": "Самоліквідатор",
+            "extraction": "Механізм невилучення",
+            "folding": "Механізм зведення",
+            "neutralization": "Нейтралізація"
         },
         "explosive-device-details": {
             "title": "Деталі",

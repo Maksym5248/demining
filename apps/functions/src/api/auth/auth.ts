@@ -12,6 +12,7 @@ const customUserClaims = async (userData: IUserDB) => {
             ROOT_ADMIN: userData?.roles.includes(ROLES.ROOT_ADMIN),
             ORGANIZATION_ADMIN: userData?.roles.includes(ROLES.ORGANIZATION_ADMIN),
             AUTHOR: userData?.roles.includes(ROLES.AUTHOR),
+            ADMIN_AMMO: userData?.roles.includes(ROLES.ADMIN_AMMO),
             organizationId: userData?.organizationId,
         };
 
@@ -27,7 +28,7 @@ const customUserClaims = async (userData: IUserDB) => {
     }
 };
 
-export const processSignUp = auth.user().onCreate(async (user) => {
+export const processSignUp = auth.user().onCreate(async user => {
     if (!user.email) {
         logger.info('User email does not exist', user);
         return;

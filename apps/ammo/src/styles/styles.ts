@@ -78,6 +78,9 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
     marginVerticalS: {
         marginVertical: theme.spacing.S,
     },
+    marginTopS: {
+        marginTop: theme.spacing.S,
+    },
     marginHorizontalS: {
         marginHorizontal: theme.spacing.S,
     },

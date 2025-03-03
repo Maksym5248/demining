@@ -71,7 +71,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
                 ? [
                       {
                           ...value.size,
-                          variant: 1,
+                          variant: null,
                       },
                   ]
                 : []),
@@ -81,7 +81,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
                 ? [
                       {
                           weight: value.weight,
-                          variant: 1,
+                          variant: null,
                       },
                   ]
                 : []),
@@ -91,7 +91,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
                 name: item.name,
                 explosiveId: item.explosiveId,
                 weight: item.weight,
-                variant: item.variant ?? 1,
+                variant: item.variant ?? null,
                 description: item.description ?? null,
             })) ?? [],
         caliber: value.caliber,
@@ -163,7 +163,7 @@ export const createExplosiveObjectDetailsDTO = (
             length: el.length ?? null,
             width: el.width ?? null,
             height: el.height ?? null,
-            variant: el.variant ?? 1,
+            variant: el.variant ?? null,
         })) ?? [],
     weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
@@ -172,7 +172,7 @@ export const createExplosiveObjectDetailsDTO = (
             explosiveId: el.explosiveId ?? null,
             name: el.name ?? null,
             weight: el.weight ?? null,
-            variant: el.variant ?? 1,
+            variant: el.variant ?? null,
             description: el.description ?? null,
         })) ?? null,
     caliber: value?.caliber ?? null,
@@ -241,7 +241,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
             length: el.length ?? null,
             width: el.width ?? null,
             height: el.height ?? null,
-            variant: el.variant ?? 1,
+            variant: el.variant ?? null,
         })) ?? [],
     weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
@@ -256,7 +256,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
             explosiveId: el.explosiveId ?? null,
             name: el.name ?? null,
             weight: el.weight ?? null,
-            variant: el.variant ?? 1,
+            variant: el.variant ?? null,
             description: el.description ?? null,
         })) ?? null,
     caliber: value.caliber ?? null,

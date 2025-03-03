@@ -16,12 +16,12 @@ export const BlockSlider = ({ description, data, label, hidden, require = true }
         return null;
     }
 
-    const itemWidth = device.window.width - theme.spacing.S * 4;
+    const itemWidth = device.window.width - theme.spacing.S * 2;
 
     return (
         <BlockView title={label}>
-            <Text text={description ?? '-'} style={styles.marginVerticalS} />
-            <CarouselImage width={itemWidth} data={data} />
+            <Text text={description ?? '-'} style={styles.marginTopS} />
+            {data.length !== 0 && <CarouselImage width={itemWidth} data={data} />}
         </BlockView>
     );
 };

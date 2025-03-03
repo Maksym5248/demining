@@ -66,7 +66,7 @@ export interface ITempartureDB {
 
 export interface IWeightDB {
     weight: number; // kg;
-    variant: number;
+    variant: number | null;
 }
 
 export interface IExplosiveObjectDetailsDB {

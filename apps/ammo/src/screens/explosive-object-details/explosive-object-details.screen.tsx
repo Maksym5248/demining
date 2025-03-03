@@ -30,7 +30,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                 <CarouselImage width={device.window.width} data={vm.slides} />
                 <Block.View title={t('details')}>
                     <Field.View label={t('name')} text={vm.item?.data.name} />
-                    <Field.View label={t('fullName')} text={vm.item?.data.fullName} />
+                    <Field.View label={t('fullName')} text={vm.item?.data.fullName} require={false} />
                     <Field.View label={t('type')} text={vm.item?.type?.displayName} />
                     <Field.View label={t('component')} text={vm.item?.component?.name} />
                     <Field.View label={t('classification')} text={vm.item?.classItemsNames.join(', ')} />
@@ -40,6 +40,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                             label={t('fuse')}
                             splitterItem=", "
                             type="horizontal"
+                            require={false}
                             items={vm.fuses?.map(el => ({
                                 title: el?.displayName,
                                 onPress: () => vm.openExplosiveObject(el.data.id ?? ''),
@@ -49,6 +50,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     {vm.item?.component?.id !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && (
                         <Field.List
                             label={t('fervor')}
+                            require={false}
                             splitterItem=", "
                             type="horizontal"
                             items={vm.fervor?.map(el => ({
@@ -57,21 +59,48 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                             }))}
                         />
                     )}
-                    <Field.View label={t('description')} text={vm.item?.data.description} />
+                    <Field.View label={t('targetSensor')} text={details?.data.targetSensor} require={false} />
+                    <Field.View label={t('sensitivity')} text={details?.data.sensitivity} require={false} />
+                    <Field.View label={t('timeWork')} text={details?.data.timeWork} require={false} />
+                    <Field.View label={t('description')} text={vm.item?.data.description} require={false} />
                 </Block.View>
                 <Block.View title={t('characteristic')}>
-                    <Field.View label={t('caliber')} text={details?.data.caliber} />
-                    <Field.Range label={t('material')} value={details?.materials?.map(el => el.name)} />
-                    <Field.Range label={t('size')} value={details?.data?.size?.map(el => viewSize(el))} />
-                    <Field.Range label={t('weight')} value={details?.data?.weight?.map(el => el?.weight)} />
+                    <Field.View label={t('caliber')} text={details?.data.caliber} require={false} />
+                    <Field.List
+                        label={t('material')}
+                        splitterItem=", "
+                        type="horizontal"
+                        items={details?.materials?.map(el => ({
+                            title: el.name,
+                        }))}
+                    />
+                    <Field.List
+                        label={t('size')}
+                        splitterItem=", "
+                        items={details?.data?.size?.map(el => ({
+                            title: viewSize(el),
+                            text: el.name ? ` (${el.name})` : undefined,
+                        }))}
+                    />
+                    <Field.List
+                        label={t('weight')}
+                        splitterItem=", "
+                        type="horizontal"
+                        items={details?.data?.weight?.map(el => ({
+                            title: el.weight,
+                        }))}
+                    />
                     <Field.List
                         label={t('fillers')}
                         splitter=" - "
-                        items={vm.fillers?.map(el => ({
-                            title: el.explosive?.displayName ?? el.name ?? '-',
-                            text: el.weight,
-                            onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
-                        }))}
+                        items={vm.fillers
+                            ?.sort((a, b) => (a.variant > b.variant ? 1 : -1))
+                            .map(el => ({
+                                prefix: el.variant ? `${el.variant}) ` : '',
+                                title: `${el.explosive?.displayName ?? el.name ?? '-'}`,
+                                text: el.weight,
+                                onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
+                            }))}
                     />
                     <Field.Range label={t('temperature')} value={[details?.data.temperature?.min, details?.data.temperature?.max]} />
                 </Block.View>
@@ -86,9 +115,39 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                 />
                 <Block.Slider
                     require={false}
+                    label={t('liquidator')}
+                    description={details?.data.liquidator?.description}
+                    data={vm.slidesLiquidator}
+                />
+                <Block.Slider
+                    require={false}
                     label={t('structure')}
                     description={details?.data.structure?.description}
                     data={vm.slidesStructure}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('folding')}
+                    description={details?.data.folding?.description}
+                    data={vm.slidesFolding}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('installation')}
+                    description={details?.data.installation?.description}
+                    data={vm.slidesInstallation}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('extraction')}
+                    description={details?.data.extraction?.description}
+                    data={vm.slidesExtraction}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('neutralization')}
+                    description={details?.data.neutralization?.description}
+                    data={vm.slidesNeutralization}
                 />
                 <Block.Slider require={false} label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
             </Scroll>
