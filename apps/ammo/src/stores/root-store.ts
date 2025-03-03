@@ -1,21 +1,21 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import {
-    type IExplosiveDeviceStore,
-    type IExplosiveObjectStore,
     ExplosiveDeviceStore,
     ExplosiveObjectStore,
-    type IRequestModel,
     RequestModel,
     ExplosiveStore,
+    BookStore,
+    type IExplosiveDeviceStore,
+    type IExplosiveObjectStore,
+    type IRequestModel,
     type IExplosiveStore,
     type IBookStore,
-    BookStore,
+    type IAuthUser,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
 import { DB } from '~/db';
-import { Analytics, Crashlytics, Logger, Message } from '~/services';
+import { Analytics, Auth, Crashlytics, Logger, Message } from '~/services';
 
 export interface IRootStore {
     explosive: IExplosiveStore;
@@ -53,6 +53,7 @@ export class RootStore implements IRootStore {
             crashlytics: Crashlytics,
             logger: Logger,
             message: Message,
+            auth: Auth,
         };
     }
 
@@ -110,20 +111,34 @@ export class RootStore implements IRootStore {
         return urls;
     }
 
+    private async onChangeUser(user: IAuthUser | null) {
+        try {
+            if (user) {
+                this.services.analytics.setUserId(user.uid);
+            } else {
+                this.services.analytics.setUserId(null);
+            }
+        } catch (e) {
+            this.services.logger.error(e);
+            this.services.message.error('Bиникла помилка');
+        }
+
+        this.setInitialized(true);
+    }
+
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            this.services.analytics.init();
+            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+            this.services.auth.signInAnonymously();
+
+            this.services.analytics.init(this.services.auth.uuid());
             this.services.crashlytics.init();
 
             try {
                 await DB.init();
                 await Promise.all([
-                    this.explosiveObject.subscribe.run({
-                        where: {
-                            status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
-                        },
-                    }),
+                    this.explosiveObject.subscribe.run(),
                     this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),
                     this.explosive.subscribe.run(),

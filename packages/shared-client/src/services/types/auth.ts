@@ -9,5 +9,6 @@ export interface IAuth {
     signOut: () => Promise<void>;
     createUserWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     signInWithEmailAndPassword: (email: string, password: string) => Promise<void>;
+    signInAnonymously: () => Promise<void>;
     refreshToken: () => Promise<string | undefined>;
 }
