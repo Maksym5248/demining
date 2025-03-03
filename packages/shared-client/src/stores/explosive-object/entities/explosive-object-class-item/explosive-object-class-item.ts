@@ -4,6 +4,7 @@ import { type IExplosiveObjectClassItemAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
 import { RequestModel } from '~/models';
 import { type IMessage } from '~/services';
+import { type IViewerStore } from '~/stores';
 
 import {
     createExplosiveObjectClassItem,
@@ -17,6 +18,7 @@ export interface IExplosiveObjectClassItem {
     displayName: string;
     updateFields(data: Partial<IExplosiveObjectClassItemData>): void;
     update: RequestModel<[IUpdateValue<IExplosiveObjectClassItemData>]>;
+    isEditable: boolean;
 }
 
 interface IApi {
@@ -27,20 +29,27 @@ interface IServices {
     message: IMessage;
 }
 
+interface IStores {
+    viewer?: IViewerStore;
+}
+
 interface IExplosiveObjectClassParams {
     services: IServices;
     api: IApi;
+    getStores: () => IStores;
 }
 
 export class ExplosiveObjectClassItem implements IExplosiveObjectClassItem {
     data: IExplosiveObjectClassItemData;
     api: IApi;
     services: IServices;
+    getStores: () => IStores;
 
     constructor(data: IExplosiveObjectClassItemData, params: IExplosiveObjectClassParams) {
         this.data = data;
         this.api = params.api;
         this.services = params.services;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }
@@ -68,4 +77,8 @@ export class ExplosiveObjectClassItem implements IExplosiveObjectClassItem {
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
     });
+
+    get isEditable() {
+        return !!this.getStores()?.viewer?.user?.isContentAdmin;
+    }
 }

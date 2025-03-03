@@ -48,7 +48,7 @@ export const ExplosiveObjectTypeWizardModal = observer(({ id, isVisible, hide, m
             placement="right"
             width={500}
             onClose={hide}
-            extra={<WizardButtons {...wizard} />}>
+            extra={<WizardButtons {...wizard} isEditable={item?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (

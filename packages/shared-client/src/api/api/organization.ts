@@ -47,13 +47,13 @@ export class OrganizationAPI {
         if (permissions.isAdmin) {
             roles.push(ROLES.ORGANIZATION_ADMIN);
         } else {
-            roles = roles.filter((el) => el !== ROLES.ORGANIZATION_ADMIN);
+            roles = roles.filter(el => el !== ROLES.ORGANIZATION_ADMIN);
         }
 
         if (permissions.isAuthor) {
             roles.push(ROLES.AUTHOR);
         } else {
-            roles = roles.filter((el) => el !== ROLES.AUTHOR);
+            roles = roles.filter(el => el !== ROLES.AUTHOR);
         }
 
         return roles;
@@ -101,11 +101,11 @@ export class OrganizationAPI {
 
         await Promise.all([
             this.db.organization.update(organizationId, {
-                membersIds: organization.membersIds.filter((el) => el !== userId),
+                membersIds: organization.membersIds.filter(el => el !== userId),
             }),
             this.db.user.update(userId, {
                 organizationId: null,
-                roles: user.roles.filter((el) => el !== ROLES.ORGANIZATION_ADMIN),
+                roles: user.roles.filter(el => el !== ROLES.ORGANIZATION_ADMIN),
             }),
         ]);
     };
@@ -120,7 +120,7 @@ export class OrganizationAPI {
             },
             ...(query ?? {}),
         });
-        return organizations.map((organization) => {
+        return organizations.map(organization => {
             removeFields(organization, 'membersIds');
             return organization;
         });

@@ -61,7 +61,7 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                 placement="right"
                 width={500}
                 onClose={hide}
-                extra={<WizardButtons {...wizard} />}>
+                extra={<WizardButtons {...wizard} isEditable={item?.isEditable} />}>
                 {isLoading ? (
                     <Spin css={s.spin} />
                 ) : (
@@ -75,7 +75,7 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                         <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                             <Select
                                 placeholder="Вибрати"
-                                options={explosiveObjectComponentData.map((el) => ({
+                                options={explosiveObjectComponentData.map(el => ({
                                     label: el.name,
                                     value: el.id,
                                 }))}
@@ -86,7 +86,7 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                                 allowClear
                                 showSearch
                                 placeholder="Вибрати"
-                                options={store.explosiveObject.class.list.asArray.map((el) => ({
+                                options={store.explosiveObject.class.list.asArray.map(el => ({
                                     label: el.displayName,
                                     value: el.id,
                                 }))}
@@ -98,9 +98,9 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                                 allowClear
                                 showSearch
                                 options={store.explosiveObject.classItem.list.asArray
-                                    .filter((el) => el.data.typeId === typeId)
-                                    .filter((el) => el.data.id !== id)
-                                    .map((el) => ({
+                                    .filter(el => el.data.typeId === typeId)
+                                    .filter(el => el.data.id !== id)
+                                    .map(el => ({
                                         label: el.displayName,
                                         value: el.id,
                                     }))}

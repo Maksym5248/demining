@@ -23,6 +23,7 @@ import {
     type IExplosiveObjectClassItem,
     type IExplosiveObjectClassItemData,
 } from './entities';
+import { type IViewerStore } from '../viewer';
 
 interface IApi {
     explosiveObjectClass: IExplosiveObjectClassAPI;
@@ -51,11 +52,16 @@ export interface IExplosiveObjectClassStore {
     subscribe: IRequestModel;
 }
 
+interface IStores {
+    viewer?: IViewerStore;
+}
+
 export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
     api: IApi;
     services: IServices;
     lists: ILists;
     collections: ICollections;
+    getStores: () => IStores;
 
     collection = new CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
         factory: (data: IExplosiveObjectClassData) => new ExplosiveObjectClass(data, this),
@@ -67,11 +73,12 @@ export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
 
     search = new SearchModel<IExplosiveObjectClass, IExplosiveObjectClassData>(this.list, { fields: ['displayName'] });
 
-    constructor(params: { api: IApi; services: IServices; lists: ILists; collections: ICollections }) {
+    constructor(params: { api: IApi; services: IServices; lists: ILists; collections: ICollections; getStores: () => IStores }) {
         this.api = params.api;
         this.services = params.services;
         this.lists = params.lists;
         this.collections = params.collections;
+        this.getStores = params.getStores;
 
         makeAutoObservable(this);
     }

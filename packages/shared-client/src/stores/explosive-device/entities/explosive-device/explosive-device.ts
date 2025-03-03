@@ -69,7 +69,7 @@ export class ExplosiveDevice implements IExplosiveDevice {
     }
 
     get isEditable() {
-        return !!this.getStores()?.viewer?.user?.isAuthor;
+        return !!this.getStores()?.viewer?.user?.isContentAdmin;
     }
 
     get displayName() {

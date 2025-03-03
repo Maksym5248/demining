@@ -6,6 +6,7 @@ import { type ICurrentUserData } from './current-user.schema';
 export interface ICurrentUser {
     data: ICurrentUserData;
     isRootAdmin: boolean;
+    isContentAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;
     isAuthor: boolean;
@@ -30,6 +31,10 @@ export class CurrentUser implements ICurrentUser {
         return this.data.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.data.organization;
     }
 
+    get isContentAdmin() {
+        return this.data.roles.includes(ROLES.ROOT_ADMIN);
+    }
+
     get isAuthor() {
         return this.data.roles.includes(ROLES.AUTHOR);
     }
@@ -39,10 +44,10 @@ export class CurrentUser implements ICurrentUser {
     }
 
     get isAuthorizedDSNS() {
-        return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember || !!this.isAuthor;
+        return !!this.isRootAdmin || !!this.isOrganizationAdmin || !!this.isOrganizationMember || !!this.isAuthor || !!this.isContentAdmin;
     }
     get isWaitingApproved() {
-        return !!this.data.id && !this.data.organization && !this.isAuthor;
+        return !!this.data.id && !this.data.organization && !this.isAuthor && !this.isRootAdmin && !this.isContentAdmin;
     }
 
     get isAuthorizedAmmo() {
