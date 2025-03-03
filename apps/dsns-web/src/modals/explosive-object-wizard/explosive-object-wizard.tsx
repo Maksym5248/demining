@@ -7,16 +7,16 @@ import {
     EXPLOSIVE_OBJECT_STATUS,
     explosiveObjectComponentData,
     explosiveObjectStatuses,
-    materialsData,
     measurement,
     MIME_TYPE,
 } from 'shared-my';
-import { type ISizeData, type ITempartureData } from 'shared-my-client';
+import { type ISizeData } from 'shared-my-client';
 
 import {
     FieldFiller,
     FieldModal,
     FieldMulty,
+    FieldRange,
     FieldSection,
     Select,
     UploadFile,
@@ -29,7 +29,7 @@ import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification, Fervor, Fuse } from './components';
+import { Classification, Fervor, Fuse, Material } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -52,6 +52,9 @@ const getParams = ({
     size,
     weight,
     temperature,
+    targetSensor,
+    sensitivity,
+    timeWork,
     filler,
     fuseIds,
     fervorIds,
@@ -71,13 +74,15 @@ const getParams = ({
     foldingDescription,
     installationDescription,
     installationImageUris,
+    neutralizationDescription,
+    neutralizationImageUris,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
     details: {
         imageUris,
         caliber,
-        material,
+        material: material.filter(el => !!el),
         fullDescription,
         size:
             size?.map(
@@ -96,6 +101,9 @@ const getParams = ({
                 variant: i + 1,
             })) ?? [],
         temperature,
+        targetSensor,
+        sensitivity,
+        timeWork,
         filler,
         fuseIds: fuseIds?.filter(el => !!el) ?? [],
         fervorIds: fervorIds?.filter(el => !!el) ?? [],
@@ -126,6 +134,10 @@ const getParams = ({
         installation: {
             imageUris: installationImageUris,
             description: installationDescription,
+        },
+        neutralization: {
+            imageUris: neutralizationImageUris,
+            description: neutralizationDescription,
         },
     },
 });
@@ -332,14 +344,18 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Корпус" name="material">
-                        <Select
-                            options={materialsData.map(el => ({
-                                label: el.name,
-                                value: el.id,
-                            }))}
-                        />
+                    <Form.Item label="Датчик цілі" name="targetSensor">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
+                    <Form.Item label="Чутливість" name="sensitivity">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
+                    </Form.Item>
+                    <Form.Item label="Час роботи" name="timeWork">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
+                    </Form.Item>
+                    <FieldRange label="Температура, °C" name="temperature" />
+                    <Divider />
+                    <Material />
                     <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
                     <FieldModal
                         label="Розмір, мм"
@@ -349,27 +365,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         getDescription={item => item.name}
                     />
                     <FieldFiller label="Спорядження" name="filler" />
-                    <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue, setFieldValue }) => {
-                            const value = (getFieldValue('temperature') as ITempartureData) ?? {};
-
-                            return (
-                                <Form.Item label="Температура, °C" name="temperature">
-                                    <InputNumber
-                                        placeholder="Мін"
-                                        onChange={min => setFieldValue('temperature', { ...value, min })}
-                                        value={value?.min}
-                                        css={s.size}
-                                    />
-                                    <InputNumber
-                                        placeholder="Макс"
-                                        onChange={max => setFieldValue('temperature', { ...value, max })}
-                                        value={value?.max}
-                                    />
-                                </Form.Item>
-                            );
-                        }}
-                    </Form.Item>
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
@@ -393,7 +388,9 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Divider />
                     <FieldSection label="Невилучення" name="extractionImageUris" nameDesc="extractionDescription" />
                     <Divider />
-                    <FieldSection label="Зведення" name="foldingImageUris" nameDesc="foldingDescription" />
+                    <FieldSection label="Зведення" name="neutralizationImageUris" nameDesc="foldingDescription" />
+                    <Divider />
+                    <FieldSection label="Знешкодження" name="neutralizationImageUris" nameDesc="neutralizationDescription" />
                     <Divider />
                     <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} loading={isSubmitting} />

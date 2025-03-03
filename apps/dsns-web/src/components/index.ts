@@ -22,3 +22,4 @@ export * from './field-filler';
 export * from './upload';
 export * from './field-multi';
 export * from './field-modal';
+export * from './field-range';

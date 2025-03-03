@@ -5,6 +5,7 @@ export interface IFillerDB {
     explosiveId: string | null;
     weight: number;
     variant: number;
+    description?: string | null;
 }
 
 export interface IStructureDB {
@@ -14,6 +15,7 @@ export interface IStructureDB {
 
 export interface INeutralizationDB {
     description: string;
+    imageUris: string[];
 }
 
 export interface IActionDB {
@@ -71,7 +73,12 @@ export interface IExplosiveObjectDetailsDB {
     fullDescription: string | null;
     imageUris: string[] | null;
     // characteristics
-    material: MATERIAL;
+    /**
+     * @deprecated
+     */
+    material?: MATERIAL;
+    materialV2: MATERIAL[];
+
     /**
      * @deprecated
      */
@@ -96,4 +103,10 @@ export interface IExplosiveObjectDetailsDB {
     liquidator?: ILiquidatorDB | null; // самоліквідатор
     extraction?: IExtractionDB | null; // механізм невилучення
     folding?: IFoldingDB | null; // механізм зведення
+    neutralization: INeutralizationDB | null; // нейтралізація
+
+    // fuse
+    targetSensor: string | null; // датчик цілі
+    sensitivity: string | null; // чутливість
+    timeWork: string | null; // час роботи
 }

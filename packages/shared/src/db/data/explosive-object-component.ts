@@ -14,4 +14,12 @@ export const explosiveObjectComponentData: IExplosiveObjectComponentNotDB[] = [
         id: EXPLOSIVE_OBJECT_COMPONENT.FERVOR,
         name: 'Запал',
     },
+    {
+        id: EXPLOSIVE_OBJECT_COMPONENT.CD,
+        name: 'Капсуль-детонатор',
+    },
+    {
+        id: EXPLOSIVE_OBJECT_COMPONENT.CV,
+        name: 'Капсуль-спалахувач',
+    },
 ];

@@ -16,10 +16,13 @@ export interface IExplosiveObjectForm {
 
     // detail
     imageUris: string[] | null;
-    material: MATERIAL;
+    material: MATERIAL[];
     size: ISizeData[] | null;
     weight: number[] | null;
     temperature: ITempartureData | null;
+    targetSensor: string | null; // датчик цілі
+    sensitivity: string | null; // чутливість
+    timeWork: string | null; // час роботи
 
     filler: IFillerData[] | null;
     caliber: number | null;
@@ -46,6 +49,9 @@ export interface IExplosiveObjectForm {
 
     installationImageUris: string[];
     installationDescription: string;
+
+    neutralizationImageUris: string[];
+    neutralizationDescription: string;
 
     // additional
     image?: File;
