@@ -90,8 +90,8 @@
             "action": "Принцип дії",
             "installation": "Спосіб встановлення",
             "liquidator": "Самоліквідатор",
-            "extraction": "Механізм невилучення",
-            "folding": "Механізм зведення",
+            "extraction": "Невилучення",
+            "folding": "Зведення",
             "neutralization": "Нейтралізація"
         },
         "explosive-device-details": {
