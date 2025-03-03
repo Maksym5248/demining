@@ -73,6 +73,9 @@ export class Book implements IBook {
     });
 
     get isEditable() {
-        return !!this.getStores()?.viewer?.user?.isContentAdmin;
+        return (
+            !!this.getStores()?.viewer?.user?.isContentAdmin ||
+            !!(this.getStores()?.viewer?.user?.isAuthor && this.data.authorId === this.getStores()?.viewer?.user?.data.id)
+        );
     }
 }

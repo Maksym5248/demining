@@ -12,6 +12,7 @@ export interface IExplosiveObjectClassItemData {
     typeId: string;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     parentId: string | null;
+    authorId?: string;
 }
 
 export const createExplosiveObjectClassItem = (value: IExplosiveObjectClassItemDTO): IExplosiveObjectClassItemData => ({
@@ -23,6 +24,7 @@ export const createExplosiveObjectClassItem = (value: IExplosiveObjectClassItemD
     component: value.component,
     parentId: value.parentId,
     shortName: value.shortName ?? '',
+    authorId: value.authorId,
 });
 
 export const createExplosiveObjectClassItemDTO = (
@@ -38,7 +40,7 @@ export const createExplosiveObjectClassItemDTO = (
 });
 
 export const updateExplosiveObjectClassItemDTO = data.createUpdateDTO<IExplosiveObjectClassItemData, IExplosiveObjectClassItemDTO>(
-    (value) => ({
+    value => ({
         name: value.name ?? '',
         shortName: value.shortName ?? '',
         description: value.description ?? '',

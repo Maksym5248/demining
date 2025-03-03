@@ -13,6 +13,7 @@ export interface IBookData {
     size: number;
     uri: string;
     type: BOOK_TYPE;
+    authorId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
@@ -40,6 +41,7 @@ export const updateBookDTO = data.createUpdateDTO<IBookData, IBookDTO>(value => 
 export const createBook = (value: IBookDTO): IBookData => ({
     id: value.id,
     name: value.name,
+    authorId: value.authorId,
     type: value.type ?? null,
     status: value.status,
     imageUri: value.imageUri,

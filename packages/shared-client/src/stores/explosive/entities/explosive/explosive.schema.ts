@@ -11,6 +11,7 @@ export interface IExplosiveCompositionData {
     name: string | null;
     percent: number | null;
     description: string | null;
+    authorId?: string;
 }
 
 export interface IRangeData {
