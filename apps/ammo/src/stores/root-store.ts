@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import {
     ExplosiveDeviceStore,
     ExplosiveObjectStore,
@@ -130,19 +129,16 @@ export class RootStore implements IRootStore {
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            this.services.analytics.init();
-            this.services.crashlytics.init();
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+            this.services.auth.signInAnonymously();
+
+            this.services.analytics.init(this.services.auth.uuid());
+            this.services.crashlytics.init();
 
             try {
                 await DB.init();
-                await this.services.auth.signInAnonymously();
                 await Promise.all([
-                    this.explosiveObject.subscribe.run({
-                        where: {
-                            status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
-                        },
-                    }),
+                    this.explosiveObject.subscribe.run(),
                     this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),
                     this.explosive.subscribe.run(),

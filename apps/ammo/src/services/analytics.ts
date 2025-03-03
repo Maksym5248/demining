@@ -7,7 +7,8 @@ export class AnalyticsClass implements IAnalytics {
         private crashlytics: ICrashlytics,
     ) {}
 
-    init() {
+    init(userId?: string | null) {
+        !!userId && this.setUserId(userId);
         this.event('INITIALIZATION_APP');
     }
 
