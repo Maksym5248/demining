@@ -52,6 +52,9 @@ const getParams = ({
     size,
     weight,
     temperature,
+    targetSensor,
+    sensitivity,
+    timeWork,
     filler,
     fuseIds,
     fervorIds,
@@ -71,6 +74,8 @@ const getParams = ({
     foldingDescription,
     installationDescription,
     installationImageUris,
+    neutralizationDescription,
+    neutralizationImageUris,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
@@ -96,6 +101,9 @@ const getParams = ({
                 variant: i + 1,
             })) ?? [],
         temperature,
+        targetSensor,
+        sensitivity,
+        timeWork,
         filler,
         fuseIds: fuseIds?.filter(el => !!el) ?? [],
         fervorIds: fervorIds?.filter(el => !!el) ?? [],
@@ -126,6 +134,10 @@ const getParams = ({
         installation: {
             imageUris: installationImageUris,
             description: installationDescription,
+        },
+        neutralization: {
+            imageUris: neutralizationImageUris,
+            description: neutralizationDescription,
         },
     },
 });
@@ -332,6 +344,17 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
                     </Form.Item>
                     <Divider />
+                    <Form.Item label="Датчик цілі" name="targetSensor">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
+                    </Form.Item>
+                    <Form.Item label="Чутливість" name="sensitivity">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
+                    </Form.Item>
+                    <Form.Item label="Час роботи" name="timeWork">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
+                    </Form.Item>
+                    <FieldRange label="Температура, °C" name="temperature" />
+                    <Divider />
                     <Material />
                     <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
                     <FieldModal
@@ -342,7 +365,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         getDescription={item => item.name}
                     />
                     <FieldFiller label="Спорядження" name="filler" />
-                    <FieldRange label="Температура, °C" name="temperature" />
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
@@ -366,7 +388,9 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Divider />
                     <FieldSection label="Невилучення" name="extractionImageUris" nameDesc="extractionDescription" />
                     <Divider />
-                    <FieldSection label="Зведення" name="foldingImageUris" nameDesc="foldingDescription" />
+                    <FieldSection label="Зведення" name="neutralizationImageUris" nameDesc="foldingDescription" />
+                    <Divider />
+                    <FieldSection label="Знешкодження" name="neutralizationImageUris" nameDesc="neutralizationDescription" />
                     <Divider />
                     <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} loading={isSubmitting} />

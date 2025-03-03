@@ -13,6 +13,7 @@ import {
     type IExtractionDTO,
     type IFoldingDTO,
     type IInstallationDTO,
+    type INeutralizationDTO,
 } from '~/api';
 import { data, type ICreateValue } from '~/common';
 
@@ -28,6 +29,7 @@ export type ILiquidatorData = ILiquidatorDTO;
 export type IExtractionData = IExtractionDTO;
 export type IFoldingData = IFoldingDTO;
 export type IInstallationData = IInstallationDTO;
+export type INeutralizationData = INeutralizationDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
@@ -39,13 +41,19 @@ export interface IExplosiveObjectDetailsData {
     temperature: ITempartureData | null;
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
+    targetSensor: string | null; // датчик цілі
+    sensitivity: string | null; // чутливість
+    timeWork: string | null; // час роботи
+    liquidatorShort?: string | null; // самоліквідатор коротко
+    extractionShort?: string | null; // механізм невилучення коротко
+    foldingShort?: string | null; // механізм зведення коротко
     fuseIds: string[]; // ammo
     fervorIds: string[]; // запал
     liquidator: ILiquidatorData | null; // ліквідатор;
     extraction: IExtractionData | null; // вилучення / невилучення;
     folding: IFoldingData | null; // складання;
     installation: IInstallationData | null; // спосіб встановлення
-
+    neutralization: INeutralizationData | null; // нейтралізація
     purpose: IPurposeData | null; // призначення;
     structure: IStructureData | null; // будова;
     action: IActionData | null; // принцип дії;
@@ -89,6 +97,9 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
         fervorIds: value.fervorIds ?? [],
+        targetSensor: value?.targetSensor ?? null,
+        sensitivity: value?.sensitivity ?? null,
+        timeWork: value?.timeWork ?? null,
         liquidator: value?.liquidator
             ? {
                   description: value.liquidator.description ?? null,
@@ -99,6 +110,12 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
             ? {
                   description: value.installation.description ?? null,
                   imageUris: value.installation.imageUris ?? [],
+              }
+            : null,
+        neutralization: value?.neutralization
+            ? {
+                  description: value.neutralization.description ?? null,
+                  imageUris: value.neutralization.imageUris ?? [],
               }
             : null,
         extraction: value?.extraction
@@ -161,10 +178,19 @@ export const createExplosiveObjectDetailsDTO = (
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
     fervorIds: value?.fervorIds ?? [],
+    targetSensor: value?.targetSensor ?? null,
+    sensitivity: value?.sensitivity ?? null,
+    timeWork: value?.timeWork ?? null,
     liquidator: value?.liquidator
         ? {
               description: value.liquidator.description ?? null,
               imageUris: value.liquidator.imageUris ?? [],
+          }
+        : null,
+    neutralization: value?.neutralization
+        ? {
+              description: value.neutralization.description ?? null,
+              imageUris: value.neutralization.imageUris ?? [],
           }
         : null,
     installation: value?.installation
@@ -219,6 +245,12 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
         })) ?? [],
     weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
+    targetSensor: value?.targetSensor ?? null,
+    sensitivity: value?.sensitivity ?? null,
+    timeWork: value?.timeWork ?? null,
+    liquidatorShort: value?.liquidatorShort ?? null,
+    extractionShort: value?.extractionShort ?? null,
+    foldingShort: value?.foldingShort ?? null,
     filler:
         value.filler?.map(el => ({
             explosiveId: el.explosiveId ?? null,
@@ -240,6 +272,12 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
         ? {
               description: value.installation.description ?? null,
               imageUris: value.installation.imageUris ?? [],
+          }
+        : null,
+    neutralization: value?.neutralization
+        ? {
+              description: value.neutralization.description ?? null,
+              imageUris: value.neutralization.imageUris ?? [],
           }
         : null,
     extraction: value?.extraction
