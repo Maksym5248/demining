@@ -77,10 +77,13 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     <Field.List
                         label={t('size')}
                         splitterItem=", "
-                        items={details?.data?.size?.map(el => ({
-                            title: viewSize(el),
-                            text: el.name ? ` (${el.name})` : undefined,
-                        }))}
+                        items={
+                            details?.data?.size?.map(el => ({
+                                title: viewSize(el),
+                                text: el.name ? ` (${el.name})` : undefined,
+                            })) ?? []
+                        }
+                        require={false}
                     />
                     <Field.List
                         label={t('weight')}
@@ -89,6 +92,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         items={details?.data?.weight?.map(el => ({
                             title: el.weight,
                         }))}
+                        require={false}
                     />
                     <Field.List
                         label={t('fillers')}
@@ -102,7 +106,11 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                                 onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
                             }))}
                     />
-                    <Field.Range label={t('temperature')} value={[details?.data.temperature?.min, details?.data.temperature?.max]} />
+                    <Field.Range
+                        label={t('temperature')}
+                        value={[details?.data.temperature?.min, details?.data.temperature?.max]}
+                        require={false}
+                    />
                 </Block.View>
                 <Block.View hidden={!details?.data?.fullDescription} title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />

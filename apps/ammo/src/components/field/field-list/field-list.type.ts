@@ -1,6 +1,6 @@
 interface Item {
     prefix?: string;
-    title: string | number;
+    title?: string | number;
     text?: string | number;
     onPress?: () => void;
 }

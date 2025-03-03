@@ -6,12 +6,16 @@ import { useStylesCommon, useTheme } from '~/styles';
 import { useStyles } from './field-range.style';
 import { type IFieldRangeProps } from './field-range.type';
 
-export const FieldRange = ({ label, value, info }: IFieldRangeProps) => {
+export const FieldRange = ({ label, value, info, require }: IFieldRangeProps) => {
     const s = useStyles();
     const styles = useStylesCommon();
     const theme = useTheme();
 
     const filtered = value?.filter(el => !!el);
+
+    if (!require && (!filtered || !filtered?.length)) {
+        return null;
+    }
 
     return (
         <View style={s.item}>

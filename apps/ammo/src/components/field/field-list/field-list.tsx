@@ -12,8 +12,10 @@ export const FieldList = ({ label, items, info, type = 'vertical', splitter, spl
     const theme = useTheme();
     const isVertical = type === 'vertical';
 
-    if (!require && !items?.length) {
-        return;
+    const filtered = items?.filter(el => !!el.title);
+
+    if (!require && (!items?.length || !filtered?.length)) {
+        return null;
     }
 
     return (
