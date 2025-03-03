@@ -14,6 +14,7 @@ import {
     type IFoldingDTO,
     type IInstallationDTO,
     type INeutralizationDTO,
+    type IEdditionalCharacteristcDTO,
 } from '~/api';
 import { data, type ICreateValue } from '~/common';
 
@@ -30,6 +31,7 @@ export type IExtractionData = IExtractionDTO;
 export type IFoldingData = IFoldingDTO;
 export type IInstallationData = IInstallationDTO;
 export type INeutralizationData = INeutralizationDTO;
+export type IEdditionalCharacteristicData = IEdditionalCharacteristcDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
@@ -57,6 +59,7 @@ export interface IExplosiveObjectDetailsData {
     purpose: IPurposeData | null; // призначення;
     structure: IStructureData | null; // будова;
     action: IActionData | null; // принцип дії;
+    additional: IEdditionalCharacteristicData[] | null; // додатково
 }
 
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
@@ -148,6 +151,11 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
                   imageUris: value.action.imageUris ?? [],
               }
             : null,
+        additional:
+            value?.additional?.map(el => ({
+                name: el.name,
+                value: el.value,
+            })) ?? null,
     };
 };
 
@@ -229,6 +237,11 @@ export const createExplosiveObjectDetailsDTO = (
               imageUris: value.action.imageUris ?? [],
           }
         : null,
+    additional:
+        value?.additional?.map(el => ({
+            name: el.name,
+            value: el.value,
+        })) ?? null,
 });
 
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
@@ -310,4 +323,9 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
               imageUris: value.action.imageUris ?? [],
           }
         : null,
+    additional:
+        value?.additional?.map(el => ({
+            name: el.name,
+            value: el.value,
+        })) ?? null,
 }));

@@ -111,6 +111,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         value={[details?.data.temperature?.min, details?.data.temperature?.max]}
                         require={false}
                     />
+                    {details?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
                 </Block.View>
                 <Block.View hidden={!details?.data?.fullDescription} title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />

@@ -69,6 +69,11 @@ export interface IWeightDB {
     variant: number | null;
 }
 
+export interface IEdditionalCharacteristcDB {
+    name: string;
+    value: string;
+}
+
 export interface IExplosiveObjectDetailsDB {
     fullDescription: string | null;
     imageUris: string[] | null;
@@ -109,4 +114,5 @@ export interface IExplosiveObjectDetailsDB {
     targetSensor: string | null; // датчик цілі
     sensitivity: string | null; // чутливість
     timeWork: string | null; // час роботи
+    additional: IEdditionalCharacteristcDB[] | null; // додатково
 }
