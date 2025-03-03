@@ -5,6 +5,7 @@ export interface IFillerDB {
     explosiveId: string | null;
     weight: number;
     variant: number;
+    description?: string | null;
 }
 
 export interface IStructureDB {
@@ -71,7 +72,12 @@ export interface IExplosiveObjectDetailsDB {
     fullDescription: string | null;
     imageUris: string[] | null;
     // characteristics
-    material: MATERIAL;
+    /**
+     * @deprecated
+     */
+    material?: MATERIAL;
+    materialV2: MATERIAL[];
+
     /**
      * @deprecated
      */

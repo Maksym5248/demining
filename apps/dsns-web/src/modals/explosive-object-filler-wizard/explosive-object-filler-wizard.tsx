@@ -44,7 +44,8 @@ export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onS
             explosiveId: values.explosiveId,
             name: values.name,
             weight: values.weight,
-            variant: values.variant,
+            variant: values.variant ?? null,
+            description: values.description ?? null,
         });
         hide();
     };
@@ -98,11 +99,14 @@ export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onS
                         );
                     }}
                 </Form.Item>
-                <Form.Item label="Варіант" name="variant" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                <Form.Item label="Варіант" name="variant">
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item label="Вага, кг" name="weight" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                     <InputNumber min={0} />
+                </Form.Item>
+                <Form.Item label="Опис" name="description">
+                    <Input />
                 </Form.Item>
                 <Form.Item label=" " colon={false}>
                     <Space>

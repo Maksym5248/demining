@@ -1,4 +1,4 @@
-import { MATERIAL } from 'shared-my';
+import { type MATERIAL } from 'shared-my';
 
 import {
     type IExplosiveObjectDetailsDTO,
@@ -33,7 +33,7 @@ export interface IExplosiveObjectDetailsData {
     id: string;
     fullDescription: string | null;
     imageUris: string[] | null;
-    material: MATERIAL;
+    material: MATERIAL[];
     size: ISizeData[] | null; //мм;
     weight: IWeightData[] | null; // kg;
     temperature: ITempartureData | null;
@@ -56,7 +56,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         id,
         fullDescription: value.fullDescription ?? null,
         imageUris: value.imageUris ?? [],
-        material: value.material,
+        material: value.materialV2 ?? (value.material ? [value.material] : []),
         size:
             value.sizeV2 ??
             (value.size
@@ -84,6 +84,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
                 explosiveId: item.explosiveId,
                 weight: item.weight,
                 variant: item.variant ?? 1,
+                description: item.description ?? null,
             })) ?? [],
         caliber: value.caliber,
         fuseIds: value.fuseIds ?? [],
@@ -138,7 +139,7 @@ export const createExplosiveObjectDetailsDTO = (
 ): ICreateValue<IExplosiveObjectDetailsDTO> => ({
     imageUris: value?.imageUris ?? [],
     fullDescription: value?.fullDescription ?? null,
-    material: value?.material ?? MATERIAL.METAL,
+    materialV2: value?.material ?? [],
     sizeV2:
         value?.size?.map(el => ({
             name: el.name ?? null,
@@ -155,6 +156,7 @@ export const createExplosiveObjectDetailsDTO = (
             name: el.name ?? null,
             weight: el.weight ?? null,
             variant: el.variant ?? 1,
+            description: el.description ?? null,
         })) ?? null,
     caliber: value?.caliber ?? null,
     fuseIds: value?.fuseIds ?? [],
@@ -206,7 +208,7 @@ export const createExplosiveObjectDetailsDTO = (
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
     imageUris: value?.imageUris ?? [],
     fullDescription: value?.fullDescription ?? null,
-    material: value.material ?? MATERIAL.METAL,
+    materialV2: value?.material ?? [],
     sizeV2:
         value?.size?.map(el => ({
             name: el.name ?? null,
@@ -223,6 +225,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
             name: el.name ?? null,
             weight: el.weight ?? null,
             variant: el.variant ?? 1,
+            description: el.description ?? null,
         })) ?? null,
     caliber: value.caliber ?? null,
     fuseIds: value.fuseIds ?? [],

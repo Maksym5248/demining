@@ -7,7 +7,6 @@ import {
     EXPLOSIVE_OBJECT_STATUS,
     explosiveObjectComponentData,
     explosiveObjectStatuses,
-    materialsData,
     measurement,
     MIME_TYPE,
 } from 'shared-my';
@@ -30,7 +29,7 @@ import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification, Fervor, Fuse } from './components';
+import { Classification, Fervor, Fuse, Material } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -78,7 +77,7 @@ const getParams = ({
     details: {
         imageUris,
         caliber,
-        material,
+        material: material.filter(el => !!el),
         fullDescription,
         size:
             size?.map(
@@ -333,14 +332,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Корпус" name="material">
-                        <Select
-                            options={materialsData.map(el => ({
-                                label: el.name,
-                                value: el.id,
-                            }))}
-                        />
-                    </Form.Item>
+                    <Material />
                     <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
                     <FieldModal
                         label="Розмір, мм"
