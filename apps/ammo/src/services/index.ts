@@ -9,6 +9,7 @@ import { FILE_SYSTEM, FILE_FORMAT } from '~/constants';
 
 import { AnalyticsClass } from './analytics';
 import { AssetStorageClass } from './asset-storage';
+import { AuthClass } from './auth';
 import { CrashlyticsClass } from './crashlytics';
 import { FileSystemClass } from './file-system';
 import { NetInfoClass } from './state';
@@ -25,5 +26,6 @@ export const Modal = new ModalClass(Analytics);
 export const AssetStorage = new AssetStorageClass();
 export const AppState = new AppStateClass();
 export const NetInfo = new NetInfoClass();
+export const Auth = new AuthClass();
 export const mageChahe = new FileSystemClass(FILE_SYSTEM.IMAGE_CACHE, FILE_FORMAT.PNG, ASSET_TYPE.IMAGE);
 export const BookCache = new FileSystemClass(FILE_SYSTEM.BOOKS_CACHE, FILE_FORMAT.PDF, ASSET_TYPE.BOOK);

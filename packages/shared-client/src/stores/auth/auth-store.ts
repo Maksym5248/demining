@@ -10,6 +10,7 @@ export interface IAuthStore {
     signInOut: IRequestModel;
     signUpWithEmail: IRequestModel<[string, string]>;
     signInWithEmail: IRequestModel<[string, string]>;
+    signInAnonymously: IRequestModel;
 }
 
 interface IServices {
@@ -62,6 +63,13 @@ export class AuthStore implements IAuthStore {
         run: async (email: string, password: string) => {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithEmailAndPassword(email, password);
+        },
+        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
+    });
+
+    signInAnonymously = new RequestModel({
+        run: async () => {
+            await this.services.auth.signInAnonymously();
         },
         onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });

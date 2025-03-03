@@ -7,6 +7,7 @@ import {
     signOut,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    signInAnonymously,
     type NextOrObserver,
     type User,
 } from 'firebase/auth';
@@ -53,5 +54,9 @@ export class AuthClass implements IAuth {
         await run();
 
         return this.auth?.currentUser?.getIdToken(true);
+    }
+
+    async signInAnonymously() {
+        await signInAnonymously(this.auth);
     }
 }
