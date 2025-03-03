@@ -24,6 +24,7 @@ import {
     type IExplosiveObjectTypeDB,
     type IExplosiveDB,
     type IBookDB,
+    type IRangeDB,
 } from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
@@ -196,7 +197,7 @@ export interface IGetAllInRectParams {
 }
 
 export type IExplosiveDTO = IExplosiveDB;
-
+export type IRangeDTO = IRangeDB;
 export interface IExplosiveDTOParams extends Omit<IExplosiveDTO, 'imageUri'> {
     image?: File;
 }

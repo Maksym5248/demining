@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-import { Form, Input, Drawer, InputNumber, Spin, Divider, Select } from 'antd';
+import { Form, Input, Drawer, Spin, Divider, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE, explosiveObjectStatuses, measurement } from 'shared-my';
 
-import { UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
+import { FieldRange, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
@@ -37,8 +37,14 @@ const getParams = ({
         ...value,
         explosive: {
             velocity: velocity ?? null,
-            brisantness: brisantness ? measurement.mmToM(brisantness) : null,
-            explosiveness: explosiveness ? measurement.cm3ToM3(explosiveness) : null,
+            brisantness: {
+                min: brisantness?.min ? measurement.mmToM(brisantness.min) : null,
+                max: brisantness?.max ? measurement.mmToM(brisantness.max) : null,
+            },
+            explosiveness: {
+                min: explosiveness?.min ? measurement.cm3ToM3(explosiveness.min) : null,
+                max: explosiveness?.max ? measurement.cm3ToM3(explosiveness.max) : null,
+            },
             tnt: tnt ?? null,
         },
         sensitivity: {
@@ -109,12 +115,22 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                                   ...currentExplosive.data.sensitivity,
                                   ...currentExplosive.data.explosive,
                                   ...currentExplosive.data.physical,
-                                  explosiveness: currentExplosive.data.explosive?.explosiveness
-                                      ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness)
-                                      : null,
-                                  brisantness: currentExplosive.data.explosive?.brisantness
-                                      ? measurement.mToMm(currentExplosive.data.explosive.brisantness)
-                                      : null,
+                                  explosiveness: {
+                                      min: currentExplosive.data.explosive?.explosiveness?.min
+                                          ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness.min)
+                                          : null,
+                                      max: currentExplosive.data.explosive?.explosiveness?.max
+                                          ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness.max)
+                                          : null,
+                                  },
+                                  brisantness: {
+                                      min: currentExplosive.data.explosive?.brisantness?.min
+                                          ? measurement.mToMm(currentExplosive.data.explosive.brisantness.min)
+                                          : null,
+                                      max: currentExplosive.data.explosive?.brisantness?.max
+                                          ? measurement.mToMm(currentExplosive.data.explosive.brisantness.max)
+                                          : null,
+                                  },
                               }
                             : {}
                     }>
@@ -169,18 +185,10 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     <Divider />
                     <Сomposition />
                     <Divider />
-                    <Form.Item label="Швидкість детонації, м/c" name="velocity">
-                        <InputNumber min={0} />
-                    </Form.Item>
-                    <Form.Item label="Брезантність, мм" name="brisantness">
-                        <InputNumber min={0} />
-                    </Form.Item>
-                    <Form.Item label="Фугасність, см³" name="explosiveness">
-                        <InputNumber min={0} />
-                    </Form.Item>
-                    <Form.Item label="Тротиловий еквівалент" name="tnt">
-                        <InputNumber min={0} />
-                    </Form.Item>
+                    <FieldRange label="Швидкість детонації, м/c" name="velocity" min={0} />
+                    <FieldRange label="Брезантність, мм" name="brisantness" min={0} />
+                    <FieldRange label="Фугасність, см³" name="explosiveness" min={0} />
+                    <FieldRange label="Тротиловий еквівалент" name="tnt" min={0} />
                     <Form.Item label="Чутливість до удару" name="shock">
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
@@ -191,15 +199,9 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Плотність, кг/м³" name="density">
-                        <InputNumber placeholder="Ввести" />
-                    </Form.Item>
-                    <Form.Item label="Т плавлення, ºС" name="meltingPoint">
-                        <InputNumber placeholder="Ввести" />
-                    </Form.Item>
-                    <Form.Item label="Т запалення, ºС" name="ignitionPoint">
-                        <InputNumber placeholder="Ввести" />
-                    </Form.Item>
+                    <FieldRange label="Плотність, кг/м³" name="density" min={0} />
+                    <FieldRange label="Т плавлення, ºС" name="meltingPoint" min={0} />
+                    <FieldRange label="Т запалення, ºС" name="ignitionPoint" min={0} />
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>
             )}

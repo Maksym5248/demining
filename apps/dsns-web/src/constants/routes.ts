@@ -94,7 +94,7 @@ export const routesInfo = {
         title: 'Книги',
     },
     [ROUTES.EXPLOSIVE_LIST]: {
-        title: 'Речовини',
+        title: 'ВР речовини',
     },
     [ROUTES.WAITING_APPROVE]: {
         title: 'Очікування підтвердження',

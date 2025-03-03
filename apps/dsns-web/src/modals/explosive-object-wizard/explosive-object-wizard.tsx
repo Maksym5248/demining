@@ -11,12 +11,13 @@ import {
     measurement,
     MIME_TYPE,
 } from 'shared-my';
-import { type ISizeData, type ITempartureData } from 'shared-my-client';
+import { type ISizeData } from 'shared-my-client';
 
 import {
     FieldFiller,
     FieldModal,
     FieldMulty,
+    FieldRange,
     FieldSection,
     Select,
     UploadFile,
@@ -349,27 +350,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         getDescription={item => item.name}
                     />
                     <FieldFiller label="Спорядження" name="filler" />
-                    <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue, setFieldValue }) => {
-                            const value = (getFieldValue('temperature') as ITempartureData) ?? {};
-
-                            return (
-                                <Form.Item label="Температура, °C" name="temperature">
-                                    <InputNumber
-                                        placeholder="Мін"
-                                        onChange={min => setFieldValue('temperature', { ...value, min })}
-                                        value={value?.min}
-                                        css={s.size}
-                                    />
-                                    <InputNumber
-                                        placeholder="Макс"
-                                        onChange={max => setFieldValue('temperature', { ...value, max })}
-                                        value={value?.max}
-                                    />
-                                </Form.Item>
-                            );
-                        }}
-                    </Form.Item>
+                    <FieldRange label="Температура, °C" name="temperature" />
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}

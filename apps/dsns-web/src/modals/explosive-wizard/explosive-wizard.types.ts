@@ -1,5 +1,5 @@
 import { type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
-import { type IExplosiveCompositionData } from 'shared-my-client';
+import { type IRangeData, type IExplosiveCompositionData } from 'shared-my-client';
 
 export interface IExplosiveForm {
     name: string;
@@ -11,18 +11,18 @@ export interface IExplosiveForm {
     composition: IExplosiveCompositionData[] | null;
     status: EXPLOSIVE_OBJECT_STATUS;
     //explosive
-    velocity: number | null; // m/s
-    brisantness: number | null; // m
-    explosiveness: number | null; // m³
-    tnt: number | null; // TNT equivalent
+    velocity: IRangeData | null; // m/s
+    brisantness: IRangeData | null; // m
+    explosiveness: IRangeData | null; // m³
+    tnt: IRangeData | null; // TNT equivalent
 
     //sensitivity
     shock: string | null;
     temperature: string | null;
     friction: string | null;
 
-    density: number | null; // kg/m³
-    meltingPoint: number | null; // °C
-    ignitionPoint: number | null; // °C
+    density: IRangeData | null; // kg/m³
+    meltingPoint: IRangeData | null; // °C
+    ignitionPoint: IRangeData | null; // °C
     image: File | null;
 }
