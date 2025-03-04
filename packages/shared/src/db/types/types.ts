@@ -1,4 +1,4 @@
-import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp, type IFieldDB } from './common';
+import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp, type IFieldDB, type ISectionInfoDB } from './common';
 import { type IActionDB, type IPurposeDB, type IStructureDB, type IFillerDB, type ISizeDB } from './explosive-object';
 import { type IExplosiveObjectDBv1, type IExplosiveObjectDB } from './explosive-object/explosive-object';
 import {
@@ -15,6 +15,7 @@ import {
     type RANKS,
     type EXPLOSIVE_OBJECT_STATUS,
     type BOOK_TYPE,
+    type MATERIAL,
 } from '../enum';
 
 export interface IAddressDB {
@@ -152,6 +153,7 @@ export interface IExplosiveDeviceDB extends IBaseDB {
     status?: EXPLOSIVE_OBJECT_STATUS;
     name: string;
     type: EXPLOSIVE_DEVICE_TYPE;
+    material: MATERIAL[];
     /** @deprecated */
     size?: ISizeDB | null; //м;
     sizeV2: ISizeDB[] | null; //м;
@@ -163,6 +165,7 @@ export interface IExplosiveDeviceDB extends IBaseDB {
     structure?: IStructureDB | null; // будова;
     action?: IActionDB | null; // принцип дії;
     additional: IFieldDB[] | null; // додатково
+    marking: ISectionInfoDB | null; // маркування
     authorId: string;
 }
 

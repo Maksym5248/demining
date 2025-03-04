@@ -14,6 +14,14 @@ export const explosiveDeviceTypeData: IExplosiveDeviceTypeNotDB[] = [
         name: 'Запальник',
         id: EXPLOSIVE_DEVICE_TYPE.IGNER,
     },
+    {
+        name: 'Детонуючий шнур',
+        id: EXPLOSIVE_DEVICE_TYPE.DETONATION_CORD,
+    },
+    {
+        name: 'Вогнепровідний шнур',
+        id: EXPLOSIVE_DEVICE_TYPE.FIRETRANSFER_CORD,
+    },
 ];
 
 export const explosiveDeviceTypeDataMap = explosiveDeviceTypeData.reduce(

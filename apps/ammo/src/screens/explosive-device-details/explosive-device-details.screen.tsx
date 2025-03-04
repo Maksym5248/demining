@@ -62,6 +62,12 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                 </Block.View>
                 <Block.Slider
                     require={false}
+                    label={t('marking')}
+                    description={vm.item?.data?.marking?.description}
+                    data={vm.slidesMarking}
+                />
+                <Block.Slider
+                    require={false}
                     label={t('purpose')}
                     description={vm.item?.data.purpose?.description}
                     data={vm.slidesPurpose}

@@ -18,6 +18,7 @@ import {
     type IExtractionDB,
     type IFoldingDB,
     type IInstallationDB,
+    type ISectionInfoDB,
 } from 'shared-my';
 
 export type IWeightDTO = IWeightDB;
@@ -33,6 +34,7 @@ export type IFoldingDTO = IFoldingDB;
 export type IFillerDTO = IFillerDB;
 export type IInstallationDTO = IInstallationDB;
 export type IExplosiveObjectDetailsDTO = IExplosiveObjectDetailsDB;
+export type ISectionInfoDTO = ISectionInfoDB;
 
 export type ICountryDTO = ICountryDB;
 export type IExplosiveObjectClassDTO = IExplosiveObjectClassDB;

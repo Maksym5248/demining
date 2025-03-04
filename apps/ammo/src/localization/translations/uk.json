@@ -93,7 +93,8 @@
             "liquidator": "Самоліквідатор",
             "extraction": "Невилучення",
             "folding": "Зведення",
-            "neutralization": "Нейтралізація"
+            "neutralization": "Нейтралізація",
+            "marking": "Маркування"
         },
         "explosive-device-details": {
             "title": "Деталі",
@@ -106,7 +107,8 @@
             "fillers": "Спорядження, кг",
             "purpose": "Ураження",
             "structure": "Будова",
-            "action": "Принцип дії"
+            "action": "Принцип дії",
+            "marking": "Маркування"
         },
         "explosive-object-type": {
             "title": "Типи"

@@ -102,7 +102,7 @@ export const ExplosiveObjectFillerWizardModal = observer(({ isVisible, hide, onS
                 <Form.Item label="Варіант" name="variant">
                     <InputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Вага, кг" name="weight" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                <Form.Item label="Вага, кг" name="weight">
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item label="Опис" name="description">

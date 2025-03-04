@@ -14,6 +14,22 @@ export interface ListItemProps {
     onRemove: (index: number) => void;
 }
 
+const getDescription = (item: IFillerData) => {
+    if (item.description && item.weight) {
+        return `${item.description} ${item.weight} кг`;
+    }
+
+    if (!item.description && item.weight) {
+        return `${item.weight} кг`;
+    }
+
+    if (item.description && !item.weight) {
+        return item.description;
+    }
+
+    return `${item.weight} кг`;
+};
+
 function ListItem({ item, index, onRemove }: ListItemProps) {
     const store = useStore();
     const _onRemove = () => onRemove?.(index);
@@ -23,10 +39,7 @@ function ListItem({ item, index, onRemove }: ListItemProps) {
 
     return (
         <List.Item actions={[<Button key="list-remove" icon={<Icon.DeleteOutlined style={{ color: 'red' }} />} onClick={_onRemove} />]}>
-            <List.Item.Meta
-                title={item?.variant ? `${label} (${item?.variant})` : label}
-                description={item.description ? `${item.description} ${item.weight} кг` : `${item.weight} кг`}
-            />
+            <List.Item.Meta title={item?.variant ? `${label} (${item?.variant})` : label} description={getDescription(item)} />
         </List.Item>
     );
 }

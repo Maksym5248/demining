@@ -54,4 +54,4 @@ function Component() {
     );
 }
 
-export const Material = observer(Component);
+export const FieldMaterial = observer(Component);

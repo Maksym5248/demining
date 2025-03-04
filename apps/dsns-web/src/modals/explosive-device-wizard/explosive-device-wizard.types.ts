@@ -1,4 +1,4 @@
-import { type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_DEVICE_TYPE, type MATERIAL } from 'shared-my';
 import { type ISizeData, type IFillerData, type IFieldData } from 'shared-my-client';
 
 export interface IExplosiveDeviceForm {
@@ -20,5 +20,9 @@ export interface IExplosiveDeviceForm {
     actionImageUris: string[];
     actionDescription: string;
 
+    markingImageUris: string[];
+    markingDescription: string;
+
     additional: IFieldData[];
+    material: MATERIAL[];
 }

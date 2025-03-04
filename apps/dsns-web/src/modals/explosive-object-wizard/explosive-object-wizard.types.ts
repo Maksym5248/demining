@@ -53,6 +53,9 @@ export interface IExplosiveObjectForm {
     neutralizationImageUris: string[];
     neutralizationDescription: string;
 
+    markingImageUris: string[];
+    markingDescription: string;
+
     additional: IFieldData[];
 
     // additional

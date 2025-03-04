@@ -99,7 +99,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
             destroyOnClose
             title={`${isEdit ? 'Редагувати' : 'Створити'} ВР`}
             placement="right"
-            width={600}
+            width={900}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={!!currentExplosive?.isEditable} />}>
             {isLoading ? (
@@ -108,8 +108,8 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                 <Form
                     name="explosive-object-form"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosive

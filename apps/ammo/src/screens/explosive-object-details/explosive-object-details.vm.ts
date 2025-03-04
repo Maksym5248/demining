@@ -14,6 +14,7 @@ export interface ISlide {
 export interface IExplosiveObjectDetailsVM extends ViewModel {
     item: IExplosiveObject | undefined;
     slides: ISlide[];
+    slidesMarking: ISlide[];
     slidesPurpose: ISlide[];
     slidesStructure: ISlide[];
     slidesAction: ISlide[];
@@ -73,6 +74,10 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
                 .filter(Boolean)
                 .map((uri, i) => ({ uri, id: i }) as ISlide) ?? ([] as ISlide[])
         );
+    }
+
+    get slidesMarking() {
+        return this.item?.details?.data.marking?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 
     get slidesPurpose() {

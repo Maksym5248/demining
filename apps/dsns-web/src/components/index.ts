@@ -23,3 +23,4 @@ export * from './upload';
 export * from './field-multi';
 export * from './field-modal';
 export * from './field-range';
+export * from './field-material';

@@ -14,6 +14,7 @@ import { type IFieldData, type ISizeData } from 'shared-my-client';
 
 import {
     FieldFiller,
+    FieldMaterial,
     FieldModal,
     FieldMulty,
     FieldRange,
@@ -29,7 +30,7 @@ import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 import { select } from '~/utils';
 
-import { Classification, Fervor, Fuse, Material } from './components';
+import { Classification, Fervor, Fuse } from './components';
 import { s } from './explosive-object-wizard.style';
 import { type IExplosiveObjectForm } from './explosive-object-wizard.types';
 
@@ -76,6 +77,8 @@ const getParams = ({
     installationImageUris,
     neutralizationDescription,
     neutralizationImageUris,
+    markingImageUris,
+    markingDescription,
     additional,
     ...values
 }: IExplosiveObjectForm) => ({
@@ -141,6 +144,10 @@ const getParams = ({
             imageUris: neutralizationImageUris,
             description: neutralizationDescription,
         },
+        marking: {
+            imageUris: markingImageUris,
+            description: markingDescription,
+        },
     },
 });
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
@@ -182,7 +189,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
             destroyOnClose
             title={`${isEdit ? 'Редагувати' : 'Створити'} ВНП`}
             placement="right"
-            width={600}
+            width={900}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={currentExplosiveObject?.isEditable} />}>
             {isLoading ? (
@@ -191,8 +198,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                 <Form
                     name="explosive-object-form"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
                     disabled={wizard.isView}
                     initialValues={
                         currentExplosiveObject
@@ -218,6 +225,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   extractionDescription: currentExplosiveObject.details?.data.extraction?.description ?? '',
                                   foldingImageUris: currentExplosiveObject.details?.data.folding?.imageUris ?? [],
                                   foldingDescription: currentExplosiveObject.details?.data.folding?.description ?? '',
+                                  markingImageUris: currentExplosiveObject.details?.data.marking?.imageUris ?? [],
+                                  markingDescription: currentExplosiveObject.details?.data.marking?.description ?? '',
                                   imageUris: currentExplosiveObject?.details?.data?.imageUris
                                       ? currentExplosiveObject.details?.data.imageUris
                                       : [],
@@ -387,13 +396,13 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         )}
                     />
                     <Divider />
-                    <Material />
+                    <FieldMaterial />
                     <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
                     <FieldModal
                         label="Розмір, мм"
                         name="size"
                         modal={MODALS.SIZE_WIZARD}
-                        getTitle={(item: ISizeData) => `${getSizeLabel(item)} (${item?.variant})`}
+                        getTitle={(item: ISizeData) => getSizeLabel(item)}
                         getDescription={item => item.name}
                     />
                     <FieldFiller label="Спорядження" name="filler" />
@@ -409,6 +418,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Повний опис" name="fullDescription">
                         <Input.TextArea placeholder="Введіть дані" rows={8} />
                     </Form.Item>
+                    <Divider />
+                    <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
                     <Divider />
                     <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
                     <Divider />

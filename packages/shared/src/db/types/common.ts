@@ -22,3 +22,8 @@ export interface IFieldDB {
     name: string;
     value: string;
 }
+
+export interface ISectionInfoDB {
+    description: string;
+    imageUris: string[];
+}

@@ -1,7 +1,7 @@
 import { Form, Drawer, Input, Spin, InputNumber, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData, explosiveObjectStatuses, measurement, MIME_TYPE } from 'shared-my';
-import { type ISizeData, useItemStore, type IFieldData } from 'shared-my-client';
+import { type ISizeData, useItemStore, type IFieldData, getSizeLabel } from 'shared-my-client';
 
 import {
     WizardButtons,
@@ -13,6 +13,7 @@ import {
     FieldFiller,
     FieldModal,
     FieldMulty,
+    FieldMaterial,
 } from '~/components';
 import { MODALS, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
@@ -20,12 +21,6 @@ import { AssetStorage } from '~/services';
 
 import { s } from './explosive-device-wizard.style';
 import { type IExplosiveDeviceForm } from './explosive-device-wizard.types';
-
-const getSizeLabel = (item: ISizeData) => {
-    if (!item.length && !item.width && !item.height) return 'невідомо';
-
-    return item.width ? `${item.length}x${item.width}x${item.height}` : `${item.length}x${item.height}`;
-};
 
 interface Props {
     id?: string;
@@ -42,6 +37,8 @@ const getParams = ({
     structureDescription,
     actionImageUris,
     actionDescription,
+    markingImageUris,
+    markingDescription,
     additional,
     ...values
 }: IExplosiveDeviceForm) => ({
@@ -70,6 +67,10 @@ const getParams = ({
         imageUris: actionImageUris,
         description: actionDescription,
     },
+    marking: {
+        imageUris: markingImageUris,
+        description: markingDescription,
+    },
 });
 
 export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
@@ -95,13 +96,15 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
         hide();
     };
 
+    console.log('item', item?.data);
+
     return (
         <Drawer
             open={isVisible}
             destroyOnClose
             title={`${isEdit ? 'Редагувати' : 'Створити'} ВР та ЗП`}
             placement="right"
-            width={500}
+            width={900}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={!!item?.isEditable} />}>
             {isLoading ? (
@@ -110,8 +113,8 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                 <Form
                     name="explosive-form"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
                     disabled={wizard.isView}
                     initialValues={
                         item
@@ -129,6 +132,8 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                                   structureDescription: item?.data.structure?.description ?? '',
                                   actionImageUris: item?.data.action?.imageUris ?? [],
                                   actionDescription: item?.data.action?.description ?? '',
+                                  markingImageUris: item?.data.marking?.imageUris ?? [],
+                                  markingDescription: item?.data.marking?.description ?? '',
                                   imageUris: item?.data?.imageUris ? item?.data.imageUris : [],
                               }
                             : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }
@@ -177,12 +182,13 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                         label="Розмір, мм"
                         name="size"
                         modal={MODALS.SIZE_WIZARD}
-                        getTitle={(item: ISizeData) => `${getSizeLabel(item)} (${item?.variant})`}
+                        getTitle={(item: ISizeData) => getSizeLabel(item)}
                         getDescription={item => item.name}
                     />
                     <Form.Item label="Вага, кг" name="chargeWeight">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
+                    <FieldMaterial />
                     <FieldMulty
                         label="Додаткові"
                         name="additional"
@@ -214,6 +220,8 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                         )}
                     />
                     <FieldFiller label="Спорядження" name="filler" />
+                    <Divider />
+                    <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
                     <Divider />
                     <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
                     <Divider />
