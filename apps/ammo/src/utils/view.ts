@@ -6,5 +6,10 @@ export const viewSize = (size?: ISizeData | null) => {
     if (size.length && size.width && size.height)
         return `${measurement.mToMm(size.length)}x${measurement.mToMm(size.width)}x${measurement.mToMm(size.height)}`;
     if (size.length && size.height) return `${measurement.mToMm(size.length)}x${measurement.mToMm(size.height)}`;
+    if (size.length && size.width) return `${measurement.mToMm(size.length)}x${measurement.mToMm(size.width)}`;
+    if (size.length) return `${measurement.mToMm(size.length)}`;
+    if (size.width) return `${measurement.mToMm(size.width)}`;
+    if (size.height) return `${measurement.mToMm(size.height)}`;
+
     return undefined;
 };
