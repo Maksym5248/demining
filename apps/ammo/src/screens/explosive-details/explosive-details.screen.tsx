@@ -80,6 +80,11 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                     <Field.Range label={t('meltingPoint')} value={[meltingPoint?.min, meltingPoint?.max]} />
                     <Field.Range label={t('ignitionPoint')} value={[ignitionPoint?.min, ignitionPoint?.max]} />
                 </Block.View>
+                {!!vm.item?.data?.additional?.length && (
+                    <Block.View title={t('additional')}>
+                        {vm.item?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
+                    </Block.View>
+                )}
             </Scroll>
         </View>
     );
