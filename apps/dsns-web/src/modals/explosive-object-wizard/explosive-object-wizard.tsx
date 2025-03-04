@@ -87,7 +87,7 @@ const getParams = ({
         additional: additional?.filter(el => !!el) ?? [],
         imageUris,
         caliber,
-        material: material.filter(el => !!el),
+        material: material?.filter(el => !!el) ?? [],
         fullDescription,
         size:
             size?.map(
@@ -109,7 +109,7 @@ const getParams = ({
         targetSensor,
         sensitivity,
         timeWork,
-        filler,
+        filler: filler ?? [],
         fuseIds: fuseIds?.filter(el => !!el) ?? [],
         fervorIds: fervorIds?.filter(el => !!el) ?? [],
         liquidator: {
