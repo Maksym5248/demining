@@ -10,7 +10,7 @@ import {
     measurement,
     MIME_TYPE,
 } from 'shared-my';
-import { type IEdditionalCharacteristicData, type ISizeData } from 'shared-my-client';
+import { type IFieldData, type ISizeData } from 'shared-my-client';
 
 import {
     FieldFiller,
@@ -360,13 +360,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         label="Додаткові"
                         name="additional"
                         manual
-                        renderField={({
-                            value,
-                            update,
-                        }: {
-                            value: IEdditionalCharacteristicData;
-                            update: (v: IEdditionalCharacteristicData) => void;
-                        }) => (
+                        renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
                             <div css={s.additional}>
                                 <Input
                                     css={s.input}

@@ -69,7 +69,7 @@ export const EquipmentListPage = observer(() => {
             dataSource={equipment.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
-            renderItem={(item) => <ListItem item={item} />}
+            renderItem={item => <ListItem item={item} />}
         />
     );
 });

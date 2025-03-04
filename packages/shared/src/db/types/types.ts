@@ -1,4 +1,4 @@
-import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp } from './common';
+import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp, type IFieldDB } from './common';
 import { type IActionDB, type IPurposeDB, type IStructureDB, type IFillerDB, type ISizeDB } from './explosive-object';
 import { type IExplosiveObjectDBv1, type IExplosiveObjectDB } from './explosive-object/explosive-object';
 import {
@@ -152,7 +152,9 @@ export interface IExplosiveDeviceDB extends IBaseDB {
     status?: EXPLOSIVE_OBJECT_STATUS;
     name: string;
     type: EXPLOSIVE_DEVICE_TYPE;
-    size?: ISizeDB | null; //мм;
+    /** @deprecated */
+    size?: ISizeDB | null; //м;
+    sizeV2: ISizeDB[] | null; //м;
     imageUri?: string | null;
     imageUris?: string[] | null;
     filler?: IFillerDB[] | null; // спорядження ВР;
@@ -160,6 +162,7 @@ export interface IExplosiveDeviceDB extends IBaseDB {
     purpose?: IPurposeDB | null; // призначення;
     structure?: IStructureDB | null; // будова;
     action?: IActionDB | null; // принцип дії;
+    additional: IFieldDB[] | null; // додатково
     authorId: string;
 }
 
@@ -190,6 +193,7 @@ export interface IExplosiveDB extends IBaseDB {
     fullName: string | null;
     formula: string | null;
     description: string | null;
+    additional: IFieldDB[] | null; // додатково
     composition: IExplosiveCompositionDB[] | null;
     /** @deprecated */
     explosive?: {

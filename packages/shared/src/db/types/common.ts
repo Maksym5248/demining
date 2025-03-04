@@ -17,3 +17,8 @@ export interface ILinkedToDocumentDB {
     documentId: string;
     executedAt: Timestamp | null;
 }
+
+export interface IFieldDB {
+    name: string;
+    value: string;
+}

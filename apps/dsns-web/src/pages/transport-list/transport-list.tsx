@@ -71,7 +71,7 @@ export const TransportListPage = observer(() => {
             dataSource={transport.list.asArray}
             onLoadMore={onLoadMore}
             header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
-            renderItem={(item) => <ListItem item={item} />}
+            renderItem={item => <ListItem item={item} />}
         />
     );
 });

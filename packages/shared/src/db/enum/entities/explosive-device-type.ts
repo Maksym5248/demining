@@ -1,4 +1,5 @@
 export enum EXPLOSIVE_DEVICE_TYPE {
     EXPLOSIVE = 'EXPLOSIVE',
     DETONATOR = 'DETONATOR',
+    IGNER = 'IGNER',
 }

@@ -60,7 +60,8 @@
             "phisicalCharacteristic": "Фізико-хімічні характеристики",
             "density": "Плотність, кг/м³",
             "meltingPoint": "Т плавлення, ºС",
-            "ignitionPoint": "Т запалення, ºС"
+            "ignitionPoint": "Т запалення, ºС",
+            "additional": "Додаткові"
         },
         "explosive-object-details": {
             "title": "Деталі",

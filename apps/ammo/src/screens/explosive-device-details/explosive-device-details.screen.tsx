@@ -34,7 +34,17 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                     <Field.View label={t('type')} text={vm.item?.type?.name} />
                 </Block.View>
                 <Block.View title={t('characteristic')}>
-                    <Field.View label={t('size')} text={viewSize(vm.item?.data?.size)} />
+                    <Field.List
+                        label={t('size')}
+                        splitterItem=", "
+                        items={
+                            vm.item?.data?.size?.map(el => ({
+                                title: viewSize(el),
+                                text: el.name ? ` (${el.name})` : undefined,
+                            })) ?? []
+                        }
+                        require={false}
+                    />
                     <Field.View label={t('weight')} text={vm.item?.data?.chargeWeight} />
                     <Text type="label" style={styles.label} text={t('fillers')} />
                     {vm.fillers?.map((el, i) => (
@@ -48,6 +58,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                             <Text text={`${el.weight}`} />
                         </View>
                     )) ?? <Text text={'-'} />}
+                    {vm.item?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
                 </Block.View>
                 <Block.Slider
                     require={false}

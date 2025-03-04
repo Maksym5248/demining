@@ -1,5 +1,5 @@
 import { type MATERIAL, type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
-import { type IEdditionalCharacteristicData, type IFillerData, type ISizeData, type ITempartureData } from 'shared-my-client';
+import { type IFieldData, type IFillerData, type ISizeData, type ITempartureData } from 'shared-my-client';
 
 export interface IExplosiveObjectForm {
     name: string;
@@ -53,7 +53,7 @@ export interface IExplosiveObjectForm {
     neutralizationImageUris: string[];
     neutralizationDescription: string;
 
-    additional: IEdditionalCharacteristicData[];
+    additional: IFieldData[];
 
     // additional
     image?: File;

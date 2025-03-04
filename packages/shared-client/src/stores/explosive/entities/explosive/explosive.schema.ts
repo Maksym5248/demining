@@ -5,6 +5,7 @@ import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import { type IExplosiveDTOParams, type IExplosiveDTO, type IRangeDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
+import { type IFieldData } from '~/stores/type';
 
 export interface IExplosiveCompositionData {
     explosiveId: string | null;
@@ -46,6 +47,7 @@ export interface IExplosiveData {
         ignitionPoint: IRangeData | null; // °C
     } | null;
     organizationId?: string;
+    additional: IFieldData[] | null; // додатково
     authorId: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -74,6 +76,13 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): I
     fullName: value.fullName ?? null,
     formula: value.formula ?? null,
     description: value.description ?? null,
+    additional:
+        value?.additional
+            ?.filter(el => !!el)
+            .map(el => ({
+                name: el.name,
+                value: el.value,
+            })) ?? null,
     composition: value.composition
         ? value.composition.map(item => ({
               explosiveId: item.explosiveId ?? null,
@@ -144,6 +153,13 @@ export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IEx
               ignitionPoint: createRangeDTO(value.physical.ignitionPoint),
           }
         : null,
+    additional:
+        value?.additional
+            ?.filter(el => !!el)
+            .map(el => ({
+                name: el.name,
+                value: el.value,
+            })) ?? null,
 }));
 
 export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
@@ -189,6 +205,13 @@ export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
             : null,
     authorId: value.authorId,
     organizationId: value?.organizationId ?? undefined,
+    additional:
+        value?.additional
+            ?.filter(el => !!el)
+            .map(el => ({
+                name: el.name,
+                value: el.value,
+            })) ?? null,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });

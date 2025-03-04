@@ -3,8 +3,9 @@ import { useEffect } from 'react';
 import { Form, Input, Drawer, Spin, Divider, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE, explosiveObjectStatuses, measurement } from 'shared-my';
+import { type IFieldData } from 'shared-my-client';
 
-import { FieldRange, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
+import { FieldMulty, FieldRange, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
@@ -31,10 +32,12 @@ const getParams = ({
     meltingPoint,
     ignitionPoint,
     tnt,
+    additional,
     ...value
 }: IExplosiveForm) => {
     return {
         ...value,
+        additional: additional?.filter(el => !!el) ?? [],
         explosive: {
             velocity: velocity ?? null,
             brisantness: {
@@ -202,6 +205,37 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     <FieldRange label="Плотність, кг/м³" name="density" min={0} />
                     <FieldRange label="Т плавлення, ºС" name="meltingPoint" min={0} />
                     <FieldRange label="Т запалення, ºС" name="ignitionPoint" min={0} />
+                    <Divider />
+                    <FieldMulty
+                        label="Додаткові"
+                        name="additional"
+                        manual
+                        renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
+                            <div css={s.additional}>
+                                <Input
+                                    css={s.input}
+                                    placeholder="Назва"
+                                    value={value?.name}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            name: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    placeholder="Значення"
+                                    value={value?.value}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            value: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} />
                 </Form>
             )}

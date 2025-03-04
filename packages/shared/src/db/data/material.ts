@@ -11,8 +11,28 @@ export const materialsData: IMaterialNotDB[] = [
         name: 'Сталь',
     },
     {
+        id: MATERIAL.CAST_IRON,
+        name: 'Чавун',
+    },
+    {
+        id: MATERIAL.DUCTILE_IRON,
+        name: 'Сталистий чавун',
+    },
+    {
+        id: MATERIAL.ALUMINIUM,
+        name: 'Алюміній',
+    },
+    {
         id: MATERIAL.PLASTIC,
         name: 'Пластик',
+    },
+    {
+        id: MATERIAL.COPPER,
+        name: 'Мідь',
+    },
+    {
+        id: MATERIAL.BRASS,
+        name: 'Латунь',
     },
     {
         id: MATERIAL.WOOD,
