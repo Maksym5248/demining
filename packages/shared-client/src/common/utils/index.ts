@@ -6,3 +6,4 @@ export * from './data';
 export * from './file';
 export * from './math';
 export * from './timeout';
+export * from './string';

@@ -154,6 +154,12 @@ export const Layout = observer(() => {
             ...(isAuthor
                 ? [
                       {
+                          key: ROUTES.EXPLOSIVE_LIST,
+                          icon: <Icon.FireOutlined />,
+                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
+                      },
+                      {
                           key: ROUTES.EXPLOSIVE_OBJECT_TYPE,
                           icon: <Icon.ApartmentOutlined />,
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_TYPE),
@@ -165,12 +171,7 @@ export const Layout = observer(() => {
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_OBJECT_CLASS),
                           onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_CLASS),
                       },
-                      {
-                          key: ROUTES.EXPLOSIVE_LIST,
-                          icon: <Icon.FireOutlined />,
-                          label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
-                          onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
-                      },
+
                       {
                           key: ROUTES.BOOKS_LIST,
                           icon: <Icon.BookOutlined />,

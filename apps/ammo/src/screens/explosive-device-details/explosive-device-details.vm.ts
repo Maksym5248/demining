@@ -10,6 +10,7 @@ import { type ViewModel } from '~/types';
 export interface IExplosiveObjectDetailsVM extends ViewModel {
     item: IExplosiveDevice | undefined;
     slides: ISlide[];
+    slidesMarking: ISlide[];
     slidesPurpose: ISlide[];
     slidesStructure: ISlide[];
     slidesAction: ISlide[];
@@ -48,6 +49,10 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
             [this.item?.imageUri, ...(this.item?.data.imageUris ?? [])].filter(Boolean).map((uri, i) => ({ uri, id: i }) as ISlide) ??
             ([] as ISlide[])
         );
+    }
+
+    get slidesMarking() {
+        return this.item?.data.marking?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 
     get slidesPurpose() {

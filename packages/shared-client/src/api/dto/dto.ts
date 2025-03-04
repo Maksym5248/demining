@@ -25,9 +25,11 @@ import {
     type IExplosiveDB,
     type IBookDB,
     type IRangeDB,
+    type IFieldDB,
 } from 'shared-my';
 
 export type IAddressDTO = IAddressDB;
+export type IFieldDTO = IFieldDB;
 
 export type IRankDTO = IRankDB;
 export type IEmployeeDTO = IEmployeeDB;

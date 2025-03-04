@@ -13,15 +13,28 @@ const size = Theme.css(`
 `);
 
 const inert = Theme.css(
-    (theme) => `
+    theme => `
     color: ${theme.token.colorInfoActive};
 
 `,
 );
 
 const label = Theme.css(
-    (theme) => `
+    theme => `
     color: ${theme.token.colorInfoActive};
+`,
+);
+
+const additional = Theme.css(
+    () => `
+    flex-direction: row;
+
+`,
+);
+
+const input = Theme.css(
+    () => `
+    margin-bottom: 5px;
 `,
 );
 
@@ -30,4 +43,6 @@ export const s = {
     size,
     inert,
     label,
+    additional,
+    input,
 };

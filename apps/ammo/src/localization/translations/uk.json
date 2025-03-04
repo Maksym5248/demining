@@ -60,7 +60,8 @@
             "phisicalCharacteristic": "Фізико-хімічні характеристики",
             "density": "Плотність, кг/м³",
             "meltingPoint": "Т плавлення, ºС",
-            "ignitionPoint": "Т запалення, ºС"
+            "ignitionPoint": "Т запалення, ºС",
+            "additional": "Додаткові"
         },
         "explosive-object-details": {
             "title": "Деталі",
@@ -92,7 +93,8 @@
             "liquidator": "Самоліквідатор",
             "extraction": "Невилучення",
             "folding": "Зведення",
-            "neutralization": "Нейтралізація"
+            "neutralization": "Нейтралізація",
+            "marking": "Маркування"
         },
         "explosive-device-details": {
             "title": "Деталі",
@@ -105,7 +107,8 @@
             "fillers": "Спорядження, кг",
             "purpose": "Ураження",
             "structure": "Будова",
-            "action": "Принцип дії"
+            "action": "Принцип дії",
+            "marking": "Маркування"
         },
         "explosive-object-type": {
             "title": "Типи"

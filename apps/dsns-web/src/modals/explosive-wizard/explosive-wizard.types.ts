@@ -1,5 +1,5 @@
 import { type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
-import { type IRangeData, type IExplosiveCompositionData } from 'shared-my-client';
+import { type IRangeData, type IExplosiveCompositionData, type IFieldData } from 'shared-my-client';
 
 export interface IExplosiveForm {
     name: string;
@@ -25,4 +25,6 @@ export interface IExplosiveForm {
     meltingPoint: IRangeData | null; // °C
     ignitionPoint: IRangeData | null; // °C
     image: File | null;
+
+    additional: IFieldData[];
 }

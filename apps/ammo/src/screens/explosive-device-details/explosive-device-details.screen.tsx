@@ -1,13 +1,13 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
 import { Block, CarouselImage, Field } from '~/components';
-import { Header, Text, Touchable, Scroll } from '~/core';
+import { Header, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
+import { useDevice, useStylesCommon } from '~/styles';
 import { viewSize } from '~/utils';
 
 import { type IExplosiveDeviceDetailsScreenProps } from './explosive-device-details.types';
@@ -20,10 +20,6 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
 
-    const onOpenExplosive = useCallback((id: string) => {
-        vm.openExplosive(id);
-    }, []);
-
     return (
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
@@ -34,21 +30,38 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                     <Field.View label={t('type')} text={vm.item?.type?.name} />
                 </Block.View>
                 <Block.View title={t('characteristic')}>
-                    <Field.View label={t('size')} text={viewSize(vm.item?.data?.size)} />
-                    <Field.View label={t('weight')} text={vm.item?.data?.chargeWeight} />
-                    <Text type="label" style={styles.label} text={t('fillers')} />
-                    {vm.fillers?.map((el, i) => (
-                        <View key={i} style={[styles.row, styles.marginHorizontalXXS]}>
-                            <Touchable onPress={el.explosiveId ? () => onOpenExplosive(el.explosiveId ?? '') : undefined}>
-                                <Text
-                                    color={el.explosive ? ThemeManager.theme.colors.link : undefined}
-                                    text={el.explosive?.displayName ?? el.name ?? '-'}
-                                />
-                            </Touchable>
-                            <Text text={`${el.weight}`} />
-                        </View>
-                    )) ?? <Text text={'-'} />}
+                    <Field.List
+                        label={t('size')}
+                        splitterItem=", "
+                        items={
+                            vm.item?.data?.size?.map(el => ({
+                                title: viewSize(el),
+                                text: el.name ? ` (${el.name})` : undefined,
+                            })) ?? []
+                        }
+                        require={false}
+                    />
+                    <Field.View label={t('weight')} text={vm.item?.data?.chargeWeight} require={false} />
+                    <Field.List
+                        label={t('fillers')}
+                        splitter=" - "
+                        items={vm.fillers
+                            ?.sort((a, b) => (a.variant > b.variant ? 1 : -1))
+                            .map(el => ({
+                                prefix: el.variant ? `${el.variant}) ` : '',
+                                title: `${el.explosive?.displayName ?? el.name ?? '-'}`,
+                                text: el.weight,
+                                onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
+                            }))}
+                    />
+                    {vm.item?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
                 </Block.View>
+                <Block.Slider
+                    require={false}
+                    label={t('marking')}
+                    description={vm.item?.data?.marking?.description}
+                    data={vm.slidesMarking}
+                />
                 <Block.Slider
                     require={false}
                     label={t('purpose')}

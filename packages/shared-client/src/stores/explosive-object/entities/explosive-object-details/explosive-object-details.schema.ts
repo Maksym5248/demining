@@ -14,9 +14,10 @@ import {
     type IFoldingDTO,
     type IInstallationDTO,
     type INeutralizationDTO,
-    type IEdditionalCharacteristcDTO,
 } from '~/api';
 import { data, type ICreateValue } from '~/common';
+
+import { type ISectionInfoData, type IFieldData } from '../../../type';
 
 export type ISizeData = ISizeDTO;
 export type IFillerData = IFillerDTO;
@@ -31,7 +32,6 @@ export type IExtractionData = IExtractionDTO;
 export type IFoldingData = IFoldingDTO;
 export type IInstallationData = IInstallationDTO;
 export type INeutralizationData = INeutralizationDTO;
-export type IEdditionalCharacteristicData = IEdditionalCharacteristcDTO;
 
 export interface IExplosiveObjectDetailsData {
     id: string;
@@ -59,7 +59,8 @@ export interface IExplosiveObjectDetailsData {
     purpose: IPurposeData | null; // призначення;
     structure: IStructureData | null; // будова;
     action: IActionData | null; // принцип дії;
-    additional: IEdditionalCharacteristicData[] | null; // додатково
+    additional: IFieldData[] | null; // додатково
+    marking: ISectionInfoData | null; // маркування
 }
 
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
@@ -149,6 +150,12 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
             ? {
                   description: value.action.description ?? null,
                   imageUris: value.action.imageUris ?? [],
+              }
+            : null,
+        marking: value?.marking
+            ? {
+                  description: value.marking.description ?? null,
+                  imageUris: value.marking.imageUris ?? [],
               }
             : null,
         additional:
@@ -242,6 +249,12 @@ export const createExplosiveObjectDetailsDTO = (
             name: el.name,
             value: el.value,
         })) ?? null,
+    marking: value?.marking
+        ? {
+              description: value.marking.description ?? null,
+              imageUris: value.marking.imageUris ?? [],
+          }
+        : null,
 });
 
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
@@ -321,6 +334,12 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
         ? {
               description: value.action.description ?? null,
               imageUris: value.action.imageUris ?? [],
+          }
+        : null,
+    marking: value?.marking
+        ? {
+              description: value.marking.description ?? null,
+              imageUris: value.marking.imageUris ?? [],
           }
         : null,
     additional:

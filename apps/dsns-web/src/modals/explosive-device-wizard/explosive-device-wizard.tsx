@@ -1,10 +1,21 @@
 import { Form, Drawer, Input, Spin, InputNumber, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData, explosiveObjectStatuses, measurement, MIME_TYPE } from 'shared-my';
-import { useItemStore } from 'shared-my-client';
+import { type ISizeData, useItemStore, type IFieldData, getSizeLabel } from 'shared-my-client';
 
-import { WizardButtons, Select, WizardFooter, UploadFile, FieldSize, FieldSection, FieldImageUris, FieldFiller } from '~/components';
-import { type WIZARD_MODE } from '~/constants';
+import {
+    WizardButtons,
+    Select,
+    WizardFooter,
+    UploadFile,
+    FieldSection,
+    FieldImageUris,
+    FieldFiller,
+    FieldModal,
+    FieldMulty,
+    FieldMaterial,
+} from '~/components';
+import { MODALS, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
 
@@ -26,15 +37,24 @@ const getParams = ({
     structureDescription,
     actionImageUris,
     actionDescription,
+    markingImageUris,
+    markingDescription,
+    additional,
     ...values
 }: IExplosiveDeviceForm) => ({
     ...values,
-    size: {
-        length: size?.length ? measurement.mmToM(size?.length) : null,
-        width: size?.width ? measurement.mmToM(size?.width) : null,
-        height: size?.height ? measurement.mmToM(size?.height) : null,
-        variant: size?.variant ?? 1,
-    },
+    additional: additional?.filter(el => !!el) ?? [],
+    size:
+        size?.map(
+            el =>
+                ({
+                    name: el.name ?? null,
+                    length: el.length ? measurement.mmToM(el.length) : null,
+                    width: el.width ? measurement.mmToM(el.width) : null,
+                    height: el.height ? measurement.mmToM(el.height) : null,
+                    variant: el.variant,
+                }) as ISizeData,
+        ) ?? [],
     purpose: {
         imageUris: purposeImageUris,
         description: purposeDescription,
@@ -46,6 +66,10 @@ const getParams = ({
     action: {
         imageUris: actionImageUris,
         description: actionDescription,
+    },
+    marking: {
+        imageUris: markingImageUris,
+        description: markingDescription,
     },
 });
 
@@ -72,13 +96,15 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
         hide();
     };
 
+    console.log('item', item?.data);
+
     return (
         <Drawer
             open={isVisible}
             destroyOnClose
             title={`${isEdit ? 'Редагувати' : 'Створити'} ВР та ЗП`}
             placement="right"
-            width={500}
+            width={900}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={!!item?.isEditable} />}>
             {isLoading ? (
@@ -87,24 +113,27 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                 <Form
                     name="explosive-form"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
                     disabled={wizard.isView}
                     initialValues={
                         item
                             ? {
                                   ...item.data,
-                                  size: {
-                                      length: item?.data.size?.length ? measurement.mToMm(item?.data.size?.length) : null,
-                                      width: item?.data.size?.width ? measurement.mToMm(item?.data.size?.width) : null,
-                                      height: item?.data.size?.height ? measurement.mToMm(item?.data.size?.height) : null,
-                                  },
+                                  size: item?.data.size?.map(el => ({
+                                      ...el,
+                                      length: el.length ? measurement.mToMm(el.length) : null,
+                                      width: el.width ? measurement.mToMm(el.width) : null,
+                                      height: el.height ? measurement.mToMm(el.height) : null,
+                                  })),
                                   purposeImageUris: item?.data.purpose?.imageUris ?? [],
                                   purposeDescription: item?.data.purpose?.description ?? '',
                                   structureImageUris: item?.data.structure?.imageUris ?? [],
                                   structureDescription: item?.data.structure?.description ?? '',
                                   actionImageUris: item?.data.action?.imageUris ?? [],
                                   actionDescription: item?.data.action?.description ?? '',
+                                  markingImageUris: item?.data.marking?.imageUris ?? [],
+                                  markingDescription: item?.data.marking?.description ?? '',
                                   imageUris: item?.data?.imageUris ? item?.data.imageUris : [],
                               }
                             : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }
@@ -149,11 +178,50 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <FieldSize name="size" />
+                    <FieldModal
+                        label="Розмір, мм"
+                        name="size"
+                        modal={MODALS.SIZE_WIZARD}
+                        getTitle={(item: ISizeData) => getSizeLabel(item)}
+                        getDescription={item => item.name}
+                    />
                     <Form.Item label="Вага, кг" name="chargeWeight">
                         <InputNumber placeholder="Ввести" />
                     </Form.Item>
+                    <FieldMaterial />
+                    <FieldMulty
+                        label="Додаткові"
+                        name="additional"
+                        manual
+                        renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
+                            <div css={s.additional}>
+                                <Input
+                                    css={s.input}
+                                    placeholder="Назва"
+                                    value={value?.name}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            name: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    placeholder="Значення"
+                                    value={value?.value}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            value: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
                     <FieldFiller label="Спорядження" name="filler" />
+                    <Divider />
+                    <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
                     <Divider />
                     <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
                     <Divider />

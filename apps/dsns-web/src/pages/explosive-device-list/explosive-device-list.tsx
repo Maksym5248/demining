@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Button, Typography, Space, Badge } from 'antd';
 import { observer } from 'mobx-react';
-import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { explosiveDeviceTypeDataMap } from 'shared-my';
 import { type IExplosiveDevice } from 'shared-my-client';
 
 import { Icon, List, ListHeader, Image } from '~/components';
@@ -13,11 +13,6 @@ import { Modal } from '~/services';
 import { s } from './explosive-device-list.styles';
 
 const { Text } = Typography;
-
-const types = {
-    [EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE]: 'Вибухові речовини',
-    [EXPLOSIVE_DEVICE_TYPE.DETONATOR]: 'Засоб підриву',
-};
 
 const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
     const onOpen = (e: React.SyntheticEvent) => {
@@ -32,7 +27,7 @@ const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
                 title={item.data.name}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{types[item.data.type]}</Text>
+                        <Text type="secondary">{explosiveDeviceTypeDataMap[item.data.type]?.name}</Text>
                     </Space>
                 }
             />

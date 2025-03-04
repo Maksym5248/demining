@@ -1,4 +1,4 @@
-import { type MATERIAL } from '~/db';
+import { type ISectionInfoDB, type IFieldDB, type MATERIAL } from '~/db';
 
 export interface IFillerDB {
     name: string | null;
@@ -69,30 +69,18 @@ export interface IWeightDB {
     variant: number | null;
 }
 
-export interface IEdditionalCharacteristcDB {
-    name: string;
-    value: string;
-}
-
 export interface IExplosiveObjectDetailsDB {
     fullDescription: string | null;
     imageUris: string[] | null;
     // characteristics
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     material?: MATERIAL;
     materialV2: MATERIAL[];
-
-    /**
-     * @deprecated
-     */
-    size?: ISizeDB | null; //мм;
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
+    size?: ISizeDB | null; //м;
+    /** @deprecated  */
     weight?: number | null; // kg
-    sizeV2: ISizeDB[] | null; //мм;
+    sizeV2: ISizeDB[] | null; //м;
     weightV2: IWeightDB[] | null;
     temperature: ITempartureDB | null;
     filler: IFillerDB[] | null; // спорядження ВР;
@@ -109,10 +97,11 @@ export interface IExplosiveObjectDetailsDB {
     extraction?: IExtractionDB | null; // механізм невилучення
     folding?: IFoldingDB | null; // механізм зведення
     neutralization: INeutralizationDB | null; // нейтралізація
+    marking: ISectionInfoDB | null; // маркування
 
     // fuse
     targetSensor: string | null; // датчик цілі
     sensitivity: string | null; // чутливість
     timeWork: string | null; // час роботи
-    additional: IEdditionalCharacteristcDB[] | null; // додатково
+    additional: IFieldDB[] | null; // додатково
 }

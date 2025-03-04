@@ -14,3 +14,4 @@ export * from './transport';
 export * from './user';
 export * from './viewer';
 export * from './book';
+export * from './type';
