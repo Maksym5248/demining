@@ -25,12 +25,20 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
         model.openClassificationSelect();
     };
 
+    const onPressCountrySelect = () => {
+        model.openCountrySelect();
+    };
+
     const onRemoveType = () => {
         model.removeType();
     };
 
     const onRemoveClassItem = (option: IOption<string>) => {
         model.removeClassItem(option.value);
+    };
+
+    const onRemoveCountry = (option: IOption<string>) => {
+        model.removeCountry(option.value);
     };
 
     const items = [
@@ -51,6 +59,18 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
                     <Link text={t('viewAll')} onPress={onPressClassificationSelect} arrow />
                 </View>
                 <Chips options={model.classItems} onRemove={onRemoveClassItem} placeholder={t('notSelected')} />
+            </View>,
+        );
+    }
+
+    if (model.type) {
+        items.push(
+            <View key="country" style={[styles.gapXS, styles.marginHorizontalS]}>
+                <View style={styles.row}>
+                    <Text type="h6" color={theme.colors.accent} text={t('country')} />
+                    <Link text={t('viewAll')} onPress={onPressCountrySelect} arrow />
+                </View>
+                <Chips options={model.countries} onRemove={onRemoveCountry} placeholder={t('notSelected')} />
             </View>,
         );
     }

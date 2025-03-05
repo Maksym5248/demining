@@ -25,7 +25,7 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, isMult
 
     const onPressSubmit = useCallback(() => {
         onSubmit(options.filter(o => selected.includes(o.value)));
-    }, []);
+    }, [options, selected]);
 
     const onToggle = useCallback(
         (value: IOption<unknown>) => {
@@ -36,7 +36,7 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, isMult
                 onSubmit([value]);
             }
         },
-        [onSelect, hide],
+        [onSelect, hide, selected, isMulti],
     );
 
     const renderItem = useCallback(

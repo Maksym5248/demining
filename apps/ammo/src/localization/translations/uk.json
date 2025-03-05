@@ -143,6 +143,7 @@
             "explosive-object": {
                 "type": "Тип",
                 "classification": "Класифікація",
+                "country": "Країна",
                 "viewAll": "Показати всі",
                 "notSelected": "Не вибрано"
             },

@@ -5,6 +5,7 @@ import { type DictionaryType } from './common';
 export interface IDictionatyFilterExplosviveObject {
     typeId?: string;
     classItemId?: string[];
+    countryId?: string[];
 }
 
 export interface IDictionatyFilterExplosviveDevice {

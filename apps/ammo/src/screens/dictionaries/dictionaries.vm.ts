@@ -73,6 +73,10 @@ export class DictionariesVM implements IDictionariesVM {
                         !isExplosiveObject(item) || (!!value && item.classItemIds.some(el => value.includes(el))),
                 },
                 {
+                    key: 'explosiveObject.countryId',
+                    rule: (item, value: string[]) => !isExplosiveObject(item) || (!!value && value.includes(item.data.countryId)),
+                },
+                {
                     key: 'explosiveDevice.type',
                     rule: (item, value) => !isExplosiveDevice(item) || item.data.type === value,
                 },
