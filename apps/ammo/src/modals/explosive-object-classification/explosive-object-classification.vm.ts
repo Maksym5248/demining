@@ -14,10 +14,12 @@ export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassifi
         makeAutoObservable(this);
     }
 
-    init({ typeId, classItemId }: { typeId: string; classItemId?: string }) {
+    init({ typeId, classItemId }: { typeId: string; classItemId?: string[] }) {
         typeId && this.classification.setType(typeId);
-        const item = this.classification.get(classItemId);
-        item?.setSelected(true);
+
+        classItemId?.forEach(id => {
+            this.classification.get(id)?.setSelected(true);
+        });
     }
 
     unmount() {

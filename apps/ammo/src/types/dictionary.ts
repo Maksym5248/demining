@@ -4,7 +4,7 @@ import { type DictionaryType } from './common';
 
 export interface IDictionatyFilterExplosviveObject {
     typeId?: string;
-    classItemId?: string;
+    classItemId?: string[];
 }
 
 export interface IDictionatyFilterExplosviveDevice {

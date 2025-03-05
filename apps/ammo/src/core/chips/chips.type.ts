@@ -4,5 +4,5 @@ export interface IChipsProps<T> {
     options?: IOption<T> | IOption<T>[];
     style?: IViewStyle;
     placeholder?: string;
-    onRemove?: (options: IOption<T>) => void;
+    onRemove?: (option: IOption<T>) => void;
 }

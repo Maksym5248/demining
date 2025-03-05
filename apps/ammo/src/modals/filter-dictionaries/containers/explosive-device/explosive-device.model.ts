@@ -56,9 +56,9 @@ export class ExplosiveDeviceModel implements IExplosiveDeviceModel {
     }
 
     openTypeSelect() {
-        const onSelect = (option: IOption<EXPLOSIVE_DEVICE_TYPE>) => {
+        const onSelect = (option: IOption<EXPLOSIVE_DEVICE_TYPE>[]) => {
             this.setFilters({
-                type: this.filters.type === option.value ? undefined : option.value,
+                type: option.some(el => el.value === this.filters.type) ? undefined : option[0]?.value,
             });
         };
 

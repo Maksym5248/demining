@@ -169,10 +169,12 @@
             }
         },
         "select": {
-            "title": "Вибір"
+            "title": "Вибір",
+            "apply": "Вибрати"
         },
         "explosive-object-classification": {
-            "title": "Класифікація"
+            "title": "Класифікація",
+            "apply": "Вибрати"
         }
     },
     "dictionaries": {

@@ -18,7 +18,17 @@ function keyExtractor<T>(item: T, index: number): string {
 }
 
 function Component<T>(
-    { isLoading, isLoadingMore, isSearch, isEndReached, onEndReached, data, onScrollBeginDrag, ...props }: IFlatListProps<T>,
+    {
+        isLoading,
+        isLoadingMore,
+        isSearch,
+        isEndReached,
+        onEndReached,
+        data,
+        onScrollBeginDrag,
+        contentContainerStyle,
+        ...props
+    }: IFlatListProps<T>,
     ref: React.Ref<FlatList>,
 ) {
     const s = useStyles();
@@ -60,7 +70,7 @@ function Component<T>(
             {...props}
             onEndReached={_onEndReached}
             style={[s.container, props.style]}
-            contentContainerStyle={s.contentContainer}
+            contentContainerStyle={[s.contentContainer, contentContainerStyle]}
             onScrollBeginDrag={_onScrollBeginDrag}
         />
     );
