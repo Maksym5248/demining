@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { Chips, Link, Separator, Text } from '~/core';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
+import { type IOption } from '~/types';
 
 import { useStyles } from './explosive-object.style';
 import { type IExplosiveObjectProps } from './explosive-object.type';
@@ -24,12 +25,20 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
         model.openClassificationSelect();
     };
 
+    const onPressCountrySelect = () => {
+        model.openCountrySelect();
+    };
+
     const onRemoveType = () => {
         model.removeType();
     };
 
-    const onRemoveClassItem = () => {
-        model.removeClassItem();
+    const onRemoveClassItem = (option: IOption<string>) => {
+        model.removeClassItem(option.value);
+    };
+
+    const onRemoveCountry = (option: IOption<string>) => {
+        model.removeCountry(option.value);
     };
 
     const items = [
@@ -49,7 +58,19 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
                     <Text type="h6" color={theme.colors.accent} text={t('classification')} />
                     <Link text={t('viewAll')} onPress={onPressClassificationSelect} arrow />
                 </View>
-                <Chips options={model.classItem} onRemove={onRemoveClassItem} placeholder={t('notSelected')} />
+                <Chips options={model.classItems} onRemove={onRemoveClassItem} placeholder={t('notSelected')} />
+            </View>,
+        );
+    }
+
+    if (model.type) {
+        items.push(
+            <View key="country" style={[styles.gapXS, styles.marginHorizontalS]}>
+                <View style={styles.row}>
+                    <Text type="h6" color={theme.colors.accent} text={t('country')} />
+                    <Link text={t('viewAll')} onPress={onPressCountrySelect} arrow />
+                </View>
+                <Chips options={model.countries} onRemove={onRemoveCountry} placeholder={t('notSelected')} />
             </View>,
         );
     }

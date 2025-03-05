@@ -26,6 +26,7 @@ export interface IClassificationItem {
     isClass: boolean;
     isSelected: boolean;
     setSelected(value: boolean): void;
+    toggleSelected(): void;
     setSectionVisible(value: boolean): void;
     setClassVisible(value: boolean): void;
     openSearch(): void;
@@ -50,13 +51,17 @@ export class ClassificationItem implements IClassificationItem {
         this.isSelected = value;
     }
 
+    toggleSelected() {
+        this.isSelected = !this.isSelected;
+    }
+
     openSearch() {
         if (!this.isClassItem) return;
         const filters: IDictionatyFilter = {
             type: DictionaryType.ExplosiveObject,
             explosiveObject: {
                 typeId: this.typeId,
-                classItemId: this.node.id,
+                classItemId: [this.node.id],
             },
         };
 

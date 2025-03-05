@@ -94,8 +94,8 @@ export class FilterDictionariesVM implements IFilterDictionariesVM {
     }
 
     openTypeSelect() {
-        const onSelect = (option: IOption<BOOK_TYPE>) => {
-            this.setType(option.value);
+        const onSelect = (option: IOption<BOOK_TYPE>[]) => {
+            this.setType(option[0]?.value);
         };
 
         Modal.show(MODALS.SELECT, {

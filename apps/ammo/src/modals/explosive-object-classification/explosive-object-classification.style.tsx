@@ -9,4 +9,13 @@ export const useStyles = ThemeManager.createStyleSheet(({ device }) => ({
         paddingBottom: device.inset.bottom,
         flex: 0,
     },
+    button: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: device.inset.bottom,
+    },
+    containerMulti: {
+        paddingBottom: 100,
+    },
 }));
