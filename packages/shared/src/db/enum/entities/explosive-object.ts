@@ -39,6 +39,7 @@ export enum MATERIAL {
     COPPER = 'COPPER',
     BRASS = 'BRASS',
     PLASTIC = 'PLASTIC',
+    PLASTIC_AG_4V = 'PLASTIC_AG_4V',
     WOOD = 'WOOD',
     BALEKIT = 'BALEKIT',
     TEXTOLITE = 'TEXTOLITE',
