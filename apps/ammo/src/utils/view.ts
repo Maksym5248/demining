@@ -1,5 +1,5 @@
 import { measurement } from 'shared-my';
-import { type ISizeData } from 'shared-my-client';
+import { type IFillerData, type ISizeData } from 'shared-my-client';
 
 export const viewSize = (size?: ISizeData | null) => {
     if (!size) return '-';
@@ -13,3 +13,10 @@ export const viewSize = (size?: ISizeData | null) => {
 
     return undefined;
 };
+
+export function getFillterText(item: IFillerData) {
+    if (item.description && item.weight) return `${item.description} (${item.weight})`;
+    if (item.description && !item.weight) return item.description;
+    if (!item.description && !!item.weight) return item.weight;
+    return undefined;
+}
