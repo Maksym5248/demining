@@ -44,6 +44,7 @@ export enum MATERIAL {
     BALEKIT = 'BALEKIT',
     TEXTOLITE = 'TEXTOLITE',
     RUBER = 'RUBER',
+    TEXTILE = 'TEXTILE',
 }
 
 export enum METHRIC {
