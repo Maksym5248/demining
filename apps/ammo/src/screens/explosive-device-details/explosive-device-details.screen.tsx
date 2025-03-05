@@ -8,7 +8,7 @@ import { Header, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
-import { viewSize } from '~/utils';
+import { getFillterText, viewSize } from '~/utils';
 
 import { type IExplosiveDeviceDetailsScreenProps } from './explosive-device-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-device-details.vm';
@@ -50,7 +50,7 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
                             .map(el => ({
                                 prefix: el.variant ? `${el.variant}) ` : '',
                                 title: `${el.explosive?.displayName ?? el.name ?? '-'}`,
-                                text: el.weight,
+                                text: getFillterText(el),
                                 onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
                             }))}
                     />

@@ -9,7 +9,7 @@ import { Header, Paragraph, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
-import { viewSize } from '~/utils';
+import { getFillterText, viewSize } from '~/utils';
 
 import { type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
@@ -102,7 +102,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                             .map(el => ({
                                 prefix: el.variant ? `${el.variant}) ` : '',
                                 title: `${el.explosive?.displayName ?? el.name ?? '-'}`,
-                                text: el.weight,
+                                text: getFillterText(el),
                                 onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
                             }))}
                     />
