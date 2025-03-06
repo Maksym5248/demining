@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { bookTypesMap } from 'shared-my';
 import {
     type IBookData,
     type IBook,
@@ -28,12 +27,13 @@ export interface IDataItem {
     data: IBookData;
     imageUri: string;
     displayName: string;
-    typeName: string;
+    typeNames: string[];
     checkLoaded: RequestModel;
     load: RequestModel;
     progress: number;
     status: STATUS;
     openItem(): void;
+    isLoaded: boolean;
 }
 
 export class DataItem implements IDataItem {
@@ -99,11 +99,15 @@ export class DataItem implements IDataItem {
         return this.item.id;
     }
 
-    get typeName() {
-        return bookTypesMap?.[this.data.type]?.name;
+    get typeNames() {
+        return this.item?.types?.map(el => el.name) ?? [];
     }
 
     get progress() {
         return this.bytesTotal ? this.bytesRead / this.bytesTotal : 0;
+    }
+
+    get isLoaded() {
+        return this.status === STATUS.LOADED;
     }
 }

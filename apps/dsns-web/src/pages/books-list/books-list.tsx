@@ -20,7 +20,10 @@ const ListItem = observer(({ item }: { item: IBook }) => {
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 title={item?.displayName}
-                description={bookTypesMap[item.data.type]?.name}
+                description={item.data.type
+                    ?.map(type => bookTypesMap[type]?.name)
+                    .filter(Boolean)
+                    .join(', ')}
                 avatar={<Image src={item.data.imageUri} width={70} />}
             />
         </List.Item>

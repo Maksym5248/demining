@@ -47,7 +47,7 @@ export class SearchVM implements ISearchVM {
             rules: [
                 {
                     key: 'type',
-                    rule: (item, value) => value === item.data.type,
+                    rule: (item, value) => item.data.type.includes(value),
                 },
                 {
                     key: 'loadState',
@@ -68,6 +68,12 @@ export class SearchVM implements ISearchVM {
         this.order = new OrderModel(this.search, {
             orderField: 'displayName',
             orderBy: OrderBy.Asc,
+            sections: [
+                {
+                    key: 'isLoaded',
+                    compare: item => item.isLoaded,
+                },
+            ],
         });
 
         this.infiniteScroll = new InfiniteScrollModel(this.order, {

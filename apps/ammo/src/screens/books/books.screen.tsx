@@ -30,7 +30,7 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
         <View style={s.cardContainer}>
             <Card
                 type="imageBox"
-                tags={[item.typeName]}
+                tags={item.typeNames}
                 title={item.displayName}
                 uri={item.imageUri}
                 onPress={item.status === STATUS.LOADED || item.status === STATUS.SUCCESS ? onPress : undefined}
