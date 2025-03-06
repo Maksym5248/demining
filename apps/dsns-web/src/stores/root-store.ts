@@ -35,6 +35,8 @@ import {
     type IExplosiveStore,
     type IBookStore,
     BookStore,
+    type ICommonStore,
+    CommonStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -59,6 +61,7 @@ export interface IRootStore {
     organization: IOrganizationStore;
     viewer: IViewerStore;
     book: IBookStore;
+    common: ICommonStore;
     isInitialized: boolean;
     isLoaded: boolean;
     removeAllListeners(): void;
@@ -82,6 +85,7 @@ export class RootStore implements IRootStore {
     organization: IOrganizationStore;
     viewer: IViewerStore;
     book: IBookStore;
+    common: ICommonStore;
 
     isLoaded = false;
     isInitialized = false;
@@ -104,6 +108,7 @@ export class RootStore implements IRootStore {
             user: this.user,
             organization: this.organization,
             book: this.book,
+            common: this.common,
         };
     };
 
@@ -124,6 +129,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
+        this.common = new CommonStore(this);
         this.viewer = new ViewerStore(this);
         this.auth = new AuthStore(this);
         this.document = new DocumentStore(this);
@@ -186,6 +192,7 @@ export class RootStore implements IRootStore {
             this.viewer.setLoading(true);
             await DB.init();
 
+            this.common.subscribeCountries.run();
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
 
             await this.employee.fetchRanks.run();

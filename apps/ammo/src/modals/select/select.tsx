@@ -53,7 +53,7 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, isMult
                 ref={refBootomSheet}
                 header={{
                     left: <Icon name="back" color={theme.colors.accent} />,
-                    center: <Text type="h5" text={title ?? t('title')} color={theme.colors.accent} />,
+                    center: <Text type="h4" text={title ?? t('title')} color={theme.colors.accent} />,
                 }}
                 onClose={hide}>
                 <List

@@ -47,14 +47,14 @@ export const FilterDictionariesModal = observer(({ filters, onSelect, ...props }
                 ref={refBootomSheet}
                 header={{
                     left: <Icon name="back" color={theme.colors.accent} />,
-                    center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,
+                    center: <Text type="h4" text={t('title')} color={theme.colors.accent} />,
                     right: <Text text={t('reset')} color={theme.colors.accent} onPress={onPressClear} />,
                 }}
                 {...props}
                 onClose={props.hide}>
                 <Scroll style={s.container}>
                     <View style={[s.categories, styles.marginHorizontalS]}>
-                        <Text type="h6" style={styles.label} color={theme.colors.accent} text={t('label-dictionaries')} />
+                        <Text type="h5" style={styles.label} color={theme.colors.accent} text={t('label-dictionaries')} />
                         <Button.Radio options={options} value={vm.type} onPress={onPressSection} />
                     </View>
                     <Separator />

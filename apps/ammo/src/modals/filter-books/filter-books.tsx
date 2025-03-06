@@ -48,7 +48,7 @@ export const FilterBooksModal = observer(({ filters, onSelect, ...props }: IFilt
                 ref={refBootomSheet}
                 header={{
                     left: <Icon name="back" color={theme.colors.accent} />,
-                    center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,
+                    center: <Text type="h4" text={t('title')} color={theme.colors.accent} />,
                     right: <Text text={t('reset')} color={theme.colors.accent} onPress={onPressClear} />,
                 }}
                 {...props}
@@ -56,14 +56,14 @@ export const FilterBooksModal = observer(({ filters, onSelect, ...props }: IFilt
                 <Scroll style={s.container}>
                     <View key="type" style={[styles.gapXS, styles.marginHorizontalS]}>
                         <View style={styles.row}>
-                            <Text type="h6" color={theme.colors.accent} text={t('type.type')} />
+                            <Text type="h5" color={theme.colors.accent} text={t('type.type')} />
                             <Link text={t('type.viewAll')} onPress={onPressTypeSelect} arrow />
                         </View>
                         <Chips options={vm.selectedType} onRemove={onRemoveType} placeholder={t('type.notSelected')} />
                     </View>
                     <Separator />
                     <View style={[s.categories, styles.marginHorizontalS]}>
-                        <Text type="h6" style={styles.label} color={theme.colors.accent} text={t('loaded.label-type')} />
+                        <Text type="h5" style={styles.label} color={theme.colors.accent} text={t('loaded.label-type')} />
                         <Button.Radio
                             options={vm.loaded.map(el => ({
                                 title: t(`loaded.${el.title}`),

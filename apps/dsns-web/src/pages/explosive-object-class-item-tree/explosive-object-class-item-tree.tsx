@@ -113,8 +113,6 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
         );
     };
 
-    console.log('treeData', treeData);
-
     return (
         <div css={s.container}>
             <ListHeader title={type?.displayName ?? title} onCreate={onCreate} onSearch={onSearch} {...search} />

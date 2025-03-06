@@ -132,6 +132,7 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                     </Form.Item>
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Select
+                            mode="multiple"
                             options={bookTypes.map(el => ({
                                 label: el.name,
                                 value: el.id,

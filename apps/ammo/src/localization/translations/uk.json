@@ -14,7 +14,7 @@
     },
     "components": {
         "list": {
-            "empty": "Усписку немає даних",
+            "empty": "У списку немає даних",
             "emptySearch": "Немає співпадінь за результатом пошуку"
         }
     },
@@ -145,6 +145,7 @@
                 "classification": "Класифікація",
                 "country": "Країна",
                 "viewAll": "Показати всі",
+                "component": "Частина",
                 "notSelected": "Не вибрано"
             },
             "explosive-device": {

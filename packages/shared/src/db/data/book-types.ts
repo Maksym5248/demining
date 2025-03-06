@@ -12,7 +12,7 @@ export const bookTypes: IBookTypeNotDB[] = [
     },
     {
         id: BOOK_TYPE.MINING,
-        name: 'Підривна справа',
+        name: 'Мінування',
     },
     {
         id: BOOK_TYPE.DEMINING,

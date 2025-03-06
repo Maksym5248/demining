@@ -27,7 +27,7 @@ export const ExplosiveDevice = observer(({ model }: IExplosiveDeviceProps) => {
     const items = [
         <View key="type" style={[styles.gapXS, styles.marginHorizontalS]}>
             <View style={styles.row}>
-                <Text type="h6" color={theme.colors.accent} text={t('type')} />
+                <Text type="h5" color={theme.colors.accent} text={t('type')} />
                 <Link text={t('viewAll')} onPress={onPressTypeSelect} arrow />
             </View>
             <Chips options={model.type} onRemove={onRemoveType} placeholder={t('notSelected')} />

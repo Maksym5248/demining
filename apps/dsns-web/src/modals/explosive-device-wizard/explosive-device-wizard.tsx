@@ -96,8 +96,6 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
         hide();
     };
 
-    console.log('item', item?.data);
-
     return (
         <Drawer
             open={isVisible}

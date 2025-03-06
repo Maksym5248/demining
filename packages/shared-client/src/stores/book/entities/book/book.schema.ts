@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { BOOK_TYPE, EXPLOSIVE_OBJECT_STATUS, MIME_TYPE } from 'shared-my';
+import { type BOOK_TYPE, EXPLOSIVE_OBJECT_STATUS, MIME_TYPE } from 'shared-my';
 
 import { type IBookDTO } from '~/api';
 import { data, dates, type ICreateValue } from '~/common';
@@ -12,7 +12,7 @@ export interface IBookData {
     imageUri: string;
     size: number;
     uri: string;
-    type: BOOK_TYPE;
+    type: BOOK_TYPE[];
     authorId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -20,7 +20,7 @@ export interface IBookData {
 
 export const createBookDTO = (value: ICreateValue<IBookData>): ICreateValue<IBookDTO> => ({
     name: value.name ?? null,
-    type: value.type ?? null,
+    typeV2: value.type ?? null,
     mime: value.mime ?? null,
     status: value.status ?? null,
     imageUri: value.imageUri ?? null,
@@ -30,7 +30,7 @@ export const createBookDTO = (value: ICreateValue<IBookData>): ICreateValue<IBoo
 
 export const updateBookDTO = data.createUpdateDTO<IBookData, IBookDTO>(value => ({
     name: value?.name ?? '',
-    type: value.type ?? BOOK_TYPE.AMMUNITION,
+    typeV2: value.type ?? [],
     mime: value?.mime ?? MIME_TYPE.PNG,
     status: value?.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
     imageUri: value?.imageUri ?? '',
@@ -42,7 +42,7 @@ export const createBook = (value: IBookDTO): IBookData => ({
     id: value.id,
     name: value.name,
     authorId: value.authorId,
-    type: value.type ?? null,
+    type: value.typeV2 ?? (value.type ? [value.type] : []),
     status: value.status,
     imageUri: value.imageUri,
     size: value.size ?? 0,

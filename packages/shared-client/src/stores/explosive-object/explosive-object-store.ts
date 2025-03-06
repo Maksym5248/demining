@@ -21,8 +21,6 @@ import {
     createExplosiveObjectDTO,
     createExplosiveObjectActionSum,
     ExplosiveObjectAction,
-    Country,
-    createCountry,
     ExplosiveObjectDetails,
     createExplosiveObject,
     createExplosiveObjectDetails,
@@ -31,8 +29,6 @@ import {
     type IExplosiveObjectDataParams,
     type IExplosiveObjectActionData,
     type IExplosiveObjectAction,
-    type ICountry,
-    type ICountryData,
     type IExplosiveObjectDetailsData,
     type IExplosiveObjectDetails,
 } from './entities';
@@ -40,6 +36,7 @@ import { ExplosiveObjectClassStore, type IExplosiveObjectClassStore } from './ex
 import { ExplosiveObjectClassItemStore, type IExplosiveObjectClassItemStore } from './explosive-object-class-item';
 import { ExplosiveObjectTypeStore, type IExplosiveObjectTypeStore } from './explosive-object-type';
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
+import { type ICommonStore } from '../common';
 import { createExplosive, type IExplosiveStore } from '../explosive';
 import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
@@ -58,6 +55,7 @@ interface IServices {
 interface IStores {
     viewer?: IViewerStore;
     explosive: IExplosiveStore;
+    common: ICommonStore;
 }
 
 export interface IExplosiveObjectStore {
@@ -67,11 +65,9 @@ export interface IExplosiveObjectStore {
     collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
     collectionDetails: CollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
     collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
-    collectionCountries: CollectionModel<ICountry, ICountryData>;
     list: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listFuse: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listFevor: IListModel<IExplosiveObject, IExplosiveObjectData>;
-    listCountries: IListModel<ICountry, ICountryData>;
     sum: SumExplosiveObjectActions;
     classifications: IClassifications;
     setSum: (sum: IExplosiveObjectActionSumDTO) => void;
@@ -99,10 +95,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     class: IExplosiveObjectClassStore;
     classItem: IExplosiveObjectClassItemStore;
 
-    collectionCountries = new CollectionModel<ICountry, ICountryData>({
-        factory: (data: ICountryData) => new Country(data),
-    });
-
     collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>({
         factory: (data: IExplosiveObjectActionData) => new ExplosiveObjectAction(data, this),
     });
@@ -111,10 +103,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     });
     collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
         factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
-    });
-
-    listCountries = new ListModel<ICountry, ICountryData>({
-        collection: this.collectionCountries,
     });
 
     list = new ListModel<IExplosiveObject, IExplosiveObjectData>(this);
@@ -151,7 +139,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             type: this.type?.collection,
             class: this.class?.collection,
             classItem: this.classItem?.collection,
-            country: this.collectionCountries,
+            country: this.getStores().common.collectionCountries,
         };
     }
 
@@ -338,25 +326,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     fetchDeeps = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            const [countries] = await Promise.all([
-                this.api.explosiveObject.getCountriesList(),
-                this.type.fetchList.run(),
-                this.class.fetchList.run(),
-                this.classItem.fetchList.run(),
-            ]);
+            await Promise.all([this.type.fetchList.run(), this.class.fetchList.run(), this.classItem.fetchList.run()]);
 
-            this.listCountries.set(countries.map(createCountry));
             this.classifications.init();
-        },
-        onError: () => this.services.message.error('Виникла помилка'),
-    });
-
-    subscribeCountries = new RequestModel({
-        cachePolicy: 'cache-first',
-        run: async () => {
-            const countries = await this.api.explosiveObject.getCountriesList();
-
-            this.listCountries.set(countries.map(createCountry));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -400,14 +372,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     subscribeDeeps = new RequestModel({
         run: async () => {
-            const [countries] = await Promise.all([
-                this.api.explosiveObject.getCountriesList(),
-                this.type.subscribe.run(),
-                this.class.subscribe.run(),
-                this.classItem.subscribe.run(),
-            ]);
+            await Promise.all([this.type.subscribe.run(), this.class.subscribe.run(), this.classItem.subscribe.run()]);
 
-            this.listCountries.set(countries.map(createCountry));
             this.classifications.init();
         },
     });

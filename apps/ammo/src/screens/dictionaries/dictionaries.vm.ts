@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 import {
     DebounceModel,
     Explosive,
@@ -70,11 +71,17 @@ export class DictionariesVM implements IDictionariesVM {
                 {
                     key: 'explosiveObject.classItemId',
                     rule: (item, value: string[]) =>
-                        !isExplosiveObject(item) || (!!value && item.classItemIds.some(el => value.includes(el))),
+                        !isExplosiveObject(item) || !value || !value.length || item.classItemIds.some(el => value.includes(el)),
                 },
                 {
                     key: 'explosiveObject.countryId',
-                    rule: (item, value: string[]) => !isExplosiveObject(item) || (!!value && value.includes(item.data.countryId)),
+                    rule: (item, value: string[]) =>
+                        !isExplosiveObject(item) || !value || !value.length || value.includes(item.data.countryId),
+                },
+                {
+                    key: 'explosiveObject.component',
+                    rule: (item, value: EXPLOSIVE_OBJECT_COMPONENT[]) =>
+                        !isExplosiveObject(item) || !value || !value.length || value.some(el => el === item.data.component),
                 },
                 {
                     key: 'explosiveDevice.type',

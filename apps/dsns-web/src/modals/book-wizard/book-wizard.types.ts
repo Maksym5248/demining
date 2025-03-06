@@ -7,5 +7,5 @@ export interface IBookForm {
     imageUri: string;
     uri: string;
     size: number;
-    type: BOOK_TYPE;
+    type: BOOK_TYPE[];
 }

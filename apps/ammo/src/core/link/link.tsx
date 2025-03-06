@@ -11,7 +11,7 @@ export const Link = ({ onPress, style, arrow, ...rest }: ILinkProps) => {
 
     return (
         <Touchable onPress={onPress} style={[s.container, style]}>
-            <Text type="h6" style={styles.label} color={theme.colors.link} {...rest} />
+            <Text type="h5" style={styles.label} color={theme.colors.link} {...rest} />
             {arrow && <Icon name="arrow-right" color={theme.colors.link} size={12} />}
         </Touchable>
     );

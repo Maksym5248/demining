@@ -243,7 +243,8 @@ export interface IBookTypeNotDB {
 export interface IBookDB extends IBaseDB {
     status: EXPLOSIVE_OBJECT_STATUS;
     name: string;
-    type: BOOK_TYPE;
+    type?: BOOK_TYPE;
+    typeV2: BOOK_TYPE[];
     mime: MIME_TYPE;
     imageUri: string;
     size: number;

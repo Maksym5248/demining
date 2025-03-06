@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { Chips, Link, Separator, Text } from '~/core';
 import { useTranslate } from '~/localization';
@@ -29,6 +30,10 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
         model.openCountrySelect();
     };
 
+    const onPressComponentSelect = () => {
+        model.openComponentSelect();
+    };
+
     const onRemoveType = () => {
         model.removeType();
     };
@@ -41,10 +46,28 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
         model.removeCountry(option.value);
     };
 
+    const onRemoveComponent = (option: IOption<EXPLOSIVE_OBJECT_COMPONENT>) => {
+        model.removeComponent(option.value);
+    };
+
     const items = [
+        <View key="component" style={[styles.gapXS, styles.marginHorizontalS]}>
+            <View style={styles.row}>
+                <Text type="h5" color={theme.colors.accent} text={t('component')} />
+                <Link text={t('viewAll')} onPress={onPressComponentSelect} arrow />
+            </View>
+            <Chips options={model.components} onRemove={onRemoveComponent} placeholder={t('notSelected')} />
+        </View>,
+        <View key="country" style={[styles.gapXS, styles.marginHorizontalS]}>
+            <View style={styles.row}>
+                <Text type="h5" color={theme.colors.accent} text={t('country')} />
+                <Link text={t('viewAll')} onPress={onPressCountrySelect} arrow />
+            </View>
+            <Chips options={model.countries} onRemove={onRemoveCountry} placeholder={t('notSelected')} />
+        </View>,
         <View key="type" style={[styles.gapXS, styles.marginHorizontalS]}>
             <View style={styles.row}>
-                <Text type="h6" color={theme.colors.accent} text={t('type')} />
+                <Text type="h5" color={theme.colors.accent} text={t('type')} />
                 <Link text={t('viewAll')} onPress={onPressTypeSelect} arrow />
             </View>
             <Chips options={model.type} onRemove={onRemoveType} placeholder={t('notSelected')} />
@@ -55,22 +78,10 @@ export const ExplosiveObject = observer(({ model }: IExplosiveObjectProps) => {
         items.push(
             <View key="classification" style={[styles.gapXS, styles.marginHorizontalS]}>
                 <View style={styles.row}>
-                    <Text type="h6" color={theme.colors.accent} text={t('classification')} />
+                    <Text type="h5" color={theme.colors.accent} text={t('classification')} />
                     <Link text={t('viewAll')} onPress={onPressClassificationSelect} arrow />
                 </View>
                 <Chips options={model.classItems} onRemove={onRemoveClassItem} placeholder={t('notSelected')} />
-            </View>,
-        );
-    }
-
-    if (model.type) {
-        items.push(
-            <View key="country" style={[styles.gapXS, styles.marginHorizontalS]}>
-                <View style={styles.row}>
-                    <Text type="h6" color={theme.colors.accent} text={t('country')} />
-                    <Link text={t('viewAll')} onPress={onPressCountrySelect} arrow />
-                </View>
-                <Chips options={model.countries} onRemove={onRemoveCountry} placeholder={t('notSelected')} />
             </View>,
         );
     }

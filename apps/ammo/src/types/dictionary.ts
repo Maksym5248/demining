@@ -1,4 +1,4 @@
-import { type BOOK_TYPE, type EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
+import { type EXPLOSIVE_OBJECT_COMPONENT, type BOOK_TYPE, type EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 
 import { type DictionaryType } from './common';
 
@@ -6,6 +6,7 @@ export interface IDictionatyFilterExplosviveObject {
     typeId?: string;
     classItemId?: string[];
     countryId?: string[];
+    component?: EXPLOSIVE_OBJECT_COMPONENT[];
 }
 
 export interface IDictionatyFilterExplosviveDevice {
