@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import { type IExplosiveObjectAPI } from '~/api';
 import { type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
-import { type IViewerStore } from '~/stores';
+import { type ICountry, type ICountryData, type IViewerStore } from '~/stores';
 
 import { type IExplosiveObjectActionData } from './explosive-object-action.schema';
 import {
@@ -15,8 +15,6 @@ import {
     type IExplosiveObjectClassData,
     type IExplosiveObjectClassItem,
     type IExplosiveObjectClassItemData,
-    type ICountry,
-    type ICountryData,
     type IExplosiveObjectDetails,
     type IExplosiveObjectDetailsData,
 } from '..';
