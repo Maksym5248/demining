@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text } from '~/core';
+import { Paragraph } from '~/core';
 import { useDevice, useStylesCommon, useTheme } from '~/styles';
 
 import { type IBlockSliderProps } from './block-slider.type';
@@ -20,7 +20,7 @@ export const BlockSlider = ({ description, data, label, hidden, require = true }
 
     return (
         <BlockView title={label}>
-            <Text text={description ?? '-'} style={styles.marginTopS} />
+            <Paragraph text={description ?? '-'} style={styles.marginTopS} />
             {data.length !== 0 && <CarouselImage width={itemWidth} data={data} />}
         </BlockView>
     );
