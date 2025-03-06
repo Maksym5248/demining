@@ -11,6 +11,7 @@ import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
 import { type ICollectionModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
+import { type ICountry, type ICountryData } from '~/stores/common';
 import { type IViewerStore } from '~/stores/viewer';
 
 import {
@@ -20,7 +21,6 @@ import {
     createExplosiveObject,
 } from './explosive-object.schema';
 import { type INode, type IClassifications } from '../../classifications';
-import { type ICountryData, type ICountry } from '../country';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
 import { createExplosiveObjectDetails, type IExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';

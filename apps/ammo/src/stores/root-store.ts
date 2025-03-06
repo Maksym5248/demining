@@ -11,6 +11,8 @@ import {
     type IExplosiveStore,
     type IBookStore,
     type IAuthUser,
+    CommonStore,
+    type ICommonStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -22,6 +24,7 @@ export interface IRootStore {
     explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     book: IBookStore;
+    common: ICommonStore;
     isInitialized: boolean;
     isLoaded: boolean;
     removeAllListeners(): void;
@@ -34,6 +37,7 @@ export class RootStore implements IRootStore {
     explosiveDevice: IExplosiveDeviceStore;
     explosiveObject: IExplosiveObjectStore;
     book: IBookStore;
+    common: ICommonStore;
 
     isLoaded = false;
     isInitialized = false;
@@ -44,6 +48,7 @@ export class RootStore implements IRootStore {
             explosive: this.explosive,
             explosiveDevice: this.explosiveDevice,
             explosiveObject: this.explosiveObject,
+            common: this.common,
         };
     };
 
@@ -62,6 +67,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
+        this.common = new CommonStore(this);
         this.explosive = new ExplosiveStore(this);
         this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
@@ -138,6 +144,7 @@ export class RootStore implements IRootStore {
             try {
                 await DB.init();
                 await Promise.all([
+                    this.common.subscribeCountries.run(),
                     this.explosiveObject.subscribe.run(),
                     this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),

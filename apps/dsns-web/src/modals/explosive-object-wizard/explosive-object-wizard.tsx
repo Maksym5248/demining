@@ -151,7 +151,7 @@ const getParams = ({
     },
 });
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-    const { explosiveObject, viewer } = useStore();
+    const { explosiveObject, viewer, common } = useStore();
     const wizard = useWizard({ id, mode });
 
     const currentExplosiveObject = explosiveObject.collection.get(id as string);
@@ -321,7 +321,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveObject.listCountries.asArray.map(el => ({
+                            options={common.listCountries.asArray.map(el => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}

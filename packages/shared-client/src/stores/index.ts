@@ -15,3 +15,4 @@ export * from './user';
 export * from './viewer';
 export * from './book';
 export * from './type';
+export * from './common';
