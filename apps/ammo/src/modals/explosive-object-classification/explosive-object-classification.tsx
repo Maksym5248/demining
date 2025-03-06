@@ -32,13 +32,13 @@ const ListItem = observer(
 );
 
 export const ExplosiveObjectClassificationModal = observer(
-    ({ typeId, classItemId, onSelect, isMulti, ...props }: IExplosiveObjectClassificationModalProps) => {
+    ({ typeId, classItemId, onSelect, isMulti, component, ...props }: IExplosiveObjectClassificationModalProps) => {
         const theme = useTheme();
         const styles = useStylesCommon();
         const s = useStyles();
         const t = useTranslate('modals.explosive-object-classification');
         const refBootomSheet = useRef<IBottomSheetRef>(null);
-        const vm = useViewModel<IExplosiveObjectClassificationVM>(explosiveObjectClassificationVM, { typeId, classItemId });
+        const vm = useViewModel<IExplosiveObjectClassificationVM>(explosiveObjectClassificationVM, { typeId, classItemId, component });
 
         const onSubmit = useCallback((v: string) => {
             refBootomSheet.current?.close();
@@ -61,7 +61,7 @@ export const ExplosiveObjectClassificationModal = observer(
                     ref={refBootomSheet}
                     header={{
                         left: <Icon name="back" color={theme.colors.accent} />,
-                        center: <Text type="h5" text={t('title')} color={theme.colors.accent} />,
+                        center: <Text type="h4" text={t('title')} color={theme.colors.accent} />,
                     }}
                     onClose={props.hide}>
                     <List

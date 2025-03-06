@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { type EXPLOSIVE_OBJECT_COMPONENT, explosiveObjectComponentData } from 'shared-my';
 
 import { MODALS } from '~/constants';
 import { Modal } from '~/services';
@@ -9,14 +10,17 @@ export interface IExplosiveObjectModel {
     openTypeSelect(): void;
     openClassificationSelect(): void;
     openCountrySelect(): void;
+    openComponentSelect(): void;
     setFilters(filters?: IDictionatyFilterExplosviveObject): void;
     filters: IDictionatyFilterExplosviveObject;
     type?: IOption<string>;
     classItems?: IOption<string>[];
     countries?: IOption<string>[];
+    components?: IOption<EXPLOSIVE_OBJECT_COMPONENT>[];
     removeType: () => void;
     removeClassItem: (id: string) => void;
     removeCountry: (id: string) => void;
+    removeComponent: (id: EXPLOSIVE_OBJECT_COMPONENT) => void;
     clear: () => void;
 }
 
@@ -24,6 +28,8 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
     filters: IDictionatyFilterExplosviveObject = {
         typeId: undefined,
         classItemId: undefined,
+        component: undefined,
+        countryId: undefined,
     };
 
     constructor() {
@@ -34,6 +40,8 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         this.filters = {
             typeId: undefined,
             classItemId: undefined,
+            component: undefined,
+            countryId: undefined,
         };
     }
 
@@ -41,6 +49,13 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         return stores.explosiveObject.type.list.map(item => ({
             value: item.id,
             title: item.displayName,
+        }));
+    }
+
+    get componentOptions(): IOption<EXPLOSIVE_OBJECT_COMPONENT>[] {
+        return explosiveObjectComponentData.map(item => ({
+            value: item.id,
+            title: item.name,
         }));
     }
 
@@ -81,16 +96,27 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         return this.countryOptions.filter(el => this.filters.countryId?.includes(el.value));
     }
 
+    get components() {
+        return this.componentOptions.filter(el => this.filters.component?.includes(el.value));
+    }
+
     removeType() {
         this.setFilters({ typeId: undefined, classItemId: undefined });
     }
 
     removeClassItem(id: string) {
-        this.setFilters({ classItemId: this.filters.classItemId?.filter(el => el !== id) });
+        const value = this.filters.classItemId?.filter(el => el !== id);
+        this.setFilters({ classItemId: value?.length ? value : undefined });
     }
 
     removeCountry(id: string) {
-        this.setFilters({ countryId: this.filters.countryId?.filter(el => el !== id) });
+        const value = this.filters.countryId?.filter(el => el !== id);
+        this.setFilters({ countryId: value?.length ? value : undefined });
+    }
+
+    removeComponent(id: EXPLOSIVE_OBJECT_COMPONENT) {
+        const value = this.filters.component?.filter(el => el !== id);
+        this.setFilters({ component: value?.length ? value : undefined });
     }
 
     setFilters(filters?: Partial<IDictionatyFilterExplosviveObject>) {
@@ -98,11 +124,10 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
     }
 
     openTypeSelect() {
-        const onSelect = (option: IOption<string>[]) => {
+        const onSelect = (option: IOption<EXPLOSIVE_OBJECT_COMPONENT>[]) => {
             this.setFilters({
                 typeId: option[0]?.value,
                 classItemId: this.filters.typeId === option[0]?.value ? this.filters.classItemId : undefined,
-                countryId: this.filters.typeId === option[0]?.value ? this.filters.countryId : undefined,
             });
         };
 
@@ -113,10 +138,27 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         });
     }
 
+    openComponentSelect() {
+        const onSelect = (option: IOption<EXPLOSIVE_OBJECT_COMPONENT>[]) => {
+            const value = option.map(el => el.value);
+            this.setFilters({
+                component: value?.length ? value : undefined,
+            });
+        };
+
+        Modal.show(MODALS.SELECT, {
+            value: this.filters.component,
+            options: this.componentOptions,
+            isMulti: true,
+            onSelect,
+        });
+    }
+
     openCountrySelect() {
         const onSelect = (option: IOption<string>[]) => {
+            const value = option.map(el => el.value);
             this.setFilters({
-                countryId: option.map(el => el.value),
+                countryId: value.length ? value : undefined,
             });
         };
 
@@ -130,12 +172,13 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
 
     openClassificationSelect() {
         const onSelect = (classItemId: string[]) => {
-            this.setFilters({ classItemId });
+            this.setFilters({ classItemId: classItemId.length ? classItemId : undefined });
         };
 
         Modal.show(MODALS.EXPLOSIVE_OBJECT_CLASSIFICATION, {
             typeId: this.filters.typeId,
             classItemId: this.filters.classItemId,
+            component: this.filters.component,
             isMulti: true,
             onSelect,
         });

@@ -324,6 +324,14 @@ export class Classifications implements IClassifications {
                 children: [],
                 isLast: false,
             },
+            {
+                id: EXPLOSIVE_OBJECT_COMPONENT.FERVOR,
+                displayName: 'Запал',
+                type: TypeNodeClassification.Section,
+                deep: 0,
+                children: [],
+                isLast: false,
+            },
         ];
 
         const getSection = (component: EXPLOSIVE_OBJECT_COMPONENT) => sections.find(item => item.id === component?.valueOf());

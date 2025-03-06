@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
 import { useTheme } from '~/styles';
+import { type IOption } from '~/types';
 
 import { useStyles } from './chips.style';
 import { type IChipsProps } from './chips.type';
@@ -11,7 +12,9 @@ export function Chips<T>({ style, options, placeholder, onRemove }: IChipsProps<
     const s = useStyles();
     const theme = useTheme();
 
-    if (!options && !!placeholder) {
+    const value = (Array.isArray(options) ? options : [options]).filter(Boolean) as IOption<T>[];
+
+    if (!value?.length && !!placeholder) {
         return (
             <View style={s.placeholder}>
                 <Text type="radio" color={theme.colors.thirdiary} style={s.placeholderText} text={placeholder} />
@@ -19,11 +22,9 @@ export function Chips<T>({ style, options, placeholder, onRemove }: IChipsProps<
         );
     }
 
-    if (!options) {
+    if (!value) {
         return null;
     }
-
-    const value = Array.isArray(options) ? options : [options];
 
     return (
         <View style={[s.container, style]}>

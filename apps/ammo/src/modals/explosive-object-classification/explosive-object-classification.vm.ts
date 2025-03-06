@@ -1,4 +1,6 @@
+import { isArray } from 'lodash';
 import { makeAutoObservable } from 'mobx';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { ClassificationExplosiveObject, type IClassificationExplosiveObject, type IClassificationItem } from '~/models';
 import { type ViewModel } from '~/types';
@@ -14,12 +16,22 @@ export class ExplosiveObjectClassificationVM implements IExplosiveObjectClassifi
         makeAutoObservable(this);
     }
 
-    init({ typeId, classItemId }: { typeId: string; classItemId?: string[] }) {
+    init({
+        typeId,
+        classItemId,
+        component,
+    }: {
+        typeId: string;
+        classItemId?: string | string[];
+        component?: EXPLOSIVE_OBJECT_COMPONENT | EXPLOSIVE_OBJECT_COMPONENT[];
+    }) {
         typeId && this.classification.setType(typeId);
 
-        classItemId?.forEach(id => {
+        (isArray(classItemId) ? classItemId : [classItemId])?.forEach(id => {
             this.classification.get(id)?.setSelected(true);
         });
+
+        this.classification.setComponent(component);
     }
 
     unmount() {

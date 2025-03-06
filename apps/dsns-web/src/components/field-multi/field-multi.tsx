@@ -29,8 +29,6 @@ function Component<T>({ label, name: rootName, manual = false, renderField }: Pr
                                         setFieldValue(rootName, newValues);
                                     };
 
-                                    console.log('value', value);
-
                                     return (
                                         <div style={{ display: 'flex' }}>
                                             <Form.Item name={manual ? undefined : i} {...restField}>

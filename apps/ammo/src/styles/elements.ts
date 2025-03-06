@@ -8,7 +8,7 @@ export const createElementsStyles = (): IElementStyle => ({
         height: 50,
     },
     radio: {
-        height: 24,
+        height: 30,
     },
     button: {
         height: 50,
