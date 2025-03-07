@@ -166,6 +166,7 @@ export interface IExplosiveDeviceDB extends IBaseDB {
     action?: IActionDB | null; // принцип дії;
     additional: IFieldDB[] | null; // додатково
     marking: ISectionInfoDB | null; // маркування
+    usage: ISectionInfoDB | null; // використання
     authorId: string;
 }
 

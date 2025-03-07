@@ -86,14 +86,14 @@
             "targetSensor": "Датчик цілі",
             "sensitivity": "Чутливість",
             "timeWork": "Час роботи",
-            "purpose": "Ураження",
+            "purpose": "Призначення",
             "structure": "Будова",
             "action": "Принцип дії",
             "installation": "Спосіб встановлення",
             "liquidator": "Самоліквідатор",
             "extraction": "Невилучення",
             "folding": "Зведення",
-            "neutralization": "Нейтралізація",
+            "neutralization": "Нейтралізація та безпека",
             "marking": "Маркування"
         },
         "explosive-device-details": {
@@ -108,7 +108,8 @@
             "purpose": "Ураження",
             "structure": "Будова",
             "action": "Принцип дії",
-            "marking": "Маркування"
+            "marking": "Маркування",
+            "usage": "Використання та безпека"
         },
         "explosive-object-type": {
             "title": "Типи"
