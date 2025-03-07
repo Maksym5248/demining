@@ -23,6 +23,9 @@ export interface IExplosiveDeviceForm {
     markingImageUris: string[];
     markingDescription: string;
 
+    usageImageUris: string[];
+    usageDescription: string;
+
     additional: IFieldData[];
     material: MATERIAL[];
 }

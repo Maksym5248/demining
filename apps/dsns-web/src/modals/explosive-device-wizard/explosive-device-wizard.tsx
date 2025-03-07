@@ -39,6 +39,8 @@ const getParams = ({
     actionDescription,
     markingImageUris,
     markingDescription,
+    usageDescription,
+    usageImageUris,
     additional,
     ...values
 }: IExplosiveDeviceForm) => ({
@@ -70,6 +72,10 @@ const getParams = ({
     marking: {
         imageUris: markingImageUris,
         description: markingDescription,
+    },
+    usage: {
+        imageUris: usageImageUris,
+        description: usageDescription,
     },
 });
 
@@ -221,11 +227,13 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     <Divider />
                     <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
                     <Divider />
-                    <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
+                    <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
                     <Divider />
                     <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
                     <Divider />
                     <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
+                    <Divider />
+                    <FieldSection label="Використання та безпека" name="usageImageUris" nameDesc="usageDescription" />
                     <WizardFooter
                         {...wizard}
                         onCancel={hide}

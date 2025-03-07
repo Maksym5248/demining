@@ -26,6 +26,7 @@ export interface IExplosiveDeviceData {
     material: MATERIAL[];
     additional: IFieldData[] | null; // додатково
     marking: ISectionInfoData | null; // маркування
+    usage: ISectionInfoData | null; // використання
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
@@ -73,6 +74,12 @@ export const createExplosiveDeviceDTO = (value: ICreateValue<IExplosiveDeviceDat
           }
         : null,
     marking: value?.marking
+        ? {
+              description: value.marking.description ?? null,
+              imageUris: value.marking.imageUris ?? [],
+          }
+        : null,
+    usage: value?.marking
         ? {
               description: value.marking.description ?? null,
               imageUris: value.marking.imageUris ?? [],
@@ -135,6 +142,12 @@ export const updateExplosiveDeviceDTO = data.createUpdateDTO<IExplosiveDeviceDat
               imageUris: value.marking.imageUris ?? [],
           }
         : null,
+    usage: value?.marking
+        ? {
+              description: value.marking.description ?? null,
+              imageUris: value.marking.imageUris ?? [],
+          }
+        : null,
     additional:
         value?.additional
             ?.filter(el => !!el)
@@ -190,6 +203,12 @@ export const createExplosiveDevice = (value: IExplosiveDeviceDTO): IExplosiveDev
           }
         : null,
     marking: value?.marking
+        ? {
+              description: value.marking.description ?? null,
+              imageUris: value.marking.imageUris ?? [],
+          }
+        : null,
+    usage: value?.marking
         ? {
               description: value.marking.description ?? null,
               imageUris: value.marking.imageUris ?? [],
