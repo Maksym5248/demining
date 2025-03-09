@@ -227,6 +227,10 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   foldingDescription: currentExplosiveObject.details?.data.folding?.description ?? '',
                                   markingImageUris: currentExplosiveObject.details?.data.marking?.imageUris ?? [],
                                   markingDescription: currentExplosiveObject.details?.data.marking?.description ?? '',
+                                  installationImageUris: currentExplosiveObject.details?.data.installation?.imageUris ?? [],
+                                  installationDescription: currentExplosiveObject.details?.data.installation?.description ?? '',
+                                  neutralizationImageUris: currentExplosiveObject.details?.data.neutralization?.imageUris ?? [],
+                                  neutralizationDescription: currentExplosiveObject.details?.data.neutralization?.description ?? '',
                                   imageUris: currentExplosiveObject?.details?.data?.imageUris
                                       ? currentExplosiveObject.details?.data.imageUris
                                       : [],
