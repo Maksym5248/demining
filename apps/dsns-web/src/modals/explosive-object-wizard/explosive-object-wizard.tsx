@@ -359,7 +359,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
                     </Form.Item>
                     <Divider />
-                    <Form.Item label="Датчик цілі" name="targetSensor">
+                    <Form.Item label="Підривник" name="targetSensor">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
                     <Form.Item label="Чутливість" name="sensitivity">
