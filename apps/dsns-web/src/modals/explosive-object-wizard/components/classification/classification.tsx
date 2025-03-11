@@ -36,11 +36,11 @@ export const Classification = ({ typeId, component, setFieldValue }: Classificat
                 <Form.Item noStyle shouldUpdate={() => true}>
                     {({ getFieldValue, setFieldValue }) => {
                         const selectedIds: string[] = getFieldValue('classItemIds') ?? [];
-                        const classes = classifications.getBy({ typeId, component });
+                        const classes = classifications.getBy({ typeId });
 
                         const itemsOptions = transformTreeNodesToTreeData<IExplosiveObjectClassItem>(
                             classes,
-                            (item) => item?.displayName ?? '',
+                            item => item?.displayName ?? '',
                         );
 
                         const onChange = (value: string[]) => setFieldValue('classItemIds', isArray(value) ? value : [value]);
