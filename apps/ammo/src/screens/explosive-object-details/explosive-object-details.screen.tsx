@@ -9,7 +9,7 @@ import { Header, Paragraph, Scroll } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
-import { getFillterText, viewSize } from '~/utils';
+import { getFillterText, getTemurature, viewSize } from '~/utils';
 
 import { type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
@@ -109,11 +109,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                                 onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
                             }))}
                     />
-                    <Field.Range
-                        label={t('temperature')}
-                        value={[details?.data.temperature?.min, details?.data.temperature?.max]}
-                        require={false}
-                    />
+                    <Field.Range label={t('temperature')} value={getTemurature(details?.data.temperature)} require={false} />
                     {details?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
                     <Field.View label={t('description')} text={vm.item?.data.description} require={false} />
                 </Block.View>

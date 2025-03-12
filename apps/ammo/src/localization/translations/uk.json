@@ -82,7 +82,7 @@
             "size": "Розмір, мм",
             "weight": "Вага, кг",
             "fillers": "Спорядження, кг",
-            "temperature": "Температура, °C",
+            "temperature": "Температура використання, °C",
             "targetSensor": "Підривники",
             "sensitivity": "Чутливість",
             "timeWork": "Час роботи",
