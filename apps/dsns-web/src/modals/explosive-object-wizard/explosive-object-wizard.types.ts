@@ -28,6 +28,10 @@ export interface IExplosiveObjectForm {
     caliber: number | null;
     fuseIds: string[];
     fervorIds: string[];
+    liquidatorShort: string | null;
+    foldingShort: string | null;
+    extractionShort: string | null;
+    damage: string | null;
 
     purposeImageUris: string[];
     purposeDescription: string;
@@ -55,6 +59,9 @@ export interface IExplosiveObjectForm {
 
     markingImageUris: string[];
     markingDescription: string;
+
+    historicalImageUris: string[];
+    historicalDescription: string;
 
     additional: IFieldData[];
 

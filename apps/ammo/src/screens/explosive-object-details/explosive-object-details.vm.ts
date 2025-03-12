@@ -16,6 +16,7 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     slides: ISlide[];
     slidesMarking: ISlide[];
     slidesPurpose: ISlide[];
+    slidesHistorical: ISlide[];
     slidesStructure: ISlide[];
     slidesAction: ISlide[];
     slidesInstallation: ISlide[];
@@ -110,6 +111,10 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
 
     get slidesAction() {
         return this.item?.details?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    }
+
+    get slidesHistorical() {
+        return this.item?.details?.data.historical?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
     }
 }
 

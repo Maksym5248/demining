@@ -46,9 +46,10 @@ export interface IExplosiveObjectDetailsData {
     targetSensor: string | null; // датчик цілі
     sensitivity: string | null; // чутливість
     timeWork: string | null; // час роботи
-    liquidatorShort?: string | null; // самоліквідатор коротко
-    extractionShort?: string | null; // механізм невилучення коротко
-    foldingShort?: string | null; // механізм зведення коротко
+    liquidatorShort: string | null; // час самоліквідації
+    foldingShort: string | null; // час зведення
+    extractionShort: string | null; // механізм невилучення
+    damage: string | null; // можливе ураження
     fuseIds: string[]; // ammo
     fervorIds: string[]; // запал
     liquidator: ILiquidatorData | null; // ліквідатор;
@@ -61,6 +62,7 @@ export interface IExplosiveObjectDetailsData {
     action: IActionData | null; // принцип дії;
     additional: IFieldData[] | null; // додатково
     marking: ISectionInfoData | null; // маркування
+    historical: ISectionInfoData | null; // історичні дані
 }
 
 export const createExplosiveObjectDetails = (id: string, value: IExplosiveObjectDetailsDTO): IExplosiveObjectDetailsData => {
@@ -104,6 +106,10 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         targetSensor: value?.targetSensor ?? null,
         sensitivity: value?.sensitivity ?? null,
         timeWork: value?.timeWork ?? null,
+        liquidatorShort: value?.liquidatorShort ?? null,
+        extractionShort: value?.extractionShort ?? null,
+        foldingShort: value?.foldingShort ?? null,
+        damage: value?.damage ?? null,
         liquidator: value?.liquidator
             ? {
                   description: value.liquidator.description ?? null,
@@ -158,6 +164,12 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
                   imageUris: value.marking.imageUris ?? [],
               }
             : null,
+        historical: value?.historical
+            ? {
+                  description: value.historical.description ?? null,
+                  imageUris: value.historical.imageUris ?? [],
+              }
+            : null,
         additional:
             value?.additional?.map(el => ({
                 name: el.name,
@@ -196,6 +208,10 @@ export const createExplosiveObjectDetailsDTO = (
     targetSensor: value?.targetSensor ?? null,
     sensitivity: value?.sensitivity ?? null,
     timeWork: value?.timeWork ?? null,
+    liquidatorShort: value?.liquidatorShort ?? null,
+    extractionShort: value?.extractionShort ?? null,
+    foldingShort: value?.foldingShort ?? null,
+    damage: value?.damage ?? null,
     liquidator: value?.liquidator
         ? {
               description: value.liquidator.description ?? null,
@@ -255,6 +271,12 @@ export const createExplosiveObjectDetailsDTO = (
               imageUris: value.marking.imageUris ?? [],
           }
         : null,
+    historical: value?.historical
+        ? {
+              description: value.historical.description ?? null,
+              imageUris: value.historical.imageUris ?? [],
+          }
+        : null,
 });
 
 export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveObjectDetailsData, IExplosiveObjectDetailsDTO>(value => ({
@@ -277,6 +299,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
     liquidatorShort: value?.liquidatorShort ?? null,
     extractionShort: value?.extractionShort ?? null,
     foldingShort: value?.foldingShort ?? null,
+    damage: value?.damage ?? null,
     filler:
         value.filler?.map(el => ({
             explosiveId: el.explosiveId ?? null,
@@ -347,4 +370,10 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
             name: el.name,
             value: el.value,
         })) ?? null,
+    historical: value?.historical
+        ? {
+              description: value.historical.description ?? null,
+              imageUris: value.historical.imageUris ?? [],
+          }
+        : null,
 }));

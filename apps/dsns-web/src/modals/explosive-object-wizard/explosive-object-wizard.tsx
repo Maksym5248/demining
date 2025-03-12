@@ -79,7 +79,13 @@ const getParams = ({
     neutralizationImageUris,
     markingImageUris,
     markingDescription,
+    historicalImageUris,
+    historicalDescription,
     additional,
+    liquidatorShort,
+    foldingShort,
+    extractionShort,
+    damage,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
@@ -89,6 +95,10 @@ const getParams = ({
         caliber,
         material: material?.filter(el => !!el) ?? [],
         fullDescription,
+        liquidatorShort,
+        foldingShort,
+        extractionShort,
+        damage,
         size:
             size?.map(
                 el =>
@@ -147,6 +157,10 @@ const getParams = ({
         marking: {
             imageUris: markingImageUris,
             description: markingDescription,
+        },
+        historical: {
+            imageUris: historicalImageUris,
+            description: historicalDescription,
         },
     },
 });
@@ -231,6 +245,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   installationDescription: currentExplosiveObject.details?.data.installation?.description ?? '',
                                   neutralizationImageUris: currentExplosiveObject.details?.data.neutralization?.imageUris ?? [],
                                   neutralizationDescription: currentExplosiveObject.details?.data.neutralization?.description ?? '',
+                                  historicalImageUris: currentExplosiveObject.details?.data.historical?.imageUris ?? [],
+                                  historicalDescription: currentExplosiveObject.details?.data.historical?.description ?? '',
                                   imageUris: currentExplosiveObject?.details?.data?.imageUris
                                       ? currentExplosiveObject.details?.data.imageUris
                                       : [],
@@ -355,16 +371,25 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
-                    <Form.Item label="Скорочений опис" name="description">
-                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
-                    </Form.Item>
-                    <Divider />
                     <Form.Item label="Підривник" name="targetSensor">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
                     <Form.Item label="Чутливість" name="sensitivity">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
+                    <Form.Item label="Час самоліквідації" name="liquidatorShort">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Час зведення" name="foldingShort">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Механізм невилучення" name="extractionShort">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Form.Item label="Ураження" name="damage">
+                        <Input placeholder="Введіть дані" />
+                    </Form.Item>
+                    <Divider />
                     <Form.Item label="Час роботи" name="timeWork">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
@@ -399,7 +424,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             </div>
                         )}
                     />
-                    <Divider />
                     <FieldMaterial />
                     <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
                     <FieldModal
@@ -418,28 +442,33 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item noStyle shouldUpdate={() => true}>
                         {({ getFieldValue }) => getFieldValue('component') !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && <Fervor />}
                     </Form.Item>
+                    <Form.Item label="Скорочений опис" name="description">
+                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
+                    </Form.Item>
                     <Divider />
                     <Form.Item label="Повний опис" name="fullDescription">
                         <Input.TextArea placeholder="Введіть дані" rows={8} />
                     </Form.Item>
                     <Divider />
-                    <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
+                    <FieldSection label="Історична довідка" name="historicalImageUris" nameDesc="historicalDescription" />
                     <Divider />
-                    <FieldSection label="Ураження" name="purposeImageUris" nameDesc="purposeDescription" />
-                    <Divider />
-                    <FieldSection label="Встановлення" name="installationImageUris" nameDesc="installationDescription" />
+                    <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
                     <Divider />
                     <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
                     <Divider />
-                    <FieldSection label="Ліквідатор" name="liquidatorImageUris" nameDesc="liquidatorDescription" />
+                    <FieldSection label="Зведення" name="foldingImageUris" nameDesc="foldingDescription" />
+                    <Divider />
+                    <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
                     <Divider />
                     <FieldSection label="Невилучення" name="extractionImageUris" nameDesc="extractionDescription" />
                     <Divider />
-                    <FieldSection label="Зведення" name="neutralizationImageUris" nameDesc="foldingDescription" />
+                    <FieldSection label="Самоліквідатор" name="liquidatorImageUris" nameDesc="liquidatorDescription" />
+                    <Divider />
+                    <FieldSection label="Встановлення" name="installationImageUris" nameDesc="installationDescription" />
                     <Divider />
                     <FieldSection label="Знешкодження" name="neutralizationImageUris" nameDesc="neutralizationDescription" />
                     <Divider />
-                    <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
+                    <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
                     <WizardFooter {...wizard} onCancel={hide} onRemove={onRemove} loading={isSubmitting} />
                 </Form>
             )}

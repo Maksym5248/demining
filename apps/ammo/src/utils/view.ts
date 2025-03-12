@@ -1,3 +1,4 @@
+import { isNumber } from 'lodash';
 import { measurement } from 'shared-my';
 import { type IFillerData, type ISizeData } from 'shared-my-client';
 
@@ -20,3 +21,15 @@ export function getFillterText(item: IFillerData) {
     if (!item.description && !!item.weight) return item.weight;
     return undefined;
 }
+
+const getMax = (value: number | null) => (isNumber(value) && value > 0 ? `+${value}` : value);
+
+export const getTemurature = (value?: { min: number | null; max: number | null } | null) => {
+    const { min, max } = value ?? {};
+
+    if (min && max) return [min, getMax(max)];
+    if (min) return [min];
+    if (max) return [getMax(max)];
+
+    return undefined;
+};

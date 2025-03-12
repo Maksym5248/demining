@@ -87,6 +87,10 @@ export interface IExplosiveObjectDetailsDB {
     caliber: number | null; // ammo
     fuseIds: string[]; // ammo
     fervorIds: string[] | null; // підривник
+    liquidatorShort: string | null; // час самоліквідації
+    foldingShort: string | null; // час зведення
+    extractionShort: string | null; // механізм невилучення
+    damage: string | null; // можливе ураження
 
     // description
     purpose: IPurposeDB | null; // призначення/ураження;
@@ -98,7 +102,7 @@ export interface IExplosiveObjectDetailsDB {
     folding?: IFoldingDB | null; // механізм зведення
     neutralization: INeutralizationDB | null; // нейтралізація
     marking: ISectionInfoDB | null; // маркування
-
+    historical: ISectionInfoDB | null; // історичні дані
     // fuse
     targetSensor: string | null; // датчик цілі
     sensitivity: string | null; // чутливість

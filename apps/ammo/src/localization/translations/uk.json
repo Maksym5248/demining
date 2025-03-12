@@ -82,7 +82,7 @@
             "size": "Розмір, мм",
             "weight": "Вага, кг",
             "fillers": "Спорядження, кг",
-            "temperature": "Температура, °C",
+            "temperature": "Температура використання, °C",
             "targetSensor": "Підривники",
             "sensitivity": "Чутливість",
             "timeWork": "Час роботи",
@@ -94,7 +94,12 @@
             "extraction": "Невилучення",
             "folding": "Зведення",
             "neutralization": "Нейтралізація та безпека",
-            "marking": "Маркування"
+            "marking": "Маркування",
+            "liquidatorShort": "Час самоліквідації",
+            "foldingShort": "Час зведення",
+            "extractionShort": "Механізм невилучення",
+            "damage": "Ураження",
+            "historical": "Історична довідка"
         },
         "explosive-device-details": {
             "title": "Деталі",
