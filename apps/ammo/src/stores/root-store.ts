@@ -95,6 +95,12 @@ export class RootStore implements IRootStore {
             urls.push(...(item.details?.data?.purpose?.imageUris ?? []));
             urls.push(...(item.details?.data?.structure?.imageUris ?? []));
             urls.push(...(item.details?.data?.action?.imageUris ?? []));
+            urls.push(...(item.details?.data?.liquidator?.imageUris ?? []));
+            urls.push(...(item.details?.data?.extraction?.imageUris ?? []));
+            urls.push(...(item.details?.data?.folding?.imageUris ?? []));
+            urls.push(...(item.details?.data?.installation?.imageUris ?? []));
+            urls.push(...(item.details?.data?.marking?.imageUris ?? []));
+            urls.push(...(item.details?.data?.historical?.imageUris ?? []));
         });
 
         this.explosive.collection.asArray.forEach(item => {
@@ -108,6 +114,7 @@ export class RootStore implements IRootStore {
             urls.push(...(item?.data?.purpose?.imageUris ?? []));
             urls.push(...(item?.data?.structure?.imageUris ?? []));
             urls.push(...(item?.data?.action?.imageUris ?? []));
+            urls.push(...(item?.data?.usage?.imageUris ?? []));
         });
 
         this.book.collection.asArray.forEach(item => {
