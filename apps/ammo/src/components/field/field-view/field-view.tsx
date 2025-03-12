@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { Icon, Tooltip, Text } from '~/core';
+import { Icon, Tooltip, Text, Paragraph } from '~/core';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './field-view.style';
@@ -25,7 +25,7 @@ export const FieldView = ({ label, text, info, require = true }: IFieldViewProps
                     </Tooltip>
                 )}
             </View>
-            <Text text={text ?? '-'} />
+            <Paragraph text={text ?? '-'} />
         </View>
     );
 };

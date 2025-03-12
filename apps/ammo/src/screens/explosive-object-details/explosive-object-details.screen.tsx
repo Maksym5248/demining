@@ -35,6 +35,9 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     <Field.View label={t('component')} text={vm.item?.component?.name} />
                     <Field.View label={t('classification')} text={vm.item?.classItemsNames.join(', ')} />
                     <Field.View label={t('country')} text={vm.item?.country?.displayName} />
+                </Block.View>
+                <Block.View title={t('characteristic')}>
+                    <Field.View label={t('caliber')} text={details?.data.caliber} require={false} />
                     {vm.item?.component?.id === EXPLOSIVE_OBJECT_COMPONENT.AMMO && (
                         <Field.List
                             label={t('fuse')}
@@ -61,11 +64,11 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     )}
                     <Field.View label={t('targetSensor')} text={details?.data.targetSensor} require={false} />
                     <Field.View label={t('sensitivity')} text={details?.data.sensitivity} require={false} />
+                    <Field.View label={t('liquidatorShort')} text={details?.data.liquidatorShort} require={false} />
+                    <Field.View label={t('foldingShort')} text={details?.data.foldingShort} require={false} />
+                    <Field.View label={t('extractionShort')} text={details?.data.extractionShort} require={false} />
                     <Field.View label={t('timeWork')} text={details?.data.timeWork} require={false} />
-                    <Field.View label={t('description')} text={vm.item?.data.description} require={false} />
-                </Block.View>
-                <Block.View title={t('characteristic')}>
-                    <Field.View label={t('caliber')} text={details?.data.caliber} require={false} />
+                    <Field.View label={t('damage')} text={details?.data.damage} require={false} />
                     <Field.List
                         label={t('material')}
                         splitterItem=", "
@@ -112,27 +115,22 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         require={false}
                     />
                     {details?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
+                    <Field.View label={t('description')} text={vm.item?.data.description} require={false} />
                 </Block.View>
                 <Block.View hidden={!details?.data?.fullDescription} title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />
                 </Block.View>
                 <Block.Slider
                     require={false}
-                    label={t('marking')}
-                    description={details?.data.marking?.description}
-                    data={vm.slidesMarking}
+                    label={t('historical')}
+                    description={details?.data.historical?.description}
+                    data={vm.slidesHistorical}
                 />
                 <Block.Slider
                     require={false}
                     label={t('purpose')}
                     description={details?.data.purpose?.description}
                     data={vm.slidesPurpose}
-                />
-                <Block.Slider
-                    require={false}
-                    label={t('liquidator')}
-                    description={details?.data.liquidator?.description}
-                    data={vm.slidesLiquidator}
                 />
                 <Block.Slider
                     require={false}
@@ -146,12 +144,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                     description={details?.data.folding?.description}
                     data={vm.slidesFolding}
                 />
-                <Block.Slider
-                    require={false}
-                    label={t('installation')}
-                    description={details?.data.installation?.description}
-                    data={vm.slidesInstallation}
-                />
+                <Block.Slider require={false} label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
                 <Block.Slider
                     require={false}
                     label={t('extraction')}
@@ -160,11 +153,28 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                 />
                 <Block.Slider
                     require={false}
+                    label={t('liquidator')}
+                    description={details?.data.liquidator?.description}
+                    data={vm.slidesLiquidator}
+                />
+                <Block.Slider
+                    require={false}
+                    label={t('installation')}
+                    description={details?.data.installation?.description}
+                    data={vm.slidesInstallation}
+                />
+                <Block.Slider
+                    require={false}
                     label={t('neutralization')}
                     description={details?.data.neutralization?.description}
                     data={vm.slidesNeutralization}
                 />
-                <Block.Slider require={false} label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
+                <Block.Slider
+                    require={false}
+                    label={t('marking')}
+                    description={details?.data.marking?.description}
+                    data={vm.slidesMarking}
+                />
             </Scroll>
         </View>
     );

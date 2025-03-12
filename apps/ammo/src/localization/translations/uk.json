@@ -94,7 +94,12 @@
             "extraction": "Невилучення",
             "folding": "Зведення",
             "neutralization": "Нейтралізація та безпека",
-            "marking": "Маркування"
+            "marking": "Маркування",
+            "liquidatorShort": "Час самоліквідації",
+            "foldingShort": "Час зведення",
+            "extractionShort": "Механізм невилучення",
+            "damage": "Ураження",
+            "historical": "Історична довідка"
         },
         "explosive-device-details": {
             "title": "Деталі",
