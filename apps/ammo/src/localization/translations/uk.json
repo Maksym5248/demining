@@ -104,7 +104,7 @@
             "demageDistance": "Дальність дольоту окремих осколків, м",
             "demageSquad": "Площа ураження, м²",
             "demageHeight": "Висота ураження, м",
-            "demageNumber": "Кількість уражених, од",
+            "demageNumber": "Кількість уражаючих елементів, од",
             "demageNumberAction": "Уражаюча дія"
         },
         "explosive-device-details": {
