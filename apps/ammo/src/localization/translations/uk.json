@@ -99,7 +99,14 @@
             "foldingShort": "Час зведення",
             "extractionShort": "Механізм невилучення",
             "damage": "Ураження",
-            "historical": "Історична довідка"
+            "historical": "Історична довідка",
+            "demageRadius": "Радіус ураження, м",
+            "demageDistance": "Дальність дольоту окремих осколків, м",
+            "demageSquad": "Площа ураження, м²",
+            "demageHeight": "Висота ураження, м",
+            "demageAction": "Уражаюча дія",
+            "demageNumber": "Кількість уражаючих елементів, од",
+            "demageNumberAction": "Уражаюча дія"
         },
         "explosive-device-details": {
             "title": "Деталі",

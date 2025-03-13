@@ -63,12 +63,23 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         />
                     )}
                     <Field.View label={t('targetSensor')} text={details?.data.targetSensor} require={false} />
-                    <Field.View label={t('sensitivity')} text={details?.data.sensitivity} require={false} />
+                    <Field.View label={t('sensitivity')} text={details?.data.sensitivity?.sensitivity} require={false} />
+                    {details?.data.sensitivity?.additional?.map(el => (
+                        <Field.View key={el.name} label={el.name} text={el.value} require={false} />
+                    ))}
                     <Field.View label={t('liquidatorShort')} text={details?.data.liquidatorShort} require={false} />
                     <Field.View label={t('foldingShort')} text={details?.data.foldingShort} require={false} />
                     <Field.View label={t('extractionShort')} text={details?.data.extractionShort} require={false} />
+                    <Field.Range label={t('demageRadius')} value={details?.data.damage?.radius} require={false} />
+                    <Field.Range label={t('demageDistance')} value={details?.data.damage?.distance} require={false} />
+                    <Field.Range label={t('demageSquad')} value={details?.data.damage?.squad} require={false} />
+                    <Field.Range label={t('demageHeight')} value={details?.data.damage?.height} require={false} />
+                    <Field.Range label={t('demageNumber')} value={details?.data.damage?.number} require={false} />
+                    <Field.View label={t('demageAction')} text={details?.data.damage?.action} require={false} />
+                    {details?.data.damage?.additional?.map(el => (
+                        <Field.View key={el.name} label={el.name} text={el.value} require={false} />
+                    ))}
                     <Field.View label={t('timeWork')} text={details?.data.timeWork} require={false} />
-                    <Field.View label={t('damage')} text={details?.data.damage} require={false} />
                     <Field.List
                         label={t('material')}
                         splitterItem=", "

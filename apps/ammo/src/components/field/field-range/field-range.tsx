@@ -1,3 +1,4 @@
+import { isArray } from 'lodash';
 import { View } from 'react-native';
 
 import { Icon, Tooltip, Text } from '~/core';
@@ -11,7 +12,7 @@ export const FieldRange = ({ label, value, info, require }: IFieldRangeProps) =>
     const styles = useStylesCommon();
     const theme = useTheme();
 
-    const filtered = value?.filter(el => !!el);
+    const filtered = (isArray(value) ? value : [value?.min, value?.max])?.filter(el => !!el);
 
     if (!require && (!filtered || !filtered?.length)) {
         return null;

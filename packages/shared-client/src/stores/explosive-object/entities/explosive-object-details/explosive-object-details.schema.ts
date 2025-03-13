@@ -16,8 +16,9 @@ import {
     type INeutralizationDTO,
 } from '~/api';
 import { data, type ICreateValue } from '~/common';
+import { createRange, createRangeDTO } from '~/stores/utils';
 
-import { type ISectionInfoData, type IFieldData } from '../../../type';
+import { type ISectionInfoData, type IFieldData, type IRangeData } from '../../../type';
 
 export type ISizeData = ISizeDTO;
 export type IFillerData = IFillerDTO;
@@ -32,6 +33,20 @@ export type IExtractionData = IExtractionDTO;
 export type IFoldingData = IFoldingDTO;
 export type IInstallationData = IInstallationDTO;
 export type INeutralizationData = INeutralizationDTO;
+export type IDamageData = {
+    radius: IRangeData | null; // радіус суцільного ураження
+    distance: IRangeData | null; // дальність дольоту осколків
+    squad: IRangeData | null; // площа ураження;
+    height: IRangeData | null; // висота ураження;
+    number: IRangeData | null; // кількість
+    action: string | null; // вражаюча дія;
+    additional: IFieldData[] | null; // додатково
+};
+
+export type ISensitivityData = {
+    sensitivity: string | null; // чутливість
+    additional: IFieldData[] | null; // додатково
+};
 
 export interface IExplosiveObjectDetailsData {
     id: string;
@@ -43,13 +58,13 @@ export interface IExplosiveObjectDetailsData {
     temperature: ITempartureData | null;
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
-    targetSensor: string | null; // датчик цілі
-    sensitivity: string | null; // чутливість
+    targetSensor: string | null; // підривник
+    sensitivity: ISensitivityData | null; // чутливість
     timeWork: string | null; // час роботи
     liquidatorShort: string | null; // час самоліквідації
     foldingShort: string | null; // час зведення
     extractionShort: string | null; // механізм невилучення
-    damage: string | null; // можливе ураження
+    damage: null | IDamageData;
     fuseIds: string[]; // ammo
     fervorIds: string[]; // запал
     liquidator: ILiquidatorData | null; // ліквідатор;
@@ -104,12 +119,27 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         fuseIds: value.fuseIds ?? [],
         fervorIds: value.fervorIds ?? [],
         targetSensor: value?.targetSensor ?? null,
-        sensitivity: value?.sensitivity ?? null,
+        sensitivity: {
+            sensitivity: value?.sensitivityV2?.sensitivity ?? value?.sensitivity ?? null,
+            additional: value?.sensitivityV2?.additional ?? null,
+        },
         timeWork: value?.timeWork ?? null,
         liquidatorShort: value?.liquidatorShort ?? null,
         extractionShort: value?.extractionShort ?? null,
         foldingShort: value?.foldingShort ?? null,
-        damage: value?.damage ?? null,
+        damage: {
+            radius: createRange(value?.damageV2?.radius) ?? null,
+            distance: createRange(value?.damageV2?.distance) ?? null,
+            squad: createRange(value?.damageV2?.squad) ?? null,
+            height: createRange(value?.damageV2?.height) ?? null,
+            number: createRange(value?.damageV2?.number) ?? null,
+            action: value?.damageV2?.action ?? null,
+            additional:
+                value?.damageV2?.additional?.filter(Boolean).map(el => ({
+                    name: el.name,
+                    value: el.value,
+                })) ?? null,
+        },
         liquidator: value?.liquidator
             ? {
                   description: value.liquidator.description ?? null,
@@ -206,12 +236,27 @@ export const createExplosiveObjectDetailsDTO = (
     fuseIds: value?.fuseIds ?? [],
     fervorIds: value?.fervorIds ?? [],
     targetSensor: value?.targetSensor ?? null,
-    sensitivity: value?.sensitivity ?? null,
+    sensitivityV2: {
+        sensitivity: value?.sensitivity?.sensitivity ?? null,
+        additional: value?.sensitivity?.additional ?? null,
+    },
     timeWork: value?.timeWork ?? null,
     liquidatorShort: value?.liquidatorShort ?? null,
     extractionShort: value?.extractionShort ?? null,
     foldingShort: value?.foldingShort ?? null,
-    damage: value?.damage ?? null,
+    damageV2: {
+        radius: createRangeDTO(value?.damage?.radius) ?? null,
+        distance: createRangeDTO(value?.damage?.distance) ?? null,
+        squad: createRangeDTO(value?.damage?.squad) ?? null,
+        height: createRangeDTO(value?.damage?.height) ?? null,
+        number: createRangeDTO(value?.damage?.number) ?? null,
+        action: value?.damage?.action ?? null,
+        additional:
+            value?.damage?.additional?.filter(Boolean).map(el => ({
+                name: el.name,
+                value: el.value,
+            })) ?? null,
+    },
     liquidator: value?.liquidator
         ? {
               description: value.liquidator.description ?? null,
@@ -294,12 +339,27 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
     weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
     targetSensor: value?.targetSensor ?? null,
-    sensitivity: value?.sensitivity ?? null,
+    sensitivityV2: {
+        sensitivity: value?.sensitivity?.sensitivity ?? null,
+        additional: value?.sensitivity?.additional ?? null,
+    },
     timeWork: value?.timeWork ?? null,
     liquidatorShort: value?.liquidatorShort ?? null,
     extractionShort: value?.extractionShort ?? null,
     foldingShort: value?.foldingShort ?? null,
-    damage: value?.damage ?? null,
+    damageV2: {
+        radius: createRangeDTO(value?.damage?.radius) ?? null,
+        distance: createRangeDTO(value?.damage?.distance) ?? null,
+        squad: createRangeDTO(value?.damage?.squad) ?? null,
+        height: createRangeDTO(value?.damage?.height) ?? null,
+        number: createRangeDTO(value?.damage?.number) ?? null,
+        action: value?.damage?.action ?? null,
+        additional:
+            value?.damage?.additional?.filter(Boolean).map(el => ({
+                name: el.name,
+                value: el.value,
+            })) ?? null,
+    },
     filler:
         value.filler?.map(el => ({
             explosiveId: el.explosiveId ?? null,
