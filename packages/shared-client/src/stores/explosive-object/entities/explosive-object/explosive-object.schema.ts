@@ -19,8 +19,6 @@ export interface IExplosiveObjectData {
     classItemIds: string[];
     countryId: string;
     imageUri?: string;
-    // detailsId the same as id
-    detailsId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
     organizationId?: string;
@@ -79,7 +77,6 @@ export const createExplosiveObject = (value: IExplosiveObjectDTO): IExplosiveObj
     name: value?.name ?? '',
     status: value.status,
     imageUri: value.imageUri ?? '',
-    detailsId: value.id,
     organizationId: value?.organizationId ?? undefined,
     authorId: value?.authorId ?? undefined,
 });

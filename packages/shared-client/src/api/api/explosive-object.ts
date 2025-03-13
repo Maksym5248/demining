@@ -1,8 +1,8 @@
 import {
-    countries,
     type IExplosiveObjectTypeDB,
     type IExplosiveObjectActionDB,
     type IExplosiveObjectDB,
+    type IExplosiveObjectDetailsDB,
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
     type IExplosiveDB,
@@ -16,21 +16,24 @@ import {
     type IExplosiveObjectDTOParams,
     type IExplosiveObjectActionSumDTO,
     type IExplosiveObjectClassItemDTO,
-    type ICountryDTO,
     type IExplosiveObjectFullDTO,
+    type IExplosiveObjectDetailsDTO,
 } from '../dto';
 import { createImage, updateImage } from '../image';
 
 export interface IExplosiveObjectAPI {
-    create: (value: ICreateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
-    update: (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectDTO>;
+    create: (value: ICreateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectFullDTO>;
+    update: (id: string, value: IUpdateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectFullDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectDTO[]>;
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
-    getCountriesList: () => Promise<ICountryDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectFullDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
     subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
+    subscribeDetails: (
+        args: Partial<IQuery> | null,
+        callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void,
+    ) => Promise<void>;
 }
 
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
@@ -40,44 +43,82 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
             explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
             explosiveObject: IDBBase<IExplosiveObjectDB>;
+            explosiveObjectDetails: IDBBase<IExplosiveObjectDetailsDB>;
             explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
             explosive: IDBBase<IExplosiveDB>;
+            batchStart(): void;
+            batchCommit(): Promise<void>;
         },
         private services: {
             assetStorage: IAssetStorage;
         },
     ) {}
 
-    create = async ({ image, ...value }: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
+    create = async ({ image, details, status, ...value }: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectFullDTO> => {
         const imageUri = await createImage({ image, services: this.services });
+        const id = this.db.explosiveObject.uuid();
 
-        const res = await this.db.explosiveObject.create({
+        this.db.batchStart();
+
+        this.db.explosiveObject.batchCreate({
             ...value,
             imageUri,
+            status,
+            id,
         });
 
-        if (!res) throw new Error('there is explosive object');
+        if (details) {
+            this.db.explosiveObjectDetails.batchCreate({
+                ...(details ?? {}),
+                status,
+                id,
+            });
+        }
 
-        return res;
+        await this.db.batchCommit();
+
+        return this.get(id);
     };
 
-    update = async (id: string, { image, ...value }: IUpdateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectDTO> => {
+    update = async (
+        id: string,
+        { image, status, details, ...value }: IUpdateValue<IExplosiveObjectDTOParams>,
+    ): Promise<IExplosiveObjectFullDTO> => {
         const current = await this.db.explosiveObject.get(id);
         if (!current) throw new Error('there is explosive object');
 
         const imageUri = await updateImage({ image, imageUri: current.imageUri, services: this.services });
 
-        const explosiveObject = await this.db.explosiveObject.update(id, {
+        this.db.batchStart();
+
+        this.db.explosiveObject.batchUpdate(id, {
             ...value,
+            status,
             imageUri: imageUri ?? null,
         });
 
-        if (!explosiveObject) throw new Error('there is explosive object');
+        if (details) {
+            this.db.explosiveObjectDetails.batchUpdate(id, {
+                ...(details ?? {}),
+                status,
+            });
+        }
 
-        return explosiveObject;
+        await this.db.batchCommit();
+
+        return this.get(id);
     };
 
-    remove = (id: string) => this.db.explosiveObject.remove(id);
+    remove = async (id: string) => {
+        this.db.batchStart();
+
+        this.db.explosiveObject.batchRemove(id);
+        this.db.explosiveObjectDetails.batchRemove(id);
+
+        await this.db.batchCommit();
+
+        return id;
+    };
 
     getList = async (query?: IQuery): Promise<IExplosiveObjectDTO[]> =>
         this.db.explosiveObject.select({
@@ -97,19 +138,26 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
     }
-    async getCountriesList() {
-        return countries;
-    }
 
     get = async (id: string): Promise<IExplosiveObjectFullDTO> => {
-        const res = await this.db.explosiveObject.get(id);
-        const explosiveIds = (res?.details?.filler?.map(el => el.explosiveId).filter(Boolean) as string[]) ?? [];
-        const explosive = await this.db.explosive.getByIds(explosiveIds);
+        const [res, details] = await Promise.all([this.db.explosiveObject.get(id), this.db.explosiveObjectDetails.get(id)]);
+
+        const explosiveIds = (details?.filler?.map(el => el.explosiveId).filter(Boolean) as string[]) ?? [];
+
+        const [explosive, fuse, fervor] = await Promise.all([
+            this.db.explosive.getByIds(explosiveIds),
+            this.db.explosiveObject.getByIds(details?.fuseIds ?? []),
+            this.db.explosiveObject.getByIds(details?.fervorIds ?? []),
+        ]);
+
         if (!res) throw new Error('there is explosiveObject with id');
 
         return {
             ...res,
             explosive,
+            fuse,
+            fervor,
+            details,
         };
     };
 
@@ -146,5 +194,9 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
     subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => {
         return this.db.explosiveObject.subscribe(args, callback);
+    };
+
+    subscribeDetails = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void) => {
+        return this.db.explosiveObjectDetails.subscribe(args, callback);
     };
 }

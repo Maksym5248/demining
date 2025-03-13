@@ -28,6 +28,8 @@ import {
     type IFieldDB,
 } from 'shared-my';
 
+import { type IExplosiveObjectDetailsDTO } from './explosive-object';
+
 export type IAddressDTO = IAddressDB;
 export type IFieldDTO = IFieldDB;
 
@@ -70,6 +72,7 @@ export interface IExplosiveActionSumDTO {
 
 export interface IExplosiveObjectDTOParams extends Omit<IExplosiveObjectDB, 'imageUri'> {
     image?: File;
+    details: Omit<IExplosiveObjectDetailsDTO, 'id' | 'createdAt' | 'updatedAt'> | null;
 }
 
 export interface IExplosiveObjectTypeDTOParams extends Omit<IExplosiveObjectTypeDB, 'imageUri'> {
