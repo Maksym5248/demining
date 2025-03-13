@@ -1,4 +1,4 @@
-import { type MATERIAL } from 'shared-my';
+import { type IRangeDB, type MATERIAL } from 'shared-my';
 
 import {
     type IExplosiveObjectDetailsDTO,
@@ -44,6 +44,7 @@ export type IDamageData = {
 };
 
 export type ISensitivityData = {
+    effort: IRangeDB | null; // зусилля, кг
     sensitivity: string | null; // чутливість
     additional: IFieldData[] | null; // додатково
 };
@@ -120,6 +121,7 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         fervorIds: value.fervorIds ?? [],
         targetSensor: value?.targetSensor ?? null,
         sensitivity: {
+            effort: createRange(value?.sensitivityV2?.effort) ?? null,
             sensitivity: value?.sensitivityV2?.sensitivity ?? value?.sensitivity ?? null,
             additional: value?.sensitivityV2?.additional ?? null,
         },
@@ -237,6 +239,7 @@ export const createExplosiveObjectDetailsDTO = (
     fervorIds: value?.fervorIds ?? [],
     targetSensor: value?.targetSensor ?? null,
     sensitivityV2: {
+        effort: createRangeDTO(value?.sensitivity?.effort) ?? null,
         sensitivity: value?.sensitivity?.sensitivity ?? null,
         additional: value?.sensitivity?.additional ?? null,
     },
@@ -340,6 +343,7 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
     targetSensor: value?.targetSensor ?? null,
     sensitivityV2: {
+        effort: createRangeDTO(value?.sensitivity?.effort) ?? null,
         sensitivity: value?.sensitivity?.sensitivity ?? null,
         additional: value?.sensitivity?.additional ?? null,
     },

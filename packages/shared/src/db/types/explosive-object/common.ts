@@ -73,13 +73,7 @@ export interface IExplosiveObjectDetailsDB {
     fullDescription: string | null;
     imageUris: string[] | null;
     // characteristics
-    /** @deprecated */
-    material?: MATERIAL;
     materialV2: MATERIAL[];
-    /** @deprecated */
-    size?: ISizeDB | null; //м;
-    /** @deprecated  */
-    weight?: number | null; // kg
     sizeV2: ISizeDB[] | null; //м;
     weightV2: IWeightDB[] | null;
     temperature: ITempartureDB | null;
@@ -99,6 +93,16 @@ export interface IExplosiveObjectDetailsDB {
         action: string | null; // Вражаюча дія міни
         additional: IFieldDB[] | null; // додатково
     };
+    // fuse
+    targetSensor: string | null; // Підривник
+    sensitivityV2: {
+        effort: IRangeDB | null; // зусилля, кг
+        sensitivity: string | null; // чутливість
+        additional: IFieldDB[] | null; // додатково
+    } | null; // чутливість
+    timeWork: string | null; // час роботи
+    additional: IFieldDB[] | null; // додатково
+
     // description
     purpose: IPurposeDB | null; // призначення/ураження;
     structure: IStructureDB | null; // будова;
@@ -110,13 +114,13 @@ export interface IExplosiveObjectDetailsDB {
     neutralization: INeutralizationDB | null; // нейтралізація
     marking: ISectionInfoDB | null; // маркування
     historical: ISectionInfoDB | null; // історичні дані
-    // fuse
-    targetSensor: string | null; // Підривник
+
+    /** @deprecated  */
+    weight?: number | null; // kg
+    /** @deprecated */
+    size?: ISizeDB | null; //м
+    /** @deprecated */
     sensitivity?: string | null; // чутливість
-    sensitivityV2: {
-        sensitivity: string | null; // чутливість
-        additional: IFieldDB[] | null; // додатково
-    } | null; // чутливість
-    timeWork: string | null; // час роботи
-    additional: IFieldDB[] | null; // додатково
+    /** @deprecated */
+    material?: MATERIAL;
 }

@@ -22,6 +22,7 @@ export interface IExplosiveObjectForm {
     temperature: ITempartureData | null;
     targetSensor: string | null; // датчик цілі
     sensitivitySensitivity: string | null; // чутливість
+    sensitivityEffort: IRangeData | null; // зусилля
     sensitivityAdditional: IFieldData[] | null; // додаткові
     timeWork: string | null; // час роботи
 

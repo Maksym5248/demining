@@ -54,6 +54,7 @@ const getParams = ({
     weight,
     temperature,
     targetSensor,
+    sensitivityEffort,
     sensitivitySensitivity,
     sensitivityAdditional,
     timeWork,
@@ -106,6 +107,7 @@ const getParams = ({
         foldingShort,
         extractionShort,
         sensitivity: {
+            effort: sensitivityEffort,
             sensitivity: sensitivitySensitivity,
             additional: sensitivityAdditional?.filter(el => !!el) ?? [],
         },
@@ -274,6 +276,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   historicalDescription: currentExplosiveObject.details?.data.historical?.description ?? '',
                                   sensitivitySensitivity: currentExplosiveObject.details?.data.sensitivity?.sensitivity,
                                   sensitivityAdditional: currentExplosiveObject.details?.data.sensitivity?.additional ?? [],
+                                  sensitivityEffort: currentExplosiveObject.details?.data.sensitivity?.effort,
                                   imageUris: currentExplosiveObject?.details?.data?.imageUris
                                       ? currentExplosiveObject.details?.data.imageUris
                                       : [],
@@ -402,6 +405,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Підривник" name="targetSensor">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
+                    <FieldRange label="Зусилля, кг" name="sensitivityEffort" />
                     <Form.Item label="Чутливість" name="sensitivitySensitivity">
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
