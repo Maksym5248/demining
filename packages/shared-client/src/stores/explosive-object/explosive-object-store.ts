@@ -9,6 +9,7 @@ import {
     type IExplosiveObjectClassAPI,
     type IExplosiveObjectClassItemAPI,
     type IExplosiveObjectDTO,
+    type IExplosiveObjectDetailsDTO,
 } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
@@ -83,6 +84,7 @@ export interface IExplosiveObjectStore {
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
     subscribe: IRequestModel<[query?: Partial<IQuery> | null]>;
+    subscribeDetails: IRequestModel;
     subscribeDeeps: IRequestModel;
 }
 
@@ -158,6 +160,14 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 this.collectionDetails.set(details.id, details);
             }
 
+            if (res.fuse?.length) {
+                this.collection.setArr(res.fuse.map(createExplosiveObject));
+            }
+
+            if (res.fervor?.length) {
+                this.collection.setArr(res.fervor.map(createExplosiveObject));
+            }
+
             this.list.unshift(value);
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
@@ -181,12 +191,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 ...getDictionaryFilter(this),
             });
 
-            this.collectionDetails.setArr(
-                res
-                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
-                    .filter(Boolean) as IExplosiveObjectDetailsData[],
-            );
-
             this.list.set(res.map(createExplosiveObject));
         },
     });
@@ -201,12 +205,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.collectionDetails.setArr(
-                res
-                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
-                    .filter(Boolean) as IExplosiveObjectDetailsData[],
-            );
-
             this.list.push(res.map(createExplosiveObject));
         },
         onError: () => this.services.message.error('Виникла помилка'),
@@ -219,12 +217,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 limit: this.listFuse.pageSize,
                 ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FUSE),
             });
-
-            this.collectionDetails.setArr(
-                res
-                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
-                    .filter(Boolean) as IExplosiveObjectDetailsData[],
-            );
 
             this.listFuse.set(res.map(createExplosiveObject));
         },
@@ -240,12 +232,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FUSE),
             });
 
-            this.collectionDetails.setArr(
-                res
-                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
-                    .filter(Boolean) as IExplosiveObjectDetailsData[],
-            );
-
             this.listFuse.push(res.map(createExplosiveObject));
         },
         onError: () => this.services.message.error('Виникла помилка'),
@@ -258,12 +244,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 limit: this.listFevor.pageSize,
                 ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FERVOR),
             });
-
-            this.collectionDetails.setArr(
-                res
-                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
-                    .filter(Boolean) as IExplosiveObjectDetailsData[],
-            );
 
             this.listFevor.set(res.map(createExplosiveObject));
         },
@@ -278,12 +258,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 startAfter: dates.toDateServer(this.listFevor.last.data.createdAt),
                 ...getDictionaryFilter(this, EXPLOSIVE_OBJECT_COMPONENT.FERVOR),
             });
-
-            this.collectionDetails.setArr(
-                res
-                    .map(el => (el?.details ? createExplosiveObjectDetails(el.id, el.details) : undefined))
-                    .filter(Boolean) as IExplosiveObjectDetailsData[],
-            );
 
             this.listFevor.push(res.map(createExplosiveObject));
         },
@@ -319,6 +293,14 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             if (res.explosive) {
                 this.getStores().explosive.collection.setArr(res.explosive.map(createExplosive));
             }
+
+            if (res.fuse?.length) {
+                this.collection.setArr(res.fuse.map(createExplosiveObject));
+            }
+
+            if (res.fervor?.length) {
+                this.collection.setArr(res.fervor.map(createExplosiveObject));
+            }
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -343,9 +325,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 },
                 (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
                     const create: IExplosiveObjectData[] = [];
-                    const createDetails: IExplosiveObjectDetailsData[] = [];
                     const update: IExplosiveObjectData[] = [];
-                    const updateDetails: IExplosiveObjectDetailsData[] = [];
                     const remove: string[] = [];
 
                     values.forEach(value => {
@@ -353,18 +333,45 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                             remove.push(value.data.id);
                         } else if (value.type === 'added') {
                             create.push(createExplosiveObject(value.data));
-                            !!value.data.details && createDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
                         } else if (value.type === 'modified') {
                             update.push(createExplosiveObject(value.data));
-                            !!value.data.details && updateDetails.push(createExplosiveObjectDetails(value.data.id, value.data.details));
                         }
                     });
 
                     this.list.push(create);
-                    this.collectionDetails.setArr(createDetails);
                     this.collection.updateArr(update);
-                    this.collectionDetails.updateArr(updateDetails);
                     this.collection.remove(remove);
+                },
+            );
+        },
+    });
+
+    subscribeDetails = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObject.subscribeDetails(
+                {
+                    where: {
+                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                    },
+                },
+                (values: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => {
+                    const create: IExplosiveObjectDetailsData[] = [];
+                    const update: IExplosiveObjectDetailsData[] = [];
+                    const remove: string[] = [];
+
+                    values.forEach(value => {
+                        if (value.type === 'removed') {
+                            remove.push(value.data.id);
+                        } else if (value.type === 'added') {
+                            create.push(createExplosiveObjectDetails(value.data.id, value.data));
+                        } else if (value.type === 'modified') {
+                            update.push(createExplosiveObjectDetails(value.data.id, value.data));
+                        }
+                    });
+
+                    this.collectionDetails.setArr(create);
+                    this.collectionDetails.updateArr(update);
+                    this.collectionDetails.remove(remove);
                 },
             );
         },

@@ -1,5 +1,5 @@
 import { type ILinkedToDocumentDB, type IBaseDB, type Timestamp, type IFieldDB, type ISectionInfoDB } from './common';
-import { type IActionDB, type IPurposeDB, type IStructureDB, type IFillerDB, type ISizeDB } from './explosive-object';
+import { type IFillerDB, type ISizeDB } from './explosive-object';
 import { type IExplosiveObjectDBv1, type IExplosiveObjectDB } from './explosive-object/explosive-object';
 import {
     type EMPLOYEE_TYPE,
@@ -161,9 +161,9 @@ export interface IExplosiveDeviceDB extends IBaseDB {
     imageUris?: string[] | null;
     filler?: IFillerDB[] | null; // спорядження ВР;
     chargeWeight?: number | null;
-    purpose?: IPurposeDB | null; // призначення;
-    structure?: IStructureDB | null; // будова;
-    action?: IActionDB | null; // принцип дії;
+    purpose?: ISectionInfoDB | null; // призначення;
+    structure?: ISectionInfoDB | null; // будова;
+    action?: ISectionInfoDB | null; // принцип дії;
     additional: IFieldDB[] | null; // додатково
     marking: ISectionInfoDB | null; // маркування
     usage: ISectionInfoDB | null; // використання

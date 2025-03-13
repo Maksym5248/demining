@@ -4,7 +4,7 @@ import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS, type MATERIAL } from 's
 import { type IExplosiveDeviceDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
-import { type IPurposeData, type IFillerData, type IStructureData, type IActionData, type ISizeData } from '~/stores';
+import { type IFillerData, type ISizeData } from '~/stores';
 
 import { type ISectionInfoData, type IFieldData } from '../../../type';
 
@@ -18,9 +18,9 @@ export interface IExplosiveDeviceData {
     imageUris: string[] | null;
     filler: IFillerData[] | null; // спорядження ВР;
     chargeWeight: number | null;
-    purpose: IPurposeData | null; // призначення;
-    structure: IStructureData | null; // будова;
-    action: IActionData | null; // принцип дії;
+    purpose: ISectionInfoData | null; // призначення;
+    structure: ISectionInfoData | null; // будова;
+    action: ISectionInfoData | null; // принцип дії;
     organizationId?: string;
     authorId?: string;
     material: MATERIAL[];

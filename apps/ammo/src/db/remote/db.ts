@@ -1,4 +1,4 @@
-import { firebase, getFirestore } from '@react-native-firebase/firestore';
+import { firebase, type FirebaseFirestoreTypes, getFirestore, writeBatch } from '@react-native-firebase/firestore';
 import {
     TABLES,
     type IExplosiveObjectTypeDB,
@@ -11,6 +11,7 @@ import {
     type IExplosiveDeviceActionDB,
     type IUserDB,
     type IBookDB,
+    type IExplosiveObjectDetailsDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -37,6 +38,7 @@ export class DBRemote
             | 'explosiveObjectClass'
             | 'explosiveObjectClassItem'
             | 'explosiveObject'
+            | 'explosiveObjectDetails'
             | 'explosiveObjectAction'
             | 'explosiveDevice'
             | 'explosiveDeviceAction'
@@ -59,6 +61,8 @@ export class DBRemote
 
     explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
 
+    explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, [], getCreateData, undefined);
+
     explosiveObjectAction = new DBBase<IExplosiveObjectActionDB>(TABLES.EXPLOSIVE_OBJECT_ACTION, [], getCreateData);
 
     explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], getCreateData);
@@ -68,6 +72,8 @@ export class DBRemote
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
+
+    batch: FirebaseFirestoreTypes.WriteBatch | null = null;
 
     init = () => {
         getFirestore().settings({
@@ -89,15 +95,25 @@ export class DBRemote
         /** WEB */
     }
 
-    private setBatch() {
-        /** WEB */
+    private setBatch(batch: FirebaseFirestoreTypes.WriteBatch | null) {
+        this.batch = batch;
+
+        this.user.setBatch(batch);
+        this.explosiveObject.setBatch(batch);
+        this.explosiveObjectDetails.setBatch(batch);
+        this.explosiveDevice.setBatch(batch);
+        this.explosive.setBatch(batch);
+        this.explosiveObjectAction.setBatch(batch);
+        this.explosiveDeviceAction.setBatch(batch);
     }
 
     batchStart() {
-        /** WEB */
+        const batch = writeBatch(getFirestore());
+        this.setBatch(batch);
     }
 
     async batchCommit() {
-        /** WEB */
+        await this.batch?.commit();
+        this.setBatch(null);
     }
 }

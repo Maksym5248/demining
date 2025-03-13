@@ -103,7 +103,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get details() {
-        return this.collections.details.get(this.data.detailsId);
+        return this.collections.details.get(this.data.id);
     }
 
     get id() {

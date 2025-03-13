@@ -1,13 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type IExplosiveObjectAPI } from '~/api';
+import { type ICommonAPI } from '~/api';
 import { CollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { Country, createCountry, type ICountry, type ICountryData } from './entities';
 
 interface IApi {
-    explosiveObject: IExplosiveObjectAPI;
+    common: ICommonAPI;
 }
 
 interface IServices {
@@ -48,7 +48,7 @@ export class CommonStore implements ICommonStore {
     subscribeCountries = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            const countries = await this.api.explosiveObject.getCountriesList();
+            const countries = await this.api.common.getCountriesList();
 
             this.listCountries.set(countries.map(createCountry));
         },

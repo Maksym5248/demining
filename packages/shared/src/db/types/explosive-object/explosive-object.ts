@@ -6,7 +6,6 @@ import {
     type MATERIAL,
 } from '~/db';
 
-import { type IExplosiveObjectDetailsDB } from './common';
 import { type IBaseDB } from '../common';
 
 export interface IExplosiveObjectComponentNotDB {
@@ -83,5 +82,4 @@ export interface IExplosiveObjectDB extends IBaseDB {
     countryId: string; // СССР
     classItemIds: string[]; // протитанковий, протиднищевий; кумулятивний
     imageUri: string | null;
-    details: IExplosiveObjectDetailsDB | null;
 }

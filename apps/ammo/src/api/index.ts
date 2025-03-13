@@ -6,6 +6,7 @@ import {
     ExplosiveObjectClassItemAPI,
     ExplosiveAPI,
     BookAPI,
+    CommonAPI,
 } from 'shared-my-client';
 
 import { DB } from '~/db';
@@ -23,4 +24,5 @@ export const Api = {
     explosiveDevice: new ExplosiveDeviceAPI(DB),
     explosive: new ExplosiveAPI(DB, services),
     book: new BookAPI(DB),
+    common: new CommonAPI(),
 };

@@ -1,20 +1,6 @@
 import { type IRangeDB, type MATERIAL } from 'shared-my';
 
-import {
-    type IExplosiveObjectDetailsDTO,
-    type IStructureDTO,
-    type IActionDTO,
-    type ISizeDTO,
-    type IPurposeDTO,
-    type IFillerDTO,
-    type ITempartureDTO,
-    type IWeightDTO,
-    type ILiquidatorDTO,
-    type IExtractionDTO,
-    type IFoldingDTO,
-    type IInstallationDTO,
-    type INeutralizationDTO,
-} from '~/api';
+import { type IExplosiveObjectDetailsDTO, type ISizeDTO, type IFillerDTO, type IWeightDTO } from '~/api';
 import { data, type ICreateValue } from '~/common';
 import { createRange, createRangeDTO } from '~/stores/utils';
 
@@ -22,17 +8,8 @@ import { type ISectionInfoData, type IFieldData, type IRangeData } from '../../.
 
 export type ISizeData = ISizeDTO;
 export type IFillerData = IFillerDTO;
-export type ITempartureData = ITempartureDTO;
-
-export type IStructureData = IStructureDTO;
-export type IPurposeData = IPurposeDTO;
-export type IActionData = IActionDTO;
 export type IWeightData = IWeightDTO;
-export type ILiquidatorData = ILiquidatorDTO;
-export type IExtractionData = IExtractionDTO;
-export type IFoldingData = IFoldingDTO;
-export type IInstallationData = IInstallationDTO;
-export type INeutralizationData = INeutralizationDTO;
+
 export type IDamageData = {
     radius: IRangeData | null; // радіус суцільного ураження
     distance: IRangeData | null; // дальність дольоту осколків
@@ -56,7 +33,7 @@ export interface IExplosiveObjectDetailsData {
     material: MATERIAL[];
     size: ISizeData[] | null; //мм;
     weight: IWeightData[] | null; // kg;
-    temperature: ITempartureData | null;
+    temperature: IRangeData | null;
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
     targetSensor: string | null; // підривник
@@ -68,14 +45,14 @@ export interface IExplosiveObjectDetailsData {
     damage: null | IDamageData;
     fuseIds: string[]; // ammo
     fervorIds: string[]; // запал
-    liquidator: ILiquidatorData | null; // ліквідатор;
-    extraction: IExtractionData | null; // вилучення / невилучення;
-    folding: IFoldingData | null; // складання;
-    installation: IInstallationData | null; // спосіб встановлення
-    neutralization: INeutralizationData | null; // нейтралізація
-    purpose: IPurposeData | null; // призначення;
-    structure: IStructureData | null; // будова;
-    action: IActionData | null; // принцип дії;
+    liquidator: ISectionInfoData | null; // ліквідатор;
+    extraction: ISectionInfoData | null; // вилучення / невилучення;
+    folding: ISectionInfoData | null; // складання;
+    installation: ISectionInfoData | null; // спосіб встановлення
+    neutralization: ISectionInfoData | null; // нейтралізація
+    purpose: ISectionInfoData | null; // призначення;
+    structure: ISectionInfoData | null; // будова;
+    action: ISectionInfoData | null; // принцип дії;
     additional: IFieldData[] | null; // додатково
     marking: ISectionInfoData | null; // маркування
     historical: ISectionInfoData | null; // історичні дані

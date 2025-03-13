@@ -25,6 +25,7 @@ import {
     type IExplosiveObjectClassItemDB,
     type IExplosiveDB,
     type IBookDB,
+    type IExplosiveObjectDetailsDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -73,6 +74,8 @@ export class DBRemote implements IDB {
     );
 
     explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], getCreateData, undefined);
+
+    explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, [], getCreateData, undefined);
 
     explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], getCreateData);
 
@@ -156,7 +159,9 @@ export class DBRemote implements IDB {
         this.user.setBatch(batch);
         this.organization.setBatch(batch);
         this.explosiveObject.setBatch(batch);
-
+        this.explosiveObjectDetails.setBatch(batch);
+        this.explosiveDevice.setBatch(batch);
+        this.explosive.setBatch(batch);
         this.employee.setBatch(batch);
         this.employeeAction.setBatch(batch);
         this.mapViewAction.setBatch(batch);

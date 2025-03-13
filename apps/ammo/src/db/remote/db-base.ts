@@ -23,6 +23,7 @@ import {
     endAt,
     or,
     and,
+    type FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
@@ -101,6 +102,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
 
     getSearchData: undefined | ((value: Partial<T>) => string[]) = undefined;
 
+    batch: FirebaseFirestoreTypes.WriteBatch | null = null;
+
     constructor(
         tableName: string,
         searchFields: (keyof T)[],
@@ -123,10 +126,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         this.rootCollection = undefined;
     }
 
-    setBatch() {
-        /**
-         * it is using in web
-         */
+    setBatch(batch: FirebaseFirestoreTypes.WriteBatch | null) {
+        this.batch = batch;
     }
 
     get collection() {

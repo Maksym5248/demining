@@ -153,6 +153,7 @@ export class RootStore implements IRootStore {
                 await Promise.all([
                     this.common.subscribeCountries.run(),
                     this.explosiveObject.subscribe.run(),
+                    this.explosiveObject.subscribeDetails.run(),
                     this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),
                     this.explosive.subscribe.run(),
