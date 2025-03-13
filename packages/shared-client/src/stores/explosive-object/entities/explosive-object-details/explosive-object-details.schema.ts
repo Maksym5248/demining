@@ -43,6 +43,11 @@ export type IDamageData = {
     additional: IFieldData[] | null; // додатково
 };
 
+export type ISensitivityData = {
+    sensitivity: string | null; // чутливість
+    additional: IFieldData[] | null; // додатково
+};
+
 export interface IExplosiveObjectDetailsData {
     id: string;
     fullDescription: string | null;
@@ -53,8 +58,8 @@ export interface IExplosiveObjectDetailsData {
     temperature: ITempartureData | null;
     filler: IFillerData[] | null; // спорядження ВР;
     caliber: number | null; // ammo
-    targetSensor: string | null; // датчик цілі
-    sensitivity: string | null; // чутливість
+    targetSensor: string | null; // підривник
+    sensitivity: ISensitivityData | null; // чутливість
     timeWork: string | null; // час роботи
     liquidatorShort: string | null; // час самоліквідації
     foldingShort: string | null; // час зведення
@@ -114,7 +119,10 @@ export const createExplosiveObjectDetails = (id: string, value: IExplosiveObject
         fuseIds: value.fuseIds ?? [],
         fervorIds: value.fervorIds ?? [],
         targetSensor: value?.targetSensor ?? null,
-        sensitivity: value?.sensitivity ?? null,
+        sensitivity: {
+            sensitivity: value?.sensitivityV2?.sensitivity ?? value?.sensitivity ?? null,
+            additional: value?.sensitivityV2?.additional ?? null,
+        },
         timeWork: value?.timeWork ?? null,
         liquidatorShort: value?.liquidatorShort ?? null,
         extractionShort: value?.extractionShort ?? null,
@@ -228,7 +236,10 @@ export const createExplosiveObjectDetailsDTO = (
     fuseIds: value?.fuseIds ?? [],
     fervorIds: value?.fervorIds ?? [],
     targetSensor: value?.targetSensor ?? null,
-    sensitivity: value?.sensitivity ?? null,
+    sensitivityV2: {
+        sensitivity: value?.sensitivity?.sensitivity ?? null,
+        additional: value?.sensitivity?.additional ?? null,
+    },
     timeWork: value?.timeWork ?? null,
     liquidatorShort: value?.liquidatorShort ?? null,
     extractionShort: value?.extractionShort ?? null,
@@ -328,7 +339,10 @@ export const updateExplosiveObjectDetailsDTO = data.createUpdateDTO<IExplosiveOb
     weightV2: value?.weight?.map((el, i) => ({ weight: el.weight, variant: el.variant ?? i })) ?? [],
     temperature: value?.temperature ? { max: value?.temperature.max, min: value?.temperature.min } : null,
     targetSensor: value?.targetSensor ?? null,
-    sensitivity: value?.sensitivity ?? null,
+    sensitivityV2: {
+        sensitivity: value?.sensitivity?.sensitivity ?? null,
+        additional: value?.sensitivity?.additional ?? null,
+    },
     timeWork: value?.timeWork ?? null,
     liquidatorShort: value?.liquidatorShort ?? null,
     extractionShort: value?.extractionShort ?? null,

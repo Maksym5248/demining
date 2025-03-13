@@ -111,8 +111,12 @@ export interface IExplosiveObjectDetailsDB {
     marking: ISectionInfoDB | null; // маркування
     historical: ISectionInfoDB | null; // історичні дані
     // fuse
-    targetSensor: string | null; // датчик цілі
-    sensitivity: string | null; // чутливість
+    targetSensor: string | null; // Підривник
+    sensitivity?: string | null; // чутливість
+    sensitivityV2: {
+        sensitivity: string | null; // чутливість
+        additional: IFieldDB[] | null; // додатково
+    } | null; // чутливість
     timeWork: string | null; // час роботи
     additional: IFieldDB[] | null; // додатково
 }

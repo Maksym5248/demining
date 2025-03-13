@@ -54,7 +54,8 @@ const getParams = ({
     weight,
     temperature,
     targetSensor,
-    sensitivity,
+    sensitivitySensitivity,
+    sensitivityAdditional,
     timeWork,
     filler,
     fuseIds,
@@ -104,6 +105,10 @@ const getParams = ({
         liquidatorShort,
         foldingShort,
         extractionShort,
+        sensitivity: {
+            sensitivity: sensitivitySensitivity,
+            additional: sensitivityAdditional?.filter(el => !!el) ?? [],
+        },
         damage: {
             radius: damageRadius,
             distance: damageDistance,
@@ -131,7 +136,6 @@ const getParams = ({
             })) ?? [],
         temperature,
         targetSensor,
-        sensitivity,
         timeWork,
         filler: filler ?? [],
         fuseIds: fuseIds?.filter(el => !!el) ?? [],
@@ -268,6 +272,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                   neutralizationDescription: currentExplosiveObject.details?.data.neutralization?.description ?? '',
                                   historicalImageUris: currentExplosiveObject.details?.data.historical?.imageUris ?? [],
                                   historicalDescription: currentExplosiveObject.details?.data.historical?.description ?? '',
+                                  sensitivitySensitivity: currentExplosiveObject.details?.data.sensitivity?.sensitivity,
+                                  sensitivityAdditional: currentExplosiveObject.details?.data.sensitivity?.additional ?? [],
                                   imageUris: currentExplosiveObject?.details?.data?.imageUris
                                       ? currentExplosiveObject.details?.data.imageUris
                                       : [],
@@ -396,9 +402,39 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Підривник" name="targetSensor">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
-                    <Form.Item label="Чутливість" name="sensitivity">
-                        <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
+                    <Form.Item label="Чутливість" name="sensitivitySensitivity">
+                        <Input placeholder="Введіть дані" />
                     </Form.Item>
+                    <FieldMulty
+                        label="Додаткові чутливість"
+                        name="sensitivityAdditional"
+                        manual
+                        renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
+                            <div css={s.additional}>
+                                <Input
+                                    css={s.input}
+                                    placeholder="Назва"
+                                    value={value?.name}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            name: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    placeholder="Значення"
+                                    value={value?.value}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            value: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
                     <Form.Item label="Час самоліквідації" name="liquidatorShort">
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
@@ -452,6 +488,25 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
                     <FieldRange label="Температура, °C" name="temperature" />
+
+                    <FieldMaterial />
+                    <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
+                    <FieldModal
+                        label="Розмір, мм"
+                        name="size"
+                        modal={MODALS.SIZE_WIZARD}
+                        getTitle={(item: ISizeData) => getSizeLabel(item)}
+                        getDescription={item => item.name}
+                    />
+                    <FieldFiller label="Спорядження" name="filler" />
+                    <Divider />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
+                    </Form.Item>
+                    <Divider />
+                    <Form.Item noStyle shouldUpdate={() => true}>
+                        {({ getFieldValue }) => getFieldValue('component') !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && <Fervor />}
+                    </Form.Item>
                     <FieldMulty
                         label="Додаткові"
                         name="additional"
@@ -482,24 +537,6 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             </div>
                         )}
                     />
-                    <FieldMaterial />
-                    <FieldMulty label="Вага, кг" name="weight" renderField={() => <InputNumber placeholder="Ввести" />} />
-                    <FieldModal
-                        label="Розмір, мм"
-                        name="size"
-                        modal={MODALS.SIZE_WIZARD}
-                        getTitle={(item: ISizeData) => getSizeLabel(item)}
-                        getDescription={item => item.name}
-                    />
-                    <FieldFiller label="Спорядження" name="filler" />
-                    <Divider />
-                    <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
-                    </Form.Item>
-                    <Divider />
-                    <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue }) => getFieldValue('component') !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && <Fervor />}
-                    </Form.Item>
                     <Form.Item label="Скорочений опис" name="description">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={3} />
                     </Form.Item>
