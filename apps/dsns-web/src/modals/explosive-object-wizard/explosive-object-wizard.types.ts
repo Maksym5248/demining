@@ -1,5 +1,5 @@
 import { type MATERIAL, type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
-import { type IRangeData, type IFieldData, type IFillerData, type ISizeData, type ITempartureData } from 'shared-my-client';
+import { type IRangeData, type IFieldData, type IFillerData, type ISizeData } from 'shared-my-client';
 
 export interface IExplosiveObjectForm {
     name: string;
@@ -19,7 +19,7 @@ export interface IExplosiveObjectForm {
     material: MATERIAL[];
     size: ISizeData[] | null;
     weight: number[] | null;
-    temperature: ITempartureData | null;
+    temperature: IRangeData | null;
     targetSensor: string | null; // датчик цілі
     sensitivitySensitivity: string | null; // чутливість
     sensitivityEffort: IRangeData | null; // зусилля

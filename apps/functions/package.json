@@ -23,7 +23,7 @@
         "_isolate": "yarn isolate",
         "deploy:functions:dev": "yarn isolate && firebase deploy --project dsns-dev-85963 --only functions",
         "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions",
-        "migrate": "ts-node ./src/migrations/explosive-object/v1/api"
+        "migrate": "ts-node ./src/migrations/explosive-object/v2/api"
     },
     "dependencies": {
         "firebase-admin": "^12.1.1",
