@@ -1,11 +1,11 @@
 import { type Dayjs } from 'dayjs';
-import { isNumber } from 'lodash';
 import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
-import { type IExplosiveDTOParams, type IExplosiveDTO, type IRangeDTO } from '~/api';
+import { type IExplosiveDTOParams, type IExplosiveDTO } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
-import { type IFieldData } from '~/stores/type';
+import { type IRangeData, type IFieldData } from '~/stores/type';
+import { createRange, createRangeDTO } from '~/stores/utils';
 
 export interface IExplosiveCompositionData {
     explosiveId: string | null;
@@ -13,11 +13,6 @@ export interface IExplosiveCompositionData {
     percent: number | null;
     description: string | null;
     authorId?: string;
-}
-
-export interface IRangeData {
-    min: number | null;
-    max: number | null;
 }
 
 export interface IExplosiveData {
@@ -56,17 +51,6 @@ export interface IExplosiveData {
 export interface IExplosiveDataParams extends Omit<IExplosiveData, 'imageUri'> {
     image?: File;
 }
-
-const createRange = (value?: IRangeDTO | number | null): IRangeData =>
-    ({
-        min: (isNumber(value) ? value : value?.min) ?? null,
-        max: (isNumber(value) ? null : value?.max) ?? null,
-    }) as IRangeData;
-
-const createRangeDTO = (value?: IRangeData | null): IRangeDTO => ({
-    min: value?.min ?? null,
-    max: value?.max ?? null,
-});
 
 export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): ICreateValue<IExplosiveDTOParams> => ({
     name: value.name,

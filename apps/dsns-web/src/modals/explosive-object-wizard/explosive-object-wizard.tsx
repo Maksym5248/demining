@@ -85,7 +85,13 @@ const getParams = ({
     liquidatorShort,
     foldingShort,
     extractionShort,
-    damage,
+    damageRadius,
+    damageDistance,
+    damageSquad,
+    damageHeight,
+    damageNumber,
+    damageAction,
+    damageAdditional,
     ...values
 }: IExplosiveObjectForm) => ({
     ...values,
@@ -98,7 +104,15 @@ const getParams = ({
         liquidatorShort,
         foldingShort,
         extractionShort,
-        damage,
+        damage: {
+            radius: damageRadius,
+            distance: damageDistance,
+            squad: damageSquad,
+            height: damageHeight,
+            number: damageNumber,
+            action: damageAction,
+            additional: damageAdditional?.filter(el => !!el) ?? [],
+        },
         size:
             size?.map(
                 el =>
@@ -220,6 +234,13 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             ? {
                                   ...currentExplosiveObject.data,
                                   ...currentExplosiveObject.details?.data,
+                                  damageRadius: currentExplosiveObject.details?.data.damage?.radius,
+                                  damageDistance: currentExplosiveObject.details?.data.damage?.distance,
+                                  damageSquad: currentExplosiveObject.details?.data.damage?.squad,
+                                  damageHeight: currentExplosiveObject.details?.data.damage?.height,
+                                  damageNumber: currentExplosiveObject.details?.data.damage?.number,
+                                  damageAction: currentExplosiveObject.details?.data.damage?.action,
+                                  damageAdditional: currentExplosiveObject.details?.data.damage?.additional ?? [],
                                   size: currentExplosiveObject.details?.data.size?.map(el => ({
                                       ...el,
                                       length: el.length ? measurement.mToMm(el.length) : null,
@@ -371,6 +392,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             );
                         }}
                     </Form.Item>
+                    <Divider />
                     <Form.Item label="Підривник" name="targetSensor">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                     </Form.Item>
@@ -386,9 +408,45 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <Form.Item label="Механізм невилучення" name="extractionShort">
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
-                    <Form.Item label="Ураження" name="damage">
+                    <Divider />
+                    <FieldRange label="Радіус суцільного ураження, м" name="damageRadius" />
+                    <FieldRange label="Дальність дольоту окремих осколків, м" name="damageDistance" />
+                    <FieldRange label="Площа ураження, м2" name="damageSquad" />
+                    <FieldRange label="Висота ураження, м" name="damageHeight" />
+                    <FieldRange label="Кількість уражаючих елементів, м" name="damageNumber" />
+                    <Form.Item label="Вражаюча дія" name="damageAction">
                         <Input placeholder="Введіть дані" />
                     </Form.Item>
+                    <FieldMulty
+                        label="Додаткові"
+                        name="damageAdditional"
+                        manual
+                        renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
+                            <div css={s.additional}>
+                                <Input
+                                    css={s.input}
+                                    placeholder="Назва"
+                                    value={value?.name}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            name: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    placeholder="Значення"
+                                    value={value?.value}
+                                    onChange={e =>
+                                        update({
+                                            ...(value ?? {}),
+                                            value: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
                     <Divider />
                     <Form.Item label="Час роботи" name="timeWork">
                         <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />

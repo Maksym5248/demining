@@ -1,4 +1,4 @@
-import { type ISectionInfoDB, type IFieldDB, type MATERIAL } from '~/db';
+import { type ISectionInfoDB, type IFieldDB, type MATERIAL, type IRangeDB } from '~/db';
 
 export interface IFillerDB {
     name: string | null;
@@ -90,8 +90,15 @@ export interface IExplosiveObjectDetailsDB {
     liquidatorShort: string | null; // час самоліквідації
     foldingShort: string | null; // час зведення
     extractionShort: string | null; // механізм невилучення
-    damage: string | null; // можливе ураження
-
+    damageV2: null | {
+        radius: IRangeDB | null; // радіус суцільного ураження, м
+        distance: IRangeDB | null; // дальність дольоту осколків, м
+        number: IRangeDB | null; // кількість уражаючих елементів, од
+        squad: IRangeDB | null; // площа ураження, м
+        height: IRangeDB | null; // висота ураження, м
+        action: string | null; // Вражаюча дія міни
+        additional: IFieldDB[] | null; // додатково
+    };
     // description
     purpose: IPurposeDB | null; // призначення/ураження;
     structure: IStructureDB | null; // будова;

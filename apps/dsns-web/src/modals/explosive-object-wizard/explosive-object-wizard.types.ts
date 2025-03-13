@@ -1,5 +1,5 @@
 import { type MATERIAL, type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
-import { type IFieldData, type IFillerData, type ISizeData, type ITempartureData } from 'shared-my-client';
+import { type IRangeData, type IFieldData, type IFillerData, type ISizeData, type ITempartureData } from 'shared-my-client';
 
 export interface IExplosiveObjectForm {
     name: string;
@@ -31,7 +31,14 @@ export interface IExplosiveObjectForm {
     liquidatorShort: string | null;
     foldingShort: string | null;
     extractionShort: string | null;
-    damage: string | null;
+
+    damageRadius: IRangeData | null; // радіус суцільного ураження
+    damageDistance: IRangeData | null; // дальність дольоту осколків
+    damageSquad: IRangeData | null; // площа ураження;
+    damageHeight: IRangeData | null; // висота ураження;
+    damageNumber: IRangeData | null; // кількість уражених;
+    damageAction: string | null; // вражаюча дія;
+    damageAdditional: IFieldData[] | null; // додаткові характеристики
 
     purposeImageUris: string[];
     purposeDescription: string;
