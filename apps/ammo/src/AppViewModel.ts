@@ -7,7 +7,7 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, BookCache, ImageChahe, LocalStorage, NetInfo } from './services';
+import { Analytics, AppState, BookCache, ImageChahe, LocalStorage, NetInfo, Updater } from './services';
 import { ThemeManager } from './styles';
 import { Device } from './utils';
 
@@ -66,9 +66,8 @@ export class AppViewModel implements IAppViewModel {
                         NetInfo.pingInfo();
                     }
                 });
-                console.log('stores.init.run() 1');
+
                 await stores.init.run();
-                console.log('stores.init.run() 2');
 
                 NetInfo.onChange(info => {
                     info.isConnected && this.preloadImages.run();
@@ -82,7 +81,19 @@ export class AppViewModel implements IAppViewModel {
     preloadImages = new RequestModel({
         returnIfLoaded: true,
         run: async () => {
-            await ImageChahe.preload(stores.getImagesUrls());
+            const uris = stores.getImagesUrls();
+            const unsavedUrls = await ImageChahe.filterUnsaved(uris);
+
+            Logger.log(`FileSystem dir (${ImageChahe.dir}): `, uris.length);
+            Logger.log(`FileSystem dir (${ImageChahe.dir}) unsaved: `, unsavedUrls.length);
+
+            if (!unsavedUrls.length) return;
+
+            Updater.optional({
+                title: Localization.t('updates.dictionaries.title'),
+                text: Localization.t('updates.dictionaries.text'),
+                onLoad: () => ImageChahe.downloadMany(unsavedUrls),
+            });
         },
     });
 }

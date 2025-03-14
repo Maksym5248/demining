@@ -24,5 +24,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         left: 0,
         right: 0,
         bottom: device.inset.bottom,
+        marginHorizontal: theme.spacing.XL,
     },
 }));

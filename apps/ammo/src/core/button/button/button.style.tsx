@@ -3,7 +3,6 @@ import { ThemeManager } from '~/styles';
 export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     container: {
         ...theme.element.button,
-        marginHorizontal: theme.spacing.XL,
         borderRadius: theme.radius.M,
         flexDirection: 'row',
         justifyContent: 'space-between',

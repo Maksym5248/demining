@@ -16,10 +16,12 @@ import { NetInfoClass } from './state';
 import { AppStateClass } from './state/app-state';
 import { MessageClass } from './ui/message';
 import { NavigationClass } from './ui/navigation';
+import { UpdaterClass } from './ui/updater';
 
 export const LocalStorage = new MMKV();
 export const Navigation = new NavigationClass();
 export const Message = new MessageClass();
+export const Updater = new UpdaterClass();
 export const Crashlytics = new CrashlyticsClass(Logger);
 export const Analytics = new AnalyticsClass(Logger, Crashlytics);
 export const Modal = new ModalClass(Analytics);
