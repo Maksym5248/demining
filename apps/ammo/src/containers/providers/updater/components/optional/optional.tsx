@@ -31,6 +31,11 @@ const Component = ({ id, isVisible, title, text, onLoad }: IOptionalProps) => {
 
     const animated = useSharedValue(1);
 
+    const hide = useCallback(() => {
+        Updater.hide(id);
+        setTimeout(() => setStatus(STATUS.IDLE), 0);
+    }, []);
+
     useEffect(() => {
         if (isVisible) {
             setRendering(true);
@@ -55,11 +60,11 @@ const Component = ({ id, isVisible, title, text, onLoad }: IOptionalProps) => {
             setStatus(STATUS.ERROR);
         }
 
-        Updater.hide(id);
+        hide();
     }, [onLoad]);
 
     const onPressLater = useCallback(() => {
-        Updater.hide(id);
+        hide();
     }, []);
 
     const deviceHeight = getContentHeight(device);
