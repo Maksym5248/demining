@@ -1,5 +1,7 @@
 import EventEmitter from 'events';
 
+import { v4 as uuid } from 'uuid';
+
 enum EVENTS {
     ON_CHANGE = 'ON_CHANGE',
 }
@@ -13,39 +15,49 @@ export interface IUpdaterParams {
 }
 
 export interface IUpdaterState extends IUpdaterParams {
+    id: string;
     isVisible: boolean;
     type: IUpdateType;
 }
 
 const eventEmitter = new EventEmitter();
 
-export const createUpdaterState = (state: IUpdaterState): IUpdaterState => ({
+export const createUpdaterState = (state: Omit<IUpdaterState, 'id' | 'isVisible'>): IUpdaterState => ({
     ...state,
-    isVisible: state.isVisible ?? true,
+    id: uuid(),
+    isVisible: true,
 });
 
 export interface IUpdater {
     forced(params: IUpdaterParams): void;
     optional(params: IUpdaterParams): void;
-    hide(): void;
-    onChange(callBack: (value: IUpdaterState) => void): () => void;
+    hide(id?: string): void;
+    onChange(callBack: (value: IUpdaterState[]) => void): () => void;
     removeAllListeners(): void;
 }
 
 export class UpdaterClass implements IUpdater {
-    forced = (params: IUpdaterParams) => this.show({ ...params, type: 'forced', isVisible: true });
-    optional = (params: IUpdaterParams) => this.show({ ...params, type: 'optional', isVisible: true });
+    state: IUpdaterState[] = [];
 
-    private show = (params: IUpdaterState) => {
-        const p = createUpdaterState(params);
-        eventEmitter.emit(EVENTS.ON_CHANGE, p);
+    forced = (params: IUpdaterParams) => this.show(createUpdaterState({ ...params, type: 'forced' }));
+    optional = (params: IUpdaterParams) => this.show(createUpdaterState({ ...params, type: 'optional' }));
+
+    private show = (state: IUpdaterState) => {
+        this.state.push(state);
+        eventEmitter.emit(EVENTS.ON_CHANGE, this.state);
     };
 
-    hide() {
-        eventEmitter.emit(EVENTS.ON_CHANGE, null);
+    hide(id?: string) {
+        if (id) {
+            this.state = this.state.filter(item => item.id !== id);
+        } else {
+            this.state.pop();
+        }
+
+        eventEmitter.emit(EVENTS.ON_CHANGE, this.state);
     }
 
-    onChange = (callBack: (value: IUpdaterState) => void) => {
+    onChange = (callBack: (value: IUpdaterState[]) => void) => {
         eventEmitter.on(EVENTS.ON_CHANGE, callBack);
 
         return () => eventEmitter.removeListener(EVENTS.ON_CHANGE, callBack);

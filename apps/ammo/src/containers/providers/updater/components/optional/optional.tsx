@@ -21,7 +21,7 @@ enum STATUS {
     SUCCESS = 'success',
 }
 
-const Component = ({ isVisible, title, text, onLoad }: IOptionalProps) => {
+const Component = ({ id, isVisible, title, text, onLoad }: IOptionalProps) => {
     const s = useStyles();
     const device = useDevice();
     const theme = useTheme();
@@ -55,11 +55,11 @@ const Component = ({ isVisible, title, text, onLoad }: IOptionalProps) => {
             setStatus(STATUS.ERROR);
         }
 
-        Updater.hide();
+        Updater.hide(id);
     }, [onLoad]);
 
     const onPressLater = useCallback(() => {
-        Updater.hide();
+        Updater.hide(id);
     }, []);
 
     const deviceHeight = getContentHeight(device);

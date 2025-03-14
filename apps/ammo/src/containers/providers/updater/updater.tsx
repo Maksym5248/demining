@@ -6,9 +6,10 @@ import { type IUpdaterState } from '~/services/ui/updater';
 import { Optional } from './components';
 
 const Component = () => {
-    const [data, setData] = useState<IUpdaterState | null>();
+    const [data, setData] = useState<IUpdaterState[]>([]);
 
-    const { isVisible, title, text, type, onLoad } = data ?? {
+    const { id, isVisible, title, text, type, onLoad } = data[data.length - 1] ?? {
+        id: '',
         isVisible: false,
         title: '',
         text: '',
@@ -30,7 +31,7 @@ const Component = () => {
 
     return (
         <>
-            <Optional isVisible={isVisibleOptional} title={title} text={text} onLoad={onLoad} />
+            <Optional id={id} isVisible={isVisibleOptional} title={title} text={text} onLoad={onLoad} />
         </>
     );
 };
