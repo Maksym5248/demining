@@ -16,6 +16,7 @@ export interface IAppViewModel extends ViewModel {
     isVisibleSplash: boolean;
     initialization: IRequestModel;
 }
+const SIENTLY_LOADING_IMAGES_NUMBER = 50;
 
 export class AppViewModel implements IAppViewModel {
     isVisibleSplash = true;
@@ -89,11 +90,15 @@ export class AppViewModel implements IAppViewModel {
 
             if (!unsavedUrls.length) return;
 
-            Updater.optional({
-                title: Localization.t('updates.dictionaries.title'),
-                text: Localization.t('updates.dictionaries.text'),
-                onLoad: () => ImageChahe.downloadMany(unsavedUrls),
-            });
+            if (unsavedUrls.length > SIENTLY_LOADING_IMAGES_NUMBER) {
+                Updater.optional({
+                    title: Localization.t('updates.dictionaries.title'),
+                    text: Localization.t('updates.dictionaries.text'),
+                    onLoad: () => ImageChahe.downloadMany(unsavedUrls),
+                });
+            } else {
+                ImageChahe.downloadMany(unsavedUrls);
+            }
         },
     });
 }
