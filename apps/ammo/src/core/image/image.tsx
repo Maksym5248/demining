@@ -6,7 +6,7 @@ import Reanimated from 'react-native-reanimated';
 import { Logger, useAsyncEffect } from 'shared-my-client';
 
 import { useVar } from '~/hooks';
-import { mageChahe } from '~/services';
+import { ImageChahe } from '~/services';
 import { useTheme } from '~/styles';
 
 import { useStyles } from './image.styles';
@@ -64,13 +64,13 @@ export function Image({
         if (!uri) return;
 
         try {
-            const fileExists = await mageChahe.exists(uri);
+            const fileExists = await ImageChahe.exists(uri);
 
             if (!fileExists) {
-                await mageChahe.download(uri);
+                await ImageChahe.download(uri);
             }
 
-            setLocalUri(mageChahe.getLocalPath(uri));
+            setLocalUri(ImageChahe.getLocalPath(uri));
         } catch (e) {
             onError(e);
         }

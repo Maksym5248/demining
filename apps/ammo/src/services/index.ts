@@ -27,5 +27,5 @@ export const AssetStorage = new AssetStorageClass();
 export const AppState = new AppStateClass();
 export const NetInfo = new NetInfoClass();
 export const Auth = new AuthClass();
-export const mageChahe = new FileSystemClass(FILE_SYSTEM.IMAGE_CACHE, FILE_FORMAT.PNG, ASSET_TYPE.IMAGE);
+export const ImageChahe = new FileSystemClass(FILE_SYSTEM.IMAGE_CACHE, FILE_FORMAT.PNG, ASSET_TYPE.IMAGE);
 export const BookCache = new FileSystemClass(FILE_SYSTEM.BOOKS_CACHE, FILE_FORMAT.PDF, ASSET_TYPE.BOOK);

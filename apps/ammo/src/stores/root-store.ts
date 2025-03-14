@@ -142,6 +142,8 @@ export class RootStore implements IRootStore {
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
+            await DB.init();
+
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
             this.services.auth.signInAnonymously();
 
@@ -149,7 +151,6 @@ export class RootStore implements IRootStore {
             this.services.crashlytics.init();
 
             try {
-                await DB.init();
                 await Promise.all([
                     this.common.subscribeCountries.run(),
                     this.explosiveObject.subscribe.run(),

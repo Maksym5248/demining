@@ -35,4 +35,9 @@ export class AnalyticsClass implements IAnalytics {
         this.logger.log(`ANALYTICS: User ID: ${uid}`);
         analytics().setUserId(uid);
     };
+
+    setSession = (session: number) => {
+        this.logger.log(`ANALYTICS: Session: ${session}`);
+        analytics().setUserProperty('session', session.toString());
+    };
 }
