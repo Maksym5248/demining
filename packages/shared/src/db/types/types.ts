@@ -256,7 +256,6 @@ export interface IAppConfigDB extends IBaseDB {
     config: {
         version: {
             number: string;
-            build: number;
             force: boolean;
         };
         links: {
