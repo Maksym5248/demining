@@ -7,8 +7,9 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, BookCache, ImageChahe, LocalStorage, NetInfo, Updater } from './services';
+import { Analytics, AppState, BookCache, ImageChahe, LocalStorage, NetInfo } from './services';
 import { ThemeManager } from './styles';
+import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
 
 export interface IAppViewModel extends ViewModel {
@@ -16,10 +17,11 @@ export interface IAppViewModel extends ViewModel {
     isVisibleSplash: boolean;
     initialization: IRequestModel;
 }
-const SIENTLY_LOADING_IMAGES_NUMBER = 50;
 
 export class AppViewModel implements IAppViewModel {
     isVisibleSplash = true;
+
+    updater: IUpdaterModel = new UpdaterModel();
 
     constructor() {
         makeAutoObservable(this);
@@ -61,7 +63,6 @@ export class AppViewModel implements IAppViewModel {
                 AppState.init();
 
                 await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init()]);
-
                 AppState.onChange(state => {
                     if (state === 'active') {
                         NetInfo.pingInfo();
@@ -70,34 +71,12 @@ export class AppViewModel implements IAppViewModel {
 
                 await stores.init.run();
 
+                setTimeout(() => this.updater.checkUpdates.run(), 0);
                 NetInfo.onChange(info => {
-                    info.isConnected && this.preloadImages.run();
+                    info.isConnected && this.updater.preloadImages.run();
                 });
             } catch (error) {
                 Logger.error(error);
-            }
-        },
-    });
-
-    preloadImages = new RequestModel({
-        returnIfLoaded: true,
-        run: async () => {
-            const uris = stores.getImagesUrls();
-            const unsavedUrls = await ImageChahe.filterUnsaved(uris);
-
-            Logger.log(`FileSystem dir (${ImageChahe.dir}): `, uris.length);
-            Logger.log(`FileSystem dir (${ImageChahe.dir}) unsaved: `, unsavedUrls.length);
-
-            if (!unsavedUrls.length) return;
-
-            if (unsavedUrls.length > SIENTLY_LOADING_IMAGES_NUMBER) {
-                Updater.optional({
-                    title: Localization.t('updates.dictionaries.title'),
-                    text: Localization.t('updates.dictionaries.text'),
-                    onLoad: () => ImageChahe.downloadMany(unsavedUrls),
-                });
-            } else {
-                ImageChahe.downloadMany(unsavedUrls);
             }
         },
     });

@@ -3,19 +3,21 @@ import React, { useState, useEffect, memo } from 'react';
 import { Updater } from '~/services';
 import { type IUpdaterState } from '~/services/ui/updater';
 
-import { Optional } from './components';
+import { Optional, Forced } from './components';
 
 const Component = () => {
     const [data, setData] = useState<IUpdaterState[]>([]);
 
-    const { id, isVisible, title, text, type, onLoad } = data[data.length - 1] ?? {
-        id: '',
-        isVisible: false,
-        title: '',
-        text: '',
-        type: 'optional',
-        onLoad: () => Promise.resolve(),
-    };
+    const { id, link, isVisible, title, text, type, onLoad } = data?.find(el => el.type === 'forced') ??
+        data[0] ?? {
+            id: '',
+            isVisible: false,
+            title: '',
+            text: '',
+            type: undefined,
+            link: '',
+            onLoad: () => Promise.resolve(),
+        };
 
     useEffect(() => {
         const removeListener = Updater.onChange(newData => {
@@ -28,10 +30,19 @@ const Component = () => {
     }, []);
 
     const isVisibleOptional = isVisible && type === 'optional';
+    const isVisibleForced = isVisible && type === 'forced';
+    const params = {
+        id,
+        link,
+        title,
+        text,
+        onLoad,
+    };
 
     return (
         <>
-            <Optional id={id} isVisible={isVisibleOptional} title={title} text={text} onLoad={onLoad} />
+            <Optional {...params} isVisible={isVisibleOptional} />
+            <Forced {...params} isVisible={isVisibleForced} />
         </>
     );
 };

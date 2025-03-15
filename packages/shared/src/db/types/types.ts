@@ -251,3 +251,17 @@ export interface IBookDB extends IBaseDB {
     size: number;
     uri: string;
 }
+
+export interface IAppConfigDB extends IBaseDB {
+    config: {
+        version: {
+            number: string;
+            build: number;
+            force: boolean;
+        };
+        links: {
+            appStore: string;
+            playMarket: string;
+        };
+    };
+}

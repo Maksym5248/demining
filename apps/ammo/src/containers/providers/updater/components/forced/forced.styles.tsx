@@ -5,26 +5,30 @@ export const getContentHeight = (device: { inset: { bottom: number } }) => devic
 export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     container: {
         position: 'absolute',
+        top: 0,
         left: 0,
         right: 0,
         bottom: 0,
+        backgroundColor: theme.colors.background,
+        paddingBottom: device.inset.bottom,
     },
     content: {
-        borderTopColor: theme.colors.inert,
-        borderTopWidth: 1,
-        gap: theme.spacing.M,
+        display: 'flex',
+        flex: 1,
+        gap: theme.spacing.XL,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%',
-        backgroundColor: theme.colors.background,
-        paddingBottom: device.inset.bottom + 20,
         paddingHorizontal: theme.spacing.M,
+        paddingVertical: theme.spacing.XL,
     },
     buttons: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         gap: theme.spacing.M,
+    },
+    text: {
+        textAlign: 'center',
+        flex: 1,
     },
     button: {
         flex: 1,

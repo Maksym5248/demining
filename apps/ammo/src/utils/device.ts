@@ -39,6 +39,7 @@ export interface IDevice {
     isShortScreen: boolean;
     screenAspectRatio: number;
     appInfo: string;
+    version: string;
 }
 
 export class DeviceClass implements IDevice, IDeviceInternal {
@@ -96,6 +97,10 @@ export class DeviceClass implements IDevice, IDeviceInternal {
     }
     get screenAspectRatio() {
         return this.isPortrait ? this.window.height / this.window.width : this.window.width / this.window.height;
+    }
+
+    get version() {
+        return DeviceInfo.getVersion();
     }
 
     get appInfo() {

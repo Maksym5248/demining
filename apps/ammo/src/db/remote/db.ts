@@ -12,6 +12,7 @@ import {
     type IUserDB,
     type IBookDB,
     type IExplosiveObjectDetailsDB,
+    type IAppConfigDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -44,6 +45,7 @@ export class DBRemote
             | 'explosiveDeviceAction'
             | 'explosive'
             | 'user'
+            | 'app'
         >
 {
     user = new DBBase<IUserDB>(TABLES.USER, ['email']);
@@ -73,6 +75,8 @@ export class DBRemote
 
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
 
+    app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
+
     batch: FirebaseFirestoreTypes.WriteBatch | null = null;
 
     init = () => {
@@ -81,7 +85,6 @@ export class DBRemote
             cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
             ssl: true,
         });
-
         return Promise.resolve();
     };
 

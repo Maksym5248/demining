@@ -12,3 +12,4 @@ export * from './entities/ranks';
 export * from './entities/book';
 export * from './file';
 export * from './tables';
+export * from './apps';

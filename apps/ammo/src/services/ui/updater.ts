@@ -11,7 +11,8 @@ export type IUpdateType = 'forced' | 'optional';
 export interface IUpdaterParams {
     title: string;
     text: string;
-    onLoad: () => Promise<void>;
+    link?: string;
+    onLoad?: () => Promise<void>;
 }
 
 export interface IUpdaterState extends IUpdaterParams {
@@ -44,17 +45,17 @@ export class UpdaterClass implements IUpdater {
 
     private show = (state: IUpdaterState) => {
         this.state.push(state);
-        eventEmitter.emit(EVENTS.ON_CHANGE, this.state);
+        eventEmitter.emit(EVENTS.ON_CHANGE, [...this.state]);
     };
 
     hide(id?: string) {
         if (id) {
             this.state = this.state.filter(item => item.id !== id);
         } else {
-            this.state.pop();
+            this.state.shift();
         }
 
-        eventEmitter.emit(EVENTS.ON_CHANGE, this.state);
+        eventEmitter.emit(EVENTS.ON_CHANGE, [...this.state]);
     }
 
     onChange = (callBack: (value: IUpdaterState[]) => void) => {

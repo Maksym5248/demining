@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { APPS } from 'shared-my';
 import {
     ExplosiveDeviceStore,
     ExplosiveObjectStore,
@@ -67,7 +68,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
-        this.common = new CommonStore(this);
+        this.common = new CommonStore(APPS.AMMO, this);
         this.explosive = new ExplosiveStore(this);
         this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
