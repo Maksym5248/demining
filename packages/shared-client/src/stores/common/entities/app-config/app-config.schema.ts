@@ -1,27 +1,27 @@
-import { type IAppConfigDTO } from '~/api';
+import { type PlatformType } from 'shared-my';
+
+import { type IVersionDTO, type IAppConfigDTO } from '~/api';
+
+export interface IVersionData {
+    number: string;
+    force: boolean;
+    link: string;
+}
 
 export interface IAppConfigData {
     config: {
-        version: {
-            number: string;
-            force: boolean;
-        };
-        links: {
-            appStore?: string;
-            playMarket?: string;
-        };
+        version: IVersionData;
     };
 }
 
-export const createAppConfig = (dto?: IAppConfigDTO): IAppConfigData => ({
+export const createVersion = (dto?: IVersionDTO): IVersionData => ({
+    number: dto?.number ?? '0.0.0',
+    force: dto?.force ?? false,
+    link: dto?.link ?? '',
+});
+
+export const createAppConfig = (platform: PlatformType, dto?: IAppConfigDTO): IAppConfigData => ({
     config: {
-        version: {
-            number: dto?.config?.version?.number ?? '',
-            force: dto?.config?.version?.force ?? false,
-        },
-        links: {
-            appStore: dto?.config?.links?.appStore,
-            playMarket: dto?.config?.links?.playMarket,
-        },
+        version: createVersion(dto?.config?.platform[platform].version),
     },
 });

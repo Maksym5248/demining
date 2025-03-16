@@ -252,15 +252,20 @@ export interface IBookDB extends IBaseDB {
     uri: string;
 }
 
+export interface IVersionDB {
+    number: string;
+    force: boolean;
+    link: string;
+}
+
+export type PlatformType = 'ios' | 'android' | 'windows' | 'macos' | 'web';
+
+export interface IPlatformConfigDB {
+    version: IVersionDB;
+}
+
 export interface IAppConfigDB extends IBaseDB {
     config: {
-        version: {
-            number: string;
-            force: boolean;
-        };
-        links: {
-            appStore: string;
-            playMarket: string;
-        };
+        platform: Record<PlatformType, IPlatformConfigDB>;
     };
 }

@@ -1,40 +1,45 @@
 import { makeAutoObservable } from 'mobx';
+import { type PlatformType } from 'shared-my';
 
-import { createAppConfig, type IAppConfigData } from './app-config.schema';
+import { type IAppConfigData } from './app-config.schema';
 
 export interface IAppConfig {
-    data: IAppConfigData;
+    platform?: PlatformType;
+    data: IAppConfigData | null;
     version: {
         major: number;
         minor: number;
         bugfix: number;
     };
-    links: {
-        appStore?: string;
-        playMarket?: string;
-    };
+    link: string;
     force: boolean;
     isAvalibaleUpdate(version: string): boolean;
+    setPlatform(platform: PlatformType): void;
     set(data: IAppConfigData): void;
 }
 
 export class AppConfig implements IAppConfig {
-    data: IAppConfigData = createAppConfig();
+    data: IAppConfigData | null = null;
+    platform?: PlatformType;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    parceVersion(version: string) {
-        return version.split('.').map(Number);
+    parceVersion(version?: string) {
+        return version?.split('.').map(Number);
+    }
+
+    setPlatform(platform: PlatformType) {
+        this.platform = platform;
     }
 
     get force() {
-        return this.data.config.version.force;
+        return !!this.data?.config.version.force;
     }
 
     get version() {
-        const [major, minor, bugfix] = this.parceVersion(this.data.config.version.number);
+        const [major, minor, bugfix] = this.parceVersion(this.data?.config.version.number) ?? [0, 0, 0];
 
         return {
             major,
@@ -43,13 +48,13 @@ export class AppConfig implements IAppConfig {
         };
     }
 
-    get links() {
-        return this.data.config.links;
+    get link() {
+        return this.data?.config.version.link ?? '';
     }
 
     isAvalibaleUpdate(version: string) {
         const { major, minor, bugfix } = this.version;
-        const [currentMajor, currentMinor, currentBugfix] = this.parceVersion(version);
+        const [currentMajor, currentMinor, currentBugfix] = this.parceVersion(version) ?? [0, 0, 0];
 
         return major > currentMajor || minor > currentMinor || bugfix > currentBugfix;
     }

@@ -2,11 +2,11 @@ import { type APPS, countries, type IAppConfigDB } from 'shared-my';
 
 import { type IDBBase } from '~/common';
 
-import { type ICountryDTO } from '../dto';
+import { type IAppConfigDTO, type ICountryDTO } from '../dto';
 
 export interface ICommonAPI {
     getCountriesList: () => Promise<ICountryDTO[]>;
-    getAppConfig: (name: APPS) => Promise<any>;
+    getAppConfig: (name: APPS) => Promise<IAppConfigDTO>;
 }
 
 export class CommonAPI implements ICommonAPI {
@@ -20,6 +20,12 @@ export class CommonAPI implements ICommonAPI {
     }
 
     async getAppConfig(name: APPS) {
-        return this.db.app.get(name);
+        const res = await this.db.app.get(name);
+
+        if (!res) {
+            throw new Error('App config not found');
+        }
+
+        return res;
     }
 }

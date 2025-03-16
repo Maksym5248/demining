@@ -24,24 +24,24 @@ export class UpdaterModel implements IUpdaterModel {
 
     checkUpdates = new RequestModel({
         run: async () => {
+            const { appConfig } = stores.common;
+            appConfig.setPlatform(Device.platform);
+
             await stores.common.fetchAppConfig.run();
 
-            const { appConfig } = stores.common;
-
             if (!stores.common.appConfig.isAvalibaleUpdate(Device.version)) return;
-            const link = Device.isAndroid ? appConfig.links.playMarket : appConfig.links.appStore;
 
             if (appConfig.force) {
                 Updater.forced({
                     title: Localization.t('updates.app-force.title'),
                     text: Localization.t('updates.app-force.text'),
-                    link,
+                    link: appConfig.link,
                 });
             } else {
                 Updater.optional({
                     title: Localization.t('updates.app-optional.title'),
                     text: Localization.t('updates.app-optional.text'),
-                    link,
+                    link: appConfig.link,
                 });
             }
         },

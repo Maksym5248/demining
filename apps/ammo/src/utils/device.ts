@@ -40,6 +40,7 @@ export interface IDevice {
     screenAspectRatio: number;
     appInfo: string;
     version: string;
+    platform: 'ios' | 'android' | 'windows' | 'macos' | 'web';
 }
 
 export class DeviceClass implements IDevice, IDeviceInternal {
@@ -111,6 +112,10 @@ export class DeviceClass implements IDevice, IDeviceInternal {
         const envName = CONFIG.ENV === 'prod' ? ' ' : ` ${toUpperFirst(CONFIG.ENV)} `;
 
         return `${toUpperFirst(name)}${envName}v${version} (${buildId})`;
+    }
+
+    get platform() {
+        return Platform.OS;
     }
 
     addDimensionsEventListener(callback: any) {

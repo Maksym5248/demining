@@ -5,7 +5,7 @@ import { type ICommonAPI } from '~/api';
 import { CollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { AppConfig, Country, createCountry, type ICountry, type ICountryData } from './entities';
+import { AppConfig, Country, createAppConfig, createCountry, type ICountry, type ICountryData } from './entities';
 
 interface IApi {
     common: ICommonAPI;
@@ -57,7 +57,12 @@ export class CommonStore implements ICommonStore {
         cachePolicy: 'cache-first',
         run: async () => {
             const config = await this.api.common.getAppConfig(this.appName);
-            this.appConfig.set(config);
+
+            if (!this.appConfig.platform) {
+                throw new Error('Platform is not set');
+            }
+
+            this.appConfig.set(createAppConfig(this.appConfig.platform, config));
         },
     });
 
