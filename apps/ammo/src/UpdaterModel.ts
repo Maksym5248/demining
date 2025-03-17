@@ -13,7 +13,7 @@ export interface IUpdaterModel extends ViewModel {
     preloadImages: IRequestModel;
 }
 
-const SIENTLY_LOADING_IMAGES_NUMBER = -1;
+const SIENTLY_LOADING_IMAGES_NUMBER = 50;
 
 export class UpdaterModel implements IUpdaterModel {
     isVisibleSplash = true;

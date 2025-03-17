@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 
 import { observer } from 'mobx-react';
-import { View, type TextInput as TextInputRN } from 'react-native';
+import { Keyboard, View, type TextInput as TextInputRN } from 'react-native';
 
 import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, TextInput } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -81,6 +81,8 @@ export const DictionariesScreen = observer(({ route }: IDictionariesScreenProps)
                 right={<Icon name="search" color={theme.colors.textSecondary} />}
                 isClearable
                 style={s.searchContainer}
+                returnKeyType="done"
+                onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             <List

@@ -77,7 +77,11 @@ export const HomeScreen = observer(() => {
                 </View>
                 <View style={s.content}>
                     <Text type="h4" text={t('rest')} style={s.sctionTitle} />
-                    <Scroll horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scroll}>
+                    <Scroll
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={s.scroll}>
                         {vm.rest.map(el => (
                             <Card
                                 key={el.id}
