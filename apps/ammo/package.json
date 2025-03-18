@@ -2,7 +2,7 @@
     "name": "ammo",
     "private": true,
     "version": "1.3.0",
-    "build-number": 58,
+    "build-number": 59,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
         "android:prod": "react-native run-android --mode=proddebug --appIdSuffix=prod",
