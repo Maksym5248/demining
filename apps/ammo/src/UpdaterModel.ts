@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import semver from 'semver';
 import { type IRequestModel, Logger, RequestModel } from 'shared-my-client';
 
 import { stores } from '~/stores';
@@ -22,6 +23,11 @@ export class UpdaterModel implements IUpdaterModel {
         makeAutoObservable(this);
     }
 
+    isAvalibaleUpdate() {
+        const { version } = stores.common.appConfig;
+        return !semver.satisfies(Device.version, version);
+    }
+
     checkUpdates = new RequestModel({
         run: async () => {
             const { appConfig } = stores.common;
@@ -29,7 +35,7 @@ export class UpdaterModel implements IUpdaterModel {
 
             await stores.common.fetchAppConfig.run();
 
-            if (!stores.common.appConfig.isAvalibaleUpdate(Device.version)) return;
+            if (!this.isAvalibaleUpdate()) return;
 
             if (appConfig.force) {
                 Updater.forced({
