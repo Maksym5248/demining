@@ -251,3 +251,21 @@ export interface IBookDB extends IBaseDB {
     size: number;
     uri: string;
 }
+
+export interface IVersionDB {
+    number: string;
+    force: boolean;
+    link: string;
+}
+
+export type PlatformType = 'ios' | 'android' | 'windows' | 'macos' | 'web';
+
+export interface IPlatformConfigDB {
+    version: IVersionDB;
+}
+
+export interface IAppConfigDB extends IBaseDB {
+    config: {
+        platform: Record<PlatformType, IPlatformConfigDB>;
+    };
+}

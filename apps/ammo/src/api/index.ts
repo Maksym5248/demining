@@ -24,5 +24,5 @@ export const Api = {
     explosiveDevice: new ExplosiveDeviceAPI(DB),
     explosive: new ExplosiveAPI(DB, services),
     book: new BookAPI(DB),
-    common: new CommonAPI(),
+    common: new CommonAPI(DB),
 };

@@ -3,9 +3,13 @@ import { type ProgressListener } from 'react-native-file-access/lib/typescript/t
 import { Logger } from 'shared-my-client';
 
 export interface IFileSystem {
+    readonly dir: string;
     exists(filePath: string): Promise<boolean>;
     existsMany(filePaths: string[]): Promise<boolean[]>;
     download(fromUrl: string, onProgress?: ProgressListener): Promise<void>;
+    downloadMany(fromUrls: string[]): Promise<void>;
+    /** @description returns unsaved uris */
+    filterUnsaved(uris: string[]): Promise<string[]>;
     preload(uris: string[]): Promise<void>;
     getPath(uri: string): string;
     getLocalPath(uri: string): string;
@@ -13,7 +17,7 @@ export interface IFileSystem {
 
 export class FileSystemClass {
     constructor(
-        private dir: string,
+        public readonly dir: string,
         private fileFormat?: string,
         private table?: string,
     ) {}
@@ -29,26 +33,8 @@ export class FileSystemClass {
     }
 
     async preload(uris: string[]): Promise<void> {
-        const urls = await Promise.allSettled(
-            uris.map(async uri => {
-                try {
-                    const fileExists = await this.exists(uri);
-                    return fileExists ? null : uri;
-                } catch (error) {
-                    return null;
-                }
-            }),
-        );
-
-        Logger.log(`FileSystem dir (${this.dir}): `, urls.length);
-
-        const unsevedUrls = urls
-            .filter((result): result is PromiseFulfilledResult<string | null> => result.status === 'fulfilled' && !!result.value)
-            .map(result => result.value as string);
-
-        Logger.log(`FileSystem dir(${this.dir}) - loading unsaved: `, unsevedUrls.length);
-
-        await Promise.allSettled(unsevedUrls.map(uri => this.download(uri)));
+        const unsavedUrls = await this.filterUnsaved(uris);
+        await Promise.allSettled(unsavedUrls.map(uri => this.download(uri)));
     }
 
     async exists(uri: string): Promise<boolean> {
@@ -60,6 +46,25 @@ export class FileSystemClass {
             Logger.error('Images - failed to check if file exists:', error);
             return false;
         }
+    }
+
+    async filterUnsaved(uris: string[]): Promise<string[]> {
+        const urls = await Promise.allSettled(
+            uris.map(async uri => {
+                try {
+                    const fileExists = await this.exists(uri);
+                    return fileExists ? null : uri;
+                } catch (error) {
+                    return null;
+                }
+            }),
+        );
+
+        const unsevedUrls = urls
+            .filter((result): result is PromiseFulfilledResult<string | null> => result.status === 'fulfilled' && !!result.value)
+            .map(result => result.value as string);
+
+        return unsevedUrls;
     }
 
     async existsMany(uris: string[]): Promise<boolean[]> {
@@ -79,6 +84,10 @@ export class FileSystemClass {
         } catch (error) {
             console.error('Failed to download file:', error);
         }
+    }
+
+    async downloadMany(urls: string[]): Promise<void> {
+        await Promise.allSettled(urls.map(uri => this.download(uri)));
     }
 
     private getFileName(uri: string) {

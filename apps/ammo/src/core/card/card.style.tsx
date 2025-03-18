@@ -17,8 +17,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         justifyContent: 'flex-start',
     },
     svg: {
-        width: 80,
-        height: 80,
+        height: '50%',
+        aspectRatio: 1,
         padding: theme.spacing.XS,
         marginBottom: theme.spacing.S,
         alignSelf: 'center',

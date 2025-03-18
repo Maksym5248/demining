@@ -10,6 +10,8 @@ import {
     type IExplosiveDB,
     type IWeightDB,
     type ISectionInfoDB,
+    type IAppConfigDB,
+    type IVersionDB,
 } from 'shared-my';
 
 export type IWeightDTO = IWeightDB;
@@ -19,6 +21,9 @@ export type IExplosiveObjectDetailsDTO = Omit<IExplosiveObjectDetailsDB, 'status
 export type ISectionInfoDTO = ISectionInfoDB;
 
 export type ICountryDTO = ICountryDB;
+export type IVersionDTO = IVersionDB;
+export type IAppConfigDTO = IAppConfigDB;
+
 export type IExplosiveObjectClassDTO = IExplosiveObjectClassDB;
 export type IExplosiveObjectClassItemDTO = IExplosiveObjectClassItemDB;
 export type IExplosiveObjectTypeDTO = IExplosiveObjectTypeDB;

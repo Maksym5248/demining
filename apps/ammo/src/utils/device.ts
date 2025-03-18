@@ -39,6 +39,8 @@ export interface IDevice {
     isShortScreen: boolean;
     screenAspectRatio: number;
     appInfo: string;
+    version: string;
+    platform: 'ios' | 'android' | 'windows' | 'macos' | 'web';
 }
 
 export class DeviceClass implements IDevice, IDeviceInternal {
@@ -98,6 +100,10 @@ export class DeviceClass implements IDevice, IDeviceInternal {
         return this.isPortrait ? this.window.height / this.window.width : this.window.width / this.window.height;
     }
 
+    get version() {
+        return DeviceInfo.getVersion();
+    }
+
     get appInfo() {
         const name = DeviceInfo.getApplicationName();
         const version = DeviceInfo.getVersion();
@@ -106,6 +112,10 @@ export class DeviceClass implements IDevice, IDeviceInternal {
         const envName = CONFIG.ENV === 'prod' ? ' ' : ` ${toUpperFirst(CONFIG.ENV)} `;
 
         return `${toUpperFirst(name)}${envName}v${version} (${buildId})`;
+    }
+
+    get platform() {
+        return Platform.OS;
     }
 
     addDimensionsEventListener(callback: any) {

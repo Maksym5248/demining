@@ -24,6 +24,7 @@ import {
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
     type IExplosiveObjectDetailsDB,
+    type IAppConfigDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -97,6 +98,7 @@ export interface IDB {
     document: IDBBase<IDocumentDB>;
     book: IDBBase<IBaseDB>;
     explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
+    app: IDBBase<IAppConfigDB>;
     batchStart(): void;
     batchCommit(): Promise<void>;
     init(): void;

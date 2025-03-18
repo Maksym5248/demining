@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { makeAutoObservable } from 'mobx';
+import { APPS } from 'shared-my';
 import {
     type IDocumentStore,
     type IAuthStore,
@@ -129,7 +130,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
-        this.common = new CommonStore(this);
+        this.common = new CommonStore(APPS.DEMINING_WEB, this);
         this.viewer = new ViewerStore(this);
         this.auth = new AuthStore(this);
         this.document = new DocumentStore(this);

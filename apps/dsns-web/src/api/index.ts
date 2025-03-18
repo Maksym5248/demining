@@ -38,7 +38,7 @@ export const Api = {
     explosiveObjectClass: new ExplosiveObjectClassAPI(DB),
     explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DB),
     book: new BookAPI(DB),
-    common: new CommonAPI(),
+    common: new CommonAPI(DB),
 
     explosiveObject: new ExplosiveObjectAPI(DB, services),
     explosiveDevice: new ExplosiveDeviceAPI(DB),

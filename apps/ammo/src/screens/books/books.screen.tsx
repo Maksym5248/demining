@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 
 import { observer } from 'mobx-react';
-import { View, type TextInput as TextInputRN } from 'react-native';
+import { Keyboard, View, type TextInput as TextInputRN } from 'react-native';
 import { measurement } from 'shared-my';
 
 import { Badge, Card, Header, Icon, type IFlatListRenderedItem, List, Progress, TextInput } from '~/core';
@@ -85,6 +85,8 @@ export const BooksScreen = observer(({ route }: IBookScreenProps) => {
                 value={vm.searchBy}
                 right={<Icon name="search" color={theme.colors.textSecondary} />}
                 isClearable
+                returnKeyType="done"
+                onSubmitEditing={() => Keyboard.dismiss()}
                 style={s.searchContainer}
             />
 

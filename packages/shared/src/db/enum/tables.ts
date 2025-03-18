@@ -22,6 +22,7 @@ export enum TABLES {
     ORGANIZATION = 'ORGANIZATION',
     DOCUMENT = 'DOCUMENT',
     BOOK = 'BOOK',
+    APP_CONFIG = 'APP_CONFIG',
 }
 
 export enum TABLES_DIR {

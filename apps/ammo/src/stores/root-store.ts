@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { APPS } from 'shared-my';
 import {
     ExplosiveDeviceStore,
     ExplosiveObjectStore,
@@ -67,7 +68,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
-        this.common = new CommonStore(this);
+        this.common = new CommonStore(APPS.AMMO, this);
         this.explosive = new ExplosiveStore(this);
         this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
@@ -142,6 +143,8 @@ export class RootStore implements IRootStore {
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
+            await DB.init();
+
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
             this.services.auth.signInAnonymously();
 
@@ -149,7 +152,6 @@ export class RootStore implements IRootStore {
             this.services.crashlytics.init();
 
             try {
-                await DB.init();
                 await Promise.all([
                     this.common.subscribeCountries.run(),
                     this.explosiveObject.subscribe.run(),
