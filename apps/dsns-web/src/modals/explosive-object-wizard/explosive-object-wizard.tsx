@@ -505,7 +505,10 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     <FieldFiller label="Спорядження" name="filler" />
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
-                        {({ getFieldValue }) => getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO && <Fuse />}
+                        {({ getFieldValue }) =>
+                            (getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO ||
+                                getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.EXPLOSIVE_DEVICE) && <Fuse />
+                        }
                     </Form.Item>
                     <Divider />
                     <Form.Item noStyle shouldUpdate={() => true}>
