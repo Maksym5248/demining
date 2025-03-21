@@ -1,6 +1,6 @@
 {
-    "name": "dsns-web",
-    "productName": "dsns",
+    "name": "demining-web",
+    "productName": "demining",
     "version": "1.4.0",
     "description": "My Electron application description",
     "main": ".webpack/main",

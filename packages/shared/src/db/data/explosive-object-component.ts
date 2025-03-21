@@ -22,4 +22,8 @@ export const explosiveObjectComponentData: IExplosiveObjectComponentNotDB[] = [
         id: EXPLOSIVE_OBJECT_COMPONENT.CV,
         name: 'Капсуль-спалахувач',
     },
+    {
+        id: EXPLOSIVE_OBJECT_COMPONENT.EXPLOSIVE_DEVICE,
+        name: 'Підривний пристрій',
+    },
 ];

@@ -7,6 +7,7 @@ export enum EXPLOSIVE_OBJECT_STATUS {
 export enum EXPLOSIVE_OBJECT_COMPONENT {
     AMMO = 'AMMO',
     FUSE = 'FUSE',
+    EXPLOSIVE_DEVICE = 'EXPLOSIVE_DEVICE', // підривний пристрій,
     FERVOR = 'FERVOR', // Запал
     CD = 'CD', // Капсюл-детонатор
     CV = 'CV', // Капсуль спалахувач
