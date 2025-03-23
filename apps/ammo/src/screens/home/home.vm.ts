@@ -9,7 +9,6 @@ import { DictionaryType, type IBookFilter, type IDictionatyFilter, type ViewMode
 
 export interface IItem {
     id: string;
-    name?: string;
     svg: ISvgName;
     screen?: SCREENS;
 }
@@ -35,37 +34,31 @@ const dictionaries: IItem[] = [
 export const books: IItem[] = [
     {
         id: bookTypesMap[BOOK_TYPE.AMMUNITION].id,
-        name: bookTypesMap[BOOK_TYPE.AMMUNITION].name,
         svg: 'book-ammo',
         screen: SCREENS.BOOKS,
     },
     {
         id: bookTypesMap[BOOK_TYPE.EXPLOSIVE].id,
-        name: bookTypesMap[BOOK_TYPE.EXPLOSIVE].name,
         svg: 'book-explosive',
         screen: SCREENS.BOOKS,
     },
     {
         id: bookTypesMap[BOOK_TYPE.BLASTING].id,
-        name: bookTypesMap[BOOK_TYPE.BLASTING].name,
         svg: 'book-blasting',
         screen: SCREENS.BOOKS,
     },
     {
         id: bookTypesMap[BOOK_TYPE.MINING].id,
-        name: bookTypesMap[BOOK_TYPE.MINING].name,
         svg: 'book-mining',
         screen: SCREENS.BOOKS,
     },
     {
         id: bookTypesMap[BOOK_TYPE.DEMINING].id,
-        name: bookTypesMap[BOOK_TYPE.DEMINING].name,
         svg: 'book-demining',
         screen: SCREENS.BOOKS,
     },
     {
         id: bookTypesMap[BOOK_TYPE.ORDER_MO].id,
-        name: bookTypesMap[BOOK_TYPE.ORDER_MO].name,
         svg: 'book-order',
         screen: SCREENS.BOOKS,
     },

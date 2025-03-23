@@ -224,8 +224,12 @@
         "explosive-device": "Засоби підриву"
     },
     "books": {
-        "explosive": "ВР речовини",
-        "explosive-object": "Боєприпаси",
-        "explosive-device": "Засоби підриву"
+        "Ammunition": "Боєприпаси",
+        "Explosive": "ВР речовини",
+        "Demining": "Розмінування",
+        "Mining": "Мінування",
+        "Blasting": "Вибухові роботи",
+        "Equipment": "Обладнання",
+        "OrdersMO": "Накази МО"
     }
 }

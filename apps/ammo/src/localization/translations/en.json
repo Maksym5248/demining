@@ -1,0 +1,235 @@
+{
+    "error": {
+        "can-not-open-link": "Failed to open the link"
+    },
+    "updates": {
+        "dictionaries": {
+            "title": "Download",
+            "text": "New data is available. Would you like to update?"
+        },
+        "app-force": {
+            "title": "Update Required",
+            "text": "To continue using the app, you must install the new version, as the previous one is no longer supported."
+        },
+        "app-optional": {
+            "title": "Update Available",
+            "text": "A new version of the app is available. Would you like to update?"
+        }
+    },
+    "core": {
+        "bottom-sheet": {
+            "cancel": "Cancel",
+            "close": "Close"
+        },
+        "select": {
+            "title": "Select",
+            "placeholder": "Choose"
+        }
+    },
+    "components": {
+        "list": {
+            "empty": "No data in the list",
+            "emptySearch": "No matches found for your search"
+        }
+    },
+    "containers": {
+        "updater": {
+            "title": "Update",
+            "later": "Later",
+            "update": "Update",
+            "success": "Update completed",
+            "error": "Update failed",
+            "download": "Download"
+        }
+    },
+    "screens": {
+        "home": {
+            "title": "Reference",
+            "search": "Search all reference guides",
+            "dictionaries": "Reference",
+            "book": "Literature",
+            "rest": "Other",
+            "explosive": "Explosives",
+            "explosive-object": "Ammunition",
+            "explosive-device": "Detonation Devices",
+            "settings": "Settings"
+        },
+        "dictionaries": {
+            "title": "Guide",
+            "search": "Search"
+        },
+        "books": {
+            "title": "Literature",
+            "search": "Search"
+        },
+        "explosive-details": {
+            "title": "Details",
+            "details": "Details",
+            "name": "Name",
+            "fullName": "Full Name",
+            "formula": "Formula",
+            "description": "Description",
+            "composition": "Composition",
+            "container": "Composition",
+            "explosiveCharacteristic": "Explosive Characteristics",
+            "detonationSpeed": "Detonation Speed, m/s",
+            "brisance": "Brisance, mm",
+            "brisanceTooltip": "Brisance is measured using the Hess method — the degree of compression of a lead column caused by an explosive (mm).",
+            "explosiveVolume": "Explosive Volume, cm³",
+            "explosiveVolumeTooltip": "Explosive volume is measured by the Trauzl test — the volume of a cavity in a lead cylinder after an explosion (cm³).",
+            "trotylEquivalent": "TNT Equivalent",
+            "sensitivityToImpact": "Impact Sensitivity",
+            "sensitivityToTemperature": "Temperature Sensitivity",
+            "sensitivityToFriction": "Friction Sensitivity",
+            "phisicalCharacteristic": "Physical-Chemical Properties",
+            "density": "Density, kg/m³",
+            "meltingPoint": "Melting Point, ºC",
+            "ignitionPoint": "Ignition Point, ºC",
+            "additional": "Additional"
+        },
+        "explosive-object-details": {
+            "title": "Details",
+            "details": "Details",
+            "name": "Marking",
+            "fullName": "Full Name",
+            "type": "Type",
+            "component": "Component",
+            "classification": "Classification",
+            "country": "Country",
+            "characteristic": "Characteristics",
+            "caliber": "Caliber",
+            "material": "Material",
+            "fuse": "Fuses",
+            "fervor": "Igniters",
+            "description": "Description",
+            "fullDescription": "Full Description",
+            "size": "Size, mm",
+            "weight": "Weight, kg",
+            "fillers": "Filling, kg",
+            "temperature": "Operating Temperature, °C",
+            "targetSensor": "Fuses",
+            "sensitivity": "Sensitivity",
+            "sensitivityEffort": "Sensitivity, kg",
+            "timeWork": "Operation Time",
+            "purpose": "Purpose",
+            "structure": "Structure",
+            "action": "Operating Principle",
+            "installation": "Installation Method",
+            "liquidator": "Self-Destruction",
+            "extraction": "Anti-Removal",
+            "folding": "Arming",
+            "neutralization": "Neutralization and Safety",
+            "marking": "Marking",
+            "liquidatorShort": "Self-Destruction Time",
+            "foldingShort": "Arming Time",
+            "extractionShort": "Anti-Removal Mechanism",
+            "damage": "Damage",
+            "historical": "Historical Reference",
+            "demageRadius": "Lethal Radius, m",
+            "demageRadiusInfo": "Maximum distance from the explosion site where there is an average density of lethal fragments hitting a 0.75 m² target (1.5 m high and 0.5 m wide) with a 0.63 probability.",
+            "demageDistance": "Fragment Flight Distance, m",
+            "demageSquad": "Damage Area, m²",
+            "demageHeight": "Damage Height, m",
+            "demageAction": "Lethal Effect",
+            "demageNumber": "Number of Lethal Elements, pcs",
+            "demageNumberAction": "Lethal Effect"
+        },
+        "explosive-device-details": {
+            "title": "Details",
+            "details": "Details",
+            "name": "Name",
+            "type": "Type",
+            "characteristic": "Characteristics",
+            "size": "Size, mm",
+            "weight": "Weight, kg",
+            "fillers": "Filling, kg",
+            "purpose": "Purpose",
+            "structure": "Structure",
+            "action": "Operating Principle",
+            "marking": "Marking",
+            "usage": "Usage and Safety"
+        },
+        "explosive-object-type": {
+            "title": "Types"
+        },
+        "explosive-object-classification": {
+            "title": "Classification"
+        },
+        "settings": {
+            "title": "Settings",
+            "about": "About the App",
+            "support": "Contact Support"
+        },
+        "about": {
+            "title": "About the App",
+            "title1": "Open Data and Responsibility",
+            "text1": "The app is created using open sources and public data. All information is provided for informational purposes only and does not guarantee full accuracy or relevance. The author is not responsible for any consequences related to the use of the app. Users use it at their own risk and should always refer to official sources or experts if needed.",
+            "title2": "Educational Purpose",
+            "text2": "The main goal of the app is education and raising awareness about ammunition and explosive devices. It is designed for humanitarian demining specialists, educators, students, and anyone interested in the topic. It helps understand characteristics, classification, and operating principles of various munitions but is not a guide for action.",
+            "title3": "Feedback and Suggestions"
+        }
+    },
+    "modals": {
+        "gallery": {
+            "of": "of"
+        },
+        "filter-dictionaries": {
+            "title": "Filters",
+            "reset": "Reset",
+            "apply": "Apply",
+            "label-dictionaries": "Reference",
+            "empty": "Select a reference",
+            "explosive-object": {
+                "type": "Type",
+                "classification": "Classification",
+                "country": "Country",
+                "viewAll": "Show all",
+                "component": "Component",
+                "notSelected": "Not selected"
+            },
+            "explosive-device": {
+                "type": "Type",
+                "viewAll": "Show all",
+                "notSelected": "Not selected"
+            }
+        },
+        "filter-books": {
+            "title": "Filters",
+            "reset": "Reset",
+            "apply": "Apply",
+            "type": {
+                "type": "Topic",
+                "viewAll": "Show all",
+                "notSelected": "Not selected"
+            },
+            "loaded": {
+                "label-type": "Loading",
+                "all": "All",
+                "loaded": "Loaded",
+                "not-loaded": "Not Loaded"
+            }
+        },
+        "select": {
+            "title": "Select",
+            "apply": "Select"
+        },
+        "explosive-object-classification": {
+            "title": "Classification",
+            "apply": "Select"
+        }
+    },
+    "dictionaries": {
+        "explosive": "Explosives",
+        "explosive-object": "Ammunition",
+        "explosive-device": "Detonation Devices"
+    },
+    "books": {
+        "Ammunition": "Ammunition",
+        "Explosive": "Explosive",
+        "Demining": "Demining",
+        "Mining": "Mining",
+        "Blasting": "Blasting",
+        "Equipment": "Equipment",
+        "OrdersMO": "OrdersMO"
+    }
+}
