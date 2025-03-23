@@ -19,6 +19,7 @@ export const HomeScreen = observer(() => {
     const styles = useStylesCommon();
     const t = useTranslate('screens.home');
     const tDictionaries = useTranslate('dictionaries');
+    const tBooks = useTranslate('books');
     const transition = useTransition();
 
     const vm = useViewModel<IHomeVM>(homeVM);
@@ -67,7 +68,7 @@ export const HomeScreen = observer(() => {
                             <Card
                                 key={item.id}
                                 style={s.item}
-                                title={item.name}
+                                title={tBooks(item.id)}
                                 svg={item.svg}
                                 styleInfo={styles.contentCenter}
                                 onPress={() => vm.openBook(item.id)}
