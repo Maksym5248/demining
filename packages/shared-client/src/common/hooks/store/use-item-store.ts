@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 
+import { type IData, type IDataModel } from '~/models';
+
 import { type IUseSelectStore } from '../../types';
 
-export function useItemStore<T extends { data: B }, B extends { id: string }>(store: IUseSelectStore<T, B>, id: string) {
+export function useItemStore<T extends IDataModel<B>, B extends IData>(store: IUseSelectStore<T, B>, id: string) {
     const item = store.collection.get(id);
 
     useEffect(() => {

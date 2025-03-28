@@ -21,7 +21,7 @@ export interface ICollectionModel<T extends IDataModel<B>, B extends IData> {
     asArray: readonly T[];
 }
 
-interface ICollectionModelParams<T extends { data: B; id: ID }, B> {
+interface ICollectionModelParams<T extends IDataModel<B>, B extends IData> {
     factory?: (data: B) => T;
     model?: new (data: B) => T;
 }

@@ -4,6 +4,7 @@ import { filterByItemFields } from 'shared-my';
 
 import { type Path, type ISearchParams } from '~/common';
 
+import { type IData, type IDataModel } from './DataModel';
 import { type IListModel } from './ListModel';
 
 export interface ISearchModel<T> {
@@ -15,7 +16,7 @@ export interface ISearchModel<T> {
     clear(): void;
 }
 
-export class SearchModel<T extends { data: B }, B extends { id: string }> implements ISearchModel<T> {
+export class SearchModel<T extends IDataModel<B>, B extends IData> implements ISearchModel<T> {
     fields: Path<T>[] = [] as Path<T>[];
     searchBy = '';
 
