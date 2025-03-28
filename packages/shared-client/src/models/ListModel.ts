@@ -4,8 +4,9 @@ import { makeAutoObservable } from 'mobx';
 import { type Path } from '~/common';
 
 import { type ICollectionModel } from './CollectionModel';
+import { type IData, type IDataModel } from './DataModel';
 
-export interface IListModel<T extends { data: B }, B extends { id: string }> {
+export interface IListModel<T extends IDataModel<B>, B extends IData> {
     push: (value: B | B[], isUniqueEnabled?: boolean) => void;
     unshift: (value: B | B[], isUniqueEnabled?: boolean) => void;
     set: (arr: B[]) => void;
@@ -13,7 +14,6 @@ export interface IListModel<T extends { data: B }, B extends { id: string }> {
     checkMore: (length: number) => void;
     setMore: (isMore: boolean) => void;
     map: <U>(callback: (value: T, index: number, array: T[]) => U) => U[];
-    // remove: (ids: string | string[]) => void;
     remove: (ids: string | string[]) => void;
     pageSize: number;
     isEmpty: boolean;
@@ -25,12 +25,12 @@ export interface IListModel<T extends { data: B }, B extends { id: string }> {
     pages: number;
 }
 
-export interface ListModelParams<T extends { data: B }, B extends { id: string }> {
+export interface ListModelParams<T extends IDataModel<B>, B extends IData> {
     pageSize?: number;
     collection: ICollectionModel<T, B>;
 }
 
-export class ListModel<T extends { data: B }, B extends { id: string }> implements IListModel<T, B> {
+export class ListModel<T extends IDataModel<B>, B extends IData> implements IListModel<T, B> {
     private ids: string[] = [];
 
     public pageSize = 0;

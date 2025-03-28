@@ -6,3 +6,4 @@ export * from './RequestModel';
 export * from './SearchModel';
 export * from './OrderModel';
 export * from './FiltersModel';
+export * from './DataModel';

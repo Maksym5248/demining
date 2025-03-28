@@ -2,13 +2,12 @@ import { makeAutoObservable } from 'mobx';
 import { type IMaterialNotDB, materialsData } from 'shared-my';
 
 import { type IUpdateValue } from '~/common';
+import { type IDataModel } from '~/models';
 
 import { type IExplosiveObjectDetailsData } from './explosive-object-details.schema';
 
-export interface IExplosiveObjectDetails {
-    data: IExplosiveObjectDetailsData;
+export interface IExplosiveObjectDetails extends IDataModel<IExplosiveObjectDetailsData> {
     materials?: IMaterialNotDB[];
-    id: string;
     updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>): void;
 }
 

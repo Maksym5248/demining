@@ -5,10 +5,11 @@ import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates, data } from '~/common';
+import { type IData } from '~/models';
 
 import { createExplosiveObjectDetailsDTO, type IExplosiveObjectDetailsData } from '../explosive-object-details';
 
-export interface IExplosiveObjectData {
+export interface IExplosiveObjectData extends IData {
     id: string;
     name: string;
     fullName: string | null;

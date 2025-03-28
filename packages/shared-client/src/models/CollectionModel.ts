@@ -3,9 +3,11 @@ import { path } from 'shared-my';
 
 import { type Path } from '~/common';
 
+import { type IData, type IDataModel } from './DataModel';
+
 type ID = string;
 
-export interface ICollectionModel<T, B> {
+export interface ICollectionModel<T extends IDataModel<B>, B extends IData> {
     get: (id?: ID) => T | undefined;
     set: (id: ID, value: B) => void;
     setArr: (arr: (B & { id: string })[]) => void;
@@ -34,7 +36,7 @@ export interface SetParams<B> {
     (delta: number): void;
 }
 
-export class CollectionModel<T extends { data: B; id: ID }, B> implements ICollectionModel<T, B> {
+export class CollectionModel<T extends IDataModel<B>, B extends IData> implements ICollectionModel<T, B> {
     private collection: Record<string, T> = {};
 
     model?: new (data: B) => T;
