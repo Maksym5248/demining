@@ -7,7 +7,7 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, Auth, BookCache, Crashlytics, ImageChahe, LocalStorage, NetInfo } from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -28,9 +28,9 @@ export class AppViewModel implements IAppViewModel {
     }
 
     initSession = () => {
-        const currentNumber = LocalStorage.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
+        const currentNumber = LocalStore.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
         const newSessionNumber = currentNumber + 1;
-        LocalStorage.set(STORAGE.SESSION_NUMBER, newSessionNumber);
+        LocalStore.set(STORAGE.SESSION_NUMBER, newSessionNumber);
         Analytics.setSession(newSessionNumber);
     };
 
@@ -56,6 +56,18 @@ export class AppViewModel implements IAppViewModel {
         this.isVisibleSplash = true;
     }
 
+    initConfig = async () => {
+        const { appConfig } = stores.common;
+        appConfig.setPlatform(Device.platform);
+
+        await stores.common.fetchAppConfig.run();
+        this.updater.checkUpdates.run();
+
+        if (appConfig.checkDebugger(Auth.uuid())) {
+            Debugger.init(true);
+        }
+    };
+
     initialization = new RequestModel({
         run: async () => {
             try {
@@ -77,7 +89,9 @@ export class AppViewModel implements IAppViewModel {
 
                 await stores.init.run();
 
-                setTimeout(() => this.updater.checkUpdates.run(), 0);
+                setTimeout(() => {
+                    this.initConfig();
+                }, 0);
                 NetInfo.onChange(info => {
                     info.isConnected && this.updater.preloadImages.run();
                 });

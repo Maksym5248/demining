@@ -16,7 +16,7 @@ const ListItem = observer(({ item }: { item: IDataItem }) => {
 
     const onPress = () => item.press();
 
-    return <ListItemCore title={t(item.title)} onPress={onPress} />;
+    return <ListItemCore title={t(item.title)} onPress={onPress} state={item.isActive ? 'active' : 'default'} />;
 });
 
 export const SettingsScreen = observer(() => {

@@ -44,9 +44,9 @@
     },
     "screens": {
         "home": {
-            "title": "Reference",
-            "search": "Search all reference guides",
-            "dictionaries": "Reference",
+            "title": "Dictionaries",
+            "search": "Search all dictionaries guides",
+            "dictionaries": "Dictionaries",
             "book": "Literature",
             "rest": "Other",
             "explosive": "Explosives",
@@ -158,7 +158,8 @@
         "settings": {
             "title": "Settings",
             "about": "About the App",
-            "support": "Contact Support"
+            "support": "Contact Support",
+            "debugger": "debugger"
         },
         "about": {
             "title": "About the App",

@@ -10,6 +10,7 @@ export interface IVersionData {
 
 export interface IAppConfigData {
     config: {
+        debuggers: string[];
         version: IVersionData;
     };
 }
@@ -22,6 +23,7 @@ export const createVersion = (dto?: IVersionDTO): IVersionData => ({
 
 export const createAppConfig = (platform: PlatformType, dto?: IAppConfigDTO): IAppConfigData => ({
     config: {
+        debuggers: dto?.config?.debuggers ?? [],
         version: createVersion(dto?.config?.platform[platform].version),
     },
 });

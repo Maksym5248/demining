@@ -29,11 +29,8 @@ export class UpdaterModel implements IUpdaterModel {
     }
 
     checkUpdates = new RequestModel({
-        run: async () => {
+        run: () => {
             const { appConfig } = stores.common;
-            appConfig.setPlatform(Device.platform);
-
-            await stores.common.fetchAppConfig.run();
 
             if (!this.isAvalibaleUpdate()) return;
 
