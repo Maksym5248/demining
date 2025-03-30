@@ -40,7 +40,7 @@ export class AppViewModel implements IAppViewModel {
 
         Logger.setLevel(LogLevel.Debug);
         Logger.log('VERSION: ', Device.appInfo);
-        Logger.log('SESSION: ', LocalStore.getString(STORAGE.SESSION_NUMBER));
+        Logger.log('SESSION: ', LocalStore.getNumber(STORAGE.SESSION_NUMBER));
         Logger.log('LOCALE: ', Localization.data.locale);
         Logger.log('USER ID: ', Auth.uuid());
     };
@@ -57,7 +57,7 @@ export class AppViewModel implements IAppViewModel {
         NetInfo.removeAllListeners();
         ThemeManager.removeAllListeners();
         Localization.removeAllListeners();
-
+        Debugger.removeAllListeners();
         this.isVisibleSplash = true;
     }
 
