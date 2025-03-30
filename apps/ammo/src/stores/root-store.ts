@@ -148,9 +148,6 @@ export class RootStore implements IRootStore {
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
             this.services.auth.signInAnonymously();
 
-            this.services.analytics.init(this.services.auth.uuid());
-            this.services.crashlytics.init();
-
             try {
                 await Promise.all([
                     this.common.subscribeCountries.run(),

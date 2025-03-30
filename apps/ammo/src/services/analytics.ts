@@ -2,14 +2,15 @@ import analytics from '@react-native-firebase/analytics';
 import { type IAnalyticsEventParams, type IAnalytics, type ILogger, type ICrashlytics } from 'shared-my-client';
 
 export class AnalyticsClass implements IAnalytics {
+    uuid: string | null = null;
+
     constructor(
         private logger: ILogger,
         private crashlytics: ICrashlytics,
     ) {}
 
-    init(userId?: string | null) {
-        !!userId && this.setUserId(userId);
-        this.event('INITIALIZATION_APP');
+    init() {
+        analytics().logEvent('INITIALIZATION_APP');
     }
 
     page(name: string) {
@@ -30,14 +31,24 @@ export class AnalyticsClass implements IAnalytics {
         analytics().logEvent(name, params);
     }
 
-    setUserId = (uid: string | null) => {
+    setUserId = (uid: string | null | undefined) => {
+        if (!!uid && this.uuid !== uid) {
+            this.logger.log(`ANALYTICS: User ID - ${uid}`);
+        }
+
+        this.uuid = uid ?? null;
+
+        analytics().setUserId(this.uuid);
         this.crashlytics.setUser(uid ? { id: uid } : null);
-        this.logger.log(`ANALYTICS: User ID: ${uid}`);
-        analytics().setUserId(uid);
     };
 
     setSession = (session: number) => {
-        this.logger.log(`ANALYTICS: Session: ${session}`);
+        this.logger.log(`ANALYTICS: Session - ${session}`);
         analytics().setUserProperty('session', session.toString());
+    };
+
+    setLanguage = (language: string) => {
+        this.logger.log(`ANALYTICS: Language - ${language}`);
+        analytics().setUserProperty('language', language);
     };
 }

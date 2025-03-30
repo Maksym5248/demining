@@ -7,7 +7,7 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, BookCache, ImageChahe, LocalStorage, NetInfo } from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, ImageChahe, LocalStorage, NetInfo } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -31,7 +31,6 @@ export class AppViewModel implements IAppViewModel {
         const currentNumber = LocalStorage.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
         const newSessionNumber = currentNumber + 1;
         LocalStorage.set(STORAGE.SESSION_NUMBER, newSessionNumber);
-        Logger.log('SESSION:', newSessionNumber);
         Analytics.setSession(newSessionNumber);
     };
 
@@ -46,27 +45,34 @@ export class AppViewModel implements IAppViewModel {
     };
 
     unmount() {
+        Logger.log('UNMOUNT');
+
         stores.removeAllListeners();
         AppState.removeAllListeners();
         NetInfo.removeAllListeners();
         ThemeManager.removeAllListeners();
         Localization.removeAllListeners();
+
+        this.isVisibleSplash = true;
     }
 
     initialization = new RequestModel({
-        cachePolicy: 'cache-first',
         run: async () => {
             this.initDebuger();
             this.initSession();
 
             try {
                 AppState.init();
+                Analytics.init();
+                Analytics.setUserId(Auth.uuid());
+                Crashlytics.init();
 
                 await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init()]);
                 AppState.onChange(state => {
                     if (state === 'active') {
                         NetInfo.pingInfo();
                     }
+                    Logger.log('APP STATE', state);
                 });
 
                 await stores.init.run();
