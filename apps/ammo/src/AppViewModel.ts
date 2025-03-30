@@ -35,9 +35,14 @@ export class AppViewModel implements IAppViewModel {
     };
 
     initDebuger = () => {
-        CONFIG.IS_DEBUG && Logger.enable();
-        Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
-        Logger.log('VERSION:', Device.appInfo);
+        Logger.enable();
+        Debugger.init(true);
+
+        Logger.setLevel(LogLevel.Debug);
+        Logger.log('VERSION: ', Device.appInfo);
+        Logger.log('SESSION: ', LocalStore.getNumber(STORAGE.SESSION_NUMBER));
+        Logger.log('LOCALE: ', Localization.data.locale);
+        Logger.log('USER ID: ', Auth.uuid());
     };
 
     animationFinished = () => {
@@ -52,7 +57,7 @@ export class AppViewModel implements IAppViewModel {
         NetInfo.removeAllListeners();
         ThemeManager.removeAllListeners();
         Localization.removeAllListeners();
-
+        Debugger.removeAllListeners();
         this.isVisibleSplash = true;
     }
 
@@ -63,15 +68,14 @@ export class AppViewModel implements IAppViewModel {
         await stores.common.fetchAppConfig.run();
         this.updater.checkUpdates.run();
 
-        if (appConfig.checkDebugger(Auth.uuid())) {
-            Debugger.init(true);
+        if (appConfig.checkDebugger(Auth.uuid()) || CONFIG.IS_DEBUG) {
+            this.initDebuger();
         }
     };
 
     initialization = new RequestModel({
         run: async () => {
             try {
-                this.initDebuger();
                 this.initSession();
 
                 AppState.init();

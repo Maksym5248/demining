@@ -16,8 +16,6 @@ export const DebuggerButton = memo(() => {
 
     const [isVisible, setVisible] = useState(Debugger.isVisibleButton);
 
-    console.log('DebuggerButton', isVisible);
-
     const translateY = useSharedValue(45);
     const translateX = useSharedValue(Device.window.width / 2 - 25);
 
