@@ -6,6 +6,7 @@ import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
 import { dates } from '~/common';
 import {
     CollectionModel,
+    type ICollectionModel,
     type IListModel,
     type IOrderModel,
     type ISearchModel,
@@ -21,7 +22,7 @@ import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveStore {
-    collection: CollectionModel<IExplosive, IExplosiveData>;
+    collection: ICollectionModel<IExplosive, IExplosiveData>;
     list: IListModel<IExplosive, IExplosiveData>;
     create: RequestModel<[ICreateValue<IExplosiveData>]>;
     remove: RequestModel<[string]>;
@@ -49,7 +50,7 @@ export class ExplosiveStore implements IExplosiveStore {
     api: IApi;
     services: IServices;
     getStores: () => IStores;
-    collection = new CollectionModel<IExplosive, IExplosiveData>({
+    collection: ICollectionModel<IExplosive, IExplosiveData> = new CollectionModel<IExplosive, IExplosiveData>({
         factory: (data: IExplosiveData) => new Explosive(data, this),
     });
     list: IListModel<IExplosive, IExplosiveData>;
@@ -145,7 +146,7 @@ export class ExplosiveStore implements IExplosiveStore {
     fetchByIds = new RequestModel({
         run: async (ids: string[]) => {
             const res = await this.api.explosive.getByIds(ids);
-            this.collection.setArr(res.map(createExplosive));
+            this.collection.set(res.map(createExplosive));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });
@@ -162,7 +163,7 @@ export class ExplosiveStore implements IExplosiveStore {
                     const { create, update, remove } = data.sortByType<IExplosiveDTO, IExplosiveData>(values, createExplosive);
 
                     this.list.push(create);
-                    this.collection.updateArr(update);
+                    this.collection.update(update);
                     this.collection.remove(remove);
                 },
             );

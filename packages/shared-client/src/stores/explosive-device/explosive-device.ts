@@ -5,7 +5,7 @@ import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO } from '~/api';
 import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, ListModel, RequestModel } from '~/models';
+import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import {
@@ -24,9 +24,9 @@ import { getDictionaryFilter } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveDeviceStore {
-    collectionActions: CollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData>;
-    collection: CollectionModel<IExplosiveDevice, IExplosiveDeviceData>;
-    list: ListModel<IExplosiveDevice, IExplosiveDeviceData>;
+    collectionActions: ICollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData>;
+    collection: ICollectionModel<IExplosiveDevice, IExplosiveDeviceData>;
+    list: IListModel<IExplosiveDevice, IExplosiveDeviceData>;
     sum: SumExplosiveDeviceActions;
     setSum(sum: IExplosiveActionSumDTO): void;
     explosiveItems: IExplosiveDevice[];
@@ -57,10 +57,13 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
     services: IServices;
     getStores: () => IStores;
 
-    collectionActions = new CollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData>({
+    collectionActions: ICollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData> = new CollectionModel<
+        IExplosiveDeviceAction,
+        IExplosiveDeviceActionData
+    >({
         factory: (data: IExplosiveDeviceActionData) => new ExplosiveDeviceAction(data, this),
     });
-    collection = new CollectionModel<IExplosiveDevice, IExplosiveDeviceData>({
+    collection: ICollectionModel<IExplosiveDevice, IExplosiveDeviceData> = new CollectionModel<IExplosiveDevice, IExplosiveDeviceData>({
         factory: (data: IExplosiveDeviceData) => new ExplosiveDevice(data, this),
     });
     list = new ListModel<IExplosiveDevice, IExplosiveDeviceData>({ collection: this.collection });
@@ -172,7 +175,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
                     );
 
                     this.list.push(create);
-                    this.collection.updateArr(update);
+                    this.collection.update(update);
                     this.collection.remove(remove);
                 },
             );

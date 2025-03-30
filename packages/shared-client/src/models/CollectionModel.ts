@@ -7,13 +7,14 @@ import { type IData, type IDataModel } from './DataModel';
 
 type ID = string;
 
+type ISingleArg<B extends IData> = [ID, B];
+type IArrayArg<B extends IData> = [B[]];
+
 export interface ICollectionModel<T extends IDataModel<B>, B extends IData> {
     get: (id?: ID) => T | undefined;
-    set: (id: ID, value: B) => void;
-    setArr: (arr: (B & { id: string })[]) => void;
-    update: (id: ID, value: B) => void;
-    updateArr: (values: (B & { id: string })[]) => void;
-    remove: (id: string) => void;
+    set: (...args: ISingleArg<B> | IArrayArg<B>) => void;
+    update: (...args: ISingleArg<B> | IArrayArg<B>) => void;
+    remove: (id: string | string[]) => void;
     exist: (id: string) => boolean;
     findBy(path: string, value: unknown): T | undefined;
     onRemoved?: (fn: (id: string) => void) => void;
@@ -85,7 +86,7 @@ export class CollectionModel<T extends IDataModel<B>, B extends IData> implement
         }
     }
 
-    set(id: ID, value: B) {
+    setSingle(id: ID, value: B) {
         if (this.exist(id)) {
             this.update(id, value);
         } else {
@@ -95,7 +96,7 @@ export class CollectionModel<T extends IDataModel<B>, B extends IData> implement
         }
     }
 
-    update(id: ID, value: B) {
+    updateSingle(id: ID, value: B) {
         const stringId = String(id);
 
         const item = get(this.collection, stringId);
@@ -106,6 +107,22 @@ export class CollectionModel<T extends IDataModel<B>, B extends IData> implement
         values.forEach(value => {
             this.update(value.id, value);
         });
+    }
+
+    set(...args: [ID, B] | [B[]]) {
+        if (args.length === 1) {
+            this.setArr(...(args as unknown as [B[]]));
+        } else {
+            this.setSingle(...args);
+        }
+    }
+
+    update(...args: [ID, B] | [B[]]) {
+        if (args.length === 1) {
+            this.updateArr(...(args as unknown as [B[]]));
+        } else {
+            this.updateSingle(...args);
+        }
     }
 
     get(id?: ID): T | undefined {

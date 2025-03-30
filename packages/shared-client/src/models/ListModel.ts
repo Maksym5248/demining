@@ -60,7 +60,7 @@ export class ListModel<T extends IDataModel<B>, B extends IData> implements ILis
     }
 
     set(arr: B[]) {
-        this.collection.setArr(arr);
+        this.collection.set(arr);
         this.ids = arr.map(item => item.id);
 
         this.checkMore(arr.length);
@@ -70,7 +70,7 @@ export class ListModel<T extends IDataModel<B>, B extends IData> implements ILis
         const newItems = Array.isArray(value) ? value : [value];
         const items = newItems as (B & { id: string })[];
 
-        this.collection.setArr(items);
+        this.collection.set(items);
         this.ids.push(...items.map(el => el.id));
 
         if (isArray(value)) this.checkMore(value.length);
@@ -80,7 +80,7 @@ export class ListModel<T extends IDataModel<B>, B extends IData> implements ILis
         const newItems = Array.isArray(value) ? value : [value];
         const items = newItems as (B & { id: string })[];
 
-        this.collection.setArr(items);
+        this.collection.set(items);
         this.ids.unshift(...items.map(el => el.id));
 
         if (isArray(value)) this.checkMore(value.length);

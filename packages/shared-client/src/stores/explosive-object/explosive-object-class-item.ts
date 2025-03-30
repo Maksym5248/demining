@@ -113,7 +113,7 @@ export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemS
                 );
 
                 this.list.push(create);
-                this.collection.updateArr(update);
+                this.collection.update(update);
                 this.collection.remove(remove);
             });
         },
