@@ -7,7 +7,7 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, BookCache, ImageChahe, LocalStorage, NetInfo } from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -28,10 +28,9 @@ export class AppViewModel implements IAppViewModel {
     }
 
     initSession = () => {
-        const currentNumber = LocalStorage.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
+        const currentNumber = LocalStore.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
         const newSessionNumber = currentNumber + 1;
-        LocalStorage.set(STORAGE.SESSION_NUMBER, newSessionNumber);
-        Logger.log('SESSION:', newSessionNumber);
+        LocalStore.set(STORAGE.SESSION_NUMBER, newSessionNumber);
         Analytics.setSession(newSessionNumber);
     };
 
@@ -46,32 +45,53 @@ export class AppViewModel implements IAppViewModel {
     };
 
     unmount() {
+        Logger.log('UNMOUNT');
+
         stores.removeAllListeners();
         AppState.removeAllListeners();
         NetInfo.removeAllListeners();
         ThemeManager.removeAllListeners();
         Localization.removeAllListeners();
+
+        this.isVisibleSplash = true;
     }
 
-    initialization = new RequestModel({
-        cachePolicy: 'cache-first',
-        run: async () => {
-            this.initDebuger();
-            this.initSession();
+    initConfig = async () => {
+        const { appConfig } = stores.common;
+        appConfig.setPlatform(Device.platform);
 
+        await stores.common.fetchAppConfig.run();
+        this.updater.checkUpdates.run();
+
+        if (appConfig.checkDebugger(Auth.uuid())) {
+            Debugger.init(true);
+        }
+    };
+
+    initialization = new RequestModel({
+        run: async () => {
             try {
+                this.initDebuger();
+                this.initSession();
+
                 AppState.init();
+                Analytics.init();
+                Analytics.setUserId(Auth.uuid());
+                Crashlytics.init();
 
                 await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init()]);
                 AppState.onChange(state => {
                     if (state === 'active') {
                         NetInfo.pingInfo();
                     }
+                    Logger.log('APP STATE', state);
                 });
 
                 await stores.init.run();
 
-                setTimeout(() => this.updater.checkUpdates.run(), 0);
+                setTimeout(() => {
+                    this.initConfig();
+                }, 0);
                 NetInfo.onChange(info => {
                     info.isConnected && this.updater.preloadImages.run();
                 });

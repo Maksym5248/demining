@@ -9,7 +9,7 @@ import {
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type ICollectionModel, RequestModel } from '~/models';
+import { type ICollectionModel, type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type ICountry, type ICountryData } from '~/stores/common';
 import { type IViewerStore } from '~/stores/viewer';
@@ -54,9 +54,7 @@ interface IExplosiveObjectParams {
     classifications: IClassifications;
 }
 
-export interface IExplosiveObject {
-    id: string;
-    data: IExplosiveObjectData;
+export interface IExplosiveObject extends IDataModel<IExplosiveObjectData> {
     imageUri?: string | null;
     displayName: string;
     signName: string;

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveObjectAPI } from '~/api';
-import { type ICollectionModel } from '~/models';
+import { type IDataModel, type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type ICountry, type ICountryData, type IViewerStore } from '~/stores';
 
@@ -48,9 +48,7 @@ interface IExplosiveObjectActionParams {
     classifications: IClassifications;
 }
 
-export interface IExplosiveObjectAction {
-    data: IExplosiveObjectActionData;
-    id: string;
+export interface IExplosiveObjectAction extends IDataModel<IExplosiveObjectActionData> {
     type?: IExplosiveObjectType;
     explosiveObject: IExplosiveObject;
     updateFields(data: Partial<IExplosiveObjectActionData>): void;

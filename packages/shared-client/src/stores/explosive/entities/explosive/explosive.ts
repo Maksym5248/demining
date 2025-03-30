@@ -3,16 +3,14 @@ import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IExplosiveAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel } from '~/models';
+import { type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores';
 
 import { type IExplosiveData, updateExplosiveDTO, createExplosive } from './explosive.schema';
 
-export interface IExplosive {
-    id: string;
+export interface IExplosive extends IDataModel<IExplosiveData> {
     imageUri?: string | null;
-    data: IExplosiveData;
     isCurrentOrganization: boolean;
     displayName: string;
     isEditable: boolean;

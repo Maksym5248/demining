@@ -2,7 +2,16 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveObjectTypeDTO, type IExplosiveObjectTypeAPI } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
-import { CollectionModel, type IListModel, type IRequestModel, type ISearchModel, ListModel, RequestModel, SearchModel } from '~/models';
+import {
+    CollectionModel,
+    type ICollectionModel,
+    type IListModel,
+    type IRequestModel,
+    type ISearchModel,
+    ListModel,
+    RequestModel,
+    SearchModel,
+} from '~/models';
 import { type IMessage } from '~/services';
 
 import {
@@ -24,7 +33,7 @@ interface IServices {
 }
 
 export interface IExplosiveObjectTypeStore {
-    collection: CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
+    collection: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     list: IListModel<IExplosiveObjectType, IExplosiveObjectTypeData>;
     search: ISearchModel<IExplosiveObjectType>;
     create: IRequestModel<[ICreateValue<IExplosiveObjectTypeDataParams>]>;
@@ -44,7 +53,10 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
     services: IServices;
     getStores: () => IStores;
 
-    collection = new CollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData>({
+    collection: ICollectionModel<IExplosiveObjectType, IExplosiveObjectTypeData> = new CollectionModel<
+        IExplosiveObjectType,
+        IExplosiveObjectTypeData
+    >({
         factory: (data: IExplosiveObjectTypeData) => new ExplosiveObjectType(data, this),
     });
 
@@ -115,7 +127,7 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
                 );
 
                 this.list.push(create);
-                this.collection.updateArr(update);
+                this.collection.update(update);
                 this.collection.remove(remove);
             });
         },

@@ -3,15 +3,13 @@ import { EXPLOSIVE_OBJECT_STATUS, explosiveDeviceTypeData, type IExplosiveDevice
 
 import { type IExplosiveDeviceAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel } from '~/models';
+import { type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores/viewer';
 
 import { type IExplosiveDeviceData, updateExplosiveDeviceDTO, createExplosiveDevice } from './explosive-device.schema';
 
-export interface IExplosiveDevice {
-    id: string;
-    data: IExplosiveDeviceData;
+export interface IExplosiveDevice extends IDataModel<IExplosiveDeviceData> {
     type?: IExplosiveDeviceTypeNotDB;
     imageUri?: string | null;
     displayName: string;

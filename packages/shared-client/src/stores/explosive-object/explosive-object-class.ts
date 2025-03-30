@@ -42,7 +42,7 @@ interface ICollections {
 }
 
 export interface IExplosiveObjectClassStore {
-    collection: CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
+    collection: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     list: IListModel<IExplosiveObjectClass, IExplosiveObjectClassData>;
     search: ISearchModel<IExplosiveObjectClass>;
     create: IRequestModel<[ICreateValue<IExplosiveObjectClassData>]>;
@@ -63,7 +63,10 @@ export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
     collections: ICollections;
     getStores: () => IStores;
 
-    collection = new CollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData>({
+    collection: ICollectionModel<IExplosiveObjectClass, IExplosiveObjectClassData> = new CollectionModel<
+        IExplosiveObjectClass,
+        IExplosiveObjectClassData
+    >({
         factory: (data: IExplosiveObjectClassData) => new ExplosiveObjectClass(data, this),
     });
 
@@ -127,7 +130,7 @@ export class ExplosiveObjectClassStore implements IExplosiveObjectClassStore {
                 );
 
                 this.list.push(create);
-                this.collection.updateArr(update);
+                this.collection.update(update);
                 this.collection.remove(remove);
             });
         },

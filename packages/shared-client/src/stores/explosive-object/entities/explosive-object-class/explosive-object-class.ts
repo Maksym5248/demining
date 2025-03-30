@@ -2,15 +2,13 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveObjectClassAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel } from '~/models';
+import { type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores';
 
 import { createExplosiveObjectClass, updateExplosiveObjectClassDTO, type IExplosiveObjectClassData } from './explosive-object-class.schema';
 
-export interface IExplosiveObjectClass {
-    data: IExplosiveObjectClassData;
-    id: string;
+export interface IExplosiveObjectClass extends IDataModel<IExplosiveObjectClassData> {
     displayName: string;
     isEditable: boolean;
     update: RequestModel<[IUpdateValue<Omit<IExplosiveObjectClassData, 'typeId'>>]>;

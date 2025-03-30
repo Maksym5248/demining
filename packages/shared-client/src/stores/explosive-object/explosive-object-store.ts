@@ -13,7 +13,7 @@ import {
 } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
-import { CollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { Classifications, type IClassifications } from './classifications';
@@ -63,9 +63,9 @@ export interface IExplosiveObjectStore {
     type: IExplosiveObjectTypeStore;
     class: IExplosiveObjectClassStore;
     classItem: IExplosiveObjectClassItemStore;
-    collectionActions: CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
-    collectionDetails: CollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
-    collection: CollectionModel<IExplosiveObject, IExplosiveObjectData>;
+    collectionActions: ICollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
+    collectionDetails: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
+    collection: ICollectionModel<IExplosiveObject, IExplosiveObjectData>;
     list: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listFuse: IListModel<IExplosiveObject, IExplosiveObjectData>;
     listFevor: IListModel<IExplosiveObject, IExplosiveObjectData>;
@@ -97,13 +97,19 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     class: IExplosiveObjectClassStore;
     classItem: IExplosiveObjectClassItemStore;
 
-    collectionActions = new CollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>({
+    collectionActions: ICollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData> = new CollectionModel<
+        IExplosiveObjectAction,
+        IExplosiveObjectActionData
+    >({
         factory: (data: IExplosiveObjectActionData) => new ExplosiveObjectAction(data, this),
     });
-    collectionDetails = new CollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>({
+    collectionDetails: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData> = new CollectionModel<
+        IExplosiveObjectDetails,
+        IExplosiveObjectDetailsData
+    >({
         factory: (data: IExplosiveObjectDetailsData) => new ExplosiveObjectDetails(data),
     });
-    collection = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
+    collection: ICollectionModel<IExplosiveObject, IExplosiveObjectData> = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
         factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
     });
 
@@ -161,11 +167,11 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             }
 
             if (res.fuse?.length) {
-                this.collection.setArr(res.fuse.map(createExplosiveObject));
+                this.collection.set(res.fuse.map(createExplosiveObject));
             }
 
             if (res.fervor?.length) {
-                this.collection.setArr(res.fervor.map(createExplosiveObject));
+                this.collection.set(res.fervor.map(createExplosiveObject));
             }
 
             this.list.unshift(value);
@@ -291,15 +297,15 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             this.collection.set(res.id, createExplosiveObject(res));
 
             if (res.explosive) {
-                this.getStores().explosive.collection.setArr(res.explosive.map(createExplosive));
+                this.getStores().explosive.collection.set(res.explosive.map(createExplosive));
             }
 
             if (res.fuse?.length) {
-                this.collection.setArr(res.fuse.map(createExplosiveObject));
+                this.collection.set(res.fuse.map(createExplosiveObject));
             }
 
             if (res.fervor?.length) {
-                this.collection.setArr(res.fervor.map(createExplosiveObject));
+                this.collection.set(res.fervor.map(createExplosiveObject));
             }
         },
         onError: () => this.services.message.error('Виникла помилка'),
@@ -339,7 +345,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                     });
 
                     this.list.push(create);
-                    this.collection.updateArr(update);
+                    this.collection.update(update);
                     this.collection.remove(remove);
                 },
             );
@@ -369,8 +375,8 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                         }
                     });
 
-                    this.collectionDetails.setArr(create);
-                    this.collectionDetails.updateArr(update);
+                    this.collectionDetails.set(create);
+                    this.collectionDetails.update(update);
                     this.collectionDetails.remove(remove);
                 },
             );

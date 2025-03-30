@@ -1,16 +1,14 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IEmployeeAPI } from '~/api';
-import { type ICollectionModel } from '~/models';
+import { type IDataModel, type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IEmployeeActionData } from './employee-action.schema';
 import { type IEmployeeParams, Employee, type IEmployee } from '../employee';
 import { type IRank, type IRankData } from '../rank';
 
-export interface IEmployeeAction {
-    data: IEmployeeActionData;
-    id: string;
+export interface IEmployeeAction extends IDataModel<IEmployeeActionData> {
     employee: IEmployee;
 }
 

@@ -2,13 +2,12 @@ import { makeAutoObservable } from 'mobx';
 import { type IMaterialNotDB, materialsData } from 'shared-my';
 
 import { type IUpdateValue } from '~/common';
+import { type IDataModel } from '~/models';
 
 import { type IExplosiveObjectDetailsData } from './explosive-object-details.schema';
 
-export interface IExplosiveObjectDetails {
-    data: IExplosiveObjectDetailsData;
+export interface IExplosiveObjectDetails extends IDataModel<IExplosiveObjectDetailsData> {
     materials?: IMaterialNotDB[];
-    id: string;
     updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>): void;
 }
 
@@ -29,7 +28,7 @@ export class ExplosiveObjectDetails implements IExplosiveObjectDetails {
         return materialsData.filter(el => this.data.material.includes(el.id));
     }
 
-    updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>) {
+    updateFields(data: Partial<IExplosiveObjectDetailsData>) {
         Object.assign(this.data, data);
     }
 }

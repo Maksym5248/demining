@@ -3,7 +3,8 @@ import EventEmitter from 'events';
 import { I18n, type TranslateOptions } from 'i18n-js';
 import { cloneDeep } from 'lodash';
 import { findBestLanguageTag } from 'react-native-localize';
-import { Logger } from 'shared-my-client';
+
+import { Analytics } from '~/services';
 
 const translations = {
     uk: require('./translations/uk.json'),
@@ -86,7 +87,7 @@ class LocalizationClass implements ILocalization {
                 this.setLocale(initialData?.locale);
             } else {
                 const bestAvailableLanguage = findBestAvailableLanguage(Object.keys(translations));
-                Logger.log('bestAvailableLanguage', bestAvailableLanguage.languageTag);
+                Analytics.setLanguage(bestAvailableLanguage.languageTag);
                 this.setLocale(bestAvailableLanguage.languageTag);
             }
         } catch (e) {

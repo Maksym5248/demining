@@ -34,7 +34,7 @@ const fromServerDate = (value: Omit<Timestamp, 'toJSON'>): Dayjs => {
     return res;
 };
 
-const create = (value: number): Dayjs => {
+const create = (value: number | Date): Dayjs => {
     const res = dayjs(value);
     return res;
 };
@@ -67,6 +67,12 @@ const startOfWeek = () => today().startOf('week');
 const startOfMonth = () => today().startOf('month');
 const startOfYear = () => today().startOf('year');
 const endOfDay = () => today().endOf('day');
+const format = (date?: Date, format?: 'HH:mm:ss') => {
+    if (!date) return '';
+
+    const day = create(date);
+    return day.format(format);
+};
 
 export const dates = {
     init: (t: typeof Timestamp) => {
@@ -83,4 +89,5 @@ export const dates = {
     startOfMonth,
     startOfYear,
     endOfDay,
+    format,
 };

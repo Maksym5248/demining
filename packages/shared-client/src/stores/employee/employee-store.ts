@@ -76,15 +76,15 @@ export class EmployeeStore implements IEmployeeStore {
     }
 
     get chiefs() {
-        return this.list.asArray.filter((el) => el.data.type === EMPLOYEE_TYPE.CHIEF);
+        return this.list.asArray.filter(el => el.data.type === EMPLOYEE_TYPE.CHIEF);
     }
 
     get squadLeads() {
-        return this.list.asArray.filter((el) => el.data.type === EMPLOYEE_TYPE.SQUAD_LEAD);
+        return this.list.asArray.filter(el => el.data.type === EMPLOYEE_TYPE.SQUAD_LEAD);
     }
 
     get workers() {
-        return this.list.asArray.filter((el) => el.data.type !== EMPLOYEE_TYPE.CHIEF);
+        return this.list.asArray.filter(el => el.data.type !== EMPLOYEE_TYPE.CHIEF);
     }
 
     get chiefFirst() {

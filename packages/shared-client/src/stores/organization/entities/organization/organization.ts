@@ -1,16 +1,14 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
-import { type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { type IDataModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IUpdateOrganizationParams, type IOrganizationValue, createOrganization, createOrganizationDTO } from './organization.schema';
 import { type IUser, type IUserStore, type IUserData, createUser } from '../../../user';
 import { type IViewerStore } from '../../../viewer';
 
-export interface IOrganization {
-    id: string;
-    data: IOrganizationValue;
+export interface IOrganization extends IDataModel<IOrganizationValue> {
     listMembers: IListModel<IUser, IUserData>;
     update: IRequestModel<[ICreateOrganizationDTO]>;
     createMember: IRequestModel<[string, boolean, boolean]>;

@@ -1,6 +1,6 @@
-import { type IListModel, type ICollectionModel, type IRequestModel } from '~/models';
+import { type IListModel, type ICollectionModel, type IRequestModel, type IDataModel, type IData } from '~/models';
 
-export interface IUseSelectStore<T extends { data: B }, B extends { id: string }> {
+export interface IUseSelectStore<T extends IDataModel<B>, B extends IData> {
     fetchList: IRequestModel<any[]>;
     fetchMoreList?: IRequestModel<any[]>;
     fetchItem: IRequestModel<any[]>;

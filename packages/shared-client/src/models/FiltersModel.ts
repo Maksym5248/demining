@@ -3,6 +3,7 @@ import { isObject, path } from 'shared-my';
 
 import { type Path } from '~/common';
 
+import { type IData, type IDataModel } from './DataModel';
 import { type IListModel } from './ListModel';
 
 export interface IFilterRules<F, T> {
@@ -10,7 +11,7 @@ export interface IFilterRules<F, T> {
     rule: (item: T, value: any) => boolean;
 }
 
-export interface IFiltersParams<F, T extends { data: B }, B extends { id: string }> {
+export interface IFiltersParams<F, T extends IDataModel<B>, B extends IData> {
     rules?: IFilterRules<F, T>[];
     initialValues?: F;
 }
@@ -35,7 +36,7 @@ const getFieldsCount = (values: Record<string, any>, counter: any[] = []) => {
     return counter.length;
 };
 
-export class FiltersModel<F extends object, T extends { data: B }, B extends { id: string }> implements IFiltersModel<F, T> {
+export class FiltersModel<F extends object, T extends IDataModel<B>, B extends IData> implements IFiltersModel<F, T> {
     rules: IFilterRules<F, T>[] = [];
     values: F = {} as F;
 

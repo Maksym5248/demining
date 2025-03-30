@@ -3,15 +3,13 @@ import { str } from 'shared-my';
 
 import { type IEmployeeAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel, type ICollectionModel } from '~/models';
+import { type IDataModel, RequestModel, type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { createEmployee, updateEmployeeDTO, type IEmployeeData } from './employee.schema';
 import { type IRank, type IRankData } from '../rank';
 
-export interface IEmployee {
-    id: string;
-    data: IEmployeeData;
+export interface IEmployee extends IDataModel<IEmployeeData> {
     rank?: IRank;
     fullName: string;
     signName: string;

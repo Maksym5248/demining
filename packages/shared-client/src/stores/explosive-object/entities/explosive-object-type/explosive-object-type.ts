@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveObjectTypeAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel } from '~/models';
+import { type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores';
 
@@ -31,10 +31,8 @@ export interface IExplosiveObjectTypeParams {
     getStores: () => IStores;
 }
 
-export interface IExplosiveObjectType {
-    data: IExplosiveObjectTypeData;
+export interface IExplosiveObjectType extends IDataModel<IExplosiveObjectTypeData> {
     displayName: string;
-    id: string;
     updateFields(data: Partial<IExplosiveObjectTypeData>): void;
     update: RequestModel<[IUpdateValue<IExplosiveObjectTypeData>]>;
     isEditable: boolean;

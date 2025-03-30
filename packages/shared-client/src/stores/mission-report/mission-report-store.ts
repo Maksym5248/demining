@@ -98,11 +98,11 @@ export class MissionReportStore implements IMissionReportStore {
         this.getStores().employee.collectionActions.set(data.approvedByAction?.id, createEmployeeAction(data.approvedByAction));
         this.getStores().employee.collectionActions.set(data.squadLeaderAction?.id, createEmployeeAction(data.squadLeaderAction));
         this.getStores().map.collection.set(data.mapView.id, createMapView(data.mapView));
-        this.getStores().employee.collectionActions.setArr(data.squadActions.map(createEmployeeAction));
-        this.getStores().explosiveObject.collectionActions.setArr(data.explosiveObjectActions.map(createExplosiveObjectAction));
-        this.getStores().transport.collectionActions.setArr(data.transportActions.map(createTransportAction));
-        this.getStores().equipment.collectionActions.setArr(data.equipmentActions.map(createEquipmentAction));
-        this.getStores().explosiveDevice.collectionActions.setArr(data.explosiveActions.map(createExplosiveDeviceAction));
+        this.getStores().employee.collectionActions.set(data.squadActions.map(createEmployeeAction));
+        this.getStores().explosiveObject.collectionActions.set(data.explosiveObjectActions.map(createExplosiveObjectAction));
+        this.getStores().transport.collectionActions.set(data.transportActions.map(createTransportAction));
+        this.getStores().equipment.collectionActions.set(data.equipmentActions.map(createEquipmentAction));
+        this.getStores().explosiveDevice.collectionActions.set(data.explosiveActions.map(createExplosiveDeviceAction));
         this.getStores().order.collection.set(data.order.id, createOrderFull(data.order));
         this.getStores().missionRequest.collection.set(data.missionRequest.id, createMissionRequest(data.missionRequest));
         this.collection.set(data.id, createMissionReportFull(data));

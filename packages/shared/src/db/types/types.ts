@@ -256,6 +256,7 @@ export interface IPlatformConfigDB {
 
 export interface IAppConfigDB extends IBaseDB {
     config: {
+        debuggers?: string[];
         platform: Record<PlatformType, IPlatformConfigDB>;
     };
 }

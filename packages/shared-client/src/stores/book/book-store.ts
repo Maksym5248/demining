@@ -3,14 +3,14 @@ import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
 
 import { type IBookDTO, type IBookAPI } from '~/api';
 import { type ICreateValue, type ISubscriptionDocument, data, dates } from '~/common';
-import { CollectionModel, type IRequestModel, ListModel, RequestModel } from '~/models';
+import { CollectionModel, type ICollectionModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IBook, Book, createBook, createBookDTO, type IBookData } from './entities';
 import { type IViewerStore } from '../viewer';
 
 export interface IBookStore {
-    collection: CollectionModel<IBook, IBookData>;
+    collection: ICollectionModel<IBook, IBookData>;
     list: ListModel<IBook, IBookData>;
     create: IRequestModel<[ICreateValue<IBookData>]>;
     remove: IRequestModel<[string]>;
@@ -43,7 +43,7 @@ export class BookStore implements IBookStore {
     services: IServices;
     getStores: () => IStores;
 
-    collection = new CollectionModel<IBook, IBookData>({
+    collection: ICollectionModel<IBook, IBookData> = new CollectionModel<IBook, IBookData>({
         factory: (data: IBookData) => new Book(data, this),
     });
 
@@ -119,7 +119,7 @@ export class BookStore implements IBookStore {
                     const { create, update, remove } = data.sortByType<IBookDTO, IBookData>(values, createBook);
 
                     this.list.push(create);
-                    this.collection.updateArr(update);
+                    this.collection.update(update);
                     this.collection.remove(remove);
                 },
             );

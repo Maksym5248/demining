@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
+import { type IData, type IDataModel } from './DataModel';
 import { type IListModel } from './ListModel';
 
 export interface IInfiniteScrollModel<T> {
@@ -17,7 +18,7 @@ export interface IInfiniteScrollModelParams {
     size?: number;
 }
 
-export class InfiniteScrollModel<T extends { data: B }, B extends { id: string }> implements IInfiniteScrollModel<T> {
+export class InfiniteScrollModel<T extends IDataModel<B>, B extends IData> implements IInfiniteScrollModel<T> {
     size: number;
     page: number = 1;
 

@@ -3,15 +3,18 @@ import { path } from 'shared-my';
 
 import { type Path } from '~/common';
 
+import { type IData, type IDataModel } from './DataModel';
+
 type ID = string;
 
-export interface ICollectionModel<T, B> {
+type ISingleArg<B extends IData> = [ID, B];
+type IArrayArg<B extends IData> = [B[]];
+
+export interface ICollectionModel<T extends IDataModel<B>, B extends IData> {
     get: (id?: ID) => T | undefined;
-    set: (id: ID, value: B) => void;
-    setArr: (arr: (B & { id: string })[]) => void;
-    update: (id: ID, value: B) => void;
-    updateArr: (values: (B & { id: string })[]) => void;
-    remove: (id: string) => void;
+    set: (...args: ISingleArg<B> | IArrayArg<B>) => void;
+    update: (...args: ISingleArg<B> | IArrayArg<B>) => void;
+    remove: (id: string | string[]) => void;
     exist: (id: string) => boolean;
     findBy(path: string, value: unknown): T | undefined;
     onRemoved?: (fn: (id: string) => void) => void;
@@ -19,7 +22,7 @@ export interface ICollectionModel<T, B> {
     asArray: readonly T[];
 }
 
-interface ICollectionModelParams<T extends { data: B; id: ID }, B> {
+interface ICollectionModelParams<T extends IDataModel<B>, B extends IData> {
     factory?: (data: B) => T;
     model?: new (data: B) => T;
 }
@@ -34,7 +37,7 @@ export interface SetParams<B> {
     (delta: number): void;
 }
 
-export class CollectionModel<T extends { data: B; id: ID }, B> implements ICollectionModel<T, B> {
+export class CollectionModel<T extends IDataModel<B>, B extends IData> implements ICollectionModel<T, B> {
     private collection: Record<string, T> = {};
 
     model?: new (data: B) => T;
@@ -83,7 +86,7 @@ export class CollectionModel<T extends { data: B; id: ID }, B> implements IColle
         }
     }
 
-    set(id: ID, value: B) {
+    setSingle(id: ID, value: B) {
         if (this.exist(id)) {
             this.update(id, value);
         } else {
@@ -93,17 +96,38 @@ export class CollectionModel<T extends { data: B; id: ID }, B> implements IColle
         }
     }
 
-    update(id: ID, value: B) {
+    updateSingle(id: ID, value: B) {
         const stringId = String(id);
 
         const item = get(this.collection, stringId);
-        Object.assign(item.data, value);
+
+        if (item?.updateFields) {
+            item.updateFields(value);
+        } else {
+            Object.assign(item.data, value);
+        }
     }
 
     updateArr(values: (B & { id: string })[]) {
         values.forEach(value => {
-            this.update(value.id, value);
+            this.updateSingle(value.id, value);
         });
+    }
+
+    set(...args: [ID, B] | [B[]]) {
+        if (args.length === 1) {
+            this.setArr(...(args as unknown as [B[]]));
+        } else {
+            this.setSingle(...args);
+        }
+    }
+
+    update(...args: [ID, B] | [B[]]) {
+        if (args.length === 1) {
+            this.updateArr(...(args as unknown as [B[]]));
+        } else {
+            this.updateSingle(...args);
+        }
     }
 
     get(id?: ID): T | undefined {

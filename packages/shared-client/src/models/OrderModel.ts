@@ -3,6 +3,7 @@ import { isFunction, isString, path } from 'shared-my';
 
 import { type Path, OrderBy } from '~/common';
 
+import { type IData, type IDataModel } from './DataModel';
 import { type IListModel } from './ListModel';
 
 interface IOrderSection<T> {
@@ -54,7 +55,7 @@ const defaultSortFn = function <T>(orderField: Path<T> | undefined, orderBy: Ord
     return orderBy === OrderBy.Desc ? v : -v;
 };
 
-export class OrderModel<T extends { data: B }, B extends { id: string }> implements IOrderModel<T> {
+export class OrderModel<T extends IDataModel<B>, B extends IData> implements IOrderModel<T> {
     orderField: Path<T> | undefined;
     orderBy: OrderBy;
     sections: IOrderSection<T>[];

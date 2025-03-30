@@ -1,14 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type ITransportAPI } from '~/api';
+import { type IDataModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type ITransportActionData } from './transport-action.schema';
 import { type ITransport, Transport } from '../transport/transport';
 
-export interface ITransportAction {
-    data: ITransportActionData;
-    id: string;
+export interface ITransportAction extends IDataModel<ITransportActionData> {
     updateFields(data: Partial<ITransportActionData>): void;
     transport: ITransport;
 }

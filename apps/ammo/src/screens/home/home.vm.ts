@@ -78,6 +78,8 @@ export interface IHomeVM extends ViewModel {
     books: IItem[];
     openSearch(): void;
     openDictionary(id: string): void;
+    openDictionaryAll(): void;
+    openBooksAll(): void;
     openBook(id: string): void;
     openRest(id: string): void;
 }
@@ -104,6 +106,14 @@ export class HomeVM implements IHomeVM {
         Navigation.navigate(item?.screen, {
             filters,
         });
+    }
+
+    openDictionaryAll() {
+        Navigation.navigate(SCREENS.DICTIONARIES);
+    }
+
+    openBooksAll() {
+        Navigation.navigate(SCREENS.BOOKS);
     }
 
     openBook(id: string) {

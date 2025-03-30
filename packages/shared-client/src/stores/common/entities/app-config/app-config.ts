@@ -11,6 +11,7 @@ export interface IAppConfig {
     force: boolean;
     setPlatform(platform: PlatformType): void;
     set(data: IAppConfigData): void;
+    checkDebugger(uuid?: string): boolean;
 }
 
 export class AppConfig implements IAppConfig {
@@ -27,6 +28,10 @@ export class AppConfig implements IAppConfig {
 
     setPlatform(platform: PlatformType) {
         this.platform = platform;
+    }
+
+    checkDebugger(uuid?: string) {
+        return uuid ? !!this.data?.config.debuggers?.includes(uuid) : false;
     }
 
     get force() {
