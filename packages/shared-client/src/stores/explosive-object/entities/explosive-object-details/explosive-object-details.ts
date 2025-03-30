@@ -28,7 +28,7 @@ export class ExplosiveObjectDetails implements IExplosiveObjectDetails {
         return materialsData.filter(el => this.data.material.includes(el.id));
     }
 
-    updateFields(data: IUpdateValue<IExplosiveObjectDetailsData>) {
+    updateFields(data: Partial<IExplosiveObjectDetailsData>) {
         Object.assign(this.data, data);
     }
 }

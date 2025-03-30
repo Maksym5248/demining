@@ -1,11 +1,11 @@
 import { makeAutoObservable } from 'mobx';
 import { ROLES } from 'shared-my';
 
+import { type IDataModel } from '~/models';
+
 import { type IUserData } from './user.schema';
 
-export interface IUser {
-    id: string;
-    data: IUserData;
+export interface IUser extends IDataModel<IUserData> {
     isRootAdmin: boolean;
     isOrganizationAdmin: boolean;
     isOrganizationMember: boolean;

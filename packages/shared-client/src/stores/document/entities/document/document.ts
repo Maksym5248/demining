@@ -2,14 +2,12 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IDocumentAPI } from '~/api';
 import { type IUpdateValue, fileUtils } from '~/common';
-import { type IRequestModel, RequestModel } from '~/models';
+import { type IDataModel, type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IDocumentData, createDocument, updateDocumentDTO } from './document.schema';
 
-export interface IDocument {
-    id: string;
-    data: IDocumentData;
+export interface IDocument extends IDataModel<IDocumentData> {
     updateFields(data: Partial<IDocumentData>): void;
     load: IRequestModel<[], File | null>;
     update: IRequestModel<[IUpdateValue<IDocumentData>, File]>;

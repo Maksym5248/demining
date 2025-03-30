@@ -58,7 +58,7 @@ export class EquipmentStore implements IEquipmentStore {
     }
 
     get listMineDetectors() {
-        return this.list.asArray.filter((el) => el.data.type === EQUIPMENT_TYPE.MINE_DETECTOR);
+        return this.list.asArray.filter(el => el.data.type === EQUIPMENT_TYPE.MINE_DETECTOR);
     }
 
     get firstMineDetector() {

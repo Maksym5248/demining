@@ -1,9 +1,8 @@
+import { type IDataModel } from '~/models';
+
 import { type IRankData } from './rank.schema';
 
-export interface IRank {
-    data: IRankData;
-    id: string;
-}
+export interface IRank extends IDataModel<IRankData> {}
 
 export class Rank implements IRank {
     data: IRankData;

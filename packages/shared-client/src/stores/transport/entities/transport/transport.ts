@@ -2,14 +2,12 @@ import { makeAutoObservable } from 'mobx';
 
 import { type ITransportAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type IRequestModel, RequestModel } from '~/models';
+import { type IDataModel, type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type ITransportData, updateTransportDTO, createTransport } from './transport.schema';
 
-export interface ITransport {
-    id: string;
-    data: ITransportData;
+export interface ITransport extends IDataModel<ITransportData> {
     updateFields(data: Partial<ITransportData>): void;
     update: IRequestModel<[IUpdateValue<ITransportData>]>;
     fullName: string;

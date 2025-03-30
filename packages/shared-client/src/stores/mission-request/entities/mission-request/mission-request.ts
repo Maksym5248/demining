@@ -3,14 +3,12 @@ import { missionRequestType } from 'shared-my';
 
 import { type IMissionRequestAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel } from '~/models';
+import { type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IMissionRequestData, updateMissionRequestDTO, createMissionRequest } from './mission-request.schema';
 
-export interface IMissionRequest {
-    id: string;
-    data: IMissionRequestData;
+export interface IMissionRequest extends IDataModel<IMissionRequestData> {
     update: RequestModel<[IUpdateValue<IMissionRequestData>]>;
     displayType?: string;
     displayValue: string;
@@ -46,7 +44,7 @@ export class MissionRequest implements IMissionRequest {
     }
 
     get displayType() {
-        return missionRequestType.find((el) => el.value === this.data.type)?.name;
+        return missionRequestType.find(el => el.value === this.data.type)?.name;
     }
 
     get displayValue() {

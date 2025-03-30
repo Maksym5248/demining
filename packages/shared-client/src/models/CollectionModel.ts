@@ -100,12 +100,17 @@ export class CollectionModel<T extends IDataModel<B>, B extends IData> implement
         const stringId = String(id);
 
         const item = get(this.collection, stringId);
-        Object.assign(item.data, value);
+
+        if (item?.updateFields) {
+            item.updateFields(value);
+        } else {
+            Object.assign(item.data, value);
+        }
     }
 
     updateArr(values: (B & { id: string })[]) {
         values.forEach(value => {
-            this.update(value.id, value);
+            this.updateSingle(value.id, value);
         });
     }
 

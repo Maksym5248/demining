@@ -2,14 +2,12 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IEquipmentAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { RequestModel } from '~/models';
+import { type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IEquipmentData, updateEquipmentDTO, createEquipment } from './equipment.schema';
 
-export interface IEquipment {
-    id: string;
-    data: IEquipmentData;
+export interface IEquipment extends IDataModel<IEquipmentData> {
     updateFields: (data: Partial<IEquipmentData>) => void;
     update: RequestModel<[IUpdateValue<IEquipmentData>]>;
 }

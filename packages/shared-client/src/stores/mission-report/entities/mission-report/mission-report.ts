@@ -5,6 +5,7 @@ import { str, EQUIPMENT_TYPE, EXPLOSIVE_DEVICE_TYPE, TRANSPORT_TYPE } from 'shar
 
 import { dates } from '~/common';
 import { type IPoint } from '~/map';
+import { type IDataModel } from '~/models';
 
 import { type IMissionReportData } from './mission-report.schema';
 import { type IEmployeeAction, type IEmployeeStore } from '../../../employee';
@@ -18,9 +19,7 @@ import { type ITransportAction, type ITransportStore } from '../../../transport'
 
 const getLastSign = (arr: any[], i: number) => (arr.length - 1 === i ? '.' : ', ');
 
-export interface IMissionReport {
-    id: string;
-    data: IMissionReportData;
+export interface IMissionReport extends IDataModel<IMissionReportData> {
     equipmentActions: IEquipmentAction[];
     order: IOrder;
     missionRequest: IMissionRequest;

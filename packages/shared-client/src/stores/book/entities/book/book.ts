@@ -3,15 +3,13 @@ import { bookTypesMap, type IBookTypeNotDB } from 'shared-my';
 
 import { type IBookAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type IRequestModel, RequestModel } from '~/models';
+import { type IDataModel, type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores';
 
 import { type IBookData, createBook, updateBookDTO } from './book.schema';
 
-export interface IBook {
-    id: string;
-    data: IBookData;
+export interface IBook extends IDataModel<IBookData> {
     displayName: string;
     updateFields(data: Partial<IBookData>): void;
     update: IRequestModel<[IUpdateValue<IBookData>]>;

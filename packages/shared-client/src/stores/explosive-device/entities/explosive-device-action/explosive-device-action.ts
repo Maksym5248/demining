@@ -1,15 +1,14 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IExplosiveDeviceAPI } from '~/api';
+import { type IDataModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores';
 
 import { type IExplosiveDeviceActionData } from './explosive-device-action.schema';
 import { ExplosiveDevice } from '../explosive-device';
 
-export interface IExplosiveDeviceAction {
-    data: IExplosiveDeviceActionData;
-    id: string;
+export interface IExplosiveDeviceAction extends IDataModel<IExplosiveDeviceActionData> {
     explosive: ExplosiveDevice;
     updateFields(data: Partial<IExplosiveDeviceActionData>): void;
 }

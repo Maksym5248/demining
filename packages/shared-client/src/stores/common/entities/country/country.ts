@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
+import { type IDataModel } from '~/models';
+
 import { type ICountryData } from './country.schema';
 
-export interface ICountry {
-    data: ICountryData;
-    id: string;
+export interface ICountry extends IDataModel<ICountryData> {
     displayName: string;
     updateFields(data: Partial<ICountryData>): void;
 }
