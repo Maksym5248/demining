@@ -58,10 +58,10 @@ export class AppViewModel implements IAppViewModel {
 
     initialization = new RequestModel({
         run: async () => {
-            this.initDebuger();
-            this.initSession();
-
             try {
+                this.initDebuger();
+                this.initSession();
+
                 AppState.init();
                 Analytics.init();
                 Analytics.setUserId(Auth.uuid());

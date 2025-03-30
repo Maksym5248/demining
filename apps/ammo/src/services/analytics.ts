@@ -32,12 +32,11 @@ export class AnalyticsClass implements IAnalytics {
     }
 
     setUserId = (uid: string | null | undefined) => {
-        if (!!uid && this.uuid !== uid) {
-            this.logger.log(`ANALYTICS: User ID - ${uid}`);
-        }
+        if (this.uuid === uid) return;
 
         this.uuid = uid ?? null;
 
+        this.logger.log(`ANALYTICS: User ID - ${uid}`);
         analytics().setUserId(this.uuid);
         this.crashlytics.setUser(uid ? { id: uid } : null);
     };
