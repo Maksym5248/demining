@@ -52,7 +52,8 @@
             "explosive": "Вибухові речовини",
             "explosive-object": "Боєприпаси",
             "explosive-device": "Засоби підриву",
-            "settings": "Налаштування"
+            "settings": "Налаштування",
+            "viewAll": "Показати всі"
         },
         "dictionaries": {
             "title": "Довідник",

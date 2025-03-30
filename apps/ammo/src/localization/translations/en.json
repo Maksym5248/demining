@@ -52,7 +52,8 @@
             "explosive": "Explosives",
             "explosive-object": "Ammunition",
             "explosive-device": "Detonation Devices",
-            "settings": "Settings"
+            "settings": "Settings",
+            "viewAll": "Show all"
         },
         "dictionaries": {
             "title": "Guide",

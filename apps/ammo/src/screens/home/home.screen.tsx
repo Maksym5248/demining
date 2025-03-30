@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { View, Animated } from 'react-native';
 
 import { images } from '~/assets';
-import { Card, Header, Icon, Scroll, Select, Text } from '~/core';
+import { Card, Header, Icon, Link, Scroll, Select, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -30,6 +30,14 @@ export const HomeScreen = observer(() => {
         });
     };
 
+    const onPressViewAllDictionaries = () => {
+        vm.openDictionaryAll();
+    };
+
+    const onPressViewAllBooks = () => {
+        vm.openBooksAll();
+    };
+
     return (
         <View style={styles.container}>
             <View style={s.background} />
@@ -47,7 +55,10 @@ export const HomeScreen = observer(() => {
                 </Animated.View>
 
                 <View style={s.content}>
-                    <Text type="h4" text={t('dictionaries')} style={s.sctionTitle} />
+                    <View style={[styles.row, s.sectionRight]}>
+                        <Text type="h4" text={t('dictionaries')} style={s.sctionTitle} />
+                        <Link text={t('viewAll')} onPress={onPressViewAllDictionaries} arrow />
+                    </View>
                     <Scroll horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scroll}>
                         {vm.dictionaries.map(item => (
                             <Card
@@ -62,7 +73,10 @@ export const HomeScreen = observer(() => {
                     </Scroll>
                 </View>
                 <View style={s.content}>
-                    <Text type="h4" text={t('book')} style={s.sctionTitle} />
+                    <View style={[styles.row, s.sectionRight]}>
+                        <Text type="h4" text={t('book')} style={s.sctionTitle} />
+                        <Link text={t('viewAll')} onPress={onPressViewAllBooks} arrow />
+                    </View>
                     <Scroll horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scroll}>
                         {vm.books.map(item => (
                             <Card

@@ -47,6 +47,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
     sctionTitle: {
         paddingLeft: theme.spacing.L,
     },
+    sectionRight: {
+        paddingRight: theme.spacing.L,
+    },
     item: {
         width: device.window.width / 2.6,
         aspectRatio: 1,

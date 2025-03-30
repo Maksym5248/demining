@@ -95,8 +95,8 @@ export class DictionariesVM implements IDictionariesVM {
         });
 
         this.order = new OrderModel(this.search, {
-            orderField: 'displayName',
-            orderBy: OrderBy.Asc,
+            orderField: 'data.createdAt',
+            orderBy: OrderBy.Desc,
         });
 
         this.infiniteScroll = new InfiniteScrollModel(this.order, {
