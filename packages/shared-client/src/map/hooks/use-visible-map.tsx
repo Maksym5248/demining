@@ -5,7 +5,7 @@ interface IUseVisibleMapParams {
 }
 
 export function useVisibleMap({ mapRef }: IUseVisibleMapParams) {
-    const interval = useRef<NodeJS.Timeout>();
+    const interval = useRef<NodeJS.Timeout>(null);
 
     const [isVisibleMap, setVisibleMap] = useState(false);
 
@@ -13,7 +13,10 @@ export function useVisibleMap({ mapRef }: IUseVisibleMapParams) {
         interval.current = setInterval(() => {
             if (mapRef?.current && mapRef.current.getProjection()) {
                 setVisibleMap(true);
-                clearInterval(interval.current);
+                if (interval.current) {
+                    clearInterval(interval.current);
+                    interval.current = null;
+                }
             }
         }, 100);
 

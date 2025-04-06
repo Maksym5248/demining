@@ -42,7 +42,7 @@ export function Touchable({
             {children}
             <Component
                 hitSlop={isBorderLess ? hitSlop : undefined}
-                underlayColor={rippleColor}
+                underlayColor={rippleColor as string}
                 activeOpacity={1}
                 // borderless={type === 'borderLess'}
                 enabled={!disabled}
