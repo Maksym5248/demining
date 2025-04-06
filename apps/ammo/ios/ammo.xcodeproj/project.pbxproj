@@ -381,6 +381,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "demining.$(PRODUCT_NAME:rfc1034identifier).prod";
 				PRODUCT_NAME = ammo;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[arch=*]" = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "ammo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -703,6 +704,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "demining.$(PRODUCT_NAME:rfc1034identifier).dev";
 				PRODUCT_NAME = ammo;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[arch=*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ammo-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
