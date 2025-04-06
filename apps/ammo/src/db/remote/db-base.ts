@@ -24,6 +24,7 @@ import {
     or,
     and,
     type FirebaseFirestoreTypes,
+    onSnapshot,
 } from '@react-native-firebase/firestore';
 import { isObject } from 'lodash';
 import isArray from 'lodash/isArray';
@@ -374,7 +375,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         return new Promise((resolve, rejected) => {
             const q = this.query(args ?? {});
 
-            q.onSnapshot(
+            onSnapshot(
+                q,
                 { includeMetadataChanges: true },
                 snapshot => {
                     const res: ISubscriptionDocument<T>[] = [];

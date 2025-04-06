@@ -23,8 +23,8 @@ export interface ICarouselProps {
     itemWidth: number;
     initialIndex?: number;
     data: any[];
-    renderItem: (params: IRenderItemParams<any>) => React.ReactNodeArray | React.ReactNode;
-    renderFooter?: (params: IRenderFooterParams) => React.ReactNodeArray | React.ReactNode;
+    renderItem: (params: IRenderItemParams<any>) => React.ReactNode;
+    renderFooter?: (params: IRenderFooterParams) => React.ReactNode;
     style?: ViewStyle | ViewStyle[];
     containerStyle?: ViewStyle | ViewStyle[];
     contentContainerStyle?: ViewStyle | ViewStyle[];
