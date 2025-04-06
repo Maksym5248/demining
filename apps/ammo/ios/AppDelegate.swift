@@ -8,14 +8,14 @@ import Firebase
 @main
 class AppDelegate: RCTAppDelegate {
   override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    self.moduleName = "RnDiffApp"
+    self.moduleName = "Ammo"
     self.dependencyProvider = RCTAppDependencyProvider()
 
     // You can add your custom initial props in the dictionary below.
     // They will be passed down to the ViewController used by React Native.
     self.initialProps = [:];
     
-    FIRApp.configure();
+    FirebaseApp.configure()
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
