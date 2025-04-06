@@ -1,9 +1,9 @@
-import { type Component, type RefObject } from 'react';
+import { type Component } from 'react';
 
-import { measure, runOnJS, runOnUI } from 'react-native-reanimated';
+import { type AnimatedRef, measure, runOnJS, runOnUI } from 'react-native-reanimated';
 
 export const measureSize = (
-    aref: RefObject<Component<RefObject<Component<any>> | null>> | null,
+    aref: AnimatedRef<Component<any, any, any>> | null,
 ): Promise<{ x: number; y: number; width: number; height: number; pageX: number; pageY: number }> =>
     new Promise((resolve, reject) => {
         const end = (measured: { x: number; y: number; width: number; height: number; pageX: number; pageY: number }) => {
