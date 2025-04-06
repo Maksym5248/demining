@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3B89DD46ECC9400293D3BD55 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36AA30E9129D4C89A90AF874 /* BootSplash.storyboard */; };
 		5B81278479424C6B8BEEC1CC /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07261B080E144B93BA68E008 /* Colors.xcassets */; };
 		857EE85F37A711684C62FEE2 /* Pods_ammo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75B909653908D02CF1159FA4 /* Pods_ammo.framework */; };
@@ -23,11 +21,8 @@
 		00E356F21AD99517003FC87E /* ammoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ammoTests.m; sourceTree = "<group>"; };
 		07261B080E144B93BA68E008 /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = ammo/Colors.xcassets; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ammo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ammo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ammo/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ammo/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ammo/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ammo/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ammo/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = ammo/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1E1ECECCF6BA8CD382AAAE53 /* Pods-ammo.release.prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo.release.prod.xcconfig"; path = "Target Support Files/Pods-ammo/Pods-ammo.release.prod.xcconfig"; sourceTree = "<group>"; };
 		36AA30E9129D4C89A90AF874 /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = ammo/BootSplash.storyboard; sourceTree = "<group>"; };
@@ -37,6 +32,7 @@
 		5B7EB9410499542E8C5724F5 /* Pods-ammo-ammoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.debug.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		75B909653908D02CF1159FA4 /* Pods_ammo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ammo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ammo-ammoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ammo-ammoTests.release.xcconfig"; path = "Target Support Files/Pods-ammo-ammoTests/Pods-ammo-ammoTests.release.xcconfig"; sourceTree = "<group>"; };
+		BD24E3AD2DA2A079004DCC35 /* ammo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ammo-Bridging-Header.h"; sourceTree = "<group>"; };
 		BD7F37BA2C7FB71E00514747 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		BDA7117E2DA2998700B58F45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BDB812772D4011F6008D84EB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -78,16 +74,14 @@
 		13B07FAE1A68108700A75B9A /* ammo */ = {
 			isa = PBXGroup;
 			children = (
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB71A68108700A75B9A /* main.m */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				FB4C25DEB1AA934786254EE7 /* PrivacyInfo.xcprivacy */,
 				36AA30E9129D4C89A90AF874 /* BootSplash.storyboard */,
 				07261B080E144B93BA68E008 /* Colors.xcassets */,
 				BDA7117E2DA2998700B58F45 /* AppDelegate.swift */,
+				BD24E3AD2DA2A079004DCC35 /* ammo-Bridging-Header.h */,
 			);
 			name = ammo;
 			sourceTree = "<group>";
@@ -347,8 +341,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDA7117F2DA2998700B58F45 /* AppDelegate.swift in Sources */,
-				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
