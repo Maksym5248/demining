@@ -1,4 +1,5 @@
-import { firebase, type FirebaseFirestoreTypes, getFirestore, writeBatch } from '@react-native-firebase/firestore';
+import { getApp } from '@react-native-firebase/app';
+import { firebase, type FirebaseFirestoreTypes, getFirestore, initializeFirestore, writeBatch } from '@react-native-firebase/firestore';
 import {
     TABLES,
     type IExplosiveObjectTypeDB,
@@ -80,7 +81,7 @@ export class DBRemote
     batch: FirebaseFirestoreTypes.WriteBatch | null = null;
 
     init = () => {
-        getFirestore().settings({
+        initializeFirestore(getApp(), {
             persistence: true,
             cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
             ssl: true,
