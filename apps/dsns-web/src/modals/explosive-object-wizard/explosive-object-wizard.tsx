@@ -4,7 +4,7 @@ import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import {
     EXPLOSIVE_OBJECT_COMPONENT,
-    EXPLOSIVE_OBJECT_STATUS,
+    APPROVE_STATUS,
     explosiveObjectComponentData,
     explosiveObjectStatuses,
     measurement,
@@ -283,7 +283,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                               }
                             : {
                                   typeId: firstType?.data.id,
-                                  status: EXPLOSIVE_OBJECT_STATUS.PENDING,
+                                  status: APPROVE_STATUS.PENDING,
                                   classItemIds: [],
                               }
                     }>

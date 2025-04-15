@@ -1,17 +1,9 @@
-import {
-    type ISectionInfoDB,
-    type IFieldDB,
-    type MATERIAL,
-    type IRangeDB,
-    type ISizeDB,
-    type IBaseDB,
-    type EXPLOSIVE_OBJECT_STATUS,
-} from '~/db';
+import { type ISectionInfoDB, type IFieldDB, type MATERIAL, type IRangeDB, type ISizeDB, type IBaseDB, type APPROVE_STATUS } from '~/db';
 
 import { type IWeightDB, type IFillerDB } from './common';
 
 export interface IExplosiveObjectDetailsDB extends IBaseDB {
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     fullDescription: string | null;
     imageUris: string[] | null;
     // characteristics

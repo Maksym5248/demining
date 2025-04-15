@@ -28,11 +28,11 @@ export const materialsData: IMaterialNotDB[] = [
     },
     {
         id: MATERIAL.PLASTIC,
-        name: 'Пластпаса',
+        name: 'Пластик',
     },
     {
         id: MATERIAL.PLASTIC_AG_4V,
-        name: 'Пластпаса АГ-4В',
+        name: 'Пластик АГ-4В',
     },
     {
         id: MATERIAL.COPPER,

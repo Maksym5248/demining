@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS, type MATERIAL } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, APPROVE_STATUS, type MATERIAL } from 'shared-my';
 
 import { type IExplosiveDeviceDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -10,7 +10,7 @@ import { type ISectionInfoData, type IFieldData } from '../../../type';
 
 export interface IExplosiveDeviceData {
     id: string;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     type: EXPLOSIVE_DEVICE_TYPE;
     name: string;
     size: ISizeData[] | null;
@@ -43,7 +43,7 @@ export const createExplosiveDeviceDTO = (value: ICreateValue<IExplosiveDeviceDat
             height: el.height ?? null,
             variant: el.variant ?? null,
         })) ?? [],
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     chargeWeight: value.chargeWeight ?? null,
     imageUri: value.imageUri ?? null,
     imageUris: value.imageUris ?? [],
@@ -106,7 +106,7 @@ export const updateExplosiveDeviceDTO = data.createUpdateDTO<IExplosiveDeviceDat
             height: el.height ?? null,
             variant: el.variant ?? null,
         })) ?? [],
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     chargeWeight: value.chargeWeight ?? null,
     imageUri: value.imageUri ?? null,
     imageUris: value.imageUris ?? [],
@@ -162,7 +162,7 @@ export const createExplosiveDevice = (value: IExplosiveDeviceDTO): IExplosiveDev
     type: value.type,
     name: value?.name ?? '',
     chargeWeight: value.chargeWeight ?? null,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     material: value.material ?? [],
     size:
         value.sizeV2 ??

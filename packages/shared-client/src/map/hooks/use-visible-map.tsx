@@ -1,7 +1,7 @@
-import { type MutableRefObject, useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 
 interface IUseVisibleMapParams {
-    mapRef?: MutableRefObject<google.maps.Map | undefined>;
+    mapRef?: RefObject<google.maps.Map | null>;
 }
 
 export function useVisibleMap({ mapRef }: IUseVisibleMapParams) {

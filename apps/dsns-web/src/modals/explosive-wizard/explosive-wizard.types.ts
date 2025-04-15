@@ -1,4 +1,4 @@
-import { type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { type APPROVE_STATUS } from 'shared-my';
 import { type IRangeData, type IExplosiveCompositionData, type IFieldData } from 'shared-my-client';
 
 export interface IExplosiveForm {
@@ -9,7 +9,7 @@ export interface IExplosiveForm {
     formula: string | null;
     description: string | null;
     composition: IExplosiveCompositionData[] | null;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     //explosive
     velocity: IRangeData | null; // m/s
     brisantness: IRangeData | null; // m

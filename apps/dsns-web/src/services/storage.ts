@@ -6,13 +6,13 @@ const eventEmitter = new EventEmitter();
 
 export class StorageClass implements IStorage {
     set = (key: string, value: any) => {
-        LocalStore.setItem(key, JSON.stringify(value));
+        localStorage.setItem(key, JSON.stringify(value));
         eventEmitter.emit(key, value);
     };
 
     get(key: string) {
         try {
-            const value = LocalStore.getItem(key);
+            const value = localStorage.getItem(key);
             if (value) {
                 return JSON.parse(value);
             }
@@ -24,7 +24,7 @@ export class StorageClass implements IStorage {
     }
 
     remove = (key: string) => {
-        LocalStore.removeItem(key);
+        localStorage.removeItem(key);
         eventEmitter.emit(key, null);
     };
 

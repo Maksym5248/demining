@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, APPROVE_STATUS } from 'shared-my';
 
 import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO } from '~/api';
 import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
@@ -165,7 +165,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
             await this.api.explosiveDevice.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {

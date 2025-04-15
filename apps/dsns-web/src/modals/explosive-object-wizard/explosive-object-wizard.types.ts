@@ -1,4 +1,4 @@
-import { type MATERIAL, type EXPLOSIVE_OBJECT_COMPONENT, type EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { type MATERIAL, type EXPLOSIVE_OBJECT_COMPONENT, type APPROVE_STATUS } from 'shared-my';
 import { type IRangeData, type IFieldData, type IFillerData, type ISizeData } from 'shared-my-client';
 
 export interface IExplosiveObjectForm {
@@ -7,7 +7,7 @@ export interface IExplosiveObjectForm {
     description: string | null;
     fullDescription: string | null;
 
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     countryId: string;
     typeId: string;

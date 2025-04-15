@@ -22,7 +22,7 @@ export function useValues<T>(initialValue = {}) {
                 delete data[id];
             },
             clear: () => {
-                Object.keys(data).forEach((key) => {
+                Object.keys(data).forEach(key => {
                     delete data[key];
                 });
             },

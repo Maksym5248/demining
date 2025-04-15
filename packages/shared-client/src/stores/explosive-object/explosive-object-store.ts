@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -326,7 +326,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             await this.api.explosiveObject.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
@@ -357,7 +357,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             await this.api.explosiveObject.subscribeDetails(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => {

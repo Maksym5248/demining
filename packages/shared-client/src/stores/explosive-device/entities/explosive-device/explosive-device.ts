@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS, explosiveDeviceTypeData, type IExplosiveDeviceTypeNotDB } from 'shared-my';
+import { APPROVE_STATUS, explosiveDeviceTypeData, type IExplosiveDeviceTypeNotDB } from 'shared-my';
 
 import { type IExplosiveDeviceAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -59,11 +59,11 @@ export class ExplosiveDevice implements IExplosiveDevice {
     }
 
     get isConfirmed() {
-        return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
+        return this.data.status === APPROVE_STATUS.CONFIRMED;
     }
 
     get isPending() {
-        return this.data.status === EXPLOSIVE_OBJECT_STATUS.PENDING;
+        return this.data.status === APPROVE_STATUS.PENDING;
     }
 
     get isEditable() {

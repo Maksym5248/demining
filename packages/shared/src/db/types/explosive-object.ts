@@ -1,16 +1,6 @@
-import { type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_OBJECT_COMPONENT, type METHRIC, type MATERIAL } from '~/db';
+import { type EXPLOSIVE_OBJECT_CATEGORY, type APPROVE_STATUS, type EXPLOSIVE_OBJECT_COMPONENT, type METHRIC } from '~/db';
 
-import { type IBaseDB } from '../common';
-
-export interface IExplosiveObjectComponentNotDB {
-    id: EXPLOSIVE_OBJECT_COMPONENT;
-    name: string;
-}
-
-export interface IMaterialNotDB {
-    id: MATERIAL;
-    name: string;
-}
+import { type ILinkedToDocumentDB, type Timestamp, type IBaseDB } from './common';
 
 export interface IExplosiveObjectClassDB extends IBaseDB {
     id: string;
@@ -37,24 +27,24 @@ export interface IExplosiveObjectTypeDB extends IBaseDB {
     metricCaliber?: METHRIC;
 }
 
-export interface ICountryDB {
-    id: string;
-    name: string;
-}
-
-export interface IMaterialDB {
-    id: string;
-    name: string;
-}
-
 export interface IExplosiveObjectDB extends IBaseDB {
     name: string | null;
     fullName: string | null;
     description: string | null;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT | null; // Боєприпас
     typeId: string | null; // Інженерний
     countryId: string; // СССР
     classItemIds: string[]; // протитанковий, протиднищевий; кумулятивний
     imageUri: string | null;
+}
+
+export interface IExplosiveObjectActionDB extends IExplosiveObjectDB, ILinkedToDocumentDB {
+    explosiveObjectId: string;
+    quantity: number;
+    category: EXPLOSIVE_OBJECT_CATEGORY;
+    isDiscovered: boolean;
+    isTransported: boolean;
+    isDestroyed: boolean;
+    executedAt: Timestamp;
 }

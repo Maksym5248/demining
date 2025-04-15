@@ -11,7 +11,7 @@ interface IAutocompleteProps {
 }
 
 export function Autocomplete({ onPlaceChanged }: IAutocompleteProps) {
-    const autocompleteRef = useRef<google.maps.places.Autocomplete>();
+    const autocompleteRef = useRef<google.maps.places.Autocomplete>(null);
 
     const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
         autocompleteRef.current = autocomplete;

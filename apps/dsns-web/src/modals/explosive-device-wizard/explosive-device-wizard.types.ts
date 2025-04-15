@@ -1,4 +1,4 @@
-import { type EXPLOSIVE_OBJECT_STATUS, type EXPLOSIVE_DEVICE_TYPE, type MATERIAL } from 'shared-my';
+import { type APPROVE_STATUS, type EXPLOSIVE_DEVICE_TYPE, type MATERIAL } from 'shared-my';
 import { type ISizeData, type IFillerData, type IFieldData } from 'shared-my-client';
 
 export interface IExplosiveDeviceForm {
@@ -9,7 +9,7 @@ export interface IExplosiveDeviceForm {
     filler: IFillerData[] | null;
     size: ISizeData[] | null;
     chargeWeight: number | null;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
 
     purposeImageUris: string[];
     purposeDescription: string;

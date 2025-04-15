@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { APPROVE_STATUS } from 'shared-my';
 
 import { type IBookDTO, type IBookAPI } from '~/api';
 import { type ICreateValue, type ISubscriptionDocument, data, dates } from '~/common';
@@ -112,7 +112,7 @@ export class BookStore implements IBookStore {
             await this.api.book.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IBookDTO>[]) => {

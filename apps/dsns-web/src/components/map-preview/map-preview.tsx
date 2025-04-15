@@ -51,7 +51,7 @@ function Component({
 }: IMapViewProps) {
     const { mapOptions, polygonOptions, circleOptions, toggleMapType, lineOptions } = useMapOptions({ isPictureType: true });
 
-    const mapRef = useRef<google.maps.Map>();
+    const mapRef = useRef<google.maps.Map>(null);
     const isVisibleMap = useVisibleMap({ mapRef });
     const [zoom, setZoom] = useState<number>(initialZoom ?? MAP_ZOOM.DEFAULT);
 
