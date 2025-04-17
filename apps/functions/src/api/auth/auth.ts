@@ -2,16 +2,18 @@ import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { auth, https } from 'firebase-functions';
 import * as logger from 'firebase-functions/logger';
-import { type IUserDB, ROLES } from 'shared-my';
+import { type IUserDB, ROLES, TABLES } from 'shared-my';
 
-const createUserRef = (uid: string) => getFirestore().collection('USER').doc(uid);
+const createUserRef = (uid: string) => getFirestore().collection(TABLES.USER).doc(uid);
 
 const customUserClaims = async (userData: IUserDB) => {
     try {
         const customClaims = {
             ROOT_ADMIN: userData?.roles.includes(ROLES.ROOT_ADMIN),
             ORGANIZATION_ADMIN: userData?.roles.includes(ROLES.ORGANIZATION_ADMIN),
-            AUTHOR: userData?.roles.includes(ROLES.AUTHOR),
+            AMMO_CONTENT_ADMIN: userData?.roles.includes(ROLES.AMMO_CONTENT_ADMIN),
+            AMMO_VIEWER: userData?.roles.includes(ROLES.AMMO_VIEWER),
+            DEMINING_VIEWER: userData?.roles.includes(ROLES.DEMINING_VIEWER),
             organizationId: userData?.organizationId,
         };
 
@@ -45,7 +47,7 @@ export const processSignUp = auth.user().onCreate(async user => {
         const userData = {
             id: user.uid,
             email: user.email,
-            roles: [],
+            roles: [ROLES.AMMO_VIEWER],
             organizationId: null,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),

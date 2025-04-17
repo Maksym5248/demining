@@ -9,9 +9,9 @@ export const ViewOrganizationsManagment = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isRootAdmin } = store.viewer.user ?? {};
+    const { permissions } = store.viewer.user ?? {};
 
-    if (!isRootAdmin) {
+    if (!permissions?.managment.view()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 

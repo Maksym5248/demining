@@ -122,7 +122,7 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                             }}
                         </Form.Item>
                     </Form.Item>
-                    {viewer.user?.isAuthor && (
+                    {viewer.user?.permissions.ammo.approve() && (
                         <Form.Item label="Статус" name="status" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>

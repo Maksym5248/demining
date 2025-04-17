@@ -130,7 +130,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
-        this.common = new CommonStore(APPS.DEMINING_WEB, this);
+        this.common = new CommonStore(APPS.DEMINING, this);
         this.viewer = new ViewerStore(this);
         this.auth = new AuthStore(this);
         this.document = new DocumentStore(this);

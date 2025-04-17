@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { ROLES } from 'shared-my';
 
 import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
 import { type IDataModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
@@ -80,7 +81,7 @@ export class Organization implements IOrganization {
                 this.data.id,
                 userId,
                 { isAdmin, isAuthor },
-                !!this.getStores().viewer.user?.isRootAdmin,
+                !!this.getStores().viewer.user?.data.roles.includes(ROLES.ROOT_ADMIN),
             );
 
             this.listMembers.push(createUser(res));
@@ -95,7 +96,7 @@ export class Organization implements IOrganization {
                 this.data.id,
                 userId,
                 { isAdmin, isAuthor },
-                !!this.getStores().viewer.user?.isRootAdmin,
+                !!this.getStores().viewer.user?.data.roles.includes(ROLES.ROOT_ADMIN),
             );
             const member = createUser(res);
 

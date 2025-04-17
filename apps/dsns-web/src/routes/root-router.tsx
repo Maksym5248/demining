@@ -34,7 +34,7 @@ import { nav } from '~/utils';
 
 import {
     ViewAuth,
-    ViewAuthorManagment,
+    ViewAmmoManagment,
     ViewDev,
     ViewExplosiveObjectList,
     ViewOrganization,
@@ -134,7 +134,7 @@ const router = createBrowserRouter([
                                     Component: BooksListPage,
                                 },
                             ],
-                            <ViewAuthorManagment />,
+                            <ViewAmmoManagment />,
                         ),
                         nav.withAccess(
                             {

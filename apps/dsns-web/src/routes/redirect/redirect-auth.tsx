@@ -9,9 +9,9 @@ export const RedirectAuth = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthorizedDSNS } = store.viewer.user ?? {};
+    const { permissions } = store.viewer.user ?? {};
 
-    if (!isAuthorizedDSNS) {
+    if (!permissions?.demining.view()) {
         return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
     }
 

@@ -4,14 +4,14 @@ import { Navigate, Outlet, useLocation, useOutletContext } from 'react-router-do
 import { ROUTES } from '~/constants';
 import { useStore } from '~/hooks';
 
-export const ViewAuthorManagment = observer(() => {
+export const ViewAmmoManagment = observer(() => {
     const store = useStore();
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthor } = store.viewer.user ?? {};
+    const { permissions } = store.viewer.user ?? {};
 
-    if (!isAuthor) {
+    if (!permissions?.ammo.viewManagement()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 

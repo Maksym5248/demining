@@ -318,7 +318,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             )}
                         </Form.Item>
                     </Form.Item>
-                    {viewer.user?.isContentAdmin && (
+                    {viewer.user?.permissions.ammo.approve() && (
                         <Form.Item label="Статус" name="status">
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>

@@ -4,7 +4,11 @@ interface ISelf {
     getStores: () => {
         viewer?: {
             user?: {
-                isAuthor: boolean;
+                permissions: {
+                    ammo: {
+                        edit: () => boolean;
+                    };
+                };
                 data?: {
                     organization?: {
                         id: string;
@@ -16,7 +20,7 @@ interface ISelf {
 }
 
 export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_COMPONENT) => {
-    if (self?.getStores()?.viewer?.user?.isAuthor)
+    if (self?.getStores()?.viewer?.user?.permissions?.ammo?.edit())
         return component
             ? {
                   where: {

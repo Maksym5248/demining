@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Typography, Space } from 'antd';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
+import { ROLES } from 'shared-my';
 import { useAsyncEffect } from 'shared-my-client';
 import { type IUser } from 'shared-my-client';
 
@@ -28,7 +29,7 @@ const ListItem = observer(({ item, organizationId }: { item: IUser; organization
                 title={item.data.email}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{item.isOrganizationAdmin ? 'Адмін' : ''}</Text>
+                        <Text type="secondary">{item.hasRole(ROLES.ORGANIZATION_ADMIN) ? 'Адмін' : ''}</Text>
                     </Space>
                 }
             />

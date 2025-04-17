@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Drawer, Spin, Switch } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { ROLES } from 'shared-my';
 
 import { Select, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -69,8 +70,8 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                     disabled={wizard.isView}
                     initialValues={{
                         id,
-                        isAdmin: !!member?.isOrganizationAdmin,
-                        isAuthor: !!member?.isAuthor,
+                        ORGANIZATION_ADMIN: !!member?.data.roles.includes(ROLES.ORGANIZATION_ADMIN),
+                        AMMO_CONTENT_ADMIN: !!member?.data.roles.includes(ROLES.AMMO_CONTENT_ADMIN),
                     }}>
                     <Form.Item label="Email" name="id" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
@@ -90,23 +91,20 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                         name="isAdmin"
                         valuePropName="checked"
                         rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer.user?.isRootAdmin} />
+                        <Switch disabled={!viewer.user?.data.roles.includes(ROLES.ORGANIZATION_ADMIN)} />
                     </Form.Item>
                     <Form.Item
                         label="Автор контенту"
                         name="isAuthor"
                         valuePropName="checked"
                         rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer.user?.isRootAdmin} />
+                        <Switch disabled={!viewer.user?.data.roles.includes(ROLES.AMMO_CONTENT_ADMIN)} />
                     </Form.Item>
                     <WizardFooter
                         {...wizard}
                         onCancel={hide}
                         onRemove={onRemove}
-                        isRemove={
-                            wizard.isRemove &&
-                            (viewer.user?.isRootAdmin || (viewer.user?.isOrganizationAdmin && !member?.isOrganizationAdmin))
-                        }
+                        isRemove={wizard.isRemove && viewer.user?.permissions?.managment.remove(member?.data)}
                         loading={currentOrganization?.createMember.isLoading || currentOrganization?.updateMember.isLoading}
                     />
                 </Form>

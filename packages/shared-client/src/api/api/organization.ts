@@ -51,9 +51,9 @@ export class OrganizationAPI {
         }
 
         if (permissions.isAuthor) {
-            roles.push(ROLES.AUTHOR);
+            roles.push(ROLES.AMMO_CONTENT_ADMIN);
         } else {
-            roles = roles.filter(el => el !== ROLES.AUTHOR);
+            roles = roles.filter(el => el !== ROLES.AMMO_CONTENT_ADMIN);
         }
 
         return roles;

@@ -74,10 +74,8 @@ export class Explosive implements IExplosive {
     }
 
     get isEditable() {
-        return (
-            !!this.getStores()?.viewer?.user?.isContentAdmin ||
-            !!(this.getStores()?.viewer?.user?.isAuthor && this.data.authorId === this.getStores()?.viewer?.user?.data.id)
-        );
+        const { permissions } = this.getStores()?.viewer?.user ?? {};
+        return !!permissions?.ammo?.edit(this.data);
     }
 
     update = new RequestModel({

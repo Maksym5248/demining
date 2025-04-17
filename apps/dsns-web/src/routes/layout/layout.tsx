@@ -29,9 +29,21 @@ export const Layout = observer(() => {
     const params = useParams();
 
     const [collapsed, setCollapsed] = useState(false);
-    const { isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor } = store.viewer.user ?? {};
+    const { permissions } = store.viewer.user ?? {};
 
-    const [selectedVerticalMenu, setSelectedVerticalMenu] = useState(isAuthor ? VericalMenu.DICTIONARY : VericalMenu.DOCUMENTS);
+    const [selectedVerticalMenu, setSelectedVerticalMenu] = useState(
+        (() => {
+            let value = VericalMenu.DICTIONARY;
+
+            if (permissions?.demining.view()) {
+                value = VericalMenu.DOCUMENTS;
+            } else if (permissions?.managment.view()) {
+                value = VericalMenu.MANAGMENT;
+            }
+
+            return value;
+        })(),
+    );
 
     const routes = nav.getRoutes(location.pathname, params as { [key: string]: string });
     const itemsBreadcrumb = routes.map(el => ({
@@ -46,7 +58,7 @@ export const Layout = observer(() => {
 
     const menuManagment = useMemo(() => {
         const arr = [
-            ...(isRootAdmin
+            ...(permissions?.managment.view()
                 ? [
                       {
                           key: ROUTES.ORGANIZATIONS_LIST,
@@ -59,11 +71,11 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+    }, [permissions?.managment.view()]);
 
     const menuDocuments = useMemo(() => {
         const arr = [
-            ...(isOrganizationAdmin || isOrganizationMember
+            ...(permissions?.demining.view()
                 ? [
                       {
                           key: ROUTES.HOME,
@@ -131,11 +143,11 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+    }, [permissions?.demining.view()]);
 
     const menuDictionary = useMemo(() => {
         const arr = [
-            ...(isOrganizationAdmin || isOrganizationMember || isAuthor
+            ...(permissions?.ammo.viewManagement()
                 ? [
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_LIST,
@@ -149,16 +161,16 @@ export const Layout = observer(() => {
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_DEVICE_LIST),
                           onClick: () => navigate(ROUTES.EXPLOSIVE_DEVICE_LIST),
                       },
-                  ]
-                : []),
-            ...(isAuthor
-                ? [
                       {
                           key: ROUTES.EXPLOSIVE_LIST,
                           icon: <Icon.FireOutlined />,
                           label: nav.getRouteTitle(ROUTES.EXPLOSIVE_LIST),
                           onClick: () => navigate(ROUTES.EXPLOSIVE_LIST),
                       },
+                  ]
+                : []),
+            ...(permissions?.ammo.edit()
+                ? [
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_TYPE,
                           icon: <Icon.ApartmentOutlined />,
@@ -183,11 +195,11 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+    }, [permissions?.ammo.edit]);
 
     const menuVertical = useMemo(() => {
         const arr = [
-            ...(isOrganizationAdmin || isOrganizationMember
+            ...(permissions?.demining.view()
                 ? [
                       {
                           key: VericalMenu.DOCUMENTS,
@@ -202,7 +214,7 @@ export const Layout = observer(() => {
                 icon: <Icon.FireOutlined style={{ marginLeft: 10 }} />,
                 onClick: () => setSelectedVerticalMenu(VericalMenu.DICTIONARY),
             },
-            ...(isRootAdmin
+            ...(permissions?.managment.view()
                 ? [
                       {
                           key: VericalMenu.MANAGMENT,
@@ -224,7 +236,7 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [isRootAdmin, isOrganizationAdmin, isOrganizationMember, isAuthor]);
+    }, [permissions?.managment.view]);
 
     const defaultSelectedKeys = useMemo(() => {
         const [, initialRoute] = location.pathname.split('/');

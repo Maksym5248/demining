@@ -3,6 +3,13 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
   
+		match /APP_CONFIG/{id} {
+    	allow read: if true;
+      allow create: if false
+      allow update: if false
+      allow delete: if false
+    }
+    
     match /USER/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
@@ -20,40 +27,60 @@ service cloud.firestore {
       allow read, create, update, delete: if isMember(organizationId)
     }
     
-    match /EXPLOSIVE_OBJECT/{explosiveObjectId} {
-    	allow read: if isAuth();
-      allow create: if isRootAdmin() || isOrganizationAdmin() || isAuthor();
-      allow update, delete: if isRootAdmin() || isAuthor();
-    }
-
-    match /EXPLOSIVE_OBJECT_TYPE/{explosiveObjectTypeId} {
-    	allow read: if isAuth();
-      allow create: if isAuthor() || isAuthor();
-      allow update, delete: if isAuthor();
-    }
-
-    match /EXPLOSIVE_OBJECT_CLASS/{explosiveObjectTypeId} {
-    	allow read: if isAuth();
-      allow create: if isAuthor() || isAuthor();
-      allow update, delete: if isAuthor();
-    }
-
-    match /EXPLOSIVE_OBJECT_CLASS_ITEM/{explosiveObjectTypeId} {
-    	allow read: if isAuth();
-      allow create: if isAuthor() || isAuthor();
-      allow update, delete: if isAuthor();
+    match /EXPLOSIVE_OBJECT/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin()|| (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT", id));
+      allow delete: if isRootAdmin();
     }
     
-    match /EXPLOSIVE/{explosiveId} {
-      allow read: if isAuth();
-      allow create: if isRootAdmin() || isOrganizationAdmin() || isAuth();
-      allow update, delete: if isRootAdmin() || isAuth();
+    match /EXPLOSIVE_OBJECT_DETAILS/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin()|| (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_DETAILS", id));
+      allow delete: if isRootAdmin();
     }
 
-    match /EXPLOSIVE_NEW/{explosiveId} {
-      allow read: if isAuth();
-      allow create: if isRootAdmin() || isAuth();
-      allow update, delete: if isRootAdmin() || isAuth();
+    match /EXPLOSIVE_OBJECT_TYPE/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_TYPE", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_OBJECT_CLASS/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_CLASS", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_OBJECT_CLASS_ITEM/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_CLASS_ITEM", id));
+      allow delete: if isRootAdmin();
+    }
+    
+    match /EXPLOSIVE/{id} {
+      allow read: if true;
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_NEW/{id} {
+      allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_NEW", id));
+      allow delete: if isRootAdmin();
+    }
+    
+    match /BOOK/{id} {
+      allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("BOOK", id));
+      allow delete: if isRootAdmin();
     }
 
     function isAuth() {
@@ -68,8 +95,13 @@ service cloud.firestore {
       return request.auth.token.ORGANIZATION_ADMIN;
     }
 
-    function isAuthor() {
-      return request.auth.token.AUTHOR;
+    function isAmmoContentAdmin() {
+      return request.auth.token.AMMO_CONTENT_ADMIN;
+    }
+    
+    function isAuthor(table, id){
+      let currentId = get(/databases/$(database)/documents/$(table)/$(id)).data.authorId;
+      return currentId == request.auth.uid;
     }
 
     function isMember(organizationId) {
