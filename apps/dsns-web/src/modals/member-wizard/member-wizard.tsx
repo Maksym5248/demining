@@ -36,12 +36,19 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
     const isLoading = !user.fetchListUnassigned.isLoaded && user.fetchListUnassigned.isLoading;
 
     const onFinishCreate = async (values: IMemberForm) => {
-        await currentOrganization?.createMember.run(values.id, values.isAdmin, values.isAuthor);
+        await currentOrganization?.createMember.run(values.id);
         hide();
     };
 
     const onFinishUpdate = async (values: IMemberForm) => {
-        await currentOrganization?.updateMember.run(values.id, values.isAdmin, values.isAuthor);
+        await member?.update.run({
+            access: {
+                roles: {
+                    [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
+                    [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
+                },
+            },
+        });
         hide();
     };
 
@@ -70,8 +77,8 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                     disabled={wizard.isView}
                     initialValues={{
                         id,
-                        ORGANIZATION_ADMIN: !!member?.data.roles.includes(ROLES.ORGANIZATION_ADMIN),
-                        AMMO_CONTENT_ADMIN: !!member?.data.roles.includes(ROLES.AMMO_CONTENT_ADMIN),
+                        ORGANIZATION_ADMIN: !!member?.hasRole(ROLES.ORGANIZATION_ADMIN),
+                        AMMO_CONTENT_ADMIN: !!member?.hasRole(ROLES.AMMO_CONTENT_ADMIN),
                     }}>
                     <Form.Item label="Email" name="id" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
@@ -79,33 +86,33 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                             options={
                                 wizard.isCreate
                                     ? user.listUnassigned.asArray.map(el => ({
-                                          label: el.data.email,
+                                          label: el.data.info.email,
                                           value: el.id,
                                       }))
-                                    : [{ label: member?.data.email, value: member?.id }]
+                                    : [{ label: member?.data.info.email, value: member?.id }]
                             }
                         />
                     </Form.Item>
                     <Form.Item
                         label="Адмін організації"
-                        name="isAdmin"
+                        name="ORGANIZATION_ADMIN"
                         valuePropName="checked"
                         rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer.user?.data.roles.includes(ROLES.ORGANIZATION_ADMIN)} />
+                        <Switch disabled={!viewer?.hasRole(ROLES.ORGANIZATION_ADMIN)} />
                     </Form.Item>
                     <Form.Item
                         label="Автор контенту"
-                        name="isAuthor"
+                        name="AMMO_CONTENT_ADMIN"
                         valuePropName="checked"
                         rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer.user?.data.roles.includes(ROLES.AMMO_CONTENT_ADMIN)} />
+                        <Switch disabled={!viewer?.hasRole(ROLES.AMMO_CONTENT_ADMIN)} />
                     </Form.Item>
                     <WizardFooter
                         {...wizard}
                         onCancel={hide}
                         onRemove={onRemove}
-                        isRemove={wizard.isRemove && viewer.user?.permissions?.managment.remove(member?.data)}
-                        loading={currentOrganization?.createMember.isLoading || currentOrganization?.updateMember.isLoading}
+                        isRemove={wizard.isRemove && viewer?.permissions?.managment.remove()}
+                        loading={currentOrganization?.createMember.isLoading}
                     />
                 </Form>
             )}

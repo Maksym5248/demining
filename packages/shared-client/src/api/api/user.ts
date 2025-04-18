@@ -1,129 +1,94 @@
-import keyBy from 'lodash/keyBy';
-import map from 'lodash/map';
-import uniq from 'lodash/uniq';
-import { removeFields } from 'shared-my';
-import { type IOrganizationDB, type IUserDB } from 'shared-my';
+import { type IUserInfoDB, type IMemberDB, type IOrganizationDB, type IUserAccessDB } from 'shared-my';
 
-import { type IQuery, type IDBBase, type IUpdateValue } from '~/common';
-import { type IAssetStorage } from '~/services';
+import { type IQuery, type IDBBase } from '~/common';
 
-import { type IUserDTO, type ICurrentUserDTO, type IUserOrganizationDTO } from '../dto';
+import { type IUpdateUserDTO, type IUserDTO } from '../dto';
 
 export interface IUserAPI {
-    update: (id: string, value: IUpdateValue<ICurrentUserDTO>) => Promise<ICurrentUserDTO>;
+    update: (id: string, value: IUpdateUserDTO) => Promise<IUserDTO>;
     remove: (id: string) => Promise<string>;
-    getList: (query?: IQuery) => Promise<ICurrentUserDTO[]>;
-    getListUnassignedUsers: (query?: IQuery) => Promise<IUserDTO[]>;
-    get: (id: string) => Promise<ICurrentUserDTO | null>;
+    getList: (query?: IQuery) => Promise<IUserDTO[]>;
+    get: (id: string) => Promise<IUserDTO>;
     exist: (id: string) => Promise<boolean>;
-    setOrganization: (id: string) => void;
-    removeOrganization: () => void;
 }
 
 export class UserAPI {
     constructor(
         private db: {
-            user: IDBBase<IUserDB>;
+            userInfo: IDBBase<IUserInfoDB>;
+            userAccess: IDBBase<IUserAccessDB>;
+            member: IDBBase<IMemberDB>;
             organization?: IDBBase<IOrganizationDB>;
-            setOrganizationId: (id: string) => void;
-            removeOrganizationId: () => void;
-        },
-        private services: {
-            assetStorage: IAssetStorage;
+            batchStart: () => void;
+            batchCommit: () => Promise<void>;
         },
     ) {}
 
-    getIds = <T>(arr: T[], key: string) => uniq(map(arr, key).filter(el => !!el)) as string[];
+    update = async (id: string, value: IUpdateUserDTO): Promise<IUserDTO> => {
+        this.db.batchStart();
 
-    getUserOrganization = async (user: IUserDB | null): Promise<IUserOrganizationDTO | null> => {
-        if (!user || !user?.organizationId) {
-            return null;
-        }
+        !!value.info && this.db.userInfo.batchUpdate(id, value.info);
+        !!value.access && this.db.userAccess.batchUpdate(id, value.access);
+        !!value.member && this.db.member.batchUpdate(id, value.member);
 
-        const res = await this.db.organization?.get(user.organizationId);
+        await this.db.batchCommit();
 
-        if (!res) {
-            return null;
-        }
-
-        removeFields(res, 'membersIds');
-
-        return res;
+        return this.get(id);
     };
 
-    update = async (id: string, value: IUpdateValue<ICurrentUserDTO>): Promise<ICurrentUserDTO> => {
-        const res = await this.db.user.update(id, value);
+    remove = async (id: string) => {
+        this.db.batchStart();
 
-        const organization = await this.getUserOrganization(res);
-        removeFields(res, 'organizationId');
+        this.db.userInfo.batchRemove(id);
+        this.db.userAccess.batchRemove(id);
+        this.db.member.batchRemove(id);
 
-        return {
-            ...res,
-            organization,
-        };
+        await this.db.batchCommit();
+
+        return id;
     };
 
-    remove = (id: string) => this.db.user.remove(id);
-
-    getList = async (query?: IQuery): Promise<ICurrentUserDTO[]> => {
-        const users = await this.db.user.select({
-            order: {
-                by: 'createdAt',
-                type: 'desc',
-            },
-            ...(query ?? {}),
-        });
-
-        const organizationIds = this.getIds(users, 'organizationId');
-
-        const organizations = (await Promise.all(
-            organizationIds.map(organizationId => this.db.organization?.get(organizationId)),
-        )) as IOrganizationDB[];
-
-        const collection = keyBy(organizations, 'id');
-
-        return users.map(({ organizationId, ...restUser }) => ({
-            ...restUser,
-            organization: organizationId ? collection[organizationId] : null,
-        }));
-    };
-
-    getListUnassignedUsers = (query?: IQuery): Promise<IUserDTO[]> =>
-        this.db.user.select({
+    getList = async (query?: IQuery): Promise<IUserDTO[]> => {
+        const members = await this.db.member.select({
             ...(query ?? {}),
             order: {
                 by: 'createdAt',
                 type: 'desc',
             },
-            where: {
-                organizationId: null,
-                ...(query?.where ?? {}),
-            },
         });
 
-    get = async (id: string): Promise<ICurrentUserDTO | null> => {
-        const res = await this.db.user.get(id);
+        const [info, access] = await Promise.all([
+            this.db.userInfo.getByIds(members.map(item => item.id)),
+            this.db.userAccess.getByIds(members.map(item => item.id)),
+        ]);
 
-        if (!res) return null;
+        const infoMap = new Map(info.map(item => [item.id, item]));
+        const accessMap = new Map(access.map(item => [item.id, item]));
 
-        const organization = await this.getUserOrganization(res);
+        return members.map(member => {
+            return {
+                id: member.id,
+                info: infoMap.get(member.id) ?? ({} as IUserInfoDB),
+                access: accessMap.get(member.id) ?? ({} as IUserAccessDB),
+                member,
+            };
+        });
+    };
 
-        removeFields(res, 'organizationId');
+    get = async (id: string): Promise<IUserDTO> => {
+        const [info, access, member] = await Promise.all([this.db.userInfo.get(id), this.db.userAccess.get(id), this.db.member.get(id)]);
+
+        if (!info || !access || !member) {
+            throw new Error('There is no user with id');
+        }
 
         return {
-            ...res,
-            organization,
+            id: info.id,
+            info,
+            access,
+            member,
         };
     };
 
-    exist = (id: string): Promise<boolean> => this.db.user.exist('id', id);
-
-    setOrganization = async (id: string) => {
-        this.services.assetStorage.setOrganizationId(id);
-        this.db.setOrganizationId(id);
-    };
-    removeOrganization = () => {
-        this.services.assetStorage.removeOrganizationId();
-        this.db.removeOrganizationId();
-    };
+    exist = (id: string): Promise<boolean> => this.db.userInfo.exist('id', id);
 }

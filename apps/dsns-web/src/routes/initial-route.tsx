@@ -9,7 +9,7 @@ export const InitialRoute = observer(() => {
     const location = useLocation();
     const store = useStore();
 
-    const { status, permissions } = store.viewer.user ?? {};
+    const { status, permissions } = store.viewer ?? {};
 
     if (permissions?.demining.view()) {
         return <Navigate to={ROUTES.MISSION_REPORT_LIST} state={{ from: location }} replace />;

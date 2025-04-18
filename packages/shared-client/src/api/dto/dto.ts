@@ -12,7 +12,6 @@ import {
     type IEquipmentActionDB,
     type IMissionReportDB,
     type IMapViewActionDB,
-    type IUserDB,
     type IOrganizationDB,
     type IDocumentDB,
     type IExplosiveDeviceActionDB,
@@ -26,6 +25,9 @@ import {
     type IBookDB,
     type IRangeDB,
     type IFieldDB,
+    type IUserInfoDB,
+    type IUserAccessDB,
+    type IMemberDB,
 } from 'shared-my';
 
 import { type IExplosiveObjectDetailsDTO } from './explosive-object';
@@ -183,18 +185,35 @@ export interface IMissionReportDTOParamsUpdate {
     address: string;
 }
 
-export interface ICurrentUserDTO extends Omit<IUserDB, 'organizationId'> {
+export interface ICurrentUserDTO {
+    id: string;
+    info: IUserInfoDB;
+    access: IUserAccessDB;
+    member: IMemberDB;
     organization: IUserOrganizationDTO | null;
 }
 
-export type IUserDTO = IUserDB;
+export type IUserDTO = {
+    id: string;
+    info: IUserInfoDB;
+    access: IUserAccessDB;
+    member: IMemberDB;
+};
 
-export type IOrganizationDTO = Omit<IOrganizationDB, 'membersIds'>;
+export type IUpdateUserDTO = {
+    info?: Omit<IUserInfoDB, 'id' | 'createdAt' | 'updatedAt'>;
+    access?: {
+        roles: Partial<Omit<IUserAccessDB, 'id' | 'createdAt' | 'updatedAt'>['roles']>;
+    };
+    member?: Omit<IMemberDB, 'id' | 'createdAt' | 'updatedAt'>;
+};
 
-export type IUserOrganizationDTO = Omit<IOrganizationDB, 'membersIds'>;
+export type IOrganizationDTO = IOrganizationDB;
+
+export type IUserOrganizationDTO = Omit<IOrganizationDB, 'search'>;
 
 export type ICreateOrganizationDTO = Pick<IOrganizationDB, 'name'>;
-export type ICreateOrganizationMembersDTO = Pick<IOrganizationDB, 'membersIds'>;
+export type ICreateOrganizationMembersDTO = IOrganizationDB;
 
 export interface IGetAllInRectParams {
     topLeft: IPointDB;

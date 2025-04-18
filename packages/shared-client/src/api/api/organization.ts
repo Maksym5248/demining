@@ -1,5 +1,4 @@
-import { removeFields, ROLES } from 'shared-my';
-import { type IUserDB, type IOrganizationDB } from 'shared-my';
+import { type IMemberDB, type IUserInfoDB, type IOrganizationDB, type IUserAccessDB } from 'shared-my';
 
 import { type IQuery, type IDBBase } from '~/common';
 
@@ -7,13 +6,8 @@ import { type IOrganizationDTO, type IUserDTO, type ICreateOrganizationDTO } fro
 
 export interface IOrganizationAPI {
     create: (value: Pick<ICreateOrganizationDTO, 'name'>) => Promise<IOrganizationDTO>;
-    update: (id: string, value: ICreateOrganizationDTO) => Promise<Omit<IOrganizationDTO, 'members'>>;
-    updateMember: (
-        organizationId: string,
-        userId: string,
-        permissions: { isAdmin: boolean; isAuthor: boolean },
-        isRootAdmin: boolean,
-    ) => Promise<IUserDTO>;
+    update: (id: string, value: ICreateOrganizationDTO) => Promise<IOrganizationDTO>;
+    addMember: (organizationId: string, userId: string) => Promise<IUserDTO>;
     removeMember: (organizationId: string, userId: string) => Promise<void>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IOrganizationDTO[]>;
@@ -22,92 +16,73 @@ export interface IOrganizationAPI {
     exist: (id: string) => Promise<boolean>;
 }
 
+// TODO: користувач не повинен бути доданий до вох організацій одночасно
+// 1. створити додатко CurrentUserAPI для використання користувачем
+// 2. User api оновити або додати/видалити роль
+// 3. Список учасників без організації
+// 4. Може створити таблицю для з'єднання організації та учасників ??
+// 5. зробити необовязковим повернення після оновлення чи створення (створює зайві запити)
+
 export class OrganizationAPI {
     constructor(
         private db: {
             organization: IDBBase<IOrganizationDB>;
-            user: IDBBase<IUserDB>;
+            userInfo: IDBBase<IUserInfoDB>;
+            userAccess: IDBBase<IUserAccessDB>;
+            member: IDBBase<IMemberDB>;
         },
     ) {}
 
     create = async (value: Pick<ICreateOrganizationDTO, 'name'>): Promise<IOrganizationDTO> => {
-        const res = await this.db.organization.create({
-            ...value,
-            membersIds: [],
+        return this.db.organization.create(value);
+    };
+
+    update = async (id: string, value: ICreateOrganizationDTO): Promise<IOrganizationDTO> => {
+        return this.db.organization.update(id, value);
+    };
+
+    addMember = async (organizationId: string, userId: string): Promise<IUserDTO> => {
+        const [info, access, member, organization] = await Promise.all([
+            this.db.userInfo.get(userId),
+            this.db.userAccess.get(userId),
+            this.db.member.get(userId),
+            this.db.organization.get(organizationId),
+        ]);
+
+        if (!info || !access || !member) {
+            throw new Error('There is no user with id');
+        }
+
+        if (!organization) {
+            throw new Error('There is no organization with id');
+        }
+
+        await this.db.member.update(userId, {
+            organizationId,
         });
 
-        removeFields(res, 'membersIds');
-
-        return res;
-    };
-
-    private getRoles(user: IUserDB, permissions: { isAdmin: boolean; isAuthor: boolean }) {
-        let roles = user.roles.includes(ROLES.ROOT_ADMIN) ? [ROLES.ROOT_ADMIN] : [];
-
-        if (permissions.isAdmin) {
-            roles.push(ROLES.ORGANIZATION_ADMIN);
-        } else {
-            roles = roles.filter(el => el !== ROLES.ORGANIZATION_ADMIN);
-        }
-
-        if (permissions.isAuthor) {
-            roles.push(ROLES.AMMO_CONTENT_ADMIN);
-        } else {
-            roles = roles.filter(el => el !== ROLES.AMMO_CONTENT_ADMIN);
-        }
-
-        return roles;
-    }
-
-    update = async (id: string, value: ICreateOrganizationDTO): Promise<Omit<IOrganizationDTO, 'members'>> => {
-        const res = await this.db.organization.update(id, value);
-        removeFields(res, 'membersIds');
-        return res;
-    };
-
-    updateMember = async (
-        organizationId: string,
-        userId: string,
-        permissions: { isAdmin: boolean; isAuthor: boolean },
-        isRootAdmin: boolean,
-    ): Promise<IUserDTO> => {
-        const [organization, user] = await Promise.all([
-            this.db.organization.get(organizationId),
-            this.db.user.get(userId) as Promise<IUserDTO>,
-        ]);
-
-        const membersIds = organization?.membersIds ?? [];
-
-        const roles = this.getRoles(user, permissions);
-
-        await Promise.all([
-            this.db.organization.update(organizationId, {
-                membersIds: membersIds.includes(userId) ? membersIds : [...membersIds, userId],
-            }),
-            this.db.user.update(userId, {
-                organizationId,
-                ...(isRootAdmin ? { roles } : {}),
-            }),
-        ]);
-
-        return { ...user, roles, organizationId };
+        return {
+            id: info.id,
+            info,
+            access,
+            member,
+        };
     };
 
     removeMember = async (organizationId: string, userId: string): Promise<void> => {
-        const [organization, user] = await Promise.all([
-            this.db.organization.get(organizationId) as Promise<IOrganizationDB>,
-            this.db.user.get(userId) as Promise<IUserDB>,
-        ]);
+        const [member, organization] = await Promise.all([this.db.member.get(userId), this.db.organization.get(organizationId)]);
 
-        await Promise.all([
-            this.db.organization.update(organizationId, {
-                membersIds: organization.membersIds.filter(el => el !== userId),
-            }),
-            this.db.user.update(userId, {
-                organizationId: null,
-                roles: user.roles.filter(el => el !== ROLES.ORGANIZATION_ADMIN),
-            }),
-        ]);
+        if (!member) {
+            throw new Error('User not in any organization');
+        }
+
+        if (!organization) {
+            throw new Error('There is no organization with id');
+        }
+
+        await this.db.member.update(userId, {
+            organizationId: null,
+        });
     };
 
     remove = (id: string) => this.db.organization.remove(id);
@@ -120,10 +95,8 @@ export class OrganizationAPI {
             },
             ...(query ?? {}),
         });
-        return organizations.map(organization => {
-            removeFields(organization, 'membersIds');
-            return organization;
-        });
+
+        return organizations;
     };
 
     get = async (id: string): Promise<IOrganizationDTO | null> => {
@@ -131,23 +104,32 @@ export class OrganizationAPI {
 
         if (!res) throw new Error('There is no organization with id');
 
-        removeFields(res, 'membersIds');
-
         return res;
     };
 
-    getMembers = async (id: string): Promise<IUserDTO[]> => {
-        const res = await this.db.user.select({
+    getMembers = async (organizationId: string): Promise<IUserDTO[]> => {
+        const members = await this.db.member.select({
             where: {
-                organizationId: id,
+                organizationId,
             },
         });
 
-        if (!res) {
-            return [];
-        }
+        const [info, access] = await Promise.all([
+            this.db.userInfo.getByIds(members.map(item => item.id)),
+            this.db.userAccess.getByIds(members.map(item => item.id)),
+        ]);
 
-        return res;
+        const infoMap = new Map(info.map(item => [item.id, item]));
+        const accessMap = new Map(access.map(item => [item.id, item]));
+
+        return members.map(member => {
+            return {
+                id: member.id,
+                info: infoMap.get(member.id) ?? ({} as IUserInfoDB),
+                access: accessMap.get(member.id) ?? ({} as IUserAccessDB),
+                member,
+            };
+        });
     };
 
     exist = (id: string): Promise<boolean> => this.db.organization.exist('id', id);

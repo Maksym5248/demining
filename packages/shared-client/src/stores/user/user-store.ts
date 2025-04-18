@@ -26,7 +26,7 @@ export class UserStore implements IUserStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IUser, IUserData>({ model: User });
+    collection = new CollectionModel<IUser, IUserData>({ factory: data => new User(data, { api: this.api, services: this.services }) });
     listUnassigned = new ListModel<IUser, IUserData>(this);
 
     constructor(params: { api: IApi; services: IServices }) {
@@ -38,9 +38,12 @@ export class UserStore implements IUserStore {
 
     fetchListUnassigned = new RequestModel({
         run: async (search?: string) => {
-            const res = await this.api.user.getListUnassignedUsers({
+            const res = await this.api.user.getList({
                 search,
                 limit: this.listUnassigned.pageSize,
+                where: {
+                    organizationId: null,
+                },
             });
 
             this.listUnassigned.set(res.map(createUser));
@@ -51,10 +54,13 @@ export class UserStore implements IUserStore {
     fetchListUnassignedMore = new RequestModel({
         shouldRun: () => this.listUnassigned.isMorePages,
         run: async (search?: string) => {
-            const res = await this.api.user.getListUnassignedUsers({
+            const res = await this.api.user.getList({
                 search,
                 limit: this.listUnassigned.pageSize,
                 startAfter: dates.toDateServer(this.listUnassigned.last.data.createdAt),
+                where: {
+                    organizationId: null,
+                },
             });
 
             this.listUnassigned.push(res.map(createUser));

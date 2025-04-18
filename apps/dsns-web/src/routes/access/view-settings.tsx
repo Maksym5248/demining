@@ -9,7 +9,7 @@ export const ViewSettings = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { permissions } = store.viewer.user ?? {};
+    const { permissions } = store.viewer ?? {};
 
     if (!permissions?.demining.view()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;

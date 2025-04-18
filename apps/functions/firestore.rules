@@ -13,7 +13,14 @@ service cloud.firestore {
     match /USER/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if (isUserSelf(userId) && disableUpdateKeys(["roles"])) || isRootAdmin() || (isOrganizationAdmin() && isNoOrganization(userId) && hasOnly(["organizationId", "updatedAt"]));
+      allow update: if isUserSelf(userId) || isRootAdmin();
+      allow delete: if isRootAdmin();
+    }
+
+    match /USER_ACCESS/{userId} {
+      allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
+      allow create: if false;
+      allow update: if isRootAdmin();
       allow delete: if isRootAdmin();
     }
     

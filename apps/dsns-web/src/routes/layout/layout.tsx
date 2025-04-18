@@ -29,7 +29,7 @@ export const Layout = observer(() => {
     const params = useParams();
 
     const [collapsed, setCollapsed] = useState(false);
-    const { permissions } = store.viewer.user ?? {};
+    const { permissions } = store.viewer ?? {};
 
     const [selectedVerticalMenu, setSelectedVerticalMenu] = useState(
         (() => {
@@ -266,7 +266,7 @@ export const Layout = observer(() => {
                     menu={{
                         items: [
                             {
-                                label: store.viewer.user?.data.email,
+                                label: store.viewer.user?.data.info.email,
                                 key: 'email',
                             },
                             {

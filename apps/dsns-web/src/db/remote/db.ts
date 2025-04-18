@@ -20,13 +20,15 @@ import {
     type IOrganizationDB,
     type ITransportActionDB,
     type ITransportDB,
-    type IUserDB,
+    type IUserInfoDB,
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
     type IExplosiveDB,
     type IBookDB,
     type IExplosiveObjectDetailsDB,
     type IAppConfigDB,
+    type IUserAccessDB,
+    type IMemberDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -59,7 +61,11 @@ const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
 
 export class DBRemote implements IDB {
     /** COMMON COLLECTIONS */
-    user = new DBBase<IUserDB>(TABLES.USER, ['email']);
+    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['email']);
+
+    userAccess = new DBBase<IUserAccessDB>(TABLES.USER_ACCESS, []);
+
+    member = new DBBase<IMemberDB>(TABLES.MEMBER, []);
 
     organization = new DBBase<IOrganizationDB>(TABLES.ORGANIZATION, ['name'], getCreateData);
 
@@ -159,7 +165,9 @@ export class DBRemote implements IDB {
     private setBatch(batch: WriteBatch | null) {
         this.batch = batch;
 
-        this.user.setBatch(batch);
+        this.userInfo.setBatch(batch);
+        this.userAccess.setBatch(batch);
+        this.member.setBatch(batch);
         this.organization.setBatch(batch);
         this.explosiveObject.setBatch(batch);
         this.explosiveObjectDetails.setBatch(batch);

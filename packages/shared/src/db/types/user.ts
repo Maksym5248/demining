@@ -1,9 +1,24 @@
 import { type IBaseDB } from './common';
-import { type APPS, type ROLES } from '../enum';
+import { type ROLES } from '../enum';
 
-export interface IUserDB extends Omit<IBaseDB, 'organizationId'> {
-    email: string;
-    roles: ROLES[];
-    apps: APPS[];
+/**
+ * Collection to manage user permission
+ */
+export interface IMemberDB extends Omit<IBaseDB, 'organizationId'> {
     organizationId: string | null;
+}
+
+/**
+ * User can't edit this information
+ * id the same as uid
+ */
+export interface IUserAccessDB extends Omit<IBaseDB, 'organizationId'> {
+    roles: Partial<Record<ROLES, boolean>>;
+}
+
+/**
+ * User can edit this information
+ */
+export interface IUserInfoDB extends Omit<IBaseDB, 'organizationId'> {
+    email: string;
 }

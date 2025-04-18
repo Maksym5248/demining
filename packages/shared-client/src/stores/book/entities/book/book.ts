@@ -77,7 +77,7 @@ export class Book implements IBook {
     });
 
     get isEditable() {
-        const { permissions } = this.getStores()?.viewer?.user ?? {};
+        const { permissions } = this.getStores()?.viewer ?? {};
         return !!permissions?.ammo?.edit(this.data);
     }
 }

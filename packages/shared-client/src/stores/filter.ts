@@ -3,12 +3,12 @@ import { type EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS } from 'shared-my';
 interface ISelf {
     getStores: () => {
         viewer?: {
-            user?: {
-                permissions: {
-                    ammo: {
-                        edit: () => boolean;
-                    };
+            permissions: {
+                ammo: {
+                    edit: () => boolean;
                 };
+            };
+            user?: {
                 data?: {
                     organization?: {
                         id: string;
@@ -20,7 +20,7 @@ interface ISelf {
 }
 
 export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_COMPONENT) => {
-    if (self?.getStores()?.viewer?.user?.permissions?.ammo?.edit())
+    if (self?.getStores()?.viewer?.permissions?.ammo?.edit())
         return component
             ? {
                   where: {

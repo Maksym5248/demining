@@ -13,8 +13,12 @@ export interface ICurrentUserOrganizationValue {
 
 export interface ICurrentUserData {
     id: string;
-    roles: ROLES[];
-    email: string;
+    info: {
+        email: string;
+    };
+    access: {
+        roles: Partial<Record<ROLES, boolean>>;
+    };
     organization: ICurrentUserOrganizationValue | null;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -29,9 +33,15 @@ export const createCurrentUserOrganization = (value: IUserOrganizationDTO): ICur
 
 export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => ({
     id: value.id,
-    roles: value?.roles ?? [],
-    email: value.email ?? '',
+    info: {
+        email: value.info?.email ?? '',
+    },
+    access: {
+        roles: {
+            ...value?.access?.roles,
+        },
+    },
+    createdAt: dates.fromServerDate(value.info?.createdAt),
+    updatedAt: dates.fromServerDate(value.info?.updatedAt),
     organization: value?.organization ? createCurrentUserOrganization(value.organization) : null,
-    createdAt: dates.fromServerDate(value.createdAt),
-    updatedAt: dates.fromServerDate(value.updatedAt),
 });

@@ -67,7 +67,7 @@ export class ExplosiveDevice implements IExplosiveDevice {
     }
 
     get isEditable() {
-        const { permissions } = this.getStores()?.viewer?.user ?? {};
+        const { permissions } = this.getStores()?.viewer ?? {};
         return !!permissions?.ammo?.edit(this.data);
     }
 

@@ -6,7 +6,6 @@ import { type ICurrentUserData } from '../current-user/current-user.schema';
 interface Params {
     authorId?: string;
     status?: APPROVE_STATUS;
-    roles?: ROLES[];
 }
 
 export interface IPermission {
@@ -31,47 +30,49 @@ export interface IPermissions {
 }
 
 export class Permissions implements IPermissions {
-    constructor(private user: { data: ICurrentUserData }) {
+    constructor(private parent: { user: { data: ICurrentUserData } | null; hasRole: (role: ROLES) => boolean }) {
         makeAutoObservable(this);
     }
 
-    get ammo() {
-        const { roles } = this.user.data;
+    hasRole(role: ROLES) {
+        return this.parent.hasRole(role);
+    }
 
+    get userId() {
+        return this.parent?.user?.data.id;
+    }
+
+    get ammo() {
         return {
-            view: () => roles.includes(ROLES.AMMO_VIEWER),
-            viewManagement: () => roles.includes(ROLES.AMMO_CONTENT_ADMIN),
-            create: () => roles.includes(ROLES.AMMO_CONTENT_ADMIN),
+            view: () => this.hasRole(ROLES.AMMO_VIEWER),
+            viewManagement: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
+            create: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
             edit: (params?: Params) => {
                 const { authorId, status } = params || {};
 
-                return roles.includes(ROLES.AMMO_CONTENT_ADMIN) || (authorId === this.user.data.id && status !== APPROVE_STATUS.CONFIRMED);
+                return this.hasRole(ROLES.AMMO_CONTENT_ADMIN) || (authorId === this.userId && status !== APPROVE_STATUS.CONFIRMED);
             },
-            approve: () => roles.includes(ROLES.AMMO_CONTENT_ADMIN),
-            remove: () => roles.includes(ROLES.AMMO_CONTENT_ADMIN),
+            approve: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
+            remove: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
         };
     }
 
     get demining() {
-        const { roles } = this.user.data;
-
         return {
-            view: () => roles.includes(ROLES.DEMINING_VIEWER) && !!this.user.data.organization?.id,
-            viewManagement: () => roles.includes(ROLES.ORGANIZATION_ADMIN),
-            create: () => roles.includes(ROLES.ORGANIZATION_ADMIN),
-            edit: () => roles.includes(ROLES.ORGANIZATION_ADMIN),
-            remove: () => roles.includes(ROLES.ORGANIZATION_ADMIN),
+            view: () => this.hasRole(ROLES.DEMINING_VIEWER) && !!this.userId,
+            viewManagement: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
+            create: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
+            edit: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
+            remove: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
         };
     }
 
     get managment() {
-        const { roles } = this.user.data;
-
         return {
-            view: () => roles.includes(ROLES.ROOT_ADMIN),
-            create: () => roles.includes(ROLES.ROOT_ADMIN),
-            edit: () => roles.includes(ROLES.ROOT_ADMIN),
-            remove: () => roles.includes(ROLES.ROOT_ADMIN),
+            view: () => this.hasRole(ROLES.ROOT_ADMIN),
+            create: () => this.hasRole(ROLES.ROOT_ADMIN),
+            edit: () => this.hasRole(ROLES.ROOT_ADMIN),
+            remove: () => this.hasRole(ROLES.ROOT_ADMIN),
         };
     }
 }

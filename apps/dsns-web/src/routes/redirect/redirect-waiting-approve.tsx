@@ -10,7 +10,7 @@ export const RedirectWaitingApprove = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { status } = store.viewer.user ?? {};
+    const { status } = store.viewer ?? {};
 
     if (status?.demining !== APPROVE_STATUS.PENDING) {
         return <Navigate to={ROUTES.WAITING_APPROVE} state={{ from: location }} replace />;

@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { ROLES } from 'shared-my';
 
 import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
 import { type IDataModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
@@ -12,8 +11,7 @@ import { type IViewerStore } from '../../../viewer';
 export interface IOrganization extends IDataModel<IOrganizationValue> {
     listMembers: IListModel<IUser, IUserData>;
     update: IRequestModel<[ICreateOrganizationDTO]>;
-    createMember: IRequestModel<[string, boolean, boolean]>;
-    updateMember: IRequestModel<[string, boolean, boolean]>;
+    createMember: IRequestModel<[string]>;
     removeMember: IRequestModel<[string]>;
     fetchListMembers: IRequestModel;
 }
@@ -76,31 +74,10 @@ export class Organization implements IOrganization {
     });
 
     createMember = new RequestModel({
-        run: async (userId: string, isAdmin: boolean, isAuthor: boolean) => {
-            const res = await this.api.organization.updateMember(
-                this.data.id,
-                userId,
-                { isAdmin, isAuthor },
-                !!this.getStores().viewer.user?.data.roles.includes(ROLES.ROOT_ADMIN),
-            );
+        run: async (userId: string) => {
+            const res = await this.api.organization.addMember(this.data.id, userId);
 
             this.listMembers.push(createUser(res));
-        },
-        onSuccuss: () => this.services.message.success('Збережено успішно'),
-        onError: () => this.services.message.error('Не вдалось додати'),
-    });
-
-    updateMember = new RequestModel({
-        run: async (userId: string, isAdmin: boolean, isAuthor: boolean) => {
-            const res = await this.api.organization.updateMember(
-                this.data.id,
-                userId,
-                { isAdmin, isAuthor },
-                !!this.getStores().viewer.user?.data.roles.includes(ROLES.ROOT_ADMIN),
-            );
-            const member = createUser(res);
-
-            this.getStores().user.collection.update(member.id, member);
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),

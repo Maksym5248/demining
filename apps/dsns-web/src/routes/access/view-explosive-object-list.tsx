@@ -9,7 +9,7 @@ export const ViewExplosiveObjectList = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { permissions } = store.viewer.user ?? {};
+    const { permissions } = store.viewer ?? {};
 
     if (!permissions?.ammo.viewManagement()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
