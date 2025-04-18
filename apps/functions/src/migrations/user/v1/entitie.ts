@@ -28,6 +28,7 @@ export const v1Tov2 = (
     const info = {
         ...common,
         email: prev.email,
+        _search: prev?._search ?? [],
     };
 
     const access = {
