@@ -23,6 +23,20 @@ service cloud.firestore {
       allow update: if isRootAdmin();
       allow delete: if isRootAdmin();
     }
+
+    match /USER_INFO/{userId} {
+      allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
+      allow create: if false;
+      allow update: if isRootAdmin();
+      allow delete: if isRootAdmin();
+    }
+
+    match /MEMBER/{userId} {
+      allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
+      allow create: if false;
+      allow update: if isRootAdmin() || (isOrganizationAdmin() && isNoOrganization(userId));
+      allow delete: if isRootAdmin();
+    }
     
     match /ORGANIZATION/{organizationId} {
       allow read: if isMember(organizationId);
