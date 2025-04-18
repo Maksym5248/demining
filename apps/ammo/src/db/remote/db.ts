@@ -10,7 +10,7 @@ import {
     type IExplosiveDB,
     type IExplosiveObjectActionDB,
     type IExplosiveDeviceActionDB,
-    type IUserDB,
+    type IUserInfoDB,
     type IBookDB,
     type IExplosiveObjectDetailsDB,
     type IAppConfigDB,
@@ -45,11 +45,11 @@ export class DBRemote
             | 'explosiveDevice'
             | 'explosiveDeviceAction'
             | 'explosive'
-            | 'user'
+            | 'userInfo'
             | 'app'
         >
 {
-    user = new DBBase<IUserDB>(TABLES.USER, ['email']);
+    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['email']);
 
     explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], getCreateData, undefined);
 
@@ -102,7 +102,7 @@ export class DBRemote
     private setBatch(batch: FirebaseFirestoreTypes.WriteBatch | null) {
         this.batch = batch;
 
-        this.user.setBatch(batch);
+        this.userInfo.setBatch(batch);
         this.explosiveObject.setBatch(batch);
         this.explosiveObjectDetails.setBatch(batch);
         this.explosiveDevice.setBatch(batch);
