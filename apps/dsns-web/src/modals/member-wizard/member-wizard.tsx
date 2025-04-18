@@ -46,6 +46,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                 roles: {
                     [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
                     [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
+                    [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
                 },
             },
         });
@@ -79,6 +80,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                         id,
                         ORGANIZATION_ADMIN: !!member?.hasRole(ROLES.ORGANIZATION_ADMIN),
                         AMMO_CONTENT_ADMIN: !!member?.hasRole(ROLES.AMMO_CONTENT_ADMIN),
+                        DEMINING_VIEWER: !!member?.hasRole(ROLES.DEMINING_VIEWER),
                     }}>
                     <Form.Item label="Email" name="id" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
@@ -92,6 +94,13 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                                     : [{ label: member?.data.info.email, value: member?.id }]
                             }
                         />
+                    </Form.Item>
+                    <Form.Item
+                        label="Перегляд demining"
+                        name="DEMINING_VIEWER"
+                        valuePropName="checked"
+                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                        <Switch disabled={!viewer?.hasRole(ROLES.DEMINING_VIEWER)} />
                     </Form.Item>
                     <Form.Item
                         label="Адмін організації"

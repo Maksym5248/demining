@@ -4,6 +4,7 @@ export interface IMemberForm {
     id: string;
     ORGANIZATION_ADMIN: boolean;
     AMMO_CONTENT_ADMIN: boolean;
+    DEMINING_VIEWER: boolean;
 }
 
 export interface UserProps {
