@@ -11,7 +11,7 @@ export const InitialRoute = observer(() => {
 
     const { status, permissions } = store.viewer ?? {};
 
-    console.log('InitialRoute', { status, permissions });
+    console.log('InitialRoute');
 
     if (permissions?.demining.view()) {
         return <Navigate to={ROUTES.MISSION_REPORT_LIST} state={{ from: location }} replace />;
@@ -28,6 +28,7 @@ export const InitialRoute = observer(() => {
     if (status?.demining === APPROVE_STATUS.PENDING) {
         return <Navigate to={ROUTES.WAITING_APPROVE} state={{ from: location }} replace />;
     }
+    console.log('InitialRoute 1');
 
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
 });
