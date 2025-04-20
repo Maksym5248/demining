@@ -21,8 +21,9 @@
         "test": "jest --watchAll=true --coverage",
         "clean": "rm -rf node_modules/ dist/",
         "_isolate": "yarn isolate",
-        "deploy:functions:dev": "yarn isolate && firebase deploy --project dsns-dev-85963 --only functions --force",
-        "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions  --force",
+        "deploy:functions:dev": "yarn isolate && firebase deploy --project dsns-dev-85963 --only functions",
+        "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions",
+        "setpolicy": "firebase functions:artifacts:setpolicy",
         "migrate": "ts-node ./src/migrations/user/v1/api",
         "export:data": "ts-node ./src/export/export-data"
     },
