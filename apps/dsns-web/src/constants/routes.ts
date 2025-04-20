@@ -16,6 +16,7 @@ export enum ROUTES {
     ORGANIZATIONS_LIST = '/organization-list',
     MEMBERS_LIST = '/organization-list/:organizationId/members-list',
     MY_ORGANIZATION = '/my-organization',
+    USERS_LIST = '/users-list',
 
     LOGIN = '/login',
     SIGNUP = '/signup',
@@ -71,6 +72,9 @@ export const routesInfo = {
     },
     [ROUTES.MEMBERS_LIST]: {
         title: 'Учасники',
+    },
+    [ROUTES.USERS_LIST]: {
+        title: 'Користувачі',
     },
     [ROUTES.MY_ORGANIZATION]: {
         title: 'Учасники',

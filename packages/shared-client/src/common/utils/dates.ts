@@ -67,11 +67,16 @@ const startOfWeek = () => today().startOf('week');
 const startOfMonth = () => today().startOf('month');
 const startOfYear = () => today().startOf('year');
 const endOfDay = () => today().endOf('day');
-const format = (date?: Date, format?: 'HH:mm:ss') => {
+const format = (date?: Date | Dayjs, format?: 'HH:mm:ss' | 'YYYY-MM-DD HH:mm') => {
     if (!date) return '';
 
-    const day = create(date);
-    return day.format(format);
+    let day = date;
+
+    if (!dayjs.isDayjs(date)) {
+        day = create(date);
+    }
+
+    return (day as Dayjs).format(format);
 };
 
 export const dates = {

@@ -12,7 +12,7 @@ export interface IOrganizationAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IOrganizationDTO[]>;
     get: (id: string) => Promise<IOrganizationDTO | null>;
-    getMembers: (id: string) => Promise<IUserDTO[]>;
+    getMembers: (id: string, query?: IQuery) => Promise<IUserDTO[]>;
     exist: (id: string) => Promise<boolean>;
 }
 
@@ -107,10 +107,16 @@ export class OrganizationAPI {
         return res;
     };
 
-    getMembers = async (organizationId: string): Promise<IUserDTO[]> => {
+    getMembers = async (organizationId: string, query?: IQuery): Promise<IUserDTO[]> => {
         const members = await this.db.member.select({
+            ...(query ?? {}),
+            order: {
+                by: 'createdAt',
+                type: 'desc',
+            },
             where: {
                 organizationId,
+                ...(query?.where ?? {}),
             },
         });
 

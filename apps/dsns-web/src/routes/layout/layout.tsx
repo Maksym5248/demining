@@ -66,6 +66,12 @@ export const Layout = observer(() => {
                           label: nav.getRouteTitle(ROUTES.ORGANIZATIONS_LIST),
                           onClick: () => navigate(ROUTES.ORGANIZATIONS_LIST),
                       },
+                      {
+                          key: ROUTES.USERS_LIST,
+                          icon: <Icon.UserOutlined />,
+                          label: nav.getRouteTitle(ROUTES.USERS_LIST),
+                          onClick: () => navigate(ROUTES.USERS_LIST),
+                      },
                   ]
                 : []),
         ];

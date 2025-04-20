@@ -29,6 +29,7 @@ import {
     ExplosiveObjectClassItemTreePage,
     ExplosiveListPage,
     BooksListPage,
+    UsersListPage,
 } from '~/pages';
 import { nav } from '~/utils';
 
@@ -137,10 +138,16 @@ const router = createBrowserRouter([
                             <ViewAmmoManagment />,
                         ),
                         nav.withAccess(
-                            {
-                                path: ROUTES.MY_ORGANIZATION,
-                                Component: MembersListPage,
-                            },
+                            [
+                                {
+                                    path: ROUTES.MY_ORGANIZATION,
+                                    Component: MembersListPage,
+                                },
+                                {
+                                    path: ROUTES.MEMBERS_LIST,
+                                    Component: MembersListPage,
+                                },
+                            ],
                             <ViewOrganizationManagment />,
                         ),
                         nav.withAccess(
@@ -150,8 +157,8 @@ const router = createBrowserRouter([
                                     Component: OrganizationsListPage,
                                 },
                                 {
-                                    path: ROUTES.MEMBERS_LIST,
-                                    Component: MembersListPage,
+                                    path: ROUTES.USERS_LIST,
+                                    Component: UsersListPage,
                                 },
                             ],
                             <ViewOrganizationsManagment />,

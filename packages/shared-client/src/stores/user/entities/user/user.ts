@@ -34,7 +34,7 @@ export class User implements IUser {
     }
 
     updateFields(data: Partial<IUserData>) {
-        Object.assign(this, data);
+        Object.assign(this.data, data);
     }
 
     get id() {
