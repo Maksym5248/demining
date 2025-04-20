@@ -11,6 +11,8 @@ export const InitialRoute = observer(() => {
 
     const { status, permissions } = store.viewer ?? {};
 
+    console.log('InitialRoute', { status, permissions });
+
     if (permissions?.demining.view()) {
         return <Navigate to={ROUTES.MISSION_REPORT_LIST} state={{ from: location }} replace />;
     }
