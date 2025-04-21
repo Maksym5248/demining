@@ -4,7 +4,7 @@ interface ISelf {
     getStores: () => {
         viewer?: {
             permissions: {
-                ammo: {
+                dictionary: {
                     edit: () => boolean;
                 };
             };

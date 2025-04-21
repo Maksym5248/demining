@@ -202,9 +202,7 @@ export type IUserDTO = {
 
 export type IUpdateUserDTO = {
     info?: Omit<IUserInfoDB, 'id' | 'createdAt' | 'updatedAt'>;
-    access?: {
-        roles: Partial<Omit<IUserAccessDB, 'id' | 'createdAt' | 'updatedAt'>['roles']>;
-    };
+    access?: Partial<Omit<IUserAccessDB, 'id' | 'createdAt' | 'updatedAt'>>;
     member?: Omit<IMemberDB, 'id' | 'createdAt' | 'updatedAt'>;
 };
 
