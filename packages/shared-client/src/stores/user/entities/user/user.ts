@@ -42,7 +42,7 @@ export class User implements IUser {
     }
 
     hasRole(role: ROLES) {
-        return !!this.data.access.roles[role];
+        return !!this.data.access[role];
     }
 
     update = new RequestModel({

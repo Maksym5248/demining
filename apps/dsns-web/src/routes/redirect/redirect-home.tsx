@@ -11,11 +11,11 @@ export const RedirectHome = observer(() => {
 
     const { permissions } = store.viewer ?? {};
 
-    if (permissions?.demining.view()) {
+    if (permissions?.documents.view()) {
         return <Navigate to={ROUTES.HOME} state={{ from: location }} replace />;
     }
 
-    if (permissions?.ammo.viewManagement()) {
+    if (permissions?.dictionary.viewManagement()) {
         return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
     }
 

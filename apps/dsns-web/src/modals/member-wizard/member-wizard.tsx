@@ -32,7 +32,6 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
         }
     }, []);
 
-    const isEdit = !!id;
     const isLoading = !user.fetchListUnassigned.isLoaded && user.fetchListUnassigned.isLoading;
 
     const onFinishCreate = async (values: IMemberForm) => {
@@ -41,15 +40,26 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
     };
 
     const onFinishUpdate = async (values: IMemberForm) => {
-        await member?.update.run({
-            access: {
-                roles: {
-                    [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
-                    [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
-                    [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
+        if (viewer.permissions?.managment.editRoles()) {
+            await member?.update.run({
+                access: {
+                    roles: {
+                        [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
+                        [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
+                        [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
+                    },
                 },
-            },
-        });
+            });
+        } else {
+            await member?.update.run({
+                access: {
+                    roles: {
+                        [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
+                    },
+                },
+            });
+        }
+
         hide();
     };
 
@@ -62,7 +72,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
         <Drawer
             open={isVisible}
             destroyOnClose
-            title={`${isEdit ? 'Редагувати' : 'Створити'} учасника`}
+            title={`${wizard.isEdit ? 'Редагувати' : 'Створити'} учасника`}
             placement="right"
             width={500}
             onClose={hide}
@@ -72,7 +82,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
             ) : (
                 <Form
                     name="member-form"
-                    onFinish={isEdit ? onFinishUpdate : onFinishCreate}
+                    onFinish={wizard.isEdit ? onFinishUpdate : onFinishCreate}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
@@ -100,22 +110,26 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                         name="DEMINING_VIEWER"
                         valuePropName="checked"
                         rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer?.hasRole(ROLES.DEMINING_VIEWER)} />
+                        <Switch />
                     </Form.Item>
-                    <Form.Item
-                        label="Адмін організації"
-                        name="ORGANIZATION_ADMIN"
-                        valuePropName="checked"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer?.hasRole(ROLES.ORGANIZATION_ADMIN)} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Автор контенту"
-                        name="AMMO_CONTENT_ADMIN"
-                        valuePropName="checked"
-                        rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Switch disabled={!viewer?.hasRole(ROLES.AMMO_CONTENT_ADMIN)} />
-                    </Form.Item>
+                    {viewer?.permissions?.managment?.editRoles() && (
+                        <>
+                            <Form.Item
+                                label="Адмін організації"
+                                name="ORGANIZATION_ADMIN"
+                                valuePropName="checked"
+                                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                                <Switch />
+                            </Form.Item>
+                            <Form.Item
+                                label="Автор контенту"
+                                name="AMMO_CONTENT_ADMIN"
+                                valuePropName="checked"
+                                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                                <Switch />
+                            </Form.Item>
+                        </>
+                    )}
                     <WizardFooter
                         {...wizard}
                         onCancel={hide}

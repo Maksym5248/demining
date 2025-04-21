@@ -169,7 +169,7 @@ export class ExplosiveObject implements IExplosiveObject {
 
     get isEditable() {
         const { permissions } = this.getStores()?.viewer ?? {};
-        return !!permissions?.ammo?.edit(this.data);
+        return !!permissions?.dictionary?.edit(this.data);
     }
 
     get classItemIds() {

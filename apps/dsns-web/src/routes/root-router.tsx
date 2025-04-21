@@ -140,10 +140,6 @@ const router = createBrowserRouter([
                         nav.withAccess(
                             [
                                 {
-                                    path: ROUTES.MY_ORGANIZATION,
-                                    Component: MembersListPage,
-                                },
-                                {
                                     path: ROUTES.MEMBERS_LIST,
                                     Component: MembersListPage,
                                 },
@@ -165,7 +161,7 @@ const router = createBrowserRouter([
                         ),
                         nav.withAccess(
                             {
-                                path: '/dev',
+                                path: ROUTES.DEV,
                                 Component: DevPage,
                             },
                             <ViewDev />,

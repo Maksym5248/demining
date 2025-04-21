@@ -16,9 +16,7 @@ export interface ICurrentUserData {
     info: {
         email: string;
     };
-    access: {
-        roles: Partial<Record<ROLES, boolean>>;
-    };
+    access: Partial<Record<ROLES, boolean>>;
     organization: ICurrentUserOrganizationValue | null;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -37,9 +35,7 @@ export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => (
         email: value.info?.email ?? '',
     },
     access: {
-        roles: {
-            ...value?.access?.roles,
-        },
+        ...value?.access,
     },
     createdAt: dates.fromServerDate(value.info?.createdAt),
     updatedAt: dates.fromServerDate(value.info?.updatedAt),

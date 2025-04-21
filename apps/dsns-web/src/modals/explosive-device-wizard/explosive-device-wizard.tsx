@@ -166,7 +166,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                         </Form.Item>
                     </Form.Item>
                     <FieldImageUris name="imageUris" />
-                    {store.viewer?.permissions.ammo.approve() && (
+                    {store.viewer?.permissions.dictionary.approve() && (
                         <Form.Item label="Статус" name="status">
                             <Select options={explosiveObjectStatuses} />
                         </Form.Item>

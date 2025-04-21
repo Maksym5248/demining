@@ -20,7 +20,7 @@ interface ISelf {
 }
 
 export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_COMPONENT) => {
-    if (self?.getStores()?.viewer?.permissions?.ammo?.edit())
+    if (self?.getStores()?.viewer?.permissions?.dictionary?.edit())
         return component
             ? {
                   where: {

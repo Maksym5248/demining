@@ -33,13 +33,11 @@ export const v1Tov2 = (
 
     const access = {
         ...common,
-        roles: {
-            [ROLES.ROOT_ADMIN]: prev.roles.includes('ROOT_ADMIN'),
-            [ROLES.ORGANIZATION_ADMIN]: prev.roles.includes('ORGANIZATION_ADMIN'),
-            [ROLES.AMMO_CONTENT_ADMIN]: prev.roles.includes('AUTHOR'),
-            [ROLES.AMMO_VIEWER]: true,
-            [ROLES.DEMINING_VIEWER]: true,
-        },
+        [ROLES.ROOT_ADMIN]: prev.roles.includes('ROOT_ADMIN'),
+        [ROLES.ORGANIZATION_ADMIN]: prev.roles.includes('ORGANIZATION_ADMIN'),
+        [ROLES.AMMO_CONTENT_ADMIN]: prev.roles.includes('AUTHOR'),
+        [ROLES.AMMO_VIEWER]: true,
+        [ROLES.DEMINING_VIEWER]: true,
     };
 
     const member = {

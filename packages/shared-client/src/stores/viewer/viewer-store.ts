@@ -52,7 +52,7 @@ export class ViewerStore implements IViewerStore {
     }
 
     hasRole(role: ROLES) {
-        return !!this.user?.data.access.roles[role];
+        return !!this.user?.data.access[role];
     }
 
     get deminingStatus() {
@@ -60,11 +60,11 @@ export class ViewerStore implements IViewerStore {
             return null;
         }
 
-        if (!!this.user.id && !this.permissions.demining.view()) {
+        if (!!this.user.id && !this.permissions.documents.view()) {
             return APPROVE_STATUS.PENDING;
         }
 
-        if (!!this.user.id && !!this.permissions.demining.view()) {
+        if (!!this.user.id && !!this.permissions.documents.view()) {
             return APPROVE_STATUS.CONFIRMED;
         }
 

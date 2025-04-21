@@ -17,16 +17,22 @@ export interface IPermission {
 
 export interface IPermissionDemining extends IPermission {
     viewManagement: () => boolean;
+    edit: (params?: Params) => boolean;
 }
 export interface IPermissionAmmo extends IPermission {
     viewManagement: () => boolean;
     approve: (params?: Params) => boolean;
 }
 
+export interface IPermissionManagment extends IPermission {
+    viewOrganization: () => boolean;
+    editRoles: (params?: Params) => boolean;
+}
+
 export interface IPermissions {
-    ammo: IPermissionAmmo;
-    demining: IPermissionDemining;
-    managment: IPermission;
+    dictionary: IPermissionAmmo;
+    documents: IPermissionDemining;
+    managment: IPermissionManagment;
 }
 
 export class Permissions implements IPermissions {
@@ -42,10 +48,10 @@ export class Permissions implements IPermissions {
         return this.parent?.user?.data.id;
     }
 
-    get ammo() {
+    get dictionary() {
         return {
             view: () => this.hasRole(ROLES.AMMO_VIEWER),
-            viewManagement: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
+            viewManagement: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN) || this.hasRole(ROLES.ORGANIZATION_ADMIN),
             create: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
             edit: (params?: Params) => {
                 const { authorId, status } = params || {};
@@ -57,7 +63,7 @@ export class Permissions implements IPermissions {
         };
     }
 
-    get demining() {
+    get documents() {
         return {
             view: () => this.hasRole(ROLES.DEMINING_VIEWER) && !!this.userId,
             viewManagement: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
@@ -70,8 +76,10 @@ export class Permissions implements IPermissions {
     get managment() {
         return {
             view: () => this.hasRole(ROLES.ROOT_ADMIN),
+            viewOrganization: () => !!this.parent.user?.data.organization?.id && this.hasRole(ROLES.ORGANIZATION_ADMIN),
             create: () => this.hasRole(ROLES.ROOT_ADMIN),
             edit: () => this.hasRole(ROLES.ROOT_ADMIN),
+            editRoles: () => this.hasRole(ROLES.ROOT_ADMIN),
             remove: () => this.hasRole(ROLES.ROOT_ADMIN),
         };
     }

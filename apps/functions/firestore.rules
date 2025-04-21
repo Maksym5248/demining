@@ -20,21 +20,21 @@ service cloud.firestore {
     match /USER_ACCESS/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if isRootAdmin();
+      allow update: if isRootAdmin() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['DEMINING_VIEWER']) && isOrganizationAdmin());
       allow delete: if isRootAdmin();
     }
 
     match /USER_INFO/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if isRootAdmin();
+      allow update: if isRootAdmin() || isOrganizationAdmin();
       allow delete: if isRootAdmin();
     }
 
     match /MEMBER/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if isRootAdmin() || (isOrganizationAdmin() && isNoOrganization(userId));
+      allow update: if isRootAdmin() || (isNoOrganization() && isOrganizationAdmin()) || (isSameOrganization() && isOrganizationAdmin());
       allow delete: if isRootAdmin();
     }
     
@@ -120,8 +120,8 @@ service cloud.firestore {
       return request.auth.token.AMMO_CONTENT_ADMIN;
     }
     
-    function isAuthor(table, id){
-      let currentId = get(/databases/$(database)/documents/$(table)/$(id)).data.authorId;
+    function isAuthor(collection, id){
+      let currentId = doc(collection, id).data.authorId;
       return currentId == request.auth.uid;
     }
 
@@ -137,10 +137,18 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     } 
 
-    function isNoOrganization(userId) {
-      let currentUserid = get(/databases/$(database)/documents/USER/$(userId)).data.organizationId;
-      return currentUserid == null;
+    function isNoOrganization() {
+      return resource.data.organizationId == null;
     }
+
+    function isSameOrganization() {
+      return request.auth.token.organizationId == resource.data.organizationId;
+    }
+
+    // function isMemberOrganization(userId) {
+    //   let organizationId = doc("MEMBER", userId).data.organizationId;
+    //   return organizationId == request.auth.token.organizationId;
+    // }
     
     function hasOnly(keys) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
@@ -152,6 +160,10 @@ service cloud.firestore {
     
     function isArrayEmpty(key){
     	return request.resource.data[key] is list && request.resource.data[key].size() == 0;
+    }
+
+    function doc(collection, id){
+      return get(/databases/$(database)/documents/$(collection)/$(id));
     }
     
     match /{document=**} {

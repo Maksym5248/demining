@@ -11,9 +11,7 @@ export interface IUserData {
     info: {
         email: string;
     };
-    access: {
-        roles: Partial<Record<ROLES, boolean>>;
-    };
+    access: Partial<Record<ROLES, boolean>>;
     member: {
         organizationId: string | null;
     };
@@ -26,9 +24,7 @@ export const createUser = (value: IUserDTO): IUserData => ({
     info: {
         email: value?.info?.email ?? '',
     },
-    access: {
-        roles: { ...(value?.access.roles ?? {}) },
-    },
+    access: { ...(value?.access ?? {}) },
     member: {
         organizationId: value?.member.organizationId ?? null,
     },
@@ -42,11 +38,7 @@ export const updateUserDTO = data.createUpdateDTO<IUpdateUserParams, IUpdateUser
               email: value?.info?.email ?? '',
           }
         : undefined,
-    access: value?.access
-        ? {
-              roles: { ...(value?.access.roles ?? {}) },
-          }
-        : undefined,
+    access: value?.access ? { ...value?.access } : undefined,
     member: value?.member
         ? {
               organizationId: value?.member.organizationId ?? null,

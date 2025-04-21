@@ -17,11 +17,11 @@ const customUserClaims = async ({
 }) => {
     try {
         const customClaims = {
-            ROOT_ADMIN: !!access?.roles[ROLES.ROOT_ADMIN],
-            ORGANIZATION_ADMIN: !!access?.roles[ROLES.ORGANIZATION_ADMIN],
-            AMMO_CONTENT_ADMIN: !!access?.roles[ROLES.AMMO_CONTENT_ADMIN],
-            AMMO_VIEWER: !!access?.roles[ROLES.AMMO_VIEWER],
-            DEMINING_VIEWER: !!access?.roles[ROLES.DEMINING_VIEWER],
+            ROOT_ADMIN: !!access[ROLES.ROOT_ADMIN],
+            ORGANIZATION_ADMIN: !!access[ROLES.ORGANIZATION_ADMIN],
+            AMMO_CONTENT_ADMIN: !!access[ROLES.AMMO_CONTENT_ADMIN],
+            AMMO_VIEWER: !!access[ROLES.AMMO_VIEWER],
+            DEMINING_VIEWER: !!access[ROLES.DEMINING_VIEWER],
             organizationId: member?.organizationId ?? null,
         };
 
@@ -68,9 +68,7 @@ export const processSignUp = auth.user().onCreate(async user => {
             } as IUserInfoDB),
             userAccessRef.set({
                 ...common,
-                roles: {
-                    [ROLES.AMMO_VIEWER]: true,
-                },
+                [ROLES.AMMO_VIEWER]: true,
             } as IUserAccessDB),
             memberRef.set({
                 ...common,

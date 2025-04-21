@@ -12,7 +12,7 @@ export const RedirectWaitingApprove = observer(() => {
 
     const { status } = store.viewer ?? {};
 
-    if (status?.demining !== APPROVE_STATUS.PENDING) {
+    if (status?.demining === APPROVE_STATUS.PENDING) {
         return <Navigate to={ROUTES.WAITING_APPROVE} state={{ from: location }} replace />;
     }
 

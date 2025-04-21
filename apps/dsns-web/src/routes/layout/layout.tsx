@@ -7,7 +7,7 @@ import { Outlet, useLocation, useParams } from 'react-router-dom';
 
 import { Icon } from '~/components';
 import { CONFIG } from '~/config';
-import { ROUTES } from '~/constants';
+import { ROUTES, routesGroups, SECTION } from '~/constants';
 import { useNavigate, useStore } from '~/hooks';
 
 import { HEADER_HEIGHT, s } from './layout.styles';
@@ -16,12 +16,6 @@ import { nav } from '../../utils/routes';
 
 const { Sider, Content } = Lay;
 
-enum VericalMenu {
-    MANAGMENT = 'managment',
-    DOCUMENTS = 'documents',
-    DICTIONARY = 'dictionary',
-}
-
 export const Layout = observer(() => {
     const store = useStore();
     const navigate = useNavigate();
@@ -29,21 +23,7 @@ export const Layout = observer(() => {
     const params = useParams();
 
     const [collapsed, setCollapsed] = useState(false);
-    const { permissions } = store.viewer ?? {};
-
-    const [selectedVerticalMenu, setSelectedVerticalMenu] = useState(
-        (() => {
-            let value = VericalMenu.DICTIONARY;
-
-            if (permissions?.demining.view()) {
-                value = VericalMenu.DOCUMENTS;
-            } else if (permissions?.managment.view()) {
-                value = VericalMenu.MANAGMENT;
-            }
-
-            return value;
-        })(),
-    );
+    const { permissions, user } = store.viewer ?? {};
 
     const routes = nav.getRoutes(location.pathname, params as { [key: string]: string });
     const itemsBreadcrumb = routes.map(el => ({
@@ -74,14 +54,26 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
+            ...(permissions?.managment.viewOrganization()
+                ? [
+                      {
+                          key: ROUTES.MEMBERS_LIST,
+                          icon: <Icon.UserOutlined />,
+                          label: nav.getRouteTitle(ROUTES.MEMBERS_LIST),
+                          onClick: () => navigate(ROUTES.MEMBERS_LIST.replace(':organizationId', user?.data.organization?.id ?? '')),
+                      },
+                  ]
+                : []),
         ];
 
         return arr;
-    }, [permissions?.managment.view()]);
+    }, [permissions?.managment.view(), permissions?.managment.viewOrganization(), user?.data.organization?.id]);
+
+    console.log('user?.data.organization?.id', user?.data);
 
     const menuDocuments = useMemo(() => {
         const arr = [
-            ...(permissions?.demining.view()
+            ...(permissions?.documents.view()
                 ? [
                       {
                           key: ROUTES.HOME,
@@ -149,11 +141,11 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [permissions?.demining.view()]);
+    }, [permissions?.documents.view()]);
 
     const menuDictionary = useMemo(() => {
         const arr = [
-            ...(permissions?.ammo.viewManagement()
+            ...(permissions?.dictionary.viewManagement()
                 ? [
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_LIST,
@@ -175,7 +167,7 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            ...(permissions?.ammo.edit()
+            ...(permissions?.dictionary.edit()
                 ? [
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_TYPE,
@@ -201,55 +193,69 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [permissions?.ammo.edit]);
+    }, [permissions?.dictionary.edit(), permissions?.dictionary.viewManagement()]);
 
     const menuVertical = useMemo(() => {
         const arr = [
-            ...(permissions?.demining.view()
+            ...(permissions?.documents.view()
                 ? [
                       {
-                          key: VericalMenu.DOCUMENTS,
+                          key: SECTION.DOCUMENTS,
                           icon: <Icon.FileTextOutlined style={{ marginLeft: 10 }} />,
                           label: null,
-                          onClick: () => setSelectedVerticalMenu(VericalMenu.DOCUMENTS),
+                          onClick: () => navigate(ROUTES.HOME),
                       },
                   ]
                 : []),
-            {
-                key: VericalMenu.DICTIONARY,
-                icon: <Icon.FireOutlined style={{ marginLeft: 10 }} />,
-                onClick: () => setSelectedVerticalMenu(VericalMenu.DICTIONARY),
-            },
-            ...(permissions?.managment.view()
+            ...(permissions?.dictionary.viewManagement()
                 ? [
                       {
-                          key: VericalMenu.MANAGMENT,
+                          key: SECTION.DICTIONARY,
+                          icon: <Icon.FireOutlined style={{ marginLeft: 10 }} />,
+                          onClick: () => navigate(ROUTES.EXPLOSIVE_OBJECT_LIST),
+                      },
+                  ]
+                : []),
+            ...(permissions?.managment.view() || permissions?.managment.viewOrganization()
+                ? [
+                      {
+                          key: SECTION.MANAGMENT,
                           icon: <Icon.BankOutlined style={{ marginLeft: 10 }} />,
-                          onClick: () => setSelectedVerticalMenu(VericalMenu.MANAGMENT),
+                          onClick: () => navigate(ROUTES.MEMBERS_LIST.replace(':organizationId', user?.data.organization?.id ?? '')),
                       },
                   ]
                 : []),
             ...(CONFIG.IS_DEV
                 ? [
                       {
-                          key: '999',
+                          key: SECTION.DEV,
                           icon: <Icon.DeploymentUnitOutlined />,
                           label: 'DEV',
-                          onClick: () => navigate('dev'),
+                          onClick: () => navigate(ROUTES.DEV),
                       },
                   ]
                 : []),
         ];
 
         return arr;
-    }, [permissions?.managment.view]);
+    }, [permissions?.managment.view(), permissions?.documents.view()]);
 
     const defaultSelectedKeys = useMemo(() => {
         const [, initialRoute] = location.pathname.split('/');
         return [`/${initialRoute}`];
-    }, []);
+    }, [location.pathname]);
 
     const currentRoute = nav.getBasePath(location.pathname, params as { [key: string]: string });
+
+    let selectedVerticalMenu = SECTION.DICTIONARY;
+
+    if (routesGroups[SECTION.DOCUMENTS].includes(currentRoute)) {
+        selectedVerticalMenu = SECTION.DOCUMENTS;
+    } else if (routesGroups[SECTION.MANAGMENT].includes(currentRoute)) {
+        selectedVerticalMenu = SECTION.MANAGMENT;
+    } else if (routesGroups[SECTION.DEV].includes(currentRoute)) {
+        selectedVerticalMenu = SECTION.DEV;
+    }
 
     return (
         <Lay>
@@ -301,7 +307,7 @@ export const Layout = observer(() => {
                         bottom: 0,
                     }}>
                     <div className="demo-logo-vertical" />
-                    {VericalMenu.DOCUMENTS === selectedVerticalMenu && (
+                    {SECTION.DOCUMENTS === selectedVerticalMenu && (
                         <Menu
                             theme="dark"
                             defaultSelectedKeys={defaultSelectedKeys}
@@ -310,7 +316,7 @@ export const Layout = observer(() => {
                             items={menuDocuments}
                         />
                     )}
-                    {VericalMenu.DICTIONARY === selectedVerticalMenu && (
+                    {SECTION.DICTIONARY === selectedVerticalMenu && (
                         <Menu
                             theme="dark"
                             defaultSelectedKeys={defaultSelectedKeys}
@@ -319,7 +325,7 @@ export const Layout = observer(() => {
                             items={menuDictionary}
                         />
                     )}
-                    {VericalMenu.MANAGMENT === selectedVerticalMenu && (
+                    {SECTION.MANAGMENT === selectedVerticalMenu && (
                         <Menu
                             theme="dark"
                             defaultSelectedKeys={defaultSelectedKeys}

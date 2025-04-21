@@ -11,7 +11,7 @@ export const ViewSettings = observer(() => {
 
     const { permissions } = store.viewer ?? {};
 
-    if (!permissions?.demining.view()) {
+    if (!permissions?.documents.view()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 
