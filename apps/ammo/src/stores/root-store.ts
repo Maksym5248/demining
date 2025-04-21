@@ -18,6 +18,7 @@ import {
 
 import { Api } from '~/api';
 import { DB } from '~/db';
+import { Localization } from '~/localization';
 import { Analytics, Auth, Crashlytics, Logger, Message } from '~/services';
 
 export interface IRootStore {
@@ -28,8 +29,8 @@ export interface IRootStore {
     common: ICommonStore;
     isInitialized: boolean;
     isLoaded: boolean;
-    removeAllListeners(): void;
     init: IRequestModel;
+    removeAllListeners(): void;
     getImagesUrls(): string[];
 }
 
@@ -60,6 +61,7 @@ export class RootStore implements IRootStore {
             logger: Logger,
             message: Message,
             auth: Auth,
+            localization: Localization,
         };
     }
 
@@ -144,6 +146,7 @@ export class RootStore implements IRootStore {
         cachePolicy: 'cache-first',
         run: async () => {
             await DB.init();
+            this.api.setLang(this.services.localization.data.locale);
 
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
             this.services.auth.signInAnonymously();

@@ -122,6 +122,7 @@ export class RootStore implements IRootStore {
             crashlytics: Crashlytics,
             logger: Logger,
             message: Message,
+            localization: Location,
         };
     }
 
@@ -187,6 +188,7 @@ export class RootStore implements IRootStore {
 
         this.services.analytics.init();
         this.services.crashlytics.init();
+        this.api.setLang('uk');
 
         try {
             this.viewer.setLoading(true);

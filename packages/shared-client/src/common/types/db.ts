@@ -110,4 +110,5 @@ export interface IDB {
     dropDb(): void;
     setOrganizationId(id: string): void;
     removeOrganizationId(): void;
+    setLang(lang: 'uk' | 'en'): void;
 }

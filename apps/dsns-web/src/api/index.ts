@@ -53,4 +53,5 @@ export const Api = {
     organization: new OrganizationAPI(DB),
     document: new DocumentAPI(DB, services),
     map: new MapAPI(DB),
+    setLang: (lang: 'uk' | 'en') => DB.setLang(lang),
 };

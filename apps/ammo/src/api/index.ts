@@ -25,4 +25,5 @@ export const Api = {
     explosive: new ExplosiveAPI(DB, services),
     book: new BookAPI(DB),
     common: new CommonAPI(DB),
+    setLang: (lang: 'uk' | 'en') => DB.setLang(lang),
 };

@@ -14,6 +14,7 @@ import {
     type IBookDB,
     type IExplosiveObjectDetailsDB,
     type IAppConfigDB,
+    TABLES_DIR,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -97,6 +98,18 @@ export class DBRemote
 
     removeOrganizationId() {
         /** WEB */
+    }
+
+    setLang(lang: 'uk' | 'en') {
+        const rootCollection = `${TABLES_DIR.LANG}/${lang}`;
+
+        this.explosiveObjectType.setRootCollection(rootCollection);
+        this.explosiveObjectClass.setRootCollection(rootCollection);
+        this.explosiveObjectClassItem.setRootCollection(rootCollection);
+        this.explosiveObject.setRootCollection(rootCollection);
+        this.explosiveObjectDetails.setRootCollection(rootCollection);
+        this.explosiveDevice.setRootCollection(rootCollection);
+        this.explosive.setRootCollection(rootCollection);
     }
 
     private setBatch(batch: FirebaseFirestoreTypes.WriteBatch | null) {
