@@ -43,19 +43,15 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
         if (viewer.permissions?.managment.editRoles()) {
             await member?.update.run({
                 access: {
-                    roles: {
-                        [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
-                        [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
-                        [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
-                    },
+                    [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
+                    [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
+                    [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
                 },
             });
         } else {
             await member?.update.run({
                 access: {
-                    roles: {
-                        [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
-                    },
+                    [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
                 },
             });
         }
