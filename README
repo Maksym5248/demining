@@ -33,3 +33,9 @@ TODO
 // 5. isUniqueEnabled should be in list params
 // 6. use name of methodes same as Map or set has
 
+v2:
+- 2 migrations for user migrations
+- migration for localization structure
+- rules for localization structure
+- indexes for localization structure
+

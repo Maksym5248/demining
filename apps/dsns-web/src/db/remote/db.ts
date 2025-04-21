@@ -126,15 +126,15 @@ export class DBRemote implements IDB {
     dropDb = () => Promise.resolve();
 
     setLang(lang: 'uk' | 'en') {
-        const rootCollection = `${TABLES_DIR.LANG}/${lang}`;
+        const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;
 
-        this.explosiveObjectType.setRootCollection(rootCollection);
-        this.explosiveObjectClass.setRootCollection(rootCollection);
-        this.explosiveObjectClassItem.setRootCollection(rootCollection);
-        this.explosiveObject.setRootCollection(rootCollection);
-        this.explosiveObjectDetails.setRootCollection(rootCollection);
-        this.explosiveDevice.setRootCollection(rootCollection);
-        this.explosive.setRootCollection(rootCollection);
+        this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
+        this.explosiveObjectClass.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS));
+        this.explosiveObjectClassItem.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM));
+        this.explosiveObject.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT));
+        this.explosiveObjectDetails.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_DETAILS));
+        this.explosiveDevice.setTableName(getCollection(TABLES.EXPLOSIVE_DEVICE));
+        this.explosive.setTableName(getCollection(TABLES.EXPLOSIVE));
     }
 
     setOrganizationId(id: string) {

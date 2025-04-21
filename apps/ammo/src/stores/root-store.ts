@@ -146,7 +146,8 @@ export class RootStore implements IRootStore {
         cachePolicy: 'cache-first',
         run: async () => {
             await DB.init();
-            this.api.setLang(this.services.localization.data.locale);
+            // this.api.setLang(this.services.localization.data.locale);
+            this.api.setLang('uk');
 
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
             this.services.auth.signInAnonymously();

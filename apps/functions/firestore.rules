@@ -20,7 +20,7 @@ service cloud.firestore {
     match /USER_ACCESS/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if disableUpdateKeys(['ROOT_ADMIN']) && (isRootAdmin() || disableUpdateKeys(['ORGANIZATION_ADMIN']) && isOrganizationAdmin()));
+      allow update: if (disableUpdateKeys(['ROOT_ADMIN']) && isRootAdmin()) || (disableUpdateKeys(['ROOT_ADMIN', 'ORGANIZATION_ADMIN', 'AMMO_CONTENT_ADMIN']) && isOrganizationAdmin());
       allow delete: if isRootAdmin();
     }
 
@@ -91,6 +91,55 @@ service cloud.firestore {
     }
 
     match /EXPLOSIVE_NEW/{id} {
+      allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_NEW", id));
+      allow delete: if isRootAdmin();
+    }
+
+     match /EXPLOSIVE_OBJECT_v2/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin()|| (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT", id));
+      allow delete: if isRootAdmin();
+    }
+    
+    match /EXPLOSIVE_OBJECT_DETAILS_v2/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin()|| (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_DETAILS", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_OBJECT_TYPE_v2/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_TYPE", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_OBJECT_CLASS_v2/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_CLASS", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_OBJECT_CLASS_ITEM_v2/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create: if isRootAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_OBJECT_CLASS_ITEM", id));
+      allow delete: if isRootAdmin();
+    }
+    
+    match /EXPLOSIVE_v2/LANG/{lang}/{id} {
+      allow read: if true;
+      allow create: if isRootAdmin() || isOrganizationAdmin() || isAmmoContentAdmin();
+      allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE", id));
+      allow delete: if isRootAdmin();
+    }
+
+    match /EXPLOSIVE_NEW_v2/LANG/{lang}/{id} {
       allow read: if true;
       allow create: if isRootAdmin() || isAmmoContentAdmin();
       allow update: if isRootAdmin() || (isAmmoContentAdmin() && isAuthor("EXPLOSIVE_NEW", id));

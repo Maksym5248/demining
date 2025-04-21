@@ -56,6 +56,7 @@ export interface ISubscriptionDocument<T> {
 export type ICreateData<T extends IBaseDB> = Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'> & Partial<Pick<T, 'id'>>;
 
 export interface IDBBase<T extends IBaseDB> {
+    setTableName(tableName: string): void;
     setRootCollection(rootCollection: string): void;
     removeRootCollection(): void;
     setBatch(batch: any): void;

@@ -119,6 +119,10 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         this.getSearchData = getSearchData;
     }
 
+    setTableName(tableName: string) {
+        this.tableName = tableName;
+    }
+
     setRootCollection(rootCollection: string) {
         this.rootCollection = rootCollection;
     }
