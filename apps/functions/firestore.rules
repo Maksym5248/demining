@@ -20,7 +20,7 @@ service cloud.firestore {
     match /USER_ACCESS/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if isRootAdmin() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['DEMINING_VIEWER']) && isOrganizationAdmin());
+      allow update: if disableUpdateKeys(['ROOT_ADMIN']) && (isRootAdmin() || disableUpdateKeys(['ORGANIZATION_ADMIN']) && isOrganizationAdmin()));
       allow delete: if isRootAdmin();
     }
 
