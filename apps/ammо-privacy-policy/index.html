@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+
+    <script>
+        const ukPolicy = `
+            <h1>Політика конфіденційності</h1>
+            <p>Останнє оновлення: 24.02.2025</p>
+            <p>Ця Політика конфіденційності описує, як Ammo додаток збирає, використовує і захищає вашу інформацію під час використання додатку.</p>
+
+            <h2>1. Збір та використання інформації</h2>
+            <p>Наш додаток не збирає особисту інформацію користувачів, таку як ім'я, адреса електронної пошти або номер телефону.
+            Однак ми можемо збирати анонімні дані про використання додатку, зокрема:</p>
+            <ul>
+                <li>Дані аналітики (наприклад, частота використання, переглянуті сторінки);</li>
+                <li>Інформація про пристрій (тип пристрою, версія операційної системи).</li>
+            </ul>
+            <p>Ці дані використовуються виключно для покращення функціоналу та продуктивності додатку.</p>
+
+            <h2>2. Файли cookie та технології відстеження</h2>
+            <p>Наш додаток не використовує файли cookie або подібні технології відстеження.</p>
+
+            <h2>3. Обмін інформацією з третіми сторонами</h2>
+            <p>Ми не передаємо, не продаємо і не надаємо вашу інформацію третім сторонам.</p>
+
+            <h2>4. Безпека даних</h2>
+            <p>Ми дотримуємось стандартних методів захисту інформації, однак слід враховувати, що жоден спосіб передачі даних через Інтернет або електронне зберігання не є повністю безпечним.</p>
+
+            <h2>5. Посилання на сторонні ресурси</h2>
+            <p>У додатку можуть бути посилання на сторонні сайти чи ресурси. Ми не несемо відповідальності за політику конфіденційності цих ресурсів.</p>
+
+            <h2>6. Джерела інформації</h2>
+            <p>Вся інформація, представлена у додатку, отримана із відкритих джерел. Ми не гарантуємо повну точність або актуальність даних і не несемо відповідальності за їх використання. Кожен користувач має розуміти, що він використовує ці дані на власний розсуд і ризик.</p>
+
+            <h2>7. Зміни до політики конфіденційності</h2>
+            <p>Ми залишаємо за собою право оновлювати цю Політику конфіденційності. Усі зміни будуть опубліковані у додатку, і дата оновлення буде змінена відповідним чином.</p>
+
+            <h2>8. Контактна інформація</h2>
+            <p>Якщо у вас є питання щодо цієї Політики конфіденційності, зв’яжіться з нами за електронною поштою: demining.user@gmail.com</p>
+        `;
+
+        const enPolicy = `
+            <h1>Privacy Policy</h1>
+            <p>Last Updated: 24.02.2025</p>
+            <p>This Privacy Policy describes how the Ammo application collects, uses, and protects your information when you use the application.</p>
+
+            <h2>1. Information Collection and Use</h2>
+            <p>Our application does not collect personal information from users, such as name, email address, or phone number.
+            However, we may collect anonymous data about the use of the application, including:</p>
+            <ul>
+                <li>Analytics data (e.g., usage frequency, pages viewed);</li>
+                <li>Device information (device type, operating system version).</li>
+            </ul>
+            <p>This data is used solely to improve the functionality and performance of the application.</p>
+
+            <h2>2. Cookies and Tracking Technologies</h2>
+            <p>Our application does not use cookies or similar tracking technologies.</p>
+
+            <h2>3. Information Sharing with Third Parties</h2>
+            <p>We do not share, sell, or provide your information to third parties.</p>
+
+            <h2>4. Data Security</h2>
+            <p>We adhere to standard methods of information protection; however, it should be noted that no method of data transmission over the Internet or electronic storage is completely secure.</p>
+
+            <h2>5. Links to Third-Party Resources</h2>
+            <p>The application may contain links to third-party sites or resources. We are not responsible for the privacy policies of these resources.</p>
+
+            <h2>6. Sources of Information</h2>
+            <p>All information presented in the application is obtained from public sources. We do not guarantee the complete accuracy or timeliness of the data and are not responsible for its use. Each user should understand that they use this data at their own discretion and risk.</p>
+
+            <h2>7. Changes to the Privacy Policy</h2>
+            <p>We reserve the right to update this Privacy Policy. All changes will be published in the application, and the update date will be modified accordingly.</p>
+
+            <h2>8. Contact Information</h2>
+            <p>If you have any questions regarding this Privacy Policy, please contact us via email at: demining.user@gmail.com</p>
+        `;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('lang');
+        const contentDiv = document.getElementById('content');
+
+        if (lang === 'uk') {
+            contentDiv.innerHTML = ukPolicy;
+        } else {
+            contentDiv.innerHTML = enPolicy;
+        }
+    </script>
+</body>
+</html>
