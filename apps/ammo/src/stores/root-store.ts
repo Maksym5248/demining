@@ -6,13 +6,13 @@ import {
     RequestModel,
     ExplosiveStore,
     BookStore,
+    CommonStore,
     type IExplosiveDeviceStore,
     type IExplosiveObjectStore,
     type IRequestModel,
     type IExplosiveStore,
     type IBookStore,
     type IAuthUser,
-    CommonStore,
     type ICommonStore,
 } from 'shared-my-client';
 
@@ -154,11 +154,15 @@ export class RootStore implements IRootStore {
             try {
                 await Promise.all([
                     this.common.subscribeCountries.run(),
+                    this.common.subscribeStatuses.run(),
+                    this.common.subscribeMaterials.run(),
                     this.explosiveObject.subscribe.run(),
                     this.explosiveObject.subscribeDetails.run(),
                     this.explosiveObject.subscribeDeeps.run(),
                     this.explosiveDevice.subscribe.run(),
+                    this.explosiveDevice.subscribeType.run(),
                     this.explosive.subscribe.run(),
+                    this.book.subscribeBookType.run(),
                     this.book.subscribe.run(),
                 ]);
             } catch (e) {

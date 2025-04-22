@@ -1,7 +1,7 @@
 import { EXPLOSIVE_DEVICE_TYPE } from '../enum';
 import { type IExplosiveDeviceTypeDB } from '../types';
 
-export const explosiveDeviceTypeData: IExplosiveDeviceTypeDB[] = [
+export const explosiveDeviceTypeData: Pick<IExplosiveDeviceTypeDB, 'id' | 'name'>[] = [
     {
         name: 'Заряд ВР',
         id: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
@@ -29,5 +29,5 @@ export const explosiveDeviceTypeDataMap = explosiveDeviceTypeData.reduce(
         acc[item.id] = item;
         return acc;
     },
-    {} as Record<EXPLOSIVE_DEVICE_TYPE, IExplosiveDeviceTypeDB>,
+    {} as Record<EXPLOSIVE_DEVICE_TYPE, Pick<IExplosiveDeviceTypeDB, 'id' | 'name'>>,
 );

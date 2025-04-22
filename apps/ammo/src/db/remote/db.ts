@@ -15,6 +15,13 @@ import {
     type IExplosiveObjectDetailsDB,
     type IAppConfigDB,
     TABLES_DIR,
+    type IBookTypeDB,
+    type ICountryDB,
+    type IExplosiveDeviceTypeDB,
+    type IExplosiveObjectComponentDB,
+    type IMaterialDB,
+    type IStatusDB,
+    type IRankDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -47,6 +54,14 @@ export class DBRemote
             | 'explosiveDeviceAction'
             | 'explosive'
             | 'userInfo'
+            | 'book'
+            | 'bookType'
+            | 'country'
+            | 'explosiveDeviceType'
+            | 'explosiveObjectComponent'
+            | 'material'
+            | 'status'
+            | 'rank'
             | 'app'
         >
 {
@@ -79,6 +94,14 @@ export class DBRemote
 
     app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
 
+    bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE, []);
+    country = new DBBase<ICountryDB>(TABLES.COUNTRY, []);
+    explosiveDeviceType = new DBBase<IExplosiveDeviceTypeDB>(TABLES.EXPLOSIVE_DEVICE_TYPE, []);
+    explosiveObjectComponent = new DBBase<IExplosiveObjectComponentDB>(TABLES.EXPLOSIVE_OBJECT_COMPONENT, []);
+    material = new DBBase<IMaterialDB>(TABLES.MATERIAL, []);
+    status = new DBBase<IStatusDB>(TABLES.STATUSES, []);
+    rank = new DBBase<IRankDB>(TABLES.RANKS, []);
+
     batch: FirebaseFirestoreTypes.WriteBatch | null = null;
 
     init = () => {
@@ -102,6 +125,13 @@ export class DBRemote
 
     setLang(lang: 'uk' | 'en') {
         const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;
+
+        this.bookType.setTableName(getCollection(TABLES.BOOK_TYPE));
+        this.country.setTableName(getCollection(TABLES.COUNTRY));
+        this.explosiveDeviceType.setTableName(getCollection(TABLES.EXPLOSIVE_DEVICE_TYPE));
+        this.explosiveObjectComponent.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_COMPONENT));
+        this.material.setTableName(getCollection(TABLES.MATERIAL));
+        this.status.setTableName(getCollection(TABLES.STATUSES));
 
         this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
         this.explosiveObjectClass.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS));

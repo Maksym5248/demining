@@ -1,7 +1,7 @@
 import { BOOK_TYPE } from '../enum';
 import { type IBookTypeDB } from '../types';
 
-export const bookTypes: IBookTypeDB[] = [
+export const bookTypes: Pick<IBookTypeDB, 'id' | 'name'>[] = [
     {
         id: BOOK_TYPE.AMMUNITION,
         name: 'Боєприпаси',
@@ -37,5 +37,5 @@ export const bookTypesMap = bookTypes.reduce(
         acc[item.id] = item;
         return acc;
     },
-    {} as Record<BOOK_TYPE, IBookTypeDB>,
+    {} as Record<BOOK_TYPE, Pick<IBookTypeDB, 'id' | 'name'>>,
 );

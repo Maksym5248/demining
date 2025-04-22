@@ -6,10 +6,11 @@ import {
     type IFieldDB,
     type ILinkedToDocumentDB,
     type Timestamp,
+    type IMapDB,
 } from './common';
 import { type EXPLOSIVE_DEVICE_TYPE, type MATERIAL, type APPROVE_STATUS } from '../enum';
 
-export interface IExplosiveDeviceTypeDB {
+export interface IExplosiveDeviceTypeDB extends IMapDB {
     id: EXPLOSIVE_DEVICE_TYPE;
     name: string;
 }

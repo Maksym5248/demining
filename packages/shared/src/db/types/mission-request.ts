@@ -1,7 +1,7 @@
-import { type IBaseDB, type Timestamp } from './common';
+import { type IMapDB, type IBaseDB, type Timestamp } from './common';
 import { type MISSION_REQUEST_TYPE } from '../enum';
 
-export interface IMissionRequestTypeDB {
+export interface IMissionRequestTypeDB extends IMapDB {
     id: MISSION_REQUEST_TYPE;
     name: string;
 }

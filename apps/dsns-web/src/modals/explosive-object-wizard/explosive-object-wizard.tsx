@@ -371,7 +371,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={common.listCountries.asArray.map(el => ({
+                            options={common.collections.countries.asArray.map(el => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}

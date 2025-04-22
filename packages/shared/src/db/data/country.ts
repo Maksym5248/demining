@@ -1,6 +1,6 @@
 import { type ICountryDB } from '../types';
 
-export const countries: ICountryDB[] = [
+export const countries: Pick<ICountryDB, 'id' | 'name'>[] = [
     {
         id: 'UKRAINE',
         name: 'Україна',

@@ -4,6 +4,10 @@ import { type EXPLOSIVE_OBJECT_COMPONENT, type MATERIAL, type DOCUMENT_TYPE, typ
 
 export type Timestamp = TimestampInternal;
 
+export interface IMapDB {
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
 export interface IBaseDB {
     id: string;
     createdAt: Timestamp;
@@ -52,22 +56,22 @@ export interface IWeightDB {
     variant: number | null;
 }
 
-export interface IExplosiveObjectComponentDB {
+export interface IExplosiveObjectComponentDB extends IMapDB {
     id: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
 }
 
-export interface IMaterialDB {
+export interface IMaterialDB extends IMapDB {
     id: MATERIAL;
     name: string;
 }
 
-export interface ICountryDB {
+export interface ICountryDB extends IMapDB {
     id: string;
     name: string;
 }
 
-export interface IStatusDB {
+export interface IStatusDB extends IMapDB {
     id: APPROVE_STATUS;
     name: string;
 }

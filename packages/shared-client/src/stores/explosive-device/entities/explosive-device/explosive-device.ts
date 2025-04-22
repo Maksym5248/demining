@@ -1,16 +1,17 @@
 import { makeAutoObservable } from 'mobx';
-import { APPROVE_STATUS, explosiveDeviceTypeData, type IExplosiveDeviceTypeDB } from 'shared-my';
+import { APPROVE_STATUS } from 'shared-my';
 
 import { type IExplosiveDeviceAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type IDataModel, RequestModel } from '~/models';
+import { type ICollectionModel, type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 import { type IViewerStore } from '~/stores/viewer';
 
 import { type IExplosiveDeviceData, updateExplosiveDeviceDTO, createExplosiveDevice } from './explosive-device.schema';
+import { type IExplosiveDeviceType, type IExplosiveDeviceTypeData } from '../explosive-device-type';
 
 export interface IExplosiveDevice extends IDataModel<IExplosiveDeviceData> {
-    type?: IExplosiveDeviceTypeDB;
+    type?: IExplosiveDeviceTypeData;
     imageUri?: string | null;
     displayName: string;
     isCurrentOrganization: boolean;
@@ -28,6 +29,10 @@ interface IServices {
     message: IMessage;
 }
 
+interface ICollections {
+    type: ICollectionModel<IExplosiveDeviceType, IExplosiveDeviceTypeData>;
+}
+
 interface IStores {
     viewer?: IViewerStore;
 }
@@ -37,11 +42,17 @@ export class ExplosiveDevice implements IExplosiveDevice {
     services: IServices;
     getStores: () => IStores;
     data: IExplosiveDeviceData;
-    constructor(data: IExplosiveDeviceData, params: { api: IApi; services: IServices; getStores: () => IStores }) {
+    collections: ICollections;
+
+    constructor(
+        data: IExplosiveDeviceData,
+        params: { api: IApi; services: IServices; getStores: () => IStores; collections: ICollections },
+    ) {
         this.data = data;
         this.api = params.api;
         this.services = params.services;
         this.getStores = params.getStores;
+        this.collections = params.collections;
 
         makeAutoObservable(this);
     }
@@ -51,7 +62,7 @@ export class ExplosiveDevice implements IExplosiveDevice {
     }
 
     get type() {
-        return explosiveDeviceTypeData.find(item => item.id === this.data.type);
+        return this.collections.type.get(this.data.type)?.data;
     }
 
     get isCurrentOrganization() {

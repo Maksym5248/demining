@@ -1,8 +1,8 @@
-import { type IMissionRequestDB } from 'shared-my';
+import { type IMissionRequestTypeDB, type IMissionRequestDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
 
-import { type IMissionRequestDTO, type IMissionRequestSumDTO } from '../dto';
+import { type IMissionRequestTypeDTO, type IMissionRequestDTO, type IMissionRequestSumDTO } from '../dto';
 
 export interface IMissionRequestAPI {
     create: (value: ICreateValue<IMissionRequestDTO>) => Promise<IMissionRequestDTO>;
@@ -11,12 +11,17 @@ export interface IMissionRequestAPI {
     getList: (query?: IQuery) => Promise<IMissionRequestDTO[]>;
     get: (id: string) => Promise<IMissionRequestDTO>;
     sum: (query?: IQuery) => Promise<IMissionRequestSumDTO>;
+    subscribeRequestType: (
+        args: Partial<IQuery> | null,
+        callback: (data: ISubscriptionDocument<IMissionRequestTypeDTO>[]) => void,
+    ) => Promise<void>;
 }
 
 export class MissionRequestAPI implements IMissionRequestAPI {
     constructor(
         private db: {
             missionRequest: IDBBase<IMissionRequestDB>;
+            missionRequestType: IDBBase<IMissionRequestTypeDB>;
         },
     ) {}
 
@@ -44,5 +49,9 @@ export class MissionRequestAPI implements IMissionRequestAPI {
         return {
             total,
         };
+    };
+
+    subscribeRequestType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IMissionRequestTypeDTO>[]) => void) => {
+        return this.db.missionRequestType.subscribe(args, callback);
     };
 }

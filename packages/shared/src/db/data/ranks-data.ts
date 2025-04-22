@@ -1,7 +1,7 @@
 import { RANKS } from '../enum';
 import { type IRankDB } from '../types';
 
-export const ranksData: IRankDB[] = [
+export const ranksData: Pick<IRankDB, 'id' | 'fullName' | 'shortName' | 'rank'>[] = [
     {
         id: RANKS.PRIVATE,
         fullName: 'рядовий',

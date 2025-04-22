@@ -194,10 +194,23 @@ export class RootStore implements IRootStore {
             this.viewer.setLoading(true);
             await DB.init();
 
-            this.common.subscribeCountries.run();
-            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+            await Promise.all([
+                this.common.subscribeCountries.run(),
+                this.common.subscribeStatuses.run(),
+                this.common.subscribeMaterials.run(),
+                this.employee.subscribeRanks.run(),
+                this.explosiveObject.subscribe.run(),
+                this.explosiveObject.subscribeDetails.run(),
+                this.explosiveObject.subscribeDeeps.run(),
+                this.explosiveDevice.subscribe.run(),
+                this.explosiveDevice.subscribeType.run(),
+                this.explosive.subscribe.run(),
+                this.book.subscribe.run(),
+                this.book.subscribeBookType.run(),
+                this.missionRequest.subscribeType.run(),
+            ]);
 
-            await this.employee.fetchRanks.run();
+            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
         } catch (e) {
             this.services.logger.error('init', e);
         }

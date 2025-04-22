@@ -60,7 +60,7 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
     }
 
     get countryOptions(): IOption<string>[] {
-        return stores.common.listCountries.map(item => ({
+        return stores.common.collections.countries.asArray.map(item => ({
             value: item.id,
             title: item.displayName,
         }));

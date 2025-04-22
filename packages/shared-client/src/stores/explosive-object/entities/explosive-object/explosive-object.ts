@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 import { makeAutoObservable } from 'mobx';
-import { APPROVE_STATUS, EXPLOSIVE_OBJECT_TYPE, explosiveObjectComponentData, type IExplosiveObjectComponentDB } from 'shared-my';
+import { APPROVE_STATUS, EXPLOSIVE_OBJECT_TYPE } from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -18,6 +18,7 @@ import {
 import { type INode, type IClassifications } from '../../classifications';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
+import { type IExplosiveObjectComponent, type IExplosiveObjectComponentData } from '../explosive-object-component';
 import { createExplosiveObjectDetails, type IExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
 import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
 
@@ -35,6 +36,7 @@ interface ICollections {
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     country: ICollectionModel<ICountry, ICountryData>;
     details: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
+    component: ICollectionModel<IExplosiveObjectComponent, IExplosiveObjectComponentData>;
 }
 
 interface IStores {
@@ -54,7 +56,7 @@ export interface IExplosiveObject extends IDataModel<IExplosiveObjectData> {
     displayName: string;
     signName: string;
     type?: IExplosiveObjectType;
-    component?: IExplosiveObjectComponentDB;
+    component?: IExplosiveObjectComponentData;
     details?: IExplosiveObjectDetails;
     country?: ICountry;
     isConfirmed: boolean;
@@ -92,7 +94,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get component() {
-        return explosiveObjectComponentData.find(({ id }) => id === this.data.component);
+        return this.collections.component.get(this.data.component)?.data;
     }
 
     get details() {

@@ -1,7 +1,7 @@
-import { type IBaseDB } from './common';
+import { type IMapDB, type IBaseDB } from './common';
 import { type MIME_TYPE, type APPROVE_STATUS, type BOOK_TYPE } from '../enum';
 
-export interface IBookTypeDB {
+export interface IBookTypeDB extends IMapDB {
     id: BOOK_TYPE;
     name: string;
 }

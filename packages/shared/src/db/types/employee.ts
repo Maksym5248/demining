@@ -1,7 +1,7 @@
-import { type IBaseDB, type ILinkedToDocumentDB } from './common';
+import { type IMapDB, type IBaseDB, type ILinkedToDocumentDB } from './common';
 import { type EMPLOYEE_TYPE, type RANKS } from '../enum';
 
-export interface IRankDB {
+export interface IRankDB extends IMapDB {
     id: string;
     fullName: string;
     shortName: string;

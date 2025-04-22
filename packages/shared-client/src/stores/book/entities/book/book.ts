@@ -1,11 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { bookTypesMap, type IBookTypeDB } from 'shared-my';
 
 import { type IBookAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type IDataModel, type IRequestModel, RequestModel } from '~/models';
+import { type ICollectionModel, type IDataModel, type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
-import { type IViewerStore } from '~/stores';
+import { type IBookType, type IBookTypeData, type IViewerStore } from '~/stores';
 
 import { type IBookData, createBook, updateBookDTO } from './book.schema';
 
@@ -14,7 +13,7 @@ export interface IBook extends IDataModel<IBookData> {
     updateFields(data: Partial<IBookData>): void;
     update: IRequestModel<[IUpdateValue<IBookData>]>;
     isEditable: boolean;
-    types: IBookTypeDB[];
+    types: IBookTypeData[];
 }
 
 interface IApi {
@@ -29,10 +28,15 @@ interface IStores {
     viewer?: IViewerStore;
 }
 
+interface ICollections {
+    bookTypes: ICollectionModel<IBookType, IBookTypeData>;
+}
+
 interface IBookParams {
     api: IApi;
     services: IServices;
     getStores: () => IStores;
+    collections: ICollections;
 }
 
 export class Book implements IBook {
@@ -40,13 +44,15 @@ export class Book implements IBook {
     services: IServices;
     data: IBookData;
     getStores: () => IStores;
+    collections: ICollections;
 
-    constructor(data: IBookData, { api, services, getStores }: IBookParams) {
+    constructor(data: IBookData, { api, services, getStores, collections }: IBookParams) {
         this.data = data;
 
         this.api = api;
         this.services = services;
         this.getStores = getStores;
+        this.collections = collections;
 
         makeAutoObservable(this);
     }
@@ -60,7 +66,7 @@ export class Book implements IBook {
     }
 
     get types() {
-        return this.data.type?.map(type => bookTypesMap[type]).filter(Boolean);
+        return this.data.type?.map(type => this.collections.bookTypes.get(type)?.data).filter(Boolean) as IBookTypeData[];
     }
 
     updateFields(data: Partial<IBookData>) {

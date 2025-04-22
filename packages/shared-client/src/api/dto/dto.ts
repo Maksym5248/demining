@@ -28,6 +28,10 @@ import {
     type IUserInfoDB,
     type IUserAccessDB,
     type IMemberDB,
+    type IStatusDB,
+    type IBookTypeDB,
+    type IExplosiveDeviceTypeDB,
+    type IMissionRequestTypeDB,
 } from 'shared-my';
 
 import { type IExplosiveObjectDetailsDTO } from './explosive-object';
@@ -50,6 +54,7 @@ export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | 'id' | 
 };
 
 export type IMissionRequestDTO = IMissionRequestDB;
+export type IMissionRequestTypeDTO = IMissionRequestTypeDB;
 export interface IMissionRequestSumDTO {
     total: number;
 }
@@ -64,7 +69,7 @@ export interface IExplosiveObjectActionSumDTO {
 }
 
 export type IExplosiveDeviceDTO = IExplosiveDeviceDB;
-
+export type IExplosiveDeviceTypeDTO = IExplosiveDeviceTypeDB;
 export type IExplosiveActionDTO = IExplosiveDeviceActionDB;
 
 export interface IExplosiveActionSumDTO {
@@ -98,6 +103,7 @@ export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = Omit<IMapViewActionDB, 'geo'>;
 export type IDocumentDTO = IDocumentDB;
 export type IBookDTO = IBookDB;
+export type IBookTypeDTO = IBookTypeDB;
 
 export type IMissionReportDTO = IMissionReportDB;
 export interface IMissionReportFullDTO extends IMissionReportDTO {
@@ -223,3 +229,5 @@ export type IRangeDTO = IRangeDB;
 export interface IExplosiveDTOParams extends Omit<IExplosiveDTO, 'imageUri'> {
     image?: File;
 }
+
+export type IStatusDTO = IStatusDB;

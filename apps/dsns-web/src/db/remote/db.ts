@@ -29,6 +29,14 @@ import {
     type IAppConfigDB,
     type IUserAccessDB,
     type IMemberDB,
+    type IBookTypeDB,
+    type ICountryDB,
+    type IExplosiveDeviceTypeDB,
+    type IExplosiveObjectComponentDB,
+    type IMaterialDB,
+    type IMissionRequestTypeDB,
+    type IRankDB,
+    type IStatusDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -119,6 +127,15 @@ export class DBRemote implements IDB {
 
     app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
 
+    bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE, []);
+    country = new DBBase<ICountryDB>(TABLES.COUNTRY, []);
+    explosiveDeviceType = new DBBase<IExplosiveDeviceTypeDB>(TABLES.EXPLOSIVE_DEVICE_TYPE, []);
+    explosiveObjectComponent = new DBBase<IExplosiveObjectComponentDB>(TABLES.EXPLOSIVE_OBJECT_COMPONENT, []);
+    material = new DBBase<IMaterialDB>(TABLES.MATERIAL, []);
+    missionRequestType = new DBBase<IMissionRequestTypeDB>(TABLES.MISSION_REQUEST_TYPE, []);
+    rank = new DBBase<IRankDB>(TABLES.RANKS, []);
+    status = new DBBase<IStatusDB>(TABLES.STATUSES, []);
+
     batch: WriteBatch | null = null;
 
     init = () => Promise.resolve();
@@ -127,6 +144,15 @@ export class DBRemote implements IDB {
 
     setLang(lang: 'uk' | 'en') {
         const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;
+
+        this.country.setTableName(getCollection(TABLES.COUNTRY));
+        this.rank.setTableName(getCollection(TABLES.RANKS));
+        this.status.setTableName(getCollection(TABLES.STATUSES));
+        this.material.setTableName(getCollection(TABLES.MATERIAL));
+        this.bookType.setTableName(getCollection(TABLES.BOOK_TYPE));
+        this.explosiveDeviceType.setTableName(getCollection(TABLES.EXPLOSIVE_DEVICE_TYPE));
+        this.explosiveObjectComponent.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_COMPONENT));
+        this.missionRequestType.setTableName(getCollection(TABLES.MISSION_REQUEST_TYPE));
 
         this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
         this.explosiveObjectClass.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS));

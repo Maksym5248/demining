@@ -38,4 +38,5 @@ v2:
 - migration for localization structure
 - rules for localization structure
 - indexes for localization structure
+- create new tables in prod db
 

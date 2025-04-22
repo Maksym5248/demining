@@ -1,7 +1,7 @@
 import { EXPLOSIVE_OBJECT_COMPONENT } from '../enum';
 import { type IExplosiveObjectComponentDB } from '../types';
 
-export const explosiveObjectComponentData: IExplosiveObjectComponentDB[] = [
+export const explosiveObjectComponentData: Pick<IExplosiveObjectComponentDB, 'id' | 'name'>[] = [
     {
         id: EXPLOSIVE_OBJECT_COMPONENT.AMMO,
         name: 'Боєприпас',

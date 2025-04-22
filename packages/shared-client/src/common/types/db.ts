@@ -27,6 +27,14 @@ import {
     type IUserAccessDB,
     type IUserInfoDB,
     type IMemberDB,
+    type IBookTypeDB,
+    type ICountryDB,
+    type IExplosiveDeviceTypeDB,
+    type IExplosiveObjectComponentDB,
+    type IMaterialDB,
+    type IMissionRequestTypeDB,
+    type IRankDB,
+    type IStatusDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -105,6 +113,15 @@ export interface IDB {
     book: IDBBase<IBaseDB>;
     explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
     app: IDBBase<IAppConfigDB>;
+    bookType: IDBBase<IBookTypeDB>;
+    country: IDBBase<ICountryDB>;
+    explosiveDeviceType: IDBBase<IExplosiveDeviceTypeDB>;
+    explosiveObjectComponent: IDBBase<IExplosiveObjectComponentDB>;
+    material: IDBBase<IMaterialDB>;
+    missionRequestType: IDBBase<IMissionRequestTypeDB>;
+    rank: IDBBase<IRankDB>;
+    status: IDBBase<IStatusDB>;
+
     batchStart(): void;
     batchCommit(): Promise<void>;
     init(): void;

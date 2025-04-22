@@ -1,6 +1,6 @@
 import { credential } from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import {
     bookTypes,
     countries,
@@ -25,7 +25,7 @@ const suffix = `/${TABLES_DIR.LANG}/uk`;
 async function migrateExplosiveObjects() {
     const bookTypesRef = collection(TABLES.BOOK_TYPE + suffix);
     const countryRef = collection(TABLES.COUNTRY + suffix);
-    const explosiveDeviceTypesRef = collection(TABLES.EXPLOSIVE_DEVICE_OBJECT_TYPE + suffix);
+    const explosiveDeviceTypesRef = collection(TABLES.EXPLOSIVE_DEVICE_TYPE + suffix);
     const explosiveComponentsRef = collection(TABLES.EXPLOSIVE_OBJECT_COMPONENT + suffix);
     const materialRef = collection(TABLES.MATERIAL + suffix);
     const missionRequestTypeRef = collection(TABLES.MISSION_REQUEST_TYPE + suffix);
@@ -72,7 +72,11 @@ async function migrateExplosiveObjects() {
 
         data.forEach(async item => {
             const doc = ref.doc(item.id);
-            batch.set(doc, item);
+            batch.set(doc, {
+                ...item,
+                createdAt: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp(),
+            });
         });
 
         await batch.commit();

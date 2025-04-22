@@ -1,9 +1,8 @@
-import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
-import { type IExplosiveDeviceActionDB, type IExplosiveDeviceDB } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, type IExplosiveDeviceTypeDB, type IExplosiveDeviceActionDB, type IExplosiveDeviceDB } from 'shared-my';
 
 import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
 
-import { type IExplosiveDeviceDTO } from '../dto';
+import { type IExplosiveDeviceTypeDTO, type IExplosiveDeviceDTO } from '../dto';
 
 export interface IExplosiveDeviceAPI {
     create: (value: ICreateValue<IExplosiveDeviceDTO>) => Promise<IExplosiveDeviceDTO>;
@@ -15,12 +14,17 @@ export interface IExplosiveDeviceAPI {
     get: (id: string) => Promise<IExplosiveDeviceDTO>;
     sum: (query?: IQuery) => Promise<{ explosive: number; detonator: number }>;
     subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
+    subscribeType: (
+        args: Partial<IQuery> | null,
+        callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void,
+    ) => Promise<void>;
 }
 
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
     constructor(
         private db: {
             explosiveDevice: IDBBase<IExplosiveDeviceDB>;
+            explosiveDeviceType: IDBBase<IExplosiveDeviceTypeDB>;
             explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
@@ -113,5 +117,9 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
 
     subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => {
         return this.db.explosiveDevice.subscribe(args, callback);
+    };
+
+    subscribeType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => {
+        return this.db.explosiveDeviceType.subscribe(args, callback);
     };
 }

@@ -1,7 +1,7 @@
 import { APPROVE_STATUS } from '../enum';
 import { type IStatusDB } from '../types';
 
-export const explosiveObjectStatuses: IStatusDB[] = [
+export const explosiveObjectStatuses: Pick<IStatusDB, 'id' | 'name'>[] = [
     {
         id: APPROVE_STATUS.CONFIRMED,
         name: 'Підтверджено',
