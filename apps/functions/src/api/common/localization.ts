@@ -110,7 +110,7 @@ function findTranslatableTexts(
         return { textsToTranslate, pathsToUpdate };
     }
 
-    // Check direct paths first
+    // Check direct paths first (for non-array fields at the current level)
     for (const configPath of configPaths) {
         const pathSegments = configPath.split('.');
         const currentPathStr = currentPath.join('.');
@@ -119,14 +119,18 @@ function findTranslatableTexts(
         if (
             pathSegments.length === currentPath.length + 1 &&
             configPath.startsWith(currentPathStr) &&
-            !configPath.includes('[]')
+            !configPath.includes('[]') // Ensure it's not an array config path
         ) {
             const field = pathSegments[pathSegments.length - 1];
+            // Use lodash get relative to the current data object
             const value = get(data, field);
             if (typeof value === 'string' && value.trim() !== '') {
                 const fullPath = [...currentPath, field];
-                textsToTranslate.push(value);
-                pathsToUpdate.push({ path: fullPath, originalValue: value });
+                // Avoid duplicates if paths overlap in config (simple check)
+                if (!pathsToUpdate.some(p => p.path.join('.') === fullPath.join('.'))) {
+                    textsToTranslate.push(value);
+                    pathsToUpdate.push({ path: fullPath, originalValue: value });
+                }
             }
         }
     }
@@ -139,50 +143,52 @@ function findTranslatableTexts(
                 const newPath = [...currentPath, key];
                 const newPathStr = newPath.join('.');
 
-                // Check if any config path starts with this new path (potential nested object/array)
+                // Check if any config path starts with this new path OR matches an array pattern
                 const relevantConfigPaths = configPaths.filter(
                     p =>
-                        p.startsWith(newPathStr) ||
-                        p.startsWith(newPathStr.replace(/\.\d+/g, '.[]')),
-                ); // Handle array paths
+                        p.startsWith(newPathStr + '.') || // Matches nested objects/fields
+                        p === newPathStr || // Matches the exact path (for direct objects)
+                        p.startsWith(newPathStr.replace(/\.\d+/g, '.[]') + '.'), // Matches array item fields
+                );
 
                 if (relevantConfigPaths.length > 0) {
                     if (Array.isArray(value)) {
-                        // Handle arrays specifically based on config (e.g., 'items[].value')
-                        const arrayConfig = relevantConfigPaths.find(p =>
-                            p.startsWith(newPathStr.replace(/\.\d+/g, '.[]') + '.'),
-                        );
-                        if (arrayConfig) {
-                            const fieldToTranslateInItem = arrayConfig
-                                .split('[]')
-                                .pop()
-                                ?.substring(1); // e.g., 'value' from 'items[].value'
-                            if (fieldToTranslateInItem) {
-                                value.forEach((item, index) => {
-                                    const itemPath = [...newPath, index];
+                        // --- CORRECTED ARRAY HANDLING ---
+                        const arrayPatternBase = newPathStr + '[]'; // e.g., "sizeV2[]"
+                        value.forEach((item, index) => {
+                            const itemPath = [...newPath, index]; // Path to the current item, e.g., ['sizeV2', 0]
+                            // Find config paths relevant to this item's fields (e.g., "sizeV2[].name")
+                            const itemConfigPaths = configPaths
+                                .filter(p => p.startsWith(arrayPatternBase + '.'))
+                                .map(p => p.substring(arrayPatternBase.length + 1)); // Extract sub-field, e.g., "name"
+
+                            if (itemConfigPaths.length > 0) {
+                                // If the item itself is an object, recurse with the sub-paths
+                                if (item && typeof item === 'object') {
                                     findTranslatableTexts(
                                         item,
-                                        [fieldToTranslateInItem],
-                                        itemPath,
+                                        itemConfigPaths, // Pass only the relevant sub-paths (e.g., ['name'])
+                                        itemPath, // Pass the correct path to the item
                                         textsToTranslate,
                                         pathsToUpdate,
-                                    ); // Pass only the sub-field config
-                                });
+                                    );
+                                }
+                                // If item is a simple string and config is just 'array[]' (not currently supported by config)
+                                // else if (typeof item === 'string' && configPaths.includes(arrayPatternBase)) { ... }
                             }
-                        } else {
-                            // If no specific array config, maybe translate array of strings? (Not in current config)
-                        }
+                        });
+                        // --- END CORRECTION ---
                     } else if (typeof value === 'object' && value !== null) {
                         // Recurse for nested objects
                         findTranslatableTexts(
                             value,
-                            relevantConfigPaths,
+                            configPaths, // Pass the original configPaths down
                             newPath,
                             textsToTranslate,
                             pathsToUpdate,
                         );
                     }
-                    // Direct string check is handled in the initial loop
+                    // Direct string check is now handled correctly within the recursion or the initial loop
                 }
             }
         }
