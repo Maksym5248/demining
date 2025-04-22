@@ -27,8 +27,8 @@ jobs:
       with:
           ruby-version: '3.0'
           bundler-cache: true
-    - name: Install Bundler 1.17.2
-      run: gem install bundler -v 1.17.2
+    - name: Install Bundler 2.6.7
+      run: gem install bundler -v 2.6.7
     - name: Install dependencies
       working-directory: ./apps/ammo
       run: bundle install        
