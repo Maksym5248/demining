@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import * as Sentry from '@sentry/react';
 import { ConfigProvider } from 'antd';
 import uk from 'antd/lib/locale/uk_UA';
 import { Timestamp } from 'firebase/firestore';
@@ -30,13 +31,15 @@ export function App() {
     }, []);
 
     return (
-        <ConfigProvider locale={uk}>
-            <ThemeProvider>
-                <RootStoreContext.Provider value={store}>
-                    <RootRouter />
-                    <ModalProvider modals={modals} />
-                </RootStoreContext.Provider>
-            </ThemeProvider>
-        </ConfigProvider>
+        <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
+            <ConfigProvider locale={uk}>
+                <ThemeProvider>
+                    <RootStoreContext.Provider value={store}>
+                        <RootRouter />
+                        <ModalProvider modals={modals} />
+                    </RootStoreContext.Provider>
+                </ThemeProvider>
+            </ConfigProvider>
+        </Sentry.ErrorBoundary>
     );
 }

@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { type IOrganizationAPI, type ICreateOrganizationDTO } from '~/api';
+import { dates } from '~/common';
 import { type IDataModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
@@ -11,10 +12,10 @@ import { type IViewerStore } from '../../../viewer';
 export interface IOrganization extends IDataModel<IOrganizationValue> {
     listMembers: IListModel<IUser, IUserData>;
     update: IRequestModel<[ICreateOrganizationDTO]>;
-    createMember: IRequestModel<[string, boolean, boolean]>;
-    updateMember: IRequestModel<[string, boolean, boolean]>;
+    createMember: IRequestModel<[string]>;
     removeMember: IRequestModel<[string]>;
-    fetchListMembers: IRequestModel;
+    fetchListMembers: IRequestModel<[string | undefined]>;
+    fetchMoreListMembers: IRequestModel<[string | undefined]>;
 }
 
 interface IApi {
@@ -75,31 +76,10 @@ export class Organization implements IOrganization {
     });
 
     createMember = new RequestModel({
-        run: async (userId: string, isAdmin: boolean, isAuthor: boolean) => {
-            const res = await this.api.organization.updateMember(
-                this.data.id,
-                userId,
-                { isAdmin, isAuthor },
-                !!this.getStores().viewer.user?.isRootAdmin,
-            );
+        run: async (userId: string) => {
+            const res = await this.api.organization.addMember(this.data.id, userId);
 
             this.listMembers.push(createUser(res));
-        },
-        onSuccuss: () => this.services.message.success('Збережено успішно'),
-        onError: () => this.services.message.error('Не вдалось додати'),
-    });
-
-    updateMember = new RequestModel({
-        run: async (userId: string, isAdmin: boolean, isAuthor: boolean) => {
-            const res = await this.api.organization.updateMember(
-                this.data.id,
-                userId,
-                { isAdmin, isAuthor },
-                !!this.getStores().viewer.user?.isRootAdmin,
-            );
-            const member = createUser(res);
-
-            this.getStores().user.collection.update(member.id, member);
         },
         onSuccuss: () => this.services.message.success('Збережено успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
@@ -116,9 +96,24 @@ export class Organization implements IOrganization {
     });
 
     fetchListMembers = new RequestModel({
-        run: async () => {
-            const res = await this.api.organization.getMembers(this.data.id);
+        run: async (search: string | undefined) => {
+            const res = await this.api.organization.getMembers(this.data.id, {
+                search,
+                limit: this.listMembers.pageSize,
+            });
             this.listMembers.set(res.map(createUser));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchMoreListMembers = new RequestModel({
+        run: async (search: string | undefined) => {
+            const res = await this.api.organization.getMembers(this.data.id, {
+                search,
+                limit: this.listMembers.pageSize,
+                startAfter: dates.toDateServer(this.listMembers.last.data.createdAt),
+            });
+            this.listMembers.push(res.map(createUser));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

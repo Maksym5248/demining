@@ -2,14 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, InputNumber, Spin, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import {
-    EXPLOSIVE_OBJECT_COMPONENT,
-    EXPLOSIVE_OBJECT_STATUS,
-    explosiveObjectComponentData,
-    explosiveObjectStatuses,
-    measurement,
-    MIME_TYPE,
-} from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS, measurement, MIME_TYPE } from 'shared-my';
 import { type IFieldData, type ISizeData } from 'shared-my-client';
 
 import {
@@ -283,7 +276,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                               }
                             : {
                                   typeId: firstType?.data.id,
-                                  status: EXPLOSIVE_OBJECT_STATUS.PENDING,
+                                  status: APPROVE_STATUS.PENDING,
                                   classItemIds: [],
                               }
                     }>
@@ -318,9 +311,14 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             )}
                         </Form.Item>
                     </Form.Item>
-                    {viewer.user?.isContentAdmin && (
+                    {viewer?.permissions.dictionary.approve() && (
                         <Form.Item label="Статус" name="status">
-                            <Select options={explosiveObjectStatuses} />
+                            <Select
+                                options={common.collections.statuses.asArray.map(el => ({
+                                    value: el.id,
+                                    label: el.displayName,
+                                }))}
+                            />
                         </Form.Item>
                     )}
                     <Divider />
@@ -351,8 +349,8 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
 
                                 return (
                                     <Select
-                                        options={explosiveObjectComponentData.map(el => ({
-                                            label: el.name,
+                                        options={explosiveObject.collectionComponents.asArray.map(el => ({
+                                            label: el.displayName,
                                             value: el.id,
                                         }))}
                                         value={value}
@@ -371,7 +369,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                     </Form.Item>
                     <Form.Item label="Країна" name="countryId" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={common.listCountries.asArray.map(el => ({
+                            options={common.collections.countries.asArray.map(el => ({
                                 label: el.data.name,
                                 value: el.data.id,
                             }))}

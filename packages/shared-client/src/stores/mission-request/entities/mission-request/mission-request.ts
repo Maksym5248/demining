@@ -1,12 +1,12 @@
 import { makeAutoObservable } from 'mobx';
-import { missionRequestType } from 'shared-my';
 
 import { type IMissionRequestAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type IDataModel, RequestModel } from '~/models';
+import { type CollectionModel, type IDataModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
 import { type IMissionRequestData, updateMissionRequestDTO, createMissionRequest } from './mission-request.schema';
+import { type IMissionRequestType, type IMissionRequestTypeData } from '../mission-request-type';
 
 export interface IMissionRequest extends IDataModel<IMissionRequestData> {
     update: RequestModel<[IUpdateValue<IMissionRequestData>]>;
@@ -22,15 +22,21 @@ interface IServices {
     message: IMessage;
 }
 
+interface ICollections {
+    type: CollectionModel<IMissionRequestType, IMissionRequestTypeData>;
+}
+
 export class MissionRequest implements IMissionRequest {
     api: IApi;
     services: IServices;
+    collections: ICollections;
     data: IMissionRequestData;
 
-    constructor(data: IMissionRequestData, params: { api: IApi; services: IServices }) {
+    constructor(data: IMissionRequestData, params: { api: IApi; services: IServices; collections: ICollections }) {
         this.data = data;
         this.api = params.api;
         this.services = params.services;
+        this.collections = params.collections;
 
         makeAutoObservable(this);
     }
@@ -44,7 +50,7 @@ export class MissionRequest implements IMissionRequest {
     }
 
     get displayType() {
-        return missionRequestType.find(el => el.value === this.data.type)?.name;
+        return this.collections.type.get(this.data.type)?.data?.name;
     }
 
     get displayValue() {

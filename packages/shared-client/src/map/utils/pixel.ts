@@ -5,7 +5,7 @@ function getPointByPixelOffset(
     latLng: IPoint | undefined | null,
     xOffset: number,
     yOffset: number,
-    map: google.maps.Map | undefined,
+    map: google.maps.Map | null | undefined,
     zoom: number,
 ): IPoint | null {
     if (!map || !latLng) {

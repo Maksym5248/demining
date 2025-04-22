@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IDataModel, type ICollectionModel } from '~/models';
 import { type IMessage } from '~/services';
-import { type ICountry, type ICountryData, type IViewerStore } from '~/stores';
+import { type IMaterial, type IMaterialData, type ICountry, type ICountryData, type IViewerStore } from '~/stores';
 
 import { type IExplosiveObjectActionData } from './explosive-object-action.schema';
 import {
@@ -17,6 +17,8 @@ import {
     type IExplosiveObjectClassItemData,
     type IExplosiveObjectDetails,
     type IExplosiveObjectDetailsData,
+    type IExplosiveObjectComponent,
+    type IExplosiveObjectComponentData,
 } from '..';
 import { type IClassifications } from '../../classifications';
 
@@ -34,6 +36,8 @@ interface ICollections {
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     country: ICollectionModel<ICountry, ICountryData>;
     details: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
+    material: ICollectionModel<IMaterial, IMaterialData>;
+    component: ICollectionModel<IExplosiveObjectComponent, IExplosiveObjectComponentData>;
 }
 
 interface IStores {
@@ -47,7 +51,6 @@ interface IExplosiveObjectActionParams {
     getStores: () => IStores;
     classifications: IClassifications;
 }
-
 export interface IExplosiveObjectAction extends IDataModel<IExplosiveObjectActionData> {
     type?: IExplosiveObjectType;
     explosiveObject: IExplosiveObject;
@@ -72,6 +75,7 @@ export class ExplosiveObjectAction implements IExplosiveObjectAction {
         this.services = services;
         this.getStores = getStores;
         this.classifications = classifications;
+        this.collections = collections;
 
         makeAutoObservable(this);
     }

@@ -18,13 +18,23 @@ import {
     type IEquipmentActionDB,
     type IDocumentDB,
     type IExplosiveDeviceActionDB,
-    type IUserDB,
     type IExplosiveDB,
     type IExplosiveObjectTypeDB,
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
     type IExplosiveObjectDetailsDB,
     type IAppConfigDB,
+    type IUserAccessDB,
+    type IUserInfoDB,
+    type IMemberDB,
+    type IBookTypeDB,
+    type ICountryDB,
+    type IExplosiveDeviceTypeDB,
+    type IExplosiveObjectComponentDB,
+    type IMaterialDB,
+    type IMissionRequestTypeDB,
+    type IRankDB,
+    type IStatusDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -54,6 +64,7 @@ export interface ISubscriptionDocument<T> {
 export type ICreateData<T extends IBaseDB> = Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'> & Partial<Pick<T, 'id'>>;
 
 export interface IDBBase<T extends IBaseDB> {
+    setTableName(tableName: string): void;
     setRootCollection(rootCollection: string): void;
     removeRootCollection(): void;
     setBatch(batch: any): void;
@@ -75,7 +86,10 @@ export interface IDBBase<T extends IBaseDB> {
 }
 
 export interface IDB {
-    user: IDBBase<IUserDB>;
+    userInfo: IDBBase<IUserInfoDB>;
+    userAccess: IDBBase<IUserAccessDB>;
+    member: IDBBase<IMemberDB>;
+
     organization: IDBBase<IOrganizationDB>;
     explosiveObject: IDBBase<IExplosiveObjectDB>;
     explosiveObjectDetails: IDBBase<IExplosiveObjectDetailsDB>;
@@ -99,10 +113,20 @@ export interface IDB {
     book: IDBBase<IBaseDB>;
     explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
     app: IDBBase<IAppConfigDB>;
+    bookType: IDBBase<IBookTypeDB>;
+    country: IDBBase<ICountryDB>;
+    explosiveDeviceType: IDBBase<IExplosiveDeviceTypeDB>;
+    explosiveObjectComponent: IDBBase<IExplosiveObjectComponentDB>;
+    material: IDBBase<IMaterialDB>;
+    missionRequestType: IDBBase<IMissionRequestTypeDB>;
+    rank: IDBBase<IRankDB>;
+    status: IDBBase<IStatusDB>;
+
     batchStart(): void;
     batchCommit(): Promise<void>;
     init(): void;
     dropDb(): void;
     setOrganizationId(id: string): void;
     removeOrganizationId(): void;
+    setLang(lang: 'uk' | 'en'): void;
 }

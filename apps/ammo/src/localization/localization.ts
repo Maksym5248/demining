@@ -16,7 +16,7 @@ enum LOCALIZATION_EVENTS {
 }
 
 export interface ILocalizationData {
-    locale: string;
+    locale: 'uk' | 'en';
 }
 
 const fallback = {
@@ -45,17 +45,17 @@ class LocalizationClass implements ILocalization {
         defaultLocale: fallback.languageTag,
     });
 
-    private setLocale = (languageTag: string) => {
+    setLocale = (languageTag: string) => {
         this.i18n.locale = languageTag;
     };
 
-    private sendEvent(shouldSave: boolean = false) {
+    sendEvent(shouldSave: boolean = false) {
         eventEmitter.emit(LOCALIZATION_EVENTS.ON_CHANGE, cloneDeep(this.data), shouldSave);
     }
 
     get data(): Readonly<ILocalizationData> {
         return {
-            locale: this.i18n.locale,
+            locale: this.i18n.locale as 'uk' | 'en',
         };
     }
 

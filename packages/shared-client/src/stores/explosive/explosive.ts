@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { APPROVE_STATUS } from 'shared-my';
 
 import { type IExplosiveDTO, type IExplosiveAPI } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
@@ -156,7 +156,7 @@ export class ExplosiveStore implements IExplosiveStore {
             await this.api.explosive.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveDTO>[]) => {

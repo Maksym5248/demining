@@ -1,0 +1,9 @@
+{
+  "name": "ammo-privacy-policy",
+  "version": "1.0.0",
+  "main": "index.html",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "firebase deploy --project dsns-56583 --only hosting:ammo-privacy-policy"
+  }
+}

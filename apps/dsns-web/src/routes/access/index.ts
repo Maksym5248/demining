@@ -1,5 +1,5 @@
 export * from './view-auth';
-export * from './view-author-managment';
+export * from './view-ammo-managment';
 export * from './view-dev';
 export * from './view-explosive-object-list';
 export * from './view-organization-managment';

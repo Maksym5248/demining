@@ -1,9 +1,9 @@
-import { type BOOK_TYPE, type EXPLOSIVE_OBJECT_STATUS, type MIME_TYPE } from 'shared-my';
+import { type BOOK_TYPE, type APPROVE_STATUS, type MIME_TYPE } from 'shared-my';
 
 export interface IBookForm {
     name: string;
     mime: MIME_TYPE;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     imageUri: string;
     uri: string;
     size: number;

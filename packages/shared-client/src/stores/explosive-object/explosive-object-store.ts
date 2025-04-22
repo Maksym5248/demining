@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -10,6 +10,7 @@ import {
     type IExplosiveObjectClassItemAPI,
     type IExplosiveObjectDTO,
     type IExplosiveObjectDetailsDTO,
+    type IExplosiveObjectComponentDTO,
 } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
@@ -32,6 +33,10 @@ import {
     type IExplosiveObjectAction,
     type IExplosiveObjectDetailsData,
     type IExplosiveObjectDetails,
+    type IExplosiveObjectComponent,
+    type IExplosiveObjectComponentData,
+    ExplosiveObjectComponent,
+    createExplosiveObjectComponent,
 } from './entities';
 import { ExplosiveObjectClassStore, type IExplosiveObjectClassStore } from './explosive-object-class';
 import { ExplosiveObjectClassItemStore, type IExplosiveObjectClassItemStore } from './explosive-object-class-item';
@@ -63,6 +68,7 @@ export interface IExplosiveObjectStore {
     type: IExplosiveObjectTypeStore;
     class: IExplosiveObjectClassStore;
     classItem: IExplosiveObjectClassItemStore;
+    collectionComponents: ICollectionModel<IExplosiveObjectComponent, IExplosiveObjectComponentData>;
     collectionActions: ICollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData>;
     collectionDetails: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
     collection: ICollectionModel<IExplosiveObject, IExplosiveObjectData>;
@@ -97,6 +103,12 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
     class: IExplosiveObjectClassStore;
     classItem: IExplosiveObjectClassItemStore;
 
+    collectionComponents: ICollectionModel<IExplosiveObjectComponent, IExplosiveObjectComponentData> = new CollectionModel<
+        IExplosiveObjectComponent,
+        IExplosiveObjectComponentData
+    >({
+        factory: (data: IExplosiveObjectComponentData) => new ExplosiveObjectComponent(data),
+    });
     collectionActions: ICollectionModel<IExplosiveObjectAction, IExplosiveObjectActionData> = new CollectionModel<
         IExplosiveObjectAction,
         IExplosiveObjectActionData
@@ -107,7 +119,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         IExplosiveObjectDetails,
         IExplosiveObjectDetailsData
     >({
-        factory: (data: IExplosiveObjectDetailsData) => new ExplosiveObjectDetails(data),
+        factory: (data: IExplosiveObjectDetailsData) => new ExplosiveObjectDetails(data, this),
     });
     collection: ICollectionModel<IExplosiveObject, IExplosiveObjectData> = new CollectionModel<IExplosiveObject, IExplosiveObjectData>({
         factory: (data: IExplosiveObjectData) => new ExplosiveObject(data, this),
@@ -147,7 +159,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             type: this.type?.collection,
             class: this.class?.collection,
             classItem: this.classItem?.collection,
-            country: this.getStores().common.collectionCountries,
+            country: this.getStores().common.collections.countries,
+            component: this.collectionComponents,
+            material: this.getStores().common.collections.materials,
         };
     }
 
@@ -326,7 +340,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             await this.api.explosiveObject.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
@@ -357,7 +371,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             await this.api.explosiveObject.subscribeDetails(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => {
@@ -383,9 +397,38 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         },
     });
 
+    subscribeComponents = new RequestModel({
+        run: async () => {
+            await this.api.explosiveObject.subscribeComponents({}, (values: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => {
+                const create: IExplosiveObjectComponentData[] = [];
+                const update: IExplosiveObjectComponentData[] = [];
+                const remove: string[] = [];
+
+                values.forEach(value => {
+                    if (value.type === 'removed') {
+                        remove.push(value.data.id);
+                    } else if (value.type === 'added') {
+                        create.push(createExplosiveObjectComponent(value.data));
+                    } else if (value.type === 'modified') {
+                        update.push(createExplosiveObjectComponent(value.data));
+                    }
+                });
+
+                this.collectionComponents.set(create);
+                this.collectionComponents.update(update);
+                this.collectionComponents.remove(remove);
+            });
+        },
+    });
+
     subscribeDeeps = new RequestModel({
         run: async () => {
-            await Promise.all([this.type.subscribe.run(), this.class.subscribe.run(), this.classItem.subscribe.run()]);
+            await Promise.all([
+                this.subscribeComponents.run(),
+                this.type.subscribe.run(),
+                this.class.subscribe.run(),
+                this.classItem.subscribe.run(),
+            ]);
 
             this.classifications.init();
         },

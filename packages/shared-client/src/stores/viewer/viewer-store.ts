@@ -1,20 +1,26 @@
 import { makeAutoObservable } from 'mobx';
+import { APPROVE_STATUS, type ROLES } from 'shared-my';
 
-import { type IUserAPI } from '~/api';
+import { type ICurrentUserAPI } from '~/api';
 import { type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
-import { CurrentUser, type ICurrentUser, type ICurrentUserData } from './entities';
+import { CurrentUser, Permissions, type IPermissions, type ICurrentUser, type ICurrentUserData } from './entities';
 
 export interface IViewerStore {
     user: ICurrentUser | null;
+    permissions: IPermissions;
     isLoading: boolean;
+    status: {
+        demining: APPROVE_STATUS | null;
+    };
+    hasRole: (role: ROLES) => boolean;
     setLoading(isLoading: boolean): void;
     setUser(user: ICurrentUserData): void;
     removeUser(): void;
 }
 
 interface IApi {
-    user: IUserAPI;
+    currentUser: ICurrentUserAPI;
 }
 
 interface IServices {
@@ -32,13 +38,43 @@ export class ViewerStore implements IViewerStore {
     api: IApi;
     services: IServices;
     user: ICurrentUser | null = null;
+    permissions: IPermissions;
+
     isLoading = false;
 
     constructor(params: IViewerStoreParams) {
         this.api = params.api;
         this.services = params.services;
 
+        this.permissions = new Permissions(this);
+
         makeAutoObservable(this);
+    }
+
+    hasRole(role: ROLES) {
+        return !!this.user?.data.access[role];
+    }
+
+    get deminingStatus() {
+        if (!this.user?.id) {
+            return null;
+        }
+
+        if (!!this.user.id && !this.permissions.documents.view()) {
+            return APPROVE_STATUS.PENDING;
+        }
+
+        if (!!this.user.id && !!this.permissions.documents.view()) {
+            return APPROVE_STATUS.CONFIRMED;
+        }
+
+        return null;
+    }
+
+    get status() {
+        return {
+            demining: this.deminingStatus,
+        };
     }
 
     setLoading(isLoading: boolean) {
@@ -49,12 +85,12 @@ export class ViewerStore implements IViewerStore {
         this.user = new CurrentUser(user);
 
         if (user.organization?.id) {
-            this.api.user.setOrganization(user.organization?.id);
+            this.api.currentUser.setOrganization(user.organization?.id);
         }
     }
 
     removeUser() {
         this.user = null;
-        this.api.user.removeOrganization();
+        this.api.currentUser.removeOrganization();
     }
 }

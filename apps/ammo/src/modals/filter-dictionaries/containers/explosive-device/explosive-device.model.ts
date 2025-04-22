@@ -1,8 +1,9 @@
 import { makeAutoObservable } from 'mobx';
-import { type EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData } from 'shared-my';
+import { type EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 
 import { MODALS } from '~/constants';
 import { Modal } from '~/services';
+import { stores } from '~/stores';
 import { type IDictionatyFilterExplosviveDevice, type IOption } from '~/types';
 
 export interface IExplosiveDeviceModel {
@@ -30,19 +31,19 @@ export class ExplosiveDeviceModel implements IExplosiveDeviceModel {
     }
 
     get typeOptions(): IOption<string>[] {
-        return explosiveDeviceTypeData.map(type => ({
+        return stores.explosiveDevice.collectionType.asArray.map(type => ({
             value: type.id,
-            title: type.name,
+            title: type.displayName,
         }));
     }
 
     get type() {
-        const type = explosiveDeviceTypeData.find(type => type.id === this.filters.type);
+        const type = stores.explosiveDevice.collectionType.get(this.filters.type);
 
         return type
             ? {
                   value: type.id,
-                  title: type.name,
+                  title: type.displayName,
               }
             : undefined;
     }

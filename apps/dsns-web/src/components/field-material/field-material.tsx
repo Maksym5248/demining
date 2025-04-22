@@ -1,11 +1,13 @@
 import { CloseOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { materialsData } from 'shared-my';
 
 import { SelectAsync } from '~/components';
+import { useStore } from '~/hooks';
 
 function Component() {
+    const store = useStore();
+
     return (
         <Form.Item label="Корпус" name="material">
             <Form.List name="material">
@@ -20,8 +22,8 @@ function Component() {
                                     return (
                                         <Form.Item name={name} {...restField}>
                                             <SelectAsync
-                                                options={materialsData.map(el => ({
-                                                    label: el?.name,
+                                                options={store.common.collections.materials.asArray.map(el => ({
+                                                    label: el?.displayName,
                                                     value: el.id,
                                                 }))}
                                                 value={currentSelectedId}

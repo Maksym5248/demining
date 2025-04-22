@@ -8,8 +8,8 @@
  */
 import { initializeApp } from 'firebase-admin/app';
 
-import { processSignUp, refreshToken } from './api';
-
 initializeApp();
 
-export { processSignUp, refreshToken };
+import { processSignUp, refreshToken, translateOnWrite } from './api';
+
+export { processSignUp, refreshToken, translateOnWrite };

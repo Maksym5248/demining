@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { isArray } from 'lodash';
-import { EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS } from 'shared-my';
 
 import { type IExplosiveObjectDTO, type IExplosiveObjectDTOParams } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -14,7 +14,7 @@ export interface IExplosiveObjectData extends IData {
     name: string;
     fullName: string | null;
     description: string | null;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     component?: EXPLOSIVE_OBJECT_COMPONENT;
     typeId: string;
     classItemIds: string[];
@@ -30,7 +30,7 @@ export interface IExplosiveObjectDataParams {
     name: string;
     fullName: string | null;
     description: string | null;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     component: EXPLOSIVE_OBJECT_COMPONENT;
     typeId: string;
     countryId: string;
@@ -43,7 +43,7 @@ export const createExplosiveObjectDTO = (value: ICreateValue<IExplosiveObjectDat
     name: value?.name ?? null,
     fullName: value?.fullName ?? null,
     description: value?.description ?? null,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     typeId: value.typeId ?? null,
     component: value.component ?? null,
     countryId: value.countryId ?? null,
@@ -56,7 +56,7 @@ export const updateExplosiveObjectDTO = data.createUpdateDTO<IExplosiveObjectDat
     name: value.name ?? null,
     fullName: value?.fullName ?? null,
     description: value?.description ?? null,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     component: value.component ?? EXPLOSIVE_OBJECT_COMPONENT.AMMO,
     typeId: value.typeId ?? '',
     countryId: value.countryId ?? '',

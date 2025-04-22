@@ -1,8 +1,8 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_DEVICE_TYPE, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, APPROVE_STATUS } from 'shared-my';
 
-import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO } from '~/api';
+import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO, type IExplosiveDeviceTypeDTO } from '~/api';
 import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
@@ -18,6 +18,10 @@ import {
     ExplosiveDevice,
     ExplosiveDeviceAction,
     createExplosiveDeviceActionSum,
+    type IExplosiveDeviceType,
+    type IExplosiveDeviceTypeData,
+    ExplosiveDeviceType,
+    createExplosiveDeviceType,
 } from './entities';
 import { SumExplosiveDeviceActions } from './sum-explosive-actions';
 import { getDictionaryFilter } from '../filter';
@@ -26,6 +30,7 @@ import { type IViewerStore } from '../viewer';
 export interface IExplosiveDeviceStore {
     collectionActions: ICollectionModel<IExplosiveDeviceAction, IExplosiveDeviceActionData>;
     collection: ICollectionModel<IExplosiveDevice, IExplosiveDeviceData>;
+    collectionType: ICollectionModel<IExplosiveDeviceType, IExplosiveDeviceTypeData>;
     list: IListModel<IExplosiveDevice, IExplosiveDeviceData>;
     sum: SumExplosiveDeviceActions;
     setSum(sum: IExplosiveActionSumDTO): void;
@@ -38,6 +43,7 @@ export interface IExplosiveDeviceStore {
     fetchItem: RequestModel<[string]>;
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
     subscribe: RequestModel;
+    subscribeType: RequestModel;
 }
 
 interface IApi {
@@ -63,6 +69,14 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
     >({
         factory: (data: IExplosiveDeviceActionData) => new ExplosiveDeviceAction(data, this),
     });
+
+    collectionType: ICollectionModel<IExplosiveDeviceType, IExplosiveDeviceTypeData> = new CollectionModel<
+        IExplosiveDeviceType,
+        IExplosiveDeviceTypeData
+    >({
+        factory: (data: IExplosiveDeviceTypeData) => new ExplosiveDeviceType(data),
+    });
+
     collection: ICollectionModel<IExplosiveDevice, IExplosiveDeviceData> = new CollectionModel<IExplosiveDevice, IExplosiveDeviceData>({
         factory: (data: IExplosiveDeviceData) => new ExplosiveDevice(data, this),
     });
@@ -75,6 +89,12 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         this.getStores = params.getStores;
 
         makeAutoObservable(this);
+    }
+
+    get collections() {
+        return {
+            type: this.collectionType,
+        };
     }
 
     setSum(sum: IExplosiveActionSumDTO) {
@@ -165,7 +185,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
             await this.api.explosiveDevice.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {
@@ -179,6 +199,21 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
                     this.collection.remove(remove);
                 },
             );
+        },
+    });
+
+    subscribeType = new RequestModel({
+        run: async () => {
+            await this.api.explosiveDevice.subscribeType({}, (values: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveDeviceTypeDTO, IExplosiveDeviceTypeData>(
+                    values,
+                    createExplosiveDeviceType,
+                );
+
+                this.collectionType.set(create);
+                this.collectionType.update(update);
+                this.collectionType.remove(remove);
+            });
         },
     });
 }

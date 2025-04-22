@@ -1,4 +1,4 @@
-import { type MutableRefObject, useCallback, useMemo, useRef } from 'react';
+import { type RefObject, useCallback, useMemo, useRef } from 'react';
 
 import { DrawingType, mapUtils } from 'shared-my-client';
 import { type ICircle, type ILine, type IPoint, type IPolygon } from 'shared-my-client';
@@ -14,7 +14,7 @@ interface IUsePolygonParams {
     polygons?: IPolygon[];
     circles?: ICircle[];
     isActiveStick: boolean;
-    mapRef?: MutableRefObject<google.maps.Map | undefined>;
+    mapRef?: RefObject<google.maps.Map | null>;
 }
 
 export interface IUsePolygonReturn {
@@ -43,8 +43,8 @@ export function usePolygon({
     setCircle,
     setLine,
 }: IUsePolygonParams): IUsePolygonReturn {
-    const polygonRef = useRef<google.maps.Polygon>();
-    const polylineRef = useRef<google.maps.Polyline>(); // New reference for the polyline
+    const polygonRef = useRef<google.maps.Polygon>(null);
+    const polylineRef = useRef<google.maps.Polyline>(null); // New reference for the polyline
 
     const onLoadPolygon = useCallback((newPolygonRef: google.maps.Polygon) => {
         polygonRef.current = newPolygonRef;

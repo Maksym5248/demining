@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import { EMPLOYEE_TYPE } from 'shared-my';
 
-import { type IEmployeeAPI } from '~/api';
-import { type ICreateValue, dates } from '~/common';
+import { type IRankDTO, type IEmployeeAPI } from '~/api';
+import { type ICreateValue, type ISubscriptionDocument, dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
@@ -27,14 +27,13 @@ export interface IEmployeeStore {
     collectionRanks: ICollectionModel<IRank, IRankData>;
 
     list: IListModel<IEmployee, IEmployeeData>;
-    listRanks: IListModel<IRank, IRankData>;
 
     chiefs: IEmployee[];
     squadLeads: IEmployee[];
     workers: IEmployee[];
     chiefFirst: IEmployee;
     squadLeadFirst: IEmployee;
-    fetchRanks: IRequestModel;
+    subscribeRanks: RequestModel;
     create: IRequestModel<[ICreateValue<IEmployeeData>]>;
     remove: IRequestModel<[string]>;
     fetchListAll: IRequestModel;
@@ -66,7 +65,6 @@ export class EmployeeStore implements IEmployeeStore {
     });
 
     list = new ListModel<IEmployee, IEmployeeData>({ collection: this.collection });
-    listRanks = new ListModel<IRank, IRankData>({ collection: this.collectionRanks });
 
     constructor({ api, services }: { api: IApi; services: IServices }) {
         this.api = api;
@@ -98,14 +96,6 @@ export class EmployeeStore implements IEmployeeStore {
     getById(id: string) {
         return this.collection.get(id);
     }
-
-    fetchRanks = new RequestModel({
-        shouldRun: () => !this.listRanks.length,
-        run: async () => {
-            const res = await this.api.employee.getlistRanks();
-            this.listRanks.push(res.map(createRank));
-        },
-    });
 
     create = new RequestModel({
         run: async (data: ICreateValue<IEmployeeData>) => {
@@ -163,5 +153,30 @@ export class EmployeeStore implements IEmployeeStore {
             this.collection.set(res.id, createEmployee(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    subscribeRanks = new RequestModel({
+        cachePolicy: 'cache-first',
+        run: async () => {
+            await this.api.employee.subscribeRank({}, (values: ISubscriptionDocument<IRankDTO>[]) => {
+                const create: IRankData[] = [];
+                const update: IRankData[] = [];
+                const remove: string[] = [];
+
+                values.forEach(value => {
+                    if (value.type === 'removed') {
+                        remove.push(value.data.id);
+                    } else if (value.type === 'added') {
+                        create.push(createRank(value.data));
+                    } else if (value.type === 'modified') {
+                        update.push(createRank(value.data));
+                    }
+                });
+
+                this.collectionRanks.set(create);
+                this.collectionRanks.update(update);
+                this.collectionRanks.remove(remove);
+            });
+        },
     });
 }

@@ -16,3 +16,4 @@ export * from './document';
 export * from './map';
 export * from './book';
 export * from './common';
+export * from './current-user';

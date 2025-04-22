@@ -1,8 +1,8 @@
-import { type IBookDB } from 'shared-my';
+import { type IBookTypeDB, type IBookDB } from 'shared-my';
 
 import { type IDBBase, type IUpdateValue, type ICreateValue, type ISubscriptionDocument, type IQuery } from '~/common';
 
-import { type IBookDTO } from '../dto';
+import { type IBookTypeDTO, type IBookDTO } from '../dto';
 
 export interface IBookAPI {
     getList: (query?: IQuery) => Promise<IBookDTO[]>;
@@ -11,12 +11,14 @@ export interface IBookAPI {
     remove: (id: string) => Promise<void>;
     get: (id: string) => Promise<IBookDTO>;
     subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => Promise<void>;
+    subscribeBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
 }
 
 export class BookAPI implements IBookAPI {
     constructor(
         private db: {
             book: IDBBase<IBookDB>;
+            bookType: IDBBase<IBookTypeDB>;
         },
     ) {}
 
@@ -53,5 +55,9 @@ export class BookAPI implements IBookAPI {
 
     subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => {
         return this.db.book.subscribe(args, callback);
+    };
+
+    subscribeBookType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => {
+        return this.db.bookType.subscribe(args, callback);
     };
 }

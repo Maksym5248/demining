@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Input, Drawer, Spin, Divider, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE, explosiveObjectStatuses, measurement } from 'shared-my';
+import { MIME_TYPE, measurement } from 'shared-my';
 import { type IFieldData } from 'shared-my-client';
 
 import { FieldMulty, FieldRange, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
@@ -64,7 +64,7 @@ const getParams = ({
 };
 
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-    const { explosive, viewer } = useStore();
+    const { explosive, viewer, common } = useStore();
     const wizard = useWizard({ id, mode });
 
     const currentExplosive = explosive.collection.get(id as string);
@@ -168,9 +168,14 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                             )}
                         </Form.Item>
                     </Form.Item>
-                    {viewer.user?.isContentAdmin && (
+                    {viewer?.permissions.dictionary.approve() && (
                         <Form.Item label="Статус" name="status">
-                            <Select options={explosiveObjectStatuses} />
+                            <Select
+                                options={common.collections.statuses.asArray.map(el => ({
+                                    value: el.id,
+                                    label: el.displayName,
+                                }))}
+                            />
                         </Form.Item>
                     )}
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>

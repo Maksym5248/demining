@@ -1,8 +1,8 @@
 {
     "name": "ammo",
     "private": true,
-    "version": "1.5.0",
-    "build-number": 64,
+    "version": "1.6.0",
+    "build-number": 66,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
         "android:prod": "react-native run-android --mode=proddebug --appIdSuffix=prod",
@@ -24,6 +24,7 @@
         "update:build-number": "/bin/sh ./bin/update-build-number.sh",
         "clone": "/bin/sh ./bin/clone-base64.sh",
         "prepare:env": "/bin/sh ./bin/prepare-env.sh",
+        "prepare:gem": "bundle install",
         "postinstall": "cd ../../ && yarn patch-package"
     },
     "dependencies": {

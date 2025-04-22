@@ -1,22 +1,23 @@
-import { ranksData, type IEmployeeDB } from 'shared-my';
+import { type IRankDB, type IEmployeeDB } from 'shared-my';
 
-import { type ICreateValue, type IDBBase, type IQuery, type IUpdateValue } from '~/common';
+import { type ISubscriptionDocument, type ICreateValue, type IDBBase, type IQuery, type IUpdateValue } from '~/common';
 
-import { type IRankDTO, type IEmployeeDTO } from '../dto';
+import { type IEmployeeDTO } from '../dto';
 
 export interface IEmployeeAPI {
     create: (value: ICreateValue<IEmployeeDTO>) => Promise<IEmployeeDTO>;
     update: (id: string, value: IUpdateValue<IEmployeeDTO>) => Promise<IEmployeeDTO>;
     remove: (id: string) => Promise<string>;
-    getlistRanks: () => Promise<IRankDTO[]>;
     getList: (query?: IQuery) => Promise<IEmployeeDTO[]>;
     get: (id: string) => Promise<IEmployeeDTO>;
+    subscribeRank: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IRankDB>[]) => void) => Promise<void>;
 }
 
 export class EmployeeAPI implements IEmployeeAPI {
     constructor(
         private db: {
             employee: IDBBase<IEmployeeDB>;
+            rank: IDBBase<IRankDB>;
         },
     ) {}
 
@@ -32,9 +33,9 @@ export class EmployeeAPI implements IEmployeeAPI {
             ...(query ?? {}),
         });
 
-    async getlistRanks() {
-        return ranksData;
-    }
+    subscribeRank = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IRankDB>[]) => void) => {
+        return this.db.rank.subscribe(args, callback);
+    };
 
     get = async (id: string): Promise<IEmployeeDTO> => {
         const res = await this.db.employee.get(id);

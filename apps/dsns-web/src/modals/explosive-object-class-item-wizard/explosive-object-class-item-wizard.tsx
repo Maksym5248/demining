@@ -1,6 +1,6 @@
 import { Form, Drawer, Input, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { type EXPLOSIVE_OBJECT_COMPONENT, explosiveObjectComponentData } from 'shared-my';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 import { useItemStore } from 'shared-my-client';
 
 import { WizardButtons, WizardFooter, Select } from '~/components';
@@ -75,8 +75,8 @@ export const ExplosiveObjectClassItemWizardModal = observer(
                         <Form.Item label="Частина" name="component" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                             <Select
                                 placeholder="Вибрати"
-                                options={explosiveObjectComponentData.map(el => ({
-                                    label: el.name,
+                                options={store.explosiveObject.collectionComponents.asArray.map(el => ({
+                                    label: el.displayName,
                                     value: el.id,
                                 }))}
                             />

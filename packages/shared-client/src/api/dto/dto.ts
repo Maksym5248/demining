@@ -12,7 +12,6 @@ import {
     type IEquipmentActionDB,
     type IMissionReportDB,
     type IMapViewActionDB,
-    type IUserDB,
     type IOrganizationDB,
     type IDocumentDB,
     type IExplosiveDeviceActionDB,
@@ -26,6 +25,13 @@ import {
     type IBookDB,
     type IRangeDB,
     type IFieldDB,
+    type IUserInfoDB,
+    type IUserAccessDB,
+    type IMemberDB,
+    type IStatusDB,
+    type IBookTypeDB,
+    type IExplosiveDeviceTypeDB,
+    type IMissionRequestTypeDB,
 } from 'shared-my';
 
 import { type IExplosiveObjectDetailsDTO } from './explosive-object';
@@ -48,6 +54,7 @@ export type IOrderDTOParams = Omit<IOrderDB, 'updatedAt' | 'createdAt' | 'id' | 
 };
 
 export type IMissionRequestDTO = IMissionRequestDB;
+export type IMissionRequestTypeDTO = IMissionRequestTypeDB;
 export interface IMissionRequestSumDTO {
     total: number;
 }
@@ -62,7 +69,7 @@ export interface IExplosiveObjectActionSumDTO {
 }
 
 export type IExplosiveDeviceDTO = IExplosiveDeviceDB;
-
+export type IExplosiveDeviceTypeDTO = IExplosiveDeviceTypeDB;
 export type IExplosiveActionDTO = IExplosiveDeviceActionDB;
 
 export interface IExplosiveActionSumDTO {
@@ -96,6 +103,7 @@ export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = Omit<IMapViewActionDB, 'geo'>;
 export type IDocumentDTO = IDocumentDB;
 export type IBookDTO = IBookDB;
+export type IBookTypeDTO = IBookTypeDB;
 
 export type IMissionReportDTO = IMissionReportDB;
 export interface IMissionReportFullDTO extends IMissionReportDTO {
@@ -183,18 +191,33 @@ export interface IMissionReportDTOParamsUpdate {
     address: string;
 }
 
-export interface ICurrentUserDTO extends Omit<IUserDB, 'organizationId'> {
+export interface ICurrentUserDTO {
+    id: string;
+    info: IUserInfoDB;
+    access: IUserAccessDB;
+    member: IMemberDB;
     organization: IUserOrganizationDTO | null;
 }
 
-export type IUserDTO = IUserDB;
+export type IUserDTO = {
+    id: string;
+    info: IUserInfoDB;
+    access: IUserAccessDB;
+    member: IMemberDB;
+};
 
-export type IOrganizationDTO = Omit<IOrganizationDB, 'membersIds'>;
+export type IUpdateUserDTO = {
+    info?: Omit<IUserInfoDB, 'id' | 'createdAt' | 'updatedAt'>;
+    access?: Partial<Omit<IUserAccessDB, 'id' | 'createdAt' | 'updatedAt'>>;
+    member?: Omit<IMemberDB, 'id' | 'createdAt' | 'updatedAt'>;
+};
 
-export type IUserOrganizationDTO = Omit<IOrganizationDB, 'membersIds'>;
+export type IOrganizationDTO = IOrganizationDB;
+
+export type IUserOrganizationDTO = Omit<IOrganizationDB, 'search'>;
 
 export type ICreateOrganizationDTO = Pick<IOrganizationDB, 'name'>;
-export type ICreateOrganizationMembersDTO = Pick<IOrganizationDB, 'membersIds'>;
+export type ICreateOrganizationMembersDTO = IOrganizationDB;
 
 export interface IGetAllInRectParams {
     topLeft: IPointDB;
@@ -206,3 +229,5 @@ export type IRangeDTO = IRangeDB;
 export interface IExplosiveDTOParams extends Omit<IExplosiveDTO, 'imageUri'> {
     image?: File;
 }
+
+export type IStatusDTO = IStatusDB;

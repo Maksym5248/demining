@@ -1,10 +1,14 @@
-import { type EXPLOSIVE_OBJECT_COMPONENT, EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { type EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS } from 'shared-my';
 
 interface ISelf {
     getStores: () => {
         viewer?: {
+            permissions: {
+                dictionary: {
+                    edit: () => boolean;
+                };
+            };
             user?: {
-                isAuthor: boolean;
                 data?: {
                     organization?: {
                         id: string;
@@ -16,7 +20,7 @@ interface ISelf {
 }
 
 export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_COMPONENT) => {
-    if (self?.getStores()?.viewer?.user?.isAuthor)
+    if (self?.getStores()?.viewer?.permissions?.dictionary?.edit())
         return component
             ? {
                   where: {
@@ -28,7 +32,7 @@ export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_CO
     if (!self?.getStores()?.viewer?.user?.data?.organization?.id) {
         return {
             where: {
-                status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                status: APPROVE_STATUS.CONFIRMED,
                 component: component,
             },
         };
@@ -37,12 +41,12 @@ export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_CO
     return {
         or: [
             {
-                status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                status: APPROVE_STATUS.CONFIRMED,
                 component: component,
             },
             {
                 organizationId: self.getStores()?.viewer?.user?.data?.organization?.id,
-                status: { '!=': EXPLOSIVE_OBJECT_STATUS.CONFIRMED },
+                status: { '!=': APPROVE_STATUS.CONFIRMED },
                 component: component,
             },
         ],

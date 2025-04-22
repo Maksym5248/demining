@@ -1,6 +1,6 @@
 {
     "name": "functions",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "main": "dist/index.js",
     "private": true,
     "engines": {
@@ -23,9 +23,13 @@
         "_isolate": "yarn isolate",
         "deploy:functions:dev": "yarn isolate && firebase deploy --project dsns-dev-85963 --only functions",
         "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions",
-        "migrate": "ts-node ./src/migrations/explosive-object/v2/api"
+        "setpolicy": "firebase functions:artifacts:setpolicy",
+        "migrate": "ts-node ./src/migrations/explosive-object/v3/api",
+        "script": "export GOOGLE_APPLICATION_CREDENTIALS=\"./firebase-adminsdk.json\" && ts-node ./src/migrations/common/v1/translate-existing-data",
+        "export:data": "ts-node ./src/export/export-data"
     },
     "dependencies": {
+        "@google-cloud/translate": "^9.0.1",
         "firebase-admin": "^12.1.1",
         "firebase-functions": "^5.0.1",
         "shared-my": "*"

@@ -1,43 +1,55 @@
 import { makeAutoObservable } from 'mobx';
-import { ROLES } from 'shared-my';
+import { type ROLES } from 'shared-my';
 
-import { type IDataModel } from '~/models';
+import { type IUserAPI } from '~/api';
+import { RequestModel, type IDataModel } from '~/models';
+import { type IMessage } from '~/services';
 
-import { type IUserData } from './user.schema';
+import { type IUpdateUserParams, type IUserData } from './user.schema';
 
 export interface IUser extends IDataModel<IUserData> {
-    isRootAdmin: boolean;
-    isOrganizationAdmin: boolean;
-    isOrganizationMember: boolean;
-    isAuthor: boolean;
+    hasRole(role: ROLES): boolean;
+    update: RequestModel<[user: IUpdateUserParams]>;
+}
+
+interface IApi {
+    user: IUserAPI;
+}
+
+interface IServices {
+    message: IMessage;
 }
 
 export class User implements IUser {
     data: IUserData;
+    api: IApi;
+    services: IServices;
 
-    constructor(data: IUserData) {
+    constructor(data: IUserData, params: { api: IApi; services: IServices }) {
         this.data = data;
+        this.api = params.api;
+        this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    updateFields(data: Partial<IUserData>) {
+        Object.assign(this.data, data);
     }
 
     get id() {
         return this.data.id;
     }
 
-    get isRootAdmin() {
-        return this.data.roles.includes(ROLES.ROOT_ADMIN);
+    hasRole(role: ROLES) {
+        return !!this.data.access[role];
     }
 
-    get isOrganizationAdmin() {
-        return this.data.roles.includes(ROLES.ORGANIZATION_ADMIN) && !!this.data.organizationId;
-    }
-
-    get isOrganizationMember() {
-        return !!this.data.organizationId;
-    }
-
-    get isAuthor() {
-        return this.data.roles.includes(ROLES.AUTHOR);
-    }
+    update = new RequestModel({
+        run: async (user: IUpdateUserParams) => {
+            const res = await this.api.user.update(this.id, user);
+            this.updateFields(res);
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
 }

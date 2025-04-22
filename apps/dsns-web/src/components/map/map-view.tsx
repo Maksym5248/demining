@@ -51,7 +51,7 @@ function Component<T extends IMapItem>({
 
     const { mapOptions, toggleMapType } = useMapOptions({ isPictureType: false, isCreating, drawing });
 
-    const mapRef = useRef<google.maps.Map>();
+    const mapRef = useRef<google.maps.Map>(null);
 
     const [isActiveStick, setActiveStick] = useState(initialIsActiveStick);
     const [isVisibleInArea, setVisibleInArea] = useState(initialIsVisibleInArea);

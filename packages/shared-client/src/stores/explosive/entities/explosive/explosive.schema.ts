@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { APPROVE_STATUS } from 'shared-my';
 
 import { type IExplosiveDTOParams, type IExplosiveDTO } from '~/api';
 import { type ICreateValue } from '~/common';
@@ -17,7 +17,7 @@ export interface IExplosiveCompositionData {
 
 export interface IExplosiveData {
     id: string;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     name: string;
     imageUri: string | null;
     imageUris: string[] | null;
@@ -55,7 +55,7 @@ export interface IExplosiveDataParams extends Omit<IExplosiveData, 'imageUri'> {
 export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): ICreateValue<IExplosiveDTOParams> => ({
     name: value.name,
     image: value.image ?? undefined,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     imageUris: value?.imageUris ?? [],
     fullName: value.fullName ?? null,
     formula: value.formula ?? null,
@@ -102,7 +102,7 @@ export const createExplosiveDTO = (value: ICreateValue<IExplosiveDataParams>): I
 export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IExplosiveDTOParams>(value => ({
     imageUris: value?.imageUris ?? [],
     name: value.name ?? '',
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     image: value.image ?? undefined,
     fullName: value.fullName ?? null,
     formula: value.formula ?? null,
@@ -148,7 +148,7 @@ export const updateExplosiveDTO = data.createUpdateDTO<IExplosiveDataParams, IEx
 
 export const createExplosive = (value: IExplosiveDTO): IExplosiveData => ({
     id: value.id,
-    status: value.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value.status ?? APPROVE_STATUS.PENDING,
     name: value.name,
     imageUri: value.imageUri,
     imageUris: value?.imageUris ?? [],

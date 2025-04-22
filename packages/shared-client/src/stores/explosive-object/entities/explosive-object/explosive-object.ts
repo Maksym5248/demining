@@ -1,11 +1,6 @@
 import { uniq } from 'lodash';
 import { makeAutoObservable } from 'mobx';
-import {
-    EXPLOSIVE_OBJECT_STATUS,
-    EXPLOSIVE_OBJECT_TYPE,
-    explosiveObjectComponentData,
-    type IExplosiveObjectComponentNotDB,
-} from 'shared-my';
+import { APPROVE_STATUS, EXPLOSIVE_OBJECT_TYPE } from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -23,6 +18,7 @@ import {
 import { type INode, type IClassifications } from '../../classifications';
 import { type IExplosiveObjectClass, type IExplosiveObjectClassData } from '../explosive-object-class';
 import { type IExplosiveObjectClassItemData, type IExplosiveObjectClassItem } from '../explosive-object-class-item';
+import { type IExplosiveObjectComponent, type IExplosiveObjectComponentData } from '../explosive-object-component';
 import { createExplosiveObjectDetails, type IExplosiveObjectDetails, type IExplosiveObjectDetailsData } from '../explosive-object-details';
 import { type IExplosiveObjectType, type IExplosiveObjectTypeData } from '../explosive-object-type';
 
@@ -40,6 +36,7 @@ interface ICollections {
     classItem: ICollectionModel<IExplosiveObjectClassItem, IExplosiveObjectClassItemData>;
     country: ICollectionModel<ICountry, ICountryData>;
     details: ICollectionModel<IExplosiveObjectDetails, IExplosiveObjectDetailsData>;
+    component: ICollectionModel<IExplosiveObjectComponent, IExplosiveObjectComponentData>;
 }
 
 interface IStores {
@@ -59,7 +56,7 @@ export interface IExplosiveObject extends IDataModel<IExplosiveObjectData> {
     displayName: string;
     signName: string;
     type?: IExplosiveObjectType;
-    component?: IExplosiveObjectComponentNotDB;
+    component?: IExplosiveObjectComponentData;
     details?: IExplosiveObjectDetails;
     country?: ICountry;
     isConfirmed: boolean;
@@ -97,7 +94,7 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get component() {
-        return explosiveObjectComponentData.find(({ id }) => id === this.data.component);
+        return this.collections.component.get(this.data.component)?.data;
     }
 
     get details() {
@@ -161,11 +158,11 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get isConfirmed() {
-        return this.data.status === EXPLOSIVE_OBJECT_STATUS.CONFIRMED;
+        return this.data.status === APPROVE_STATUS.CONFIRMED;
     }
 
     get isPending() {
-        return this.data.status === EXPLOSIVE_OBJECT_STATUS.PENDING;
+        return this.data.status === APPROVE_STATUS.PENDING;
     }
 
     get isCurrentOrganization() {
@@ -173,10 +170,8 @@ export class ExplosiveObject implements IExplosiveObject {
     }
 
     get isEditable() {
-        return (
-            !!this.getStores()?.viewer?.user?.isContentAdmin ||
-            !!(this.getStores()?.viewer?.user?.isAuthor && this.data.authorId === this.getStores()?.viewer?.user?.data.id)
-        );
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.edit(this.data);
     }
 
     get classItemIds() {

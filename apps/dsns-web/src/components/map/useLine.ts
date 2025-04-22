@@ -40,7 +40,7 @@ export function useLine({
     setCircle,
     setLine,
 }: IUseLineParams): IUseLineReturn {
-    const polylineRef = useRef<google.maps.Polyline>();
+    const polylineRef = useRef<google.maps.Polyline>(null);
 
     const onLoadPolyline = useCallback((newPolylineRef: google.maps.Polyline) => {
         polylineRef.current = newPolylineRef;

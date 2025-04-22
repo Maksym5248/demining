@@ -2,26 +2,36 @@ import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { auth, https } from 'firebase-functions';
 import * as logger from 'firebase-functions/logger';
-import { type IUserDB, ROLES } from 'shared-my';
+import { type IMemberDB, type IUserAccessDB, type IUserInfoDB, ROLES, TABLES } from 'shared-my';
 
-const createUserRef = (uid: string) => getFirestore().collection('USER').doc(uid);
+const createUserInfoRef = (uid: string) => getFirestore().collection(TABLES.USER_INFO).doc(uid);
+const createUserAccessRef = (uid: string) => getFirestore().collection(TABLES.USER_ACCESS).doc(uid);
+const createMemberRef = (uid: string) => getFirestore().collection(TABLES.MEMBER).doc(uid);
 
-const customUserClaims = async (userData: IUserDB) => {
+const customUserClaims = async ({
+    access,
+    member,
+}: {
+    access: IUserAccessDB;
+    member: IMemberDB | null;
+}) => {
     try {
         const customClaims = {
-            ROOT_ADMIN: userData?.roles.includes(ROLES.ROOT_ADMIN),
-            ORGANIZATION_ADMIN: userData?.roles.includes(ROLES.ORGANIZATION_ADMIN),
-            AUTHOR: userData?.roles.includes(ROLES.AUTHOR),
-            organizationId: userData?.organizationId,
+            ROOT_ADMIN: !!access[ROLES.ROOT_ADMIN],
+            ORGANIZATION_ADMIN: !!access[ROLES.ORGANIZATION_ADMIN],
+            AMMO_CONTENT_ADMIN: !!access[ROLES.AMMO_CONTENT_ADMIN],
+            AMMO_VIEWER: !!access[ROLES.AMMO_VIEWER],
+            DEMINING_VIEWER: !!access[ROLES.DEMINING_VIEWER],
+            organizationId: member?.organizationId ?? null,
         };
 
-        await getAuth().setCustomUserClaims(userData.id, customClaims);
+        await getAuth().setCustomUserClaims(access.id, customClaims);
 
-        const message = `Successfully updated token for user: ${userData.id}`;
+        const message = `Successfully updated token for user: ${access.id}`;
         logger.info(message);
         return { message };
     } catch (error) {
-        const errorMessage = `Error claim user: ${userData.id}`;
+        const errorMessage = `Error claim user: ${access.id}`;
         logger.error(errorMessage);
         return { message: errorMessage };
     }
@@ -33,8 +43,11 @@ export const processSignUp = auth.user().onCreate(async user => {
         return;
     }
 
-    const userRef = createUserRef(user.uid);
-    const res = await userRef.get();
+    const userInfoRef = createUserInfoRef(user.uid);
+    const userAccessRef = createUserAccessRef(user.uid);
+    const memberRef = createMemberRef(user.uid);
+
+    const res = await userInfoRef.get();
 
     if (res.exists) {
         logger.info('User already exist', user);
@@ -42,16 +55,26 @@ export const processSignUp = auth.user().onCreate(async user => {
     }
 
     try {
-        const userData = {
+        const common = {
             id: user.uid,
-            email: user.email,
-            roles: [],
-            organizationId: null,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
         };
 
-        await userRef.set(userData);
+        await Promise.all([
+            userInfoRef.set({
+                ...common,
+                email: user.email,
+            } as IUserInfoDB),
+            userAccessRef.set({
+                ...common,
+                [ROLES.AMMO_VIEWER]: true,
+            } as IUserAccessDB),
+            memberRef.set({
+                ...common,
+                organizationId: null,
+            } as IMemberDB),
+        ]);
     } catch (error) {
         const errorMessage = `Error creating user: ${user.uid}`;
         logger.error(errorMessage);
@@ -71,12 +94,21 @@ export const refreshToken = https.onCall(async (data, context) => {
         return { message: 'uuid not defined' };
     }
 
-    const userRef = createUserRef(uid);
-    const res = await userRef.get();
-    const user = res.data() as IUserDB;
+    const userAccessRef = createUserAccessRef(uid);
+    const membersRef = createMemberRef(uid);
+
+    const [userAccessRes, memberRes] = await Promise.all([userAccessRef.get(), membersRef.get()]);
+
+    if (!userAccessRes.exists) {
+        logger.info('User access not found', uid);
+        return { message: 'User access not found' };
+    }
+
+    const access = userAccessRes.data() as IUserAccessDB;
+    const member = memberRes.data() as IMemberDB;
 
     try {
-        await customUserClaims(user);
+        await customUserClaims({ access, member });
         return { success: true };
     } catch (e) {
         logger.error('Error updating custom claims:', e);

@@ -19,6 +19,7 @@ import {
     ExplosiveAPI,
     BookAPI,
     CommonAPI,
+    CurrentUserAPI,
 } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
@@ -47,8 +48,10 @@ export const Api = {
     missionRequest: new MissionRequestAPI(DB),
     order: new OrderAPI(DB),
     transport: new TransportAPI(DB),
-    user: new UserAPI(DB, services),
+    user: new UserAPI(DB),
+    currentUser: new CurrentUserAPI(DB, services),
     organization: new OrganizationAPI(DB),
     document: new DocumentAPI(DB, services),
-    map: new MapAPI(DB), // test
+    map: new MapAPI(DB),
+    setLang: (lang: 'uk' | 'en') => DB.setLang(lang),
 };

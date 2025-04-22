@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { type BOOK_TYPE, EXPLOSIVE_OBJECT_STATUS, MIME_TYPE } from 'shared-my';
+import { type BOOK_TYPE, APPROVE_STATUS, MIME_TYPE } from 'shared-my';
 
 import { type IBookDTO } from '~/api';
 import { data, dates, type ICreateValue } from '~/common';
@@ -8,7 +8,7 @@ export interface IBookData {
     id: string;
     name: string;
     mime: MIME_TYPE;
-    status: EXPLOSIVE_OBJECT_STATUS;
+    status: APPROVE_STATUS;
     imageUri: string;
     size: number;
     uri: string;
@@ -32,7 +32,7 @@ export const updateBookDTO = data.createUpdateDTO<IBookData, IBookDTO>(value => 
     name: value?.name ?? '',
     typeV2: value.type ?? [],
     mime: value?.mime ?? MIME_TYPE.PNG,
-    status: value?.status ?? EXPLOSIVE_OBJECT_STATUS.PENDING,
+    status: value?.status ?? APPROVE_STATUS.PENDING,
     imageUri: value?.imageUri ?? '',
     size: value?.size ?? 0,
     uri: value?.uri ?? '',

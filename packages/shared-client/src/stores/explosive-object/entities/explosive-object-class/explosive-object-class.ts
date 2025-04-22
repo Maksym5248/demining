@@ -69,9 +69,7 @@ export class ExplosiveObjectClass implements IExplosiveObjectClass {
     });
 
     get isEditable() {
-        return (
-            !!this.getStores()?.viewer?.user?.isContentAdmin ||
-            !!(this.getStores()?.viewer?.user?.isAuthor && this.data.authorId === this.getStores()?.viewer?.user?.data.id)
-        );
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.edit(this.data);
     }
 }

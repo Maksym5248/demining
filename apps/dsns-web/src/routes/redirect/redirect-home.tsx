@@ -9,14 +9,14 @@ export const RedirectHome = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isAuthorizedDSNS, isAuthor, isOrganizationMember } = store.viewer.user ?? {};
+    const { permissions } = store.viewer ?? {};
 
-    if (isAuthorizedDSNS && isAuthor && !isOrganizationMember) {
-        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
+    if (permissions?.documents.view()) {
+        return <Navigate to={ROUTES.HOME} state={{ from: location }} replace />;
     }
 
-    if (isAuthorizedDSNS) {
-        return <Navigate to={ROUTES.HOME} state={{ from: location }} replace />;
+    if (permissions?.dictionary.viewManagement()) {
+        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
     }
 
     return <Outlet context={context} />;

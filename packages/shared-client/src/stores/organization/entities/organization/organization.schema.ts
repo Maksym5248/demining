@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 
-import { type ICreateOrganizationDTO, type ICreateOrganizationMembersDTO, type IOrganizationDTO } from '~/api';
+import { type ICreateOrganizationDTO, type IOrganizationDTO } from '~/api';
 import { dates } from '~/common';
 
 export interface IOrganizationValue {
@@ -21,8 +21,4 @@ export const createOrganization = (value: Omit<IOrganizationDTO, 'members'>): IO
 
 export const createOrganizationDTO = (value: ICreateOrganizationDTO): ICreateOrganizationDTO => ({
     name: value?.name ?? '',
-});
-
-export const createMembersDTO = (value: string[]): ICreateOrganizationMembersDTO => ({
-    membersIds: value ?? [],
 });

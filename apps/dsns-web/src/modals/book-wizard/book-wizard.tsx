@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Drawer, Spin, Input, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { bookTypes, explosiveObjectStatuses, MIME_TYPE } from 'shared-my';
+import { MIME_TYPE } from 'shared-my';
 
 import { Upload, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
-    const { book, viewer } = useStore();
+    const { book, viewer, common } = useStore();
     const wizard = useWizard({ id, mode });
 
     const currentBook = book.collection.get(id as string);
@@ -122,9 +122,14 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                             }}
                         </Form.Item>
                     </Form.Item>
-                    {viewer.user?.isAuthor && (
+                    {viewer?.permissions.dictionary.approve() && (
                         <Form.Item label="Статус" name="status" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
-                            <Select options={explosiveObjectStatuses} />
+                            <Select
+                                options={common.collections.statuses.asArray.map(el => ({
+                                    value: el.id,
+                                    label: el.displayName,
+                                }))}
+                            />
                         </Form.Item>
                     )}
                     <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
@@ -133,8 +138,8 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Є обов'язковим полем" }]}>
                         <Select
                             mode="multiple"
-                            options={bookTypes.map(el => ({
-                                label: el.name,
+                            options={book.collectionBookType.asArray.map(el => ({
+                                label: el.displayName,
                                 value: el.id,
                             }))}
                         />

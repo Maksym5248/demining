@@ -1,16 +1,27 @@
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_STATUS } from 'shared-my';
+import { APPROVE_STATUS } from 'shared-my';
 
-import { type IBookDTO, type IBookAPI } from '~/api';
+import { type IBookDTO, type IBookAPI, type IBookTypeDTO } from '~/api';
 import { type ICreateValue, type ISubscriptionDocument, data, dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
 
-import { type IBook, Book, createBook, createBookDTO, type IBookData } from './entities';
+import {
+    type IBook,
+    Book,
+    createBook,
+    createBookDTO,
+    type IBookData,
+    type IBookTypeData,
+    createBookType,
+    type IBookType,
+    BookType,
+} from './entities';
 import { type IViewerStore } from '../viewer';
 
 export interface IBookStore {
     collection: ICollectionModel<IBook, IBookData>;
+    collectionBookType: ICollectionModel<IBookType, IBookTypeData>;
     list: ListModel<IBook, IBookData>;
     create: IRequestModel<[ICreateValue<IBookData>]>;
     remove: IRequestModel<[string]>;
@@ -18,6 +29,7 @@ export interface IBookStore {
     fetchList: IRequestModel<[search?: string]>;
     fetchListMore: IRequestModel<[search?: string]>;
     subscribe: RequestModel;
+    subscribeBookType: RequestModel;
 }
 
 interface IApi {
@@ -46,6 +58,15 @@ export class BookStore implements IBookStore {
     collection: ICollectionModel<IBook, IBookData> = new CollectionModel<IBook, IBookData>({
         factory: (data: IBookData) => new Book(data, this),
     });
+
+    collectionBookType: ICollectionModel<IBookType, IBookTypeData> = new CollectionModel<IBookType, IBookTypeData>({
+        factory: (data: IBookTypeData) => new BookType(data),
+    });
+
+    collections = {
+        book: this.collection,
+        bookTypes: this.collectionBookType,
+    };
 
     list = new ListModel<IBook, IBookData>({ collection: this.collection });
 
@@ -112,7 +133,7 @@ export class BookStore implements IBookStore {
             await this.api.book.subscribe(
                 {
                     where: {
-                        status: EXPLOSIVE_OBJECT_STATUS.CONFIRMED,
+                        status: APPROVE_STATUS.CONFIRMED,
                     },
                 },
                 (values: ISubscriptionDocument<IBookDTO>[]) => {
@@ -123,6 +144,31 @@ export class BookStore implements IBookStore {
                     this.collection.remove(remove);
                 },
             );
+        },
+    });
+
+    subscribeBookType = new RequestModel({
+        cachePolicy: 'cache-first',
+        run: async () => {
+            await this.api.book.subscribeBookType({}, (values: ISubscriptionDocument<IBookTypeDTO>[]) => {
+                const create: IBookTypeData[] = [];
+                const update: IBookTypeData[] = [];
+                const remove: string[] = [];
+
+                values.forEach(value => {
+                    if (value.type === 'removed') {
+                        remove.push(value.data.id);
+                    } else if (value.type === 'added') {
+                        create.push(createBookType(value.data));
+                    } else if (value.type === 'modified') {
+                        update.push(createBookType(value.data));
+                    }
+                });
+
+                this.collectionBookType.set(create);
+                this.collectionBookType.update(update);
+                this.collectionBookType.remove(remove);
+            });
         },
     });
 }

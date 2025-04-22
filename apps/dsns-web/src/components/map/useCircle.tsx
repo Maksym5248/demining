@@ -32,7 +32,7 @@ export function useCircle({
     setLine,
     setCircle,
 }: IUseCircleParams): IUseCircleReturn {
-    const circleRef = useRef<google.maps.Circle>();
+    const circleRef = useRef<google.maps.Circle>(null);
 
     const onLoadCircle = useCallback((newCircleRef: google.maps.Circle) => {
         circleRef.current = newCircleRef;

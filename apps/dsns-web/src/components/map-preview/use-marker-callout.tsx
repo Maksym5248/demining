@@ -1,4 +1,4 @@
-import { type MutableRefObject, useMemo } from 'react';
+import { type RefObject, useMemo } from 'react';
 
 import { mathUtils } from 'shared-my-client';
 import { mapUtils, type IMarker, type IPoint } from 'shared-my-client';
@@ -6,7 +6,7 @@ import { mapUtils, type IMarker, type IPoint } from 'shared-my-client';
 interface IUseMarkerCalloutParams {
     marker?: IMarker;
     zoom: number;
-    mapRef?: MutableRefObject<google.maps.Map | undefined>;
+    mapRef?: RefObject<google.maps.Map | null>;
     isVisibleMap: boolean;
     polygonCallout: IPoint[];
 }

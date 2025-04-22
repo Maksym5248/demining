@@ -6,6 +6,7 @@ import {
     type IExplosiveObjectClassDB,
     type IExplosiveObjectClassItemDB,
     type IExplosiveDB,
+    type IExplosiveObjectComponentDB,
 } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
@@ -18,6 +19,7 @@ import {
     type IExplosiveObjectClassItemDTO,
     type IExplosiveObjectFullDTO,
     type IExplosiveObjectDetailsDTO,
+    type IExplosiveObjectComponentDTO,
 } from '../dto';
 import { createImage, updateImage } from '../image';
 
@@ -34,6 +36,10 @@ export interface IExplosiveObjectAPI {
         args: Partial<IQuery> | null,
         callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void,
     ) => Promise<void>;
+    subscribeComponents: (
+        args: Partial<IQuery> | null,
+        callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void,
+    ) => Promise<void>;
 }
 
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
@@ -45,6 +51,7 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             explosiveObject: IDBBase<IExplosiveObjectDB>;
             explosiveObjectDetails: IDBBase<IExplosiveObjectDetailsDB>;
             explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
+            explosiveObjectComponent: IDBBase<IExplosiveObjectComponentDB>;
             explosive: IDBBase<IExplosiveDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
@@ -198,5 +205,9 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
     subscribeDetails = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void) => {
         return this.db.explosiveObjectDetails.subscribe(args, callback);
+    };
+
+    subscribeComponents = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void) => {
+        return this.db.explosiveObjectComponent.subscribe(args, callback);
     };
 }

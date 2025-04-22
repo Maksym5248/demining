@@ -122,6 +122,7 @@ export class RootStore implements IRootStore {
             crashlytics: Crashlytics,
             logger: Logger,
             message: Message,
+            localization: Location,
         };
     }
 
@@ -130,7 +131,7 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
-        this.common = new CommonStore(APPS.DEMINING_WEB, this);
+        this.common = new CommonStore(APPS.DEMINING, this);
         this.viewer = new ViewerStore(this);
         this.auth = new AuthStore(this);
         this.document = new DocumentStore(this);
@@ -165,10 +166,9 @@ export class RootStore implements IRootStore {
             if (user) {
                 this.services.analytics.setUserId(user.uid);
                 await this.services.auth.refreshToken();
-                const res = await this.api.user.get(user.uid);
+                const [res] = await Promise.all([this.api.currentUser.get(user.uid), this.explosiveObject.fetchDeeps.run()]);
 
                 if (res) this.viewer.setUser(createCurrentUser(res));
-                await this.explosiveObject.fetchDeeps.run();
             } else {
                 this.services.analytics.setUserId(null);
                 this.viewer.removeUser();
@@ -188,15 +188,29 @@ export class RootStore implements IRootStore {
 
         this.services.analytics.init();
         this.services.crashlytics.init();
+        this.api.setLang('uk');
 
         try {
             this.viewer.setLoading(true);
             await DB.init();
 
-            this.common.subscribeCountries.run();
-            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+            await Promise.all([
+                this.common.subscribeCountries.run(),
+                this.common.subscribeStatuses.run(),
+                this.common.subscribeMaterials.run(),
+                this.employee.subscribeRanks.run(),
+                this.explosiveObject.subscribe.run(),
+                this.explosiveObject.subscribeDetails.run(),
+                this.explosiveObject.subscribeDeeps.run(),
+                this.explosiveDevice.subscribe.run(),
+                this.explosiveDevice.subscribeType.run(),
+                this.explosive.subscribe.run(),
+                this.book.subscribe.run(),
+                this.book.subscribeBookType.run(),
+                this.missionRequest.subscribeType.run(),
+            ]);
 
-            await this.employee.fetchRanks.run();
+            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
         } catch (e) {
             this.services.logger.error('init', e);
         }

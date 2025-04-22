@@ -9,9 +9,9 @@ export const ViewOrganization = observer(() => {
     const location = useLocation();
     const context = useOutletContext<any>();
 
-    const { isOrganizationMember } = store.viewer.user ?? {};
+    const { permissions } = store.viewer ?? {};
 
-    if (!isOrganizationMember) {
+    if (!permissions?.documents.view()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 
