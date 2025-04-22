@@ -5,11 +5,49 @@ service cloud.firestore {
   
 		match /APP_CONFIG/{id} {
     	allow read: if true;
-      allow create: if false
-      allow update: if false
-      allow delete: if false
+      allow create, update, delete: if false
     }
-    
+
+    match /BOOK_TYPE/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /COUNTRY/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /EXPLOSIVE_DEVICE_TYPE/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /EXPLOSIVE_OBJECT_COMPONENT/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /MATERIAL/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /MISSION_REQUEST_TYPE/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /RANKS/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+
+    match /STATUSES/LANG/{lang}/{id} {
+    	allow read: if true;
+      allow create, update, delete: if false
+    }
+        
     match /USER/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
