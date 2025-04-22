@@ -9,7 +9,7 @@ import {
 } from './common';
 import { type EXPLOSIVE_DEVICE_TYPE, type MATERIAL, type APPROVE_STATUS } from '../enum';
 
-export interface IExplosiveDeviceTypeNotDB {
+export interface IExplosiveDeviceTypeDB {
     id: EXPLOSIVE_DEVICE_TYPE;
     name: string;
 }

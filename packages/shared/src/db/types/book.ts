@@ -1,7 +1,7 @@
 import { type IBaseDB } from './common';
 import { type MIME_TYPE, type APPROVE_STATUS, type BOOK_TYPE } from '../enum';
 
-export interface IBookTypeNotDB {
+export interface IBookTypeDB {
     id: BOOK_TYPE;
     name: string;
 }

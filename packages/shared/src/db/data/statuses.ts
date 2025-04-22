@@ -1,18 +1,17 @@
 import { APPROVE_STATUS } from '../enum';
+import { type IStatusDB } from '../types';
 
-// Note: This is a shared file, but should be used only for ui and not in db
-
-export const explosiveObjectStatuses = [
+export const explosiveObjectStatuses: IStatusDB[] = [
     {
-        value: APPROVE_STATUS.CONFIRMED,
-        label: 'Підтверджено',
+        id: APPROVE_STATUS.CONFIRMED,
+        name: 'Підтверджено',
     },
     {
-        value: APPROVE_STATUS.REJECTED,
-        label: 'Відхилено',
+        id: APPROVE_STATUS.REJECTED,
+        name: 'Відхилено',
     },
     {
-        value: APPROVE_STATUS.PENDING,
-        label: 'Очікує підтвердження',
+        id: APPROVE_STATUS.PENDING,
+        name: 'Очікує підтвердження',
     },
 ];

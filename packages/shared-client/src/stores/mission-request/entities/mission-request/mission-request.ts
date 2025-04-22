@@ -44,7 +44,7 @@ export class MissionRequest implements IMissionRequest {
     }
 
     get displayType() {
-        return missionRequestType.find(el => el.value === this.data.type)?.name;
+        return missionRequestType.find(el => el.id === this.data.type)?.name;
     }
 
     get displayValue() {

@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 import { makeAutoObservable } from 'mobx';
-import { APPROVE_STATUS, EXPLOSIVE_OBJECT_TYPE, explosiveObjectComponentData, type IExplosiveObjectComponentNotDB } from 'shared-my';
+import { APPROVE_STATUS, EXPLOSIVE_OBJECT_TYPE, explosiveObjectComponentData, type IExplosiveObjectComponentDB } from 'shared-my';
 
 import { type IExplosiveObjectAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -54,7 +54,7 @@ export interface IExplosiveObject extends IDataModel<IExplosiveObjectData> {
     displayName: string;
     signName: string;
     type?: IExplosiveObjectType;
-    component?: IExplosiveObjectComponentNotDB;
+    component?: IExplosiveObjectComponentDB;
     details?: IExplosiveObjectDetails;
     country?: ICountry;
     isConfirmed: boolean;

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { APPROVE_STATUS, explosiveDeviceTypeData, type IExplosiveDeviceTypeNotDB } from 'shared-my';
+import { APPROVE_STATUS, explosiveDeviceTypeData, type IExplosiveDeviceTypeDB } from 'shared-my';
 
 import { type IExplosiveDeviceAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -10,7 +10,7 @@ import { type IViewerStore } from '~/stores/viewer';
 import { type IExplosiveDeviceData, updateExplosiveDeviceDTO, createExplosiveDevice } from './explosive-device.schema';
 
 export interface IExplosiveDevice extends IDataModel<IExplosiveDeviceData> {
-    type?: IExplosiveDeviceTypeNotDB;
+    type?: IExplosiveDeviceTypeDB;
     imageUri?: string | null;
     displayName: string;
     isCurrentOrganization: boolean;

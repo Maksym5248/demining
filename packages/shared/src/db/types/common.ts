@@ -1,6 +1,6 @@
 import { type Timestamp as TimestampInternal } from '@firebase/firestore-types';
 
-import { type EXPLOSIVE_OBJECT_COMPONENT, type MATERIAL, type DOCUMENT_TYPE } from '../enum';
+import { type EXPLOSIVE_OBJECT_COMPONENT, type MATERIAL, type DOCUMENT_TYPE, type APPROVE_STATUS } from '../enum';
 
 export type Timestamp = TimestampInternal;
 
@@ -52,12 +52,12 @@ export interface IWeightDB {
     variant: number | null;
 }
 
-export interface IExplosiveObjectComponentNotDB {
+export interface IExplosiveObjectComponentDB {
     id: EXPLOSIVE_OBJECT_COMPONENT;
     name: string;
 }
 
-export interface IMaterialNotDB {
+export interface IMaterialDB {
     id: MATERIAL;
     name: string;
 }
@@ -67,8 +67,8 @@ export interface ICountryDB {
     name: string;
 }
 
-export interface IMaterialDB {
-    id: string;
+export interface IStatusDB {
+    id: APPROVE_STATUS;
     name: string;
 }
 

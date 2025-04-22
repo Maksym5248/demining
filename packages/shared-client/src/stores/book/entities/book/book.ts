@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { bookTypesMap, type IBookTypeNotDB } from 'shared-my';
+import { bookTypesMap, type IBookTypeDB } from 'shared-my';
 
 import { type IBookAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -14,7 +14,7 @@ export interface IBook extends IDataModel<IBookData> {
     updateFields(data: Partial<IBookData>): void;
     update: IRequestModel<[IUpdateValue<IBookData>]>;
     isEditable: boolean;
-    types: IBookTypeNotDB[];
+    types: IBookTypeDB[];
 }
 
 interface IApi {

@@ -1,16 +1,17 @@
 import { MISSION_REQUEST_TYPE } from '../enum';
+import { type IMissionRequestTypeDB } from '../types';
 
-export const missionRequestType = [
+export const missionRequestType: IMissionRequestTypeDB[] = [
     {
         name: 'Заявка',
-        value: MISSION_REQUEST_TYPE.APPLICATION,
+        id: MISSION_REQUEST_TYPE.APPLICATION,
     },
     {
         name: 'Лист',
-        value: MISSION_REQUEST_TYPE.LETTER,
+        id: MISSION_REQUEST_TYPE.LETTER,
     },
     {
         name: 'Договір',
-        value: MISSION_REQUEST_TYPE.CONTRACT,
+        id: MISSION_REQUEST_TYPE.CONTRACT,
     },
 ];

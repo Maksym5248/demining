@@ -76,9 +76,9 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                     }>
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={missionRequestType.map(({ name, value }) => ({
+                            options={missionRequestType.map(({ name, id }) => ({
                                 label: name,
-                                value,
+                                value: id,
                             }))}
                         />
                     </Form.Item>
