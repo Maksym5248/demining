@@ -1,5 +1,3 @@
-import { get } from 'lodash'; // Using lodash for safe nested access and cloning
-
 export const SOURCE_LANG = 'uk';
 export const TARGET_LANG = 'en';
 
@@ -37,11 +35,15 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
         'foldingShort',
         'extractionShort',
         'timeWork',
+        'targetSensor',
         'damageV2.action',
+        'damageV2.additional[].name', // Translate 'value' in each item of 'damageV2.additional' array
         'damageV2.additional[].value', // Translate 'value' in each item of 'damageV2.additional' array
         'sizeV2[].name', // Translate 'value' in each item of 'damageV2.additional' array
         'sensitivityV2.sensitivity',
+        'sensitivityV2.additional[].name', // Translate 'value' in each item of 'sensitivityV2.additional' array
         'sensitivityV2.additional[].value', // Translate 'value' in each item of 'sensitivityV2.additional' array
+        'additional[].name',
         'additional[].value', // Translate 'value' in each item of 'additional' array
         'purpose.description',
         'structure.description',
@@ -58,6 +60,7 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
         'name',
         'fullName',
         'description',
+        'additional[].name',
         'additional[].value',
         'composition[].name',
         'composition[].description',
@@ -70,14 +73,15 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
         'fullName',
         'description',
         'sizeV2[].name', // Translate 'value' in each item of 'damageV2.additional' array
+        'filler[].name', // Translate 'value' in each item of 'damageV2.additional' array
         'filler[].description', // Translate 'value' in each item of 'damageV2.additional' array
         'purpose.description',
         'structure.description',
         'action.description',
+        'additional[].name',
         'additional[].value',
         'marking.description',
         'usage.description',
-        'marking.description',
     ],
     BOOK_TYPE: ['name'],
     COUNTRY: ['name'],
@@ -97,104 +101,81 @@ interface PathInfo {
 /**
  * Recursively finds all strings to translate based on the configuration.
  * @param data The object/array to traverse.
- * @param configPaths The configured dot-notation paths for this data structure.
- * @param currentPath Internal: The current path being traversed.
+ * @param configPaths The configured dot-notation paths (e.g., "prop.subprop", "array[].field").
+ * @param currentPath Internal: The current path being traversed from the root.
  * @param textsToTranslate Output: Array to collect texts.
  * @param pathsToUpdate Output: Array to collect path info for reconstruction.
  */
 export function findTranslatableTexts(
     data: any,
-    configPaths: string[],
-    currentPath: (string | number)[] = [],
+    configPaths: string[], // Config paths relevant to the *root* object structure
+    currentPath: (string | number)[] = [], // Path from root to current 'data'
     textsToTranslate: string[] = [],
     pathsToUpdate: PathInfo[] = [],
 ): { textsToTranslate: string[]; pathsToUpdate: PathInfo[] } {
-    if (!data) {
+    // Base case: If data is not an object or array, or is null, stop recursion.
+    if (!data || typeof data !== 'object') {
         return { textsToTranslate, pathsToUpdate };
     }
 
-    // Check direct paths first (for non-array fields at the current level)
-    for (const configPath of configPaths) {
-        const pathSegments = configPath.split('.');
-        const currentPathStr = currentPath.join('.');
+    // Iterate through keys of the current data object/array
+    for (const key in data) {
+        // Ensure it's an own property and handle potential prototype pollution if needed
+        if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
 
-        // Handle direct string match at the current level
-        if (
-            pathSegments.length === currentPath.length + 1 &&
-            configPath.startsWith(currentPathStr) &&
-            !configPath.includes('[]') // Ensure it's not an array config path
-        ) {
-            const field = pathSegments[pathSegments.length - 1];
-            // Use lodash get relative to the current data object
-            const value = get(data, field);
-            if (typeof value === 'string' && value.trim() !== '') {
-                const fullPath = [...currentPath, field];
-                // Avoid duplicates if paths overlap in config (simple check)
-                if (!pathsToUpdate.some(p => p.path.join('.') === fullPath.join('.'))) {
-                    textsToTranslate.push(value);
-                    pathsToUpdate.push({ path: fullPath, originalValue: value });
-                }
+        const value = data[key];
+        // Construct the path to the current value, handling array indices vs object keys
+        const newPath = [...currentPath, Array.isArray(data) ? parseInt(key, 10) : key];
+        const newPathStr = newPath.join('.'); // Full path string from root, e.g., "sizeV2.0.name"
+
+        // --- Path Matching Logic ---
+        // 1. Check if the exact path string matches a config path (e.g., "purpose.description")
+        let isMatch = configPaths.includes(newPathStr);
+
+        // 2. Check if the path matches an array item field config
+        // Convert path like "sizeV2.0.name" to "sizeV2.[].name" for comparison
+        if (!isMatch) {
+            const arrayItemFieldPath = newPathStr.replace(/\.(\d+)\./g, '.[].'); // Handle nested arrays too
+            const arrayItemPathEnd = newPathStr.replace(/\.(\d+)$/, '.[]'); // Handle end of path array index
+            if (
+                configPaths.includes(arrayItemFieldPath) ||
+                configPaths.includes(arrayItemPathEnd)
+            ) {
+                isMatch = true;
             }
         }
-    }
+        // --- End Path Matching ---
 
-    // Traverse deeper (objects and arrays)
-    if (typeof data === 'object') {
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                const value = data[key];
-                const newPath = [...currentPath, key];
-                const newPathStr = newPath.join('.');
-
-                // Check if any config path starts with this new path OR matches an array pattern
-                const relevantConfigPaths = configPaths.filter(
-                    p =>
-                        p.startsWith(newPathStr + '.') || // Matches nested objects/fields
-                        p === newPathStr || // Matches the exact path (for direct objects)
-                        p.startsWith(newPathStr.replace(/\.\d+/g, '.[]') + '.'), // Matches array item fields
-                );
-
-                if (relevantConfigPaths.length > 0) {
-                    if (Array.isArray(value)) {
-                        // --- CORRECTED ARRAY HANDLING ---
-                        const arrayPatternBase = newPathStr + '[]'; // e.g., "sizeV2[]"
-                        value.forEach((item, index) => {
-                            const itemPath = [...newPath, index]; // Path to the current item, e.g., ['sizeV2', 0]
-                            // Find config paths relevant to this item's fields (e.g., "sizeV2[].name")
-                            const itemConfigPaths = configPaths
-                                .filter(p => p.startsWith(arrayPatternBase + '.'))
-                                .map(p => p.substring(arrayPatternBase.length + 1)); // Extract sub-field, e.g., "name"
-
-                            if (itemConfigPaths.length > 0) {
-                                // If the item itself is an object, recurse with the sub-paths
-                                if (item && typeof item === 'object') {
-                                    findTranslatableTexts(
-                                        item,
-                                        itemConfigPaths, // Pass only the relevant sub-paths (e.g., ['name'])
-                                        itemPath, // Pass the correct path to the item
-                                        textsToTranslate,
-                                        pathsToUpdate,
-                                    );
-                                }
-                                // If item is a simple string and config is just 'array[]' (not currently supported by config)
-                                // else if (typeof item === 'string' && configPaths.includes(arrayPatternBase)) { ... }
-                            }
-                        });
-                        // --- END CORRECTION ---
-                    } else if (typeof value === 'object' && value !== null) {
-                        // Recurse for nested objects
-                        findTranslatableTexts(
-                            value,
-                            configPaths, // Pass the original configPaths down
-                            newPath,
-                            textsToTranslate,
-                            pathsToUpdate,
-                        );
-                    }
-                    // Direct string check is now handled correctly within the recursion or the initial loop
-                }
+        // If the current path is configured for translation and the value is a string
+        if (isMatch && typeof value === 'string' && value.trim() !== '') {
+            // Avoid adding duplicates if somehow traversed twice (shouldn't happen with this logic)
+            if (!pathsToUpdate.some(p => p.path.join('.') === newPathStr)) {
+                textsToTranslate.push(value);
+                pathsToUpdate.push({ path: newPath, originalValue: value });
             }
         }
+
+        // --- Recursion Logic ---
+        // Recurse deeper if the current value is an object/array
+        // AND if any config path *starts with* the current path string + '.' (for objects)
+        // OR starts with the array pattern version + '.' (for arrays),
+        // indicating potential deeper fields need translation.
+        if (value && typeof value === 'object') {
+            const objectPrefix = newPathStr + '.'; // e.g., "purpose."
+            // Create array pattern prefix, e.g., "sizeV2.[]." from "sizeV2.0" or "sizeV2"
+            const arrayPrefix =
+                (Array.isArray(value) ? newPathStr : newPathStr.replace(/\.(\d+)$/, '')) + '[].';
+
+            const hasDeeperConfigs = configPaths.some(
+                p => p.startsWith(objectPrefix) || p.startsWith(arrayPrefix),
+            );
+
+            if (hasDeeperConfigs) {
+                // Pass the original full configPaths down for comparison at deeper levels
+                findTranslatableTexts(value, configPaths, newPath, textsToTranslate, pathsToUpdate);
+            }
+        }
+        // --- End Recursion ---
     }
 
     return { textsToTranslate, pathsToUpdate };

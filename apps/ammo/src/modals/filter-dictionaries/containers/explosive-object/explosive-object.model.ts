@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { type EXPLOSIVE_OBJECT_COMPONENT, explosiveObjectComponentData } from 'shared-my';
+import { type EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import { MODALS } from '~/constants';
 import { Modal } from '~/services';
@@ -53,9 +53,9 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
     }
 
     get componentOptions(): IOption<EXPLOSIVE_OBJECT_COMPONENT>[] {
-        return explosiveObjectComponentData.map(item => ({
-            value: item.id,
-            title: item.name,
+        return stores.explosiveObject.collectionComponents.asArray.map(item => ({
+            value: item.data.id,
+            title: item.displayName,
         }));
     }
 
