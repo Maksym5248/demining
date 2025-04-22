@@ -22,6 +22,7 @@ import {
 
 export interface IMissionRequestStore {
     collection: CollectionModel<IMissionRequest, IMissionRequestData>;
+    collectionType: CollectionModel<IMissionRequestType, IMissionRequestTypeData>;
     list: ListModel<IMissionRequest, IMissionRequestData>;
     sum: { total: number };
     setSum: (sum: IMissionRequestSumDTO) => void;
@@ -60,6 +61,12 @@ export class MissionRequestStore implements IMissionRequestStore {
         this.services = params.services;
 
         makeAutoObservable(this);
+    }
+
+    get collections() {
+        return {
+            type: this.collectionType,
+        };
     }
 
     setSum(sum: IMissionRequestSumDTO) {

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { Button, Typography, Space, Badge } from 'antd';
 import { observer } from 'mobx-react';
-import { explosiveDeviceTypeDataMap } from 'shared-my';
 import { type IExplosiveDevice } from 'shared-my-client';
 
 import { Icon, List, ListHeader, Image } from '~/components';
@@ -27,7 +26,7 @@ const ListItem = observer(({ item }: { item: IExplosiveDevice }) => {
                 title={item.data.name}
                 description={
                     <Space css={s.listItemDesc}>
-                        <Text type="secondary">{explosiveDeviceTypeDataMap[item.data.type]?.name}</Text>
+                        <Text type="secondary">{item?.type?.name}</Text>
                     </Space>
                 }
             />

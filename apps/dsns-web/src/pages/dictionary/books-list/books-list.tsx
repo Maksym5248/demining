@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import { bookTypesMap } from 'shared-my';
 import { type IBook } from 'shared-my-client';
 
 import { Icon, List, ListHeader, Image } from '~/components';
@@ -20,8 +19,8 @@ const ListItem = observer(({ item }: { item: IBook }) => {
         <List.Item actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 title={item?.displayName}
-                description={item.data.type
-                    ?.map(type => bookTypesMap[type]?.name)
+                description={item.types
+                    ?.map(type => type.name)
                     .filter(Boolean)
                     .join(', ')}
                 avatar={<Image src={item.data.imageUri} width={70} />}

@@ -1,6 +1,8 @@
 import { credential } from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { TABLES, TABLES_DIR } from 'shared-my';
+
 import {
     bookTypes,
     countries,
@@ -10,9 +12,7 @@ import {
     materialsData,
     missionRequestType,
     ranksData,
-    TABLES,
-    TABLES_DIR,
-} from 'shared-my';
+} from './data';
 
 initializeApp({
     // eslint-disable-next-line @typescript-eslint/no-var-requires

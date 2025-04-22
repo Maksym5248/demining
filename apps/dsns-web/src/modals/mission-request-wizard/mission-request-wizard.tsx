@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, DatePicker, Drawer, Spin, Input } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MISSION_REQUEST_TYPE, missionRequestType } from 'shared-my';
+import { MISSION_REQUEST_TYPE } from 'shared-my';
 import { dates } from 'shared-my-client';
 
 import { Select, WizardButtons, WizardFooter } from '~/components';
@@ -76,9 +76,9 @@ export const MissionRequestWizardModal = observer(({ id, isVisible, hide, mode }
                     }>
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={missionRequestType.map(({ name, id }) => ({
-                                label: name,
-                                value: id,
+                            options={store.missionRequest.collectionType.asArray.map(item => ({
+                                label: item.displayName,
+                                value: item.id,
                             }))}
                         />
                     </Form.Item>

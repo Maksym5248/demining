@@ -1,6 +1,6 @@
 import { Form, Drawer, Input, Spin, InputNumber, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { EXPLOSIVE_DEVICE_TYPE, explosiveDeviceTypeData, explosiveObjectStatuses, measurement, MIME_TYPE } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE, measurement, MIME_TYPE } from 'shared-my';
 import { type ISizeData, useItemStore, type IFieldData, getSizeLabel } from 'shared-my-client';
 
 import {
@@ -168,14 +168,19 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     <FieldImageUris name="imageUris" />
                     {store.viewer?.permissions.dictionary.approve() && (
                         <Form.Item label="Статус" name="status">
-                            <Select options={explosiveObjectStatuses} />
+                            <Select
+                                options={store.common.collections.statuses.asArray.map(el => ({
+                                    value: el.id,
+                                    label: el.displayName,
+                                }))}
+                            />
                         </Form.Item>
                     )}
                     <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                         <Select
-                            options={explosiveDeviceTypeData.map(el => ({
+                            options={store.explosiveDevice.collectionType.asArray.map(el => ({
                                 value: el.id,
-                                label: el.name,
+                                label: el.displayName,
                             }))}
                         />
                     </Form.Item>

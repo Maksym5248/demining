@@ -1,4 +1,4 @@
-import { type APPS, countries, type IAppConfigDB, type ICountryDB, type IMaterialDB, type IStatusDB } from 'shared-my';
+import { type APPS, type IAppConfigDB, type ICountryDB, type IMaterialDB, type IStatusDB } from 'shared-my';
 
 import { type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
 
@@ -20,10 +20,6 @@ export class CommonAPI implements ICommonAPI {
             status: IDBBase<IStatusDB>;
         },
     ) {}
-
-    async getCountriesList() {
-        return countries;
-    }
 
     subscribeCountry = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => {
         return this.db.country.subscribe(args, callback);
