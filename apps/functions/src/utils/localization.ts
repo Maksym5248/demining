@@ -120,27 +120,27 @@ export function findTranslatableTexts(
 
     // Iterate through keys of the current data object/array
     for (const key in data) {
-        // Ensure it's an own property and handle potential prototype pollution if needed
+        // Ensure it's an own property
         if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
 
         const value = data[key];
-        // Construct the path to the current value, handling array indices vs object keys
+        // Construct the path to the current value
         const newPath = [...currentPath, Array.isArray(data) ? parseInt(key, 10) : key];
         const newPathStr = newPath.join('.'); // Full path string from root, e.g., "sizeV2.0.name"
 
         // --- Path Matching Logic ---
+        let isMatch = false;
         // 1. Check if the exact path string matches a config path (e.g., "purpose.description")
-        let isMatch = configPaths.includes(newPathStr);
-
-        // 2. Check if the path matches an array item field config
-        // Convert path like "sizeV2.0.name" to "sizeV2.[].name" for comparison
-        if (!isMatch) {
-            const arrayItemFieldPath = newPathStr.replace(/\.(\d+)\./g, '.[].'); // Handle nested arrays too
-            const arrayItemPathEnd = newPathStr.replace(/\.(\d+)$/, '.[]'); // Handle end of path array index
-            if (
-                configPaths.includes(arrayItemFieldPath) ||
-                configPaths.includes(arrayItemPathEnd)
-            ) {
+        if (configPaths.includes(newPathStr)) {
+            isMatch = true;
+        } else {
+            // 2. Check if the path matches an array item field config
+            // Convert path like "sizeV2.0.name" to "sizeV2.[].name" for comparison
+            // Regex: Replace '.<number>' with '.[]' if it's followed by another '.' or the end of the string.
+            const arrayPatternPath = newPathStr.replace(/\.(\d+)(?=\.|$)/g, '.[]');
+            // Ensure the replacement actually happened (to avoid matching non-array paths)
+            // and check if the resulting pattern exists in the config
+            if (newPathStr !== arrayPatternPath && configPaths.includes(arrayPatternPath)) {
                 isMatch = true;
             }
         }
@@ -148,7 +148,7 @@ export function findTranslatableTexts(
 
         // If the current path is configured for translation and the value is a string
         if (isMatch && typeof value === 'string' && value.trim() !== '') {
-            // Avoid adding duplicates if somehow traversed twice (shouldn't happen with this logic)
+            // Avoid adding duplicates
             if (!pathsToUpdate.some(p => p.path.join('.') === newPathStr)) {
                 textsToTranslate.push(value);
                 pathsToUpdate.push({ path: newPath, originalValue: value });
@@ -156,13 +156,9 @@ export function findTranslatableTexts(
         }
 
         // --- Recursion Logic ---
-        // Recurse deeper if the current value is an object/array
-        // AND if any config path *starts with* the current path string + '.' (for objects)
-        // OR starts with the array pattern version + '.' (for arrays),
-        // indicating potential deeper fields need translation.
+        // (Recursion logic remains the same as the previous correct version)
         if (value && typeof value === 'object') {
-            const objectPrefix = newPathStr + '.'; // e.g., "purpose."
-            // Create array pattern prefix, e.g., "sizeV2.[]." from "sizeV2.0" or "sizeV2"
+            const objectPrefix = newPathStr + '.';
             const arrayPrefix =
                 (Array.isArray(value) ? newPathStr : newPathStr.replace(/\.(\d+)$/, '')) + '[].';
 
@@ -171,7 +167,6 @@ export function findTranslatableTexts(
             );
 
             if (hasDeeperConfigs) {
-                // Pass the original full configPaths down for comparison at deeper levels
                 findTranslatableTexts(value, configPaths, newPath, textsToTranslate, pathsToUpdate);
             }
         }
