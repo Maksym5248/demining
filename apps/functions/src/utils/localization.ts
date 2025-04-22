@@ -29,22 +29,22 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
     EXPLOSIVE_OBJECT_v2: ['name', 'fullName', 'description'],
     EXPLOSIVE_OBJECT_DETAILS_v2: [
         'fullDescription',
-        'filler[].name', // Translate 'value' in each item of 'additional' array
-        'filler[].description', // Translate 'value' in each item of 'additional' array
+        'filler.[].name', // Translate 'value' in each item of 'additional' array
+        'filler.[].description', // Translate 'value' in each item of 'additional' array
         'liquidatorShort',
         'foldingShort',
         'extractionShort',
         'timeWork',
         'targetSensor',
         'damageV2.action',
-        'damageV2.additional[].name', // Translate 'value' in each item of 'damageV2.additional' array
-        'damageV2.additional[].value', // Translate 'value' in each item of 'damageV2.additional' array
-        'sizeV2[].name', // Translate 'value' in each item of 'damageV2.additional' array
+        'damageV2.additional.[].name', // Translate 'value' in each item of 'damageV2.additional' array
+        'damageV2.additional.[].value', // Translate 'value' in each item of 'damageV2.additional' array
+        'sizeV2.[].name', // Translate 'value' in each item of 'damageV2.additional' array
         'sensitivityV2.sensitivity',
-        'sensitivityV2.additional[].name', // Translate 'value' in each item of 'sensitivityV2.additional' array
-        'sensitivityV2.additional[].value', // Translate 'value' in each item of 'sensitivityV2.additional' array
-        'additional[].name',
-        'additional[].value', // Translate 'value' in each item of 'additional' array
+        'sensitivityV2.additional.[].name', // Translate 'value' in each item of 'sensitivityV2.additional' array
+        'sensitivityV2.additional.[].value', // Translate 'value' in each item of 'sensitivityV2.additional' array
+        'additional.[].name',
+        'additional.[].value', // Translate 'value' in each item of 'additional' array
         'purpose.description',
         'structure.description',
         'action.description',
@@ -60,10 +60,10 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
         'name',
         'fullName',
         'description',
-        'additional[].name',
-        'additional[].value',
-        'composition[].name',
-        'composition[].description',
+        'additional.[].name',
+        'additional.[].value',
+        'composition.[].name',
+        'composition.[].description',
         'sensitivity.shock',
         'sensitivity.temperature',
         'sensitivity.friction',
@@ -72,14 +72,14 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
         'name',
         'fullName',
         'description',
-        'sizeV2[].name', // Translate 'value' in each item of 'damageV2.additional' array
-        'filler[].name', // Translate 'value' in each item of 'damageV2.additional' array
-        'filler[].description', // Translate 'value' in each item of 'damageV2.additional' array
+        'sizeV2.[].name', // Translate 'value' in each item of 'damageV2.additional' array
+        'filler.[].name', // Translate 'value' in each item of 'damageV2.additional' array
+        'filler.[].description', // Translate 'value' in each item of 'damageV2.additional' array
         'purpose.description',
         'structure.description',
         'action.description',
-        'additional[].name',
-        'additional[].value',
+        'additional.[].name',
+        'additional.[].value',
         'marking.description',
         'usage.description',
     ],
@@ -106,6 +106,7 @@ interface PathInfo {
  * @param textsToTranslate Output: Array to collect texts.
  * @param pathsToUpdate Output: Array to collect path info for reconstruction.
  */
+
 export function findTranslatableTexts(
     data: any,
     configPaths: string[], // Config paths relevant to the *root* object structure
@@ -126,52 +127,56 @@ export function findTranslatableTexts(
         const value = data[key];
         // Construct the path to the current value
         const newPath = [...currentPath, Array.isArray(data) ? parseInt(key, 10) : key];
-        const newPathStr = newPath.join('.'); // Full path string from root, e.g., "sizeV2.0.name"
+        const newPathStr = newPath.join('.'); // Full path string from root, e.g., "items.0.name"
 
         // --- Path Matching Logic ---
         let isMatch = false;
-        // 1. Check if the exact path string matches a config path (e.g., "purpose.description")
+
+        // Check 1: Direct match
         if (configPaths.includes(newPathStr)) {
             isMatch = true;
         } else {
-            // 2. Check if the path matches an array item field config
-            // Convert path like "sizeV2.0.name" to "sizeV2.[].name" for comparison
-            // Regex: Replace '.<number>' with '.[]' if it's followed by another '.' or the end of the string.
-            const arrayPatternPath = newPathStr.replace(/\.(\d+)(?=\.|$)/g, '.[]');
-            // Ensure the replacement actually happened (to avoid matching non-array paths)
-            // and check if the resulting pattern exists in the config
-            if (newPathStr !== arrayPatternPath && configPaths.includes(arrayPatternPath)) {
-                isMatch = true;
+            // Check 2: Array pattern match
+            try {
+                // Generate pattern like items.[].name from items.0.name
+                const patternPath = newPathStr.replace(/\.(\d+)(?=\.|$)/g, '.[]');
+                // Check if conversion happened AND if the pattern exists in config
+                if (patternPath !== newPathStr && configPaths.includes(patternPath)) {
+                    isMatch = true;
+                }
+            } catch (e) {
+                // Log regex error if it occurs (shouldn't happen often)
+                console.error(`Regex error processing path: ${newPathStr}`, e); // Keep this error log
             }
         }
         // --- End Path Matching ---
 
         // If the current path is configured for translation and the value is a string
         if (isMatch && typeof value === 'string' && value.trim() !== '') {
-            // Avoid adding duplicates
+            // Avoid adding duplicates based on the exact path string
             if (!pathsToUpdate.some(p => p.path.join('.') === newPathStr)) {
                 textsToTranslate.push(value);
                 pathsToUpdate.push({ path: newPath, originalValue: value });
             }
+            // Removed duplicate skipped log
         }
 
         // --- Recursion Logic ---
-        // (Recursion logic remains the same as the previous correct version)
         if (value && typeof value === 'object') {
-            const objectPrefix = newPathStr + '.';
-            const arrayPrefix =
-                (Array.isArray(value) ? newPathStr : newPathStr.replace(/\.(\d+)$/, '')) + '[].';
+            // Calculate the pattern prefix for the current path + '.'
+            const patternPrefix = newPathStr.replace(/\.(\d+)(?=\.|$)/g, '.[]') + '.';
 
-            const hasDeeperConfigs = configPaths.some(
-                p => p.startsWith(objectPrefix) || p.startsWith(arrayPrefix),
-            );
+            // Check if any config path starts with this pattern prefix
+            const hasDeeperConfigs = configPaths.some(p => p.startsWith(patternPrefix));
+
+            // Removed recursion check log
 
             if (hasDeeperConfigs) {
                 findTranslatableTexts(value, configPaths, newPath, textsToTranslate, pathsToUpdate);
             }
         }
         // --- End Recursion ---
-    }
+    } // End of for loop
 
     return { textsToTranslate, pathsToUpdate };
 }

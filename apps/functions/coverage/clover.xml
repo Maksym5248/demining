@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1745339080048" clover="3.2.0">
+  <project timestamp="1745339080048" name="All files">
+    <metrics statements="33" coveredstatements="32" conditionals="23" coveredconditionals="22" methods="3" coveredmethods="3" elements="59" coveredelements="57" complexity="0" loc="33" ncloc="33" packages="1" files="1" classes="1"/>
+    <file name="localization.ts" path="/Users/maxymkostin/Documents/dev/projects/my/projects/demining/apps/functions/src/utils/localization.ts">
+      <metrics statements="33" coveredstatements="32" conditionals="23" coveredconditionals="22" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="110" count="1" type="stmt"/>
+      <line num="113" count="35" type="cond" truecount="1" falsecount="0"/>
+      <line num="114" count="35" type="cond" truecount="1" falsecount="0"/>
+      <line num="115" count="35" type="cond" truecount="1" falsecount="0"/>
+      <line num="118" count="26" type="cond" truecount="3" falsecount="0"/>
+      <line num="119" count="1" type="stmt"/>
+      <line num="123" count="52" type="stmt"/>
+      <line num="125" count="52" type="cond" truecount="0" falsecount="1"/>
+      <line num="127" count="52" type="stmt"/>
+      <line num="129" count="52" type="cond" truecount="2" falsecount="0"/>
+      <line num="130" count="52" type="stmt"/>
+      <line num="133" count="52" type="stmt"/>
+      <line num="136" count="52" type="cond" truecount="2" falsecount="0"/>
+      <line num="137" count="10" type="stmt"/>
+      <line num="140" count="42" type="stmt"/>
+      <line num="142" count="42" type="stmt"/>
+      <line num="144" count="42" type="cond" truecount="3" falsecount="0"/>
+      <line num="145" count="15" type="stmt"/>
+      <line num="149" count="0" type="stmt"/>
+      <line num="155" count="52" type="cond" truecount="4" falsecount="0"/>
+      <line num="157" count="50" type="cond" truecount="1" falsecount="0"/>
+      <line num="158" count="21" type="stmt"/>
+      <line num="159" count="21" type="stmt"/>
+      <line num="165" count="52" type="cond" truecount="3" falsecount="0"/>
+      <line num="167" count="18" type="stmt"/>
+      <line num="170" count="39" type="stmt"/>
+      <line num="174" count="18" type="cond" truecount="1" falsecount="0"/>
+      <line num="175" count="17" type="stmt"/>
+      <line num="181" count="25" type="stmt"/>
+    </file>
+  </project>
+</coverage>
