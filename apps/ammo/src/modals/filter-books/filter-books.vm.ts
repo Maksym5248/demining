@@ -1,8 +1,9 @@
 import { makeAutoObservable } from 'mobx';
-import { BOOK_TYPE, bookTypesMap } from 'shared-my';
+import { type BOOK_TYPE } from 'shared-my';
 
 import { MODALS } from '~/constants';
 import { Modal } from '~/services';
+import { stores } from '~/stores';
 import { type ViewModel, type IBookFilter, type IOption, BookLoadedState } from '~/types';
 
 export interface IFilterDictionariesVM extends ViewModel {
@@ -16,33 +17,6 @@ export interface IFilterDictionariesVM extends ViewModel {
     setLoadedState(value: BookLoadedState): void;
     filters: IBookFilter;
 }
-
-export const bookTypes: IOption<BOOK_TYPE>[] = [
-    {
-        value: bookTypesMap[BOOK_TYPE.AMMUNITION].id,
-        title: bookTypesMap[BOOK_TYPE.AMMUNITION].name,
-    },
-    {
-        value: bookTypesMap[BOOK_TYPE.EXPLOSIVE].id,
-        title: bookTypesMap[BOOK_TYPE.EXPLOSIVE].name,
-    },
-    {
-        value: bookTypesMap[BOOK_TYPE.BLASTING].id,
-        title: bookTypesMap[BOOK_TYPE.BLASTING].name,
-    },
-    {
-        value: bookTypesMap[BOOK_TYPE.MINING].id,
-        title: bookTypesMap[BOOK_TYPE.MINING].name,
-    },
-    {
-        value: bookTypesMap[BOOK_TYPE.DEMINING].id,
-        title: bookTypesMap[BOOK_TYPE.DEMINING].name,
-    },
-    {
-        value: bookTypesMap[BOOK_TYPE.ORDER_MO].id,
-        title: bookTypesMap[BOOK_TYPE.ORDER_MO].name,
-    },
-];
 
 export const loadedOptions: IOption<BookLoadedState>[] = [
     {
@@ -113,7 +87,13 @@ export class FilterDictionariesVM implements IFilterDictionariesVM {
     }
 
     get types() {
-        return bookTypes;
+        return stores.book.collectionBookType.asArray.map(
+            type =>
+                ({
+                    title: type.data.name,
+                    value: type.id,
+                }) as IOption<BOOK_TYPE>,
+        );
     }
 
     get selectedType() {

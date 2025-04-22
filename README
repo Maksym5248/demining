@@ -39,4 +39,6 @@ v2:
 - rules for localization structure
 - indexes for localization structure
 - create new tables in prod db
+- translate-existing-data
+
 

@@ -25,7 +25,7 @@
         "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions",
         "setpolicy": "firebase functions:artifacts:setpolicy",
         "migrate": "ts-node ./src/migrations/explosive-object/v3/api",
-        "script": "ts-node ./src/migrations/common/v1/create-common-tables",
+        "script": "export GOOGLE_APPLICATION_CREDENTIALS=\"./firebase-adminsdk.json\" && ts-node ./src/migrations/common/v1/translate-existing-data",
         "export:data": "ts-node ./src/export/export-data"
     },
     "dependencies": {

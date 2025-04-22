@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { BOOK_TYPE, bookTypesMap } from 'shared-my';
+import { BOOK_TYPE } from 'shared-my';
 
 import { SCREENS } from '~/constants';
 import { type ISvgName } from '~/core';
@@ -33,32 +33,32 @@ const dictionaries: IItem[] = [
 
 export const books: IItem[] = [
     {
-        id: bookTypesMap[BOOK_TYPE.AMMUNITION].id,
+        id: BOOK_TYPE.AMMUNITION,
         svg: 'book-ammo',
         screen: SCREENS.BOOKS,
     },
     {
-        id: bookTypesMap[BOOK_TYPE.EXPLOSIVE].id,
+        id: BOOK_TYPE.EXPLOSIVE,
         svg: 'book-explosive',
         screen: SCREENS.BOOKS,
     },
     {
-        id: bookTypesMap[BOOK_TYPE.BLASTING].id,
+        id: BOOK_TYPE.BLASTING,
         svg: 'book-blasting',
         screen: SCREENS.BOOKS,
     },
     {
-        id: bookTypesMap[BOOK_TYPE.MINING].id,
+        id: BOOK_TYPE.MINING,
         svg: 'book-mining',
         screen: SCREENS.BOOKS,
     },
     {
-        id: bookTypesMap[BOOK_TYPE.DEMINING].id,
+        id: BOOK_TYPE.DEMINING,
         svg: 'book-demining',
         screen: SCREENS.BOOKS,
     },
     {
-        id: bookTypesMap[BOOK_TYPE.ORDER_MO].id,
+        id: BOOK_TYPE.ORDER_MO,
         svg: 'book-order',
         screen: SCREENS.BOOKS,
     },
