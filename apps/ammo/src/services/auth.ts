@@ -25,6 +25,11 @@ export class AuthClass implements IAuth {
     }
 
     async signInWithGoogle() {
+        GoogleSignin.configure({
+            // @ts-ignore: clientId is present in options but not specified in firebase type
+            iosClientId: authApp.options.clientId,
+        });
+
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
         const signInResult = await GoogleSignin.signIn();
