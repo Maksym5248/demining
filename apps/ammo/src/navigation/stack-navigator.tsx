@@ -28,7 +28,7 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.SIGN_IN} component={screens.SignInScreen} />
             <Stack.Screen name={SCREENS.SIGN_UP} component={screens.SignUpScreen} />
 
-            {/* HOME */}
+            {/* DICTIONARIES */}
             <Stack.Screen name={SCREENS.HOME} component={screens.HomeScreen} />
             <Stack.Screen name={SCREENS.DICTIONARIES} component={screens.DictionariesScreen} />
             <Stack.Screen
@@ -43,9 +43,13 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.EXPLOSIVE_DEVICE_DETAILS} component={screens.ExplosiveDeviceDetailsScreen} />
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_CLASSIFICATION} component={screens.ExplosiveObjectClassificationScreen} />
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_TYPE} component={screens.ExplosiveObjectTypeScreen} />
+            <Stack.Screen name={SCREENS.BOOKS} component={screens.BooksScreen} />
+
+            {/* SETTINGS */}
             <Stack.Screen name={SCREENS.SETTINGS} component={screens.SettingsScreen} />
             <Stack.Screen name={SCREENS.ABOUT} component={screens.AboutScreen} />
-            <Stack.Screen name={SCREENS.BOOKS} component={screens.BooksScreen} />
+
+            {/* COMMON */}
             <Stack.Screen name={SCREENS.READER} component={screens.ReaderScreen} options={{ orientation: 'all' }} />
         </Stack.Navigator>
     );
