@@ -165,7 +165,7 @@ export class RootStore implements IRootStore {
         try {
             if (user) {
                 this.services.analytics.setUserId(user.uid);
-                await this.services.auth.refreshToken();
+
                 const [res] = await Promise.all([this.api.currentUser.get(user.uid), this.explosiveObject.fetchDeeps.run()]);
 
                 if (res) this.viewer.setUser(createCurrentUser(res));

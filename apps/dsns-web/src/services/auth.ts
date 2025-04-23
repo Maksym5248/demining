@@ -1,3 +1,4 @@
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { getApp } from 'firebase/app';
 import {
     getAuth,
@@ -11,11 +12,11 @@ import {
     type NextOrObserver,
     type User,
 } from 'firebase/auth';
-import { httpsCallable, getFunctions } from 'firebase/functions';
+import { getFunctions } from 'firebase/functions';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
 
 export class AuthClass implements IAuth {
-    googleProvide = new GoogleAuthProvider();
+    googleProvider = new GoogleAuthProvider();
 
     private get auth() {
         return getAuth(getApp());
@@ -23,6 +24,12 @@ export class AuthClass implements IAuth {
 
     private get functions() {
         return getFunctions(getApp());
+    }
+
+    init() {
+        GoogleSignin.configure({
+            webClientId: '',
+        });
     }
 
     uuid() {
@@ -34,7 +41,7 @@ export class AuthClass implements IAuth {
     }
 
     async signInWithGoogle() {
-        await signInWithPopup(this.auth, this.googleProvide);
+        await signInWithPopup(this.auth, this.googleProvider);
     }
 
     async signOut() {
@@ -47,13 +54,6 @@ export class AuthClass implements IAuth {
 
     async signInWithEmailAndPassword(email: string, password: string) {
         await signInWithEmailAndPassword(this.auth, email, password);
-    }
-
-    async refreshToken() {
-        const run = httpsCallable(this.functions, 'refreshToken');
-        await run();
-
-        return this.auth?.currentUser?.getIdToken(true);
     }
 
     async signInAnonymously() {

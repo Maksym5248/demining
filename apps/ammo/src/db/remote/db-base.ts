@@ -107,7 +107,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
 
     constructor(
         tableName: string,
-        searchFields: (keyof T)[],
+        searchFields?: (keyof T)[],
         getCreateData?: (value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'>) => Partial<T>,
         getUpdateData?: (value: Partial<T>) => Partial<T>,
         getSearchData?: (value: Partial<T>) => string[],

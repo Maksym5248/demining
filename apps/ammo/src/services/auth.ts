@@ -1,8 +1,9 @@
 import { getApp } from '@react-native-firebase/app';
-import { getAuth, onAuthStateChanged, signInAnonymously } from '@react-native-firebase/auth';
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInAnonymously } from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
 
-export class AuthClass implements Pick<IAuth, 'signInAnonymously' | 'onAuthStateChanged' | 'uuid'> {
+export class AuthClass implements IAuth {
     private get auth() {
         return getAuth(getApp());
     }
@@ -13,6 +14,32 @@ export class AuthClass implements Pick<IAuth, 'signInAnonymously' | 'onAuthState
 
     async signInAnonymously() {
         await signInAnonymously(this.auth);
+    }
+
+    async createUserWithEmailAndPassword(email: string, password: string) {
+        await this.auth.createUserWithEmailAndPassword(email, password);
+    }
+
+    async signInWithEmailAndPassword(email: string, password: string) {
+        await this.auth.signInWithEmailAndPassword(email, password);
+    }
+
+    async signInWithGoogle() {
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+        const signInResult = await GoogleSignin.signIn();
+
+        if (!signInResult.data?.idToken) {
+            throw new Error('No ID token found');
+        }
+
+        const googleCredential = GoogleAuthProvider.credential(signInResult.data.idToken);
+
+        await this.auth.signInWithCredential(googleCredential);
+    }
+
+    async signOut() {
+        await this.auth.signOut();
     }
 
     onAuthStateChanged(fn: (user: IAuthUser | null) => void) {

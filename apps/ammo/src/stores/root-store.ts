@@ -14,6 +14,8 @@ import {
     type IBookStore,
     type IAuthUser,
     type ICommonStore,
+    AuthStore,
+    ViewerStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -40,13 +42,15 @@ export class RootStore implements IRootStore {
     explosiveObject: IExplosiveObjectStore;
     book: IBookStore;
     common: ICommonStore;
+    auth: AuthStore;
+    viewer: ViewerStore;
 
     isLoaded = false;
     isInitialized = false;
 
     getStores = () => {
         return {
-            viewer: undefined,
+            viewer: this.viewer,
             explosive: this.explosive,
             explosiveDevice: this.explosiveDevice,
             explosiveObject: this.explosiveObject,
@@ -70,6 +74,9 @@ export class RootStore implements IRootStore {
     }
 
     constructor() {
+        this.auth = new AuthStore(this);
+        this.viewer = new ViewerStore(this);
+
         this.common = new CommonStore(APPS.AMMO, this);
         this.explosive = new ExplosiveStore(this);
         this.explosiveDevice = new ExplosiveDeviceStore(this);

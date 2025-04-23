@@ -19,4 +19,6 @@ export interface IUserAccessDB extends Omit<IBaseDB, 'organizationId'>, Partial<
  */
 export interface IUserInfoDB extends Omit<IBaseDB, 'organizationId'> {
     email: string;
+    photoUri: string | null;
+    name: string | null;
 }

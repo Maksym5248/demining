@@ -22,6 +22,8 @@ import {
     type IMaterialDB,
     type IStatusDB,
     type IRankDB,
+    type IUserAccessDB,
+    type IMemberDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -66,6 +68,8 @@ export class DBRemote
         >
 {
     userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['email']);
+    userAccess = new DBBase<IUserAccessDB>(TABLES.USER_ACCESS);
+    member = new DBBase<IMemberDB>(TABLES.MEMBER);
 
     explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], getCreateData, undefined);
 
