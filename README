@@ -11,20 +11,6 @@ apps:
 - ammo web admin
 - ammo mobile
 
-TODO
-// DSNS WEB
-1.
-- відображення на карті та при створенні документів
-- add confirmation email for autentication process
-- permission for verifying and editing explosivce objects
-- map = agregation 
-- search, how to improve ? перенести поле _search до meta
-- cache on api level
-- побудувати кластеризацію для різних масштабів
-- при зближені до масштабу 17 відображати всі обєкти у видимій зоні
-- використати один спосіб завантаження даних для всіх картинок (видалити передавання в api картинок)
-
-
 // TODO: for List/Collection
 // 1. create different function setOrUpdateFor list
 // 2. update or updateArr should be one method
