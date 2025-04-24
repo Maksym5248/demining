@@ -54,6 +54,10 @@ export class SignInVM implements ISignInVM {
     constructor() {
         makeAutoObservable(this);
     }
+
+    unmount() {
+        this.form.reset();
+    }
 }
 
 export const signInVM = new SignInVM();

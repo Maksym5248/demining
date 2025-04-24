@@ -48,7 +48,6 @@ export const SignInScreen = observer(() => {
                     <TextInput
                         label={t('inputPassWord')}
                         style={s.inputPassword}
-                        blurOnSubmit={true}
                         ref={refPassword}
                         returnKeyType="done"
                         secureTextEntry

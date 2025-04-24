@@ -9,6 +9,7 @@ import { createField, type IField } from './field';
 export interface IForm<T> {
     field: (name: Path<T>) => IField;
     submit: () => void;
+    reset: () => void;
     isValid: boolean;
 }
 
@@ -42,6 +43,10 @@ export class Form<T> implements IForm<T> {
 
     submit = () => {
         this.form.submit(this.params.submit);
+    };
+
+    reset = () => {
+        this.form.reset();
     };
 
     get isValid() {

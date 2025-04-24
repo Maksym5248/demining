@@ -10,4 +10,5 @@ export interface IButtonProps {
     right?: ReactNode;
     left?: ReactNode;
     testID?: string;
+    color?: string;
 }

@@ -1,8 +1,9 @@
 import { makeAutoObservable } from 'mobx';
+import { type IRequestModel, RequestModel } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
-import { SCREENS } from '~/constants';
-import { Debugger, Navigation } from '~/services';
+import { MODALS, SCREENS } from '~/constants';
+import { Debugger, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -14,6 +15,7 @@ export interface ISettingsVM extends ViewModel {
     userName?: string;
     isAuthenticated: boolean;
     openSignIn: () => void;
+    signOut: IRequestModel;
 }
 
 export class SettingsVM implements ISettingsVM {
@@ -47,6 +49,18 @@ export class SettingsVM implements ISettingsVM {
     openSignIn() {
         Navigation.navigate(SCREENS.SIGN_IN);
     }
+
+    signOut = new RequestModel({
+        run: async () => {
+            try {
+                Modal.show(MODALS.LOADING);
+                await stores.auth.signInOut.run();
+                Modal.hide(MODALS.LOADING);
+            } catch (error) {
+                Modal.hide(MODALS.LOADING);
+            }
+        },
+    });
 
     get uri() {
         return stores.viewer.user?.data?.info?.photoUri ?? undefined;

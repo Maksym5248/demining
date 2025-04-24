@@ -6,6 +6,14 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         marginVertical: theme.spacing.XL,
     },
     autenticate: {
-        marginBottom: theme.spacing.XL,
+        alignSelf: 'stretch',
+        backgroundColor: theme.colors.backgroundSecondary,
+        borderColor: theme.colors.accent,
+        borderWidth: 1,
+    },
+    userInfo: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: theme.spacing.L,
     },
 }));

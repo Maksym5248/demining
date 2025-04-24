@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List, Avatar, Button, Text } from '~/core';
+import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List, Avatar, Button, Text, Icon } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -31,17 +31,30 @@ export const SettingsScreen = observer(() => {
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IDataItem>) => <ListItem item={item} />, []);
 
     const onOpenSignIn = () => vm.openSignIn();
+    const onSignOut = () => vm.signOut.run();
 
     return (
         <View style={styles.container}>
-            <Header title={t('title')} backButton="none" color={theme.colors.white} />
+            <Header
+                title={t('title')}
+                backButton="none"
+                color={theme.colors.white}
+                right={vm.isAuthenticated ? <Icon name="logout" color={theme.colors.white} onPress={onSignOut} /> : undefined}
+            />
             <List
                 data={vm.asArray}
                 renderItem={renderItem}
                 ListHeaderComponent={() => (
-                    <View>
+                    <View style={s.userInfo}>
                         <Avatar size={108} style={s.avatar} />
-                        {!vm.isAuthenticated && <Button.Base title={t('autenticate')} style={s.autenticate} onPress={onOpenSignIn} />}
+                        {!vm.isAuthenticated && (
+                            <Button.Base
+                                title={t('autenticate')}
+                                style={s.autenticate}
+                                onPress={onOpenSignIn}
+                                color={theme.colors.accent}
+                            />
+                        )}
                         {!!vm.isAuthenticated && <Text text={vm.userName} />}
                     </View>
                 )}

@@ -1,5 +1,12 @@
 import { getApp } from '@react-native-firebase/app';
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInAnonymously } from '@react-native-firebase/auth';
+import {
+    getAuth,
+    GoogleAuthProvider,
+    onAuthStateChanged,
+    signInAnonymously,
+    linkWithCredential,
+    EmailAuthProvider,
+} from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
 
@@ -17,7 +24,12 @@ export class AuthClass implements IAuth {
     }
 
     async createUserWithEmailAndPassword(email: string, password: string) {
-        await this.auth.createUserWithEmailAndPassword(email, password);
+        if (this.auth.currentUser) {
+            const credential = EmailAuthProvider.credential(email, password);
+            await linkWithCredential(this.auth.currentUser, credential);
+        } else {
+            await this.auth.createUserWithEmailAndPassword(email, password);
+        }
     }
 
     async signInWithEmailAndPassword(email: string, password: string) {
@@ -38,9 +50,13 @@ export class AuthClass implements IAuth {
             throw new Error('No ID token found');
         }
 
-        const googleCredential = GoogleAuthProvider.credential(signInResult.data.idToken);
+        const credential = GoogleAuthProvider.credential(signInResult.data.idToken);
 
-        await this.auth.signInWithCredential(googleCredential);
+        if (this.auth.currentUser) {
+            await linkWithCredential(this.auth.currentUser, credential);
+        } else {
+            await this.auth.signInWithCredential(credential);
+        }
     }
 
     async signOut() {

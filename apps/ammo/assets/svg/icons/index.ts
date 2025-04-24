@@ -10,6 +10,7 @@ import eyeHidden from './eye-hidden.svg';
 import eye from './eye.svg';
 import filter from './filter.svg';
 import info from './info.svg';
+import logout from './logout.svg';
 import search from './search.svg';
 import settings from './settings.svg';
 import success from './success.svg';
@@ -30,4 +31,5 @@ export const svgIcons = {
     success,
     settings,
     debugger: debuggerIcon,
+    logout,
 };

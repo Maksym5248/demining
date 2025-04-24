@@ -153,13 +153,14 @@ export class RootStore implements IRootStore {
             }
         } catch (e) {
             this.services.logger.error(e);
-            // this.services.message.error('Bиникла помилка');
+            this.services.message.error('Bиникла помилка');
             this.viewer.removeUser();
         }
 
         this.viewer.setLoading(false);
     }
-
+    // LOG: USER ID: JH4CmYUduNbDUY1aOCUZKC22SmE2
+    // LOG: ANALYTICS: User ID - VmDNSPtUx4RU5Km9j9OK1mvZR6s2
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
@@ -167,7 +168,10 @@ export class RootStore implements IRootStore {
             this.api.setLang(this.services.localization.data.locale);
 
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
-            this.services.auth.signInAnonymously();
+
+            if (!this.services.auth.uuid()) {
+                this.services.auth.signInAnonymously();
+            }
 
             try {
                 await Promise.all([
