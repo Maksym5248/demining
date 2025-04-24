@@ -137,8 +137,9 @@ export class RootStore implements IRootStore {
 
     private async onChangeUser(user: IAuthUser | null) {
         try {
+            this.services.analytics.setUserId(user?.uid ?? null);
+
             if (user) {
-                this.services.analytics.setUserId(user.uid);
                 this.viewer.setAuthData(user);
             }
 
@@ -148,7 +149,6 @@ export class RootStore implements IRootStore {
             }
 
             if (!user) {
-                this.services.analytics.setUserId(null);
                 this.viewer.removeUser();
             }
         } catch (e) {
