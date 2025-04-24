@@ -9,4 +9,5 @@ export interface IButtonProps {
     disabled?: boolean;
     right?: ReactNode;
     left?: ReactNode;
+    testID?: string;
 }

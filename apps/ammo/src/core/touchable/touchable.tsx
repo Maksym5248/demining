@@ -25,6 +25,7 @@ export function Touchable({
     disabled,
     type = 'borderLess',
     style,
+    testID,
     ...rest
 }: ITouchable) {
     const styles = useStylesCommon();
@@ -51,6 +52,7 @@ export function Touchable({
                 rippleColor={rippleColor}
                 {...rest}
                 style={[styles.touchable, isBorderLess ? { borderRadius: BORDER_LESS_RADIUS } : undefined]}
+                testID={`${testID}.touchable`}
             />
         </View>
     );

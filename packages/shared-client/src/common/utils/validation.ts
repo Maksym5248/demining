@@ -1,18 +1,17 @@
 import * as Yup from 'yup';
 
-const withPrefix = (v: string) => `errors.${v}`;
+const { string, object } = Yup;
 
-const password = Yup.string().required(withPrefix('required')).min(8, withPrefix('min'));
-const name = Yup.string().required(withPrefix('required')).min(2, withPrefix('min'));
+const p = (v: string) => `errors.${v}`;
 
-const email = Yup.string()
-    .email(withPrefix('incorrect'))
-    .required(withPrefix('required'))
-    .trim(withPrefix('required'));
+const password = string().required(p('required')).min(8, p('min'));
+const name = string().required(p('required')).min(2, p('min'));
+const email = string().email(p('incorrect')).required(p('required')).trim(p('required'));
 
-const shape = (fields: Yup.ObjectShape) => Yup.object().shape(fields);
+export const shape = <U extends Yup.ObjectShape>(fields: U) => object().shape(fields);
 
 export const validation = {
+    Yup,
     shape,
     password,
     email,

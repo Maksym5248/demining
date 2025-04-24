@@ -25,3 +25,4 @@ export * from './chips';
 export * from './tooltip';
 export * from './paragraph';
 export * from './progress';
+export * from './keyboard-aware-scroll-view';

@@ -4,3 +4,4 @@ export * from './animation';
 export * from './mask';
 export * from './view';
 export * from './url';
+export * from './models';

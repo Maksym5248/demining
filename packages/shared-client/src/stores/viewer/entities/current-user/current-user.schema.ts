@@ -15,6 +15,8 @@ export interface ICurrentUserData {
     id: string;
     info: {
         email: string;
+        photoUri: string | null;
+        name: string | null;
     };
     access: Partial<Record<ROLES, boolean>>;
     organization: ICurrentUserOrganizationValue | null;
@@ -33,6 +35,8 @@ export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => (
     id: value.id,
     info: {
         email: value.info?.email ?? '',
+        photoUri: value.info?.photoUri ?? null,
+        name: value.info?.name ?? null,
     },
     access: {
         ...value?.access,
