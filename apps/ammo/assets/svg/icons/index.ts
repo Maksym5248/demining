@@ -11,6 +11,7 @@ import eye from './eye.svg';
 import filter from './filter.svg';
 import info from './info.svg';
 import search from './search.svg';
+import settings from './settings.svg';
 import success from './success.svg';
 
 export const svgIcons = {
@@ -27,5 +28,6 @@ export const svgIcons = {
     ['arrow-right']: arrowRight,
     ['cloud-update']: cloudUpdate,
     success,
+    settings,
     debugger: debuggerIcon,
 };

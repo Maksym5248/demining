@@ -30,7 +30,7 @@ export const SettingsScreen = observer(() => {
 
     return (
         <View style={styles.container}>
-            <Header title={t('title')} backButton="back" color={theme.colors.white} />
+            <Header title={t('title')} backButton="none" color={theme.colors.white} />
             <List data={vm.asArray} renderItem={renderItem} />
         </View>
     );

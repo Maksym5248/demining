@@ -64,14 +64,6 @@ export const books: IItem[] = [
     },
 ];
 
-export const rest: IItem[] = [
-    {
-        id: 'settings',
-        svg: 'settings',
-        screen: SCREENS.SETTINGS,
-    },
-];
-
 export interface IHomeVM extends ViewModel {
     dictionaries: IItem[];
     rest: IItem[];
@@ -128,7 +120,7 @@ export class HomeVM implements IHomeVM {
     }
 
     openRest(id: string) {
-        const item = rest.find(el => el.id === id);
+        const item = this.rest.find(el => el.id === id);
         if (!item?.screen) return;
         Navigation.navigate(item?.screen);
     }
@@ -145,8 +137,8 @@ export class HomeVM implements IHomeVM {
         return books;
     }
 
-    get rest() {
-        return rest;
+    get rest(): IItem[] {
+        return [];
     }
 }
 

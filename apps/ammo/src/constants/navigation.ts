@@ -1,4 +1,5 @@
 export enum SCREENS {
+    ROOT = 'Root',
     HOME = 'Home',
     EXPLOSIVE_DETAILS = 'ExplosiveDetails',
     EXPLOSIVE_OBJECT_DETAILS = 'ExplosiveObjectDetails',

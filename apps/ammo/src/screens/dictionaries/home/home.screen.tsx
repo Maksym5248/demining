@@ -90,25 +90,27 @@ export const HomeScreen = observer(() => {
                         ))}
                     </Scroll>
                 </View>
-                <View style={s.content}>
-                    <Text type="h4" text={t('rest')} style={s.sctionTitle} />
-                    <Scroll
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={s.scroll}>
-                        {vm.rest.map(el => (
-                            <Card
-                                key={el.id}
-                                style={s.item}
-                                title={t(el.id)}
-                                svg={el.svg}
-                                styleInfo={styles.contentCenter}
-                                onPress={() => vm.openRest(el.id)}
-                            />
-                        ))}
-                    </Scroll>
-                </View>
+                {!!vm.rest.length && (
+                    <View style={s.content}>
+                        <Text type="h4" text={t('rest')} style={s.sctionTitle} />
+                        <Scroll
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={s.scroll}>
+                            {vm.rest.map(el => (
+                                <Card
+                                    key={el.id}
+                                    style={s.item}
+                                    title={t(el.id)}
+                                    svg={el.svg}
+                                    styleInfo={styles.contentCenter}
+                                    onPress={() => vm.openRest(el.id)}
+                                />
+                            ))}
+                        </Scroll>
+                    </View>
+                )}
             </Scroll>
         </View>
     );
