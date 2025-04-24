@@ -16,6 +16,7 @@ import {
     type ICommonStore,
     AuthStore,
     ViewerStore,
+    createCurrentUser,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -138,15 +139,25 @@ export class RootStore implements IRootStore {
         try {
             if (user) {
                 this.services.analytics.setUserId(user.uid);
-            } else {
+                this.viewer.setAuthData(user);
+            }
+
+            if (user && !user.isAnonymous) {
+                const res = await this.api.currentUser.get(user.uid);
+                if (res) this.viewer.setUser(createCurrentUser(res));
+            }
+
+            if (!user) {
                 this.services.analytics.setUserId(null);
+                this.viewer.removeUser();
             }
         } catch (e) {
             this.services.logger.error(e);
             this.services.message.error('Bиникла помилка');
+            this.viewer.removeUser();
         }
 
-        this.setInitialized(true);
+        this.viewer.setLoading(false);
     }
 
     init = new RequestModel({

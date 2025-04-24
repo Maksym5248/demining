@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { APPROVE_STATUS, type ROLES } from 'shared-my';
 
 import { type ICurrentUserAPI } from '~/api';
-import { type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
+import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
 import { CurrentUser, Permissions, type IPermissions, type ICurrentUser, type ICurrentUserData } from './entities';
 
@@ -10,12 +10,15 @@ export interface IViewerStore {
     user: ICurrentUser | null;
     permissions: IPermissions;
     isLoading: boolean;
+    isAnonymous: boolean;
+    isAuthenticated: boolean;
     status: {
         demining: APPROVE_STATUS | null;
     };
     hasRole: (role: ROLES) => boolean;
     setLoading(isLoading: boolean): void;
     setUser(user: ICurrentUserData): void;
+    setAuthData(authData: IAuthUser | null): void;
     removeUser(): void;
 }
 
@@ -39,6 +42,7 @@ export class ViewerStore implements IViewerStore {
     services: IServices;
     user: ICurrentUser | null = null;
     permissions: IPermissions;
+    authData: IAuthUser | null = null;
 
     isLoading = false;
 
@@ -77,8 +81,20 @@ export class ViewerStore implements IViewerStore {
         };
     }
 
+    get isAnonymous() {
+        return !!this.authData?.isAnonymous;
+    }
+
+    get isAuthenticated() {
+        return !!this.user?.id && !this.isAnonymous;
+    }
+
     setLoading(isLoading: boolean) {
         this.isLoading = isLoading;
+    }
+
+    setAuthData(authData: IAuthUser | null) {
+        this.authData = authData;
     }
 
     setUser(user: ICurrentUserData) {

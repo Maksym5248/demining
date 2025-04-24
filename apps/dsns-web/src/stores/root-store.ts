@@ -165,11 +165,15 @@ export class RootStore implements IRootStore {
         try {
             if (user) {
                 this.services.analytics.setUserId(user.uid);
+                this.viewer.setAuthData(user);
+            }
 
-                const [res] = await Promise.all([this.api.currentUser.get(user.uid), this.explosiveObject.fetchDeeps.run()]);
-
+            if (user && !user.isAnonymous) {
+                const res = await this.api.currentUser.get(user.uid);
                 if (res) this.viewer.setUser(createCurrentUser(res));
-            } else {
+            }
+
+            if (!user) {
                 this.services.analytics.setUserId(null);
                 this.viewer.removeUser();
             }
@@ -189,9 +193,9 @@ export class RootStore implements IRootStore {
         this.services.analytics.init();
         this.services.crashlytics.init();
         this.api.setLang('uk');
+        this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
 
         try {
-            this.viewer.setLoading(true);
             await DB.init();
 
             await Promise.all([
@@ -209,8 +213,6 @@ export class RootStore implements IRootStore {
                 this.book.subscribeBookType.run(),
                 this.missionRequest.subscribeType.run(),
             ]);
-
-            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
         } catch (e) {
             this.services.logger.error('init', e);
         }
