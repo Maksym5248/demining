@@ -13,5 +13,5 @@ export function t(key: string, options?: TranslateOptions) {
               defaultValue: key,
               ...(options || {}),
           })
-        : null;
+        : '';
 }

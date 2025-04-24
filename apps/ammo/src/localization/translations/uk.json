@@ -32,6 +32,11 @@
         "select": {
             "title": "Вибір",
             "placeholder": "Вибрати"
+        },
+        "alert": {
+            "title": "Виникла помилка",
+            "cancelTitle": "Скасувати",
+            "confirmTitle": "Підтвердити"
         }
     },
     "components": {
@@ -169,7 +174,11 @@
             "about": "Про програму",
             "support": "Звернутись у підтримку",
             "debugger": "debugger",
-            "autenticate": "Увійти"
+            "autenticate": "Увійти",
+            "alert": {
+                "title": "Вийти",
+                "subTitle": "Ви впевнені, що хочете вийти?"
+            }
         },
         "about": {
             "title": "Про програму",

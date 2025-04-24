@@ -2,8 +2,9 @@ import { makeAutoObservable } from 'mobx';
 import { type IRequestModel, RequestModel } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
-import { MODALS, SCREENS } from '~/constants';
-import { Debugger, Modal, Navigation } from '~/services';
+import { SCREENS } from '~/constants';
+import { t } from '~/localization';
+import { Debugger, Navigation, Alert } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -51,14 +52,15 @@ export class SettingsVM implements ISettingsVM {
     }
 
     signOut = new RequestModel({
-        run: async () => {
-            try {
-                Modal.show(MODALS.LOADING);
-                await stores.auth.signInOut.run();
-                Modal.hide(MODALS.LOADING);
-            } catch (error) {
-                Modal.hide(MODALS.LOADING);
-            }
+        run: () => {
+            Alert.show({
+                title: t('screens.settings.alert.title'),
+                subTitle: t('screens.settings.alert.subTitle'),
+                isVisibleLoading: true,
+                confirm: {
+                    run: () => stores.auth.signInOut.run(),
+                },
+            });
         },
     });
 

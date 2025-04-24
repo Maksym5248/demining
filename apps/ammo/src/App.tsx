@@ -12,7 +12,7 @@ import { Crashlytics, Navigation } from '~/services';
 import { ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
-import { Debugger, MessageProvider, ModalProvider, Splash, TooltipProvider, UpdaterProvider } from './containers';
+import { AlertProvider, Debugger, MessageProvider, ModalProvider, Splash, TooltipProvider, UpdaterProvider } from './containers';
 
 enableScreens(true);
 
@@ -48,6 +48,7 @@ export const App = observer(() => {
                         <RootNavigation ref={setNavigationRef} />
                         <ModalProvider modals={modals} />
                         <MessageProvider />
+                        <AlertProvider />
                         <UpdaterProvider />
                         <Debugger />
                         {vm.isVisibleSplash && <Splash onAnimationEnd={onAnimationEnd} isReady={vm.initialization.isLoaded} />}

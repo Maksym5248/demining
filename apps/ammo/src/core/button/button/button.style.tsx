@@ -12,6 +12,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         position: 'relative',
         ...theme.shadow.light,
     },
+    invert: {
+        backgroundColor: theme.colors.inert,
+    },
     disabled: {
         backgroundColor: theme.colors.disabled,
     },

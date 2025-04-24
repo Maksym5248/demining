@@ -1,14 +1,16 @@
 import { type ReactNode } from 'react';
 
-import { type ViewStyle } from 'react-native';
+import { type IViewStyle } from '~/types';
 
 export interface IButtonProps {
     title?: string;
-    style?: ViewStyle;
+    style?: IViewStyle;
     onPress?: () => void;
     disabled?: boolean;
     right?: ReactNode;
     left?: ReactNode;
     testID?: string;
     color?: string;
+    type?: 'invert' | 'primary';
+    isLoading?: boolean;
 }

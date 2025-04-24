@@ -32,6 +32,11 @@
         "select": {
             "title": "Select",
             "placeholder": "Choose"
+        },
+        "alert": {
+            "title": "Somthing went wrong",
+            "cancelTitle": "Cancel",
+            "confirmTitle": "Confirm"
         }
     },
     "components": {
@@ -169,7 +174,11 @@
             "about": "About the App",
             "support": "Contact Support",
             "debugger": "debugger",
-            "autenticate": "Log in"
+            "autenticate": "Log in",
+            "alert": {
+                "title": "Sign Out",
+                "subTitle": "Are you sure you want to sign out?"
+            }
         },
         "about": {
             "title": "About the App",
