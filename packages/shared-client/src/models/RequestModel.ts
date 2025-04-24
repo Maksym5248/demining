@@ -15,7 +15,7 @@ export interface IRequestModel<Params extends Array<any> = undefined[], Return =
 export interface IRequestModelParams<Params extends Array<any> = undefined[], Return = void> {
     shouldRun?: (...args: Partial<Params> | Params) => boolean;
     run: (...args: Params) => Promise<Return | void> | Return | void;
-    onError?: () => void;
+    onError?: (e?: Error) => void;
     onSuccuss?: () => void;
     returnIfLoaded?: boolean;
     cachePolicy?: 'cache-first' | 'network-only';

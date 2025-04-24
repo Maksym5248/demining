@@ -1,31 +1,50 @@
 import { makeAutoObservable } from 'mobx';
-import { Form as FormMRF } from 'mobx-react-form';
-import { type FieldConstructor } from 'mobx-react-form/lib/models/FieldInterface';
+import FormMRF from 'mobx-react-form';
+import { type SubmitHooks } from 'mobx-react-form/lib/models/SharedActionsInterface';
 import yup from 'mobx-react-form/lib/validators/YUP';
-import { validation } from 'shared-my-client';
+import { type Path, validation } from 'shared-my-client';
 
-import { Field } from './field';
+import { createField, type IField } from './field';
 
-export interface IForm extends FormMRF {}
+export interface IForm<T> {
+    field: (name: Path<T>) => IField;
+    submit: () => void;
+    isValid: boolean;
+}
 
-export class Form extends FormMRF implements IForm {
-    constructor(private params: { schema: any; fields: any }) {
-        super();
+export class Form<T> implements IForm<T> {
+    form: FormMRF;
+
+    constructor(private params: { schema: any; fields: any; submit: SubmitHooks }) {
+        const plugins = {
+            yup: yup({
+                schema: () => this.params.schema,
+                package: validation.Yup,
+                // extend: ({ validator, form }) => {},
+            }),
+        };
+
+        const fields = this.params?.fields ?? [];
+
+        const options = {
+            validateOnInit: false,
+            validateOnChange: true,
+        };
+
+        this.form = new FormMRF({ fields }, { plugins, options });
+
         makeAutoObservable(this);
     }
 
-    plugins() {
-        return {
-            yup: yup({ schema: this.params.schema, package: validation.Yup }),
-        };
-    }
-    setup() {
-        return {
-            fields: this.params.fields,
-        };
-    }
+    field = (name: Path<T>) => {
+        return createField(this.form.$(name));
+    };
 
-    makeField(props: FieldConstructor) {
-        return new Field(props);
+    submit = () => {
+        this.form.submit(this.params.submit);
+    };
+
+    get isValid() {
+        return this.form.isValid;
     }
 }

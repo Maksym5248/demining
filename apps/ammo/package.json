@@ -70,7 +70,7 @@
         "react-native-screens": "4.10.0",
         "react-native-svg": "15.11.2",
         "react-native-svg-transformer": "1.5.0",
-        "react-native-theme-mk": "0.1.6",
+        "react-native-theme-mk": "0.2.0",
         "semver": "^7.7.1",
         "shared-my": "*",
         "shared-my-client": "*",

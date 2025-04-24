@@ -17914,10 +17914,10 @@ react-native-svg@15.11.2:
     css-tree "^1.1.3"
     warn-once "0.1.1"
 
-react-native-theme-mk@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/react-native-theme-mk/-/react-native-theme-mk-0.1.6.tgz#7cf909899bed897601d29989698d3d62a2c2125e"
-  integrity sha512-8h560Swrkv+vbDbjrEiT/yFQDA8YdrcPzo6/Eg0+YcG6kq6r/5xQ5fAeabBDFc5MvbTPFlLWjMNgnATDnA2NXw==
+react-native-theme-mk@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-theme-mk/-/react-native-theme-mk-0.2.0.tgz#3eab956643101fd8840482d84208b9be2a59961d"
+  integrity sha512-quOAlhIpU8AmDNs4uVE8qGSwKyZJoMYqMP5ygWZuR8qFcBnvD8Px3RJSjS9lA3dAYd0lY4l7KLSZNfymi0+ZrQ==
   dependencies:
     events "^3.3.0"
 

@@ -1,6 +1,14 @@
 {
     "error": {
-        "can-not-open-link": "Failed to open the link"
+        "can-not-open-link": "Failed to open the link",
+        "required": "Field is required.",
+        "unexpected": "Something went wrong",
+        "min-password-length": "Min password length is %{value}.",
+        "max-password-length": "Max password length is %{value}.",
+        "min-new-password-length": "%{value}+ characters",
+        "invalid-name": "Invalid name",
+        "invalid-email": "Invalid email, try again.",
+        "invalid-password": "Invalid password, try again."
     },
     "updates": {
         "dictionaries": {
@@ -160,7 +168,8 @@
             "title": "Settings",
             "about": "About the App",
             "support": "Contact Support",
-            "debugger": "debugger"
+            "debugger": "debugger",
+            "autenticate": "Log in"
         },
         "about": {
             "title": "About the App",
@@ -169,6 +178,24 @@
             "title2": "Educational Purpose",
             "text2": "The main goal of the app is education and raising awareness about ammunition and explosive devices. It is designed for humanitarian demining specialists, educators, students, and anyone interested in the topic. It helps understand characteristics, classification, and operating principles of various munitions but is not a guide for action.",
             "title3": "Feedback and Suggestions"
+        },
+        "sign-in": {
+            "title": "Sign In",
+            "inputEmail": "Email",
+            "inputPassWord": "Password",
+            "button": "Sign In",
+            "passWord": "Forgot password?",
+            "footerAccount": "Don't have an account?",
+            "footerSignUp": "Sign Up"
+        },
+        "sign-up": {
+            "title": "Sign Up",
+            "inputEmail": "Email",
+            "inputPassWord": "Password",
+            "button": "Sign Up",
+            "passWord": "Forgot password?",
+            "footerAccount": "Already have an account?",
+            "footerSignIn": "Sign In"
         }
     },
     "modals": {

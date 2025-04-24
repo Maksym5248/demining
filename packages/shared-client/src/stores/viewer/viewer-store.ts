@@ -86,6 +86,7 @@ export class ViewerStore implements IViewerStore {
     }
 
     get isAuthenticated() {
+        console.log('isAuthenticated', this.user?.id, this.authData, this.isAnonymous);
         return !!this.user?.id && !this.isAnonymous;
     }
 

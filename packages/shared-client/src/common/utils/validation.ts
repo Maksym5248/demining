@@ -2,11 +2,14 @@ import * as Yup from 'yup';
 
 const { string, object } = Yup;
 
-const p = (v: string) => `errors.${v}`;
+const p = (v: string, value?: string) => ({
+    message: `error.${v}`,
+    value,
+});
 
-const password = string().required(p('required')).min(8, p('min'));
-const name = string().required(p('required')).min(2, p('min'));
-const email = string().email(p('incorrect')).required(p('required')).trim(p('required'));
+const password = string().required(p('required')).min(8, p('min-password-length', '8')).max(20, p('max-password-length', '20'));
+const name = string().required(p('required')).min(2, p('min-length', '2'));
+const email = string().email(p('invalid-email')).required(p('required')).trim(p('required'));
 
 export const shape = <U extends Yup.ObjectShape>(fields: U) => object().shape(fields);
 

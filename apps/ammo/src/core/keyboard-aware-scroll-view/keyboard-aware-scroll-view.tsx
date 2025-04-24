@@ -12,7 +12,7 @@ export const KeyboardAwareScrollView = ({ contentStyle, children, ...rest }: Key
 
     return (
         <KeyboardAwareScrollViewRN
-            extraHeight={120}
+            // extraHeight={120}
             bounces={false}
             keyboardShouldPersistTaps="handled"
             enableAutomaticScroll={device.isIOS}

@@ -153,7 +153,7 @@ export class RootStore implements IRootStore {
             }
         } catch (e) {
             this.services.logger.error(e);
-            this.services.message.error('Bиникла помилка');
+            // this.services.message.error('Bиникла помилка');
             this.viewer.removeUser();
         }
 

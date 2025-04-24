@@ -12,17 +12,17 @@ const validationSchema = validation.shape({
     password: validation.password,
 });
 
-interface SignInForm {
+interface SignUpForm {
     email: string;
     password: string;
 }
 
 export interface ISignInVM extends ViewModel {
-    form: IForm<SignInForm>;
+    form: IForm<SignUpForm>;
 }
 
-export class SignInVM implements ISignInVM {
-    form: IForm<SignInForm> = new Form({
+export class SignUpVM implements ISignInVM {
+    form: IForm<SignUpForm> = new Form({
         schema: validationSchema,
         fields: [
             {
@@ -37,16 +37,17 @@ export class SignInVM implements ISignInVM {
         ],
         submit: {
             onSubmit: async form => {
-                Modal.show(MODALS.LOADING);
-                const values = form.values();
-                await stores.auth.signInWithEmail.run(values.email, values.password);
-            },
-            onSuccess: () => {
-                Modal.hide(MODALS.LOADING);
-                Navigation.goBack();
-            },
-            onError: () => {
-                Modal.hide(MODALS.LOADING);
+                try {
+                    Modal.show(MODALS.LOADING);
+                    const values = form.values();
+
+                    await stores.auth.signUpWithEmail.run(values.email, values.password);
+
+                    Modal.hide(MODALS.LOADING);
+                    Navigation.goBack();
+                } finally {
+                    Modal.hide(MODALS.LOADING);
+                }
             },
         },
     });
@@ -56,4 +57,4 @@ export class SignInVM implements ISignInVM {
     }
 }
 
-export const signInVM = new SignInVM();
+export const signUpVM = new SignUpVM();

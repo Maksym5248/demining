@@ -7,6 +7,7 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
         justifyContent: 'center',
         left: 0,
         right: 0,
+        pointerEvents: 'none',
     },
     label: {
         position: 'absolute',

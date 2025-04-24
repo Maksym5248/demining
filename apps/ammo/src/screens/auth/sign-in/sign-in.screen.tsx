@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 
 import { SCREENS } from '~/constants';
@@ -12,57 +13,56 @@ import { useTheme } from '~/styles';
 import { useStyles } from './sign-in.style';
 import { signInVM } from './sign-in.vm';
 
-// TODO:
-// 1. implement forgot password
-// 2. email confirmation link to app
-
-export const SignInScreen = () => {
+export const SignInScreen = observer(() => {
     const s = useStyles();
     const vm = useViewModel(signInVM);
     const theme = useTheme();
     const t = useTranslate('screens.sign-in');
+    const tError = useTranslate();
 
     const [refPassword, onEditedEmail] = useFocusInput();
 
-    // const email = vm.form.fields.get('email');
-    // const password = vm.form.fields.get('password');
+    const email = vm.form.field('email');
+    const password = vm.form.field('password');
 
-    const onGoToSignUp = () => {
-        Navigation.push(SCREENS.SIGN_UP);
-    };
+    const onGoToSignUp = () => Navigation.push(SCREENS.SIGN_UP);
+    const onSubmit = () => vm.form.submit();
 
-    const onSubmit = () => {
-        vm.form.submit();
-    };
+    console.log('email', email.error);
 
     return (
         <View style={s.container}>
+            <Header backButton="back" title={t('title')} />
             <KeyboardAwareScrollView contentStyle={s.contentContainer}>
-                <Header title={t('title')} backButton="back" />
-                <TextInput
-                    label={t('inputEmail')}
-                    onSubmitEditing={onEditedEmail}
-                    keyboardType="email-address"
-                    // autoCompleteType="email"
-                    testID="email"
-                    // {...email.bind()}
-                />
-                <TextInput
-                    label={t('inputPassWord')}
-                    style={s.inputPassword}
-                    blurOnSubmit={true}
-                    ref={refPassword}
-                    returnKeyType="done"
-                    secureTextEntry
-                    // autoCompleteType="password"
-                    // onSubmitEditing={vm.form.isValid ? vm.form.submit : undefined}
-                    testID="password"
-                    // {...password.bind()}
-                />
-                <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_in" />
-                <Touchable style={s.forgotPassword} testID="go_to_sign_up">
-                    <Text type="p3" color={theme.colors.accent} text={`${t('passWord')}  `} />
-                </Touchable>
+                <View />
+                <View>
+                    <TextInput
+                        label={t('inputEmail')}
+                        onSubmitEditing={onEditedEmail}
+                        keyboardType="email-address"
+                        autoComplete="email"
+                        testID="email"
+                        {...email}
+                        message={tError(email.error?.message, email.error)}
+                    />
+                    <TextInput
+                        label={t('inputPassWord')}
+                        style={s.inputPassword}
+                        blurOnSubmit={true}
+                        ref={refPassword}
+                        returnKeyType="done"
+                        secureTextEntry
+                        autoComplete="password"
+                        onSubmitEditing={vm.form.isValid ? vm.form.submit : undefined}
+                        testID="password"
+                        {...password}
+                        message={tError(password.error?.message, password.error)}
+                    />
+                    <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_in" />
+                    <Touchable style={s.forgotPassword} testID="go_to_sign_up">
+                        <Text type="p3" color={theme.colors.accent} text={`${t('passWord')}  `} />
+                    </Touchable>
+                </View>
                 <View style={s.signUpContainer}>
                     <Text type="p2" color={theme.colors.thirdiary} text={`${t('footerAccount')} `} />
                     <Touchable testID="go_to_sign_up" onPress={onGoToSignUp}>
@@ -72,4 +72,4 @@ export const SignInScreen = () => {
             </KeyboardAwareScrollView>
         </View>
     );
-};
+});

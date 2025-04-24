@@ -17,13 +17,13 @@ const commonTabbarOptions = {
     tabBarShowLabel: true,
 };
 
-const dictionaryTabbarOptions = (t: (key: string) => string) => ({
+const dictionaryTabbarOptions = (t: (key: string) => string | undefined) => ({
     ...commonTabbarOptions,
     tabBarIcon: getIcon('dictionary'),
     tabBarLabel: t('screens.home.title'),
 });
 
-const settingTabbarOptions = (t: (key: string) => string) => ({
+const settingTabbarOptions = (t: (key: string) => string | undefined) => ({
     ...commonTabbarOptions,
     tabBarIcon: getIcon('settings'),
     tabBarLabel: t('screens.settings.title'),
@@ -33,14 +33,17 @@ export const TabNavigator = () => {
     const theme = useTheme();
     const t = useTranslate();
 
-    const screenOptions = {
-        tabBarActiveTintColor: theme.colors.accent,
-        tabBarInactiveTintColor: theme.colors.secondary,
-        headerShown: false,
+    const params = {
+        screenOptions: {
+            tabBarActiveTintColor: theme.colors.accent,
+            tabBarInactiveTintColor: theme.colors.secondary,
+            headerShown: false,
+        },
+        initialRouteName: SCREENS.HOME,
     };
 
     return (
-        <Tab.Navigator screenOptions={screenOptions}>
+        <Tab.Navigator {...params}>
             <Tab.Screen name={SCREENS.HOME} component={screens.HomeScreen} options={dictionaryTabbarOptions(t)} />
             <Tab.Screen name={SCREENS.SETTINGS} component={screens.SettingsScreen} options={settingTabbarOptions(t)} />
         </Tab.Navigator>
