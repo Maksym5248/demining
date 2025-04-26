@@ -43,12 +43,10 @@ export class AuthStore implements IAuthStore {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithGoogle();
         },
-        onError: () => this.services.message.error('Не вдалось увійти, спробуйте ще раз'),
     });
 
     signInOut = new RequestModel({
         run: () => this.services.auth.signOut(),
-        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });
 
     signUpWithEmail = new RequestModel({
@@ -56,7 +54,6 @@ export class AuthStore implements IAuthStore {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.createUserWithEmailAndPassword(email, password);
         },
-        onError: () => this.services.message.error('Не вдалось зареєструватись, спробуйте ще раз'),
     });
 
     signInWithEmail = new RequestModel({
@@ -64,13 +61,11 @@ export class AuthStore implements IAuthStore {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithEmailAndPassword(email, password);
         },
-        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });
 
     signInAnonymously = new RequestModel({
         run: async () => {
             await this.services.auth.signInAnonymously();
         },
-        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });
 }

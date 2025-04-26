@@ -1,7 +1,8 @@
 import { makeAutoObservable } from 'mobx';
+import { ERROR_MESSAGE } from 'shared-my';
 
 import { type SCREENS } from '~/constants';
-import { t } from '~/localization';
+import { tError } from '~/localization';
 import { Navigation, Message } from '~/services';
 import { externalLink } from '~/utils/url';
 
@@ -38,7 +39,7 @@ export class DataItem implements IDataItem {
             try {
                 await externalLink.emailTo(this.params.email);
             } catch (error) {
-                Message.error(t('error.can-not-open-link') as string);
+                Message.error(tError(ERROR_MESSAGE.CAN_NOT_OPEN_LINK));
             }
         }
 

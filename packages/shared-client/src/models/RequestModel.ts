@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type ErrorInner } from '~/common';
+import { ErrorModel, type IErrorModel } from '~/common';
 import { Logger } from '~/services';
 
 import { RequestStateModel } from './RequestStateModel';
@@ -9,13 +9,13 @@ export interface IRequestModel<Params extends Array<any> = undefined[], Return =
     run: (...args: Params) => Promise<Return | void> | Return | void;
     isLoading: boolean;
     isLoaded: boolean;
-    error: ErrorInner | null;
+    error: IErrorModel | null;
 }
 
 export interface IRequestModelParams<Params extends Array<any> = undefined[], Return = void> {
     shouldRun?: (...args: Partial<Params> | Params) => boolean;
     run: (...args: Params) => Promise<Return | void> | Return | void;
-    onError?: (e?: Error) => void;
+    onError?: (e?: IErrorModel) => void;
     onSuccuss?: () => void;
     returnIfLoaded?: boolean;
     cachePolicy?: 'cache-first' | 'network-only';
@@ -26,8 +26,8 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
 
     private _shouldRun?: (...args: Params) => boolean;
     private _run: (...args: Params) => Promise<Return | void> | Return | void;
-    private _onError?: (e?: Error) => void;
-    private _onSuccuss?: (e?: Error) => void;
+    private _onError?: (e?: IErrorModel) => void;
+    private _onSuccuss?: () => void;
     private _returnIfLoaded = false;
     _cachePolicy?: 'cache-first' | 'network-only';
 
@@ -57,10 +57,12 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
             this._onSuccuss?.();
             this.requestState.success();
         } catch (e) {
-            this._onError?.(e as Error);
-            this.requestState.failure(e as Error);
-            Logger.error((e as Error)?.message);
-            throw e;
+            const error = new ErrorModel(e as Error);
+
+            this._onError?.(error);
+            this.requestState.failure(error);
+            Logger.error(error.message);
+            throw error;
         }
 
         return res;

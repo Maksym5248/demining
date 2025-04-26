@@ -28,8 +28,6 @@ export const SignInScreen = observer(() => {
     const onGoToSignUp = () => Navigation.push(SCREENS.SIGN_UP);
     const onSubmit = () => vm.form.submit();
 
-    console.log('email', email.error);
-
     return (
         <View style={s.container}>
             <Header backButton="back" title={t('title')} />
@@ -57,7 +55,7 @@ export const SignInScreen = observer(() => {
                         {...password}
                         message={tError(password.error?.message, password.error)}
                     />
-                    <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_in" />
+                    <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_in" disabled={vm.form.isDisabled} />
                     <Touchable style={s.forgotPassword} testID="go_to_sign_up">
                         <Text type="p3" color={theme.colors.accent} text={`${t('passWord')}  `} />
                     </Touchable>

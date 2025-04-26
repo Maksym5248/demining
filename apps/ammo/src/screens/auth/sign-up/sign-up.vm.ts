@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
-import { Modal, Navigation } from '~/services';
+import { Message, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 import { Form, type IForm } from '~/utils';
@@ -45,6 +45,8 @@ export class SignUpVM implements ISignInVM {
 
                     Modal.hide(MODALS.LOADING);
                     Navigation.goBack();
+                } catch (e) {
+                    Message.error('Не вдалось зареєструватись, спробуйте ще раз');
                 } finally {
                     Modal.hide(MODALS.LOADING);
                 }

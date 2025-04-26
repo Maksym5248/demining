@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { validation } from 'shared-my-client';
+import { type IErrorModel, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import { Modal, Navigation } from '~/services';
@@ -37,16 +37,16 @@ export class SignInVM implements ISignInVM {
         ],
         submit: {
             onSubmit: async form => {
-                Modal.show(MODALS.LOADING);
-                const values = form.values();
-                await stores.auth.signInWithEmail.run(values.email, values.password);
-            },
-            onSuccess: () => {
-                Modal.hide(MODALS.LOADING);
-                Navigation.goBack();
-            },
-            onError: () => {
-                Modal.hide(MODALS.LOADING);
+                try {
+                    Modal.show(MODALS.LOADING);
+                    const values = form.values();
+                    await stores.auth.signInWithEmail.run(values.email, values.password);
+                    Navigation.goBack();
+                } catch (error) {
+                    this.form.setErrors((error as IErrorModel)?.fields);
+                } finally {
+                    Modal.hide(MODALS.LOADING);
+                }
             },
         },
     });

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '~/components';
 import { ROUTES } from '~/constants';
 import { useStore } from '~/hooks';
+import { Message } from '~/services';
 
 import { s } from './settings.styles';
 
@@ -13,8 +14,12 @@ export const SettingsPage = observer(() => {
     const navigate = useNavigate();
 
     const onSignOut = async () => {
-        await store.auth.signInOut.run();
-        navigate(ROUTES.LOGIN);
+        try {
+            await store.auth.signInOut.run();
+            navigate(ROUTES.LOGIN);
+        } catch (error) {
+            Message.error('Не вдалось вийти, спробуйте ще раз');
+        }
     };
 
     return (

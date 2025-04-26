@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from '~/components';
 import { ROUTES } from '~/constants';
 import { useStore } from '~/hooks';
+import { Message } from '~/services';
 
 import { s } from './signup.styles';
 import AppIcon from '../../../../assets/icon.svg';
@@ -18,12 +19,20 @@ interface ISignInFrom {
 export const SignupPage = observer(() => {
     const store = useStore();
 
-    const handleGoogleSignIn = () => {
-        store.auth.signInWithGoogle.run();
+    const handleGoogleSignIn = async () => {
+        try {
+            await store.auth.signInWithGoogle.run();
+        } catch (error) {
+            Message.error('Не вдалось увійти, спробуйте ще раз');
+        }
     };
 
     const onFinish = async (values: ISignInFrom) => {
-        store.auth.signUpWithEmail.run(values.email, values.password);
+        try {
+            await store.auth.signUpWithEmail.run(values.email, values.password);
+        } catch (e) {
+            Message.error('Не вдалось зареєструватись, спробуйте ще раз');
+        }
     };
 
     const isLoading = store.auth.signInWithGoogle.isLoading || store.auth.signUpWithEmail.isLoading || store.viewer.isLoading;

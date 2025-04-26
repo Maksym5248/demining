@@ -159,8 +159,7 @@ export class RootStore implements IRootStore {
 
         this.viewer.setLoading(false);
     }
-    // LOG: USER ID: JH4CmYUduNbDUY1aOCUZKC22SmE2
-    // LOG: ANALYTICS: User ID - VmDNSPtUx4RU5Km9j9OK1mvZR6s2
+
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {

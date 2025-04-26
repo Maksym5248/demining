@@ -13,3 +13,4 @@ export * from './entities/book';
 export * from './file';
 export * from './tables';
 export * from './apps';
+export * from './error';

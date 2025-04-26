@@ -8,7 +8,8 @@
         "min-new-password-length": "%{value}+ characters",
         "invalid-name": "Invalid name",
         "invalid-email": "Invalid email, try again.",
-        "invalid-password": "Invalid password, try again."
+        "invalid-password": "Invalid password, try again.",
+        "wrong_email_or_password": "Wrong email or password, try again."
     },
     "updates": {
         "dictionaries": {

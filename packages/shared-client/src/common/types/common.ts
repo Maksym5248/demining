@@ -9,11 +9,6 @@ export interface Runnable<T> {
     run: (fn: (() => Promise<T>) | (() => T)) => Promise<T | undefined> | T | undefined;
 }
 
-export interface ErrorInner {
-    code?: string;
-    message: string;
-}
-
 export interface ITreeNode<T> {
     id: string;
     item: T;

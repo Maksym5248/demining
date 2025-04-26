@@ -8,7 +8,8 @@
         "min-new-password-length": "%{value}+ символів",
         "invalid-name": "Невірне ім'я",
         "invalid-email": "Невірний email, спробуйте ще раз.",
-        "invalid-password": "Невірний пароль, спробуйте ще раз."
+        "invalid-password": "Невірний пароль, спробуйте ще раз.",
+        "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз."
     },
     "updates": {
         "dictionaries": {
