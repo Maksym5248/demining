@@ -29,6 +29,7 @@ export const SignUpScreen = observer(() => {
 
     const onGoToSignIn = () => Navigation.navigate(SCREENS.SIGN_IN);
     const onSubmit = () => vm.form.submit();
+    const onPressGoogle = () => vm.signInWithGoogle.run();
 
     return (
         <View style={s.container}>
@@ -69,6 +70,7 @@ export const SignUpScreen = observer(() => {
                         message={tError(confirmPassword.error?.message, confirmPassword.error)}
                     />
                     <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_up" />
+                    <Button.Google style={s.button} onPress={onPressGoogle} testID="google" />
                 </View>
                 <View style={s.signUpContainer}>
                     <Text type="p2" color={theme.colors.thirdiary} text={`${t('footerAccount')} `} />

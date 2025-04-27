@@ -44,11 +44,7 @@ export class CurrentUserAPI {
 
         const res = await this.db.organization?.get(member?.organizationId);
 
-        if (!res) {
-            throw new Error('There is no organization connected to user');
-        }
-
-        return res;
+        return res ?? null;
     };
 
     updateInfo = async (id: string, value: IUpdateValue<IUserInfoDB>): Promise<IUserInfoDB> => {

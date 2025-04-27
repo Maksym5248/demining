@@ -12,6 +12,7 @@ export interface IForm<T> {
     field: (name: Path<T>) => IField;
     submit: () => void;
     reset: () => void;
+    values: () => T;
     setErrors: (error?: any) => void;
     isValid: boolean;
     isDisabled: boolean;
@@ -73,6 +74,10 @@ export class Form<T> implements IForm<T> {
 
     reset = () => {
         this.form.reset();
+    };
+
+    values = () => {
+        return this.form.values();
     };
 
     get isValid() {

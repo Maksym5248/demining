@@ -37,6 +37,7 @@ export const themeBase: IBaseThemeSchema = {
         link: palette.blueB4,
         disabled: palette.grey92,
         inertDark: palette.grey92,
+        google: palette.red37,
     },
     fonts: Device.isIOS
         ? {

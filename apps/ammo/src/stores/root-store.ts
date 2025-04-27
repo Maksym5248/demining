@@ -17,12 +17,13 @@ import {
     AuthStore,
     ViewerStore,
     createCurrentUser,
+    ErrorModel,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
 import { DB } from '~/db';
 import { Localization } from '~/localization';
-import { Analytics, Auth, Crashlytics, Logger, Message } from '~/services';
+import { Analytics, Auth, Crashlytics, ErrorManager, Logger, Message } from '~/services';
 
 export interface IRootStore {
     explosive: IExplosiveStore;
@@ -151,9 +152,11 @@ export class RootStore implements IRootStore {
             if (!user) {
                 this.viewer.removeUser();
             }
+
+            Logger.log('Anonimus', this.viewer.isAnonymous);
         } catch (e) {
-            this.services.logger.error(e);
-            this.services.message.error('Bиникла помилка');
+            const error = new ErrorModel(e as Error);
+            ErrorManager.request(error);
             this.viewer.removeUser();
         }
 

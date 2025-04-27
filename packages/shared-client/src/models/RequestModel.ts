@@ -61,7 +61,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
 
             this._onError?.(error);
             this.requestState.failure(error);
-            Logger.error(error.message);
+            Logger.error((e as Error)?.message);
             throw error;
         }
 

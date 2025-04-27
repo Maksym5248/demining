@@ -8,6 +8,7 @@ export interface IButtonProps {
     onPress?: () => void;
     disabled?: boolean;
     right?: ReactNode;
+    center?: ReactNode;
     left?: ReactNode;
     testID?: string;
     color?: string;

@@ -24,7 +24,7 @@ import { UpdaterClass } from './ui/updater';
 export const LocalStore = new LocalStoreClass();
 export const Navigation = new NavigationClass();
 export const Message = new MessageClass();
-export const ErrorManager = new ErrorManagerClass(Message);
+export const ErrorManager = new ErrorManagerClass(Message, Logger);
 export const Alert = new AlertClass();
 export const Updater = new UpdaterClass();
 export const Crashlytics = new CrashlyticsClass(Logger);

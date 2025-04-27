@@ -27,6 +27,7 @@ export const SignInScreen = observer(() => {
 
     const onGoToSignUp = () => Navigation.push(SCREENS.SIGN_UP);
     const onSubmit = () => vm.form.submit();
+    const onPressGoogle = () => vm.signInWithGoogle.run();
 
     return (
         <View style={s.container}>
@@ -58,6 +59,7 @@ export const SignInScreen = observer(() => {
                     <Touchable style={s.forgotPassword} testID="go_to_sign_up">
                         <Text type="p3" color={theme.colors.accent} text={`${t('passWord')}  `} />
                     </Touchable>
+                    <Button.Google style={s.button} onPress={onPressGoogle} testID="google" />
                 </View>
                 <View style={s.signUpContainer}>
                     <Text type="p2" color={theme.colors.thirdiary} text={`${t('footerAccount')} `} />

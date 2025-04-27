@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { Form, type IForm, validation } from 'shared-my-client';
+import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import { ErrorManager, Modal, Navigation } from '~/services';
@@ -18,6 +18,7 @@ interface SignInForm {
 
 export interface ISignInVM extends ViewModel {
     form: IForm<SignInForm>;
+    signInWithGoogle: RequestModel;
 }
 
 export class SignInVM implements ISignInVM {
@@ -35,24 +36,41 @@ export class SignInVM implements ISignInVM {
             },
         ],
         submit: {
-            onSubmit: async form => {
-                try {
-                    Modal.show(MODALS.LOADING);
-                    const values = form.values();
-                    await stores.auth.signInWithEmail.run(values.email, values.password);
-                    Navigation.goBack();
-                } catch (e) {
-                    ErrorManager.form<SignInForm>(this.form, e);
-                } finally {
-                    Modal.hide(MODALS.LOADING);
-                }
-            },
+            onSubmit: () => this.submit.run(),
         },
     });
 
     constructor() {
         makeAutoObservable(this);
     }
+
+    submit = new RequestModel({
+        run: async () => {
+            try {
+                Modal.show(MODALS.LOADING);
+                const values = this.form.values();
+                await stores.auth.signInWithEmail.run(values.email, values.password);
+                Navigation.goBack();
+            } catch (e) {
+                ErrorManager.form<SignInForm>(this.form, e);
+            } finally {
+                Modal.hide(MODALS.LOADING);
+            }
+        },
+    });
+
+    signInWithGoogle = new RequestModel({
+        run: async () => {
+            try {
+                Modal.show(MODALS.LOADING);
+                await stores.auth.signInWithGoogle.run();
+            } catch (e) {
+                ErrorManager.request(e);
+            } finally {
+                Modal.hide(MODALS.LOADING);
+            }
+        },
+    });
 
     unmount() {
         this.form.reset();

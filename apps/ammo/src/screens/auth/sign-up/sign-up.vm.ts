@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
-import { ErrorModel, Form, type IForm, validation } from 'shared-my-client';
+import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS, SCREENS } from '~/constants';
-import { Message, Modal, Navigation } from '~/services';
+import { ErrorManager, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -20,6 +20,7 @@ interface SignUpForm {
 
 export interface ISignInVM extends ViewModel {
     form: IForm<SignUpForm>;
+    signInWithGoogle: RequestModel;
 }
 
 export class SignUpVM implements ISignInVM {
@@ -42,33 +43,44 @@ export class SignUpVM implements ISignInVM {
             },
         ],
         submit: {
-            onSubmit: async form => {
-                try {
-                    Modal.show(MODALS.LOADING);
-                    const values = form.values();
-
-                    await stores.auth.signUpWithEmail.run(values.email, values.password);
-
-                    Modal.hide(MODALS.LOADING);
-                    Navigation.navigate(SCREENS.SETTINGS);
-                } catch (e) {
-                    const error = new ErrorModel(e);
-
-                    this.form.setErrors(error);
-
-                    if (!error.isFieldError && error.message) {
-                        Message.error(error.message);
-                    }
-                } finally {
-                    Modal.hide(MODALS.LOADING);
-                }
-            },
+            onSubmit: () => this.submit.run(),
         },
     });
 
     constructor() {
         makeAutoObservable(this);
     }
+
+    submit = new RequestModel({
+        run: async () => {
+            try {
+                Modal.show(MODALS.LOADING);
+                const values = this.form.values();
+
+                await stores.auth.signUpWithEmail.run(values.email, values.password);
+
+                Modal.hide(MODALS.LOADING);
+                Navigation.navigate(SCREENS.SETTINGS);
+            } catch (e) {
+                ErrorManager.form<SignUpForm>(this.form, e);
+            } finally {
+                Modal.hide(MODALS.LOADING);
+            }
+        },
+    });
+
+    signInWithGoogle = new RequestModel({
+        run: async () => {
+            try {
+                Modal.show(MODALS.LOADING);
+                await stores.auth.signInWithGoogle.run();
+            } catch (e) {
+                ErrorManager.request(e);
+            } finally {
+                Modal.hide(MODALS.LOADING);
+            }
+        },
+    });
 }
 
 export const signUpVM = new SignUpVM();

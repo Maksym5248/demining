@@ -10,6 +10,7 @@ export const palette: Record<IPalette, string> = {
     white: '#ffffff',
     green78: '#1E6478',
     red53: '#ec5353',
+    red37: '#DB4437',
     transparent: 'rgba(0,0,0,0)',
     blackTransparent01: 'rgba(19, 22, 22, 0.1)',
     blueB4: '#407fb4',

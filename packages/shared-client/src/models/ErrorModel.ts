@@ -13,6 +13,7 @@ export interface IErrorModel {
     isFieldError: boolean;
 }
 
+const values = Object.values(ERROR_MESSAGE);
 export class ErrorModel implements IErrorModel {
     data: unknown;
 
@@ -28,14 +29,14 @@ export class ErrorModel implements IErrorModel {
             this.fields = e.fields;
         } else {
             this.data = e;
-            this.message = this.getMessage();
+            this.message = this.getMessage(e);
             this.status = this.getStatus(e);
             this.fields = this.getFields(e);
         }
     }
 
-    private getMessage() {
-        return ERROR_MESSAGE.UNEXPECTED;
+    private getMessage(e: any) {
+        return values.includes(e?.message) ? e?.message : ERROR_MESSAGE.UNEXPECTED;
     }
 
     private getStatus(e: any) {

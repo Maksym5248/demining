@@ -8,7 +8,10 @@ import {
     EmailAuthProvider,
 } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { ERROR_MESSAGE } from 'shared-my';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
+
+import { Device } from '~/utils';
 
 export class AuthClass implements IAuth {
     private get auth() {
@@ -38,25 +41,26 @@ export class AuthClass implements IAuth {
 
     async signInWithGoogle() {
         GoogleSignin.configure({
-            // @ts-ignore: clientId is present in options but not specified in firebase type
-            iosClientId: authApp.options.clientId,
+            iosClientId: getApp().options.clientId,
         });
 
-        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        if (Device.isAndroid) {
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        }
 
         const signInResult = await GoogleSignin.signIn();
+        console.log('signInResult', signInResult);
+
+        if (signInResult.type === 'cancelled') {
+            throw new Error(ERROR_MESSAGE.CANCELED);
+        }
 
         if (!signInResult.data?.idToken) {
             throw new Error('No ID token found');
         }
 
         const credential = GoogleAuthProvider.credential(signInResult.data.idToken);
-
-        if (this.auth.currentUser) {
-            await linkWithCredential(this.auth.currentUser, credential);
-        } else {
-            await this.auth.signInWithCredential(credential);
-        }
+        await this.auth.signInWithCredential(credential);
     }
 
     async signOut() {

@@ -9,6 +9,7 @@ import download from './download.svg';
 import eyeHidden from './eye-hidden.svg';
 import eye from './eye.svg';
 import filter from './filter.svg';
+import google from './google.svg';
 import info from './info.svg';
 import logout from './logout.svg';
 import search from './search.svg';
@@ -32,4 +33,5 @@ export const svgIcons = {
     settings,
     debugger: debuggerIcon,
     logout,
+    google,
 };

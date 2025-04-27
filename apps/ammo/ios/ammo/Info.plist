@@ -20,6 +20,15 @@
 	<string>1.6.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.281126311275-s8lehovvapeck0hb9vo33mh80clm8in9</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>68</string>
 	<key>LSApplicationQueriesSchemes</key>
