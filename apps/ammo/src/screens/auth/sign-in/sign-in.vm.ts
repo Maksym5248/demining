@@ -1,11 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { type IErrorModel, validation } from 'shared-my-client';
+import { Form, type IForm, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
-import { Modal, Navigation } from '~/services';
+import { ErrorManager, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
-import { Form, type IForm } from '~/utils';
 
 const validationSchema = validation.shape({
     email: validation.email,
@@ -42,8 +41,8 @@ export class SignInVM implements ISignInVM {
                     const values = form.values();
                     await stores.auth.signInWithEmail.run(values.email, values.password);
                     Navigation.goBack();
-                } catch (error) {
-                    this.form.setErrors((error as IErrorModel)?.fields);
+                } catch (e) {
+                    ErrorManager.form<SignInForm>(this.form, e);
                 } finally {
                     Modal.hide(MODALS.LOADING);
                 }

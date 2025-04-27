@@ -18,7 +18,7 @@ export const SignInScreen = observer(() => {
     const vm = useViewModel(signInVM);
     const theme = useTheme();
     const t = useTranslate('screens.sign-in');
-    const tError = useTranslate();
+    const tError = useTranslate('error');
 
     const [refPassword, onEditedEmail] = useFocusInput();
 

@@ -18,7 +18,7 @@ export const SignUpScreen = observer(() => {
     const vm = useViewModel(signUpVM);
     const theme = useTheme();
     const t = useTranslate('screens.sign-up');
-    const tError = useTranslate();
+    const tError = useTranslate('error');
 
     const [refPassword, onEditedEmail] = useFocusInput();
 

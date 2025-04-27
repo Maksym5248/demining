@@ -10,17 +10,17 @@ export interface IErrorModel {
     message: string;
     status: number | null;
     fields: IErrorField[];
+    isFieldError: boolean;
 }
 
 export class ErrorModel implements IErrorModel {
-    data: Error;
+    data: unknown;
 
     message: ERROR_MESSAGE;
     status: number | null;
     fields: IErrorField[] = [];
 
-    constructor(e: Error) {
-        console.log('e', e?.message);
+    constructor(e: unknown) {
         if (e instanceof ErrorModel) {
             this.data = e.data;
             this.message = e.message;
@@ -38,11 +38,11 @@ export class ErrorModel implements IErrorModel {
         return ERROR_MESSAGE.UNEXPECTED;
     }
 
-    private getStatus(e: Error) {
+    private getStatus(e: any) {
         return get(e, 'response.status', null);
     }
 
-    private getFields(e: Error) {
+    private getFields(e: any) {
         const res = [];
 
         if (e?.message?.includes('auth/invalid-login-credentials')) {
@@ -58,5 +58,9 @@ export class ErrorModel implements IErrorModel {
         }
 
         return res;
+    }
+
+    get isFieldError() {
+        return this.fields.length > 0;
     }
 }

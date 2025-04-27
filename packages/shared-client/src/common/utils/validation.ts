@@ -2,8 +2,8 @@ import * as Yup from 'yup';
 
 const { string, object } = Yup;
 
-const p = (v: string, value?: string) => ({
-    message: `error.${v}`,
+const p = (message: string, value?: string) => ({
+    message,
     value,
 });
 

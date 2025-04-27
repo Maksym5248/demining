@@ -43,7 +43,6 @@
         "@sentry/react-native": "6.10.0",
         "axios": "1.6.5",
         "dayjs": "1.11.10",
-        "formik": "2.4.5",
         "geofire-common": "6.0.0",
         "i18n-js": "4.4.3",
         "lodash": "4.17.21",

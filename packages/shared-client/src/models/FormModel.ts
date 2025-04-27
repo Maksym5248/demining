@@ -2,15 +2,17 @@ import { makeAutoObservable } from 'mobx';
 import FormMRF from 'mobx-react-form';
 import { type SubmitHooks } from 'mobx-react-form/lib/models/SharedActionsInterface';
 import yup from 'mobx-react-form/lib/validators/YUP';
-import { type IErrorField, type Path, validation } from 'shared-my-client';
 
-import { createField, type IField } from './field';
+import { validation, type Path } from '~/common';
+
+import { ErrorModel } from './ErrorModel';
+import { createField, type IField } from './FieldModel';
 
 export interface IForm<T> {
     field: (name: Path<T>) => IField;
     submit: () => void;
     reset: () => void;
-    setErrors: (fields?: IErrorField[]) => void;
+    setErrors: (error?: any) => void;
     isValid: boolean;
     isDisabled: boolean;
 }
@@ -58,8 +60,10 @@ export class Form<T> implements IForm<T> {
         this.form.submit(this.params.submit);
     };
 
-    setErrors(fields?: IErrorField[]) {
-        fields?.forEach(el => {
+    setErrors(error?: any) {
+        const e = new ErrorModel(error);
+
+        e?.fields?.forEach(el => {
             if (!!el?.field && !!el?.message) {
                 // @ts-ignore
                 this.field(el.field).setError(el?.message);

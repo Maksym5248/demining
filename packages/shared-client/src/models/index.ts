@@ -7,3 +7,6 @@ export * from './SearchModel';
 export * from './OrderModel';
 export * from './FiltersModel';
 export * from './DataModel';
+export * from './FieldModel';
+export * from './FormModel';
+export * from './ErrorModel';

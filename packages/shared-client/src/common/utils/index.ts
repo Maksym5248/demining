@@ -7,4 +7,3 @@ export * from './file';
 export * from './math';
 export * from './timeout';
 export * from './string';
-export * from './error';

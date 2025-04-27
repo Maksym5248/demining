@@ -1,7 +1,8 @@
 import { ASSET_TYPE } from 'shared-my';
-import { Logger, Modal as ModalClass } from 'shared-my-client';
+import { ErrorManagerClass, Logger, Modal as ModalClass } from 'shared-my-client';
 
 export type { IMessageState } from './ui/message';
+export type { IErrorManager } from 'shared-my-client';
 export { Logger } from 'shared-my-client';
 
 import { FILE_SYSTEM, FILE_FORMAT } from '~/constants';
@@ -23,6 +24,7 @@ import { UpdaterClass } from './ui/updater';
 export const LocalStore = new LocalStoreClass();
 export const Navigation = new NavigationClass();
 export const Message = new MessageClass();
+export const ErrorManager = new ErrorManagerClass(Message);
 export const Alert = new AlertClass();
 export const Updater = new UpdaterClass();
 export const Crashlytics = new CrashlyticsClass(Logger);

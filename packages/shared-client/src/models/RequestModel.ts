@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 
-import { ErrorModel, type IErrorModel } from '~/common';
 import { Logger } from '~/services';
 
+import { ErrorModel, type IErrorModel } from './ErrorModel';
 import { RequestStateModel } from './RequestStateModel';
 
 export interface IRequestModel<Params extends Array<any> = undefined[], Return = void> {

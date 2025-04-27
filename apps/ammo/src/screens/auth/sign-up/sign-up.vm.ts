@@ -1,11 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { validation } from 'shared-my-client';
+import { ErrorModel, Form, type IForm, validation } from 'shared-my-client';
 
-import { MODALS } from '~/constants';
+import { MODALS, SCREENS } from '~/constants';
 import { Message, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
-import { Form, type IForm } from '~/utils';
 
 const validationSchema = validation.shape({
     email: validation.email,
@@ -44,9 +43,15 @@ export class SignUpVM implements ISignInVM {
                     await stores.auth.signUpWithEmail.run(values.email, values.password);
 
                     Modal.hide(MODALS.LOADING);
-                    Navigation.goBack();
+                    Navigation.navigate(SCREENS.SETTINGS);
                 } catch (e) {
-                    Message.error('Не вдалось зареєструватись, спробуйте ще раз');
+                    const error = new ErrorModel(e);
+
+                    this.form.setErrors(error);
+
+                    if (!error.isFieldError && error.message) {
+                        Message.error(error.message);
+                    }
                 } finally {
                     Modal.hide(MODALS.LOADING);
                 }
