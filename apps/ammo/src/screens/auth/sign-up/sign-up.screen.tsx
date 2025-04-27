@@ -21,9 +21,11 @@ export const SignUpScreen = observer(() => {
     const tError = useTranslate('error');
 
     const [refPassword, onEditedEmail] = useFocusInput();
+    const [refConfirmPassword, onEditedPassword] = useFocusInput();
 
     const email = vm.form.field('email');
     const password = vm.form.field('password');
+    const confirmPassword = vm.form.field('confirmPassword');
 
     const onGoToSignIn = () => Navigation.navigate(SCREENS.SIGN_IN);
     const onSubmit = () => vm.form.submit();
@@ -45,16 +47,26 @@ export const SignUpScreen = observer(() => {
                     />
                     <TextInput
                         label={t('inputPassWord')}
-                        style={s.inputPassword}
                         blurOnSubmit={true}
                         ref={refPassword}
+                        secureTextEntry
+                        autoComplete="password"
+                        onSubmitEditing={onEditedPassword}
+                        testID="password"
+                        {...password}
+                        message={tError(password.error?.message, password.error)}
+                    />
+                    <TextInput
+                        label={t('inputPassWordConfirm')}
+                        blurOnSubmit={true}
+                        ref={refConfirmPassword}
                         returnKeyType="done"
                         secureTextEntry
                         autoComplete="password"
                         onSubmitEditing={vm.form.isValid ? vm.form.submit : undefined}
                         testID="password"
-                        {...password}
-                        message={tError(password.error?.message, password.error)}
+                        {...confirmPassword}
+                        message={tError(confirmPassword.error?.message, confirmPassword.error)}
                     />
                     <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_up" />
                 </View>

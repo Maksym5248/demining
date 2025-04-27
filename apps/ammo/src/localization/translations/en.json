@@ -9,6 +9,7 @@
         "invalid-name": "Invalid name",
         "invalid-email": "Invalid email, try again.",
         "invalid-password": "Invalid password, try again.",
+        "passwords-must-match": "Passwords must match.",
         "wrong_email_or_password": "Wrong email or password, try again."
     },
     "updates": {
@@ -202,6 +203,7 @@
             "title": "Sign Up",
             "inputEmail": "Email",
             "inputPassWord": "Password",
+            "inputPassWordConfirm": "Confirm Password",
             "button": "Sign Up",
             "passWord": "Forgot password?",
             "footerAccount": "Already have an account?",

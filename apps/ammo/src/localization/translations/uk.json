@@ -9,6 +9,7 @@
         "invalid-name": "Невірне ім'я",
         "invalid-email": "Невірний email, спробуйте ще раз.",
         "invalid-password": "Невірний пароль, спробуйте ще раз.",
+        "passwords-must-match": "Паролі не співпадають",
         "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз."
     },
     "updates": {
@@ -202,6 +203,7 @@
             "title": "Реєстрація",
             "inputEmail": "Електронна пошта",
             "inputPassWord": "Пароль",
+            "inputPassWordConfirm": "Підтвердження пароля",
             "button": "Зареєструватись",
             "passWord": "Забули пароль?",
             "footerAccount": "Є обліковий запис?",

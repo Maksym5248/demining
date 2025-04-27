@@ -18,9 +18,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         marginTop: theme.spacing.XXL,
         alignItems: 'center',
     },
-    inputPassword: {
-        marginTop: theme.spacing.XS,
-    },
     forgotPassword: {
         alignSelf: 'center',
         marginTop: theme.spacing.S,

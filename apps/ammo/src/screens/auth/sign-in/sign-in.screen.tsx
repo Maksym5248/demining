@@ -45,7 +45,6 @@ export const SignInScreen = observer(() => {
                     />
                     <TextInput
                         label={t('inputPassWord')}
-                        style={s.inputPassword}
                         ref={refPassword}
                         returnKeyType="done"
                         secureTextEntry

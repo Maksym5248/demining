@@ -9,11 +9,13 @@ import { type ViewModel } from '~/types';
 const validationSchema = validation.shape({
     email: validation.email,
     password: validation.password,
+    confirmPassword: validation.confirmPassword,
 });
 
 interface SignUpForm {
     email: string;
     password: string;
+    confirmPassword: string;
 }
 
 export interface ISignInVM extends ViewModel {
@@ -31,6 +33,11 @@ export class SignUpVM implements ISignInVM {
             {
                 name: 'password',
                 rules: 'password',
+                type: 'password',
+            },
+            {
+                name: 'confirmPassword',
+                rules: 'confirmPassword',
                 type: 'password',
             },
         ],
