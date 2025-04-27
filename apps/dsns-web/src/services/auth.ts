@@ -59,4 +59,16 @@ export class AuthClass implements IAuth {
     async signInAnonymously() {
         await signInAnonymously(this.auth);
     }
+
+    async checkEmailVerification() {
+        if (!this.auth.currentUser) {
+            throw new Error('User not found');
+        }
+
+        await this.auth.currentUser.reload();
+
+        if (!this.auth.currentUser.emailVerified) {
+            throw new Error('Email not verified');
+        }
+    }
 }

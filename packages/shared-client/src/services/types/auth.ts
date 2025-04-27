@@ -9,4 +9,5 @@ export interface IAuth {
     createUserWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     signInWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     signInAnonymously: () => Promise<void>;
+    checkEmailVerification: () => Promise<void>;
 }

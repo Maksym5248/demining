@@ -11,6 +11,7 @@ export interface IViewerStore {
     permissions: IPermissions;
     isLoading: boolean;
     isAnonymous: boolean;
+    isEmailVerified: boolean;
     isAuthenticated: boolean;
     status: {
         demining: APPROVE_STATUS | null;
@@ -85,8 +86,12 @@ export class ViewerStore implements IViewerStore {
         return !!this.authData?.isAnonymous;
     }
 
+    get isEmailVerified() {
+        return !!this.authData?.emailVerified;
+    }
+
     get isAuthenticated() {
-        return !!this.user?.id && !this.isAnonymous;
+        return !!this.user?.id && !this.isAnonymous && !!this.isEmailVerified;
     }
 
     setLoading(isLoading: boolean) {

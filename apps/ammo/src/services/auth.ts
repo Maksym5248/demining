@@ -6,6 +6,7 @@ import {
     signInAnonymously,
     linkWithCredential,
     EmailAuthProvider,
+    sendEmailVerification,
 } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ERROR_MESSAGE } from 'shared-my';
@@ -26,6 +27,18 @@ export class AuthClass implements IAuth {
         await signInAnonymously(this.auth);
     }
 
+    async checkEmailVerification() {
+        if (!this.auth.currentUser) {
+            throw new Error('User not found');
+        }
+
+        await this.auth.currentUser.reload();
+
+        if (!this.auth.currentUser.emailVerified) {
+            throw new Error('Email not verified');
+        }
+    }
+
     async createUserWithEmailAndPassword(email: string, password: string) {
         if (this.auth.currentUser) {
             const credential = EmailAuthProvider.credential(email, password);
@@ -33,6 +46,12 @@ export class AuthClass implements IAuth {
         } else {
             await this.auth.createUserWithEmailAndPassword(email, password);
         }
+
+        if (!this.auth.currentUser) {
+            throw new Error('User not found');
+        }
+
+        await sendEmailVerification(this.auth.currentUser);
     }
 
     async signInWithEmailAndPassword(email: string, password: string) {
