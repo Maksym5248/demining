@@ -14,7 +14,7 @@ export interface ISettingsVM extends ViewModel {
     asArray: IDataItem[];
     uri?: string;
     userName?: string;
-    isAuthenticated: boolean;
+    isRegistered: boolean;
     signOut: IRequestModel;
 }
 
@@ -67,8 +67,8 @@ export class SettingsVM implements ISettingsVM {
         return stores.viewer.user?.displayName;
     }
 
-    get isAuthenticated() {
-        return stores.viewer.isAuthenticated;
+    get isRegistered() {
+        return stores.viewer.isRegistered;
     }
 
     get asArray() {

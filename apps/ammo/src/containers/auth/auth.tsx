@@ -2,7 +2,7 @@ import React from 'react';
 
 import { observer } from 'mobx-react';
 
-import { Button } from '~/core';
+import { Button, Text } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useTheme } from '~/styles';
@@ -23,9 +23,10 @@ export const Auth = observer(({ children }: IAuthProps) => {
     return (
         <>
             {!!vm.isAuthenticated && children}
-            {!vm.isAuthenticated && (
+            {!vm.isRegistered && (
                 <Button.Base title={t('autenticate')} style={s.autenticate} onPress={onOpenSignIn} color={theme.colors.accent} />
             )}
+            {!vm.isEmailVerified && vm.isRegistered && <Text text={t('emailVerificationText')} />}
         </>
     );
 });

@@ -13,6 +13,7 @@ export interface IViewerStore {
     isAnonymous: boolean;
     isEmailVerified: boolean;
     isAuthenticated: boolean;
+    isRegistered: boolean;
     status: {
         demining: APPROVE_STATUS | null;
     };
@@ -88,6 +89,10 @@ export class ViewerStore implements IViewerStore {
 
     get isEmailVerified() {
         return !!this.authData?.emailVerified;
+    }
+
+    get isRegistered() {
+        return !!this.user?.id && !this.isAnonymous;
     }
 
     get isAuthenticated() {

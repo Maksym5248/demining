@@ -7,6 +7,8 @@ import { type ViewModel } from '~/types';
 
 export interface IAuthVM extends ViewModel {
     isAuthenticated: boolean;
+    isRegistered: boolean;
+    isEmailVerified: boolean;
     openSignIn: () => void;
 }
 
@@ -21,6 +23,14 @@ export class AuthVM implements IAuthVM {
 
     get isAuthenticated() {
         return !!stores.viewer.isAuthenticated;
+    }
+
+    get isRegistered() {
+        return !!stores.viewer.isRegistered;
+    }
+
+    get isEmailVerified() {
+        return !!stores.viewer.isEmailVerified;
     }
 }
 

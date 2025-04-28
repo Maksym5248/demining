@@ -40,7 +40,7 @@ export const SettingsScreen = observer(() => {
                 title={t('title')}
                 backButton="none"
                 color={theme.colors.white}
-                right={vm.isAuthenticated ? <Icon name="logout" color={theme.colors.white} onPress={onSignOut} /> : undefined}
+                right={vm.isRegistered ? <Icon name="logout" color={theme.colors.white} onPress={onSignOut} /> : undefined}
             />
             <List
                 data={vm.asArray}

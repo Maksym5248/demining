@@ -57,7 +57,8 @@
             "download": "Download"
         },
         "auth": {
-            "autenticate": "Log in"
+            "autenticate": "Log in",
+            "emailVerificationText": "Please check your email to verify your account."
         }
     },
     "screens": {
