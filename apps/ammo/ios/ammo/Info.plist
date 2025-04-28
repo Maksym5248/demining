@@ -25,7 +25,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.281126311275-s8lehovvapeck0hb9vo33mh80clm8in9</string>
+				<string>$(IOS_SCHEMA_GOOGLE)</string>
 			</array>
 		</dict>
 	</array>

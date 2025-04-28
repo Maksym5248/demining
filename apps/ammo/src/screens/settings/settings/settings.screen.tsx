@@ -61,7 +61,7 @@ export const SettingsScreen = observer(() => {
                 )}
             />
             <View style={s.footer}>
-                <Text text={Device.appInfo} />
+                <Text text={Device.appInfo} color={theme.colors.inertDark} />
             </View>
         </View>
     );

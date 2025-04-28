@@ -64,6 +64,7 @@ export class SignInVM implements ISignInVM {
             try {
                 Modal.show(MODALS.LOADING);
                 await stores.auth.signInWithGoogle.run();
+                Navigation.goBack();
             } catch (e) {
                 ErrorManager.request(e);
             } finally {

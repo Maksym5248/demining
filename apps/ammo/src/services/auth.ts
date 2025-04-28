@@ -12,6 +12,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ERROR_MESSAGE } from 'shared-my';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
 
+import { CONFIG } from '~/config';
 import { Device } from '~/utils';
 
 export class AuthClass implements IAuth {
@@ -60,6 +61,7 @@ export class AuthClass implements IAuth {
 
     async signInWithGoogle() {
         GoogleSignin.configure({
+            webClientId: CONFIG.WEB_CLIENT_ID,
             iosClientId: getApp().options.clientId,
         });
 
