@@ -3,23 +3,13 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 
-import { SCREENS } from '~/constants';
 import { Button, KeyboardAwareScrollView, TextInput, Touchable, Text, Header } from '~/core';
-import { useFocusInput, useViewModel } from '~/hooks';
+import { useFocusInput, useStatusBar, useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { useTheme } from '~/styles';
 
 import { useStyles } from './sign-in.style';
 import { signInVM } from './sign-in.vm';
-
-// title
-// background email
-// backbutton on android
-// scroll in sign in screen
-// confirm password
-// поміняти реєстрацію та вхід
-// назад на 1 та два екрани для реєстрації та входу
 
 export const SignInScreen = observer(() => {
     const s = useStyles();
@@ -33,16 +23,18 @@ export const SignInScreen = observer(() => {
     const email = vm.form.field('email');
     const password = vm.form.field('password');
 
-    const onGoToSignUp = () => Navigation.push(SCREENS.SIGN_UP);
+    const onGoToSignUp = () => vm.openSignUp();
     const onSubmit = () => vm.form.submit();
     const onPressGoogle = () => vm.signInWithGoogle.run();
 
+    useStatusBar({ barStyle: 'light-content' });
+
     return (
         <View style={s.container}>
-            <Header backButton="none" color={theme.colors.accent} />
+            <Header backButton="back" />
             <KeyboardAwareScrollView contentStyle={s.contentContainer}>
-                <View>
-                    <Text type="h1" text={t('title')} />
+                <View style={s.titleContainer}>
+                    <Text type="h1" text={t('title')} color={theme.colors.accent} />
                 </View>
                 <View>
                     <TextInput

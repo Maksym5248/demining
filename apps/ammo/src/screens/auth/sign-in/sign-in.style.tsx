@@ -7,14 +7,17 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         backgroundColor: theme.colors.background,
     },
     contentContainer: {
-        height: device.screen.height - ((theme?.element?.header?.height as number) ?? 0) - device.inset.top,
+        height: device.screen.height - ((theme?.element?.header?.height as number) ?? 0) - device.inset.top - device.inset.bottom,
         paddingHorizontal: theme.spacing.M,
         paddingBottom: device.inset.bottom,
         display: 'flex',
         flex: 1,
         justifyContent: 'space-between',
     },
-    title: {
+    header: {
+        backgroundColor: theme.colors.background,
+    },
+    titleContainer: {
         marginTop: theme.spacing.XXL,
         alignItems: 'center',
     },
@@ -28,7 +31,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         marginVertical: theme.spacing.S,
     },
     signUpContainer: {
-        // flex: 1,
+        paddingHorizontal: theme.spacing.M,
+        flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'center',
         paddingBottom: theme.spacing.S,

@@ -18,4 +18,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     disabled: {
         backgroundColor: theme.colors.disabled,
     },
+    accent: {
+        backgroundColor: theme.colors.backgroundSecondary,
+        borderColor: theme.colors.accent,
+        borderWidth: 1,
+    },
 }));

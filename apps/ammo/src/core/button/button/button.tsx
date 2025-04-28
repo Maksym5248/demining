@@ -26,11 +26,23 @@ export const Button = ({
     const styles = useStylesCommon();
 
     const isInvert = type === 'invert';
+    const isAccent = type === 'accent';
 
-    const typeColor = isInvert ? theme.colors.black : theme.colors.white;
+    let typeColor = theme.colors.white;
+    let typeContainer = undefined;
+
+    if (isInvert) {
+        typeColor = theme.colors.black;
+        typeContainer = s.invert;
+    }
+
+    if (isAccent) {
+        typeColor = theme.colors.black;
+        typeContainer = s.accent;
+    }
 
     return (
-        <View style={[s.container, style, isInvert && s.invert, disabled && s.disabled]} testID={`${testID}.button`}>
+        <View style={[s.container, style, typeContainer, disabled && s.disabled]} testID={`${testID}.button`}>
             <View>{left}</View>
             {!!isLoading && <Loading size="small" color={typeColor} isVisible />}
             {!isLoading && !!title && <Text type="p3" text={title} color={color ?? typeColor} />}

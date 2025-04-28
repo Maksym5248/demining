@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const { string, object } = Yup;
+const { string, object, mixed } = Yup;
 
 const p = (message: string, value?: string) => ({
     message,
@@ -8,7 +8,9 @@ const p = (message: string, value?: string) => ({
 });
 
 const password = string().required(p('required')).min(8, p('min-password-length', '8')).max(20, p('max-password-length', '20'));
-const confirmPassword = string().oneOf([Yup.ref('password')], p('passwords-must-match'));
+const confirmPassword = mixed()
+    .required(p('required'))
+    .when('password', ([p], schema) => schema.test('passwords-must-match', p('passwords-must-match'), value => value === p));
 const name = string().required(p('required')).min(2, p('min-length', '2'));
 const email = string().email(p('invalid-email')).required(p('required')).trim(p('required'));
 

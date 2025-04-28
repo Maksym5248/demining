@@ -3,11 +3,9 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 
-import { SCREENS } from '~/constants';
 import { Button, KeyboardAwareScrollView, TextInput, Touchable, Text, Header } from '~/core';
 import { useFocusInput, useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
-import { Navigation } from '~/services';
 import { useTheme } from '~/styles';
 
 import { useStyles } from './sign-up.style';
@@ -27,7 +25,7 @@ export const SignUpScreen = observer(() => {
     const password = vm.form.field('password');
     const confirmPassword = vm.form.field('confirmPassword');
 
-    const onGoToSignIn = () => Navigation.navigate(SCREENS.SIGN_IN);
+    const onGoToSignIn = () => vm.openSignIn();
     const onSubmit = () => vm.form.submit();
     const onPressGoogle = () => vm.signInWithGoogle.run();
 
@@ -35,7 +33,9 @@ export const SignUpScreen = observer(() => {
         <View style={s.container}>
             <Header backButton="back" title={t('title')} />
             <KeyboardAwareScrollView contentStyle={s.contentContainer}>
-                <View />
+                <View style={s.titleContainer}>
+                    <Text type="h1" text={t('title')} color={theme.colors.accent} />
+                </View>
                 <View>
                     <TextInput
                         label={t('inputEmail')}

@@ -13,8 +13,10 @@ const openExternalLink = async (link: string) => {
 };
 
 const emailTo = (email: string) => openExternalLink(`mailto:${email}`);
+const emailApp = () => openExternalLink('mailto:');
 
 export const externalLink = {
     open: openExternalLink,
     emailTo,
+    emailApp,
 };

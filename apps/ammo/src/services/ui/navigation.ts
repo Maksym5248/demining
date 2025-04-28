@@ -17,7 +17,7 @@ export interface INavigationService {
     navigate: (routeName: string, params?: object) => void;
     push: (routeName: string, params?: object) => void;
     popToTop: () => void;
-    goBack: () => void;
+    goBack: (n?: number) => void;
     reset: (state: PartialState<NavigationState>) => void;
     resetOn: (name: string, params?: object) => void;
     replace: (name: string, params?: object) => void;
@@ -58,8 +58,11 @@ export class NavigationClass implements INavigationService {
         Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 
-    goBack = () => {
-        !!this.nav && this.nav.dispatch(CommonActions.goBack());
+    goBack = (n: number = -1) => {
+        for (let i = 0; i < Math.abs(n); i++) {
+            !!this.nav && this.nav.dispatch(CommonActions.goBack());
+        }
+
         Analytics.page(this.getCurrentRoute()?.name ?? 'UNKNOWN');
     };
 

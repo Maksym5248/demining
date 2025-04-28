@@ -57,8 +57,8 @@
             "download": "Download"
         },
         "auth": {
-            "autenticate": "Log in",
-            "emailVerificationText": "Please check your email to verify your account."
+            "autenticate": "Sign up",
+            "emailVerificationText": "Email is not confirmed"
         }
     },
     "screens": {
@@ -180,7 +180,6 @@
             "about": "About the App",
             "support": "Contact Support",
             "debugger": "debugger",
-            "autenticate": "Log in",
             "alert": {
                 "title": "Sign Out",
                 "subTitle": "Are you sure you want to sign out?"
@@ -212,7 +211,12 @@
             "button": "Sign Up",
             "passWord": "Forgot password?",
             "footerAccount": "Already have an account?",
-            "footerSignIn": "Sign In"
+            "footerSignIn": "Sign In",
+            "alertEmailVerification": {
+                "title": "Email verification",
+                "text": "Please check your email to verify your account.",
+                "confirm": "Open email"
+            }
         }
     },
     "modals": {

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { observer } from 'mobx-react';
+import { View } from 'react-native';
 
 import { Button, Text } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -18,15 +19,25 @@ export const Auth = observer(({ children }: IAuthProps) => {
 
     const vm = useViewModel<IAuthVM>(authVM);
 
-    const onOpenSignIn = () => vm.openSignIn();
+    const onOpenAutentication = () => vm.openAutentication();
 
     return (
         <>
             {!!vm.isAuthenticated && children}
             {!vm.isRegistered && (
-                <Button.Base title={t('autenticate')} style={s.autenticate} onPress={onOpenSignIn} color={theme.colors.accent} />
+                <Button.Base
+                    type="accent"
+                    title={t('autenticate')}
+                    style={s.autenticate}
+                    onPress={onOpenAutentication}
+                    color={theme.colors.accent}
+                />
             )}
-            {!vm.isEmailVerified && vm.isRegistered && <Text text={t('emailVerificationText')} />}
+            {!vm.isEmailVerified && vm.isRegistered && (
+                <View>
+                    <Text style={s.emailVerefication} text={t('emailVerificationText')} />
+                </View>
+            )}
         </>
     );
 });

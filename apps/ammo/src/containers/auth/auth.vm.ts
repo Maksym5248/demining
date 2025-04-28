@@ -9,7 +9,7 @@ export interface IAuthVM extends ViewModel {
     isAuthenticated: boolean;
     isRegistered: boolean;
     isEmailVerified: boolean;
-    openSignIn: () => void;
+    openAutentication: () => void;
 }
 
 export class AuthVM implements IAuthVM {
@@ -17,8 +17,8 @@ export class AuthVM implements IAuthVM {
         makeAutoObservable(this);
     }
 
-    openSignIn() {
-        Navigation.navigate(SCREENS.SIGN_IN);
+    openAutentication() {
+        Navigation.navigate(SCREENS.SIGN_UP);
     }
 
     get isAuthenticated() {

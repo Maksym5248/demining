@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
-import { MODALS } from '~/constants';
+import { MODALS, SCREENS } from '~/constants';
 import { ErrorManager, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
@@ -19,6 +19,7 @@ interface SignInForm {
 export interface ISignInVM extends ViewModel {
     form: IForm<SignInForm>;
     signInWithGoogle: RequestModel;
+    openSignUp: () => void;
 }
 
 export class SignInVM implements ISignInVM {
@@ -50,7 +51,7 @@ export class SignInVM implements ISignInVM {
                 Modal.show(MODALS.LOADING);
                 const values = this.form.values();
                 await stores.auth.signInWithEmail.run(values.email, values.password);
-                Navigation.goBack();
+                Navigation.goBack(-2);
             } catch (e) {
                 ErrorManager.form<SignInForm>(this.form, e);
             } finally {
@@ -64,7 +65,7 @@ export class SignInVM implements ISignInVM {
             try {
                 Modal.show(MODALS.LOADING);
                 await stores.auth.signInWithGoogle.run();
-                Navigation.goBack();
+                Navigation.goBack(-2);
             } catch (e) {
                 ErrorManager.request(e);
             } finally {
@@ -72,6 +73,10 @@ export class SignInVM implements ISignInVM {
             }
         },
     });
+
+    openSignUp = () => {
+        Navigation.navigate(SCREENS.SIGN_UP);
+    };
 
     unmount() {
         this.form.reset();

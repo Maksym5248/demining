@@ -1,10 +1,10 @@
 import { ThemeManager } from '~/styles';
 
-export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
+export const useStyles = ThemeManager.createStyleSheet(() => ({
     autenticate: {
         alignSelf: 'stretch',
-        backgroundColor: theme.colors.backgroundSecondary,
-        borderColor: theme.colors.accent,
-        borderWidth: 1,
+    },
+    emailVerefication: {
+        textAlign: 'center',
     },
 }));

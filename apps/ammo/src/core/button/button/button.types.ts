@@ -12,6 +12,6 @@ export interface IButtonProps {
     left?: ReactNode;
     testID?: string;
     color?: string;
-    type?: 'invert' | 'primary';
+    type?: 'invert' | 'primary' | 'accent';
     isLoading?: boolean;
 }

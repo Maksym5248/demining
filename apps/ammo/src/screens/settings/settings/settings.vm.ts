@@ -36,12 +36,10 @@ export class SettingsVM implements ISettingsVM {
 
     init() {
         Debugger.onChangeEnabled(value => {
-            console.log('Debugger enabled', value);
             this.setEnabledDebugger(value);
         });
 
         Debugger.onChangeVisibleButton(value => {
-            console.log('Debugger visible button', value);
             this.setVisibleButton(value);
         });
     }

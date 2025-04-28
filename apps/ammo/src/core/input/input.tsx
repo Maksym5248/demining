@@ -128,6 +128,7 @@ const Component = (
         <View style={[s.container, style]} pointerEvents={pointerEvents}>
             <View style={[s.inputContainer, getBorderStyle(theme, !!isValid, isFocused), contentStyle]}>
                 <View onLayout={onLayoutLeftIcon}>{renderLeftIcon()}</View>
+                {!!disabled && <RNText style={[s.input, s.inputText, inputStyle]}>{value}</RNText>}
                 {!disabled && (
                     <RNTextInput
                         blurOnSubmit={false}
@@ -150,7 +151,6 @@ const Component = (
                     />
                 )}
                 {renderRightIcon()}
-                {!!disabled && <RNText style={[s.input, s.inputText, inputStyle]}>{value}</RNText>}
             </View>
             {!!label && <Label text={label} isSmall={isFocused || !!value} style={labelStyle} paddingLeft={paddingLeftLabel} />}
             {!!message && isString(message) && (
