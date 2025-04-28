@@ -7,6 +7,7 @@ import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List, Ava
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
+import { Device } from '~/utils';
 
 import { type IDataItem } from './data-item.model';
 import { useStyles } from './settings.style';
@@ -59,6 +60,9 @@ export const SettingsScreen = observer(() => {
                     </View>
                 )}
             />
+            <View style={s.footer}>
+                <Text text={Device.appInfo} />
+            </View>
         </View>
     );
 });

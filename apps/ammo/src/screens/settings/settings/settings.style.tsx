@@ -16,4 +16,10 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         justifyContent: 'center',
         paddingVertical: theme.spacing.L,
     },
+    footer: {
+        paddingVertical: theme.spacing.L,
+        paddingHorizontal: theme.spacing.XL,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 }));

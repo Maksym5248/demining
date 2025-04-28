@@ -153,7 +153,8 @@ export class RootStore implements IRootStore {
                 this.viewer.removeUser();
             }
 
-            Logger.log('Anonimus', this.viewer.isAnonymous);
+            Logger.log('ANONIM ', this.viewer.isAnonymous);
+            Logger.log('VERIFIED_EMAIL ', this.viewer.isEmailVerified);
         } catch (e) {
             const error = new ErrorModel(e as Error);
             ErrorManager.request(error);
