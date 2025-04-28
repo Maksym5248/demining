@@ -55,6 +55,9 @@
             "success": "Update completed",
             "error": "Update failed",
             "download": "Download"
+        },
+        "auth": {
+            "autenticate": "Log in"
         }
     },
     "screens": {

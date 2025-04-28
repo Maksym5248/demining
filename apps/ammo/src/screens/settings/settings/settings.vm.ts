@@ -4,7 +4,7 @@ import { type IRequestModel, RequestModel } from 'shared-my-client';
 import { CONFIG } from '~/config';
 import { SCREENS } from '~/constants';
 import { t } from '~/localization';
-import { Debugger, Navigation, Alert } from '~/services';
+import { Debugger, Alert } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -15,7 +15,6 @@ export interface ISettingsVM extends ViewModel {
     uri?: string;
     userName?: string;
     isAuthenticated: boolean;
-    openSignIn: () => void;
     signOut: IRequestModel;
 }
 
@@ -45,10 +44,6 @@ export class SettingsVM implements ISettingsVM {
             console.log('Debugger visible button', value);
             this.setVisibleButton(value);
         });
-    }
-
-    openSignIn() {
-        Navigation.navigate(SCREENS.SIGN_IN);
     }
 
     signOut = new RequestModel({

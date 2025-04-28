@@ -3,7 +3,8 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List, Avatar, Button, Text, Icon } from '~/core';
+import { Auth } from '~/containers';
+import { ListItem as ListItemCore, Header, type IFlatListRenderedItem, List, Avatar, Text, Icon } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useStylesCommon, useTheme } from '~/styles';
@@ -31,7 +32,6 @@ export const SettingsScreen = observer(() => {
 
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IDataItem>) => <ListItem item={item} />, []);
 
-    const onOpenSignIn = () => vm.openSignIn();
     const onSignOut = () => vm.signOut.run();
 
     return (
@@ -48,15 +48,9 @@ export const SettingsScreen = observer(() => {
                 ListHeaderComponent={() => (
                     <View style={s.userInfo}>
                         <Avatar size={108} style={s.avatar} />
-                        {!vm.isAuthenticated && (
-                            <Button.Base
-                                title={t('autenticate')}
-                                style={s.autenticate}
-                                onPress={onOpenSignIn}
-                                color={theme.colors.accent}
-                            />
-                        )}
-                        {!!vm.isAuthenticated && <Text text={vm.userName} />}
+                        <Auth>
+                            <Text text={vm.userName} />
+                        </Auth>
                     </View>
                 )}
             />
