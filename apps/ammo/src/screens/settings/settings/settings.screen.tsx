@@ -34,8 +34,6 @@ export const SettingsScreen = observer(() => {
 
     const onSignOut = () => vm.signOut.run();
 
-    console.log('vm.isRegistered', vm.isRegistered);
-
     return (
         <View style={styles.container}>
             <Header

@@ -82,12 +82,13 @@ export class AppViewModel implements IAppViewModel {
                 Analytics.init();
                 Analytics.setUserId(Auth.uuid());
                 Crashlytics.init();
+                stores.auth.checkEmailVerificationStatus.run();
 
                 await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init()]);
                 AppState.onChange(state => {
                     if (state === 'active') {
                         NetInfo.pingInfo();
-                        Auth.checkEmailVerification();
+                        stores.auth.checkEmailVerificationStatus.run();
                     }
 
                     Logger.log('APP STATE', state);
