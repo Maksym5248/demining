@@ -70,7 +70,6 @@ export class AuthClass implements IAuth {
         }
 
         const signInResult = await GoogleSignin.signIn();
-        console.log('signInResult', signInResult);
 
         if (signInResult.type === 'cancelled') {
             throw new Error(ERROR_MESSAGE.CANCELED);
