@@ -80,7 +80,16 @@ export class AuthClass implements IAuth {
         }
 
         const credential = GoogleAuthProvider.credential(signInResult.data.idToken);
-        await this.auth.signInWithCredential(credential);
+
+        try {
+            if (this.auth.currentUser) {
+                await linkWithCredential(this.auth.currentUser, credential);
+            } else {
+                await this.auth.signInWithCredential(credential);
+            }
+        } catch (error) {
+            await this.auth.signInWithCredential(credential);
+        }
     }
 
     async signOut() {
