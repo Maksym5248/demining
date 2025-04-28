@@ -3,6 +3,7 @@ import { APPROVE_STATUS, type ROLES } from 'shared-my';
 
 import { type ICurrentUserAPI } from '~/api';
 import { delay } from '~/common';
+import { type IRequestModel, RequestModel } from '~/models';
 import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
 import { CurrentUser, Permissions, type IPermissions, type ICurrentUser, type ICurrentUserData, createCurrentUser } from './entities';
@@ -23,7 +24,7 @@ export interface IViewerStore {
     setUser(user: ICurrentUserData): void;
     setAuthData(authData: IAuthUser | null): void;
     removeUser(): void;
-    fetchCurrentUser(): Promise<void>;
+    fetchCurrentUser: IRequestModel;
 }
 
 interface IApi {
@@ -117,35 +118,38 @@ export class ViewerStore implements IViewerStore {
         }
     }
 
-    fetchCurrentUser = async () => {
-        const retry = 10;
-        const time = 1000;
+    fetchCurrentUser = new RequestModel({
+        returnIfLoading: true,
+        run: async () => {
+            const retry = 10;
+            const time = 1000;
 
-        if (!this.authData?.uid || this.isAnonymous) {
-            return;
-        }
-
-        for (let i = 0; i < retry; i++) {
-            try {
-                const res = await this.api.currentUser.get(this.authData.uid);
-
-                if (!res) {
-                    throw new Error('No user data');
-                }
-
-                this.setUser(createCurrentUser(res));
-                this.setAuthData(this.services.auth.currentUser());
-
-                break;
-            } catch (e) {
-                if (i === retry - 1) {
-                    throw e;
-                }
-
-                await delay(time);
+            if (!this.authData?.uid || this.isAnonymous) {
+                return;
             }
-        }
-    };
+
+            for (let i = 0; i < retry; i++) {
+                try {
+                    const res = await this.api.currentUser.get(this.authData.uid);
+
+                    if (!res) {
+                        throw new Error('No user data');
+                    }
+
+                    this.setUser(createCurrentUser(res));
+                    this.setAuthData(this.services.auth.currentUser());
+
+                    break;
+                } catch (e) {
+                    if (i === retry - 1) {
+                        throw e;
+                    }
+
+                    await delay(time);
+                }
+            }
+        },
+    });
 
     removeUser() {
         this.user = null;

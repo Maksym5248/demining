@@ -18,6 +18,7 @@ export interface IRequestModelParams<Params extends Array<any> = undefined[], Re
     onError?: (e?: IErrorModel) => void;
     onSuccuss?: () => void;
     returnIfLoaded?: boolean;
+    returnIfLoading?: boolean;
     cachePolicy?: 'cache-first' | 'network-only';
 }
 
@@ -29,6 +30,8 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
     private _onError?: (e?: IErrorModel) => void;
     private _onSuccuss?: () => void;
     private _returnIfLoaded = false;
+    private _returnIfLoading = false;
+
     _cachePolicy?: 'cache-first' | 'network-only';
 
     constructor(params: IRequestModelParams<Params, Return>) {
@@ -37,6 +40,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
         this._onError = params?.onError;
         this._onSuccuss = params?.onSuccuss;
         this._returnIfLoaded = !!params?.returnIfLoaded;
+        this._returnIfLoading = !!params?.returnIfLoading;
         this._cachePolicy = params?.cachePolicy ?? 'network-only';
 
         makeAutoObservable(this);
@@ -49,6 +53,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
             if (this._returnIfLoaded && this.requestState.isLoaded) return;
             if (this._cachePolicy === 'cache-first' && this.requestState.isLoaded) return;
             if (this._shouldRun && !this._shouldRun(...args)) return;
+            if (this._returnIfLoading && this.requestState.isLoading) return;
 
             this.requestState.start();
 

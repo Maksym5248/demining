@@ -142,7 +142,7 @@ export class RootStore implements IRootStore {
             this.viewer.setAuthData(user);
 
             if (user && !user.isAnonymous) {
-                await this.viewer.fetchCurrentUser();
+                await this.viewer.fetchCurrentUser.run();
             }
 
             if (!user) {

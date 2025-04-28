@@ -43,6 +43,7 @@ export class AuthStore implements IAuthStore {
         run: async () => {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithGoogle();
+            await this.getStores().viewer.fetchCurrentUser.run();
         },
     });
 
@@ -54,6 +55,7 @@ export class AuthStore implements IAuthStore {
         run: async (email: string, password: string) => {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.createUserWithEmailAndPassword(email, password);
+            await this.getStores().viewer.fetchCurrentUser.run();
         },
     });
 
