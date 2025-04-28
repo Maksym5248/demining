@@ -13,6 +13,14 @@ import { useTheme } from '~/styles';
 import { useStyles } from './sign-in.style';
 import { signInVM } from './sign-in.vm';
 
+// title
+// background email
+// backbutton on android
+// scroll in sign in screen
+// confirm password
+// поміняти реєстрацію та вхід
+// назад на 1 та два екрани для реєстрації та входу
+
 export const SignInScreen = observer(() => {
     const s = useStyles();
     const vm = useViewModel(signInVM);
@@ -31,9 +39,11 @@ export const SignInScreen = observer(() => {
 
     return (
         <View style={s.container}>
-            <Header backButton="back" title={t('title')} />
+            <Header backButton="none" color={theme.colors.accent} />
             <KeyboardAwareScrollView contentStyle={s.contentContainer}>
-                <View />
+                <View>
+                    <Text type="h1" text={t('title')} />
+                </View>
                 <View>
                     <TextInput
                         label={t('inputEmail')}
