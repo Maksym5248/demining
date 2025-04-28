@@ -87,7 +87,9 @@ export class AppViewModel implements IAppViewModel {
                 AppState.onChange(state => {
                     if (state === 'active') {
                         NetInfo.pingInfo();
+                        Auth.checkEmailVerification();
                     }
+
                     Logger.log('APP STATE', state);
                 });
 

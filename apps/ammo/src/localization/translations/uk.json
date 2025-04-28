@@ -10,7 +10,8 @@
         "invalid-email": "Невірний email, спробуйте ще раз.",
         "invalid-password": "Невірний пароль, спробуйте ще раз.",
         "passwords-must-match": "Паролі не співпадають",
-        "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз."
+        "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз.",
+        "email_already_in_use": "Email вже використовується."
     },
     "updates": {
         "dictionaries": {

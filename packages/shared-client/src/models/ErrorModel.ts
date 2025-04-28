@@ -51,6 +51,11 @@ export class ErrorModel implements IErrorModel {
                 message: ERROR_MESSAGE.WRONG_EMAIL_OR_PASSWORD,
                 field: ERROR_FIELD.EMAIL,
             });
+        } else if (e?.message?.includes('auth/email-already-in-use')) {
+            res.push({
+                message: ERROR_MESSAGE.EMAIL_ALREADY_IN_USE,
+                field: ERROR_FIELD.EMAIL,
+            });
         } else if (e?.message?.includes('[auth/invalid-credential] The supplied auth credential is malformed or has expired.')) {
             res.push({
                 message: ERROR_MESSAGE.WRONG_EMAIL_OR_PASSWORD,

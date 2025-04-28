@@ -24,11 +24,19 @@ export class AuthClass implements IAuth {
         return this.auth.currentUser?.uid;
     }
 
+    shouldCheckEmailVerification() {
+        return !!this.auth.currentUser && !this.auth.currentUser?.emailVerified && !this.auth.currentUser?.isAnonymous;
+    }
+
     async signInAnonymously() {
         await signInAnonymously(this.auth);
     }
 
     async checkEmailVerification() {
+        if (!this.shouldCheckEmailVerification()) {
+            return;
+        }
+
         if (!this.auth.currentUser) {
             throw new Error('User not found');
         }

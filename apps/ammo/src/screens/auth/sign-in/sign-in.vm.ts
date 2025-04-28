@@ -7,8 +7,8 @@ import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
 const validationSchema = validation.shape({
-    email: validation.email,
-    password: validation.password,
+    email: validation.email(),
+    password: validation.password(),
 });
 
 interface SignInForm {

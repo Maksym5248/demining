@@ -10,7 +10,8 @@
         "invalid-email": "Invalid email, try again.",
         "invalid-password": "Invalid password, try again.",
         "passwords-must-match": "Passwords must match.",
-        "wrong_email_or_password": "Wrong email or password, try again."
+        "wrong_email_or_password": "Wrong email or password, try again.",
+        "email_already_in_use": "Email already in use."
     },
     "updates": {
         "dictionaries": {

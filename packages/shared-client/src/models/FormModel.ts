@@ -27,7 +27,6 @@ export class Form<T> implements IForm<T> {
             yup: yup({
                 schema: () => this.params.schema,
                 package: validation.Yup,
-                // extend: ({ validator, form }) => {},
             }),
         };
 

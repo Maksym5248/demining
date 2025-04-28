@@ -8,12 +8,6 @@ import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 import { externalLink } from '~/utils';
 
-const validationSchema = validation.shape({
-    email: validation.email,
-    password: validation.password,
-    confirmPassword: validation.confirmPassword,
-});
-
 interface SignUpForm {
     email: string;
     password: string;
@@ -27,7 +21,13 @@ export interface ISignInVM extends ViewModel {
 
 export class SignUpVM implements ISignInVM {
     form: IForm<SignUpForm> = new Form({
-        schema: validationSchema,
+        schema: validation.shape({
+            email: validation.email(),
+            password: validation.password(),
+            confirmPassword: validation.confirmPassword(() => {
+                return this.form.field('password')?.value;
+            }),
+        }),
         fields: [
             {
                 name: 'email',
@@ -51,6 +51,10 @@ export class SignUpVM implements ISignInVM {
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    unmount() {
+        this.form.reset();
     }
 
     submit = new RequestModel({
