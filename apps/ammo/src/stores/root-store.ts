@@ -139,9 +139,7 @@ export class RootStore implements IRootStore {
         try {
             this.services.analytics.setUserId(user?.uid ?? null);
 
-            if (user) {
-                this.viewer.setAuthData(user);
-            }
+            this.viewer.setAuthData(user);
 
             if (user && !user.isAnonymous) {
                 await this.viewer.fetchCurrentUser();
@@ -168,7 +166,7 @@ export class RootStore implements IRootStore {
             await DB.init();
             this.api.setLang(this.services.localization.data.locale);
 
-            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+            this.services.auth.onIdTokenChanged(user => this.onChangeUser(user));
 
             if (!this.services.auth.uuid()) {
                 this.services.auth.signInAnonymously();

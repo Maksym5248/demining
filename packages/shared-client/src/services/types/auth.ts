@@ -3,6 +3,7 @@ import { type User } from '@firebase/auth-types';
 export type IAuthUser = User;
 export interface IAuth {
     uuid: () => string | undefined;
+    currentUser: () => IAuthUser | null;
     onAuthStateChanged: (fn: (user: IAuthUser | null) => void) => void;
     signInWithGoogle: () => Promise<void>;
     signOut: () => Promise<void>;
