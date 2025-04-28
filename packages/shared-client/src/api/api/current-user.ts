@@ -34,10 +34,6 @@ export class CurrentUserAPI {
 
         const member = await this.db.member?.get(userId);
 
-        if (!member) {
-            throw new Error('There is no organization with id');
-        }
-
         if (!member?.organizationId) {
             return null;
         }

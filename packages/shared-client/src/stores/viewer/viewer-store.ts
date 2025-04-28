@@ -4,7 +4,7 @@ import { APPROVE_STATUS, type ROLES } from 'shared-my';
 import { type ICurrentUserAPI } from '~/api';
 import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
-import { CurrentUser, Permissions, type IPermissions, type ICurrentUser, type ICurrentUserData } from './entities';
+import { CurrentUser, Permissions, type IPermissions, type ICurrentUser, type ICurrentUserData, createCurrentUser } from './entities';
 
 export interface IViewerStore {
     user: ICurrentUser | null;
@@ -22,6 +22,7 @@ export interface IViewerStore {
     setUser(user: ICurrentUserData): void;
     setAuthData(authData: IAuthUser | null): void;
     removeUser(): void;
+    fetchCurrentUser(): Promise<void>;
 }
 
 interface IApi {
@@ -114,6 +115,20 @@ export class ViewerStore implements IViewerStore {
             this.api.currentUser.setOrganization(user.organization?.id);
         }
     }
+
+    fetchCurrentUser = async () => {
+        if (!this.authData?.uid || this.isAnonymous) {
+            return;
+        }
+
+        const res = await this.api.currentUser.get(this.authData.uid);
+
+        if (!res) {
+            return;
+        }
+
+        this.setUser(createCurrentUser(res));
+    };
 
     removeUser() {
         this.user = null;

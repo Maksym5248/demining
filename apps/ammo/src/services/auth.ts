@@ -7,6 +7,7 @@ import {
     linkWithCredential,
     EmailAuthProvider,
     sendEmailVerification,
+    onIdTokenChanged,
 } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ERROR_MESSAGE } from 'shared-my';
@@ -106,5 +107,9 @@ export class AuthClass implements IAuth {
 
     onAuthStateChanged(fn: (user: IAuthUser | null) => void) {
         onAuthStateChanged(this.auth, fn);
+    }
+
+    onIdTokenChanged(fn: (user: IAuthUser | null) => void) {
+        onIdTokenChanged(this.auth, fn);
     }
 }

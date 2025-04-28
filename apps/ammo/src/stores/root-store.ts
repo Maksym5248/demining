@@ -16,7 +16,6 @@ import {
     type ICommonStore,
     AuthStore,
     ViewerStore,
-    createCurrentUser,
     ErrorModel,
 } from 'shared-my-client';
 
@@ -145,8 +144,7 @@ export class RootStore implements IRootStore {
             }
 
             if (user && !user.isAnonymous) {
-                const res = await this.api.currentUser.get(user.uid);
-                if (res) this.viewer.setUser(createCurrentUser(res));
+                await this.viewer.fetchCurrentUser();
             }
 
             if (!user) {

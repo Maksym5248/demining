@@ -93,10 +93,10 @@ export class SignUpVM implements ISignInVM {
 
     showAlert = () => {
         Alert.show({
-            title: t('screens.settings.alertEmailVerification.title'),
-            subTitle: t('screens.settings.emailVerification.text'),
+            title: t('screens.sign-up.alertEmailVerification.title'),
+            subTitle: t('screens.sign-up.alertEmailVerification.text'),
             confirm: {
-                title: t('screens.settings.alertEmailVerification.confirm'),
+                title: t('screens.sign-up.alertEmailVerification.confirm'),
                 run: async () => {
                     try {
                         await externalLink.emailApp();
