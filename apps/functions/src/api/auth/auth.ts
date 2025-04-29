@@ -121,6 +121,25 @@ export const onUserCreate = auth.user().onCreate(async user => {
     }
 });
 
+export const onUserDelete = auth.user().onDelete(async user => {
+    const userInfoRef = createUserInfoRef(user.uid);
+    const userAccessRef = createUserAccessRef(user.uid);
+    const memberRef = createMemberRef(user.uid);
+
+    try {
+        await Promise.all([userInfoRef.delete(), userAccessRef.delete(), memberRef.delete()]);
+
+        logger.info(`Successfully deteted initial documents for user: ${user.uid}`);
+
+        return { message: `Successfully deteted user: ${user.uid}` };
+    } catch (error) {
+        const errorMessage = `Error during deteting process for user: ${user.uid}`;
+        logger.error(errorMessage, { error });
+        // Consider more specific error handling or cleanup if needed
+        return { message: errorMessage };
+    }
+});
+
 export const onUserAccessUpdate = firestore
     .document(`${TABLES.USER_ACCESS}/{uid}`)
     .onUpdate(async (change, context) => {
