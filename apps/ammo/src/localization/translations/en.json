@@ -229,6 +229,12 @@
             "title": "Profile",
             "name": "Name",
             "button": "Save"
+        },
+        "reset-password": {
+            "title": "Reset Password",
+            "inputEmail": "Email",
+            "button": "Send",
+            "sendResetPasswordSuccess": "Password reset email sent successfully! Please check your inbox."
         }
     },
     "modals": {

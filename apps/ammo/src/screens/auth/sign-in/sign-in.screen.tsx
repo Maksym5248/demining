@@ -24,6 +24,7 @@ export const SignInScreen = observer(() => {
     const password = vm.form.field('password');
 
     const onGoToSignUp = () => vm.openSignUp();
+    const onGoToResetPassword = () => vm.openResetPassword();
     const onSubmit = () => vm.form.submit();
     const onPressGoogle = () => vm.signInWithGoogle.run();
 
@@ -58,7 +59,7 @@ export const SignInScreen = observer(() => {
                         message={tError(password.error?.message, password.error)}
                     />
                     <Button.Base title={t('button')} style={s.button} onPress={onSubmit} testID="sign_in" disabled={vm.form.isDisabled} />
-                    <Touchable style={s.forgotPassword} testID="go_to_sign_up">
+                    <Touchable style={s.forgotPassword} testID="go_to_sign_up" onPress={onGoToResetPassword}>
                         <Text type="p3" color={theme.colors.accent} text={`${t('passWord')}  `} />
                     </Touchable>
                     <Button.Google style={s.button} onPress={onPressGoogle} testID="google" />

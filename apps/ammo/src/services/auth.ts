@@ -6,6 +6,7 @@ import {
     signInAnonymously,
     sendEmailVerification,
     onIdTokenChanged,
+    sendPasswordResetEmail,
 } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ERROR_MESSAGE } from 'shared-my';
@@ -96,6 +97,14 @@ export class AuthClass implements IAuth {
         const credential = GoogleAuthProvider.credential(signInResult.data.idToken);
         const res = await this.auth.signInWithCredential(credential);
         return res.additionalUserInfo?.isNewUser ?? false;
+    }
+
+    async sendPasswordResetEmail(email: string): Promise<void> {
+        if (!email) {
+            throw new Error('Email is required to reset password.');
+        }
+
+        await sendPasswordResetEmail(this.auth, email);
     }
 
     async signOut() {

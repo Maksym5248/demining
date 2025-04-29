@@ -20,6 +20,7 @@ export interface ISignInVM extends ViewModel {
     form: IForm<SignInForm>;
     signInWithGoogle: RequestModel;
     openSignUp: () => void;
+    openResetPassword: () => void;
 }
 
 export class SignInVM implements ISignInVM {
@@ -82,6 +83,10 @@ export class SignInVM implements ISignInVM {
 
     openSignUp = () => {
         Navigation.navigate(SCREENS.SIGN_UP);
+    };
+
+    openResetPassword = () => {
+        Navigation.navigate(SCREENS.RESET_PASSWORD);
     };
 
     unmount() {

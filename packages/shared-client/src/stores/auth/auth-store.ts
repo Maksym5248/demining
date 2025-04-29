@@ -11,6 +11,7 @@ export interface IAuthStore {
     signUpWithEmail: IRequestModel<[string, string]>;
     signInWithEmail: IRequestModel<[string, string]>;
     signInAnonymously: IRequestModel;
+    sendResetPassword: IRequestModel<[string]>;
     checkEmailVerificationStatus: IRequestModel;
 }
 
@@ -65,6 +66,13 @@ export class AuthStore implements IAuthStore {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithEmailAndPassword(email, password);
             await this.getStores().viewer.fetchCurrentUser.run();
+        },
+    });
+
+    sendResetPassword = new RequestModel({
+        run: async (email: string) => {
+            this.getStores().viewer.setLoading(true);
+            await this.services.auth.sendPasswordResetEmail(email);
         },
     });
 

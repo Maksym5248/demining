@@ -3201,6 +3201,15 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNImageCropPicker (0.42.0):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.42.0)
+    - TOCropViewController (~> 2.7.4)
+  - RNImageCropPicker/QBImagePickerController (0.42.0):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController (~> 2.7.4)
   - RNLocalize (3.2.1):
     - DoubleConversion
     - glog
@@ -3454,6 +3463,7 @@ PODS:
     - Yoga
   - Sentry/HybridSDK (8.48.0)
   - SocketRocket (0.7.1)
+  - TOCropViewController (2.7.4)
   - Yoga (0.0.0)
   - ZIPFoundation (0.9.19)
 
@@ -3542,6 +3552,7 @@ DEPENDENCIES:
   - "RNFBStorage (from `../../../node_modules/@react-native-firebase/storage`)"
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../../../node_modules/@react-native-google-signin/google-signin`)"
+  - RNImageCropPicker (from `../../../node_modules/react-native-image-crop-picker`)
   - RNLocalize (from `../../../node_modules/react-native-localize`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
@@ -3582,6 +3593,7 @@ SPEC REPOS:
     - RecaptchaInterop
     - Sentry
     - SocketRocket
+    - TOCropViewController
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -3750,6 +3762,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../../../node_modules/@react-native-google-signin/google-signin"
+  RNImageCropPicker:
+    :path: "../../../node_modules/react-native-image-crop-picker"
   RNLocalize:
     :path: "../../../node_modules/react-native-localize"
   RNReanimated:
@@ -3875,6 +3889,7 @@ SPEC CHECKSUMS:
   RNFBStorage: 82226bb12b3d77cc37506d23b5457aeccc79619e
   RNGestureHandler: 96fc2de36a25cf6bece93e030c2ed9a5e95d33dd
   RNGoogleSignin: 1a215139c537bb0430abdb9ff9a8e437578e515d
+  RNImageCropPicker: b0afedeefd8655254a15c34103718455fde6ce59
   RNLocalize: 699ec2021cb49167a5c0ba1f7c690b3e5e7c43e2
   RNReanimated: 1ddde392bfda8ef1fb5b482b7e183fbb0cf1ca73
   RNScreens: 04304337930029a5d0db297b22eb0f07adc31a2c
@@ -3882,6 +3897,7 @@ SPEC CHECKSUMS:
   RNSVG: 71e35e78add645b84b52b0c6f203f91028e1ab5e
   Sentry: 1ca8405451040482877dcd344dfa3ef80b646631
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: 6eb60fc2c0eef63e7d2ef4a56e0a3353534143a2
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 

@@ -33,6 +33,7 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.SIGN_IN} component={screens.SignInScreen} />
             <Stack.Screen name={SCREENS.SIGN_UP} component={screens.SignUpScreen} />
             <Stack.Screen name={SCREENS.PROFILE} component={screens.ProfileScreen} />
+            <Stack.Screen name={SCREENS.RESET_PASSWORD} component={screens.ResetPasswordScreen} />
 
             {/* DICTIONARIES */}
             <Stack.Screen name={SCREENS.DICTIONARIES} component={screens.DictionariesScreen} />

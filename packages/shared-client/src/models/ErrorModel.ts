@@ -46,7 +46,12 @@ export class ErrorModel implements IErrorModel {
     private getFields(e: any) {
         const res = [];
 
-        if (e?.message?.includes('auth/invalid-login-credentials')) {
+        if (e?.message?.includes('[auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired')) {
+            res.push({
+                message: ERROR_MESSAGE.WRONG_EMAIL_OR_PASSWORD,
+                field: ERROR_FIELD.EMAIL,
+            });
+        } else if (e?.message?.includes('auth/invalid-login-credentials')) {
             res.push({
                 message: ERROR_MESSAGE.WRONG_EMAIL_OR_PASSWORD,
                 field: ERROR_FIELD.EMAIL,
