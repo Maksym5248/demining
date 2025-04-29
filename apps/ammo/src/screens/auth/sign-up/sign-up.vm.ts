@@ -67,7 +67,7 @@ export class SignUpVM implements ISignInVM {
 
                 Modal.hide(MODALS.LOADING);
                 this.showAlert();
-                Navigation.goBack();
+                Navigation.replace(SCREENS.PROFILE);
             } catch (e) {
                 ErrorManager.form<SignUpForm>(this.form, e);
             } finally {

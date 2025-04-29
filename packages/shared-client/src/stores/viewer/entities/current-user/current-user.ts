@@ -3,11 +3,11 @@ import { makeAutoObservable } from 'mobx';
 import { type ICurrentUserAPI } from '~/api';
 import { type IDataModel, RequestModel } from '~/models';
 
-import { type ICurrentUserInfoUpdate, type ICurrentUserData, createUpdateCurrentUserInfoDTO } from './current-user.schema';
+import { type ICurrentUserInfoUpdateData, type ICurrentUserData, createUpdateCurrentUserInfoDTO } from './current-user.schema';
 
 export interface ICurrentUser extends IDataModel<ICurrentUserData> {
     displayName: string | undefined;
-    updateInfo: RequestModel<[ICurrentUserInfoUpdate]>;
+    updateInfo: RequestModel<[ICurrentUserInfoUpdateData]>;
 }
 
 interface IApi {
@@ -29,6 +29,10 @@ export class CurrentUser implements ICurrentUser {
         Object.assign(this.data, data);
     }
 
+    updateFieldsInfo(data: Partial<ICurrentUserInfoUpdateData>) {
+        Object.assign(this.data.info, data);
+    }
+
     get id() {
         return this.data.id;
     }
@@ -38,9 +42,10 @@ export class CurrentUser implements ICurrentUser {
     }
 
     updateInfo = new RequestModel({
-        run: async (params: ICurrentUserInfoUpdate) => {
+        run: async (params: ICurrentUserInfoUpdateData) => {
             const v = createUpdateCurrentUserInfoDTO(params);
             await this.api.currentUser.updateInfo(this.id, v);
+            this.updateFieldsInfo(params);
         },
     });
 }

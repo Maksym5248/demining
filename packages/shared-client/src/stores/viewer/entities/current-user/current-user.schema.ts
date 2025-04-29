@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { type ROLES } from 'shared-my';
 
-import { type IUserInfoDTO, type ICurrentUserDTO, type IUserOrganizationDTO } from '~/api';
+import { type IUserInfoDTO, type ICurrentUserDTO, type IUserOrganizationDTO, type IUserInfoParamsDTO } from '~/api';
 import { dates } from '~/common';
 
 export interface ICurrentUserOrganizationValue {
@@ -11,9 +11,9 @@ export interface ICurrentUserOrganizationValue {
     updatedAt: Dayjs;
 }
 
-export interface ICurrentUserInfoUpdate {
+export interface ICurrentUserInfoUpdateData {
     name: string;
-    photoUri?: string | null;
+    photoUri?: string;
 }
 
 export interface ICurrentUserInfoData extends Pick<IUserInfoDTO, 'email' | 'name' | 'photoUri'> {}
@@ -48,7 +48,7 @@ export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => (
     organization: value?.organization ? createCurrentUserOrganization(value.organization) : null,
 });
 
-export const createUpdateCurrentUserInfoDTO = (value: ICurrentUserInfoUpdate): ICurrentUserInfoUpdate => ({
+export const createUpdateCurrentUserInfoDTO = (value: ICurrentUserInfoUpdateData): IUserInfoParamsDTO => ({
     name: value?.name ?? '',
     photoUri: value?.photoUri ?? null,
 });

@@ -2,12 +2,11 @@ import { type IUserInfoDB, type IMemberDB, type IOrganizationDB, type IUserAcces
 
 import { type IDBBase, type IUpdateValue } from '~/common';
 import { type IAssetStorage } from '~/services';
-import { type ICurrentUserInfoUpdate } from '~/stores';
 
-import { type ICurrentUserDTO, type IUserOrganizationDTO } from '../dto';
+import { type ICurrentUserDTO, type IUserOrganizationDTO, type IUserInfoParamsDTO } from '../dto';
 
 export interface ICurrentUserAPI {
-    updateInfo: (id: string, value: IUpdateValue<ICurrentUserInfoUpdate>) => Promise<IUserInfoDB>;
+    updateInfo: (id: string, value: IUpdateValue<IUserInfoParamsDTO>) => Promise<IUserInfoDB>;
     get: (id: string) => Promise<ICurrentUserDTO | null>;
     setOrganization: (id: string) => void;
     removeOrganization: () => void;
@@ -44,7 +43,7 @@ export class CurrentUserAPI {
         return res ?? null;
     };
 
-    updateInfo = async (id: string, value: IUpdateValue<ICurrentUserInfoUpdate>): Promise<IUserInfoDB> => {
+    updateInfo = async (id: string, value: IUpdateValue<IUserInfoParamsDTO>): Promise<IUserInfoDB> => {
         return this.db.userInfo.update(id, value);
     };
 

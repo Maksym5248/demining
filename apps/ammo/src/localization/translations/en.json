@@ -3,6 +3,8 @@
         "can-not-open-link": "Failed to open the link",
         "required": "Field is required.",
         "unexpected": "Something went wrong",
+        "min-length": "Min length is %{value}.",
+        "max-length": "Max length is %{value}.",
         "min-password-length": "Min password length is %{value}.",
         "max-password-length": "Max password length is %{value}.",
         "min-new-password-length": "%{value}+ characters",
@@ -12,6 +14,9 @@
         "passwords-must-match": "Passwords must match.",
         "wrong_email_or_password": "Wrong email or password, try again.",
         "email_already_in_use": "Email already in use."
+    },
+    "message": {
+        "updatedSuccess": "Data updated successfully"
     },
     "updates": {
         "dictionaries": {

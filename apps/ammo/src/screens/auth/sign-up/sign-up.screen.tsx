@@ -64,7 +64,7 @@ export const SignUpScreen = observer(() => {
                         returnKeyType="done"
                         secureTextEntry
                         autoComplete="password"
-                        onSubmitEditing={vm.form.isValid ? vm.form.submit : undefined}
+                        onSubmitEditing={onSubmit}
                         testID="password"
                         {...confirmPassword}
                         message={tError(confirmPassword.error?.message, confirmPassword.error)}

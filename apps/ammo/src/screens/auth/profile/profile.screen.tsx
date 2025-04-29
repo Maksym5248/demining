@@ -31,6 +31,8 @@ export const ProfileScreen = observer(() => {
                         label={t('name')}
                         autoComplete="name"
                         testID="name"
+                        onSubmitEditing={onSubmit}
+                        returnKeyType="done"
                         {...name}
                         message={tError(name.error?.message, name.error)}
                     />

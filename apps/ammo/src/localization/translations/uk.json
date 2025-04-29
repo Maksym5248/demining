@@ -3,6 +3,8 @@
         "can-not-open-link": "Не вдалося відкрити посилання",
         "required": "Поле є обов'язковим.",
         "unexpected": "Щось пішло не так",
+        "min-length": "Мінімальна кількість символів %{value}.",
+        "max-length": "Максимальна кількість символів %{value}",
         "min-password-length": "Мінімальна довжина пароля %{value} символів.",
         "max-password-length": "Максимальна довжина пароля %{value} символів.",
         "min-new-password-length": "%{value}+ символів",
@@ -12,6 +14,9 @@
         "passwords-must-match": "Паролі не співпадають",
         "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз.",
         "email_already_in_use": "Email вже використовується."
+    },
+    "message": {
+        "updatedSuccess": "Оновлено успішно"
     },
     "updates": {
         "dictionaries": {

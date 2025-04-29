@@ -74,8 +74,12 @@ export class AuthStore implements IAuthStore {
 
     checkEmailVerificationStatus = new RequestModel({
         run: async () => {
-            await this.services.auth.checkEmailVerification();
-            this.getStores().viewer.setAuthData(this.services.auth.currentUser());
+            try {
+                await this.services.auth.checkEmailVerification();
+                this.getStores().viewer.setAuthData(this.services.auth.currentUser());
+            } catch (error) {
+                // do not need to handle
+            }
         },
     });
 }

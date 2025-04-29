@@ -2,7 +2,8 @@ import { makeAutoObservable } from 'mobx';
 import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
-import { ErrorManager, Modal, Navigation } from '~/services';
+import { t } from '~/localization';
+import { ErrorManager, Message, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -41,6 +42,7 @@ export class ProfileVM implements IProfileVM {
     }
 
     init() {
+        console.log('ProfileVM init', stores.viewer.user?.data);
         this.form.setValues({
             name: stores.viewer.user?.data.info?.name ?? '',
             photoUri: stores.viewer.user?.data?.info?.photoUri ?? undefined,
@@ -60,6 +62,7 @@ export class ProfileVM implements IProfileVM {
                 await stores.viewer.user?.updateInfo.run(values);
 
                 Modal.hide(MODALS.LOADING);
+                Message.success(t('message.updatedSuccess'));
                 Navigation.goBack();
             } catch (e) {
                 ErrorManager.form<IProfileForm>(this.form, e);
