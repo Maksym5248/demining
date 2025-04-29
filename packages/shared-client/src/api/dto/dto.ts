@@ -191,9 +191,12 @@ export interface IMissionReportDTOParamsUpdate {
     address: string;
 }
 
+export interface IUserInfoDTO extends IUserInfoDB {}
+export interface IUserInfoParamsDTO extends Pick<IUserInfoDTO, 'name' | 'photoUri'> {}
+
 export interface ICurrentUserDTO {
     id: string;
-    info: IUserInfoDB;
+    info: IUserInfoDTO;
     access: IUserAccessDB;
     member: IMemberDB;
     organization: IUserOrganizationDTO | null;

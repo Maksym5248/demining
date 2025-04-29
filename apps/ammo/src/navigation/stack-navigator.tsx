@@ -32,6 +32,7 @@ export const StackNavigator = () => {
             {/* AUTH */}
             <Stack.Screen name={SCREENS.SIGN_IN} component={screens.SignInScreen} />
             <Stack.Screen name={SCREENS.SIGN_UP} component={screens.SignUpScreen} />
+            <Stack.Screen name={SCREENS.PROFILE} component={screens.ProfileScreen} />
 
             {/* DICTIONARIES */}
             <Stack.Screen name={SCREENS.DICTIONARIES} component={screens.DictionariesScreen} />

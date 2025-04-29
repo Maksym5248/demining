@@ -180,6 +180,7 @@
             "title": "Settings",
             "about": "About the App",
             "support": "Contact Support",
+            "profile": "Profile",
             "debugger": "debugger",
             "alert": {
                 "title": "Sign Out",
@@ -218,6 +219,11 @@
                 "text": "Please check your email to verify your account.",
                 "confirm": "Open email"
             }
+        },
+        "profile": {
+            "title": "Profile",
+            "name": "Name",
+            "button": "Save"
         }
     },
     "modals": {

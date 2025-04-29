@@ -14,6 +14,7 @@ export interface IForm<T> {
     reset: () => void;
     values: () => T;
     setErrors: (error?: any) => void;
+    setValues: (values: Partial<T>) => void;
     isValid: boolean;
     isDisabled: boolean;
 }
@@ -58,6 +59,14 @@ export class Form<T> implements IForm<T> {
         }
 
         this.form.submit(this.params.submit);
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setValues = (values: Partial<T>) => {
+        Object.keys(values).forEach(key => {
+            // @ts-ignore
+            this.field(key)?.setValue(values[key]);
+        });
     };
 
     setErrors(error?: any) {

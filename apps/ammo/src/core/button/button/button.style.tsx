@@ -23,4 +23,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         borderColor: theme.colors.accent,
         borderWidth: 1,
     },
+    title: {
+        textAlign: 'center',
+    },
 }));

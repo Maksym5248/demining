@@ -31,7 +31,7 @@ export const SignUpScreen = observer(() => {
 
     return (
         <View style={s.container}>
-            <Header backButton="back" title={t('title')} />
+            <Header backButton="back" />
             <KeyboardAwareScrollView contentStyle={s.contentContainer}>
                 <View style={s.titleContainer}>
                     <Text type="h1" text={t('title')} color={theme.colors.accent} />

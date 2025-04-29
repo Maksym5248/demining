@@ -17,6 +17,7 @@ export interface IField {
     onFocus: () => void;
     onBlur: () => void;
     setError: (message: ERROR_MESSAGE) => void;
+    setValue: (value: string) => void;
 }
 
 const getError = (field: FieldMRF, form: { isRunned: boolean }) => {
@@ -59,6 +60,9 @@ export const createField = (field: FieldMRF, form: { isRunned: boolean }): IFiel
         },
         setError: (message: ERROR_MESSAGE) => {
             field.invalidate(message);
+        },
+        setValue: (value: string) => {
+            field.onChange(value);
         },
     };
 };

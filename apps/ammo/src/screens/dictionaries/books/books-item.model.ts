@@ -108,6 +108,6 @@ export class DataItem implements IDataItem {
     }
 
     get isLoaded() {
-        return this.status === STATUS.LOADED;
+        return this.status === STATUS.LOADED || this.status === STATUS.SUCCESS;
     }
 }

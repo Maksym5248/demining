@@ -47,7 +47,7 @@ export const SettingsScreen = observer(() => {
                 renderItem={renderItem}
                 ListHeaderComponent={() => (
                     <View style={s.userInfo}>
-                        <Avatar size={108} style={s.avatar} />
+                        <Avatar size={108} style={s.avatar} uri={vm.photoUri} />
                         <Auth>
                             <Text text={vm.userName} />
                         </Auth>

@@ -33,13 +33,13 @@ const ListItem = observer(({ item, index }: { item: IDataItem; index: number }) 
                 tags={item.typeNames}
                 title={item.displayName}
                 uri={item.imageUri}
-                onPress={item.status === STATUS.LOADED || item.status === STATUS.SUCCESS ? onPress : undefined}
+                onPress={item.isLoaded ? onPress : undefined}
                 subTitle={measurement.formatBytes(item.data.size)}
                 style={[s.card, isLeft ? s.cardLeft : s.cardRight]}
             />
             {item.status === STATUS.IDDLE && <Icon name="download" style={s.icon} color={theme.colors.accent} onPress={onPressLoad} />}
-            {item.status === STATUS.SUCCESS && <Icon name="success" size={24} style={s.icon} color={theme.colors.success} />}
             {item.status === STATUS.LOADING && <Progress.Circle style={s.icon} size={24} progress={item.progress} />}
+            {item.isLoaded && <Icon name="success" size={24} style={s.icon} color={theme.colors.success} />}
         </View>
     );
 });

@@ -45,7 +45,7 @@ export const Button = ({
         <View style={[s.container, style, typeContainer, disabled && s.disabled]} testID={`${testID}.button`}>
             <View>{left}</View>
             {!!isLoading && <Loading size="small" color={typeColor} isVisible />}
-            {!isLoading && !!title && <Text type="p3" text={title} color={color ?? typeColor} />}
+            {!isLoading && !!title && <Text style={s.title} type="p3" text={title} color={color ?? typeColor} />}
             {!isLoading && !!center && center}
             <View>{right}</View>
             <Touchable type="rect" disabled={disabled} onPress={onPress} style={styles.touchable} testID={testID} />

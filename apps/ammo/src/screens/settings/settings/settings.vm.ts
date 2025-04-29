@@ -12,7 +12,7 @@ import { DataItem, type IDataItem } from './data-item.model';
 
 export interface ISettingsVM extends ViewModel {
     asArray: IDataItem[];
-    uri?: string;
+    photoUri?: string;
     userName?: string;
     isRegistered: boolean;
     signOut: IRequestModel;
@@ -57,7 +57,7 @@ export class SettingsVM implements ISettingsVM {
         },
     });
 
-    get uri() {
+    get photoUri() {
         return stores.viewer.user?.data?.info?.photoUri ?? undefined;
     }
 
@@ -71,6 +71,7 @@ export class SettingsVM implements ISettingsVM {
 
     get asArray() {
         return [
+            this.isRegistered ? new DataItem('profile', { screen: SCREENS.PROFILE }) : undefined,
             new DataItem('about', {
                 screen: SCREENS.ABOUT,
             }),

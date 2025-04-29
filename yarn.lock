@@ -4902,7 +4902,7 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-21.13.0.tgz#4279e2471c95e5efad86cdb970dc93117366cef5"
   integrity sha512-WbS3/G6s5J2PaHm1CnmTb/SNhc/3Mv6g4s4hiuKo99DIboUTjP5zUGxLZ0Z7ih8t1y29+Ift6NrauwqqrZeOIg==
 
-"@react-native-google-signin/google-signin@^13.2.0":
+"@react-native-google-signin/google-signin@13.2.0":
   version "13.2.0"
   resolved "https://registry.yarnpkg.com/@react-native-google-signin/google-signin/-/google-signin-13.2.0.tgz#6601764d67593344cb324b98054708140cfc3653"
   integrity sha512-1D7eWPE7itfPmNwLkBylaoiIXAvHQNalt+AfKWcgLp45ZvPh6D5wJEhbs03PJtwO7j+Nc7Z9+DjZ2auIlWzZjw==
@@ -17746,6 +17746,11 @@ react-native-device-info@14.0.4:
   version "14.0.4"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-14.0.4.tgz#56b24ace9ff29a66bdfc667209086421ed6cfdce"
   integrity sha512-NX0wMAknSDBeFnEnSFQ8kkAcQrFHrG4Cl0mVjoD+0++iaKrOupiGpBXqs8xR0SeJyPC5zpdPl4h/SaBGly6UxA==
+
+react-native-email-link@^1.16.1:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/react-native-email-link/-/react-native-email-link-1.16.1.tgz#e46f2f0baa1343e05618abdd1248f42e0baf8e9b"
+  integrity sha512-uTolJXOa6HKPEiRAQuLKN/OhVwUA4xS++yPV6YiCtRBWxl2q3FUlrJt1G6plfMAEU4qNhmwZnH3tCJ9WNYIDhg==
 
 react-native-file-access@3.1.1:
   version "3.1.1"

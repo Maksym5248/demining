@@ -111,7 +111,7 @@ export class ViewerStore implements IViewerStore {
     }
 
     setUser(user: ICurrentUserData) {
-        this.user = new CurrentUser(user);
+        this.user = new CurrentUser(user, this);
 
         if (user.organization?.id) {
             this.api.currentUser.setOrganization(user.organization?.id);

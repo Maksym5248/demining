@@ -65,7 +65,7 @@ service cloud.firestore {
     match /USER_INFO/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
       allow create: if false;
-      allow update: if isRootAdmin() || isOrganizationAdmin();
+      allow update: if (disableUpdateKeys(['id', "email", "createdAt"]) && isUserSelf(userId)) || isRootAdmin() || isOrganizationAdmin();
       allow delete: if isRootAdmin();
     }
 
