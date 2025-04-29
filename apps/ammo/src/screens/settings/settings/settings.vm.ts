@@ -58,7 +58,7 @@ export class SettingsVM implements ISettingsVM {
     });
 
     get photoUri() {
-        return stores.viewer.user?.data?.info?.photoUri ?? undefined;
+        return stores.viewer.user?.data?.info?.photoUri || undefined;
     }
 
     get userName() {

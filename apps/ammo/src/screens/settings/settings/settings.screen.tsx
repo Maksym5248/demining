@@ -33,6 +33,8 @@ export const SettingsScreen = observer(() => {
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IDataItem>) => <ListItem item={item} />, []);
 
     const onSignOut = () => vm.signOut.run();
+    // Do not delete it because it doesnt handled correctly in the mobx
+    const photo = vm.photoUri;
 
     return (
         <View style={styles.container}>
@@ -47,7 +49,7 @@ export const SettingsScreen = observer(() => {
                 renderItem={renderItem}
                 ListHeaderComponent={() => (
                     <View style={s.userInfo}>
-                        <Avatar size={108} style={s.avatar} uri={vm.photoUri} />
+                        <Avatar size={108} style={s.avatar} uri={photo} />
                         <Auth>
                             <Text text={vm.userName} />
                         </Auth>
