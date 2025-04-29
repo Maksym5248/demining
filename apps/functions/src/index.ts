@@ -13,9 +13,9 @@ initializeApp();
 import {
     onMemberUpdate,
     onUserAccessUpdate,
-    onUserCreate,
+    initializeNewUser,
     translateOnWrite,
     onUserDelete,
 } from './api';
 
-export { onMemberUpdate, onUserAccessUpdate, onUserCreate, translateOnWrite, onUserDelete };
+export { onMemberUpdate, onUserAccessUpdate, initializeNewUser, translateOnWrite, onUserDelete };
