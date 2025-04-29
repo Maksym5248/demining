@@ -8,11 +8,12 @@ import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 
 import { useStyles } from './profile.style';
+import { type IProfileScreenProps } from './profile.types';
 import { profileVM } from './profile.vm';
 
-export const ProfileScreen = observer(() => {
+export const ProfileScreen = observer(({ route }: IProfileScreenProps) => {
     const s = useStyles();
-    const vm = useViewModel(profileVM);
+    const vm = useViewModel(profileVM, route?.params);
     const t = useTranslate('screens.profile');
     const tError = useTranslate('error');
 
@@ -20,6 +21,8 @@ export const ProfileScreen = observer(() => {
     const photoUri = vm.form.field('photoUri');
 
     const onSubmit = () => vm.form.submit();
+
+    console.log('ProfileScreen', name.isValid, photoUri.isValid);
 
     return (
         <View style={s.container}>

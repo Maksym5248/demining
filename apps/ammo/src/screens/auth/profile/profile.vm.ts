@@ -3,9 +3,10 @@ import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import { t } from '~/localization';
-import { ErrorManager, Message, Modal, Navigation } from '~/services';
+import { Alert, ErrorManager, Message, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
+import { externalLink } from '~/utils';
 
 interface IProfileForm {
     name: string;
@@ -17,6 +18,10 @@ export interface IProfileVM extends ViewModel {
 }
 
 export class ProfileVM implements IProfileVM {
+    params: { isRegistration?: boolean } = {
+        isRegistration: false,
+    };
+
     form: IForm<IProfileForm> = new Form({
         schema: validation.shape({
             name: validation.name(),
@@ -41,11 +46,12 @@ export class ProfileVM implements IProfileVM {
         makeAutoObservable(this);
     }
 
-    init() {
-        console.log('ProfileVM init', stores.viewer.user?.data);
+    init(params?: { isRegistration?: boolean }) {
+        this.params.isRegistration = params?.isRegistration ?? false;
+
         this.form.setValues({
             name: stores.viewer.user?.data.info?.name ?? '',
-            photoUri: stores.viewer.user?.data?.info?.photoUri ?? undefined,
+            photoUri: stores.viewer.user?.data?.info?.photoUri ?? '',
         });
     }
 
@@ -59,10 +65,18 @@ export class ProfileVM implements IProfileVM {
                 Modal.show(MODALS.LOADING);
                 const values = this.form.values();
 
-                await stores.viewer.user?.updateInfo.run(values);
+                await stores.viewer.user?.updateInfo.run({
+                    name: values.name,
+                    photoUri: values.photoUri || undefined,
+                });
 
                 Modal.hide(MODALS.LOADING);
                 Message.success(t('message.updatedSuccess'));
+
+                if (this.params.isRegistration) {
+                    this.showAlert();
+                }
+
                 Navigation.goBack();
             } catch (e) {
                 ErrorManager.form<IProfileForm>(this.form, e);
@@ -71,6 +85,23 @@ export class ProfileVM implements IProfileVM {
             }
         },
     });
+
+    showAlert = () => {
+        Alert.show({
+            title: t('screens.sign-up.alertEmailVerification.title'),
+            subTitle: t('screens.sign-up.alertEmailVerification.text'),
+            confirm: {
+                title: t('screens.sign-up.alertEmailVerification.confirm'),
+                run: async () => {
+                    try {
+                        await externalLink.emailApp();
+                    } catch (e) {
+                        ErrorManager.request(e);
+                    }
+                },
+            },
+        });
+    };
 }
 
 export const profileVM = new ProfileVM();

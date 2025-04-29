@@ -2,11 +2,9 @@ import { makeAutoObservable } from 'mobx';
 import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS, SCREENS } from '~/constants';
-import { t } from '~/localization';
-import { Alert, ErrorManager, Modal, Navigation } from '~/services';
+import { ErrorManager, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
-import { externalLink } from '~/utils';
 
 interface SignUpForm {
     email: string;
@@ -66,8 +64,9 @@ export class SignUpVM implements ISignInVM {
                 await stores.auth.signUpWithEmail.run(values.email, values.password);
 
                 Modal.hide(MODALS.LOADING);
-                this.showAlert();
-                Navigation.replace(SCREENS.PROFILE);
+                Navigation.replace(SCREENS.PROFILE, {
+                    isRegistration: true,
+                });
             } catch (e) {
                 ErrorManager.form<SignUpForm>(this.form, e);
             } finally {
@@ -81,8 +80,9 @@ export class SignUpVM implements ISignInVM {
             try {
                 Modal.show(MODALS.LOADING);
                 await stores.auth.signInWithGoogle.run();
-                this.showAlert();
-                Navigation.goBack();
+                Navigation.replace(SCREENS.PROFILE, {
+                    isRegistration: true,
+                });
             } catch (e) {
                 ErrorManager.request(e);
             } finally {
@@ -90,23 +90,6 @@ export class SignUpVM implements ISignInVM {
             }
         },
     });
-
-    showAlert = () => {
-        Alert.show({
-            title: t('screens.sign-up.alertEmailVerification.title'),
-            subTitle: t('screens.sign-up.alertEmailVerification.text'),
-            confirm: {
-                title: t('screens.sign-up.alertEmailVerification.confirm'),
-                run: async () => {
-                    try {
-                        await externalLink.emailApp();
-                    } catch (e) {
-                        ErrorManager.request(e);
-                    }
-                },
-            },
-        });
-    };
 
     openSignIn = () => {
         Navigation.navigate(SCREENS.SIGN_IN);

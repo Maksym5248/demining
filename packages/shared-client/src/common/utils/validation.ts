@@ -15,7 +15,7 @@ const confirmPassword = (getPass: () => string) =>
         .when('password', ([pass], schema) => schema.test('passwords-must-match', p('passwords-must-match'), value => value === getPass()));
 const name = () => string().required(p('required')).min(2, p('min-length', '2'));
 const email = () => string().email(p('invalid-email')).required(p('required')).trim(p('required'));
-const uri = () => string();
+const uri = () => string().optional();
 
 export const shape = <U extends Yup.ObjectShape>(fields: U) => object().shape(fields);
 
