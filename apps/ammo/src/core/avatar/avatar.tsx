@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { View } from 'react-native';
-
 import { useTheme } from '~/styles';
 
 import { useStyles, getStyleForSize } from './avatar.styles';
 import { type IAvatarProps } from './avatar.types';
 import { Image } from '../image';
 import { Svg } from '../svg';
+import { Touchable } from '../touchable';
 
 export const Avatar = ({ onPress, uri, style, size = 48 }: IAvatarProps) => {
     const s = useStyles();
@@ -15,10 +14,10 @@ export const Avatar = ({ onPress, uri, style, size = 48 }: IAvatarProps) => {
     const sizeStyle = getStyleForSize(size);
 
     return (
-        <View style={[s.container, sizeStyle, style]}>
-            {!!uri && <Image onPress={onPress} style={s.image} uri={uri} />}
-            {!uri && <Svg onPress={onPress} size={size - 20} name="avatar" color={theme.colors.accent} />}
-        </View>
+        <Touchable onPress={onPress} style={[s.container, sizeStyle, style]}>
+            {!!uri && <Image style={sizeStyle} uri={uri} />}
+            {!uri && <Svg size={size} name="avatar" color={theme.colors.accent} />}
+        </Touchable>
     );
 };
 

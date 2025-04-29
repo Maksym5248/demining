@@ -9,10 +9,8 @@ export const getStyleForSize = (size: number) => ({
 export const useStyles = ThemeManager.createStyleSheet(({ theme, utils }) => ({
     container: {
         backgroundColor: utils.hexToRgba(theme.colors.black, 0.1),
-        padding: theme.spacing.XS,
         borderWidth: 1,
         borderColor: theme.colors.accent,
         overflow: 'hidden',
     },
-    image: {},
 }));

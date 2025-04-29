@@ -1,9 +1,9 @@
 import { makeAutoObservable } from 'mobx';
-import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
+import { Form, type IForm, type IRequestModel, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import { t } from '~/localization';
-import { Alert, ErrorManager, Message, Modal, Navigation } from '~/services';
+import { Alert, AssetStorage, ErrorManager, ImagePicker, Message, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 import { externalLink } from '~/utils';
@@ -11,6 +11,8 @@ import { externalLink } from '~/utils';
 interface IProfileForm {
     name: string;
     photoUri?: string;
+    updateImage: IRequestModel;
+    openAvatarInGallery: () => void;
 }
 
 export interface IProfileVM extends ViewModel {
@@ -82,6 +84,29 @@ export class ProfileVM implements IProfileVM {
                 ErrorManager.form<IProfileForm>(this.form, e);
             } finally {
                 Modal.hide(MODALS.LOADING);
+            }
+        },
+    });
+
+    openAvatarInGallery = () => {
+        const photoUri = this.form.field('photoUri');
+        Modal.show(MODALS.GALLERY, { images: [{ uri: photoUri.value }] });
+    };
+
+    updateImage = new RequestModel({
+        run: async () => {
+            try {
+                const res = await ImagePicker.selectImage();
+
+                if (!res.path) {
+                    throw new Error('Selected image asset is missing sourceURL');
+                }
+
+                const uri = await AssetStorage.image.create(res.path);
+
+                this.form.setValues({ photoUri: uri });
+            } catch (e) {
+                ErrorManager.request(e);
             }
         },
     });

@@ -25,8 +25,31 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         marginTop: theme.spacing.XS,
         marginVertical: theme.spacing.S,
     },
+    avatarContainer: {
+        alignSelf: 'center',
+    },
+    buttonEdit: {
+        position: 'absolute',
+        bottom: 35,
+        right: 0,
+        width: 40,
+        height: 40,
+        backgroundColor: theme.colors.white,
+        borderRadius: 20,
+        ...theme.shadow.light,
+    },
     avatar: {
         alignSelf: 'center',
         marginVertical: theme.spacing.XL,
+        marginHorizontal: 10,
+    },
+    loading: {
+        position: 'absolute',
+        backgroundColor: theme.colors.black,
+        height: 108,
+        width: 108,
+        borderRadius: 54,
+        opacity: 0.3,
+        zIndex: 1,
     },
 }));

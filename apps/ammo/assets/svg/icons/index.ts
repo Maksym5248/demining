@@ -6,6 +6,7 @@ import cloudUpdate from './cloud-update.svg';
 import debuggerIcon from './debugger.svg';
 import dictionary from './dictionary.svg';
 import download from './download.svg';
+import edit from './edit.svg';
 import eyeHidden from './eye-hidden.svg';
 import eye from './eye.svg';
 import filter from './filter.svg';
@@ -34,4 +35,5 @@ export const svgIcons = {
     debugger: debuggerIcon,
     logout,
     google,
+    edit,
 };
