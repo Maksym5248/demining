@@ -2,7 +2,6 @@ import { makeAutoObservable } from 'mobx';
 import { APPROVE_STATUS, type ROLES } from 'shared-my';
 
 import { type ICurrentUserAPI } from '~/api';
-import { delay } from '~/common';
 import { type IRequestModel, RequestModel } from '~/models';
 import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
@@ -120,34 +119,20 @@ export class ViewerStore implements IViewerStore {
 
     fetchCurrentUser = new RequestModel({
         returnIfLoading: true,
+        retry: 10,
         run: async () => {
-            const retry = 10;
-            const time = 1000;
-
-            if (!this.authData?.uid || this.isAnonymous) {
-                return;
+            if (!this.authData?.uid) {
+                throw new Error('No user data');
             }
 
-            for (let i = 0; i < retry; i++) {
-                try {
-                    const res = await this.api.currentUser.get(this.authData.uid);
+            const res = await this.api.currentUser.get(this.authData.uid);
 
-                    if (!res) {
-                        throw new Error('No user data');
-                    }
-
-                    this.setUser(createCurrentUser(res));
-                    this.setAuthData(this.services.auth.currentUser());
-
-                    break;
-                } catch (e) {
-                    if (i === retry - 1) {
-                        throw e;
-                    }
-
-                    await delay(time);
-                }
+            if (!res) {
+                throw new Error('No user data');
             }
+
+            this.setUser(createCurrentUser(res));
+            this.setAuthData(this.services.auth.currentUser());
         },
     });
 

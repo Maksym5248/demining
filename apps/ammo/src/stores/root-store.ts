@@ -137,6 +137,10 @@ export class RootStore implements IRootStore {
 
     private async onChangeUser(user: IAuthUser | null) {
         try {
+            Logger.log('AUTH_STATE_CHANGED');
+            Logger.log('ANONIM ', user?.isAnonymous);
+            Logger.log('VERIFIED_EMAIL ', user?.emailVerified);
+
             this.services.analytics.setUserId(user?.uid ?? null);
 
             this.viewer.setAuthData(user);
@@ -148,9 +152,6 @@ export class RootStore implements IRootStore {
             if (!user) {
                 this.viewer.removeUser();
             }
-
-            Logger.log('ANONIM ', this.viewer.isAnonymous);
-            Logger.log('VERIFIED_EMAIL ', this.viewer.isEmailVerified);
         } catch (e) {
             const error = new ErrorModel(e as Error);
             ErrorManager.request(error);

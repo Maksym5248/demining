@@ -59,70 +59,54 @@ const customUserClaims = async ({
     }
 };
 
-export const initializeNewUser = https.onCall(
-    async (data: { email: string; photoUri?: string }, context) => {
-        const uid = context?.auth?.uid;
+export const onUserCreate = auth.user().onCreate(async user => {
+    if (!user.email) {
+        logger.info('User email does not exist, cannot process signup fully.', { uid: user.uid });
+        return;
+    }
 
-        if (!uid) {
-            logger.warn('initializeNewUser called without authenticated user.');
-            throw new https.HttpsError('unauthenticated', 'User is not authenticated.');
-        }
+    const userInfoRef = createUserInfoRef(user.uid);
+    const userAccessRef = createUserAccessRef(user.uid);
+    const memberRef = createMemberRef(user.uid);
 
-        const userInfoRef = createUserInfoRef(uid);
-        const userAccessRef = createUserAccessRef(uid);
-        const memberRef = createMemberRef(uid);
+    const common = {
+        id: user.uid,
+        createdAt: FieldValue.serverTimestamp() as Timestamp,
+        updatedAt: FieldValue.serverTimestamp() as Timestamp,
+    };
 
-        const res = await userInfoRef.get();
+    const initialAccess: IUserAccessDB = {
+        ...common,
+        [ROLES.AMMO_VIEWER]: true,
+    };
+    const initialMember: IMemberDB = {
+        ...common,
+        organizationId: null,
+    };
+    const initialUserInfo: IUserInfoDB = {
+        ...common,
+        email: user.email,
+        photoUri: user.photoURL ?? null,
+        name: user.displayName ?? null,
+    };
 
-        if (res.exists) {
-            logger.info('User info document already exists, skipping creation.', { uid });
-            // Optionally check/update claims here if needed for existing users during re-auth?
-            return;
-        }
+    try {
+        await Promise.all([
+            userInfoRef.set(initialUserInfo),
+            userAccessRef.set(initialAccess),
+            memberRef.set(initialMember),
+            customUserClaims({ uid: user.uid, access: initialAccess, member: initialMember }),
+        ]);
 
-        const common = {
-            id: uid,
-            createdAt: FieldValue.serverTimestamp() as Timestamp,
-            updatedAt: FieldValue.serverTimestamp() as Timestamp,
-        };
+        logger.info(`Successfully set initial claims for user: ${user.uid}`);
 
-        const initialAccess: IUserAccessDB = {
-            ...common,
-            [ROLES.AMMO_VIEWER]: true,
-        };
-        const initialMember: IMemberDB = {
-            ...common,
-            organizationId: null,
-        };
-        const initialUserInfo: IUserInfoDB = {
-            ...common,
-            email: data?.email,
-            photoUri: data?.photoUri ?? null,
-            name: null,
-        };
-
-        try {
-            await Promise.all([
-                userInfoRef.set(initialUserInfo),
-                userAccessRef.set(initialAccess),
-                memberRef.set(initialMember),
-            ]);
-
-            logger.info(`Successfully created initial documents for user: ${uid}`);
-
-            await customUserClaims({ uid, access: initialAccess, member: initialMember });
-
-            logger.info(`Successfully set initial claims for user: ${uid}`);
-
-            return { message: `Successfully created user and set initial claims: ${uid}` };
-        } catch (error) {
-            const errorMessage = `Error during signup process for user: ${uid}`;
-            logger.error(errorMessage, { error });
-            // Consider more specific error handling or cleanup if needed
-            return { message: errorMessage };
-        }
-    },
-);
+        return { message: `Successfully created user and set initial claims: ${user.uid}` };
+    } catch (error) {
+        const errorMessage = `Error during signup process for user: ${user.uid}`;
+        logger.error(errorMessage, { error });
+        return { message: errorMessage };
+    }
+});
 
 export const onUserDelete = auth.user().onDelete(async user => {
     const userInfoRef = createUserInfoRef(user.uid);

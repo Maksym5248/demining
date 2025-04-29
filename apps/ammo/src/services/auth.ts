@@ -4,8 +4,6 @@ import {
     GoogleAuthProvider,
     onAuthStateChanged,
     signInAnonymously,
-    linkWithCredential,
-    EmailAuthProvider,
     sendEmailVerification,
     onIdTokenChanged,
 } from '@react-native-firebase/auth';
@@ -62,12 +60,7 @@ export class AuthClass implements IAuth {
     }
 
     async createUserWithEmailAndPassword(email: string, password: string) {
-        if (this.auth.currentUser) {
-            const credential = EmailAuthProvider.credential(email, password);
-            await linkWithCredential(this.auth.currentUser, credential);
-        } else {
-            await this.auth.createUserWithEmailAndPassword(email, password);
-        }
+        await this.auth.createUserWithEmailAndPassword(email, password);
 
         if (!this.auth.currentUser) {
             throw new Error('User not found');
@@ -101,16 +94,7 @@ export class AuthClass implements IAuth {
         }
 
         const credential = GoogleAuthProvider.credential(signInResult.data.idToken);
-
-        try {
-            if (this.auth.currentUser) {
-                await linkWithCredential(this.auth.currentUser, credential);
-            } else {
-                await this.auth.signInWithCredential(credential);
-            }
-        } catch (error) {
-            await this.auth.signInWithCredential(credential);
-        }
+        await this.auth.signInWithCredential(credential);
     }
 
     async signOut() {

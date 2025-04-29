@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
+import { delay } from '~/common';
 import { Logger } from '~/services';
 
 import { ErrorModel, type IErrorModel } from './ErrorModel';
@@ -19,6 +20,8 @@ export interface IRequestModelParams<Params extends Array<any> = undefined[], Re
     onSuccuss?: () => void;
     returnIfLoaded?: boolean;
     returnIfLoading?: boolean;
+    retry?: number;
+    retryDelay?: number;
     cachePolicy?: 'cache-first' | 'network-only';
 }
 
@@ -31,6 +34,8 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
     private _onSuccuss?: () => void;
     private _returnIfLoaded = false;
     private _returnIfLoading = false;
+    private _retry: number = 1;
+    private _retryDelay = 1000;
 
     _cachePolicy?: 'cache-first' | 'network-only';
 
@@ -41,10 +46,30 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
         this._onSuccuss = params?.onSuccuss;
         this._returnIfLoaded = !!params?.returnIfLoaded;
         this._returnIfLoading = !!params?.returnIfLoading;
+        this._retry = params?.retry ?? 1;
+        this._retryDelay = params?.retryDelay ?? 1000;
         this._cachePolicy = params?.cachePolicy ?? 'network-only';
 
         makeAutoObservable(this);
     }
+
+    retry = async (...args: Params): Promise<Return | void> => {
+        const retry = this._retry;
+        const time = this._retryDelay;
+
+        for (let i = 0; i < retry; i++) {
+            try {
+                const res = await this._run(...args);
+                return res;
+            } catch (e) {
+                if (i === retry - 1) {
+                    throw e;
+                }
+
+                await delay(time);
+            }
+        }
+    };
 
     async run(...args: Params): Promise<Return | void> {
         let res: Return | void;
@@ -57,7 +82,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
 
             this.requestState.start();
 
-            res = await this._run(...args);
+            res = await this.retry(...args);
 
             this._onSuccuss?.();
             this.requestState.success();

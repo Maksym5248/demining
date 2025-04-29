@@ -63,6 +63,7 @@ export class AuthStore implements IAuthStore {
         run: async (email: string, password: string) => {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithEmailAndPassword(email, password);
+            await this.getStores().viewer.fetchCurrentUser.run();
         },
     });
 
