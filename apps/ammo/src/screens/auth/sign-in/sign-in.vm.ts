@@ -64,8 +64,14 @@ export class SignInVM implements ISignInVM {
         run: async () => {
             try {
                 Modal.show(MODALS.LOADING);
-                await stores.auth.signInWithGoogle.run();
-                Navigation.goBack(-2);
+                const isNewUser = await stores.auth.signInWithGoogle.run();
+
+                if (isNewUser) {
+                    Navigation.goBack();
+                    Navigation.replace(SCREENS.PROFILE);
+                } else {
+                    Navigation.goBack(-2);
+                }
             } catch (e) {
                 ErrorManager.request(e);
             } finally {

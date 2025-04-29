@@ -74,8 +74,6 @@ export const UsersListPage = observer(() => {
         await user?.fetchList.run(search.searchValue);
     }, []);
 
-    console.log('user?.list.isMorePages', user?.list.isMorePages);
-
     return (
         <List
             loading={user?.fetchList.isLoading}

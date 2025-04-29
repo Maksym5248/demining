@@ -22,13 +22,11 @@ export const ProfileScreen = observer(({ route }: IProfileScreenProps) => {
 
     const onSubmit = () => vm.form.submit();
 
-    console.log('ProfileScreen', name.isValid, photoUri.isValid);
-
     return (
         <View style={s.container}>
             <Header backButton="back" title={t('title')} />
             <KeyboardAwareScrollView contentStyle={s.contentContainer}>
-                <Avatar size={108} style={s.avatar} uri={photoUri.value} />
+                <Avatar size={108} style={s.avatar} uri={photoUri.value || undefined} />
                 <View style={s.content}>
                     <TextInput
                         label={t('name')}

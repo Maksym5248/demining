@@ -6,7 +6,7 @@ import { type IMessage, type IAuth } from '~/services';
 import { type IViewerStore } from '../viewer';
 
 export interface IAuthStore {
-    signInWithGoogle: IRequestModel;
+    signInWithGoogle: IRequestModel<[], boolean>;
     signInOut: IRequestModel;
     signUpWithEmail: IRequestModel<[string, string]>;
     signInWithEmail: IRequestModel<[string, string]>;
@@ -42,8 +42,9 @@ export class AuthStore implements IAuthStore {
     signInWithGoogle = new RequestModel({
         run: async () => {
             this.getStores().viewer.setLoading(true);
-            await this.services.auth.signInWithGoogle();
+            const isNewUser = await this.services.auth.signInWithGoogle();
             await this.getStores().viewer.fetchCurrentUser.run();
+            return isNewUser;
         },
     });
 

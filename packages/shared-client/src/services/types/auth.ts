@@ -5,7 +5,7 @@ export interface IAuth {
     uuid: () => string | undefined;
     currentUser: () => IAuthUser | null;
     onAuthStateChanged: (fn: (user: IAuthUser | null) => void) => void;
-    signInWithGoogle: () => Promise<void>;
+    signInWithGoogle: () => Promise<boolean>;
     signOut: () => Promise<void>;
     createUserWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     signInWithEmailAndPassword: (email: string, password: string) => Promise<void>;

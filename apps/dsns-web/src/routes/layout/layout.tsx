@@ -74,8 +74,6 @@ export const Layout = observer(() => {
         return arr;
     }, [permissions?.managment.view(), permissions?.managment.viewOrganization(), user?.data.organization?.id]);
 
-    console.log('user?.data.organization?.id', user?.data);
-
     const menuDocuments = useMemo(() => {
         const arr = [
             ...(permissions?.documents.view()

@@ -65,7 +65,7 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
                 if (i === retry - 1) {
                     throw e;
                 }
-
+                console.log('Retrying request', i + 1, 'of', retry);
                 await delay(time);
             }
         }
