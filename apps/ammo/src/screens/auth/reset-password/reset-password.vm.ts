@@ -3,9 +3,10 @@ import { Form, type IForm, RequestModel, validation } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import { t } from '~/localization';
-import { ErrorManager, Message, Modal, Navigation } from '~/services';
+import { Alert, ErrorManager, Message, Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
+import { externalLink } from '~/utils';
 
 const validationSchema = validation.shape({
     email: validation.email(),
@@ -45,6 +46,7 @@ export class ResetPasswordVM implements IResetPasswordVM {
                 await stores.auth.sendResetPassword.run(values.email);
                 Navigation.goBack();
                 Message.success(t('screens.reset-password.sendResetPasswordSuccess'));
+                this.showAlert();
             } catch (e) {
                 ErrorManager.form<ResetPasswordForm>(this.form, e);
             } finally {
@@ -52,6 +54,23 @@ export class ResetPasswordVM implements IResetPasswordVM {
             }
         },
     });
+
+    showAlert = () => {
+        Alert.show({
+            title: t('screens.reset-password.alert.title'),
+            subTitle: t('screens.reset-password.alert.text'),
+            confirm: {
+                title: t('screens.reset-password.alert.confirm'),
+                run: async () => {
+                    try {
+                        await externalLink.emailApp();
+                    } catch (e) {
+                        ErrorManager.request(e);
+                    }
+                },
+            },
+        });
+    };
 
     unmount() {
         this.form.reset();

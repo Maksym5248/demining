@@ -244,7 +244,11 @@
             "title": "Reset Password",
             "inputEmail": "Email",
             "button": "Send",
-            "sendResetPasswordSuccess": "Password reset email sent successfully! Please check your inbox."
+            "alert": {
+                "title": "Email reset",
+                "text": "Please check your email to reset your account.",
+                "confirm": "Open email"
+            }
         }
     },
     "modals": {
