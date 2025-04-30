@@ -44,6 +44,10 @@ export class AppViewModel implements IAppViewModel {
         Logger.log('LOCALE: ', Localization.data.locale);
         Logger.log('USER ID: ', Auth.uuid());
         Logger.log('PERMISSIONS.PHOTO_LIBRARY: ', Permissions.getStatus(PERMISSIONS.PHOTO_LIBRARY));
+
+        Object.keys(CONFIG).forEach(key => {
+            Logger.log('CONFIG: ', `${key} - ${CONFIG[key as keyof typeof CONFIG]}`);
+        });
     };
 
     animationFinished = () => {
