@@ -25,6 +25,9 @@ export enum TABLES {
     DOCUMENT = 'DOCUMENT',
     BOOK = 'BOOK',
     APP_CONFIG = 'APP_CONFIG',
+    COMMENT = 'COMMENT',
+
+    // tables with ids as enums
     BOOK_TYPE = 'BOOK_TYPE',
     COUNTRY = 'COUNTRY',
     EXPLOSIVE_DEVICE_TYPE = 'EXPLOSIVE_DEVICE_TYPE',

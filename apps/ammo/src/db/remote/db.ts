@@ -24,15 +24,18 @@ import {
     type IRankDB,
     type IUserAccessDB,
     type IMemberDB,
+    type ICommentDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
+
+import { Auth } from '~/services';
 
 import { DBBase } from './db-base';
 
 const organizationId: string | null = null;
 
 const getCreateData = () => ({
-    authorId: '',
+    authorId: Auth.uuid(),
     organizationId,
 });
 
@@ -64,6 +67,7 @@ export class DBRemote
             | 'material'
             | 'status'
             | 'rank'
+            | 'comment'
             | 'app'
         >
 {
@@ -95,6 +99,8 @@ export class DBRemote
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
+
+    comment = new DBBase<ICommentDB>(TABLES.COMMENT, [], getCreateData);
 
     app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
 

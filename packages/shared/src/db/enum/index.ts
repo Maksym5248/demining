@@ -10,6 +10,7 @@ export * from './entities/roles';
 export * from './entities/transport-type';
 export * from './entities/ranks';
 export * from './entities/book';
+export * from './entities/comment';
 export * from './file';
 export * from './tables';
 export * from './apps';

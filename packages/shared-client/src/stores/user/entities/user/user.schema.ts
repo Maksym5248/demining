@@ -11,8 +11,8 @@ export interface IUserData {
     info: {
         email: string;
     };
-    access: Partial<Record<ROLES, boolean>>;
-    member: {
+    access?: Partial<Record<ROLES, boolean>>;
+    member?: {
         organizationId: string | null;
     };
     createdAt: Dayjs;
@@ -26,7 +26,7 @@ export const createUser = (value: IUserDTO): IUserData => ({
     },
     access: { ...(value?.access ?? {}) },
     member: {
-        organizationId: value?.member.organizationId ?? null,
+        organizationId: value?.member?.organizationId ?? null,
     },
     createdAt: dates.fromServerDate(value.info?.createdAt),
     updatedAt: dates.fromServerDate(value.info?.updatedAt),

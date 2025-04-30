@@ -15,3 +15,4 @@ export * from './order';
 export * from './organization';
 export * from './transport';
 export * from './user';
+export * from './comment';
