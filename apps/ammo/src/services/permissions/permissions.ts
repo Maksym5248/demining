@@ -201,7 +201,7 @@ export class PermissionsClass implements IPermissions {
 
     ask = async (permission: PERMISSIONS) => {
         const status = this.getStatus(permission);
-        Logger.log('PERMISSION ASK: ', permission, ' - ', status);
+        Logger.log('PERMISSION ASK: ', permission, status);
 
         switch (status) {
             case PERMISSION_STATUS.GRANTED:
