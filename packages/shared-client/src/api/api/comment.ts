@@ -3,11 +3,11 @@ import { type ICommentDB, type IUserInfoDB } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
 
-import { type IUserDTO, type ICommentDTO, type ICommentFullDTO } from '../dto';
+import { type IUserDTO, type ICommentDTO, type ICommentFullDTO, type ICommentParamsDTO } from '../dto';
 
 export interface ICommentAPI {
-    create: (value: ICreateValue<ICommentDTO>) => Promise<ICommentDTO>;
-    update: (id: string, value: IUpdateValue<ICommentDTO>) => Promise<ICommentDTO>;
+    create: (value: ICreateValue<ICommentParamsDTO>) => Promise<ICommentDTO>;
+    update: (id: string, value: IUpdateValue<ICommentParamsDTO>) => Promise<ICommentDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<ICommentFullDTO[]>;
     subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICommentDTO>[]) => void) => Promise<void>;
@@ -21,12 +21,15 @@ export class CommentAPI implements ICommentAPI {
         },
     ) {}
 
-    create = async (value: ICreateValue<ICommentDTO>): Promise<ICommentDTO> => {
-        const res = await this.db.comment.create(value);
+    create = async (value: ICreateValue<ICommentParamsDTO>): Promise<ICommentDTO> => {
+        const res = await this.db.comment.create({
+            ...value,
+            replyCount: 0,
+        });
         return res;
     };
 
-    update = async (id: string, value: IUpdateValue<ICommentDTO>): Promise<ICommentDTO> => {
+    update = async (id: string, value: IUpdateValue<ICommentParamsDTO>): Promise<ICommentDTO> => {
         const data = await this.db.comment.update(id, value);
         if (!data) throw new Error('there is comment with id');
         return data;

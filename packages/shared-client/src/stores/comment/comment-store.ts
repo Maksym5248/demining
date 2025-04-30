@@ -7,6 +7,7 @@ import { CollectionModel } from '~/models';
 import { Comments, type IComments } from './comments';
 import { type IComment, type ICommentData, Comment } from './entities';
 import { type IUserStore } from '../user';
+import { type IViewerStore } from '../viewer';
 
 export interface ICommentStore {
     create(id: string, type: COMMENT_TYPE): void;
@@ -19,6 +20,7 @@ interface IApi {
 
 interface IStores {
     users: IUserStore;
+    viewer: IViewerStore;
 }
 
 const createID = (id: string, type: COMMENT_TYPE) => `${type}-${id}`;

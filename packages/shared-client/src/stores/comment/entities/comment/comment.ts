@@ -1,17 +1,25 @@
+import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
 
 import { type ICommentAPI } from '~/api';
-import { type IUpdateValue } from '~/common';
 import { type IDataModel, RequestModel } from '~/models';
 import { type IUser } from '~/stores/user';
+import { type IViewerStore } from '~/stores/viewer';
 
-import { type ICommentData, updateCommentDTO } from './comment.schema';
+import { type ICommentData } from './comment.schema';
 import { type IUserStore } from '../../../user/user-store';
 
 export interface IComment extends IDataModel<ICommentData> {
     updateFields: (data: Partial<ICommentData>) => void;
-    update: RequestModel<[IUpdateValue<ICommentData>]>;
     author: IUser | undefined;
+    like: RequestModel<[]>;
+    dislike: RequestModel<[]>;
+    isLiked: boolean;
+    isDisliked: boolean;
+    createdAt: Dayjs;
+    hasReply: boolean;
+    numberLikes: number;
+    numberDikes: number;
 }
 
 interface IApi {
@@ -20,6 +28,7 @@ interface IApi {
 
 interface IStores {
     users: IUserStore;
+    viewer: IViewerStore;
 }
 
 interface ICommentParams {
@@ -52,10 +61,73 @@ export class Comment implements IComment {
         Object.assign(this.data, data);
     }
 
-    update = new RequestModel({
-        run: async (data: IUpdateValue<ICommentData>) => {
-            await this.api.comment.update(this.data.id, updateCommentDTO(data));
-            this.updateFields(data);
+    get createdAt() {
+        return this.data.createdAt;
+    }
+
+    get numberLikes() {
+        return this.data.likes.length;
+    }
+
+    get numberDikes() {
+        return this.data.dislikes.length;
+    }
+
+    get isLiked() {
+        const id = this.getStores().viewer.user?.id;
+        return id ? this.data.likes.includes(id) : false;
+    }
+
+    get isDisliked() {
+        const id = this.getStores().viewer.user?.id;
+        return id ? this.data.dislikes.includes(id) : false;
+    }
+
+    get hasReply() {
+        return this.data.replyCount > 0;
+    }
+
+    like = new RequestModel({
+        run: async () => {
+            const id = this.getStores().viewer.user?.id;
+
+            if (!id) {
+                throw new Error('User not found');
+            }
+
+            if (this.isLiked) {
+                return;
+            }
+
+            this.data.likes.push(id);
+            this.data.dislikes = this.data.dislikes.filter(id => id !== id);
+
+            await this.api.comment.update(this.data.id, {
+                likes: this.data.likes,
+                dislikes: this.data.dislikes,
+            });
+        },
+    });
+
+    dislike = new RequestModel({
+        run: async () => {
+            const id = this.getStores().viewer.user?.id;
+
+            if (!id) {
+                throw new Error('User not found');
+            }
+
+            if (this.isDisliked) {
+                return;
+            }
+
+            this.data.dislikes.push(id);
+            this.data.likes = this.data.likes.filter(id => id !== id);
+
+            await this.api.comment.update(this.data.id, {
+                dislikes: [...this.data.dislikes, id],
+                likes: this.data.likes.filter(id => id !== id),
+            });
         },
     });
 }

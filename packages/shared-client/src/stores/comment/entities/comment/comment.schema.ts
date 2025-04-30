@@ -1,9 +1,8 @@
 import { type Dayjs } from 'dayjs';
 import { COMMENT_TYPE } from 'shared-my';
 
-import { type ICommentDTO } from '~/api';
-import { dates, data } from '~/common';
-import { type ICreateValue } from '~/common';
+import { type ICommentParamsDTO, type ICommentDTO } from '~/api';
+import { dates, data, type ICreateValue } from '~/common';
 
 export interface ICommentData {
     id: string;
@@ -15,11 +14,12 @@ export interface ICommentData {
     imageUris: string[];
     likes: string[];
     dislikes: string[];
+    replyCount: number;
     createdAt: Dayjs;
     updatedAt: Dayjs;
 }
 
-export const createCommentDTO = (value: ICreateValue<ICommentData>): ICreateValue<ICommentDTO> => ({
+export const createCommentDTO = (value: ICreateValue<ICommentData>): ICreateValue<ICommentParamsDTO> => ({
     text: value.text,
     type: value.type,
     entityId: value.entityId,
@@ -29,7 +29,7 @@ export const createCommentDTO = (value: ICreateValue<ICommentData>): ICreateValu
     dislikes: value.dislikes,
 });
 
-export const updateCommentDTO = data.createUpdateDTO<ICommentData, ICommentDTO>(value => ({
+export const updateCommentDTO = data.createUpdateDTO<ICommentData, ICommentParamsDTO>(value => ({
     text: value.text ?? '',
     type: value.type ?? COMMENT_TYPE.DEFAULT,
     entityId: value.entityId ?? '',
@@ -49,6 +49,7 @@ export const createComment = (value: ICommentDTO): ICommentData => ({
     imageUris: value.imageUris ?? [],
     likes: value.likes ?? [],
     dislikes: value.dislikes ?? [],
+    replyCount: value.replyCount ?? 0,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });

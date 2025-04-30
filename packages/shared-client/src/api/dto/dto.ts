@@ -32,7 +32,6 @@ import {
     type IBookTypeDB,
     type IExplosiveDeviceTypeDB,
     type IMissionRequestTypeDB,
-    type ICommentDB,
 } from 'shared-my';
 
 import { type IExplosiveObjectDetailsDTO } from './explosive-object';
@@ -235,8 +234,3 @@ export interface IExplosiveDTOParams extends Omit<IExplosiveDTO, 'imageUri'> {
 }
 
 export type IStatusDTO = IStatusDB;
-
-export interface ICommentDTO extends Omit<ICommentDB, 'author'> {}
-export interface ICommentFullDTO extends ICommentDB {
-    author: IUserDTO;
-}

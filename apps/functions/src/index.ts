@@ -16,6 +16,14 @@ import {
     onUserCreate,
     translateOnWrite,
     onUserDelete,
+    onCommentReplyWrite,
 } from './api';
 
-export { onMemberUpdate, onUserAccessUpdate, onUserCreate, translateOnWrite, onUserDelete };
+export {
+    onMemberUpdate,
+    onUserAccessUpdate,
+    onUserCreate,
+    translateOnWrite,
+    onUserDelete,
+    onCommentReplyWrite,
+};

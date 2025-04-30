@@ -9,5 +9,6 @@ export interface ICommentDB extends Omit<IBaseDB, 'organizationId'> {
     imageUris: string[] | null;
     likes: string[] | null;
     dislikes: string[] | null;
+    replyCount: number;
     authorId: string;
 }
