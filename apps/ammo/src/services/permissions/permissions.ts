@@ -1,13 +1,13 @@
 import EventEmitter from 'events';
 
 import _ from 'lodash';
-import { Alert, type AppStateStatus } from 'react-native';
+import { Alert } from 'react-native';
 import P, { checkNotifications, type NotificationSettings, type PermissionStatus } from 'react-native-permissions';
 import { isArray } from 'shared-my';
+import { Logger } from 'shared-my-client';
 
 import { PERMISSIONS, PERMISSION_STATUS } from '~/constants';
 import { t } from '~/localization';
-import { AppState, Logger } from '~/services';
 import { type IListPermissions } from '~/types';
 import { isString } from '~/utils';
 
@@ -20,10 +20,10 @@ export interface IPermissions {
     ask: (permission: PERMISSIONS) => Promise<boolean>;
     getStatus: (permission: PERMISSIONS) => PermissionStatus | undefined;
     openSettings: () => void;
+    checkAllStatuses: () => Promise<void>;
 }
 export class PermissionsClass implements IPermissions {
     private permissions: Record<PERMISSIONS, PermissionStatus | undefined>;
-    private removeAppStateListener: () => void;
     private notificationSettings: NotificationSettings | null;
 
     constructor(private list: IListPermissions) {
@@ -34,15 +34,12 @@ export class PermissionsClass implements IPermissions {
         };
 
         this.notificationSettings = null;
-        this.removeAppStateListener = () => null;
     }
 
     private _setPermission(name: PERMISSIONS, value: PermissionStatus | undefined) {
         if (this.permissions[name] === value) {
             return;
         }
-
-        Logger.log(`PERMISSIONS ${name}`, value);
 
         eventEmitter.emit(name, value);
         this.permissions[name] = value;
@@ -162,7 +159,7 @@ export class PermissionsClass implements IPermissions {
         this._setNotificationPermission(notifications.status, notifications.settings);
     };
 
-    private async _updateAllStatuses() {
+    async checkAllStatuses() {
         const keys = Object.keys(this.list) as Array<PERMISSIONS>;
 
         await Promise.all(
@@ -187,11 +184,7 @@ export class PermissionsClass implements IPermissions {
     };
 
     async init() {
-        await this._updateAllStatuses();
-
-        this.removeAppStateListener = AppState.onChange((state: AppStateStatus): void => {
-            state === 'active' && this._updateAllStatuses();
-        });
+        await this.checkAllStatuses();
     }
 
     onChange = (name: PERMISSIONS, callBack: (value: PermissionStatus) => void) => {
@@ -201,7 +194,6 @@ export class PermissionsClass implements IPermissions {
     };
 
     removeAllListeners() {
-        !!this.removeAppStateListener && this.removeAppStateListener();
         eventEmitter.removeAllListeners();
     }
 
@@ -209,8 +201,11 @@ export class PermissionsClass implements IPermissions {
 
     ask = async (permission: PERMISSIONS) => {
         const status = this.getStatus(permission);
+        Logger.log('PERMISSION ASK: ', permission, ' - ', status);
 
         switch (status) {
+            case PERMISSION_STATUS.GRANTED:
+                return true;
             case PERMISSION_STATUS.DENIED:
                 await this._onRequest(permission);
                 return this.getStatus(permission) === PERMISSION_STATUS.GRANTED;
@@ -224,7 +219,6 @@ export class PermissionsClass implements IPermissions {
                 return false;
             default:
                 return false;
-                break;
         }
     };
 

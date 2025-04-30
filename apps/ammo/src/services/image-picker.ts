@@ -19,13 +19,21 @@ export class ImagePickerClass implements IImagePicker {
             throw new Error(ERROR_MESSAGE.PERMISSIONS_NOT_GRANTED);
         }
 
-        const res = await ImagePicker.openPicker({
-            width: 400,
-            height: 400,
-            cropping: true,
-            mediaType: 'photo',
-        });
+        try {
+            const res = await ImagePicker.openPicker({
+                width: 400,
+                height: 400,
+                cropping: true,
+                mediaType: 'photo',
+            });
 
-        return res;
+            return res;
+        } catch (error) {
+            if ((error as Error)?.message === 'User cancelled image selection') {
+                throw new Error(ERROR_MESSAGE.CANCELED);
+            }
+
+            throw error;
+        }
     };
 }

@@ -24,8 +24,6 @@ export const ProfileScreen = observer(({ route }: IProfileScreenProps) => {
     const onUpdateImage = () => vm.updateImage.run();
     const onOpenGallery = () => vm.openAvatarInGallery();
 
-    console.log('photoUri.value', photoUri.value);
-
     return (
         <View style={s.container}>
             <Header backButton="back" title={t('title')} />
