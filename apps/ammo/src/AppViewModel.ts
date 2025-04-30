@@ -7,7 +7,7 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo } from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo, Permissions } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -58,6 +58,8 @@ export class AppViewModel implements IAppViewModel {
         ThemeManager.removeAllListeners();
         Localization.removeAllListeners();
         Debugger.removeAllListeners();
+        Permissions.removeAllListeners();
+
         this.isVisibleSplash = true;
     }
 
@@ -82,6 +84,8 @@ export class AppViewModel implements IAppViewModel {
                 Analytics.init();
                 Analytics.setUserId(Auth.uuid());
                 Crashlytics.init();
+                Permissions.init();
+
                 stores.auth.checkEmailVerificationStatus.run();
 
                 await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init()]);

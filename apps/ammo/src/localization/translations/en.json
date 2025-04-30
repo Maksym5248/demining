@@ -15,6 +15,16 @@
         "wrong_email_or_password": "Wrong email or password, try again.",
         "email_already_in_use": "Email already in use."
     },
+    "permissions": {
+        "titleUnavailable": "Not available",
+        "textUnavailable": "To feature is not available",
+        "ok": "ok",
+        "titleOpenSettings": "Open setting",
+        "textOpenSettings": "To turn on that feature open the settings",
+        "openSettings": "Open settings",
+        "photoLibaryTitle": "Photo library",
+        "photoLibaryMessage": "We need access to your photo library to allow you to select a profile picture."
+    },
     "message": {
         "updatedSuccess": "Data updated successfully"
     },

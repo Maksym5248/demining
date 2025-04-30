@@ -26,15 +26,19 @@ export class ErrorManagerClass implements IErrorManager {
     }
 
     request(e: unknown) {
-        if ((e as Error)?.message === ERROR_MESSAGE.CANCELED.valueOf()) {
+        const message = (e as Error)?.message;
+
+        if (message === ERROR_MESSAGE.CANCELED.valueOf() || message === ERROR_MESSAGE.PERMISSIONS_NOT_GRANTED) {
             return;
         }
 
         const error = new ErrorModel(e);
 
-        if (error.message) {
-            this.message.error(error.message);
-            this.logger.error(error);
+        if (!error.message) {
+            return;
         }
+
+        this.message.error(error.message);
+        this.logger.error(error);
     }
 }

@@ -16,7 +16,7 @@ export const toUpperFirst = (text: string) => {
     return str1 + str2;
 };
 
-export const isString = (text: string) => typeof text === 'string';
+export const isString = (text: any) => typeof text === 'string';
 
 export const getFullName = (user: { firstName?: string; lastName?: string }) => (user ? `${user?.firstName} ${user?.lastName}` : '');
 

@@ -15,6 +15,16 @@
         "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз.",
         "email_already_in_use": "Email вже використовується."
     },
+    "permissions": {
+        "titleUnavailable": "Недоступно",
+        "textUnavailable": "Функція недоступна",
+        "ok": "Ок",
+        "titleOpenSettings": "Відкрити налаштування",
+        "textOpenSettings": "Щоб увімкнути цю функцію, відкрийте налаштування",
+        "openSettings": "Відкрити налаштування",
+        "photoLibaryTitle": "Фотобібліотека",
+        "photoLibaryMessage": "Нам потрібен доступ до вашої фотобібліотеки, щоб дозволити вам вибрати зображення профілю."
+    },
     "message": {
         "updatedSuccess": "Оновлено успішно"
     },
