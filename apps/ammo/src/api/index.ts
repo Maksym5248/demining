@@ -8,6 +8,8 @@ import {
     BookAPI,
     CommonAPI,
     CurrentUserAPI,
+    CommentAPI,
+    UserAPI,
 } from 'shared-my-client';
 
 import { DB } from '~/db';
@@ -26,6 +28,8 @@ export const Api = {
     explosive: new ExplosiveAPI(DB, services),
     book: new BookAPI(DB),
     common: new CommonAPI(DB),
+    comment: new CommentAPI(DB),
+    user: new UserAPI(DB),
     currentUser: new CurrentUserAPI(DB, services),
     setLang: (lang: 'uk' | 'en') => DB.setLang(lang),
 };

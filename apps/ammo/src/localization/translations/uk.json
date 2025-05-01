@@ -63,7 +63,14 @@
     },
     "components": {
         "comment": {
-            "viewAll": "View all"
+            "viewAll": "Дивитис всі",
+            "replies": "Відповідей %{value}",
+            "reply": "Відповісти"
+        },
+        "comments-preview": {
+            "title": "Коментарі",
+            "noComments": "Коментарі відсутні",
+            "authComments": "Увійдіть, щоб залишити та переглядати коментарі"
         }
     },
     "containers": {

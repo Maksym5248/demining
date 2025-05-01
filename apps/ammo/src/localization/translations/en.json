@@ -63,7 +63,14 @@
     },
     "components": {
         "comment": {
-            "viewAll": "View all"
+            "viewAll": "View all",
+            "replies": "Replies %{value}",
+            "reply": "Reply"
+        },
+        "comments-preview": {
+            "title": "Comments",
+            "noComments": "No comments yet",
+            "authComments": "To leave and see comments, please sign in."
         }
     },
     "containers": {

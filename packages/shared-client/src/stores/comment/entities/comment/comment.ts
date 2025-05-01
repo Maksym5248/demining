@@ -17,9 +17,10 @@ export interface IComment extends IDataModel<ICommentData> {
     isLiked: boolean;
     isDisliked: boolean;
     createdAt: Dayjs;
-    hasReply: boolean;
-    numberLikes: number;
-    numberDikes: number;
+    likesCount: number;
+    dislikesCount: number;
+    replyCount: number;
+    isReply: boolean;
 }
 
 interface IApi {
@@ -27,7 +28,7 @@ interface IApi {
 }
 
 interface IStores {
-    users: IUserStore;
+    user: IUserStore;
     viewer: IViewerStore;
 }
 
@@ -54,7 +55,7 @@ export class Comment implements IComment {
     }
 
     get author() {
-        return this.getStores().users.collection.get(this.data.authorId);
+        return this.getStores().user.collection.get(this.data.authorId);
     }
 
     updateFields(data: Partial<ICommentData>) {
@@ -65,12 +66,16 @@ export class Comment implements IComment {
         return this.data.createdAt;
     }
 
-    get numberLikes() {
+    get likesCount() {
         return this.data.likes.length;
     }
 
-    get numberDikes() {
+    get dislikesCount() {
         return this.data.dislikes.length;
+    }
+
+    get replyCount() {
+        return this.data.replyCount;
     }
 
     get isLiked() {
@@ -83,7 +88,7 @@ export class Comment implements IComment {
         return id ? this.data.dislikes.includes(id) : false;
     }
 
-    get hasReply() {
+    get isReply() {
         return this.data.replyCount > 0;
     }
 

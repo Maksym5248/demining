@@ -12,6 +12,7 @@ import eye from './eye.svg';
 import filter from './filter.svg';
 import google from './google.svg';
 import info from './info.svg';
+import like from './like.svg';
 import logout from './logout.svg';
 import search from './search.svg';
 import settings from './settings.svg';
@@ -36,4 +37,5 @@ export const svgIcons = {
     logout,
     google,
     edit,
+    like,
 };

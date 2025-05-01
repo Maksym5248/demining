@@ -1,1 +1,3 @@
-export interface IAuthProps extends React.PropsWithChildren {}
+export interface IAuthProps extends React.PropsWithChildren {
+    description?: string;
+}

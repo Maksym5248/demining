@@ -21,7 +21,7 @@ interface IApi {
 }
 
 interface IStores {
-    users: IUserStore;
+    user: IUserStore;
 }
 
 export class Comments implements IComments {
@@ -64,7 +64,7 @@ export class Comments implements IComments {
                 limit: this.list.pageSize,
             });
 
-            this.getStores().users.collection.set(res.map(el => createUser(el.author)));
+            this.getStores().user.collection.set(res.map(el => createUser(el.author)));
             this.list.set(res.map(createComment));
         },
     });
@@ -78,7 +78,7 @@ export class Comments implements IComments {
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
-            this.getStores().users.collection.set(res.map(el => createUser(el.author)));
+            this.getStores().user.collection.set(res.map(el => createUser(el.author)));
             this.list.push(res.map(createComment));
         },
     });

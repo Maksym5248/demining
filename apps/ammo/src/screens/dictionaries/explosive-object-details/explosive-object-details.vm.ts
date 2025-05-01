@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { COMMENT_TYPE } from 'shared-my';
 import { type IExplosiveObject } from 'shared-my-client';
 
 import { type ISectionCarouselModel, SectionCarouselModel } from '~/models';
@@ -26,6 +27,7 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     extraction: ISectionCarouselModel;
     folding: ISectionCarouselModel;
     neutralization: ISectionCarouselModel;
+    isComments: boolean;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
@@ -122,6 +124,15 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
             this.item?.details?.data.neutralization?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
             this.item?.details?.data.neutralization?.description as string,
         ) as unknown as ISectionCarouselModel;
+    }
+
+    get comments() {
+        if (!this.currentId) return undefined;
+        return stores.comment.get(this.currentId, COMMENT_TYPE.EXPLOSIVE_OBJECT);
+    }
+
+    get isComments() {
+        return !!this.comments?.list.length;
     }
 }
 

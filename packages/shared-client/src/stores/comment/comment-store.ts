@@ -19,7 +19,7 @@ interface IApi {
 }
 
 interface IStores {
-    users: IUserStore;
+    user: IUserStore;
     viewer: IViewerStore;
 }
 
@@ -49,7 +49,7 @@ export class CommentStore implements ICommentStore {
             api: this.api,
             collection: this.collection,
             getStores: () => ({
-                users: this.getStores().users,
+                user: this.getStores().user,
             }),
         });
     }

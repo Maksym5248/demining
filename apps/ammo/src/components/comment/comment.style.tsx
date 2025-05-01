@@ -38,10 +38,21 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    textContainer: {
+        marginBottom: theme.spacing.M,
+    },
     actionsContainer: {
         display: 'flex',
+        flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        gap: theme.spacing.L,
+    },
+    dislike: {
+        transform: [{ rotateY: '180deg' }, { rotateX: '180deg' }],
+    },
+    action: {
+        display: 'flex',
+        flexDirection: 'row',
     },
 }));

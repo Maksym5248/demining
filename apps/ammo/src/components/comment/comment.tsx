@@ -1,52 +1,15 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 
-import { Paragraph, Avatar, Image, Text, Touchable } from '~/core';
+import { Paragraph, Avatar, Image, Text, Touchable, Icon } from '~/core';
 import { useTranslate } from '~/localization';
-import { useDevice, useTheme } from '~/styles';
+import { useTheme } from '~/styles';
 
 import { useStyles } from './comment.style';
 import { type ICommentViewProps } from './comment.type';
-
-const getListWidth = (count: number, width: number, gap: number) => {
-    const w = width;
-    const gap1 = gap / 2;
-    const gap2 = (gap * 2) / 3;
-
-    return [
-        [w],
-        [w / 2 - gap1, w / 2 - gap1],
-        [w / 3 - gap2, w / 3 - gap2, w / 3 - gap2],
-        [w / 2 - gap1, w / 2 - gap1, w / 2 - gap1, w / 2 - gap1],
-        [w / 3 - gap2, w / 3 - gap2, w / 3 - gap2, w / 2 - gap1, w / 2 - gap1],
-        [w / 3 - gap2, w / 3 - gap2, w / 3 - gap2, w / 3 - gap2, w / 3 - gap2, w / 3 - gap2],
-    ][count - 1];
-};
-
-const useImageStyles = (length: number) => {
-    const theme = useTheme();
-    const device = useDevice();
-
-    const LEFT_GAP = 32 + theme.spacing.XS * 5;
-    const maxImageWidth = device.window.width - LEFT_GAP;
-    const count = length >= 6 ? 6 : length;
-    const listWidth = getListWidth(count, maxImageWidth, theme.spacing.XXS);
-
-    return useMemo(
-        () => ({
-            get: (index: number) => {
-                const width = listWidth[index];
-
-                return {
-                    width,
-                };
-            },
-        }),
-        [count, device.window.width, listWidth],
-    );
-};
+import { useImageStyles } from './useImageStyles';
 
 export const CommentView = observer(({ item, style }: ICommentViewProps) => {
     const s = useStyles();
@@ -71,7 +34,7 @@ export const CommentView = observer(({ item, style }: ICommentViewProps) => {
                                 const style = imageLayouts.get(index);
                                 const isLastVisible = index === 5;
                                 return (
-                                    <Touchable key={index} style={style}>
+                                    <Touchable key={index} style={style} onPress={() => item.openGallery(index)}>
                                         <Image source={{ uri }} style={[s.image, style]} resizeMode="contain" />
                                         {!!isLastVisible && (
                                             <View style={[style, s.imageShadow]}>
@@ -84,9 +47,36 @@ export const CommentView = observer(({ item, style }: ICommentViewProps) => {
                             .slice(0, 6)}
                     </View>
                 )}
-                {!!item.text && <Paragraph text={item.text} />}
+                {!!item.text && (
+                    <View style={s.textContainer}>
+                        <Paragraph text={item.text} />
+                    </View>
+                )}
                 <View style={s.actionsContainer}>
-                    <Text type="p5" numberOfLines={1} text={t('viewAll')} color={theme.colors.white} />
+                    <View style={s.action}>
+                        <Icon
+                            name="like"
+                            color={item.isLiked ? theme.colors.accent : theme.colors.background}
+                            secondColor={theme.colors.accent}
+                        />
+                        <Text type="p5" text={item.likesCount} />
+                    </View>
+                    <View style={s.action}>
+                        <Icon
+                            name="like"
+                            style={s.dislike}
+                            color={item.isDisliked ? theme.colors.accent : theme.colors.background}
+                            secondColor={theme.colors.accent}
+                        />
+                        <Text type="p5" text={item.dislikesCount} />
+                    </View>
+                    <View style={s.action}>
+                        <Text
+                            type="h5"
+                            text={item.isReply ? t('replies', { value: item.replyCount }) : t('reply')}
+                            color={theme.colors.accent}
+                        />
+                    </View>
                 </View>
             </View>
         </View>

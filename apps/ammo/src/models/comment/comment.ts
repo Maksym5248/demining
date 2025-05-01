@@ -1,18 +1,32 @@
 import { makeAutoObservable } from 'mobx';
 import { type IComment } from 'shared-my-client';
 
+import { MODALS } from '~/constants';
+import { Modal } from '~/services';
+
 export interface ICommentModel {
+    openGallery: (index: number) => void;
     item: IComment;
     photoUri: string | undefined;
     title?: string;
     text: string;
     imageUris: string[];
+    dislikesCount: number;
+    likesCount: number;
+    replyCount: number;
+    isLiked: boolean;
+    isDisliked: boolean;
+    isReply: boolean;
 }
 
 export class CommentModel implements ICommentModel {
     constructor(public item: IComment) {
         makeAutoObservable(this);
     }
+
+    openGallery = (index: number) => {
+        Modal.show(MODALS.GALLERY, { images: this.item.data.imageUris.map(uri => ({ uri })), index });
+    };
 
     get photoUri() {
         return this.item.author?.photoUri;
@@ -28,5 +42,29 @@ export class CommentModel implements ICommentModel {
 
     get imageUris() {
         return this.item.data.imageUris;
+    }
+
+    get dislikesCount() {
+        return this.item.dislikesCount;
+    }
+
+    get likesCount() {
+        return this.item.likesCount;
+    }
+
+    get replyCount() {
+        return this.item.likesCount;
+    }
+
+    get isLiked() {
+        return this.item.isLiked;
+    }
+
+    get isDisliked() {
+        return this.item.isDisliked;
+    }
+
+    get isReply() {
+        return this.item.isReply;
     }
 }

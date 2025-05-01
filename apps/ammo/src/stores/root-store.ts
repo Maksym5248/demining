@@ -17,6 +17,10 @@ import {
     AuthStore,
     ViewerStore,
     ErrorModel,
+    CommentStore,
+    type ICommentStore,
+    type IUserStore,
+    UserStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -45,6 +49,8 @@ export class RootStore implements IRootStore {
     common: ICommonStore;
     auth: AuthStore;
     viewer: ViewerStore;
+    comment: ICommentStore;
+    user: IUserStore;
 
     isLoaded = false;
     isInitialized = false;
@@ -56,6 +62,10 @@ export class RootStore implements IRootStore {
             explosiveDevice: this.explosiveDevice,
             explosiveObject: this.explosiveObject,
             common: this.common,
+            book: this.book,
+            auth: this.auth,
+            comment: this.comment,
+            user: this.user,
         };
     };
 
@@ -83,6 +93,8 @@ export class RootStore implements IRootStore {
         this.explosiveDevice = new ExplosiveDeviceStore(this);
         this.explosiveObject = new ExplosiveObjectStore(this);
         this.book = new BookStore(this);
+        this.user = new UserStore(this);
+        this.comment = new CommentStore(this);
 
         makeAutoObservable(this);
     }
