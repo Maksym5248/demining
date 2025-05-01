@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 import { type ICurrentUserAPI } from '~/api';
 import { type IDataModel, RequestModel } from '~/models';
-import { type IAuth } from '~/services';
+import { type IAuthUser } from '~/services';
 
 import { type ICurrentUserInfoUpdateData, type ICurrentUserData, createUpdateCurrentUserInfoDTO } from './current-user.schema';
 
@@ -16,19 +16,15 @@ interface IApi {
     currentUser: ICurrentUserAPI;
 }
 
-interface IServices {
-    auth: IAuth;
-}
-
 export class CurrentUser implements ICurrentUser {
     data: ICurrentUserData;
     api: IApi;
-    services: IServices;
+    authData: IAuthUser | null;
 
-    constructor(data: ICurrentUserData, params: { api: IApi; services: IServices }) {
+    constructor(data: ICurrentUserData, params: { api: IApi; authData: IAuthUser | null }) {
         this.data = data;
         this.api = params.api;
-        this.services = params.services;
+        this.authData = params.authData;
 
         makeAutoObservable(this);
     }
@@ -42,7 +38,7 @@ export class CurrentUser implements ICurrentUser {
     }
 
     get email() {
-        return this.services.auth.email();
+        return this.authData?.email ?? undefined;
     }
 
     get id() {
