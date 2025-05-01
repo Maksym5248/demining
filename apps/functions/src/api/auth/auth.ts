@@ -85,7 +85,6 @@ export const onUserCreate = auth.user().onCreate(async user => {
     };
     const initialUserInfo: IUserInfoDB = {
         ...common,
-        email: user.email,
         photoUri: user.photoURL ?? null,
         name: user.displayName ?? null,
     };

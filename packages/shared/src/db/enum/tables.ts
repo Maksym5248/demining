@@ -18,14 +18,17 @@ export enum TABLES {
     TRANSPORT_ACTION = 'TRANSPORT_ACTION',
     EQUIPMENT = 'EQUIPMENT',
     EQUIPMENT_ACTION = 'EQUIPMENT_ACTION',
-    USER_INFO = 'USER_INFO',
-    USER_ACCESS = 'USER_ACCESS',
-    MEMBER = 'MEMBER',
+
     ORGANIZATION = 'ORGANIZATION',
     DOCUMENT = 'DOCUMENT',
     BOOK = 'BOOK',
     APP_CONFIG = 'APP_CONFIG',
     COMMENT = 'COMMENT',
+
+    // user tables
+    USER_INFO = 'USER_INFO', // public information (viewable by all users)
+    USER_ACCESS = 'USER_ACCESS', // restricted access (viewable by admins)
+    MEMBER = 'MEMBER', // user membership info (viewable by organization admins)
 
     // tables with ids as enums
     BOOK_TYPE = 'BOOK_TYPE',

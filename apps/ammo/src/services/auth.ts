@@ -24,6 +24,10 @@ export class AuthClass implements IAuth {
         return this.auth.currentUser?.uid;
     }
 
+    email() {
+        return this.auth.currentUser?.email ?? undefined;
+    }
+
     isAnonymous() {
         return this.auth.currentUser?.isAnonymous;
     }

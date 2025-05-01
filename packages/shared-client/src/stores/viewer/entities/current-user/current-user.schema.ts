@@ -16,7 +16,7 @@ export interface ICurrentUserInfoUpdateData {
     photoUri?: string;
 }
 
-export interface ICurrentUserInfoData extends Pick<IUserInfoDTO, 'email' | 'name' | 'photoUri'> {}
+export interface ICurrentUserInfoData extends Pick<IUserInfoDTO, 'name' | 'photoUri'> {}
 export interface ICurrentUserData {
     id: string;
     info: ICurrentUserInfoData;
@@ -36,7 +36,6 @@ export const createCurrentUserOrganization = (value: IUserOrganizationDTO): ICur
 export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => ({
     id: value.id,
     info: {
-        email: value.info?.email ?? '',
         photoUri: value.info?.photoUri ?? null,
         name: value.info?.name ?? null,
     },

@@ -71,7 +71,7 @@ export class DBRemote
             | 'app'
         >
 {
-    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['email']);
+    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, []);
     userAccess = new DBBase<IUserAccessDB>(TABLES.USER_ACCESS);
     member = new DBBase<IMemberDB>(TABLES.MEMBER);
 
