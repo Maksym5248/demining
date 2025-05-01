@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { type IExplosive, type IExplosiveObject, type IFillerData } from 'shared-my-client';
+import { type IExplosiveObject } from 'shared-my-client';
 
-import { SCREENS } from '~/constants';
-import { Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
+
+import { CharacteristicModel, type ICharacteristicModel } from './models/characteristic.model';
 
 export interface ISlide {
     uri: string;
@@ -24,49 +24,25 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     slidesExtraction: ISlide[];
     slidesFolding: ISlide[];
     slidesNeutralization: ISlide[];
-    fillers: ({ explosive: IExplosive | undefined } & IFillerData)[] | undefined;
-    fuses: IExplosiveObject[];
-    fervor: IExplosiveObject[];
-    openExplosive(id: string): void;
-    openExplosiveObject(id: string): void;
+    characteristic: ICharacteristicModel;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     currentId?: string = undefined;
+    characteristic: ICharacteristicModel;
 
     constructor() {
+        this.characteristic = new CharacteristicModel();
         makeAutoObservable(this);
     }
 
     init({ id }: { id: string }) {
         this.currentId = id;
-    }
-
-    openExplosive(id: string) {
-        Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
-    }
-
-    openExplosiveObject(id: string) {
-        Navigation.push(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id });
+        this.characteristic.init({ id });
     }
 
     get item() {
         return stores.explosiveObject.collection.get(this.currentId);
-    }
-
-    get fillers() {
-        return this.item?.details?.data?.filler?.map(item => ({
-            ...item,
-            explosive: stores.explosive.collection.get(item.explosiveId ?? undefined),
-        }));
-    }
-
-    get fuses() {
-        return (this.item?.details?.data?.fuseIds?.map(item => stores.explosiveObject.collection.get(item)) as IExplosiveObject[]) ?? [];
-    }
-
-    get fervor() {
-        return (this.item?.details?.data?.fervorIds?.map(item => stores.explosiveObject.collection.get(item)) as IExplosiveObject[]) ?? [];
     }
 
     get slides() {

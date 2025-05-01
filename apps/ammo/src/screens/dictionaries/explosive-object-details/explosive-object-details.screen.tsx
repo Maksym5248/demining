@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
-import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
-import { Block, CarouselImage, Field } from '~/components';
-import { Header, Paragraph, Scroll } from '~/core';
+import { Block, CarouselImage } from '~/components';
+import { Header, type IFlatListRenderedItem, List, Paragraph } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
-import { getFillterText, getTemurature, viewSize } from '~/utils';
 
-import { type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
+import { Details } from './components';
+import { type IListItem, type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
 
 export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjectDetailsScreenProps) => {
@@ -23,172 +22,136 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
 
     const { details } = vm.item ?? {};
 
-    return (
-        <View style={styles.container}>
-            <Header title={vm.item?.data.name} backButton="back" />
-            <Scroll contentContainerStyle={styles.scrollViewContent}>
-                <CarouselImage width={device.window.width} data={vm.slides} />
-                <Block.View title={t('details')}>
-                    <Field.View label={t('name')} text={vm.item?.data.name} />
-                    <Field.View label={t('fullName')} text={vm.item?.data.fullName} require={false} />
-                    <Field.View label={t('type')} text={vm.item?.type?.displayName} />
-                    <Field.View label={t('component')} text={vm.item?.component?.name} />
-                    <Field.View label={t('classification')} text={vm.item?.classItemsNames.join(', ')} />
-                    <Field.View label={t('country')} text={vm.item?.country?.displayName} />
-                </Block.View>
-                <Block.View title={t('characteristic')}>
-                    <Field.View label={t('caliber')} text={details?.data.caliber} require={false} />
-                    {vm.item?.component?.id === EXPLOSIVE_OBJECT_COMPONENT.AMMO && (
-                        <Field.List
-                            label={t('fuse')}
-                            splitterItem=", "
-                            type="horizontal"
-                            require={false}
-                            items={vm.fuses?.map(el => ({
-                                title: el?.displayName,
-                                onPress: () => vm.openExplosiveObject(el.data.id ?? ''),
-                            }))}
-                        />
-                    )}
-                    {vm.item?.component?.id !== EXPLOSIVE_OBJECT_COMPONENT.FERVOR && (
-                        <Field.List
-                            label={t('fervor')}
-                            require={false}
-                            splitterItem=", "
-                            type="horizontal"
-                            items={vm.fervor?.map(el => ({
-                                title: el?.displayName,
-                                onPress: () => vm.openExplosiveObject(el.data.id ?? ''),
-                            }))}
-                        />
-                    )}
-                    <Field.View label={t('targetSensor')} text={details?.data.targetSensor} require={false} />
-                    <Field.Range label={t('sensitivityEffort')} value={details?.data.sensitivity?.effort} require={false} />
-                    <Field.View label={t('sensitivity')} text={details?.data.sensitivity?.sensitivity} require={false} />
-                    {details?.data.sensitivity?.additional?.map(el => (
-                        <Field.View key={el.name} label={el.name} text={el.value} require={false} />
-                    ))}
-                    <Field.View label={t('liquidatorShort')} text={details?.data.liquidatorShort} require={false} />
-                    <Field.View label={t('foldingShort')} text={details?.data.foldingShort} require={false} />
-                    <Field.View label={t('extractionShort')} text={details?.data.extractionShort} require={false} />
-                    <Field.Range
-                        label={t('demageRadius')}
-                        value={details?.data.damage?.radius}
-                        info={t('demageRadiusInfo')}
-                        require={false}
-                    />
-                    <Field.Range label={t('demageDistance')} value={details?.data.damage?.distance} require={false} />
-                    <Field.Range label={t('demageSquad')} value={details?.data.damage?.squad} require={false} />
-                    <Field.Range label={t('demageHeight')} value={details?.data.damage?.height} require={false} />
-                    <Field.Range label={t('demageNumber')} value={details?.data.damage?.number} require={false} />
-                    <Field.View label={t('demageAction')} text={details?.data.damage?.action} require={false} />
-                    {details?.data.damage?.additional?.map(el => (
-                        <Field.View key={el.name} label={el.name} text={el.value} require={false} />
-                    ))}
-                    <Field.View label={t('timeWork')} text={details?.data.timeWork} require={false} />
-                    <Field.List
-                        label={t('material')}
-                        splitterItem=", "
-                        type="horizontal"
-                        items={details?.materials?.map(el => ({
-                            title: el.name,
-                        }))}
-                    />
-                    <Field.List
-                        label={t('size')}
-                        splitterItem=", "
-                        items={
-                            details?.data?.size?.map(el => ({
-                                title: viewSize(el),
-                                text: el.name ? ` (${el.name})` : undefined,
-                            })) ?? []
-                        }
-                        require={false}
-                    />
-                    <Field.List
-                        label={t('weight')}
-                        splitterItem=", "
-                        type="horizontal"
-                        items={details?.data?.weight?.map(el => ({
-                            title: el.weight,
-                        }))}
-                        require={false}
-                    />
-                    <Field.List
-                        label={t('fillers')}
-                        splitter=" - "
-                        items={vm.fillers
-                            ?.sort((a, b) => (a.variant > b.variant ? 1 : -1))
-                            .map(el => ({
-                                prefix: el.variant ? `${el.variant}) ` : '',
-                                title: `${el.explosive?.displayName ?? el.name ?? '-'}`,
-                                text: getFillterText(el),
-                                onPress: el.explosiveId ? () => !!el.explosiveId && vm.openExplosive(el.explosiveId) : undefined,
-                            }))}
-                    />
-                    <Field.Range label={t('temperature')} value={getTemurature(details?.data.temperature)} require={false} />
-                    {details?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
-                    <Field.View label={t('description')} text={vm.item?.data.description} require={false} />
-                </Block.View>
+    const items: IListItem[] = [
+        {
+            id: 'carousel',
+            render: () => <CarouselImage width={device.window.width} data={vm.slides} />,
+        },
+        {
+            id: 'details',
+            render: () => <Details item={vm.item} />,
+        },
+        {
+            id: 'fullDescription',
+            render: () => (
                 <Block.View hidden={!details?.data?.fullDescription} title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />
                 </Block.View>
+            ),
+        },
+        {
+            id: 'historical',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('historical')}
                     description={details?.data.historical?.description}
                     data={vm.slidesHistorical}
                 />
+            ),
+        },
+        {
+            id: 'purpose',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('purpose')}
                     description={details?.data.purpose?.description}
                     data={vm.slidesPurpose}
                 />
+            ),
+        },
+        {
+            id: 'structure',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('structure')}
                     description={details?.data.structure?.description}
                     data={vm.slidesStructure}
                 />
+            ),
+        },
+        {
+            id: 'folding',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('folding')}
                     description={details?.data.folding?.description}
                     data={vm.slidesFolding}
                 />
+            ),
+        },
+        {
+            id: 'action',
+            render: () => (
                 <Block.Slider require={false} label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
+            ),
+        },
+        {
+            id: 'extraction',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('extraction')}
                     description={details?.data.extraction?.description}
                     data={vm.slidesExtraction}
                 />
+            ),
+        },
+        {
+            id: 'liquidator',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('liquidator')}
                     description={details?.data.liquidator?.description}
                     data={vm.slidesLiquidator}
                 />
+            ),
+        },
+        {
+            id: 'installation',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('installation')}
                     description={details?.data.installation?.description}
                     data={vm.slidesInstallation}
                 />
+            ),
+        },
+        {
+            id: 'neutralization',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('neutralization')}
                     description={details?.data.neutralization?.description}
                     data={vm.slidesNeutralization}
                 />
+            ),
+        },
+        {
+            id: 'marking',
+            render: () => (
                 <Block.Slider
                     require={false}
                     label={t('marking')}
                     description={details?.data.marking?.description}
                     data={vm.slidesMarking}
                 />
-            </Scroll>
+            ),
+        },
+    ];
+
+    const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
+
+    return (
+        <View style={styles.container}>
+            <Header title={vm.item?.data.name} backButton="back" />
+            <List<IListItem> data={items} renderItem={renderItem} contentContainerStyle={styles.scrollViewContent} />
         </View>
     );
 });

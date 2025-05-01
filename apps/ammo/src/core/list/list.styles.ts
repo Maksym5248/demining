@@ -5,9 +5,6 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         flex: 1,
         backgroundColor: theme.colors.background,
     },
-    contentContainer: {
-        padding: theme.spacing.S,
-    },
     separator: {
         height: theme.spacing.S,
     },

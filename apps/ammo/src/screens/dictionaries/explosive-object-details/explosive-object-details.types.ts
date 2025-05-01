@@ -5,3 +5,8 @@ export interface IExplosiveObjectDetailsScreenProps {
         };
     };
 }
+
+export interface IListItem {
+    id: string;
+    render: () => JSX.Element;
+}

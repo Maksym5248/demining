@@ -70,7 +70,7 @@ function Component<T>(
             {...props}
             onEndReached={_onEndReached}
             style={[s.container, props.style]}
-            contentContainerStyle={[s.contentContainer, contentContainerStyle]}
+            contentContainerStyle={contentContainerStyle}
             onScrollBeginDrag={_onScrollBeginDrag}
         />
     );
