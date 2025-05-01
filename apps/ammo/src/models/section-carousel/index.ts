@@ -1,2 +1,1 @@
 export * from './section-carousel';
-export * from './classification';

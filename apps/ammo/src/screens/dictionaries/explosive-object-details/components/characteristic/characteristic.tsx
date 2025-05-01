@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
-import { Block, Field } from '~/components';
+import { Field, Block } from '~/core';
 import { useTranslate } from '~/localization';
 import { getFillterText, getTemurature, viewSize } from '~/utils';
 
@@ -16,7 +16,7 @@ export const Characteristic = observer(({ characteristic }: ICharacteristicProps
     const { details } = item ?? {};
 
     return (
-        <Block.View title={t('characteristic')}>
+        <Block title={t('characteristic')}>
             <Field.View label={t('caliber')} text={details?.data.caliber} require={false} />
             {item?.component?.id === EXPLOSIVE_OBJECT_COMPONENT.AMMO && (
                 <Field.List
@@ -100,6 +100,6 @@ export const Characteristic = observer(({ characteristic }: ICharacteristicProps
             <Field.Range label={t('temperature')} value={getTemurature(details?.data.temperature)} require={false} />
             {details?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
             <Field.View label={t('description')} text={item?.data.description} require={false} />
-        </Block.View>
+        </Block>
     );
 });

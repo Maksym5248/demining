@@ -6,12 +6,10 @@ import { Navigation } from '~/services';
 import { stores } from '~/stores';
 
 export interface ICharacteristicModel {
-    item: IExplosiveObject | undefined;
     fillers: ({ explosive: IExplosive | undefined } & IFillerData)[] | undefined;
-    fuses: IExplosiveObject[];
-    fervor: IExplosiveObject[];
+    fuses: IExplosiveObject[] | undefined;
+    fervor: IExplosiveObject[] | undefined;
     openExplosive(id: string): void;
-    openExplosiveObject(id: string): void;
     init({ id }: { id: string }): void;
 }
 
@@ -28,10 +26,6 @@ export class CharacteristicModel implements ICharacteristicModel {
 
     openExplosive(id: string) {
         Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
-    }
-
-    openExplosiveObject(id: string) {
-        Navigation.push(SCREENS.EXPLOSIVE_OBJECT_DETAILS, { id });
     }
 
     get item() {

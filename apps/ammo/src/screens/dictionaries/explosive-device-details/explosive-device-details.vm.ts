@@ -1,47 +1,39 @@
 import { makeAutoObservable } from 'mobx';
-import { type IExplosiveDevice, type IExplosive, type IFillerData } from 'shared-my-client';
+import { type IExplosiveDevice } from 'shared-my-client';
 
 import { type ISlide } from '~/components';
-import { SCREENS } from '~/constants';
-import { Navigation } from '~/services';
+import { SectionCarouselModel, type ISectionCarouselModel } from '~/models';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
+
+import { CharacteristicModel, type ICharacteristicModel } from './models';
 
 export interface IExplosiveObjectDetailsVM extends ViewModel {
     item: IExplosiveDevice | undefined;
     slides: ISlide[];
-    slidesMarking: ISlide[];
-    slidesPurpose: ISlide[];
-    slidesStructure: ISlide[];
-    slidesAction: ISlide[];
-    fillers: ({ explosive: IExplosive | undefined } & IFillerData)[] | undefined;
-    openExplosive(id: string): void;
+    marking: ISectionCarouselModel;
+    purpose: ISectionCarouselModel;
+    structure: ISectionCarouselModel;
+    action: ISectionCarouselModel;
+    characteristic: ICharacteristicModel;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     currentId?: string = undefined;
+    characteristic: ICharacteristicModel;
 
     constructor() {
+        this.characteristic = new CharacteristicModel();
         makeAutoObservable(this);
     }
 
     init({ id }: { id: string }) {
         this.currentId = id;
-    }
-
-    openExplosive(id: string) {
-        Navigation.push(SCREENS.EXPLOSIVE_DETAILS, { id });
+        this.characteristic.init({ id });
     }
 
     get item() {
         return stores.explosiveDevice.collection.get(this.currentId);
-    }
-
-    get fillers() {
-        return this.item?.data?.filler?.map(item => ({
-            ...item,
-            explosive: stores.explosive.collection.get(item.explosiveId ?? undefined),
-        }));
     }
 
     get slides() {
@@ -51,20 +43,32 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
         );
     }
 
-    get slidesMarking() {
-        return this.item?.data.marking?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get marking() {
+        return new SectionCarouselModel(
+            this.item?.data.marking?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.data.marking?.description as string,
+        );
     }
 
-    get slidesPurpose() {
-        return this.item?.data.purpose?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get purpose() {
+        return new SectionCarouselModel(
+            this.item?.data.purpose?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.data.purpose?.description as string,
+        );
     }
 
-    get slidesStructure() {
-        return this.item?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get structure() {
+        return new SectionCarouselModel(
+            this.item?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.data.structure?.description as string,
+        );
     }
 
-    get slidesAction() {
-        return this.item?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get action() {
+        return new SectionCarouselModel(
+            this.item?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.data.action?.description as string,
+        );
     }
 }
 

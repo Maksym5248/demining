@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import { measurement } from 'shared-my';
 
-import { Block, CarouselImage, Field } from '~/components';
-import { Header, Text, Touchable, Scroll } from '~/core';
+import { Header, Text, Touchable, Scroll, CarouselImage, Field, Block } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { ThemeManager, useDevice, useStylesCommon } from '~/styles';
@@ -33,7 +32,7 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
             <Header title={vm.item?.data.name} backButton="back" />
             <Scroll contentContainerStyle={styles.scrollViewContent}>
                 <CarouselImage width={device.window.width} data={vm.slides} />
-                <Block.View title={t('details')}>
+                <Block title={t('details')}>
                     <Field.View label={t('name')} text={vm.item?.data.name} />
                     <Field.View label={t('fullName')} text={vm.item?.data.fullName} />
                     <Field.View label={t('formula')} text={vm.item?.data.formula} />
@@ -51,8 +50,8 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                             <Text text={`${el.percent}%`} />
                         </View>
                     ))}
-                </Block.View>
-                <Block.View title={t('explosiveCharacteristic')}>
+                </Block>
+                <Block title={t('explosiveCharacteristic')}>
                     <Field.Range label={t('detonationSpeed')} value={[velocity?.min, velocity?.max]} />
                     <Field.Range
                         label={t('brisance')}
@@ -74,16 +73,16 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
                     <Field.View label={t('sensitivityToImpact')} text={shock} />
                     <Field.View label={t('sensitivityToTemperature')} text={temperature} />
                     <Field.View label={t('sensitivityToFriction')} text={friction} />
-                </Block.View>
-                <Block.View title={t('phisicalCharacteristic')}>
+                </Block>
+                <Block title={t('phisicalCharacteristic')}>
                     <Field.Range label={t('density')} value={[density?.min, density?.max]} />
                     <Field.Range label={t('meltingPoint')} value={[meltingPoint?.min, meltingPoint?.max]} />
                     <Field.Range label={t('ignitionPoint')} value={[ignitionPoint?.min, ignitionPoint?.max]} />
-                </Block.View>
+                </Block>
                 {!!vm.item?.data?.additional?.length && (
-                    <Block.View title={t('additional')}>
+                    <Block title={t('additional')}>
                         {vm.item?.data.additional?.map(el => <Field.View key={el.name} label={el.name} text={el.value} require={false} />)}
-                    </Block.View>
+                    </Block>
                 )}
             </Scroll>
         </View>

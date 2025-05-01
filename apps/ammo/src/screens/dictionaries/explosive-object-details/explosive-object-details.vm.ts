@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { type IExplosiveObject } from 'shared-my-client';
 
+import { type ISectionCarouselModel, SectionCarouselModel } from '~/models';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -14,17 +15,17 @@ export interface ISlide {
 export interface IExplosiveObjectDetailsVM extends ViewModel {
     item: IExplosiveObject | undefined;
     slides: ISlide[];
-    slidesMarking: ISlide[];
-    slidesPurpose: ISlide[];
-    slidesHistorical: ISlide[];
-    slidesStructure: ISlide[];
-    slidesAction: ISlide[];
-    slidesInstallation: ISlide[];
-    slidesLiquidator: ISlide[];
-    slidesExtraction: ISlide[];
-    slidesFolding: ISlide[];
-    slidesNeutralization: ISlide[];
     characteristic: ICharacteristicModel;
+    marking: ISectionCarouselModel;
+    purpose: ISectionCarouselModel;
+    historical: ISectionCarouselModel;
+    structure: ISectionCarouselModel;
+    action: ISectionCarouselModel;
+    installation: ISectionCarouselModel;
+    liquidator: ISectionCarouselModel;
+    extraction: ISectionCarouselModel;
+    folding: ISectionCarouselModel;
+    neutralization: ISectionCarouselModel;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
@@ -53,44 +54,74 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
         );
     }
 
-    get slidesMarking() {
-        return this.item?.details?.data.marking?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get historical() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.historical?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.historical?.description as string,
+        );
     }
 
-    get slidesPurpose() {
-        return this.item?.details?.data.purpose?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get marking() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.marking?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.marking?.description as string,
+        );
     }
 
-    get slidesStructure() {
-        return this.item?.details?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get purpose() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.purpose?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.purpose?.description as string,
+        );
     }
 
-    get slidesInstallation() {
-        return this.item?.details?.data.installation?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get structure() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.structure?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.structure?.description as string,
+        );
     }
 
-    get slidesLiquidator() {
-        return this.item?.details?.data.liquidator?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get installation() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.installation?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.installation?.description as string,
+        );
     }
 
-    get slidesExtraction() {
-        return this.item?.details?.data.extraction?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get action() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.action?.description as string,
+        );
     }
 
-    get slidesFolding() {
-        return this.item?.details?.data.folding?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get liquidator() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.liquidator?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.liquidator?.description as string,
+        );
     }
 
-    get slidesNeutralization() {
-        return this.item?.details?.data.neutralization?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get extraction() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.extraction?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.extraction?.description as string,
+        );
     }
 
-    get slidesAction() {
-        return this.item?.details?.data.action?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get folding() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.folding?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.folding?.description as string,
+        );
     }
 
-    get slidesHistorical() {
-        return this.item?.details?.data.historical?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]);
+    get neutralization() {
+        return new SectionCarouselModel(
+            this.item?.details?.data.neutralization?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
+            this.item?.details?.data.neutralization?.description as string,
+        ) as unknown as ISectionCarouselModel;
     }
 }
 

@@ -3,19 +3,21 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Block, CarouselImage } from '~/components';
-import { Header, type IFlatListRenderedItem, List, Paragraph } from '~/core';
+import { Section } from '~/components';
+import { Header, type IFlatListRenderedItem, List, Paragraph, CarouselImage, Block } from '~/core';
 import { useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
 
 import { Details } from './components';
+import { useStyles } from './explosive-object-details.style';
 import { type IListItem, type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
 
 export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjectDetailsScreenProps) => {
     const device = useDevice();
     const styles = useStylesCommon();
+    const s = useStyles();
     const t = useTranslate('screens.explosive-object-details');
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
@@ -25,133 +27,81 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
     const items: IListItem[] = [
         {
             id: 'carousel',
+            isVisible: true,
             render: () => <CarouselImage width={device.window.width} data={vm.slides} />,
         },
         {
             id: 'details',
+            isVisible: true,
             render: () => <Details item={vm.item} />,
         },
         {
             id: 'fullDescription',
+            isVisible: !!details?.data?.fullDescription,
             render: () => (
-                <Block.View hidden={!details?.data?.fullDescription} title={t('fullDescription')}>
+                <Block title={t('fullDescription')}>
                     <Paragraph text={details?.data?.fullDescription ?? '-'} />
-                </Block.View>
+                </Block>
             ),
         },
         {
             id: 'historical',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('historical')}
-                    description={details?.data.historical?.description}
-                    data={vm.slidesHistorical}
-                />
-            ),
+            isVisible: vm.historical.isVisible,
+            render: () => <Section.Carousel title={t('historical')} item={vm.historical} />,
         },
         {
             id: 'purpose',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('purpose')}
-                    description={details?.data.purpose?.description}
-                    data={vm.slidesPurpose}
-                />
-            ),
+            isVisible: vm.purpose.isVisible,
+            render: () => <Section.Carousel title={t('purpose')} item={vm.purpose} />,
         },
         {
             id: 'structure',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('structure')}
-                    description={details?.data.structure?.description}
-                    data={vm.slidesStructure}
-                />
-            ),
+            isVisible: vm.structure.isVisible,
+            render: () => <Section.Carousel title={t('structure')} item={vm.structure} />,
         },
         {
             id: 'folding',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('folding')}
-                    description={details?.data.folding?.description}
-                    data={vm.slidesFolding}
-                />
-            ),
+            isVisible: vm.folding.isVisible,
+            render: () => <Section.Carousel title={t('folding')} item={vm.folding} />,
         },
         {
             id: 'action',
-            render: () => (
-                <Block.Slider require={false} label={t('action')} description={details?.data.action?.description} data={vm.slidesAction} />
-            ),
+            isVisible: vm.action.isVisible,
+            render: () => <Section.Carousel title={t('action')} item={vm.action} />,
         },
         {
             id: 'extraction',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('extraction')}
-                    description={details?.data.extraction?.description}
-                    data={vm.slidesExtraction}
-                />
-            ),
+            isVisible: vm.extraction.isVisible,
+            render: () => <Section.Carousel title={t('extraction')} item={vm.extraction} />,
         },
         {
             id: 'liquidator',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('liquidator')}
-                    description={details?.data.liquidator?.description}
-                    data={vm.slidesLiquidator}
-                />
-            ),
+            isVisible: vm.liquidator.isVisible,
+            render: () => <Section.Carousel title={t('liquidator')} item={vm.liquidator} />,
         },
         {
             id: 'installation',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('installation')}
-                    description={details?.data.installation?.description}
-                    data={vm.slidesInstallation}
-                />
-            ),
+            isVisible: vm.installation.isVisible,
+            render: () => <Section.Carousel title={t('installation')} item={vm.installation} />,
         },
         {
             id: 'neutralization',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('neutralization')}
-                    description={details?.data.neutralization?.description}
-                    data={vm.slidesNeutralization}
-                />
-            ),
+            isVisible: vm.neutralization.isVisible,
+            render: () => <Section.Carousel title={t('neutralization')} item={vm.neutralization} />,
         },
         {
             id: 'marking',
-            render: () => (
-                <Block.Slider
-                    require={false}
-                    label={t('marking')}
-                    description={details?.data.marking?.description}
-                    data={vm.slidesMarking}
-                />
-            ),
+            isVisible: vm.marking.isVisible,
+            render: () => <Section.Carousel title={t('marking')} item={vm.marking} />,
         },
-    ];
+    ].filter(item => item.isVisible);
 
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
 
     return (
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
-            <List<IListItem> data={items} renderItem={renderItem} contentContainerStyle={styles.scrollViewContent} />
+            <List data={items} renderItem={renderItem} contentContainerStyle={[styles.scrollViewContent, s.contentContainer]} />
         </View>
     );
 });

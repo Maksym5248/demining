@@ -27,4 +27,7 @@ export * from './chips';
 export * from './tooltip';
 export * from './paragraph';
 export * from './progress';
+export * from './field';
+export * from './block';
+export * from './carousel-image';
 export * from './keyboard-aware-scroll-view';

@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 
+import { isNumber } from 'lodash';
 import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -27,6 +28,7 @@ function Component<T>(
         data,
         onScrollBeginDrag,
         contentContainerStyle,
+        separator,
         ...props
     }: IFlatListProps<T>,
     ref: React.Ref<FlatList>,
@@ -58,7 +60,7 @@ function Component<T>(
             keyExtractor={keyExtractor}
             data={data}
             contentInset={{ bottom: 20 + device.inset.bottom }}
-            ItemSeparatorComponent={() => <View style={s.separator} />}
+            ItemSeparatorComponent={() => <View style={[s.separator, isNumber(separator) ? { height: separator } : {}]} />}
             ListEmptyComponent={() => (
                 <View style={s.emptyContainer}>
                     <Text type="p4" text={text} />
@@ -70,7 +72,7 @@ function Component<T>(
             {...props}
             onEndReached={_onEndReached}
             style={[s.container, props.style]}
-            contentContainerStyle={contentContainerStyle}
+            contentContainerStyle={[s.contentContainer, contentContainerStyle]}
             onScrollBeginDrag={_onScrollBeginDrag}
         />
     );
