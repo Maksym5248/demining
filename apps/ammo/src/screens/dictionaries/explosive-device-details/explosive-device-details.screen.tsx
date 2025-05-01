@@ -22,8 +22,6 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
 
-    const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
-
     const items: IListItem[] = [
         {
             id: 'carousel',
@@ -60,7 +58,9 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
             isVisible: vm.action.isVisible,
             render: () => <Section.Carousel title={t('action')} item={vm.action} />,
         },
-    ];
+    ].filter(item => item.isVisible);
+
+    const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
 
     return (
         <View style={styles.container}>

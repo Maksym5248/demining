@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { type IExplosiveCompositionData, type IExplosive } from 'shared-my-client';
+import { type IExplosive } from 'shared-my-client';
 
 import { type ISlide } from '~/components';
 import { SCREENS } from '~/constants';
@@ -7,22 +7,29 @@ import { Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
+import { DetailsModel, type IDetailsModel } from './models';
+
 export interface IExplosiveDetailsVM extends ViewModel {
     item: IExplosive | undefined;
     slides: ISlide[];
-    composition: ({ explosive: IExplosive | undefined } & IExplosiveCompositionData)[] | undefined;
+    details: IDetailsModel;
     openExplosive(id: string): void;
 }
 
 export class ExplosiveDetailsVM implements IExplosiveDetailsVM {
     currentId?: string = undefined;
 
+    details: IDetailsModel;
+
     constructor() {
+        this.details = new DetailsModel();
+
         makeAutoObservable(this);
     }
 
     init({ id }: { id: string }) {
         this.currentId = id;
+        this.details.init({ id });
     }
 
     openExplosive(id: string) {
@@ -31,13 +38,6 @@ export class ExplosiveDetailsVM implements IExplosiveDetailsVM {
 
     get item() {
         return stores.explosive.collection.get(this.currentId);
-    }
-
-    get composition() {
-        return this.item?.data?.composition?.map(item => ({
-            ...item,
-            explosive: stores.explosive.collection.get(item.explosiveId ?? undefined),
-        }));
     }
 
     get slides() {

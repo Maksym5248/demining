@@ -5,3 +5,9 @@ export interface IExplosiveDetailsScreenProps {
         };
     };
 }
+
+export interface IListItem {
+    id: string;
+    isVisible: boolean;
+    render: () => JSX.Element;
+}

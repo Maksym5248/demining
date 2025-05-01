@@ -13,4 +13,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    contentContainer: {
+        paddingTop: 0,
+        paddingHorizontal: 0,
+    },
 }));
