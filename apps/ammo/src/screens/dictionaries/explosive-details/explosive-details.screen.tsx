@@ -19,7 +19,6 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
     const s = useStyles();
 
     const vm = useViewModel<IExplosiveDetailsVM>(createVM(route?.params?.id), route?.params);
-
     const items: IListItem[] = [
         {
             id: 'carousel',

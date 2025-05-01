@@ -55,12 +55,15 @@
             "title": "Виникла помилка",
             "cancelTitle": "Скасувати",
             "confirmTitle": "Підтвердити"
-        }
-    },
-    "components": {
+        },
         "list": {
             "empty": "У списку немає даних",
             "emptySearch": "Немає співпадінь за результатом пошуку"
+        }
+    },
+    "components": {
+        "comment": {
+            "viewAll": "View all"
         }
     },
     "containers": {

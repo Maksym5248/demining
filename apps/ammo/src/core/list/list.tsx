@@ -35,7 +35,7 @@ function Component<T>(
 ) {
     const s = useStyles();
     const device = useDevice();
-    const t = useTranslate('components.list');
+    const t = useTranslate('core.list');
     const tooltip = useTooltipRoot();
 
     const _onEndReached = (info: { distanceFromEnd: number }) => {

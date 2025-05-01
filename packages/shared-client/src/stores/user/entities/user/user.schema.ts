@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { type ROLES } from 'shared-my';
+import { type IUserAccessDB } from 'shared-my';
 
 import { type IUpdateUserDTO, type IUserDTO } from '~/api';
 import { dates } from '~/common';
@@ -9,9 +9,10 @@ export type IUpdateUserParams = IUpdateUserDTO;
 export interface IUserData {
     id: string;
     info: {
-        email: string;
+        name?: string | null;
+        photoUri?: string | null;
     };
-    access?: Partial<Record<ROLES, boolean>>;
+    access?: Partial<IUserAccessDB>;
     member?: {
         organizationId: string | null;
     };
@@ -22,7 +23,7 @@ export interface IUserData {
 export const createUser = (value: IUserDTO): IUserData => ({
     id: value.id,
     info: {
-        email: value?.info?.email ?? '',
+        photoUri: value?.info?.photoUri ?? '',
     },
     access: { ...(value?.access ?? {}) },
     member: {

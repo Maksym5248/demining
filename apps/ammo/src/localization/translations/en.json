@@ -55,12 +55,15 @@
             "title": "Somthing went wrong",
             "cancelTitle": "Cancel",
             "confirmTitle": "Confirm"
-        }
-    },
-    "components": {
+        },
         "list": {
             "empty": "No data in the list",
             "emptySearch": "No matches found for your search"
+        }
+    },
+    "components": {
+        "comment": {
+            "viewAll": "View all"
         }
     },
     "containers": {

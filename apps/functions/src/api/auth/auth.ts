@@ -77,6 +77,7 @@ export const onUserCreate = auth.user().onCreate(async user => {
 
     const initialAccess: IUserAccessDB = {
         ...common,
+        email: user.email ?? null,
         [ROLES.AMMO_VIEWER]: true,
     };
     const initialMember: IMemberDB = {

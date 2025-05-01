@@ -12,7 +12,9 @@ export interface IMemberDB extends Omit<IBaseDB, 'organizationId'> {
  * User can't edit this information
  * id the same as uid
  */
-export interface IUserAccessDB extends Omit<IBaseDB, 'organizationId'>, Partial<Record<ROLES, boolean>> {}
+export interface IUserAccessDB extends Omit<IBaseDB, 'organizationId'>, Partial<Record<ROLES, boolean>> {
+    email: string | null;
+}
 
 /**
  * User can edit this information

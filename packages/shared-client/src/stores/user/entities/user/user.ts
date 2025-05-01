@@ -10,6 +10,8 @@ import { type IUpdateUserParams, type IUserData } from './user.schema';
 export interface IUser extends IDataModel<IUserData> {
     hasRole(role: ROLES): boolean;
     update: RequestModel<[user: IUpdateUserParams]>;
+    displayName?: string;
+    photoUri?: string;
 }
 
 interface IApi {
@@ -41,14 +43,22 @@ export class User implements IUser {
         return this.data.id;
     }
 
+    get displayName() {
+        return (this.data.info.name || this.data.access?.email) ?? undefined;
+    }
+
+    get photoUri() {
+        return this.data.info.photoUri ?? undefined;
+    }
+
     hasRole(role: ROLES) {
         return !!this.data.access?.[role];
     }
 
     update = new RequestModel({
         run: async (user: IUpdateUserParams) => {
-            const res = await this.api.user.update(this.id, user);
-            this.updateFields(res);
+            await this.api.user.update(this.id, user);
+            this.updateFields(user);
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

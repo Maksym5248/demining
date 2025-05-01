@@ -1,2 +1,1 @@
-export * from './section';
 export * from './comment';
