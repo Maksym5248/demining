@@ -13,7 +13,8 @@
         "invalid-password": "Невірний пароль, спробуйте ще раз.",
         "passwords-must-match": "Паролі не співпадають",
         "wrong_email_or_password": "Невірний email або пароль, спробуйте ще раз.",
-        "email_already_in_use": "Email вже використовується."
+        "email_already_in_use": "Email вже використовується.",
+        "some_images_not_uploaded": "Деякі картинки не вдалось завантажити"
     },
     "permissions": {
         "titleUnavailable": "Недоступно",
@@ -71,6 +72,9 @@
             "title": "Коментарі",
             "noComments": "Коментарі відсутні",
             "authComments": "Увійдіть, щоб залишити та переглядати коментарі"
+        },
+        "comment-input": {
+            "placeholder": "Введіть коментар"
         }
     },
     "containers": {

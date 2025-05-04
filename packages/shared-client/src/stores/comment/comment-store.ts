@@ -46,6 +46,8 @@ export class CommentStore implements ICommentStore {
         const key = createID(id, type);
 
         this.map[key] = new Comments({
+            entityId: id,
+            type,
             api: this.api,
             collection: this.collection,
             getStores: () => ({

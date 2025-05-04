@@ -3,11 +3,11 @@ import { type ICommentDB, type IUserInfoDB } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
 
-import { type IUserDTO, type ICommentDTO, type ICommentFullDTO, type ICommentParamsDTO } from '../dto';
+import { type IUserDTO, type ICommentDTO, type ICommentFullDTO, type ICommentCreateParamsDTO, type ICommentUpdateParamsDTO } from '../dto';
 
 export interface ICommentAPI {
-    create: (value: ICreateValue<ICommentParamsDTO>) => Promise<ICommentDTO>;
-    update: (id: string, value: IUpdateValue<ICommentParamsDTO>) => Promise<ICommentDTO>;
+    create: (value: ICreateValue<ICommentCreateParamsDTO>) => Promise<ICommentDTO>;
+    update: (id: string, value: IUpdateValue<ICommentUpdateParamsDTO>) => Promise<ICommentDTO>;
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<ICommentFullDTO[]>;
     subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICommentDTO>[]) => void) => Promise<void>;
@@ -21,15 +21,17 @@ export class CommentAPI implements ICommentAPI {
         },
     ) {}
 
-    create = async (value: ICreateValue<ICommentParamsDTO>): Promise<ICommentDTO> => {
+    create = async (value: ICreateValue<ICommentCreateParamsDTO>): Promise<ICommentDTO> => {
         const res = await this.db.comment.create({
             ...value,
+            likes: [],
+            dislikes: [],
             replyCount: 0,
         });
         return res;
     };
 
-    update = async (id: string, value: IUpdateValue<ICommentParamsDTO>): Promise<ICommentDTO> => {
+    update = async (id: string, value: IUpdateValue<ICommentUpdateParamsDTO>): Promise<ICommentDTO> => {
         const data = await this.db.comment.update(id, value);
         if (!data) throw new Error('there is comment with id');
         return data;
@@ -52,7 +54,7 @@ export class CommentAPI implements ICommentAPI {
 
         if (!comments || !comments.length) return [];
 
-        const authors = await this.db.userInfo.getByIds(uniq(comments.map(el => el.authorId)).filter(Boolean) as string[]);
+        const authors = await this.db.userInfo.getByIds(uniq(comments.map(el => el.authorId)).filter(Boolean));
         const map = new Map<string, IUserInfoDB>(authors.map(el => [el.id, el]));
 
         const res = comments.map(comment => {

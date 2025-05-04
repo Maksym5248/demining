@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { COMMENT_TYPE } from 'shared-my';
 
-import { type ICommentParamsDTO, type ICommentDTO } from '~/api';
+import { type ICommentUpdateParamsDTO, type ICommentDTO, type ICommentCreateParamsDTO } from '~/api';
 import { dates, data, type ICreateValue } from '~/common';
 
 export interface ICommentData {
@@ -19,17 +19,17 @@ export interface ICommentData {
     updatedAt: Dayjs;
 }
 
-export const createCommentDTO = (value: ICreateValue<ICommentData>): ICreateValue<ICommentParamsDTO> => ({
+export type ICreateCommentData = Pick<ICommentData, 'text' | 'imageUris' | 'parentId'>;
+
+export const createCommentDTO = (value: ICreateValue<ICommentCreateParamsDTO>): ICreateValue<ICommentCreateParamsDTO> => ({
     text: value.text,
     type: value.type,
     entityId: value.entityId,
     parentId: value.parentId,
     imageUris: value.imageUris,
-    likes: value.likes,
-    dislikes: value.dislikes,
 });
 
-export const updateCommentDTO = data.createUpdateDTO<ICommentData, ICommentParamsDTO>(value => ({
+export const updateCommentDTO = data.createUpdateDTO<ICommentData, ICommentUpdateParamsDTO>(value => ({
     text: value.text ?? '',
     type: value.type ?? COMMENT_TYPE.DEFAULT,
     entityId: value.entityId ?? '',

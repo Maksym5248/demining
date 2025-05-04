@@ -2,6 +2,8 @@ import { ASSET_TYPE } from 'shared-my';
 import { ErrorManagerClass, Logger, Modal as ModalClass } from 'shared-my-client';
 
 export type { IMessageState } from './ui/message';
+export type { IGalleryImage } from './image-picker';
+
 export type { IErrorManager } from 'shared-my-client';
 export { Logger } from 'shared-my-client';
 

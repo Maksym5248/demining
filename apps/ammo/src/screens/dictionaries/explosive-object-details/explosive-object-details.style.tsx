@@ -5,4 +5,10 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
         paddingTop: 0,
         paddingHorizontal: 0,
     },
+    commentInput: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
 }));

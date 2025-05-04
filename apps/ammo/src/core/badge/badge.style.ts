@@ -11,7 +11,6 @@ export const useStyles = ThemeManager.createStyleSheet(() => ({
         borderRadius: 7,
         height: 14,
         width: 14,
-        backgroundColor: 'red',
         justifyContent: 'center',
         alignItems: 'center',
         pointerEvents: 'none',

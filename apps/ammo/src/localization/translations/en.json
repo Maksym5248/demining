@@ -13,7 +13,8 @@
         "invalid-password": "Invalid password, try again.",
         "passwords-must-match": "Passwords must match.",
         "wrong_email_or_password": "Wrong email or password, try again.",
-        "email_already_in_use": "Email already in use."
+        "email_already_in_use": "Email already in use.",
+        "some_images_not_uploaded": "Some image are not uploaded"
     },
     "permissions": {
         "titleUnavailable": "Not available",
@@ -71,6 +72,9 @@
             "title": "Comments",
             "noComments": "No comments yet",
             "authComments": "To leave and see comments, please sign in."
+        },
+        "comment-input": {
+            "placeholder": "Enter your comment"
         }
     },
     "containers": {

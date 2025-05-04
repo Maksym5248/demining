@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Section } from '~/components';
+import { CommentInput, Section } from '~/components';
 import { CommentsPreview } from '~/containers';
 import { Header, type IFlatListRenderedItem, List, Paragraph, CarouselImage, Block } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -110,6 +110,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
             <List data={items} renderItem={renderItem} contentContainerStyle={[styles.scrollViewContent, s.contentContainer]} />
+            <CommentInput item={vm.input} style={styles.fillAbsoluteBottom} />
         </View>
     );
 });

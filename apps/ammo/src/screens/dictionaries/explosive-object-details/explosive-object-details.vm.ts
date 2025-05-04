@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { COMMENT_TYPE } from 'shared-my';
 import { type IExplosiveObject } from 'shared-my-client';
 
-import { type ISectionCarouselModel, SectionCarouselModel } from '~/models';
+import { CommentInputModel, type ICommentInputModel, type ISectionCarouselModel, SectionCarouselModel } from '~/models';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -28,11 +28,13 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     folding: ISectionCarouselModel;
     neutralization: ISectionCarouselModel;
     isComments: boolean;
+    input: ICommentInputModel;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     currentId?: string = undefined;
     characteristic: ICharacteristicModel;
+    input = new CommentInputModel(COMMENT_TYPE.EXPLOSIVE_OBJECT);
 
     constructor() {
         this.characteristic = new CharacteristicModel();
@@ -42,6 +44,11 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     init({ id }: { id: string }) {
         this.currentId = id;
         this.characteristic.init({ id });
+        this.input.init({ id });
+    }
+
+    unmount() {
+        this.input.clear();
     }
 
     get item() {

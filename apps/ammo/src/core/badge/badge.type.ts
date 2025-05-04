@@ -4,4 +4,5 @@ export interface IBadgeProps {
     children?: React.ReactNode;
     count?: number;
     style?: IViewStyle;
+    color?: string;
 }

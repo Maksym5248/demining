@@ -5,6 +5,7 @@ export enum ERROR_MESSAGE {
     EMAIL_ALREADY_IN_USE = 'email_already_in_use',
     CAN_NOT_OPEN_LINK = 'can-not-open-link',
     PERMISSIONS_NOT_GRANTED = 'permissions_not_grnated',
+    SOME_IMAGES_NOT_UPLOADED = 'some_images_not_uploaded',
 }
 
 export enum ERROR_FIELD {
