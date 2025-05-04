@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
-import { Badge, Icon } from '~/core';
+import { Badge, Icon, Loading } from '~/core';
 import { useTranslate } from '~/localization';
 import { useTheme } from '~/styles';
 
@@ -19,7 +19,7 @@ export const CommentInput = observer(({ item, style }: ICommentInputProps) => {
     return (
         !!item.isVisible && (
             <View style={[s.container, style]}>
-                <Badge count={item.countSelectedImages} color={theme.colors.accent} style={s.badge}>
+                <Badge count={item.countSelectedImages} color={theme.colors.accent} style={[s.badge, s.buttons]}>
                     <Icon
                         name={item.isSelectedImages ? 'close' : 'gallery-empty'}
                         color={theme.colors.accent}
@@ -37,7 +37,15 @@ export const CommentInput = observer(({ item, style }: ICommentInputProps) => {
                     onBlur={() => item.setFocused(false)}
                     multiline
                 />
-                <Icon name="send" color={item.isDisabled ? theme.colors.inert : theme.colors.accent} onPress={() => item.submit.run()} />
+                {!item.isLoading && (
+                    <Icon
+                        name="send"
+                        color={item.isDisabled ? theme.colors.inert : theme.colors.accent}
+                        onPress={() => item.submit.run()}
+                        style={s.buttons}
+                    />
+                )}
+                {!!item.isLoading && <Loading isVisible size="small" color={theme.colors.accent} style={s.buttons} />}
             </View>
         )
     );

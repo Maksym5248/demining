@@ -10,6 +10,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         borderTopWidth: 1,
         paddingBottom: device.inset.bottom,
         backgroundColor: theme.colors.backgroundSecondary,
+        alignItems: 'flex-end',
     },
     badge: {
         justifyContent: 'center',
@@ -21,5 +22,14 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         marginHorizontal: theme.spacing.M,
         backgroundColor: theme.colors.background,
         borderRadius: theme.radius.M,
+        minHeight: 30,
+        maxHeight: 90,
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: 'flex',
+        paddingHorizontal: theme.spacing.XS,
+    },
+    buttons: {
+        marginBottom: theme.spacing.XS,
     },
 }));

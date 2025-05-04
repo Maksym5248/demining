@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { CommentInput, Section } from '~/components';
+import { CommentInput, CommentView, Section } from '~/components';
 import { CommentsPreview } from '~/containers';
 import { Header, type IFlatListRenderedItem, List, Paragraph, CarouselImage, Block } from '~/core';
 import { useViewModel } from '~/hooks';
@@ -26,6 +26,19 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params ?? { id: mockId });
 
     const { details } = vm.item ?? {};
+
+    const comments: IListItem[] = useMemo(
+        () =>
+            vm.comments.items?.map(
+                el =>
+                    ({
+                        id: el.id,
+                        isVisible: true,
+                        render: () => <CommentView item={el} />,
+                    }) as IListItem,
+            ) ?? ([] as IListItem[]),
+        [vm.comments.items],
+    );
 
     const items: IListItem[] = [
         {
@@ -100,8 +113,9 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
         {
             id: 'comment',
             isVisible: true,
-            render: () => <CommentsPreview isComments={vm.isComments} />,
+            render: () => <CommentsPreview isComments={vm.comments.isComments} />,
         },
+        ...comments,
     ].filter(item => item.isVisible);
 
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
@@ -109,8 +123,16 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
     return (
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
-            <List data={items} renderItem={renderItem} contentContainerStyle={[styles.scrollViewContent, s.contentContainer]} />
-            <CommentInput item={vm.input} style={styles.fillAbsoluteBottom} />
+            <List
+                data={items}
+                renderItem={renderItem}
+                contentContainerStyle={[styles.scrollViewContent, s.contentContainer]}
+                isLoading={vm.comments.isLoading}
+                isLoadingMore={vm.comments.isLoadingMore}
+                isEndReached={vm.comments.isEndReached}
+                onEndReached={() => vm.comments.loadMore()}
+            />
+            <CommentInput item={vm.comments.input} style={styles.fillAbsoluteBottom} />
         </View>
     );
 });

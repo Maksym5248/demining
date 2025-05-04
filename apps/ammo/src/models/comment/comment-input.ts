@@ -11,6 +11,7 @@ export interface ICommentInputModel {
     setFocused(value: boolean): void;
     removeImages(): void;
     init(params: { id: string }): void;
+    clear(): void;
     openGallery: IRequestModel;
     submit: IRequestModel;
     value: string;
@@ -20,6 +21,7 @@ export interface ICommentInputModel {
     isSelectedImages: boolean;
     countSelectedImages: number;
     isVisible: boolean;
+    isLoading: boolean;
 }
 
 export class CommentInputModel implements ICommentInputModel {
@@ -123,6 +125,10 @@ export class CommentInputModel implements ICommentInputModel {
 
     get countSelectedImages() {
         return this.images.length;
+    }
+
+    get isLoading() {
+        return this.submit.isLoading;
     }
 
     get isVisible() {

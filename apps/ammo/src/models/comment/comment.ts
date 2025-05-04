@@ -6,7 +6,7 @@ import { Modal } from '~/services';
 
 export interface ICommentModel {
     openGallery: (index: number) => void;
-    item: IComment;
+    id: string;
     photoUri: string | undefined;
     title?: string;
     text: string;
@@ -27,6 +27,10 @@ export class CommentModel implements ICommentModel {
     openGallery = (index: number) => {
         Modal.show(MODALS.GALLERY, { images: this.item.data.imageUris.map(uri => ({ uri })), index });
     };
+
+    get id() {
+        return this.item.id;
+    }
 
     get photoUri() {
         return this.item.author?.photoUri;

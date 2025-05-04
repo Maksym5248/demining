@@ -4,17 +4,17 @@ import { type COMMENT_TYPE } from 'shared-my';
 import { type ICommentAPI } from '~/api';
 import { type ICreateValue } from '~/common';
 import { dates } from '~/common';
-import { type CollectionModel, type IListModel, ListModel, RequestModel } from '~/models';
+import { type CollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
 
 import { type IComment, type ICommentData, type ICreateCommentData, createComment, createCommentDTO } from './entities';
 import { createUser, type IUserStore } from '../user';
 
 export interface IComments {
     list: IListModel<IComment, ICommentData>;
-    create: RequestModel<[ICreateValue<ICreateCommentData>]>;
-    remove: RequestModel<[string]>;
-    fetchList: RequestModel<[search?: string]>;
-    fetchMoreList: RequestModel<[search?: string]>;
+    create: IRequestModel<[ICreateValue<ICreateCommentData>]>;
+    remove: IRequestModel<[string]>;
+    fetchList: IRequestModel;
+    fetchMoreList: IRequestModel;
 }
 
 interface IApi {
@@ -74,9 +74,12 @@ export class Comments implements IComments {
     });
 
     fetchList = new RequestModel({
-        run: async (search?: string) => {
+        run: async () => {
             const res = await this.api.comment.getList({
-                search,
+                where: {
+                    entityId: this.entityId,
+                    type: this.type,
+                },
                 limit: this.list.pageSize,
             });
 
@@ -87,9 +90,12 @@ export class Comments implements IComments {
 
     fetchMoreList = new RequestModel({
         shouldRun: () => this.list.isMorePages,
-        run: async (search?: string) => {
+        run: async () => {
             const res = await this.api.comment.getList({
-                search,
+                where: {
+                    entityId: this.entityId,
+                    type: this.type,
+                },
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });

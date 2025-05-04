@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { COMMENT_TYPE } from 'shared-my';
 import { type IExplosiveObject } from 'shared-my-client';
 
-import { CommentInputModel, type ICommentInputModel, type ISectionCarouselModel, SectionCarouselModel } from '~/models';
+import { CommentsModel, type ICommentsModel, type ISectionCarouselModel, SectionCarouselModel } from '~/models';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -27,14 +27,14 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     extraction: ISectionCarouselModel;
     folding: ISectionCarouselModel;
     neutralization: ISectionCarouselModel;
-    isComments: boolean;
-    input: ICommentInputModel;
+    comments: ICommentsModel;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     currentId?: string = undefined;
     characteristic: ICharacteristicModel;
-    input = new CommentInputModel(COMMENT_TYPE.EXPLOSIVE_OBJECT);
+
+    comments = new CommentsModel(COMMENT_TYPE.EXPLOSIVE_OBJECT);
 
     constructor() {
         this.characteristic = new CharacteristicModel();
@@ -44,11 +44,11 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     init({ id }: { id: string }) {
         this.currentId = id;
         this.characteristic.init({ id });
-        this.input.init({ id });
+        this.comments.init({ id });
     }
 
     unmount() {
-        this.input.clear();
+        this.comments.clear();
     }
 
     get item() {
@@ -131,15 +131,6 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
             this.item?.details?.data.neutralization?.imageUris.map((uri, i) => ({ uri, id: i })) ?? ([] as ISlide[]),
             this.item?.details?.data.neutralization?.description as string,
         ) as unknown as ISectionCarouselModel;
-    }
-
-    get comments() {
-        if (!this.currentId) return undefined;
-        return stores.comment.get(this.currentId, COMMENT_TYPE.EXPLOSIVE_OBJECT);
-    }
-
-    get isComments() {
-        return !!this.comments?.list.length;
     }
 }
 
