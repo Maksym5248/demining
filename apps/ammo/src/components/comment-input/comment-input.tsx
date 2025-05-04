@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { observer } from 'mobx-react-lite';
-import { View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 import { Badge, Icon, Loading } from '~/core';
 import { useTranslate } from '~/localization';
@@ -11,14 +11,14 @@ import { useTheme } from '~/styles';
 import { useStyles } from './comment-input.style';
 import { type ICommentInputProps } from './comment-input.type';
 
-export const CommentInput = observer(({ item, style }: ICommentInputProps) => {
+export const CommentInput = observer(({ item, style, onLayout }: ICommentInputProps) => {
     const s = useStyles();
     const t = useTranslate('components.comment-input');
     const theme = useTheme();
 
     return (
         !!item.isVisible && (
-            <View style={[s.container, style]}>
+            <Animated.View style={[s.container, style]} onLayout={onLayout}>
                 <Badge count={item.countSelectedImages} color={theme.colors.accent} style={[s.badge, s.buttons]}>
                     <Icon
                         name={item.isSelectedImages ? 'close' : 'gallery-empty'}
@@ -46,7 +46,7 @@ export const CommentInput = observer(({ item, style }: ICommentInputProps) => {
                     />
                 )}
                 {!!item.isLoading && <Loading isVisible size="small" color={theme.colors.accent} style={s.buttons} />}
-            </View>
+            </Animated.View>
         )
     );
 });

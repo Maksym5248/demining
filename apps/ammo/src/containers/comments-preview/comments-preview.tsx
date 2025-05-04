@@ -11,14 +11,14 @@ import { useStyles } from './comments-preview.style';
 import { type ICommentsPreviewProps } from './comments-preview.type';
 import { Auth } from '../auth';
 
-export const CommentsPreview = ({ isComments }: ICommentsPreviewProps) => {
+export const CommentsPreview = ({ isComments, onLayout }: ICommentsPreviewProps) => {
     const t = useTranslate('components.comments-preview');
     const styles = useStylesCommon();
     const theme = useTheme();
     const s = useStyles();
 
     return (
-        <View style={s.container}>
+        <View style={s.container} onLayout={onLayout}>
             <Text type="h3" style={styles.label} text={t('title')} color={theme.colors.text} />
             <Auth description={t('authComments')}>
                 {!isComments && (

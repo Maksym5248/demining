@@ -23,11 +23,20 @@ interface IStores {
     viewer: IViewerStore;
 }
 
+interface IServices {
+    localization: {
+        data: {
+            locale: string;
+        };
+    };
+}
+
 const createID = (id: string, type: COMMENT_TYPE) => `${type}-${id}`;
 
 export class CommentStore implements ICommentStore {
     api: IApi;
     getStores: () => IStores;
+    services: IServices;
 
     collection = new CollectionModel<IComment, ICommentData>({
         factory: (data: ICommentData) => new Comment(data, this),
@@ -35,9 +44,10 @@ export class CommentStore implements ICommentStore {
 
     map: Record<string, Comments> = {};
 
-    constructor(params: { api: IApi; getStores: () => IStores }) {
+    constructor(params: { api: IApi; getStores: () => IStores; services: IServices }) {
         this.api = params.api;
         this.getStores = params.getStores;
+        this.services = params.services;
 
         makeAutoObservable(this);
     }
@@ -57,6 +67,7 @@ export class CommentStore implements ICommentStore {
             getStores: () => ({
                 user: this.getStores().user,
             }),
+            services: this.services,
         });
     }
 

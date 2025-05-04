@@ -3,6 +3,7 @@ import React, { forwardRef } from 'react';
 import { isNumber } from 'lodash';
 import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 import { useTooltipRoot } from '~/hooks';
 import { useTranslate } from '~/localization';
@@ -18,6 +19,8 @@ function keyExtractor<T>(item: T, index: number): string {
     return item?.id ? String(item?.id) : String(index);
 }
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 function Component<T>(
     {
         isLoading,
@@ -29,6 +32,7 @@ function Component<T>(
         onScrollBeginDrag,
         contentContainerStyle,
         separator,
+        isAnimated,
         ...props
     }: IFlatListProps<T>,
     ref: React.Ref<FlatList>,
@@ -54,9 +58,12 @@ function Component<T>(
         onScrollBeginDrag?.(event);
     };
 
+    const Component = isAnimated ? AnimatedFlatList : FlatList;
+
     return (
-        <FlatList
+        <Component
             ref={ref}
+            // @ts-expect-error
             keyExtractor={keyExtractor}
             data={data}
             contentInset={{ bottom: 20 + device.inset.bottom }}

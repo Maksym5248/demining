@@ -1,5 +1,6 @@
-export const SOURCE_LANG = 'uk';
+export const DEFAULT_SOURCE_LANG = 'uk';
 export const TARGET_LANG = 'en';
+export const TARGET_LANGS = ['uk', 'en'];
 
 // List of collections to apply translation to
 export const collectionsToTranslate = [
@@ -18,6 +19,7 @@ export const collectionsToTranslate = [
     'MISSION_REQUEST_TYPE',
     'RANKS',
     'STATUSES',
+    'COMMENT',
 ];
 
 // Define translatable fields using dot notation for nested paths.
@@ -91,6 +93,7 @@ export const translatableFieldsConfig: { [collection: string]: string[] } = {
     MISSION_REQUEST_TYPE: ['name'],
     RANKS: ['fullName', 'shortName'],
     STATUSES: ['name'],
+    COMMENT: ['text'],
 };
 
 interface PathInfo {

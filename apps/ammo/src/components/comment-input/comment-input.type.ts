@@ -4,4 +4,5 @@ import { type IViewStyle } from '~/types';
 export interface ICommentInputProps {
     item: ICommentInputModel;
     style?: IViewStyle;
+    onLayout?: (event: any) => void;
 }

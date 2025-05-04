@@ -10,5 +10,6 @@ export interface ICommentDB extends Omit<IBaseDB, 'organizationId'> {
     likes: string[] | null;
     dislikes: string[] | null;
     replyCount: number;
+    originalLang: string;
     authorId: string;
 }

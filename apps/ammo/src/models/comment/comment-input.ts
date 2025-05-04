@@ -107,7 +107,8 @@ export class CommentInputModel implements ICommentInputModel {
         run: async () => {
             try {
                 const imageUris = await this.uploadImages();
-                await this.comments?.create.run({ text: this.value, imageUris, parentId: null });
+                const values = { text: this.value, imageUris, parentId: null };
+                await this.comments?.create.run(values);
                 this.clear();
             } catch (e) {
                 ErrorManager.request(e);
@@ -128,11 +129,10 @@ export class CommentInputModel implements ICommentInputModel {
     }
 
     get isLoading() {
-        return this.submit.isLoading;
+        return false;
     }
 
     get isVisible() {
-        return true;
-        // return !!stores.viewer.isAuthenticated;
+        return !!stores.viewer.isAuthenticated;
     }
 }

@@ -142,6 +142,7 @@ export class DBRemote
         this.explosiveObjectComponent.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_COMPONENT));
         this.material.setTableName(getCollection(TABLES.MATERIAL));
         this.status.setTableName(getCollection(TABLES.STATUSES));
+        this.comment.setTableName(getCollection(TABLES.COMMENT));
 
         this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
         this.explosiveObjectClass.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS));

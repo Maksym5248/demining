@@ -11,4 +11,5 @@ export interface IFlatListProps<T> extends FlatListProps<T> {
     isSearch?: boolean;
     isEndReached?: boolean;
     separator?: number;
+    isAnimated?: boolean;
 }

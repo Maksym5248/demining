@@ -25,6 +25,14 @@ interface IStores {
     user: IUserStore;
 }
 
+interface IServices {
+    localization: {
+        data: {
+            locale: string;
+        };
+    };
+}
+
 export class Comments implements IComments {
     entityId: string;
     type: COMMENT_TYPE;
@@ -33,6 +41,7 @@ export class Comments implements IComments {
     collection: CollectionModel<IComment, ICommentData>;
     list: IListModel<IComment, ICommentData>;
     getStores: () => IStores;
+    services: IServices;
 
     constructor(params: {
         entityId: string;
@@ -40,9 +49,11 @@ export class Comments implements IComments {
         api: IApi;
         collection: CollectionModel<IComment, ICommentData>;
         getStores: () => IStores;
+        services: IServices;
     }) {
         this.entityId = params.entityId;
         this.type = params.type;
+        this.services = params.services;
 
         this.collection = params.collection;
         this.api = params.api;
@@ -58,6 +69,7 @@ export class Comments implements IComments {
             const res = await this.api.comment.create(
                 createCommentDTO({
                     ...data,
+                    originalLang: this.services.localization.data.locale,
                     type: this.type,
                     entityId: this.entityId,
                 }),

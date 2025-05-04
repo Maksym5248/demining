@@ -27,6 +27,7 @@ export const createCommentDTO = (value: ICreateValue<ICommentCreateParamsDTO>): 
     entityId: value.entityId,
     parentId: value.parentId,
     imageUris: value.imageUris,
+    originalLang: value.originalLang,
 });
 
 export const updateCommentDTO = data.createUpdateDTO<ICommentData, ICommentUpdateParamsDTO>(value => ({
