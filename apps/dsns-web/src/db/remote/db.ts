@@ -67,9 +67,9 @@ const getUpdateDataMap = (value: Partial<IMapViewActionDB>) => {
     };
 };
 
-export class DBRemote implements IDB {
+export class DBRemote implements Omit<IDB, 'comment' | 'complain'> {
     /** COMMON COLLECTIONS */
-    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['email']);
+    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['name']);
 
     userAccess = new DBBase<IUserAccessDB>(TABLES.USER_ACCESS, []);
 
