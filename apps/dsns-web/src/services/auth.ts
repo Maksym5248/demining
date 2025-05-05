@@ -1,4 +1,3 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { getApp } from 'firebase/app';
 import {
     getAuth,
@@ -27,11 +26,7 @@ export class AuthClass implements IAuth {
         return getFunctions(getApp());
     }
 
-    init() {
-        GoogleSignin.configure({
-            webClientId: '',
-        });
-    }
+    init() {}
 
     currentUser() {
         return this.auth.currentUser as IAuthUser | null;
