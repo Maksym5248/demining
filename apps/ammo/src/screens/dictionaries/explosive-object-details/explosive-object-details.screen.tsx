@@ -15,7 +15,7 @@ import { useStyles } from './explosive-object-details.style';
 import { type IListItem, type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
 
-const mockId = 'SgmgAFIy3xkBUagzM5ZU';
+// const mockId = 'SgmgAFIy3xkBUagzM5ZU';
 
 export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjectDetailsScreenProps) => {
     const device = useDevice();
@@ -23,7 +23,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
     const s = useStyles();
     const t = useTranslate('screens.explosive-object-details');
 
-    const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params?.id ? route?.params : { id: mockId });
+    const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
     const animatedComment = useAnimatedCommentInput();
 
     const { details } = vm.item ?? {};

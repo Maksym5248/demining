@@ -5,21 +5,9 @@ import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
 import { CONFIG } from './config';
-import { PERMISSIONS, SCREENS, STORAGE } from './constants';
+import { PERMISSIONS, STORAGE } from './constants';
 import { Localization } from './localization';
-import {
-    Analytics,
-    AppState,
-    Auth,
-    BookCache,
-    Crashlytics,
-    Debugger,
-    ImageChahe,
-    LocalStore,
-    Navigation,
-    NetInfo,
-    Permissions,
-} from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo, Permissions } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -119,7 +107,7 @@ export class AppViewModel implements IAppViewModel {
                 await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init(), Permissions.init()]);
 
                 await stores.init.run();
-                Navigation.navigate(SCREENS.EXPLOSIVE_OBJECT_DETAILS);
+
                 setTimeout(() => {
                     this.initConfig();
                 }, 0);

@@ -1,8 +1,8 @@
 {
     "name": "ammo",
     "private": true,
-    "version": "1.6.0",
-    "build-number": 69,
+    "version": "1.7.0",
+    "build-number": 70,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
         "android-device": "react-native run-android --mode=devdebug --appIdSuffix=dev --deviceId=ec9d6a8d",
