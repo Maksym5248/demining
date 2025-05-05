@@ -113,7 +113,6 @@ export class CommentInputModel implements ICommentInputModel {
                 await this.comments?.create.run(values);
                 this.clear();
             } catch (e) {
-                console.log('ERROR', e);
                 ErrorManager.request(e);
             }
         },

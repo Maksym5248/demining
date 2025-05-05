@@ -42,6 +42,12 @@ export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     init({ id }: { id: string }) {
         this.currentId = id;
         this.characteristic.init({ id });
+        this.comments.init({ id });
+        this.input.init({ id });
+    }
+
+    unmount() {
+        this.input.clear();
     }
 
     get item() {

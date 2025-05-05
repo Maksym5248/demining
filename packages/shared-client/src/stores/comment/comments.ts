@@ -66,6 +66,7 @@ export class Comments implements IComments {
 
     create = new RequestModel({
         run: async (data: ICreateValue<ICreateCommentData>) => {
+            console.log('create comment 1', data);
             const res = await this.api.comment.create(
                 createCommentDTO({
                     ...data,
