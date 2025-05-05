@@ -24,6 +24,7 @@ export enum TABLES {
     BOOK = 'BOOK',
     APP_CONFIG = 'APP_CONFIG',
     COMMENT = 'COMMENT',
+    COMPLAIN = 'COMPLAIN',
 
     // user tables
     USER_INFO = 'USER_INFO', // public information (viewable by all users)

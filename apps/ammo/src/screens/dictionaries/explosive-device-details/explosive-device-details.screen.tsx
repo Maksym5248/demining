@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 
-import { Section } from '~/components';
+import { CommentInput, CommentView, Section } from '~/components';
+import { CommentsPreview } from '~/containers';
 import { Header, CarouselImage, List, type IFlatListRenderedItem } from '~/core';
-import { useViewModel } from '~/hooks';
+import { useAnimatedCommentInput, useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
 
@@ -19,10 +20,11 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
     const styles = useStylesCommon();
     const t = useTranslate('screens.explosive-device-details');
     const s = useStyles();
+    const animatedComment = useAnimatedCommentInput();
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params);
 
-    const items: IListItem[] = [
+    const dictionary: IListItem[] = [
         {
             id: 'carousel',
             isVisible: true,
@@ -58,14 +60,48 @@ export const ExplosiveDeviceDetailsScreen = observer(({ route }: IExplosiveDevic
             isVisible: vm.action.isVisible,
             render: () => <Section.Carousel title={t('action')} item={vm.action} />,
         },
-    ].filter(item => item.isVisible);
+        {
+            id: 'comment',
+            isVisible: true,
+            render: () => <CommentsPreview item={vm.comments} onMeasure={animatedComment.onMeasureCommentPreview} />,
+        },
+    ];
+
+    const comments: IListItem[] = useMemo(
+        () =>
+            vm.comments.items?.map(
+                el =>
+                    ({
+                        id: el.id,
+                        isVisible: true,
+                        render: () => <CommentView item={el} />,
+                    }) as IListItem,
+            ) ?? ([] as IListItem[]),
+        [vm.comments.items?.length],
+    );
+
+    const data = [...dictionary, ...comments].filter(item => item.isVisible);
 
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
 
     return (
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
-            <List data={items} renderItem={renderItem} contentContainerStyle={[styles.scrollViewContent, s.contentContainer]} />
+            <List
+                isAnimated
+                data={data}
+                renderItem={renderItem}
+                contentContainerStyle={[styles.scrollViewContent, s.contentContainer]}
+                isLoadingMore={vm.comments.isLoadingMore}
+                isEndReached={vm.comments.isEndReached}
+                onEndReached={() => vm.comments.loadMore.run()}
+                onScroll={animatedComment.onScroll}
+            />
+            <CommentInput
+                item={vm.input}
+                style={[styles.fillAbsoluteBottom, animatedComment.styles]}
+                onLayout={animatedComment.onLayoutCommentInput}
+            />
         </View>
     );
 });

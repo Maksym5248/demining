@@ -267,6 +267,12 @@
                 "text": "Please check your email to reset your account.",
                 "confirm": "Open email"
             }
+        },
+        "complain": {
+            "title": "Complain",
+            "textInput": "Text",
+            "button": "Send",
+            "sendSuccess": "Your complain has been sent. Thank you for your feedback."
         }
     },
     "modals": {

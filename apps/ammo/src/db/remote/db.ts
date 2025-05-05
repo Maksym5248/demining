@@ -25,6 +25,7 @@ import {
     type IUserAccessDB,
     type IMemberDB,
     type ICommentDB,
+    type IComplainDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -69,6 +70,7 @@ export class DBRemote
             | 'status'
             | 'rank'
             | 'comment'
+            | 'complain'
             | 'app'
         >
 {
@@ -102,6 +104,8 @@ export class DBRemote
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
 
     comment = new DBBase<ICommentDB>(TABLES.COMMENT, [], getCreateData);
+
+    complain = new DBBase<IComplainDB>(TABLES.COMPLAIN, [], getCreateData);
 
     app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
 

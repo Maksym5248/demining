@@ -1,9 +1,10 @@
 import { makeAutoObservable } from 'mobx';
+import { COMPLAIN_TYPE } from 'shared-my';
 import { dates, type IComment } from 'shared-my-client';
 
-import { MODALS } from '~/constants';
+import { MODALS, SCREENS } from '~/constants';
 import { t } from '~/localization';
-import { Modal } from '~/services';
+import { Modal, Navigation } from '~/services';
 import { stores } from '~/stores';
 import { type IOption } from '~/types';
 
@@ -66,6 +67,13 @@ export class CommentModel implements ICommentModel {
             onSelect: (value: IOption<string>) => {
                 if (value.value === 'delete') {
                     this.comments?.remove.run(this.id);
+                }
+
+                if (value.value === 'complain') {
+                    Navigation.push(SCREENS.COMPLAIN, {
+                        type: COMPLAIN_TYPE.COMMENT,
+                        entityId: this.id,
+                    });
                 }
             },
         });

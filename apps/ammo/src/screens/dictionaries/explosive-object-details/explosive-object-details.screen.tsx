@@ -115,7 +115,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                         render: () => <CommentView item={el} />,
                     }) as IListItem,
             ) ?? ([] as IListItem[]),
-        [vm.comments.items],
+        [vm.comments.items?.length],
     );
 
     const data = [...dictionary, ...comments].filter(item => item.isVisible);

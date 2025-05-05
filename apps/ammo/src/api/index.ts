@@ -10,6 +10,7 @@ import {
     CurrentUserAPI,
     CommentAPI,
     UserAPI,
+    ComplainAPI,
 } from 'shared-my-client';
 
 import { DB } from '~/db';
@@ -29,6 +30,7 @@ export const Api = {
     book: new BookAPI(DB),
     common: new CommonAPI(DB),
     comment: new CommentAPI(DB),
+    complain: new ComplainAPI(DB),
     user: new UserAPI(DB),
     currentUser: new CurrentUserAPI(DB, services),
     setLang: (lang: 'uk' | 'en') => DB.setLang(lang),

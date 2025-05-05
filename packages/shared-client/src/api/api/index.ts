@@ -18,3 +18,4 @@ export * from './book';
 export * from './common';
 export * from './current-user';
 export * from './comment';
+export * from './complain';

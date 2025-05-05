@@ -21,6 +21,8 @@ import {
     type ICommentStore,
     type IUserStore,
     UserStore,
+    ComplainStore,
+    type IComplainStore,
 } from 'shared-my-client';
 
 import { Api } from '~/api';
@@ -51,6 +53,7 @@ export class RootStore implements IRootStore {
     viewer: ViewerStore;
     comment: ICommentStore;
     user: IUserStore;
+    complain: IComplainStore;
 
     isLoaded = false;
     isInitialized = false;
@@ -95,6 +98,7 @@ export class RootStore implements IRootStore {
         this.book = new BookStore(this);
         this.user = new UserStore(this);
         this.comment = new CommentStore(this);
+        this.complain = new ComplainStore(this);
 
         makeAutoObservable(this);
     }

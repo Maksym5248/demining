@@ -56,6 +56,7 @@ export const StackNavigator = () => {
 
             {/* COMMON */}
             <Stack.Screen name={SCREENS.READER} component={screens.ReaderScreen} options={{ orientation: 'all' }} />
+            <Stack.Screen name={SCREENS.COMPLAIN} component={screens.ComplainScreen} />
         </Stack.Navigator>
     );
 };

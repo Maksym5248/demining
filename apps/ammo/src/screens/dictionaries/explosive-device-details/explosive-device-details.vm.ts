@@ -1,8 +1,16 @@
 import { makeAutoObservable } from 'mobx';
+import { COMMENT_TYPE } from 'shared-my';
 import { type IExplosiveDevice } from 'shared-my-client';
 
 import { type ISlide } from '~/components';
-import { SectionCarouselModel, type ISectionCarouselModel } from '~/models';
+import {
+    CommentInputModel,
+    CommentsModel,
+    type ICommentInputModel,
+    type ICommentsModel,
+    SectionCarouselModel,
+    type ISectionCarouselModel,
+} from '~/models';
 import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
@@ -16,11 +24,15 @@ export interface IExplosiveObjectDetailsVM extends ViewModel {
     structure: ISectionCarouselModel;
     action: ISectionCarouselModel;
     characteristic: ICharacteristicModel;
+    comments: ICommentsModel;
+    input: ICommentInputModel;
 }
 
 export class ExplosiveObjectDetailsVM implements IExplosiveObjectDetailsVM {
     currentId?: string = undefined;
     characteristic: ICharacteristicModel;
+    comments = new CommentsModel(COMMENT_TYPE.EXPLOSIVE_DEVICE);
+    input = new CommentInputModel(COMMENT_TYPE.EXPLOSIVE_DEVICE);
 
     constructor() {
         this.characteristic = new CharacteristicModel();

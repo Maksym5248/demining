@@ -17,4 +17,5 @@ export enum SCREENS {
     SIGN_UP = 'SignUp',
     PROFILE = 'Profile',
     RESET_PASSWORD = 'ResetPassword',
+    COMPLAIN = 'Complain',
 }

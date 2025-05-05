@@ -8,6 +8,12 @@ service cloud.firestore {
       allow create, update, delete: if false
     }
 
+    match /COMPLAIN/{id} {
+    	allow read: if isAuth();
+      allow create: if isAuth();
+      allow update, delete: if false
+    }
+
     match /COMMENT/LANG/{lang}/{id} {
     	allow read: if isAuth();
       allow create: if isAuth();

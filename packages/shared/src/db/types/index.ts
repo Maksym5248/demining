@@ -16,3 +16,4 @@ export * from './organization';
 export * from './transport';
 export * from './user';
 export * from './comment';
+export * from './complain';
