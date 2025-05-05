@@ -281,7 +281,7 @@ export const Layout = observer(() => {
                     menu={{
                         items: [
                             {
-                                label: store.viewer.user?.data.info.email,
+                                label: store.viewer.user?.displayName,
                                 key: 'email',
                             },
                             {

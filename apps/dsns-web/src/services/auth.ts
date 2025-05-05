@@ -11,6 +11,7 @@ import {
     signInAnonymously,
     type NextOrObserver,
     type User,
+    sendPasswordResetEmail,
 } from 'firebase/auth';
 import { getFunctions } from 'firebase/functions';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
@@ -32,6 +33,14 @@ export class AuthClass implements IAuth {
         });
     }
 
+    currentUser() {
+        return this.auth.currentUser as IAuthUser | null;
+    }
+
+    email() {
+        return this.auth.currentUser?.email ?? undefined;
+    }
+
     uuid() {
         return this.auth.currentUser?.uid;
     }
@@ -40,8 +49,13 @@ export class AuthClass implements IAuth {
         onAuthStateChanged(this.auth, fn as NextOrObserver<User>);
     }
 
+    async sendPasswordResetEmail(email: string) {
+        await sendPasswordResetEmail(this.auth, email);
+    }
+
     async signInWithGoogle() {
         await signInWithPopup(this.auth, this.googleProvider);
+        return true;
     }
 
     async signOut() {

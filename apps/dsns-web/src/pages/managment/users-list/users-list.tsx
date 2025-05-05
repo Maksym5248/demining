@@ -34,7 +34,7 @@ const ListItem = observer(({ item, organizationId }: { item: IUser; organization
         <List.Item key={item.id} actions={[<Button key="list-edit" icon={<Icon.EyeOutlined type="danger" />} onClick={onOpen} />]}>
             <List.Item.Meta
                 avatar={<Icon.UserOutlined />}
-                title={item.data.info.email}
+                title={item.displayName}
                 description={
                     <Space css={s.listItemDesc}>
                         <Text type="secondary">{dates.format(item.data.createdAt, 'YYYY-MM-DD HH:mm')}</Text>

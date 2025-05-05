@@ -94,10 +94,10 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                             options={
                                 wizard.isCreate
                                     ? user.listUnassigned.asArray.map(el => ({
-                                          label: el.data.info.email,
+                                          label: el.displayName,
                                           value: el.id,
                                       }))
-                                    : [{ label: member?.data.info.email, value: member?.id }]
+                                    : [{ label: member?.displayName, value: member?.id }]
                             }
                         />
                     </Form.Item>
