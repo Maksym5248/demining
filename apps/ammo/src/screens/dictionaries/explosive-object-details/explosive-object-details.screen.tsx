@@ -2,12 +2,11 @@ import React, { useCallback, useMemo } from 'react';
 
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
-import { interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { CommentInput, CommentView, Section } from '~/components';
 import { CommentsPreview } from '~/containers';
 import { Header, type IFlatListRenderedItem, List, Paragraph, CarouselImage, Block } from '~/core';
-import { useViewModel } from '~/hooks';
+import { useAnimatedCommentInput, useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
 
@@ -23,11 +22,9 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
     const styles = useStylesCommon();
     const s = useStyles();
     const t = useTranslate('screens.explosive-object-details');
-    const visible = useSharedValue(0);
-    const scrollY = useSharedValue(0);
-    const commentInputHeight = useSharedValue(0);
 
     const vm = useViewModel<IExplosiveObjectDetailsVM>(createVM(route?.params?.id), route?.params?.id ? route?.params : { id: mockId });
+    const animatedComment = useAnimatedCommentInput();
 
     const { details } = vm.item ?? {};
 
@@ -104,9 +101,7 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
         {
             id: 'comment',
             isVisible: true,
-            render: () => (
-                <CommentsPreview isComments={vm.comments.isComments} onLayout={e => console.log('TEST', e.nativeEvent.layout.y)} />
-            ),
+            render: () => <CommentsPreview item={vm.comments} onMeasure={animatedComment.onMeasureCommentPreview} />,
         },
     ];
 
@@ -127,39 +122,6 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
 
     const renderItem = useCallback(({ item }: IFlatListRenderedItem<IListItem>) => item.render(), []);
 
-    const onLayoutCommentInput = useCallback(
-        (event: any) => {
-            const { height } = event.nativeEvent.layout;
-            commentInputHeight.value = height;
-        },
-        [vm.input],
-    );
-
-    const handler = useAnimatedScrollHandler(
-        {
-            onEndDrag: e => {
-                scrollY.value = e.contentOffset.y;
-
-                if (e.contentOffset.y > 120) {
-                    visible.value = withTiming(1, { duration: 200 });
-                } else {
-                    visible.value = withTiming(0, { duration: 200 });
-                }
-            },
-        },
-        [],
-    );
-
-    const commentStyles = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {
-                    translateY: interpolate(visible.value, [0, 1], [commentInputHeight.value, 0]),
-                },
-            ],
-        };
-    }, []);
-
     return (
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
@@ -168,13 +130,16 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
                 data={data}
                 renderItem={renderItem}
                 contentContainerStyle={[styles.scrollViewContent, s.contentContainer]}
-                isLoading={vm.comments.isLoading}
                 isLoadingMore={vm.comments.isLoadingMore}
                 isEndReached={vm.comments.isEndReached}
-                onEndReached={() => vm.comments.loadMore()}
-                onScroll={handler}
+                onEndReached={() => vm.comments.loadMore.run()}
+                onScroll={animatedComment.onScroll}
             />
-            <CommentInput item={vm.input} style={[styles.fillAbsoluteBottom, commentStyles]} onLayout={onLayoutCommentInput} />
+            <CommentInput
+                item={vm.input}
+                style={[styles.fillAbsoluteBottom, animatedComment.styles]}
+                onLayout={animatedComment.onLayoutCommentInput}
+            />
         </View>
     );
 });

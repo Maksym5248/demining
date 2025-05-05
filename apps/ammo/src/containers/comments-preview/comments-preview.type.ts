@@ -1,6 +1,6 @@
-import { type LayoutChangeEvent } from 'react-native';
+import { type ICommentsModel } from '~/models';
 
 export interface ICommentsPreviewProps {
-    isComments: boolean;
-    onLayout?: (event: LayoutChangeEvent) => void;
+    item: ICommentsModel;
+    onMeasure?: (size: { x: number; y: number; width: number; height: number; pageX: number; pageY: number }) => void;
 }

@@ -11,7 +11,8 @@ service cloud.firestore {
     match /COMMENT/LANG/{lang}/{id} {
     	allow read: if isAuth();
       allow create: if isAuth();
-      allow update, delete: if false
+      allow update: if isAuth() && disableUpdateKeys(['id', "type", "authorId", 'id', "entityId", "replyCount", 'originalLang']);
+      allow delete: if false;
     }
 
     match /BOOK_TYPE/LANG/{lang}/{id} {
@@ -69,7 +70,7 @@ service cloud.firestore {
     }
 
     match /USER_INFO/{userId} {
-      allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
+      allow read: if isAuth();
       allow create: if false;
       allow update: if (disableUpdateKeys(['id', "email", "createdAt"]) && isUserSelf(userId)) || isRootAdmin() || isOrganizationAdmin();
       allow delete: if isRootAdmin();

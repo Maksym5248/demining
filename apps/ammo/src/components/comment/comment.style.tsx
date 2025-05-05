@@ -54,5 +54,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
     action: {
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.spacing.XS,
     },
 }));

@@ -55,7 +55,12 @@ export class Comment implements IComment {
     }
 
     get author() {
-        return this.getStores().user.collection.get(this.data.authorId);
+        return this.isMyComment ? this.getStores().viewer.user?.asUser : this.getStores().user.collection.get(this.data.authorId);
+    }
+
+    get isMyComment() {
+        const id = this.getStores().viewer.user?.id;
+        return id ? this.data.authorId === id : false;
     }
 
     updateFields(data: Partial<ICommentData>) {
@@ -100,17 +105,25 @@ export class Comment implements IComment {
                 throw new Error('User not found');
             }
 
-            if (this.isLiked) {
+            if (this.isMyComment) {
                 return;
             }
 
-            this.data.likes.push(id);
-            this.data.dislikes = this.data.dislikes.filter(id => id !== id);
+            if (this.isLiked) {
+                this.data.likes = this.data.likes.filter(id => id !== id);
 
-            await this.api.comment.update(this.data.id, {
-                likes: this.data.likes,
-                dislikes: this.data.dislikes,
-            });
+                await this.api.comment.update(this.data.id, {
+                    likes: [...this.data.likes, id],
+                });
+            } else {
+                this.data.likes.push(id);
+                this.data.dislikes = this.data.dislikes.filter(id => id !== id);
+
+                await this.api.comment.update(this.data.id, {
+                    likes: this.data.likes,
+                    dislikes: this.data.dislikes,
+                });
+            }
         },
     });
 
@@ -122,17 +135,25 @@ export class Comment implements IComment {
                 throw new Error('User not found');
             }
 
-            if (this.isDisliked) {
+            if (this.isMyComment) {
                 return;
             }
 
-            this.data.dislikes.push(id);
-            this.data.likes = this.data.likes.filter(id => id !== id);
+            if (this.isDisliked) {
+                this.data.dislikes = this.data.dislikes.filter(id => id !== id);
 
-            await this.api.comment.update(this.data.id, {
-                dislikes: [...this.data.dislikes, id],
-                likes: this.data.likes.filter(id => id !== id),
-            });
+                await this.api.comment.update(this.data.id, {
+                    dislikes: [...this.data.dislikes, id],
+                });
+            } else {
+                this.data.dislikes.push(id);
+                this.data.likes = this.data.likes.filter(id => id !== id);
+
+                await this.api.comment.update(this.data.id, {
+                    dislikes: [...this.data.dislikes, id],
+                    likes: this.data.likes.filter(id => id !== id),
+                });
+            }
         },
     });
 }

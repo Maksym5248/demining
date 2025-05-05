@@ -155,7 +155,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
             this.collection,
             arr.length >= 2 ? and(...arr) : arr[0],
             ...(args?.order ? [getOrder(args?.order)] : []),
-            ...(args?.startAfter ? [startAfter(args?.startAfter)] : []),
+            ...(args?.startAfter ? [startAfter(args.startAfter)] : []),
             ...(args?.startAt ? [startAt(args?.startAt)] : []),
             ...(args?.endAt ? [endAt(args?.endAt as number)] : []),
             ...(args?.limit ? [limit(args?.limit)] : []),

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { APPROVE_STATUS, type ROLES } from 'shared-my';
 
-import { type ICurrentUserAPI } from '~/api';
+import { type IUserAPI, type ICurrentUserAPI } from '~/api';
 import { type IRequestModel, RequestModel } from '~/models';
 import { type IAuthUser, type IAnalytics, type IAuth, type ILogger, type IMessage } from '~/services';
 
@@ -28,6 +28,7 @@ export interface IViewerStore {
 
 interface IApi {
     currentUser: ICurrentUserAPI;
+    user: IUserAPI;
 }
 
 interface IServices {

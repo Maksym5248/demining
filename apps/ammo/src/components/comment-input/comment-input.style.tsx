@@ -29,6 +29,9 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         display: 'flex',
         paddingHorizontal: theme.spacing.XS,
     },
+    loading: {
+        maxWidth: 16,
+    },
     buttons: {
         marginBottom: theme.spacing.XS,
     },

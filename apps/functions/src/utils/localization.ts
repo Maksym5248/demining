@@ -1,5 +1,4 @@
 export const DEFAULT_SOURCE_LANG = 'uk';
-export const TARGET_LANG = 'en';
 export const TARGET_LANGS = ['uk', 'en'];
 
 // List of collections to apply translation to

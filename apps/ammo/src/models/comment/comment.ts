@@ -1,11 +1,13 @@
 import { makeAutoObservable } from 'mobx';
-import { type IComment } from 'shared-my-client';
+import { dates, type IComment } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
 import { Modal } from '~/services';
 
 export interface ICommentModel {
     openGallery: (index: number) => void;
+    like: () => void;
+    dislike: () => void;
     id: string;
     photoUri: string | undefined;
     title?: string;
@@ -17,6 +19,7 @@ export interface ICommentModel {
     isLiked: boolean;
     isDisliked: boolean;
     isReply: boolean;
+    createAt: string;
 }
 
 export class CommentModel implements ICommentModel {
@@ -26,6 +29,13 @@ export class CommentModel implements ICommentModel {
 
     openGallery = (index: number) => {
         Modal.show(MODALS.GALLERY, { images: this.item.data.imageUris.map(uri => ({ uri })), index });
+    };
+
+    like = () => {
+        this.item.like.run();
+    };
+    dislike = () => {
+        this.item.dislike.run();
     };
 
     get id() {
@@ -70,5 +80,9 @@ export class CommentModel implements ICommentModel {
 
     get isReply() {
         return this.item.isReply;
+    }
+
+    get createAt() {
+        return dates.format(this.item.createdAt, 'YYYY-MM-DD HH:mm');
     }
 }

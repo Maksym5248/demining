@@ -101,7 +101,7 @@ export class Comments implements IComments {
     });
 
     fetchMoreList = new RequestModel({
-        shouldRun: () => this.list.isMorePages,
+        shouldRun: () => this.list.isMorePages && !this.fetchList.isLoading,
         run: async () => {
             const res = await this.api.comment.getList({
                 where: {

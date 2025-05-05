@@ -45,7 +45,7 @@ export const CommentInput = observer(({ item, style, onLayout }: ICommentInputPr
                         style={s.buttons}
                     />
                 )}
-                {!!item.isLoading && <Loading isVisible size="small" color={theme.colors.accent} style={s.buttons} />}
+                {!!item.isLoading && <Loading isVisible size="small" color={theme.colors.accent} style={[s.buttons, s.loading]} />}
             </Animated.View>
         )
     );

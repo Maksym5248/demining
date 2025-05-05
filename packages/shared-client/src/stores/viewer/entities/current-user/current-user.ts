@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type ICurrentUserAPI } from '~/api';
+import { type IUserAPI, type ICurrentUserAPI } from '~/api';
+import { User } from '~/index';
 import { type IDataModel, RequestModel } from '~/models';
 import { type IAuthUser } from '~/services';
 
@@ -10,10 +11,12 @@ export interface ICurrentUser extends IDataModel<ICurrentUserData> {
     email: string | undefined;
     displayName: string | undefined;
     updateInfo: RequestModel<[ICurrentUserInfoUpdateData]>;
+    asUser: User;
 }
 
 interface IApi {
     currentUser: ICurrentUserAPI;
+    user: IUserAPI;
 }
 
 export class CurrentUser implements ICurrentUser {
@@ -27,6 +30,10 @@ export class CurrentUser implements ICurrentUser {
         this.authData = params.authData;
 
         makeAutoObservable(this);
+    }
+
+    get asUser() {
+        return new User(this.data, this);
     }
 
     updateFields(data: Partial<ICurrentUserData>) {

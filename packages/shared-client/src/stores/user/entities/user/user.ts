@@ -3,7 +3,6 @@ import { type ROLES } from 'shared-my';
 
 import { type IUserAPI } from '~/api';
 import { RequestModel, type IDataModel } from '~/models';
-import { type IMessage } from '~/services';
 
 import { type IUpdateUserParams, type IUserData } from './user.schema';
 
@@ -18,19 +17,13 @@ interface IApi {
     user: IUserAPI;
 }
 
-interface IServices {
-    message: IMessage;
-}
-
 export class User implements IUser {
     data: IUserData;
     api: IApi;
-    services: IServices;
 
-    constructor(data: IUserData, params: { api: IApi; services: IServices }) {
+    constructor(data: IUserData, params: { api: IApi }) {
         this.data = data;
         this.api = params.api;
-        this.services = params.services;
 
         makeAutoObservable(this);
     }
@@ -60,6 +53,5 @@ export class User implements IUser {
             await this.api.user.update(this.id, user);
             this.updateFields(user);
         },
-        onError: () => this.services.message.error('Виникла помилка'),
     });
 }

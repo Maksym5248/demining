@@ -1,3 +1,4 @@
+import { trim } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 import { type COMMENT_TYPE, ERROR_MESSAGE } from 'shared-my';
 import { type IRequestModel, RequestModel } from 'shared-my-client';
@@ -104,6 +105,7 @@ export class CommentInputModel implements ICommentInputModel {
     }
 
     submit = new RequestModel({
+        returnIfLoading: true,
         run: async () => {
             try {
                 const imageUris = await this.uploadImages();
@@ -111,13 +113,14 @@ export class CommentInputModel implements ICommentInputModel {
                 await this.comments?.create.run(values);
                 this.clear();
             } catch (e) {
+                console.log('ERROR', e);
                 ErrorManager.request(e);
             }
         },
     });
 
     get isDisabled() {
-        return !this.images.length && !this.value;
+        return !this.images.length && !trim(this.value);
     }
 
     get isSelectedImages() {
@@ -129,7 +132,7 @@ export class CommentInputModel implements ICommentInputModel {
     }
 
     get isLoading() {
-        return false;
+        return this.submit.isLoading;
     }
 
     get isVisible() {
