@@ -5,6 +5,13 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         padding: theme.spacing.XS,
         flexDirection: 'row',
     },
+    header: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: theme.spacing.XS,
+    },
     content: {
         flex: 1,
         paddingLeft: theme.spacing.XS,
@@ -56,5 +63,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         flexDirection: 'row',
         alignItems: 'center',
         gap: theme.spacing.XS,
+    },
+    dots: {
+        alignSelf: 'flex-start',
     },
 }));

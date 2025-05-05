@@ -66,6 +66,7 @@ export class ExplosiveDeviceModel implements IExplosiveDeviceModel {
         Modal.show(MODALS.SELECT, {
             value: this.filters.type,
             options: this.typeOptions,
+            isMulti: true,
             onSelect,
         });
     }

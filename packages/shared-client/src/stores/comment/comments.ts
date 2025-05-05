@@ -80,8 +80,10 @@ export class Comments implements IComments {
 
     remove = new RequestModel({
         run: async (id: string) => {
+            console.log('remove comment 1', id);
+            this.list.remove(id);
             await this.api.comment.remove(id);
-            this.collection.remove(id);
+            console.log('remove comment 2', id);
         },
     });
 

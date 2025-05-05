@@ -18,7 +18,7 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, isMult
     const refBootomSheet = useRef<IBottomSheetRef>(null);
     const [selected, setSelected] = useState<unknown[]>(isArray(value) ? [...value] : [value]);
 
-    const onSubmit = useCallback((v: IOption<unknown>[]) => {
+    const onSubmit = useCallback((v: IOption<unknown> | IOption<unknown>[]) => {
         refBootomSheet.current?.close();
         onSelect?.(v);
     }, []);
@@ -33,7 +33,7 @@ export const SelectModal = memo(({ title, value, options, onSelect, hide, isMult
                 const isSelected = selected.includes(value.value);
                 setSelected(isSelected ? selected.filter(v => v !== value.value) : [...selected, value.value]);
             } else {
-                onSubmit([value]);
+                onSubmit(value);
             }
         },
         [onSelect, hide, selected, isMulti],

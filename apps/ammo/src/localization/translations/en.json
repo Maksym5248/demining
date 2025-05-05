@@ -29,6 +29,10 @@
     "message": {
         "updatedSuccess": "Data updated successfully"
     },
+    "select": {
+        "delete": "Delete",
+        "complain": "Complain"
+    },
     "updates": {
         "dictionaries": {
             "title": "Download",

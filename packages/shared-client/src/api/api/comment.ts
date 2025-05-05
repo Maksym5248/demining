@@ -45,11 +45,16 @@ export class CommentAPI implements ICommentAPI {
 
     async getList(query?: IQuery): Promise<ICommentFullDTO[]> {
         const comments = await this.db.comment.select({
+            ...(query ?? {}),
             order: {
                 by: 'createdAt',
                 type: 'desc',
+                ...(query?.order ?? {}),
             },
-            ...(query ?? {}),
+            where: {
+                isDeleted: false,
+                ...(query?.where ?? {}),
+            },
         });
 
         if (!comments || !comments.length) return [];

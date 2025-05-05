@@ -22,12 +22,16 @@ export const CommentView = observer(({ item, style }: ICommentViewProps) => {
         <View style={[s.container, style]}>
             <Avatar uri={item.photoUri} size={48} />
             <View style={s.content}>
-                {!!item.title && (
-                    <View style={s.titleConainer}>
-                        <Text type="h5" numberOfLines={1} text={item.title} />
-                        <Text type="p5" numberOfLines={1} text={item.createAt} color={theme.colors.inertDark} />
-                    </View>
-                )}
+                <View style={s.header}>
+                    {!!item.title && (
+                        <View style={s.titleConainer}>
+                            <Text type="h5" numberOfLines={1} text={item.title} />
+                            <Text type="p5" numberOfLines={1} text={item.createAt} color={theme.colors.inertDark} />
+                        </View>
+                    )}
+                    <Icon name="dots-vertical" color={theme.colors.inertDark} onPress={() => item.openMenu()} style={s.dots} />
+                </View>
+
                 {item.imageUris.length > 0 && (
                     <View style={s.imageContainer}>
                         {item.imageUris

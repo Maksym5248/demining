@@ -29,6 +29,10 @@
     "message": {
         "updatedSuccess": "Оновлено успішно"
     },
+    "select": {
+        "delete": "Видалити",
+        "complain": "Поскаржитись"
+    },
     "updates": {
         "dictionaries": {
             "title": "Завантажити",

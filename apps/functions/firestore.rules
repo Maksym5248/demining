@@ -11,7 +11,7 @@ service cloud.firestore {
     match /COMMENT/LANG/{lang}/{id} {
     	allow read: if isAuth();
       allow create: if isAuth();
-      allow update: if isAuth() && disableUpdateKeys(['id', "type", "authorId", 'id', "entityId", "replyCount", 'originalLang']);
+      allow update: if isAuth() && disableUpdateKeys(['id', "type", "authorId", "entityId", "replyCount", 'originalLang']);
       allow delete: if false;
     }
 

@@ -2,12 +2,16 @@ import { makeAutoObservable } from 'mobx';
 import { dates, type IComment } from 'shared-my-client';
 
 import { MODALS } from '~/constants';
+import { t } from '~/localization';
 import { Modal } from '~/services';
+import { stores } from '~/stores';
+import { type IOption } from '~/types';
 
 export interface ICommentModel {
     openGallery: (index: number) => void;
     like: () => void;
     dislike: () => void;
+    openMenu: () => void;
     id: string;
     photoUri: string | undefined;
     title?: string;
@@ -31,9 +35,46 @@ export class CommentModel implements ICommentModel {
         Modal.show(MODALS.GALLERY, { images: this.item.data.imageUris.map(uri => ({ uri })), index });
     };
 
+    get comments() {
+        return stores.comment.get(this.item.data.entityId, this.item.data.type);
+    }
+
+    get menuOptions() {
+        return [
+            ...(this.item.isMy
+                ? [
+                      {
+                          value: 'delete',
+                          title: t('select.delete'),
+                      },
+                  ]
+                : []),
+            ...(this.item.isMy
+                ? [
+                      {
+                          value: 'complain',
+                          title: t('select.complain'),
+                      },
+                  ]
+                : []),
+        ];
+    }
+
+    openMenu = () => {
+        Modal.show(MODALS.SELECT, {
+            options: this.menuOptions,
+            onSelect: (value: IOption<string>) => {
+                if (value.value === 'delete') {
+                    this.comments?.remove.run(this.id);
+                }
+            },
+        });
+    };
+
     like = () => {
         this.item.like.run();
     };
+
     dislike = () => {
         this.item.dislike.run();
     };

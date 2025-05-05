@@ -5,6 +5,7 @@ import close from './close.svg';
 import cloudUpdate from './cloud-update.svg';
 import debuggerIcon from './debugger.svg';
 import dictionary from './dictionary.svg';
+import dotsVertical from './dots-vertical.svg';
 import download from './download.svg';
 import edit from './edit.svg';
 import eyeHidden from './eye-hidden.svg';
@@ -44,4 +45,5 @@ export const svgIcons = {
     send,
     gallery,
     ['gallery-empty']: galleryEmpty,
+    ['dots-vertical']: dotsVertical,
 };

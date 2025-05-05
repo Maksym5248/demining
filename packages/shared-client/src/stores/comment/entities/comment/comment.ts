@@ -21,6 +21,7 @@ export interface IComment extends IDataModel<ICommentData> {
     dislikesCount: number;
     replyCount: number;
     isReply: boolean;
+    isMy: boolean;
 }
 
 interface IApi {
@@ -55,10 +56,10 @@ export class Comment implements IComment {
     }
 
     get author() {
-        return this.isMyComment ? this.getStores().viewer.user?.asUser : this.getStores().user.collection.get(this.data.authorId);
+        return this.isMy ? this.getStores().viewer.user?.asUser : this.getStores().user.collection.get(this.data.authorId);
     }
 
-    get isMyComment() {
+    get isMy() {
         const id = this.getStores().viewer.user?.id;
         return id ? this.data.authorId === id : false;
     }
@@ -105,7 +106,7 @@ export class Comment implements IComment {
                 throw new Error('User not found');
             }
 
-            if (this.isMyComment) {
+            if (this.isMy) {
                 return;
             }
 
@@ -135,7 +136,7 @@ export class Comment implements IComment {
                 throw new Error('User not found');
             }
 
-            if (this.isMyComment) {
+            if (this.isMy) {
                 return;
             }
 

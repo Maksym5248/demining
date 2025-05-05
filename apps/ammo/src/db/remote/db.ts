@@ -37,6 +37,7 @@ const organizationId: string | null = null;
 const getCreateData = () => ({
     authorId: Auth.uuid(),
     organizationId,
+    isDeleted: false,
 });
 
 export class DBRemote
