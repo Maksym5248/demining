@@ -29,7 +29,7 @@ export class UserStore implements IUserStore {
     api: IApi;
     services: IServices;
 
-    collection = new CollectionModel<IUser, IUserData>({ factory: data => new User(data, { api: this.api, services: this.services }) });
+    collection = new CollectionModel<IUser, IUserData>({ factory: data => new User(data, { api: this.api }) });
     listUnassigned = new ListModel<IUser, IUserData>(this);
     list = new ListModel<IUser, IUserData>(this);
 
