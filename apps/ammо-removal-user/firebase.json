@@ -1,0 +1,6 @@
+{
+    "hosting": {
+      "site": "ammo-remove-user",
+      "public": "public"
+    }
+  }

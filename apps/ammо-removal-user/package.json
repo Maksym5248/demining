@@ -1,0 +1,9 @@
+{
+  "name": "ammo-remove-user",
+  "version": "1.1.0",
+  "main": "index.html",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "firebase deploy --project dsns-56583 --only hosting:ammo-remove-user"
+  }
+}
