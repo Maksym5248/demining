@@ -37,6 +37,6 @@ export class ErrorManagerClass implements IErrorManager {
         }
 
         this.message.error(error.message);
-        this.logger.error(error);
+        this.logger.error((error.data as Error)?.message || error);
     }
 }

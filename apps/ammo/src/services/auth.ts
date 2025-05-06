@@ -116,10 +116,12 @@ export class AuthClass implements IAuth {
     }
 
     onAuthStateChanged(fn: (user: IAuthUser | null) => void) {
+        // @ts-expect-error
         onAuthStateChanged(this.auth, fn);
     }
 
     onIdTokenChanged(fn: (user: IAuthUser | null) => void) {
+        // @ts-expect-error
         onIdTokenChanged(this.auth, fn);
     }
 }

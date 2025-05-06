@@ -11,6 +11,6 @@ cat ./config/google-services.json | base64 > ./config/clone/google-services.json
 cat ./config/GoogleService-Info.plist > ./config/clone/GoogleService-Info.plist
 cat ./config/gradle.sign.properties | base64 > ./config/clone/gradle.sign.properties.base64
 cat ./config/sentry.properties | base64 > ./config/clone/sentry.properties.base64
-cat .env | base64 > ./config/clone/.env.base64
+cat ./config/env | base64 > ./config/clone/.env.base64
 cat ./config/google-play-service-account.json | base64 > ./config/clone/google-play-service-account.json.base64
 

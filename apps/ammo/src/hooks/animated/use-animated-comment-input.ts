@@ -28,13 +28,13 @@ export const useAnimatedCommentInput = () => {
         commentPreviewY.value = e.pageY - e.height - windowHeight;
 
         if (device.window.height - e.pageY > 0) {
-            visible.value = withTiming(1, { duration: 200 });
+            visible.set(1);
         }
     }, []);
 
     const onLayoutCommentInput = useCallback((event: any) => {
         const { height } = event.nativeEvent.layout;
-        commentInputHeight.value = height;
+        commentInputHeight.set(height);
     }, []);
 
     const onScroll = useAnimatedScrollHandler(

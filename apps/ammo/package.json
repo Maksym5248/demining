@@ -2,7 +2,7 @@
     "name": "ammo",
     "private": true,
     "version": "1.7.0",
-    "build-number": 72,
+    "build-number": 74,
     "scripts": {
         "android": "react-native run-android --mode=devdebug --appIdSuffix=dev",
         "android-device": "react-native run-android --mode=devdebug --appIdSuffix=dev --deviceId=ec9d6a8d",
@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "@firebase/firestore-types": "^3.0.3",
+        "@react-native-clipboard/clipboard": "^1.16.2",
         "@react-native-community/netinfo": "11.4.1",
         "@react-native-firebase/analytics": "22.1.0",
         "@react-native-firebase/app": "22.1.0",
