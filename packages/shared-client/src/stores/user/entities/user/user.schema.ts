@@ -24,6 +24,7 @@ export const createUser = (value: IUserDTO): IUserData => ({
     id: value.id,
     info: {
         photoUri: value?.info?.photoUri ?? '',
+        name: value?.info?.name,
     },
     access: { ...(value?.access ?? {}) },
     member: {

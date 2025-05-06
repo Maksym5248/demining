@@ -8,8 +8,8 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme, device }) => ({
         flexDirection: 'row',
         borderTopColor: theme.colors.accent,
         borderTopWidth: 1,
-        paddingBottom: device.inset.bottom,
         backgroundColor: theme.colors.backgroundSecondary,
+        paddingBottom: device.isIOS ? device.inset.bottom : theme.spacing.XS,
         alignItems: 'flex-end',
     },
     badge: {
