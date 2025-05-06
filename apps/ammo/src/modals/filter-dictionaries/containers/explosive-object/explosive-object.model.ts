@@ -134,6 +134,7 @@ export class ExplosiveObjectModel implements IExplosiveObjectModel {
         Modal.show(MODALS.SELECT, {
             value: this.filters.typeId,
             options: this.typeOptions,
+            isMulti: true,
             onSelect,
         });
     }

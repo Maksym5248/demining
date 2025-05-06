@@ -10,6 +10,20 @@ import { initializeApp } from 'firebase-admin/app';
 
 initializeApp();
 
-import { processSignUp, refreshToken, translateOnWrite } from './api';
+import {
+    onMemberUpdate,
+    onUserAccessUpdate,
+    onUserCreate,
+    translateOnWrite,
+    onUserDelete,
+    onCommentReplyWrite,
+} from './api';
 
-export { processSignUp, refreshToken, translateOnWrite };
+export {
+    onMemberUpdate,
+    onUserAccessUpdate,
+    onUserCreate,
+    translateOnWrite,
+    onUserDelete,
+    onCommentReplyWrite,
+};

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <rect fill="#D1FAE5" width="100" height="100"/>
+  <!-- Document/Form -->
+  <rect fill="#FFFFFF" x="15" y="15" width="70" height="70" rx="5"/>
+  <line stroke="#E5E7EB" stroke-width="2" x1="25" y1="30" x2="75" y2="30"/>
+  <line stroke="#E5E7EB" stroke-width="2" x1="25" y1="40" x2="75" y2="40"/>
+  <line stroke="#E5E7EB" stroke-width="2" x1="25" y1="50" x2="60" y2="50"/>
+  <line stroke="#E5E7EB" stroke-width="2" x1="25" y1="60" x2="75" y2="60"/>
+  <line stroke="#E5E7EB" stroke-width="2" x1="25" y1="70" x2="50" y2="70"/>
+  <!-- Pencil -->
+  <polygon fill="#FDBA74" points="65,55 85,75 80,80 60,60"/>
+  <polygon fill="#9CA3AF" points="60,60 58,62 78,82 80,80"/>
+  <polygon fill="#374151" points="58,62 55,65 75,85 78,82"/>
+</svg>

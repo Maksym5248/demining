@@ -22,16 +22,23 @@ import {
     type IMaterialDB,
     type IStatusDB,
     type IRankDB,
+    type IUserAccessDB,
+    type IMemberDB,
+    type ICommentDB,
+    type IComplainDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
+
+import { Auth } from '~/services';
 
 import { DBBase } from './db-base';
 
 const organizationId: string | null = null;
 
 const getCreateData = () => ({
-    authorId: '',
+    authorId: Auth.uuid(),
     organizationId,
+    isDeleted: false,
 });
 
 export class DBRemote
@@ -62,10 +69,14 @@ export class DBRemote
             | 'material'
             | 'status'
             | 'rank'
+            | 'comment'
+            | 'complain'
             | 'app'
         >
 {
-    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, ['email']);
+    userInfo = new DBBase<IUserInfoDB>(TABLES.USER_INFO, []);
+    userAccess = new DBBase<IUserAccessDB>(TABLES.USER_ACCESS);
+    member = new DBBase<IMemberDB>(TABLES.MEMBER);
 
     explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], getCreateData, undefined);
 
@@ -91,6 +102,10 @@ export class DBRemote
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
+
+    comment = new DBBase<ICommentDB>(TABLES.COMMENT, [], getCreateData);
+
+    complain = new DBBase<IComplainDB>(TABLES.COMPLAIN, [], getCreateData);
 
     app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
 
@@ -132,6 +147,7 @@ export class DBRemote
         this.explosiveObjectComponent.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_COMPONENT));
         this.material.setTableName(getCollection(TABLES.MATERIAL));
         this.status.setTableName(getCollection(TABLES.STATUSES));
+        this.comment.setTableName(getCollection(TABLES.COMMENT));
 
         this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
         this.explosiveObjectClass.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS));

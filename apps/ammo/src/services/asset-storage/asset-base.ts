@@ -1,5 +1,6 @@
 import { getApp } from '@react-native-firebase/app';
-import { getStorage, ref, uploadBytes, deleteObject, getBlob, getDownloadURL } from '@react-native-firebase/storage';
+import { getStorage, ref, uploadBytes, deleteObject, getBlob, getDownloadURL, putFile } from '@react-native-firebase/storage';
+import { isString } from 'lodash';
 import { type ASSET_TYPE } from 'shared-my';
 import { Cache } from 'shared-my-client';
 import { type IAssetStorageBase } from 'shared-my-client';
@@ -36,11 +37,15 @@ export class AssetStorageBase implements IAssetStorageBase {
         return await getDownloadURL(fileRef);
     }
 
-    async save(id: string, data: File): Promise<void> {
+    async save(id: string, data: File | string): Promise<void> {
         const fileRef = this.getFileRef(id);
 
-        await uploadBytes(fileRef, data);
-        this.cache.set(id, data);
+        if (isString(data)) {
+            await putFile(fileRef, data);
+        } else {
+            await uploadBytes(fileRef, data);
+            this.cache.set(id, data);
+        }
     }
 
     async read(id: string): Promise<File | null> {
@@ -67,7 +72,7 @@ export class AssetStorageBase implements IAssetStorageBase {
         this.cache.set(id, file);
     }
 
-    async create(file: File) {
+    async create(file: File | string) {
         const id = uuid.v4();
         await this.save(id, file);
         const downloadURL = await this.getFileUrl(id);

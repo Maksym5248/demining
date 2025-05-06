@@ -1,6 +1,5 @@
-import { type ViewStyle } from 'react-native';
-
 import { type svgIcons } from '~/assets';
+import { type IViewStyle } from '~/types';
 
 export type IIconName = keyof typeof svgIcons;
 
@@ -9,8 +8,8 @@ export interface IIconProps {
     size?: number;
     color?: string;
     secondColor?: string;
-    style?: ViewStyle;
-    svgStyle?: ViewStyle;
+    style?: IViewStyle;
+    svgStyle?: IViewStyle;
     onPress?: () => void;
     disabled?: boolean;
 }

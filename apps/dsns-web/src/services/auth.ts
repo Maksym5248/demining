@@ -10,12 +10,13 @@ import {
     signInAnonymously,
     type NextOrObserver,
     type User,
+    sendPasswordResetEmail,
 } from 'firebase/auth';
-import { httpsCallable, getFunctions } from 'firebase/functions';
+import { getFunctions } from 'firebase/functions';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
 
 export class AuthClass implements IAuth {
-    googleProvide = new GoogleAuthProvider();
+    googleProvider = new GoogleAuthProvider();
 
     private get auth() {
         return getAuth(getApp());
@@ -23,6 +24,16 @@ export class AuthClass implements IAuth {
 
     private get functions() {
         return getFunctions(getApp());
+    }
+
+    init() {}
+
+    currentUser() {
+        return this.auth.currentUser as IAuthUser | null;
+    }
+
+    email() {
+        return this.auth.currentUser?.email ?? undefined;
     }
 
     uuid() {
@@ -33,8 +44,13 @@ export class AuthClass implements IAuth {
         onAuthStateChanged(this.auth, fn as NextOrObserver<User>);
     }
 
+    async sendPasswordResetEmail(email: string) {
+        await sendPasswordResetEmail(this.auth, email);
+    }
+
     async signInWithGoogle() {
-        await signInWithPopup(this.auth, this.googleProvide);
+        await signInWithPopup(this.auth, this.googleProvider);
+        return true;
     }
 
     async signOut() {
@@ -49,14 +65,19 @@ export class AuthClass implements IAuth {
         await signInWithEmailAndPassword(this.auth, email, password);
     }
 
-    async refreshToken() {
-        const run = httpsCallable(this.functions, 'refreshToken');
-        await run();
-
-        return this.auth?.currentUser?.getIdToken(true);
-    }
-
     async signInAnonymously() {
         await signInAnonymously(this.auth);
+    }
+
+    async checkEmailVerification() {
+        if (!this.auth.currentUser) {
+            throw new Error('User not found');
+        }
+
+        await this.auth.currentUser.reload();
+
+        if (!this.auth.currentUser.emailVerified) {
+            throw new Error('Email not verified');
+        }
     }
 }

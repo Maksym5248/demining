@@ -6,11 +6,13 @@ import { type IMessage, type IAuth } from '~/services';
 import { type IViewerStore } from '../viewer';
 
 export interface IAuthStore {
-    signInWithGoogle: IRequestModel;
+    signInWithGoogle: IRequestModel<[], boolean>;
     signInOut: IRequestModel;
     signUpWithEmail: IRequestModel<[string, string]>;
     signInWithEmail: IRequestModel<[string, string]>;
     signInAnonymously: IRequestModel;
+    sendResetPassword: IRequestModel<[string]>;
+    checkEmailVerificationStatus: IRequestModel;
 }
 
 interface IServices {
@@ -41,40 +43,53 @@ export class AuthStore implements IAuthStore {
     signInWithGoogle = new RequestModel({
         run: async () => {
             this.getStores().viewer.setLoading(true);
-            await this.services.auth.signInWithGoogle();
+            const isNewUser = await this.services.auth.signInWithGoogle();
+            await this.getStores().viewer.fetchCurrentUser.run();
+            return isNewUser;
         },
-        onError: () => this.services.message.error('Не вдалось увійти, спробуйте ще раз'),
     });
 
     signInOut = new RequestModel({
         run: () => this.services.auth.signOut(),
-        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });
 
     signUpWithEmail = new RequestModel({
         run: async (email: string, password: string) => {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.createUserWithEmailAndPassword(email, password);
+            await this.getStores().viewer.fetchCurrentUser.run();
         },
-        onError: () => this.services.message.error('Не вдалось зареєструватись, спробуйте ще раз'),
     });
 
     signInWithEmail = new RequestModel({
         run: async (email: string, password: string) => {
             this.getStores().viewer.setLoading(true);
             await this.services.auth.signInWithEmailAndPassword(email, password);
+            await this.getStores().viewer.fetchCurrentUser.run();
         },
-        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
+    });
+
+    sendResetPassword = new RequestModel({
+        run: async (email: string) => {
+            this.getStores().viewer.setLoading(true);
+            await this.services.auth.sendPasswordResetEmail(email);
+        },
     });
 
     signInAnonymously = new RequestModel({
         run: async () => {
             await this.services.auth.signInAnonymously();
         },
-        onError: () => this.services.message.error('Не вдалось вийти, спробуйте ще раз'),
     });
 
-    // TODO: remove this method
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    test() {}
+    checkEmailVerificationStatus = new RequestModel({
+        run: async () => {
+            try {
+                await this.services.auth.checkEmailVerification();
+                this.getStores().viewer.setAuthData(this.services.auth.currentUser());
+            } catch (error) {
+                // do not need to handle
+            }
+        },
+    });
 }

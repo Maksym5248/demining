@@ -7,8 +7,14 @@ const eventEmitter = new EventEmitter();
 enum EVENTS {
     ON_CHANGE = 'ON_CHANGE',
 }
+export interface IAppState {
+    init: () => void;
+    onChange: (callBack: (value: AppStateStatus) => void) => () => void;
+    removeAllListeners: () => void;
+    setIgnoreUpdates: (value: boolean) => void;
+}
 
-export class AppStateClass {
+export class AppStateClass implements IAppState {
     listener: NativeEventSubscription | null = null;
     isIgnoreUpdates: boolean;
 

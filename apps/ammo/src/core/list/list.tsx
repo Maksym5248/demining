@@ -1,7 +1,9 @@
 import React, { forwardRef } from 'react';
 
+import { isNumber } from 'lodash';
 import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 import { useTooltipRoot } from '~/hooks';
 import { useTranslate } from '~/localization';
@@ -17,6 +19,8 @@ function keyExtractor<T>(item: T, index: number): string {
     return item?.id ? String(item?.id) : String(index);
 }
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 function Component<T>(
     {
         isLoading,
@@ -27,13 +31,15 @@ function Component<T>(
         data,
         onScrollBeginDrag,
         contentContainerStyle,
+        separator,
+        isAnimated,
         ...props
     }: IFlatListProps<T>,
     ref: React.Ref<FlatList>,
 ) {
     const s = useStyles();
     const device = useDevice();
-    const t = useTranslate('components.list');
+    const t = useTranslate('core.list');
     const tooltip = useTooltipRoot();
 
     const _onEndReached = (info: { distanceFromEnd: number }) => {
@@ -52,13 +58,16 @@ function Component<T>(
         onScrollBeginDrag?.(event);
     };
 
+    const Component = isAnimated ? AnimatedFlatList : FlatList;
+
     return (
-        <FlatList
+        <Component
             ref={ref}
+            // @ts-expect-error
             keyExtractor={keyExtractor}
             data={data}
             contentInset={{ bottom: 20 + device.inset.bottom }}
-            ItemSeparatorComponent={() => <View style={s.separator} />}
+            ItemSeparatorComponent={() => <View style={[s.separator, isNumber(separator) ? { height: separator } : {}]} />}
             ListEmptyComponent={() => (
                 <View style={s.emptyContainer}>
                     <Text type="p4" text={text} />

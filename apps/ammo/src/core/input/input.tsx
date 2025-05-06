@@ -117,14 +117,15 @@ const Component = (
     };
 
     const onLayoutLeftIcon = ({ nativeEvent }: { nativeEvent: { layout: { width: number } } }) => {
-        if (paddingLeftLabel.value !== nativeEvent.layout.width) {
-            paddingLeftLabel.value = nativeEvent.layout.width;
+        const newValue = nativeEvent.layout.width + 20;
+
+        if (paddingLeftLabel.value !== newValue) {
+            paddingLeftLabel.value = newValue;
         }
     };
 
     return (
         <View style={[s.container, style]} pointerEvents={pointerEvents}>
-            {!!label && <Label text={label} isSmall={isFocused || !!value} style={labelStyle} paddingLeft={paddingLeftLabel} />}
             <View style={[s.inputContainer, getBorderStyle(theme, !!isValid, isFocused), contentStyle]}>
                 <View onLayout={onLayoutLeftIcon}>{renderLeftIcon()}</View>
                 {!!disabled && <RNText style={[s.input, s.inputText, inputStyle]}>{value}</RNText>}
@@ -141,7 +142,7 @@ const Component = (
                         underlineColorAndroid={theme.colors.transparent}
                         testID={`input.${testID}`}
                         selectionColor={theme.colors.accent}
-                        placeholderTextColor={theme.colors.textSecondary}
+                        placeholderTextColor={theme.colors.thirdiary}
                         onBlur={onBlurHandler}
                         onFocus={onFocusHandler}
                         style={[s.input, inputStyle]}
@@ -151,6 +152,7 @@ const Component = (
                 )}
                 {renderRightIcon()}
             </View>
+            {!!label && <Label text={label} isSmall={isFocused || !!value} style={labelStyle} paddingLeft={paddingLeftLabel} />}
             {!!message && isString(message) && (
                 <Text
                     testID={`input.${testID}.message`}

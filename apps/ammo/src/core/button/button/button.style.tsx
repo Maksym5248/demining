@@ -12,7 +12,18 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         position: 'relative',
         ...theme.shadow.light,
     },
+    invert: {
+        backgroundColor: theme.colors.inert,
+    },
     disabled: {
         backgroundColor: theme.colors.disabled,
+    },
+    accent: {
+        backgroundColor: theme.colors.backgroundSecondary,
+        borderColor: theme.colors.accent,
+        borderWidth: 1,
+    },
+    title: {
+        textAlign: 'center',
     },
 }));

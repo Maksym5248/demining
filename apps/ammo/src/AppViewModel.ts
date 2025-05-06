@@ -5,9 +5,9 @@ import { stores } from '~/stores';
 import { type ViewModel } from '~/types';
 
 import { CONFIG } from './config';
-import { STORAGE } from './constants';
+import { PERMISSIONS, STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo } from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo, Permissions } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -43,6 +43,11 @@ export class AppViewModel implements IAppViewModel {
         Logger.log('SESSION: ', LocalStore.getNumber(STORAGE.SESSION_NUMBER));
         Logger.log('LOCALE: ', Localization.data.locale);
         Logger.log('USER ID: ', Auth.uuid());
+        Logger.log('PERMISSIONS.PHOTO_LIBRARY: ', Permissions.getStatus(PERMISSIONS.PHOTO_LIBRARY));
+
+        Object.keys(CONFIG).forEach(key => {
+            Logger.log('CONFIG: ', `${key} - ${CONFIG[key as keyof typeof CONFIG]}`);
+        });
     };
 
     animationFinished = () => {
@@ -58,6 +63,8 @@ export class AppViewModel implements IAppViewModel {
         ThemeManager.removeAllListeners();
         Localization.removeAllListeners();
         Debugger.removeAllListeners();
+        Permissions.removeAllListeners();
+
         this.isVisibleSplash = true;
     }
 
@@ -78,27 +85,32 @@ export class AppViewModel implements IAppViewModel {
             try {
                 this.initSession();
 
+                AppState.onChange(state => {
+                    Logger.log('APP STATE', state);
+                    if (state === 'active') {
+                        NetInfo.pingInfo();
+                        Permissions.checkAllStatuses();
+                        stores.auth.checkEmailVerificationStatus.run();
+                    }
+                });
+
+                NetInfo.onChange(info => {
+                    info.isConnected && this.updater.preloadImages.run();
+                });
+
                 AppState.init();
                 Analytics.init();
                 Analytics.setUserId(Auth.uuid());
                 Crashlytics.init();
+                stores.auth.checkEmailVerificationStatus.run();
 
-                await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init()]);
-                AppState.onChange(state => {
-                    if (state === 'active') {
-                        NetInfo.pingInfo();
-                    }
-                    Logger.log('APP STATE', state);
-                });
+                await Promise.allSettled([NetInfo.init(), Localization.init(), ImageChahe.init(), BookCache.init(), Permissions.init()]);
 
                 await stores.init.run();
 
                 setTimeout(() => {
                     this.initConfig();
                 }, 0);
-                NetInfo.onChange(info => {
-                    info.isConnected && this.updater.preloadImages.run();
-                });
             } catch (error) {
                 Logger.error(error);
             }

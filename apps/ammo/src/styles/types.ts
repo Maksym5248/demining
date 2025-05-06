@@ -9,6 +9,7 @@ export type IPalette =
     | 'white'
     | 'green78'
     | 'red53'
+    | 'red37'
     | 'greyD3'
     | 'transparent'
     | 'blueF8'
@@ -38,6 +39,7 @@ export type IColor =
     | 'link'
     | 'ripplePrimary'
     | 'disabled'
+    | 'google'
     | 'success';
 
 export interface IThemeTextStyle {

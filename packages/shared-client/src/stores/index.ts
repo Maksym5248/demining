@@ -16,3 +16,5 @@ export * from './viewer';
 export * from './book';
 export * from './type';
 export * from './common';
+export * from './comment';
+export * from './complain';

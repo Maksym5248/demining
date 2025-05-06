@@ -13,5 +13,14 @@ export function t(key: string, options?: TranslateOptions) {
               defaultValue: key,
               ...(options || {}),
           })
-        : null;
+        : '';
+}
+
+export function tError(key: string, options?: TranslateOptions) {
+    return key
+        ? Localization.t(`error.${key}`, {
+              defaultValue: key,
+              ...(options || {}),
+          })
+        : '';
 }

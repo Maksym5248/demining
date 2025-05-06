@@ -29,6 +29,7 @@ export const useStyles = ThemeManager.createStyleSheet(({ theme }) => ({
         alignItems: 'center',
         alignSelf: 'center',
         textAlignVertical: 'center',
+        pointerEvents: 'none',
     },
     hitSlop: {
         top: 15,

@@ -1,23 +1,27 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type ErrorInner } from '~/common';
+import { delay } from '~/common';
 import { Logger } from '~/services';
 
+import { ErrorModel, type IErrorModel } from './ErrorModel';
 import { RequestStateModel } from './RequestStateModel';
 
 export interface IRequestModel<Params extends Array<any> = undefined[], Return = void> {
     run: (...args: Params) => Promise<Return | void> | Return | void;
     isLoading: boolean;
     isLoaded: boolean;
-    error: ErrorInner | null;
+    error: IErrorModel | null;
 }
 
 export interface IRequestModelParams<Params extends Array<any> = undefined[], Return = void> {
     shouldRun?: (...args: Partial<Params> | Params) => boolean;
     run: (...args: Params) => Promise<Return | void> | Return | void;
-    onError?: () => void;
+    onError?: (e?: IErrorModel) => void;
     onSuccuss?: () => void;
     returnIfLoaded?: boolean;
+    returnIfLoading?: boolean;
+    retry?: number;
+    retryDelay?: number;
     cachePolicy?: 'cache-first' | 'network-only';
 }
 
@@ -26,9 +30,13 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
 
     private _shouldRun?: (...args: Params) => boolean;
     private _run: (...args: Params) => Promise<Return | void> | Return | void;
-    private _onError?: (e?: Error) => void;
-    private _onSuccuss?: (e?: Error) => void;
+    private _onError?: (e?: IErrorModel) => void;
+    private _onSuccuss?: () => void;
     private _returnIfLoaded = false;
+    private _returnIfLoading = false;
+    private _retry: number = 1;
+    private _retryDelay = 1000;
+
     _cachePolicy?: 'cache-first' | 'network-only';
 
     constructor(params: IRequestModelParams<Params, Return>) {
@@ -37,10 +45,31 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
         this._onError = params?.onError;
         this._onSuccuss = params?.onSuccuss;
         this._returnIfLoaded = !!params?.returnIfLoaded;
+        this._returnIfLoading = !!params?.returnIfLoading;
+        this._retry = params?.retry ?? 1;
+        this._retryDelay = params?.retryDelay ?? 1000;
         this._cachePolicy = params?.cachePolicy ?? 'network-only';
 
         makeAutoObservable(this);
     }
+
+    retry = async (...args: Params): Promise<Return | void> => {
+        const retry = this._retry;
+        const time = this._retryDelay;
+
+        for (let i = 0; i < retry; i++) {
+            try {
+                const res = await this._run(...args);
+                return res;
+            } catch (e) {
+                if (i === retry - 1) {
+                    throw e;
+                }
+                console.log('Retrying request', i + 1, 'of', retry);
+                await delay(time);
+            }
+        }
+    };
 
     async run(...args: Params): Promise<Return | void> {
         let res: Return | void;
@@ -49,18 +78,21 @@ export class RequestModel<Params extends Array<any> = undefined[], Return = void
             if (this._returnIfLoaded && this.requestState.isLoaded) return;
             if (this._cachePolicy === 'cache-first' && this.requestState.isLoaded) return;
             if (this._shouldRun && !this._shouldRun(...args)) return;
+            if (this._returnIfLoading && this.requestState.isLoading) return;
 
             this.requestState.start();
 
-            res = await this._run(...args);
+            res = await this.retry(...args);
 
             this._onSuccuss?.();
             this.requestState.success();
         } catch (e) {
-            this._onError?.(e as Error);
-            this.requestState.failure(e as Error);
+            const error = new ErrorModel(e as Error);
+
+            this._onError?.(error);
+            this.requestState.failure(error);
             Logger.error((e as Error)?.message);
-            throw e;
+            throw error;
         }
 
         return res;

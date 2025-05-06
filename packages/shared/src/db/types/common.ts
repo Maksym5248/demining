@@ -14,6 +14,8 @@ export interface IBaseDB {
     updatedAt: Timestamp;
     organizationId?: string | null;
     authorId?: string;
+    isDeleted?: boolean;
+    originalLang?: string;
     _search?: string[];
 }
 export interface ILinkedToDocumentDB {

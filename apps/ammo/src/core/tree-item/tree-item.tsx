@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View } from 'react-native';
 
-import { ListItem as ListItemCore, Text } from '~/core';
+import { ListItem, Text } from '~/core';
 import { useTheme } from '~/styles';
 
 import { useStyles, ITEM_HEIGHT } from './tree-item.style';
@@ -42,7 +42,7 @@ export const TreeItem = ({ onPress, title, lines, isSection, isClass, isClassIte
                 </>
             )}
 
-            <ListItemCore
+            <ListItem
                 title={<Text type={getTitleType()} text={title} color={isActive ? theme.colors.backgroundSecondary : theme.colors.text} />}
                 arrow={isClassItem && arrow}
                 style={[s.listItemContent, { marginLeft: offsetHorizontal }, !isClassItem ? s.notClassItem : undefined]}

@@ -4,6 +4,7 @@ import { View, StatusBar } from 'react-native';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, runOnJS, interpolate } from 'react-native-reanimated';
 
 import { Text, Icon } from '~/core';
+import { useTranslate } from '~/localization';
 import { Message } from '~/services';
 import { type IMessageState } from '~/services/ui/message';
 import { useDevice, useTheme } from '~/styles';
@@ -14,6 +15,7 @@ const Component = () => {
     const s = useStyles();
     const theme = useTheme();
     const device = useDevice();
+    const tError = useTranslate('error');
 
     const animated = useSharedValue(0);
     const self = useRef<{ timer: NodeJS.Timeout | null }>({
@@ -100,7 +102,7 @@ const Component = () => {
         isVisible && (
             <Animated.View style={[s.container, type === 'error' && s.error, type === 'success' && s.success, containerStyle]}>
                 <View style={s.content}>
-                    <Text type="p4" color={getColor()} text={text} />
+                    <Text type="p4" color={getColor()} text={type === 'error' ? tError(text) : text} />
                     <Icon size={14} name="close" style={s.icon} color={getColor()} onPress={onHide} />
                 </View>
             </Animated.View>

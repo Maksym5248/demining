@@ -1,15 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
-import { type ErrorInner, LoadingState, type Runnable } from '~/common';
+import { LoadingState, type Runnable } from '~/common';
+
+import { ErrorModel, type IErrorModel } from './ErrorModel';
 
 export interface IRequestStateModel<T = void> extends Runnable<T> {
-    error: ErrorInner | null;
+    error: IErrorModel | null;
     isLoading: boolean;
     isLoaded: boolean;
     isIdle: boolean;
     start: () => void;
     success: () => void;
-    failure: (e: ErrorInner) => void;
+    failure: (e: IErrorModel) => void;
     clear: () => void;
 }
 
@@ -18,7 +20,7 @@ export class RequestStateModel<T = void> implements IRequestStateModel<T> {
 
     isLoaded = false;
 
-    error: ErrorInner | null = null;
+    error: IErrorModel | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -34,7 +36,7 @@ export class RequestStateModel<T = void> implements IRequestStateModel<T> {
         this.isLoaded = true;
     }
 
-    failure(e: ErrorInner) {
+    failure(e: IErrorModel) {
         this.state = LoadingState.FAILURE;
         this.error = e;
     }
@@ -50,8 +52,9 @@ export class RequestStateModel<T = void> implements IRequestStateModel<T> {
             this.success();
             return res;
         } catch (e) {
-            this.failure(e as Error);
-            throw e;
+            const error = new ErrorModel(e as Error);
+            this.failure(error as IErrorModel);
+            throw error;
         }
     }
 

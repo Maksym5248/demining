@@ -35,6 +35,8 @@ import {
     type IMissionRequestTypeDB,
     type IRankDB,
     type IStatusDB,
+    type ICommentDB,
+    type IComplainDB,
 } from 'shared-my';
 
 export type IWhere = { [field: string]: any };
@@ -113,6 +115,10 @@ export interface IDB {
     book: IDBBase<IBaseDB>;
     explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
     app: IDBBase<IAppConfigDB>;
+    comment: IDBBase<ICommentDB>;
+    complain: IDBBase<IComplainDB>;
+
+    // with enums
     bookType: IDBBase<IBookTypeDB>;
     country: IDBBase<ICountryDB>;
     explosiveDeviceType: IDBBase<IExplosiveDeviceTypeDB>;

@@ -1,4 +1,5 @@
 export enum SCREENS {
+    ROOT = 'Root',
     HOME = 'Home',
     EXPLOSIVE_DETAILS = 'ExplosiveDetails',
     EXPLOSIVE_OBJECT_DETAILS = 'ExplosiveObjectDetails',
@@ -14,4 +15,7 @@ export enum SCREENS {
     READER = 'Reader',
     SIGN_IN = 'SignIn',
     SIGN_UP = 'SignUp',
+    PROFILE = 'Profile',
+    RESET_PASSWORD = 'ResetPassword',
+    COMPLAIN = 'Complain',
 }

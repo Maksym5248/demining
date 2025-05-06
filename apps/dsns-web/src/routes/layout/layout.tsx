@@ -9,6 +9,7 @@ import { Icon } from '~/components';
 import { CONFIG } from '~/config';
 import { ROUTES, routesGroups, SECTION } from '~/constants';
 import { useNavigate, useStore } from '~/hooks';
+import { Message } from '~/services';
 
 import { HEADER_HEIGHT, s } from './layout.styles';
 import AppIcon from '../../../assets/icon.svg';
@@ -32,8 +33,12 @@ export const Layout = observer(() => {
     }));
 
     const onSignOut = async () => {
-        await store.auth.signInOut.run();
-        navigate(ROUTES.LOGIN);
+        try {
+            await store.auth.signInOut.run();
+            navigate(ROUTES.LOGIN);
+        } catch (error) {
+            Message.error('Не вдалось вийти, спробуйте ще раз');
+        }
     };
 
     const menuManagment = useMemo(() => {
@@ -68,8 +73,6 @@ export const Layout = observer(() => {
 
         return arr;
     }, [permissions?.managment.view(), permissions?.managment.viewOrganization(), user?.data.organization?.id]);
-
-    console.log('user?.data.organization?.id', user?.data);
 
     const menuDocuments = useMemo(() => {
         const arr = [
@@ -278,7 +281,7 @@ export const Layout = observer(() => {
                     menu={{
                         items: [
                             {
-                                label: store.viewer.user?.data.info.email,
+                                label: store.viewer.user?.displayName,
                                 key: 'email',
                             },
                             {

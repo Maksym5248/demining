@@ -1,6 +1,37 @@
 {
     "error": {
-        "can-not-open-link": "Failed to open the link"
+        "can-not-open-link": "Failed to open the link",
+        "required": "Field is required.",
+        "unexpected": "Something went wrong",
+        "min-length": "Min length is %{value}.",
+        "max-length": "Max length is %{value}.",
+        "min-password-length": "Min password length is %{value}.",
+        "max-password-length": "Max password length is %{value}.",
+        "min-new-password-length": "%{value}+ characters",
+        "invalid-name": "Invalid name",
+        "invalid-email": "Invalid email, try again.",
+        "invalid-password": "Invalid password, try again.",
+        "passwords-must-match": "Passwords must match.",
+        "wrong_email_or_password": "Wrong email or password, try again.",
+        "email_already_in_use": "Email already in use.",
+        "some_images_not_uploaded": "Some image are not uploaded"
+    },
+    "permissions": {
+        "titleUnavailable": "Not available",
+        "textUnavailable": "To feature is not available",
+        "ok": "ok",
+        "titleOpenSettings": "Open setting",
+        "textOpenSettings": "To turn on that feature open the settings",
+        "openSettings": "Open settings",
+        "photoLibaryTitle": "Photo library",
+        "photoLibaryMessage": "We need access to your photo library to allow you to select a profile picture."
+    },
+    "message": {
+        "updatedSuccess": "Data updated successfully"
+    },
+    "select": {
+        "delete": "Delete",
+        "complain": "Complain"
     },
     "updates": {
         "dictionaries": {
@@ -24,12 +55,30 @@
         "select": {
             "title": "Select",
             "placeholder": "Choose"
-        }
-    },
-    "components": {
+        },
+        "alert": {
+            "title": "Somthing went wrong",
+            "cancelTitle": "Cancel",
+            "confirmTitle": "Confirm"
+        },
         "list": {
             "empty": "No data in the list",
             "emptySearch": "No matches found for your search"
+        }
+    },
+    "components": {
+        "comment": {
+            "viewAll": "View all",
+            "replies": "Replies %{value}",
+            "reply": "Reply"
+        },
+        "comments-preview": {
+            "title": "Comments",
+            "noComments": "No comments yet",
+            "authComments": "To leave and see comments, please sign in."
+        },
+        "comment-input": {
+            "placeholder": "Enter your comment"
         }
     },
     "containers": {
@@ -40,6 +89,10 @@
             "success": "Update completed",
             "error": "Update failed",
             "download": "Download"
+        },
+        "auth": {
+            "autenticate": "Sign up",
+            "emailVerificationText": "Email is not confirmed"
         }
     },
     "screens": {
@@ -160,7 +213,13 @@
             "title": "Settings",
             "about": "About the App",
             "support": "Contact Support",
-            "debugger": "debugger"
+            "profile": "Profile",
+            "debugger": "debugger",
+            "alert": {
+                "title": "Sign Out",
+                "subTitle": "Are you sure you want to sign out?"
+            },
+            "version": "Version: %{version}"
         },
         "about": {
             "title": "About the App",
@@ -169,6 +228,51 @@
             "title2": "Educational Purpose",
             "text2": "The main goal of the app is education and raising awareness about ammunition and explosive devices. It is designed for humanitarian demining specialists, educators, students, and anyone interested in the topic. It helps understand characteristics, classification, and operating principles of various munitions but is not a guide for action.",
             "title3": "Feedback and Suggestions"
+        },
+        "sign-in": {
+            "title": "Sign In",
+            "inputEmail": "Email",
+            "inputPassWord": "Password",
+            "button": "Sign In",
+            "passWord": "Forgot password?",
+            "footerAccount": "Don't have an account?",
+            "footerSignUp": "Sign Up"
+        },
+        "sign-up": {
+            "title": "Sign Up",
+            "inputEmail": "Email",
+            "inputPassWord": "Password",
+            "inputPassWordConfirm": "Confirm Password",
+            "button": "Sign Up",
+            "passWord": "Forgot password?",
+            "footerAccount": "Already have an account?",
+            "footerSignIn": "Sign In",
+            "alertEmailVerification": {
+                "title": "Email verification",
+                "text": "Please check your email to verify your account.",
+                "confirm": "Open email"
+            }
+        },
+        "profile": {
+            "title": "Profile",
+            "name": "Name",
+            "button": "Save"
+        },
+        "reset-password": {
+            "title": "Reset Password",
+            "inputEmail": "Email",
+            "button": "Send",
+            "alert": {
+                "title": "Email reset",
+                "text": "Please check your email to reset your account.",
+                "confirm": "Open email"
+            }
+        },
+        "complain": {
+            "title": "Complain",
+            "textInput": "Text",
+            "button": "Send",
+            "sendSuccess": "Your complain has been sent. Thank you for your feedback."
         }
     },
     "modals": {

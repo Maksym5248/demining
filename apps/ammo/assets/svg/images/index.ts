@@ -1,3 +1,4 @@
+import avatar from './avatar.svg';
 import BookAmmo from './book-ammo.svg';
 import BookBlasting from './book-blasting.svg';
 import BookDemining from './book-demining.svg';
@@ -24,4 +25,5 @@ export const svgImages = {
     ['book-explosive']: BookExplosive,
     ['book-mining']: BookMining,
     ['book-order']: BookOrder,
+    avatar,
 };

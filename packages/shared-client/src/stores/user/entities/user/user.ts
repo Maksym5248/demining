@@ -3,32 +3,27 @@ import { type ROLES } from 'shared-my';
 
 import { type IUserAPI } from '~/api';
 import { RequestModel, type IDataModel } from '~/models';
-import { type IMessage } from '~/services';
 
 import { type IUpdateUserParams, type IUserData } from './user.schema';
 
 export interface IUser extends IDataModel<IUserData> {
     hasRole(role: ROLES): boolean;
     update: RequestModel<[user: IUpdateUserParams]>;
+    displayName?: string;
+    photoUri?: string;
 }
 
 interface IApi {
     user: IUserAPI;
 }
 
-interface IServices {
-    message: IMessage;
-}
-
 export class User implements IUser {
     data: IUserData;
     api: IApi;
-    services: IServices;
 
-    constructor(data: IUserData, params: { api: IApi; services: IServices }) {
+    constructor(data: IUserData, params: { api: IApi }) {
         this.data = data;
         this.api = params.api;
-        this.services = params.services;
 
         makeAutoObservable(this);
     }
@@ -41,15 +36,22 @@ export class User implements IUser {
         return this.data.id;
     }
 
+    get displayName() {
+        return (this.data.info.name || this.data.access?.email) ?? undefined;
+    }
+
+    get photoUri() {
+        return this.data.info.photoUri ?? undefined;
+    }
+
     hasRole(role: ROLES) {
-        return !!this.data.access[role];
+        return !!this.data.access?.[role];
     }
 
     update = new RequestModel({
         run: async (user: IUpdateUserParams) => {
-            const res = await this.api.user.update(this.id, user);
-            this.updateFields(res);
+            await this.api.user.update(this.id, user);
+            this.updateFields(user);
         },
-        onError: () => this.services.message.error('Виникла помилка'),
     });
 }

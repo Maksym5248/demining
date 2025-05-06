@@ -1,7 +1,7 @@
 import { type Dayjs } from 'dayjs';
 import { type ROLES } from 'shared-my';
 
-import { type ICurrentUserDTO, type IUserOrganizationDTO } from '~/api';
+import { type IUserInfoDTO, type ICurrentUserDTO, type IUserOrganizationDTO, type IUserInfoParamsDTO } from '~/api';
 import { dates } from '~/common';
 
 export interface ICurrentUserOrganizationValue {
@@ -11,11 +11,15 @@ export interface ICurrentUserOrganizationValue {
     updatedAt: Dayjs;
 }
 
+export interface ICurrentUserInfoUpdateData {
+    name: string;
+    photoUri?: string;
+}
+
+export interface ICurrentUserInfoData extends Pick<IUserInfoDTO, 'name' | 'photoUri'> {}
 export interface ICurrentUserData {
     id: string;
-    info: {
-        email: string;
-    };
+    info: ICurrentUserInfoData;
     access: Partial<Record<ROLES, boolean>>;
     organization: ICurrentUserOrganizationValue | null;
     createdAt: Dayjs;
@@ -32,7 +36,8 @@ export const createCurrentUserOrganization = (value: IUserOrganizationDTO): ICur
 export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => ({
     id: value.id,
     info: {
-        email: value.info?.email ?? '',
+        photoUri: value.info?.photoUri ?? null,
+        name: value.info?.name ?? null,
     },
     access: {
         ...value?.access,
@@ -40,4 +45,9 @@ export const createCurrentUser = (value: ICurrentUserDTO): ICurrentUserData => (
     createdAt: dates.fromServerDate(value.info?.createdAt),
     updatedAt: dates.fromServerDate(value.info?.updatedAt),
     organization: value?.organization ? createCurrentUserOrganization(value.organization) : null,
+});
+
+export const createUpdateCurrentUserInfoDTO = (value: ICurrentUserInfoUpdateData): IUserInfoParamsDTO => ({
+    name: value?.name ?? '',
+    photoUri: value?.photoUri ?? null,
 });

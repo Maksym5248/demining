@@ -2,10 +2,12 @@ import { GoogleOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input, Spin, Typography } from 'antd';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+import { type IErrorModel } from 'shared-my-client';
 
 import { Icon } from '~/components';
 import { ROUTES } from '~/constants';
 import { useStore } from '~/hooks';
+import { Message } from '~/services';
 import { error } from '~/utils';
 
 import { s } from './login.styles';
@@ -20,15 +22,19 @@ export const LoginPage = observer(() => {
     const [form] = Form.useForm();
     const store = useStore();
 
-    const handleGoogleSignIn = () => {
-        store.auth.signInWithGoogle.run();
+    const handleGoogleSignIn = async () => {
+        try {
+            await store.auth.signInWithGoogle.run();
+        } catch (error) {
+            Message.error('Не вдалось увійти, спробуйте ще раз');
+        }
     };
 
     const onFinish = async (values: ILoginFrom) => {
         try {
             await store.auth.signInWithEmail.run(values.email, values.password);
         } catch (e) {
-            const message = error.getErrorTranslation(store.auth.signInWithEmail.error);
+            const message = error.getErrorTranslation(store.auth.signInWithEmail.error as IErrorModel);
 
             if (message) {
                 form.setFields([

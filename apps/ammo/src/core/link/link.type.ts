@@ -1,7 +1,7 @@
 import { type ITextProps } from '../text';
 
 export interface ILinkProps extends ITextProps {
-    text: string;
+    text?: string;
     arrow: boolean;
     onPress: () => void;
 }

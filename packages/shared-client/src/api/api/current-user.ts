@@ -3,10 +3,10 @@ import { type IUserInfoDB, type IMemberDB, type IOrganizationDB, type IUserAcces
 import { type IDBBase, type IUpdateValue } from '~/common';
 import { type IAssetStorage } from '~/services';
 
-import { type ICurrentUserDTO, type IUserOrganizationDTO } from '../dto';
+import { type ICurrentUserDTO, type IUserOrganizationDTO, type IUserInfoParamsDTO } from '../dto';
 
 export interface ICurrentUserAPI {
-    updateInfo: (id: string, value: IUpdateValue<IUserInfoDB>) => Promise<IUserInfoDB>;
+    updateInfo: (id: string, value: IUpdateValue<IUserInfoParamsDTO>) => Promise<IUserInfoDB>;
     get: (id: string) => Promise<ICurrentUserDTO | null>;
     setOrganization: (id: string) => void;
     removeOrganization: () => void;
@@ -34,24 +34,16 @@ export class CurrentUserAPI {
 
         const member = await this.db.member?.get(userId);
 
-        if (!member) {
-            throw new Error('There is no organization with id');
-        }
-
         if (!member?.organizationId) {
             return null;
         }
 
         const res = await this.db.organization?.get(member?.organizationId);
 
-        if (!res) {
-            throw new Error('There is no organization connected to user');
-        }
-
-        return res;
+        return res ?? null;
     };
 
-    updateInfo = async (id: string, value: IUpdateValue<IUserInfoDB>): Promise<IUserInfoDB> => {
+    updateInfo = async (id: string, value: IUpdateValue<IUserInfoParamsDTO>): Promise<IUserInfoDB> => {
         return this.db.userInfo.update(id, value);
     };
 

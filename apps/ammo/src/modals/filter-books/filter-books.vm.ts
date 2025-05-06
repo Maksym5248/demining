@@ -75,6 +75,7 @@ export class FilterDictionariesVM implements IFilterDictionariesVM {
         Modal.show(MODALS.SELECT, {
             value: this.filters.type,
             options: this.types,
+            isMulti: true,
             onSelect,
         });
     }

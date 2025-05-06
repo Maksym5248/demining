@@ -7,6 +7,8 @@ import { SCREENS } from '~/constants';
 import * as screens from '~/screens';
 import { useTheme } from '~/styles';
 
+import { TabNavigator } from './tab-navigator';
+
 const Stack = createNativeStackNavigator();
 
 export const StackNavigator = () => {
@@ -19,17 +21,21 @@ export const StackNavigator = () => {
             animation: 'slide_from_right' as StackAnimationTypes,
             animationTypeForReplace: 'push' as const,
         },
-        initialRouteName: SCREENS.HOME,
+        initialRouteName: SCREENS.ROOT,
     };
 
     return (
         <Stack.Navigator {...params}>
             {/* AUTH */}
+            <Stack.Screen name={SCREENS.ROOT} component={TabNavigator} />
+
+            {/* AUTH */}
             <Stack.Screen name={SCREENS.SIGN_IN} component={screens.SignInScreen} />
             <Stack.Screen name={SCREENS.SIGN_UP} component={screens.SignUpScreen} />
+            <Stack.Screen name={SCREENS.PROFILE} component={screens.ProfileScreen} />
+            <Stack.Screen name={SCREENS.RESET_PASSWORD} component={screens.ResetPasswordScreen} />
 
-            {/* HOME */}
-            <Stack.Screen name={SCREENS.HOME} component={screens.HomeScreen} />
+            {/* DICTIONARIES */}
             <Stack.Screen name={SCREENS.DICTIONARIES} component={screens.DictionariesScreen} />
             <Stack.Screen
                 name={SCREENS.DICTIONARIES_ANIMATED}
@@ -43,10 +49,14 @@ export const StackNavigator = () => {
             <Stack.Screen name={SCREENS.EXPLOSIVE_DEVICE_DETAILS} component={screens.ExplosiveDeviceDetailsScreen} />
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_CLASSIFICATION} component={screens.ExplosiveObjectClassificationScreen} />
             <Stack.Screen name={SCREENS.EXPLOSIVE_OBJECT_TYPE} component={screens.ExplosiveObjectTypeScreen} />
-            <Stack.Screen name={SCREENS.SETTINGS} component={screens.SettingsScreen} />
-            <Stack.Screen name={SCREENS.ABOUT} component={screens.AboutScreen} />
             <Stack.Screen name={SCREENS.BOOKS} component={screens.BooksScreen} />
+
+            {/* SETTINGS */}
+            <Stack.Screen name={SCREENS.ABOUT} component={screens.AboutScreen} />
+
+            {/* COMMON */}
             <Stack.Screen name={SCREENS.READER} component={screens.ReaderScreen} options={{ orientation: 'all' }} />
+            <Stack.Screen name={SCREENS.COMPLAIN} component={screens.ComplainScreen} />
         </Stack.Navigator>
     );
 };

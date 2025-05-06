@@ -14,6 +14,12 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         right: 0,
         bottom: 0,
     },
+    fillAbsoluteBottom: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
     modal: {
         height: device.window.height,
         width: device.window.width,
@@ -29,7 +35,7 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
     },
     scrollViewContent: {
         backgroundColor: theme.colors.background,
-        paddingBottom: device.inset.bottom + 20,
+        paddingBottom: device.inset.bottom + 70,
     },
     flatList: {
         flex: 1,
@@ -40,7 +46,6 @@ export const useStylesCommon = ThemeManager.createStyleSheet(({ theme, device })
         backgroundColor: theme.colors.white,
         borderRadius: theme.radius.M,
         paddingHorizontal: theme.spacing.S,
-        marginTop: theme.spacing.S,
         paddingBottom: theme.spacing.S,
     },
     touchable: {

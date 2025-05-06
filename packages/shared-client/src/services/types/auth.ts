@@ -1,14 +1,16 @@
-import { type User, type GoogleAuthProvider } from '@firebase/auth-types';
+import { type User } from '@firebase/auth-types';
 
 export type IAuthUser = User;
 export interface IAuth {
-    googleProvide: GoogleAuthProvider;
     uuid: () => string | undefined;
+    email: () => string | undefined;
+    currentUser: () => IAuthUser | null;
     onAuthStateChanged: (fn: (user: IAuthUser | null) => void) => void;
-    signInWithGoogle: () => Promise<void>;
+    signInWithGoogle: () => Promise<boolean>;
     signOut: () => Promise<void>;
     createUserWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     signInWithEmailAndPassword: (email: string, password: string) => Promise<void>;
     signInAnonymously: () => Promise<void>;
-    refreshToken: () => Promise<string | undefined>;
+    sendPasswordResetEmail: (email: string) => Promise<void>;
+    checkEmailVerification: () => Promise<void>;
 }

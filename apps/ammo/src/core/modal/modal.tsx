@@ -12,6 +12,7 @@ export const Modal = ({ children, isVisible, hide, ...rest }: IModalProps) => {
 
     useAndroidBackButton(() => {
         hide();
+        return isVisible;
     }, [isVisible]);
 
     return (
