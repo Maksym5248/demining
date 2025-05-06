@@ -50,7 +50,7 @@ export class CommentModel implements ICommentModel {
                       },
                   ]
                 : []),
-            ...(this.item.isMy
+            ...(!this.item.isMy
                 ? [
                       {
                           value: 'complain',

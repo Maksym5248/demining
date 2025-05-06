@@ -28,6 +28,7 @@ export const CommentInput = observer(({ item, style, onLayout }: ICommentInputPr
                 </Badge>
                 <TextInput
                     placeholder={t('placeholder')}
+                    placeholderTextColor={theme.colors.inertDark}
                     numberOfLines={4}
                     style={s.input}
                     returnKeyLabel="return"

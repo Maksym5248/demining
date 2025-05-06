@@ -41,7 +41,7 @@ export const HomeScreen = observer(() => {
     return (
         <View style={styles.container}>
             <View style={s.background} />
-            <Scroll contentContainerStyle={s.container} onScroll={transition.onScroll}>
+            <Scroll contentContainerStyle={s.container} onScroll={transition.onScroll} showsVerticalScrollIndicator={false}>
                 <Header title={t('title')} backButton="none" color={theme.colors.white} style={s.header} />
                 <View style={s.imageContainer}>
                     <Animated.Image source={images.logo} style={[s.image, transition.styles.image]} />

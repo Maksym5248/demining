@@ -70,16 +70,20 @@ export const ExplosiveDetailsScreen = observer(({ route }: IExplosiveDetailsScre
     return (
         <View style={styles.container}>
             <Header title={vm.item?.data.name} backButton="back" />
-            <List
-                isAnimated
-                data={data}
-                renderItem={renderItem}
-                contentContainerStyle={[styles.scrollViewContent, s.contentContainer]}
-                isLoadingMore={vm.comments.isLoadingMore}
-                isEndReached={vm.comments.isEndReached}
-                onEndReached={() => vm.comments.loadMore.run()}
-                onScroll={animatedComment.onScroll}
-            />
+            <View style={[styles.container, styles.hidden]}>
+                <List
+                    isAnimated
+                    data={data}
+                    renderItem={renderItem}
+                    contentContainerStyle={[styles.scrollViewContent, s.contentContainer]}
+                    style={animatedComment.containerStyles}
+                    isLoadingMore={vm.comments.isLoadingMore}
+                    isEndReached={vm.comments.isEndReached}
+                    onEndReached={() => vm.comments.loadMore.run()}
+                    onScroll={animatedComment.onScroll}
+                    showsVerticalScrollIndicator
+                />
+            </View>
             <CommentInput
                 item={vm.input}
                 style={[styles.fillAbsoluteBottom, animatedComment.styles]}
