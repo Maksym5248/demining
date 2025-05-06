@@ -56,6 +56,3 @@ jobs:
     - name: Build and deploy to Google Play
       working-directory: ./apps/ammo
       run: bundle exec fastlane android deploy_to_playstore
-    - name: Deploy privvacy policy
-      working-directory: ./apps/ammо-privacy-policy
-      run: yarn deploy
