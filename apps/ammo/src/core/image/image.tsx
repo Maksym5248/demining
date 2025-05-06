@@ -52,11 +52,7 @@ export function Image({
     };
 
     const onError = (e?: unknown) => {
-        Logger.error('Component Image:', {
-            e,
-            uri,
-            localUri,
-        });
+        Logger.error('Component Image:', (e as Error)?.message);
         setLoading(false);
     };
 
