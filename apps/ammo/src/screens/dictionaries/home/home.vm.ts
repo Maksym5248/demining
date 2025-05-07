@@ -11,6 +11,7 @@ export interface IItem {
     id: string;
     svg: ISvgName;
     screen?: SCREENS;
+    title?: string;
 }
 
 const dictionaries: IItem[] = [
@@ -31,7 +32,12 @@ const dictionaries: IItem[] = [
     },
 ];
 
-export const books: IItem[] = [
+const books: IItem[] = [
+    {
+        id: BOOK_TYPE.UAV,
+        svg: 'book-uav',
+        screen: SCREENS.BOOKS,
+    },
     {
         id: BOOK_TYPE.AMMUNITION,
         svg: 'book-ammo',
@@ -134,7 +140,10 @@ export class HomeVM implements IHomeVM {
     }
 
     get books() {
-        return books;
+        return books.map(item => ({
+            ...item,
+            title: stores.book.collectionBookType.get(item.id)?.displayName,
+        }));
     }
 
     get rest(): IItem[] {

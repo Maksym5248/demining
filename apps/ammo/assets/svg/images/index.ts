@@ -5,6 +5,7 @@ import BookDemining from './book-demining.svg';
 import BookExplosive from './book-explosive.svg';
 import BookMining from './book-mining.svg';
 import BookOrder from './book-order.svg';
+import bookUav from './book-uav.svg';
 import dictionary from './dictionary.svg';
 import explosiveDevice from './explosive-device.svg';
 import explosiveObject from './explosive-object.svg';
@@ -26,4 +27,5 @@ export const svgImages = {
     ['book-mining']: BookMining,
     ['book-order']: BookOrder,
     avatar,
+    ['book-uav']: bookUav,
 };

@@ -1,4 +1,5 @@
 export enum BOOK_TYPE {
+    UAV = 'UAV',
     AMMUNITION = 'Ammunition',
     EXPLOSIVE = 'Explosive',
     DEMINING = 'Demining',

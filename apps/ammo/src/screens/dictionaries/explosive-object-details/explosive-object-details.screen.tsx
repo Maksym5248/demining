@@ -10,7 +10,7 @@ import { useAnimatedCommentInput, useViewModel } from '~/hooks';
 import { useTranslate } from '~/localization';
 import { useDevice, useStylesCommon } from '~/styles';
 
-import { Details } from './components';
+import { Details, Characteristic } from './components';
 import { useStyles } from './explosive-object-details.style';
 import { type IListItem, type IExplosiveObjectDetailsScreenProps } from './explosive-object-details.types';
 import { createVM, type IExplosiveObjectDetailsVM } from './explosive-object-details.vm';
@@ -38,6 +38,11 @@ export const ExplosiveObjectDetailsScreen = observer(({ route }: IExplosiveObjec
             id: 'details',
             isVisible: true,
             render: () => <Details item={vm.item} />,
+        },
+        {
+            id: 'characteristic',
+            isVisible: true,
+            render: () => <Characteristic characteristic={vm.characteristic} />,
         },
         {
             id: 'fullDescription',

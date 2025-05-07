@@ -330,6 +330,7 @@
         "explosive-device": "Detonation Devices"
     },
     "books": {
+        "UAV": "UAV",
         "Ammunition": "Ammunition",
         "Explosive": "Explosive",
         "Demining": "Demining",
