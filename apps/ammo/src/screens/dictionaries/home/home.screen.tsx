@@ -82,7 +82,7 @@ export const HomeScreen = observer(() => {
                             <Card
                                 key={item.id}
                                 style={s.item}
-                                title={tBooks(item.id)}
+                                title={item.title ?? tBooks(item.id)}
                                 svg={item.svg}
                                 styleInfo={styles.contentCenter}
                                 onPress={() => vm.openBook(item.id)}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Removal Info</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    <script>
+        const ukText = `
+            <h1>Видалення облікового запису</h1>
+            <p>Якщо ви бажаєте видалити свій обліковий запис та дані, будь ласка, надішліть листа із темою "Видалити обліковий запис" на електронну адресу <strong>demining.user@gmail.com</strong>. Після обробки запиту всі ваші дані буде видалено.</p>
+        `;
+
+        const enText = `
+            <h1>Account Removal</h1>
+            <p>If you wish to delete your account and data, please send an email with the subject "Delete Account" to <strong>demining.user@gmail.com</strong>. Once we process your request, your data will be removed.</p>
+        `;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('lang');
+        const contentDiv = document.getElementById('content');
+
+        if (lang === 'uk') {
+            contentDiv.innerHTML = ukText;
+        } else {
+            contentDiv.innerHTML = enText;
+        }
+    </script>
+</body>
+</html>
