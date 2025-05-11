@@ -1,7 +1,7 @@
 import { uniq } from 'lodash';
 import { type ICommentDB, type IUserInfoDB } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument } from '~/common';
 
 import { type IUserDTO, type ICommentDTO, type ICommentFullDTO, type ICommentCreateParamsDTO, type ICommentUpdateParamsDTO } from '../dto';
 
@@ -16,8 +16,8 @@ export interface ICommentAPI {
 export class CommentAPI implements ICommentAPI {
     constructor(
         private db: {
-            comment: IDBBase<ICommentDB>;
-            userInfo: IDBBase<IUserInfoDB>;
+            comment: IDBRemote<ICommentDB>;
+            userInfo: IDBRemote<IUserInfoDB>;
         },
     ) {}
 

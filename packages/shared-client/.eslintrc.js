@@ -4,7 +4,9 @@ module.exports = {
   },
   ignorePatterns: [
     "lint-staged.config.js",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "jest.config.ts",
+    "setupTests.ts"
   ],
   extends: [
     "../../node_modules/shared-my/config/eslint-config-base.js",

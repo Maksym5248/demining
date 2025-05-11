@@ -1,6 +1,6 @@
 import { EXPLOSIVE_DEVICE_TYPE, type IExplosiveDeviceTypeDB, type IExplosiveDeviceActionDB, type IExplosiveDeviceDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument } from '~/common';
 
 import { type IExplosiveDeviceTypeDTO, type IExplosiveDeviceDTO } from '../dto';
 
@@ -23,9 +23,9 @@ export interface IExplosiveDeviceAPI {
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
     constructor(
         private db: {
-            explosiveDevice: IDBBase<IExplosiveDeviceDB>;
-            explosiveDeviceType: IDBBase<IExplosiveDeviceTypeDB>;
-            explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
+            explosiveDevice: IDBRemote<IExplosiveDeviceDB>;
+            explosiveDeviceType: IDBRemote<IExplosiveDeviceTypeDB>;
+            explosiveDeviceAction: IDBRemote<IExplosiveDeviceActionDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
         },

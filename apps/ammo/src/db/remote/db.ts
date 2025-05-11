@@ -119,13 +119,12 @@ export class DBRemote
 
     batch: FirebaseFirestoreTypes.WriteBatch | null = null;
 
-    init = () => {
-        initializeFirestore(getApp(), {
+    init = async () => {
+        await initializeFirestore(getApp(), {
             persistence: true,
             cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
             ssl: true,
         });
-        return Promise.resolve();
     };
 
     dropDb = () => Promise.resolve();

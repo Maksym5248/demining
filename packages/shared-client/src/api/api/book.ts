@@ -1,6 +1,6 @@
 import { type IBookTypeDB, type IBookDB } from 'shared-my';
 
-import { type IDBBase, type IUpdateValue, type ICreateValue, type ISubscriptionDocument, type IQuery } from '~/common';
+import { type IUpdateValue, type ICreateValue, type ISubscriptionDocument, type IQuery, type IDBRemote } from '~/common';
 
 import { type IBookTypeDTO, type IBookDTO } from '../dto';
 
@@ -17,8 +17,8 @@ export interface IBookAPI {
 export class BookAPI implements IBookAPI {
     constructor(
         private db: {
-            book: IDBBase<IBookDB>;
-            bookType: IDBBase<IBookTypeDB>;
+            book: IDBRemote<IBookDB>;
+            bookType: IDBRemote<IBookTypeDB>;
         },
     ) {}
 

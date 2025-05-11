@@ -1,6 +1,6 @@
 import { type IMissionRequestTypeDB, type IMissionRequestDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument } from '~/common';
 
 import { type IMissionRequestTypeDTO, type IMissionRequestDTO, type IMissionRequestSumDTO } from '../dto';
 
@@ -20,8 +20,8 @@ export interface IMissionRequestAPI {
 export class MissionRequestAPI implements IMissionRequestAPI {
     constructor(
         private db: {
-            missionRequest: IDBBase<IMissionRequestDB>;
-            missionRequestType: IDBBase<IMissionRequestTypeDB>;
+            missionRequest: IDBRemote<IMissionRequestDB>;
+            missionRequestType: IDBRemote<IMissionRequestTypeDB>;
         },
     ) {}
 

@@ -1,6 +1,6 @@
 import { type APPS, type IAppConfigDB, type ICountryDB, type IMaterialDB, type IStatusDB } from 'shared-my';
 
-import { type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
+import { type IQuery, type IDBRemote, type ISubscriptionDocument } from '~/common';
 
 import { type IAppConfigDTO, type ICountryDTO } from '../dto';
 
@@ -14,10 +14,10 @@ export interface ICommonAPI {
 export class CommonAPI implements ICommonAPI {
     constructor(
         private db: {
-            app: IDBBase<IAppConfigDB>;
-            country: IDBBase<ICountryDB>;
-            material: IDBBase<IMaterialDB>;
-            status: IDBBase<IStatusDB>;
+            app: IDBRemote<IAppConfigDB>;
+            country: IDBRemote<ICountryDB>;
+            material: IDBRemote<IMaterialDB>;
+            status: IDBRemote<IStatusDB>;
         },
     ) {}
 

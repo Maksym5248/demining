@@ -1,6 +1,6 @@
 import { type IExplosiveDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import { type IExplosiveDTO, type IExplosiveDTOParams } from '../dto';
@@ -19,7 +19,7 @@ export interface IExplosiveAPI {
 export class ExplosiveAPI implements IExplosiveAPI {
     constructor(
         private db: {
-            explosive: IDBBase<IExplosiveDB>;
+            explosive: IDBRemote<IExplosiveDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
         },

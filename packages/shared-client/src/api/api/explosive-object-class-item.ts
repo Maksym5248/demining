@@ -1,6 +1,6 @@
 import { type IExplosiveObjectClassItemDB } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument } from '~/common';
 
 import { type IExplosiveObjectClassItemDTO } from '../dto';
 
@@ -19,7 +19,7 @@ export interface IExplosiveObjectClassItemAPI {
 export class ExplosiveObjectClassItemAPI implements IExplosiveObjectClassItemAPI {
     constructor(
         private db: {
-            explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
+            explosiveObjectClassItem: IDBRemote<IExplosiveObjectClassItemDB>;
         },
     ) {}
 

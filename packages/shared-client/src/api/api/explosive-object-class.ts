@@ -1,6 +1,6 @@
 import { type IExplosiveObjectClassDB } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument } from '~/common';
 
 import { type IExplosiveObjectClassDTO } from '../dto';
 
@@ -16,7 +16,7 @@ export interface IExplosiveObjectClassAPI {
 export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
     constructor(
         private db: {
-            explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
+            explosiveObjectClass: IDBRemote<IExplosiveObjectClassDB>;
         },
     ) {}
 

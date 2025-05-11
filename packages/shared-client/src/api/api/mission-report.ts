@@ -18,7 +18,7 @@ import {
     type IMissionRequestDB,
 } from 'shared-my';
 
-import { type ICreateValue, type IDBBase, type IQuery } from '~/common';
+import { type ICreateValue, type IDBRemote, type IQuery } from '~/common';
 
 import { type IMissionReportFullDTO, type IMissionReportDTOParams, type IMissionReportDTO, type IMissionReportSumDTO } from '../dto';
 
@@ -98,20 +98,20 @@ export interface IMissionReportAPI {
 export class MissionReportAPI implements IMissionReportAPI {
     constructor(
         private db: {
-            order: IDBBase<IOrderDB>;
-            missionRequest: IDBBase<IMissionRequestDB>;
-            missionReport: IDBBase<IMissionReportDB>;
-            mapViewAction: IDBBase<IMapViewActionDB>;
-            employee: IDBBase<IEmployeeDB>;
-            employeeAction: IDBBase<IEmployeeActionDB>;
-            transportAction: IDBBase<ITransportActionDB>;
-            transport: IDBBase<ITransportDB>;
-            explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
-            explosiveObject: IDBBase<IExplosiveObjectDB>;
-            equipmentAction: IDBBase<IEquipmentActionDB>;
-            equipment: IDBBase<IEquipmentDB>;
-            explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
-            explosiveDevice: IDBBase<IExplosiveDeviceDB>;
+            order: IDBRemote<IOrderDB>;
+            missionRequest: IDBRemote<IMissionRequestDB>;
+            missionReport: IDBRemote<IMissionReportDB>;
+            mapViewAction: IDBRemote<IMapViewActionDB>;
+            employee: IDBRemote<IEmployeeDB>;
+            employeeAction: IDBRemote<IEmployeeActionDB>;
+            transportAction: IDBRemote<ITransportActionDB>;
+            transport: IDBRemote<ITransportDB>;
+            explosiveObjectAction: IDBRemote<IExplosiveObjectActionDB>;
+            explosiveObject: IDBRemote<IExplosiveObjectDB>;
+            equipmentAction: IDBRemote<IEquipmentActionDB>;
+            equipment: IDBRemote<IEquipmentDB>;
+            explosiveDeviceAction: IDBRemote<IExplosiveDeviceActionDB>;
+            explosiveDevice: IDBRemote<IExplosiveDeviceDB>;
             batchCommit: () => Promise<void>;
             batchStart: () => void;
         },
@@ -520,7 +520,7 @@ export class MissionReportAPI implements IMissionReportAPI {
             'explosiveActions',
         ]);
 
-        const missionReportData: Omit<IMissionReportDB, 'createdAt' | 'updatedAt' | 'authorId' | 'authorId'> = {
+        const missionReportData: Omit<IMissionReportDB, 'createdAt' | 'updatedAt' | 'authorId'> = {
             id: this.db.missionReport.uuid(),
             ...newValue,
         };

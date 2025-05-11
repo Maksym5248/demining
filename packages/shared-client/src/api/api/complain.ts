@@ -1,6 +1,6 @@
 import { type IComplainDB } from 'shared-my';
 
-import { type ICreateValue, type IDBBase } from '~/common';
+import { type ICreateValue, type IDBRemote } from '~/common';
 
 import { type IComplainDTO, type IComplainCreateParamsDTO } from '../dto';
 
@@ -11,7 +11,7 @@ export interface IComplainAPI {
 export class ComplainAPI implements IComplainAPI {
     constructor(
         private db: {
-            complain: IDBBase<IComplainDB>;
+            complain: IDBRemote<IComplainDB>;
         },
     ) {}
 

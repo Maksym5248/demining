@@ -1,4 +1,4 @@
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote } from '~/common';
 
 import { type ITransportDTO } from '../dto';
 
@@ -13,7 +13,7 @@ export interface ITransportAPI {
 export class TransportAPI implements ITransportAPI {
     constructor(
         private db: {
-            transport: IDBBase<ITransportDTO>;
+            transport: IDBRemote<ITransportDTO>;
         },
     ) {}
 

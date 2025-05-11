@@ -39,6 +39,16 @@ const create = (value: number | Date): Dayjs => {
     return res;
 };
 
+const isServerDate = (value: any): boolean => {
+    return (
+        value &&
+        typeof value === 'object' &&
+        typeof value.toDate === 'function' &&
+        typeof value.seconds === 'number' &&
+        typeof value.nanoseconds === 'number'
+    );
+};
+
 const toDateServer = (value: Date | Dayjs) => {
     if (dayjs.isDayjs(value)) {
         // @ts-ignore
@@ -94,5 +104,6 @@ export const dates = {
     startOfMonth,
     startOfYear,
     endOfDay,
+    isServerDate,
     format,
 };

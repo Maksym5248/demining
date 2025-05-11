@@ -9,7 +9,7 @@ import {
     type IExplosiveObjectComponentDB,
 } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import {
@@ -45,14 +45,14 @@ export interface IExplosiveObjectAPI {
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     constructor(
         private db: {
-            explosiveObjectType: IDBBase<IExplosiveObjectTypeDB>;
-            explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
-            explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
-            explosiveObject: IDBBase<IExplosiveObjectDB>;
-            explosiveObjectDetails: IDBBase<IExplosiveObjectDetailsDB>;
-            explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
-            explosiveObjectComponent: IDBBase<IExplosiveObjectComponentDB>;
-            explosive: IDBBase<IExplosiveDB>;
+            explosiveObjectType: IDBRemote<IExplosiveObjectTypeDB>;
+            explosiveObjectClass: IDBRemote<IExplosiveObjectClassDB>;
+            explosiveObjectClassItem: IDBRemote<IExplosiveObjectClassItemDB>;
+            explosiveObject: IDBRemote<IExplosiveObjectDB>;
+            explosiveObjectDetails: IDBRemote<IExplosiveObjectDetailsDB>;
+            explosiveObjectAction: IDBRemote<IExplosiveObjectActionDB>;
+            explosiveObjectComponent: IDBRemote<IExplosiveObjectComponentDB>;
+            explosive: IDBRemote<IExplosiveDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
         },
