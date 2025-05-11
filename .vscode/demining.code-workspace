@@ -7,7 +7,7 @@
 			"path": "../apps/ammo"
 		},
 		{
-			"path": "../apps/demining"
+			"path": "../apps/dsns-web"
 		},
 		{
 			"path": "../apps/functions"
@@ -18,10 +18,9 @@
 		{
 			"path": "../packages/shared-client"
 		}
-
 	],
 	"settings": {
-		"typescript.tsdk": "./node_modules/typescript/lib",
+		"typescript.tsdk": "../node_modules/typescript/lib", // Use a centralized TypeScript version
 		"typescript.enablePromptUseWorkspaceTsdk": true
 	}
 }

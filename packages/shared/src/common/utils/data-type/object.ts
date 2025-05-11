@@ -1,3 +1,5 @@
+import { isUndefined } from 'lodash';
+
 type Path<T, Depth extends number = 4> = [Depth] extends [never]
     ? never
     : T extends object
@@ -12,7 +14,7 @@ function getItemByPathArray<T>(value: T, path: string[]): unknown {
     const [current, ...rest] = path;
     const currentValue = value[current as keyof T];
 
-    if (!currentValue) {
+    if (isUndefined(currentValue)) {
         return undefined;
     }
 

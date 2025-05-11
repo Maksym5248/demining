@@ -39,7 +39,7 @@ const create = (value: number | Date): Dayjs => {
     return res;
 };
 
-const isServerDate = (value: any): boolean => {
+const isServerDate = (value: any): value is Timestamp => {
     return (
         value &&
         typeof value === 'object' &&

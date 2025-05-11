@@ -1,9 +1,10 @@
+import { merge } from 'lodash';
 import { MMKV } from 'react-native-mmkv';
-import { type Timestamp, type IBaseDB, path } from 'shared-my';
-import { type IQuery, type IDBBase, type ICreateData, type IWhere, dates, type Path } from 'shared-my-client';
+import { cloneDeep, type IBaseDB } from 'shared-my';
+import { type IQuery, type IDBBase, type ICreateData, type IWhere } from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
-import { getWhere } from './utils';
+import { limit, order, where } from './utils';
 
 export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     tableName: string;
@@ -35,53 +36,17 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     }
 
     private filter(args?: Partial<IQuery>): T[] {
-        const allData = this.storage
+        const data = this.storage
             .getAllKeys()
             .filter(key => key.startsWith(`${this.key}-entity/`))
             .map(key => this.entityLoad(key))
             .filter(Boolean) as T[];
 
-        const filters = [...(args?.where ? getWhere(args.where) : [])];
+        const filtered = args?.where ? where(args, data) : data;
+        const ordered = args?.order ? order(args, filtered) : data;
+        const limited = args?.limit ? limit(args, ordered) : ordered;
 
-        let filteredData = allData;
-
-        // Apply filters
-        if (filters.length) {
-            filteredData = filteredData.filter(item => filters.every(filter => filter(item)));
-        }
-
-        // Apply order
-        if (args?.order) {
-            const { by, type } = args.order;
-
-            filteredData.sort((a, b) => {
-                const aValue = path(a, by as Path<T>) as string | number | Timestamp;
-                const bValue = path(b, by as Path<T>) as string | number | Timestamp;
-
-                let aComparable = aValue;
-                let bComparable = bValue;
-
-                // Check if values are Firestore Timestamps and convert them
-                if (dates.isServerDate(aValue)) {
-                    aComparable = dates.fromServerDate(aValue as Timestamp).valueOf();
-                }
-                if (dates.isServerDate(bValue)) {
-                    bComparable = dates.fromServerDate(bValue as Timestamp).valueOf();
-                }
-
-                // Perform comparison
-                if (aComparable < bComparable) return type === 'asc' ? -1 : 1;
-                if (aComparable > bComparable) return type === 'asc' ? 1 : -1;
-                return 0;
-            });
-        }
-
-        // Apply limit
-        if (args?.limit) {
-            filteredData = filteredData.slice(0, args.limit);
-        }
-
-        return filteredData;
+        return limited;
     }
 
     private get key() {
@@ -154,10 +119,7 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         }
 
         const data = this.entityLoad(id);
-        const newData = {
-            ...data,
-            ...value,
-        } as T;
+        const newData = merge(cloneDeep(data), value) as T;
 
         this.entityUpload(id, newData);
 

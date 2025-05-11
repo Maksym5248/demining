@@ -37,15 +37,38 @@ const mockFirestore = {
 
 const mockTimestamp = {
     fromDate: (date: Date) => ({
-        seconds: Math.floor(date.getTime() / 1000),
-        nanoseconds: (date.getTime() % 1000) * 1e6,
-        toDate: () => date,
+        seconds: Math.floor(new Date(date).getTime() / 1000),
+        nanoseconds: (new Date(date).getTime() % 1000) * 1e6,
+        toDate: () => new Date(date),
+        toMillis: () => new Date(date).getTime(),
+        isEqual: function (other: { seconds: number; nanoseconds: number }) {
+            return (
+                other &&
+                typeof other.seconds === 'number' &&
+                typeof other.nanoseconds === 'number' &&
+                this.seconds === other.seconds &&
+                this.nanoseconds === other.nanoseconds
+            );
+        },
     }),
-    now: () => ({
-        seconds: Math.floor(Date.now() / 1000),
-        nanoseconds: (Date.now() % 1000) * 1e6,
-        toDate: () => new Date(),
-    }),
+    now: () => {
+        const now = new Date();
+        return {
+            seconds: Math.floor(now.getTime() / 1000),
+            nanoseconds: (now.getTime() % 1000) * 1e6,
+            toDate: () => now,
+            toMillis: () => now.getTime(),
+            isEqual: function (other: { seconds: number; nanoseconds: number }) {
+                return (
+                    other &&
+                    typeof other.seconds === 'number' &&
+                    typeof other.nanoseconds === 'number' &&
+                    this.seconds === other.seconds &&
+                    this.nanoseconds === other.nanoseconds
+                );
+            },
+        };
+    },
 };
 
 export const Timestamp = mockTimestamp;
