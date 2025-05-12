@@ -22,17 +22,23 @@ const services = {
 
 export const Api = {
     explosiveObjectType: new ExplosiveObjectTypeAPI(DBRemote, DBLocal, services),
-    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote),
-    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote),
-    explosiveObject: new ExplosiveObjectAPI(DBRemote, services),
-    explosiveDevice: new ExplosiveDeviceAPI(DBRemote),
-    explosive: new ExplosiveAPI(DBRemote, services),
-    book: new BookAPI(DBRemote),
-    common: new CommonAPI(DBRemote),
+    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote, DBLocal),
+    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote, DBLocal),
+    explosiveObject: new ExplosiveObjectAPI(DBRemote, DBLocal, services),
+    explosiveDevice: new ExplosiveDeviceAPI(DBRemote, DBLocal),
+    explosive: new ExplosiveAPI(DBRemote, DBLocal, services),
+    book: new BookAPI(DBRemote, DBLocal),
+    common: new CommonAPI(DBRemote, DBLocal),
     comment: new CommentAPI(DBRemote),
     complain: new ComplainAPI(DBRemote),
     user: new UserAPI(DBRemote),
     currentUser: new CurrentUserAPI(DBRemote, services),
-    setLang: (lang: 'uk' | 'en') => DBRemote.setLang(lang),
-    init: () => DBRemote.init(),
+    setLang: (lang: 'uk' | 'en') => {
+        DBRemote.setLang(lang);
+        DBLocal.setLang(lang);
+    },
+    init: () => {
+        DBRemote.init();
+        DBLocal.init();
+    },
 };

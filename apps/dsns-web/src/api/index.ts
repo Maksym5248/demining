@@ -23,7 +23,7 @@ import {
 } from 'shared-my-client';
 
 import { CONFIG } from '~/config';
-import { DB } from '~/db';
+import { DBLocal, DBRemote } from '~/db';
 import { AssetStorage } from '~/services';
 
 export const ExternalApi = new ExternalApiClass(CONFIG.GEO_APIFY_KEY, publicIpv4);
@@ -33,25 +33,32 @@ const services = {
 };
 
 export const Api = {
-    employee: new EmployeeAPI(DB),
-    equipment: new EquipmentAPI(DB),
-    explosiveObjectType: new ExplosiveObjectTypeAPI(DB, services),
-    explosiveObjectClass: new ExplosiveObjectClassAPI(DB),
-    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DB),
-    book: new BookAPI(DB),
-    common: new CommonAPI(DB),
+    employee: new EmployeeAPI(DBRemote),
+    equipment: new EquipmentAPI(DBRemote),
+    explosiveObjectType: new ExplosiveObjectTypeAPI(DBRemote, DBLocal, services),
+    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote, DBLocal),
+    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote, DBLocal),
+    book: new BookAPI(DBRemote, DBLocal),
+    common: new CommonAPI(DBRemote, DBLocal),
 
-    explosiveObject: new ExplosiveObjectAPI(DB, services),
-    explosiveDevice: new ExplosiveDeviceAPI(DB),
-    explosive: new ExplosiveAPI(DB, services),
-    missionReport: new MissionReportAPI(DB),
-    missionRequest: new MissionRequestAPI(DB),
-    order: new OrderAPI(DB),
-    transport: new TransportAPI(DB),
-    user: new UserAPI(DB),
-    currentUser: new CurrentUserAPI(DB, services),
-    organization: new OrganizationAPI(DB),
-    document: new DocumentAPI(DB, services),
-    map: new MapAPI(DB),
-    setLang: (lang: 'uk' | 'en') => DB.setLang(lang),
+    explosiveObject: new ExplosiveObjectAPI(DBRemote, DBLocal, services),
+    explosiveDevice: new ExplosiveDeviceAPI(DBRemote, DBLocal),
+    explosive: new ExplosiveAPI(DBRemote, DBLocal, services),
+    missionReport: new MissionReportAPI(DBRemote),
+    missionRequest: new MissionRequestAPI(DBRemote),
+    order: new OrderAPI(DBRemote),
+    transport: new TransportAPI(DBRemote),
+    user: new UserAPI(DBRemote),
+    currentUser: new CurrentUserAPI(DBRemote, services),
+    organization: new OrganizationAPI(DBRemote),
+    document: new DocumentAPI(DBRemote, services),
+    map: new MapAPI(DBRemote),
+    setLang: (lang: 'uk' | 'en') => {
+        DBRemote.setLang(lang);
+        DBLocal.setLang(lang);
+    },
+    init: async () => {
+        await DBRemote.init();
+        await DBLocal.init();
+    },
 };

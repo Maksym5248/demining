@@ -42,7 +42,6 @@ import {
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';
-import { DB } from '~/db';
 import { Analytics, Auth, Crashlytics, Logger, Message, SecureStorage, Storage } from '~/services';
 
 export interface IRootStore {
@@ -190,13 +189,13 @@ export class RootStore implements IRootStore {
     async init() {
         initializeApp(FIREBASE_CONFIG);
 
-        this.services.analytics.init();
-        this.services.crashlytics.init();
-        this.api.setLang('uk');
-        this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
-
         try {
-            await DB.init();
+            await Api.init();
+
+            this.services.analytics.init();
+            this.services.crashlytics.init();
+            this.api.setLang('uk');
+            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
 
             await Promise.all([
                 this.common.subscribeCountries.run(),

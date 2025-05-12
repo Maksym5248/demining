@@ -1,10 +1,11 @@
 import { type IExplosiveDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument, type IDBLocal } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import { type IExplosiveDTO, type IExplosiveDTOParams } from '../dto';
 import { createImage, updateImage } from '../image';
+import { DBOfflineFirst } from '../offline';
 
 export interface IExplosiveAPI {
     create: (value: ICreateValue<IExplosiveDTOParams>) => Promise<IExplosiveDTO>;
@@ -17,21 +18,32 @@ export interface IExplosiveAPI {
 }
 
 export class ExplosiveAPI implements IExplosiveAPI {
+    offline: {
+        explosive: DBOfflineFirst<IExplosiveDB>;
+    };
+
     constructor(
-        private db: {
+        dbRemote: {
             explosive: IDBRemote<IExplosiveDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
         },
+        dbLocal: {
+            explosive: IDBLocal<IExplosiveDB>;
+        },
         private services: {
             assetStorage: IAssetStorage;
         },
-    ) {}
+    ) {
+        this.offline = {
+            explosive: new DBOfflineFirst<IExplosiveDB>(dbRemote.explosive, dbLocal.explosive),
+        };
+    }
 
     create = async ({ image, ...value }: ICreateValue<IExplosiveDTOParams>): Promise<IExplosiveDTO> => {
         const imageUri = await createImage({ image, services: this.services });
 
-        const res = await this.db.explosive.create({
+        const res = await this.offline.explosive.create({
             ...value,
             imageUri,
         });
@@ -42,12 +54,12 @@ export class ExplosiveAPI implements IExplosiveAPI {
     };
 
     update = async (id: string, { image, ...value }: IUpdateValue<IExplosiveDTOParams>): Promise<IExplosiveDTO> => {
-        const current = await this.db.explosive.get(id);
+        const current = await this.offline.explosive.get(id);
         if (!current) throw new Error('there is explosive object');
 
         const imageUri = await updateImage({ image, imageUri: current.imageUri, services: this.services });
 
-        const explosiveObject = await this.db.explosive.update(id, {
+        const explosiveObject = await this.offline.explosive.update(id, {
             ...value,
             imageUri: imageUri ?? null,
         });
@@ -57,10 +69,10 @@ export class ExplosiveAPI implements IExplosiveAPI {
         return explosiveObject;
     };
 
-    remove = (id: string) => this.db.explosive.remove(id);
+    remove = (id: string) => this.offline.explosive.remove(id);
 
     getList = async (query?: IQuery): Promise<IExplosiveDTO[]> =>
-        this.db.explosive.select({
+        this.offline.explosive.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -69,7 +81,7 @@ export class ExplosiveAPI implements IExplosiveAPI {
         });
 
     get = async (id: string): Promise<IExplosiveDTO> => {
-        const res = await this.db.explosive.get(id);
+        const res = await this.offline.explosive.get(id);
         if (!res) throw new Error('there is explosive with id');
         return res;
     };
@@ -81,6 +93,6 @@ export class ExplosiveAPI implements IExplosiveAPI {
     };
 
     subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDTO>[]) => void) => {
-        return this.db.explosive.subscribe(args, callback);
+        return this.offline.explosive.subscribe(args, callback);
     };
 }

@@ -1,151 +1,199 @@
-import { type Connection, type ISelectQuery, type IWhereQuery, type IWhereQueryOption } from 'jsstore';
-import isArray from 'lodash/isArray';
-import uuid from 'uuid/v4';
+import { merge } from 'lodash';
+import { cloneDeep, type IBaseDB } from 'shared-my';
+import { type IQuery, type IDBBase, type ICreateData, type IWhere } from 'shared-my-client';
+import { v4 as uuid } from 'uuid';
 
-export class DBBase<T extends { id: string }> {
-    db: Connection;
+import { limit, order, where } from './utils';
 
+export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     tableName: string;
+    rootCollection?: string;
+    dbName: string;
+    private dbConnection?: IDBDatabase; // Store the database connection
 
-    constructor(db: Connection, tableName: string) {
-        this.db = db;
+    constructor(tableName: string, dbName = 'AppDatabase') {
         this.tableName = tableName;
+        this.dbName = dbName;
     }
 
-    async uuid() {
-        let id = null;
-
-        while (!id) {
-            const testId = `${this.tableName}-${uuid()}`;
-
-            // eslint-disable-next-line no-await-in-loop
-            const res = await this.db.select({
-                from: this.tableName,
-                where: {
-                    id: testId,
-                },
-            });
-
-            if (!res.length) {
-                id = testId;
-            }
+    private async openDB(): Promise<IDBDatabase> {
+        if (this.dbConnection) {
+            return this.dbConnection; // Reuse existing connection
         }
 
-        return id;
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.dbName);
+
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains(this.tableName)) {
+                    db.createObjectStore(this.tableName, { keyPath: 'id' });
+                }
+            };
+
+            request.onsuccess = () => {
+                this.dbConnection = request.result; // Cache the connection
+                resolve(this.dbConnection);
+            };
+
+            request.onerror = () => reject(request.error);
+        });
     }
 
-    select(args?: Partial<Omit<ISelectQuery, 'from'>>): Promise<T[]> {
-        const params: ISelectQuery = {
-            from: this.tableName,
-            ...args,
-        };
-
-        return this.db.select<T>(params);
+    private async transaction(storeName: string, mode: IDBTransactionMode): Promise<IDBObjectStore> {
+        const db = await this.openDB();
+        const transaction = db.transaction(storeName, mode);
+        return transaction.objectStore(storeName);
     }
 
-    async get(id: string): Promise<T> {
-        const [res] = await this.db.select<T>({
-            from: this.tableName,
-            where: {
-                id,
-            },
+    async closeDB(): Promise<void> {
+        if (this.dbConnection) {
+            this.dbConnection.close();
+            this.dbConnection = undefined; // Clear the cached connection
+        }
+    }
+
+    async select(args?: Partial<IQuery>): Promise<T[]> {
+        const store = await this.transaction(this.tableName, 'readonly');
+        const data: T[] = await new Promise((resolve, reject) => {
+            const request = store.getAll();
+            request.onsuccess = () => resolve(request.result as T[]);
+            request.onerror = () => reject(request.error);
         });
 
-        if (!res) {
-            throw new Error('there is no element by id');
-        }
+        const filtered = args?.where ? where(args, data) : data;
+        const ordered = args?.order ? order(args, filtered) : filtered;
+        const limited = args?.limit ? limit(args, ordered) : ordered;
 
-        return res;
+        return limited;
+    }
+
+    async get(id: string): Promise<T | null> {
+        const store = await this.transaction(this.tableName, 'readonly');
+        return new Promise((resolve, reject) => {
+            const request = store.get(id);
+            request.onsuccess = () => resolve(request.result || null);
+            request.onerror = () => reject(request.error);
+        });
     }
 
     async getByIds(ids: string[]): Promise<T[]> {
-        return this.db.select<T>({
-            from: this.tableName,
-            where: {
-                id: {
-                    in: ids,
-                },
-            },
-        });
+        const results: T[] = [];
+        for (const id of ids) {
+            const item = await this.get(id);
+            if (item) results.push(item);
+        }
+        return results;
     }
 
     async exist(field: keyof T, value: any): Promise<boolean> {
-        const [res] = await this.db.select({
-            from: this.tableName,
-            where: {
-                [field]: value,
-            },
-            limit: 1,
+        if (field === 'id') {
+            const data = await this.get(value);
+            return !!data;
+        } else {
+            const data = await this.select({ where: { [field]: value }, limit: 1 });
+            return data.length > 0;
+        }
+    }
+
+    async create(value: ICreateData<T>): Promise<T> {
+        const data = { ...value } as T;
+
+        if (!data.id) {
+            data.id = this.uuid();
+        }
+
+        const store = await this.transaction(this.tableName, 'readwrite');
+        return new Promise((resolve, reject) => {
+            const request = store.add(data);
+            request.onsuccess = () => resolve(data);
+            request.onerror = () => reject(request.error);
         });
-
-        return !!res;
     }
 
-    async create(value: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>): Promise<T> {
-        const id = await this.uuid();
+    async update(id: string, value: Partial<T>): Promise<T> {
+        if (!id) {
+            return Promise.reject(new Error('ID is required'));
+        }
 
-        const res = (await this.db.insert<T>({
-            into: this.tableName,
-            values: [{ ...value, id, createdAt: new Date(), updatedAt: new Date() }],
-            return: true,
-        })) as T[];
+        const existing = await this.get(id);
+        if (!existing) {
+            return Promise.reject(new Error('Entity not found'));
+        }
 
-        return res[0];
-    }
+        const newData = merge(cloneDeep(existing), value) as T;
 
-    async initData(
-        values: Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>[],
-        checkField: keyof Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>,
-    ): Promise<T[]> {
-        const filteredValues = await Promise.all(values.map(value => this.exist(checkField, value[checkField])));
-
-        const res = await Promise.all(values.filter((value, i) => !filteredValues[i]).map(value => this.create(value)));
-
-        // @ts-ignore
-        return isArray(res) ? res : null;
-    }
-
-    async update(id: string, value: Partial<Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id'>>): Promise<T> {
-        const newValue = { ...value };
-
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (newValue?.id) delete newValue.id;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (newValue?.updatedAt) delete newValue.updatedAt;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (newValue?.createdAt) delete newValue.createdAt;
-
-        await this.db.update({
-            in: this.tableName,
-            set: { ...newValue, updatedAt: new Date() },
-            where: {
-                id,
-            },
+        const store = await this.transaction(this.tableName, 'readwrite');
+        return new Promise((resolve, reject) => {
+            const request = store.put(newData);
+            request.onsuccess = () => resolve(newData);
+            request.onerror = () => reject(request.error);
         });
-
-        const res = await this.get(id);
-
-        return res;
     }
 
-    async remove(id: string | IWhereQueryOption) {
-        await this.db.remove({
-            from: this.tableName,
-            where: {
-                id,
-            },
+    async remove(id: string): Promise<string> {
+        const store = await this.transaction(this.tableName, 'readwrite');
+        return new Promise((resolve, reject) => {
+            const request = store.delete(id);
+            request.onsuccess = () => resolve(id);
+            request.onerror = () => reject(request.error);
         });
-
-        return id;
     }
 
-    removeBy(where: IWhereQuery) {
-        return this.db.remove({
-            from: this.tableName,
-            where,
-        });
+    async removeBy(args: IWhere): Promise<void> {
+        const data = await this.select({ where: args });
+        const store = await this.transaction(this.tableName, 'readwrite');
+
+        await Promise.all(
+            data.map(item => {
+                return new Promise<void>((resolve, reject) => {
+                    const request = store.delete(item.id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }),
+        );
+    }
+
+    async count(args?: Partial<IQuery>): Promise<number> {
+        const data = await this.select(args);
+        return data.length;
+    }
+
+    async sum(field: keyof T, args?: Partial<IQuery>): Promise<number> {
+        const data = await this.select(args);
+        return data.reduce((acc, item) => acc + ((item[field] as number) || 0), 0);
+    }
+
+    uuid() {
+        return uuid();
+    }
+
+    async setTableName(tableName: string): Promise<void> {
+        this.tableName = tableName;
+
+        const db = await this.openDB();
+        if (!db.objectStoreNames.contains(this.tableName)) {
+            db.close();
+            await new Promise((resolve, reject) => {
+                const request = indexedDB.open(this.dbName, db.version + 1);
+                request.onupgradeneeded = () => {
+                    const upgradeDb = request.result;
+                    upgradeDb.createObjectStore(this.tableName, { keyPath: 'id' });
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+    }
+
+    async setRootCollection(rootCollection: string): Promise<void> {
+        this.rootCollection = rootCollection;
+        await this.setTableName(`${rootCollection}/${this.tableName}`);
+    }
+
+    async removeRootCollection(): Promise<void> {
+        this.rootCollection = undefined;
+        await this.setTableName(this.tableName); // Reset table name without rootCollection
     }
 }

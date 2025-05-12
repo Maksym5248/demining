@@ -14,7 +14,7 @@ export interface IExplosiveObjectTypeAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectTypeDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectTypeDTO>;
-    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => void) => Promise<void>;
+    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectTypeAPI implements IExplosiveObjectTypeAPI {
@@ -76,7 +76,7 @@ export class ExplosiveObjectTypeAPI implements IExplosiveObjectTypeAPI {
         return res;
     };
 
-    sync = async (query: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => void) => {
-        await this.offline.sync(query, callback);
+    subscribe = async (query: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => void) => {
+        await this.offline.subscribe(query, callback);
     };
 }
