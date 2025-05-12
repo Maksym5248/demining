@@ -14,11 +14,8 @@ export interface IExplosiveDeviceAPI {
     getListDetonators: (query?: IQuery) => Promise<IExplosiveDeviceDTO[]>;
     get: (id: string) => Promise<IExplosiveDeviceDTO>;
     sum: (query?: IQuery) => Promise<{ explosive: number; detonator: number }>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
-    subscribeType: (
-        args: Partial<IQuery> | null,
-        callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void,
-    ) => Promise<void>;
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
+    syncType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
@@ -130,11 +127,11 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
         };
     };
 
-    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => {
-        return this.dbRemote.explosiveDevice.subscribe(args, callback);
+    sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => {
+        return this.offline.explosiveDevice.sync(args, callback);
     };
 
-    subscribeType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => {
-        return this.dbRemote.explosiveDeviceType.subscribe(args, callback);
+    syncType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => {
+        return this.offline.explosiveDeviceType.sync(args, callback);
     };
 }

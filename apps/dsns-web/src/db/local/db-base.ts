@@ -1,56 +1,33 @@
 import { merge } from 'lodash';
 import { cloneDeep, type IBaseDB } from 'shared-my';
-import { type IQuery, type IDBBase, type ICreateData, type IWhere } from 'shared-my-client';
+import { type IQuery, type ICreateData, type IWhere, type IDBLocal } from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
-import { limit, order, where } from './utils';
+import { type IDBConnection } from './db.connetion';
+import { convertTimestamps, limit, order, where } from './utils';
 
-export class DBBase<T extends IBaseDB> implements IDBBase<T> {
+export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     tableName: string;
     rootCollection?: string;
-    dbName: string;
-    private dbConnection?: IDBDatabase; // Store the database connection
 
-    constructor(tableName: string, dbName = 'AppDatabase') {
+    constructor(
+        tableName: string,
+        private db: IDBConnection,
+    ) {
         this.tableName = tableName;
-        this.dbName = dbName;
     }
 
-    private async openDB(): Promise<IDBDatabase> {
-        if (this.dbConnection) {
-            return this.dbConnection; // Reuse existing connection
+    init(): void {
+        if (!this.db.connetion.objectStoreNames.contains(this.tableName)) {
+            this.db.connetion.createObjectStore(this.tableName, { keyPath: 'id' });
         }
-
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.dbName);
-
-            request.onupgradeneeded = () => {
-                const db = request.result;
-                if (!db.objectStoreNames.contains(this.tableName)) {
-                    db.createObjectStore(this.tableName, { keyPath: 'id' });
-                }
-            };
-
-            request.onsuccess = () => {
-                this.dbConnection = request.result; // Cache the connection
-                resolve(this.dbConnection);
-            };
-
-            request.onerror = () => reject(request.error);
-        });
     }
+
+    drop(): void {}
 
     private async transaction(storeName: string, mode: IDBTransactionMode): Promise<IDBObjectStore> {
-        const db = await this.openDB();
-        const transaction = db.transaction(storeName, mode);
+        const transaction = this.db.connetion.transaction(storeName, mode);
         return transaction.objectStore(storeName);
-    }
-
-    async closeDB(): Promise<void> {
-        if (this.dbConnection) {
-            this.dbConnection.close();
-            this.dbConnection = undefined; // Clear the cached connection
-        }
     }
 
     async select(args?: Partial<IQuery>): Promise<T[]> {
@@ -61,7 +38,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
             request.onerror = () => reject(request.error);
         });
 
-        const filtered = args?.where ? where(args, data) : data;
+        const convertedData = data.map(item => convertTimestamps(item)); // Convert Timestamps
+        const filtered = args?.where ? where(args, convertedData) : convertedData;
         const ordered = args?.order ? order(args, filtered) : filtered;
         const limited = args?.limit ? limit(args, ordered) : ordered;
 
@@ -72,7 +50,10 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
         const store = await this.transaction(this.tableName, 'readonly');
         return new Promise((resolve, reject) => {
             const request = store.get(id);
-            request.onsuccess = () => resolve(request.result || null);
+            request.onsuccess = () => {
+                const result = request.result ? convertTimestamps(request.result) : null; // Convert Timestamps
+                resolve(result);
+            };
             request.onerror = () => reject(request.error);
         });
     }
@@ -172,18 +153,8 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     async setTableName(tableName: string): Promise<void> {
         this.tableName = tableName;
 
-        const db = await this.openDB();
-        if (!db.objectStoreNames.contains(this.tableName)) {
-            db.close();
-            await new Promise((resolve, reject) => {
-                const request = indexedDB.open(this.dbName, db.version + 1);
-                request.onupgradeneeded = () => {
-                    const upgradeDb = request.result;
-                    upgradeDb.createObjectStore(this.tableName, { keyPath: 'id' });
-                };
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+        if (!this.db.connetion.objectStoreNames.contains(this.tableName)) {
+            this.db.connetion.createObjectStore(this.tableName, { keyPath: 'id' });
         }
     }
 

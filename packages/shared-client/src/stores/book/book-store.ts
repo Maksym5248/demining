@@ -28,8 +28,8 @@ export interface IBookStore {
     fetchItem: IRequestModel<[string]>;
     fetchList: IRequestModel<[search?: string]>;
     fetchListMore: IRequestModel<[search?: string]>;
-    subscribe: RequestModel;
-    subscribeBookType: RequestModel;
+    sync: RequestModel;
+    syncBookType: RequestModel;
 }
 
 interface IApi {
@@ -128,9 +128,9 @@ export class BookStore implements IBookStore {
         },
     });
 
-    subscribe = new RequestModel({
+    sync = new RequestModel({
         run: async () => {
-            await this.api.book.subscribe(
+            await this.api.book.sync(
                 {
                     where: {
                         status: APPROVE_STATUS.CONFIRMED,
@@ -147,10 +147,10 @@ export class BookStore implements IBookStore {
         },
     });
 
-    subscribeBookType = new RequestModel({
+    syncBookType = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            await this.api.book.subscribeBookType({}, (values: ISubscriptionDocument<IBookTypeDTO>[]) => {
+            await this.api.book.syncBookType({}, (values: ISubscriptionDocument<IBookTypeDTO>[]) => {
                 const create: IBookTypeData[] = [];
                 const update: IBookTypeData[] = [];
                 const remove: string[] = [];

@@ -25,7 +25,7 @@ export interface IDBLocal
     extends Pick<
         IDB,
         | 'init'
-        | 'dropDb'
+        | 'drop'
         | 'setLang'
         | 'explosiveObjectType'
         | 'explosiveObject'
@@ -61,9 +61,30 @@ export class DBLocal implements IDBLocal {
     status = new DBBase<IStatusDB>(TABLES.STATUSES);
     rank = new DBBase<IRankDB>(TABLES.RANKS);
 
-    init = () => {};
+    init = async () => {
+        return Promise.resolve();
+    };
 
-    dropDb = () => {};
+    async drop() {
+        await Promise.all([
+            this.explosiveObject.drop(),
+            this.explosiveObjectDetails.drop(),
+            this.explosiveObjectType.drop(),
+            this.explosiveDevice.drop(),
+            this.explosive.drop(),
+            this.explosiveObjectClass.drop(),
+            this.explosiveObjectClassItem.drop(),
+            this.book.drop(),
+
+            this.bookType.drop(),
+            this.country.drop(),
+            this.explosiveDeviceType.drop(),
+            this.explosiveObjectComponent.drop(),
+            this.material.drop(),
+            this.status.drop(),
+            this.rank.drop(),
+        ]);
+    }
 
     setLang(lang: 'uk' | 'en') {
         const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;

@@ -32,12 +32,12 @@ export interface IExplosiveObjectAPI {
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectFullDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
-    subscribeDetails: (
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
+    syncDetails: (
         args: Partial<IQuery> | null,
         callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void,
     ) => Promise<void>;
-    subscribeComponents: (
+    syncComponents: (
         args: Partial<IQuery> | null,
         callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void,
     ) => Promise<void>;
@@ -237,15 +237,15 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         };
     };
 
-    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => {
-        return this.offline.explosiveObject.subscribe(args, callback);
+    sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => {
+        return this.offline.explosiveObject.sync(args, callback);
     };
 
-    subscribeDetails = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void) => {
-        return this.offline.explosiveObjectDetails.subscribe(args, callback);
+    syncDetails = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void) => {
+        return this.offline.explosiveObjectDetails.sync(args, callback);
     };
 
-    subscribeComponents = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void) => {
-        return this.offline.explosiveObjectComponent.subscribe(args, callback);
+    syncComponents = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void) => {
+        return this.offline.explosiveObjectComponent.sync(args, callback);
     };
 }

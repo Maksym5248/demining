@@ -11,7 +11,7 @@ export interface IExplosiveObjectClassAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectClassDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectClassDTO>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
@@ -59,7 +59,7 @@ export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
         return res;
     };
 
-    subscribe = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
-        return this.offline.subscribe(args, callback);
+    sync = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
+        return this.offline.sync(args, callback);
     };
 }

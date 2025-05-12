@@ -37,7 +37,7 @@ export interface IExplosiveObjectClassItemStore {
     remove: IRequestModel<[string]>;
     fetchList: IRequestModel;
     fetchItem: IRequestModel<[string]>;
-    subscribe: IRequestModel;
+    sync: IRequestModel;
 }
 
 interface IStores {
@@ -104,9 +104,9 @@ export class ExplosiveObjectClassItemStore implements IExplosiveObjectClassItemS
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
-    subscribe = new RequestModel({
+    sync = new RequestModel({
         run: async () => {
-            await this.api.explosiveObjectClassItem.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectClassItemDTO>[]) => {
+            await this.api.explosiveObjectClassItem.sync(null, (values: ISubscriptionDocument<IExplosiveObjectClassItemDTO>[]) => {
                 const { create, update, remove } = data.sortByType<IExplosiveObjectClassItemDTO, IExplosiveObjectClassItemData>(
                     values,
                     createExplosiveObjectClassItem,

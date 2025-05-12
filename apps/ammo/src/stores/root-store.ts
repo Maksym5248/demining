@@ -189,17 +189,17 @@ export class RootStore implements IRootStore {
                 }
 
                 await Promise.all([
-                    this.common.subscribeCountries.run(),
-                    this.common.subscribeStatuses.run(),
-                    this.common.subscribeMaterials.run(),
-                    this.explosiveObject.subscribe.run(),
-                    this.explosiveObject.subscribeDetails.run(),
-                    this.explosiveObject.subscribeDeeps.run(),
-                    this.explosiveDevice.subscribe.run(),
-                    this.explosiveDevice.subscribeType.run(),
-                    this.explosive.subscribe.run(),
-                    this.book.subscribeBookType.run(),
-                    this.book.subscribe.run(),
+                    this.common.syncCountries.run(),
+                    this.common.syncStatuses.run(),
+                    this.common.syncMaterials.run(),
+                    this.explosiveObject.sync.run(),
+                    this.explosiveObject.syncDetails.run(),
+                    this.explosiveObject.syncDeeps.run(),
+                    this.explosiveDevice.sync.run(),
+                    this.explosiveDevice.syncType.run(),
+                    this.explosive.sync.run(),
+                    this.book.syncBookType.run(),
+                    this.book.sync.run(),
                 ]);
             } catch (e) {
                 /** SKIP */

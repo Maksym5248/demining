@@ -41,7 +41,7 @@ export interface IExplosiveObjectTypeStore {
     fetchList: IRequestModel;
     fetchItem: IRequestModel<[string]>;
     sortedListTypes: IExplosiveObjectType[];
-    subscribe: IRequestModel;
+    sync: IRequestModel;
 }
 
 interface IStores {
@@ -118,9 +118,9 @@ export class ExplosiveObjectTypeStore implements IExplosiveObjectTypeStore {
         );
     }
 
-    subscribe = new RequestModel({
+    sync = new RequestModel({
         run: async () => {
-            await this.api.explosiveObjectType.subscribe(null, (values: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => {
+            await this.api.explosiveObjectType.sync(null, (values: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => {
                 const { create, update, remove } = data.sortByType<IExplosiveObjectTypeDTO, IExplosiveObjectTypeData>(
                     values,
                     createExplosiveObjectType,

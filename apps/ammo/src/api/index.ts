@@ -37,7 +37,7 @@ export const Api = {
         DBRemote.setLang(lang);
         DBLocal.setLang(lang);
     },
-    init: () => {
+    init: async () => {
         DBRemote.init();
         DBLocal.init();
     },

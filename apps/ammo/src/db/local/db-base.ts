@@ -1,12 +1,12 @@
 import { merge } from 'lodash';
 import { MMKV } from 'react-native-mmkv';
 import { cloneDeep, type IBaseDB } from 'shared-my';
-import { type IQuery, type IDBBase, type ICreateData, type IWhere } from 'shared-my-client';
+import { type IQuery, type ICreateData, type IWhere, type IDBLocal } from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
-import { limit, order, where } from './utils';
+import { convertTimestamps, limit, order, where } from './utils';
 
-export class DBBase<T extends IBaseDB> implements IDBBase<T> {
+export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     tableName: string;
     rootCollection?: string;
     storage: MMKV;
@@ -14,6 +14,10 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     constructor(tableName: string) {
         this.tableName = tableName;
         this.storage = new MMKV({ id: this.key });
+    }
+
+    drop(): void {
+        this.storage.clearAll();
     }
 
     createStorage() {
@@ -65,7 +69,11 @@ export class DBBase<T extends IBaseDB> implements IDBBase<T> {
     private entityLoad(id: string): T | null {
         const key = this.getEntityKey(id);
         const data = this.storage.getString(key);
-        return data ? JSON.parse(data) : null;
+        if (!data) return null;
+
+        const parsedData = JSON.parse(data);
+
+        return convertTimestamps(parsedData);
     }
 
     private entityUpload(id: string, value: T) {

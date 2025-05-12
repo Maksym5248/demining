@@ -198,18 +198,18 @@ export class RootStore implements IRootStore {
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
 
             await Promise.all([
-                this.common.subscribeCountries.run(),
-                this.common.subscribeStatuses.run(),
-                this.common.subscribeMaterials.run(),
+                this.common.syncCountries.run(),
+                this.common.syncStatuses.run(),
+                this.common.syncMaterials.run(),
                 this.employee.subscribeRanks.run(),
-                this.explosiveObject.subscribe.run(),
-                this.explosiveObject.subscribeDetails.run(),
-                this.explosiveObject.subscribeDeeps.run(),
-                this.explosiveDevice.subscribe.run(),
-                this.explosiveDevice.subscribeType.run(),
-                this.explosive.subscribe.run(),
-                this.book.subscribe.run(),
-                this.book.subscribeBookType.run(),
+                this.explosiveObject.sync.run(),
+                this.explosiveObject.syncDetails.run(),
+                this.explosiveObject.syncDeeps.run(),
+                this.explosiveDevice.sync.run(),
+                this.explosiveDevice.syncType.run(),
+                this.explosive.sync.run(),
+                this.book.sync.run(),
+                this.book.syncBookType.run(),
                 this.missionRequest.subscribeType.run(),
             ]);
         } catch (e) {

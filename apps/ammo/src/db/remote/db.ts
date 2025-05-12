@@ -46,7 +46,7 @@ export class DBRemote
         Pick<
             IDB,
             | 'init'
-            | 'dropDb'
+            | 'drop'
             | 'setOrganizationId'
             | 'removeOrganizationId'
             | 'batchStart'
@@ -121,13 +121,13 @@ export class DBRemote
 
     init = async () => {
         await initializeFirestore(getApp(), {
-            persistence: true,
+            persistence: false,
             cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
             ssl: true,
         });
     };
 
-    dropDb = () => Promise.resolve();
+    drop = () => Promise.resolve();
 
     setOrganizationId() {
         /** WEB */

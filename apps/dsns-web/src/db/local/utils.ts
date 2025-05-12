@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { isNull, isUndefined } from 'lodash';
 import { isArray, isObject, path } from 'shared-my';
 import { type IQuery, type IWhere, type Path, dates } from 'shared-my-client';
@@ -167,4 +168,17 @@ export const limit = <T>(args: Partial<IQuery>, data: T[]) => {
     }
 
     return data;
+};
+
+export const convertTimestamps = (obj: any): any => {
+    if (obj && typeof obj === 'object') {
+        if (obj.seconds !== undefined && obj.nanoseconds !== undefined) {
+            return new Timestamp(obj.seconds, obj.nanoseconds);
+        }
+        for (const key in obj) {
+            obj[key] = convertTimestamps(obj[key]);
+        }
+    }
+
+    return obj;
 };

@@ -38,9 +38,9 @@ export interface ICommonStore {
         statuses: CollectionModel<IStatus, IStatusData>;
         materials: CollectionModel<IMaterial, IMaterialData>;
     };
-    subscribeCountries: RequestModel;
-    subscribeStatuses: RequestModel;
-    subscribeMaterials: RequestModel;
+    syncCountries: RequestModel;
+    syncStatuses: RequestModel;
+    syncMaterials: RequestModel;
     fetchAppConfig: RequestModel;
 }
 
@@ -85,10 +85,10 @@ export class CommonStore implements ICommonStore {
         },
     });
 
-    subscribeCountries = new RequestModel({
+    syncCountries = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            await this.api.common.subscribeCountry({}, (values: ISubscriptionDocument<ICountryDTO>[]) => {
+            await this.api.common.syncCountry({}, (values: ISubscriptionDocument<ICountryDTO>[]) => {
                 const create: ICountryData[] = [];
                 const update: ICountryData[] = [];
                 const remove: string[] = [];
@@ -110,10 +110,10 @@ export class CommonStore implements ICommonStore {
         },
     });
 
-    subscribeStatuses = new RequestModel({
+    syncStatuses = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            await this.api.common.subscribeStatus({}, (values: ISubscriptionDocument<IStatusDTO>[]) => {
+            await this.api.common.syncStatus({}, (values: ISubscriptionDocument<IStatusDTO>[]) => {
                 const create: IStatusData[] = [];
                 const update: IStatusData[] = [];
                 const remove: string[] = [];
@@ -135,10 +135,10 @@ export class CommonStore implements ICommonStore {
         },
     });
 
-    subscribeMaterials = new RequestModel({
+    syncMaterials = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            await this.api.common.subscribeMaterial({}, (values: ISubscriptionDocument<IMaterialDTO>[]) => {
+            await this.api.common.syncMaterial({}, (values: ISubscriptionDocument<IMaterialDTO>[]) => {
                 const create: IMaterialData[] = [];
                 const update: IMaterialData[] = [];
                 const remove: string[] = [];

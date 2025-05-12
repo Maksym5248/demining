@@ -7,9 +7,9 @@ import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
 
 export interface ICommonAPI {
     getAppConfig: (name: APPS) => Promise<IAppConfigDTO>;
-    subscribeCountry: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => Promise<void>;
-    subscribeMaterial: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => Promise<void>;
-    subscribeStatus: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => Promise<void>;
+    syncCountry: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => Promise<void>;
+    syncMaterial: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => Promise<void>;
+    syncStatus: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => Promise<void>;
 }
 
 export class CommonAPI implements ICommonAPI {
@@ -45,15 +45,15 @@ export class CommonAPI implements ICommonAPI {
         return res;
     }
 
-    subscribeCountry = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => {
-        return this.offlineCountry.subscribe(args, callback);
+    syncCountry = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => {
+        return this.offlineCountry.sync(args, callback);
     };
 
-    subscribeMaterial = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => {
-        return this.offlineMaterial.subscribe(args, callback);
+    syncMaterial = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => {
+        return this.offlineMaterial.sync(args, callback);
     };
 
-    subscribeStatus = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => {
-        return this.offlineStatus.subscribe(args, callback);
+    syncStatus = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => {
+        return this.offlineStatus.sync(args, callback);
     };
 }

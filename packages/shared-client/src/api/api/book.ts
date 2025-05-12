@@ -11,8 +11,8 @@ export interface IBookAPI {
     update: (id: string, value: IUpdateValue<IBookDTO>) => Promise<IBookDTO>;
     remove: (id: string) => Promise<void>;
     get: (id: string) => Promise<IBookDTO>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => Promise<void>;
-    subscribeBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => Promise<void>;
+    syncBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
 }
 
 export class BookAPI implements IBookAPI {
@@ -62,11 +62,11 @@ export class BookAPI implements IBookAPI {
         return res;
     };
 
-    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => {
-        return this.offline.subscribe(args, callback);
+    sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => {
+        return this.offline.sync(args, callback);
     };
 
-    subscribeBookType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => {
-        return this.offlineBookType.subscribe(args, callback);
+    syncBookType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => {
+        return this.offlineBookType.sync(args, callback);
     };
 }
