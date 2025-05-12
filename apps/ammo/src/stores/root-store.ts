@@ -176,7 +176,7 @@ export class RootStore implements IRootStore {
     }
 
     async sync() {
-        await Promise.all([
+        await Promise.allSettled([
             this.common.syncCountries.run(),
             this.common.syncStatuses.run(),
             this.common.syncMaterials.run(),

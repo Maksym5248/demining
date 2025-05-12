@@ -187,7 +187,7 @@ export class RootStore implements IRootStore {
     }
 
     async sync() {
-        await Promise.all([
+        await Promise.allSettled([
             this.common.syncCountries.run(),
             this.common.syncStatuses.run(),
             this.common.syncMaterials.run(),
@@ -214,16 +214,9 @@ export class RootStore implements IRootStore {
             this.services.crashlytics.init();
             this.api.setLang('uk');
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+            await this.sync();
         } catch (e) {
             this.services.crashlytics.error('Init', e);
-        }
-
-        try {
-            await this.sync();
-        } catch (e) {
-            this.services.crashlytics.error('Sync', e);
-            this.api.drop();
-            await this.sync();
         }
     }
 }

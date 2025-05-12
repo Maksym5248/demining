@@ -176,7 +176,7 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         }
     }
 
-    async sync(query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void) {
+    async sync(query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void, retry = true) {
         const q: IQuery = {
             ...(query ?? {}),
             order: {
@@ -190,6 +190,7 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
             if (data.length) {
                 Logger.log('Local loading data', data.length);
+                callback(createAdded(data));
                 this.subscribeNewUpdates(q, data, callback);
             } else {
                 data = await this.dbRemote.select({
@@ -205,12 +206,14 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                 data.forEach(item => {
                     this.dbLocal.create(item);
                 });
+                callback(createAdded(data));
             }
-
-            callback(createAdded(data));
-        } catch (error) {
-            this.dbLocal.drop();
-            await this.sync(query, callback);
+        } catch (e) {
+            Logger.error('Sync ', e);
+            if (retry) {
+                this.dbLocal.drop();
+                await this.sync(query, callback, false);
+            }
         }
 
         return;
