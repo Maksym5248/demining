@@ -38,8 +38,8 @@ export const Api = {
         DBLocal.setLang(lang);
     },
     init: async () => {
-        DBRemote.init();
-        DBLocal.init();
+        await DBRemote.init();
+        await DBLocal.init();
     },
     drop: async () => {
         await DBLocal.drop();
