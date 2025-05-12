@@ -151,22 +151,32 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
         await this.dbRemote.batchCommit();
 
-        return this.get(id);
+        const { details: detailsData, ...data } = await this.get(id);
+
+        this.dbLocal.explosiveObject.update(id, data);
+        if (detailsData) {
+            this.dbLocal.explosiveObjectDetails.update(id, detailsData);
+        }
+
+        return { details: detailsData, ...data };
     };
 
     remove = async (id: string) => {
         this.dbRemote.batchStart();
 
-        this.dbRemote.explosiveObject.batchRemove(id);
-        this.dbRemote.explosiveObjectDetails.batchRemove(id);
+        this.dbRemote.explosiveObject.batchUpdate(id, { isDeleted: true });
+        this.dbRemote.explosiveObjectDetails.batchUpdate(id, { isDeleted: true });
 
         await this.dbRemote.batchCommit();
+
+        this.dbLocal.explosiveObject.remove(id);
+        this.dbLocal.explosiveObjectDetails.remove(id);
 
         return id;
     };
 
-    getList = async (query?: IQuery): Promise<IExplosiveObjectDTO[]> =>
-        this.dbRemote.explosiveObject.select({
+    getList = async (query?: IQuery): Promise<IExplosiveObjectDTO[]> => {
+        const res = await this.offline.explosiveObject.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -174,8 +184,14 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
 
+        const all = await this.dbLocal.explosiveObject.select();
+
+        console.log('[TEST] getList', { query, res, all });
+        return res;
+    };
+
     getClassesItemsList(query?: IQuery) {
-        return this.dbRemote.explosiveObjectClassItem.select({
+        return this.offline.explosiveObjectClassItem.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -190,9 +206,9 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         const explosiveIds = (details?.filler?.map(el => el.explosiveId).filter(Boolean) as string[]) ?? [];
 
         const [explosive, fuse, fervor] = await Promise.all([
-            this.dbRemote.explosive.getByIds(explosiveIds),
-            this.dbRemote.explosiveObject.getByIds(details?.fuseIds ?? []),
-            this.dbRemote.explosiveObject.getByIds(details?.fervorIds ?? []),
+            this.offline.explosive.getByIds(explosiveIds),
+            this.offline.explosiveObject.getByIds(details?.fuseIds ?? []),
+            this.offline.explosiveObject.getByIds(details?.fervorIds ?? []),
         ]);
 
         if (!res) throw new Error('there is explosiveObject with id');

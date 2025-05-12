@@ -15,6 +15,7 @@ export interface IDBOfflineFirst<T extends IBaseDB> {
     remove: (id: string) => Promise<string>;
     select: (query?: IQuery) => Promise<T[]>;
     get: (id: string) => Promise<T>;
+    getByIds: (ids: string[]) => Promise<T[]>;
     sync: (query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void) => Promise<void>;
 }
 
@@ -66,35 +67,27 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
     async select(query?: IQuery): Promise<T[]> {
         const q: IQuery = {
-            order: {
-                by: 'createdAt',
-                type: 'desc',
-            },
             ...(query ?? {}),
         };
 
-        let res = await this.dbLocal.select(q);
+        const res = await this.dbRemote.select({
+            ...q,
+            where: {
+                ...(q.where ?? {}),
+                ['!=']: { isDeleted: true },
+            },
+            ...(query ?? {}),
+        });
 
-        if (!res.length) {
-            res = await this.dbRemote.select({
-                ...q,
-                where: {
-                    ...(q.where ?? {}),
-                    ['!=']: { isDeleted: true },
-                },
-                ...(query ?? {}),
-            });
-
-            await Promise.all(
-                res.map(async item => {
-                    if (await this.dbLocal.exist('id', item.id)) {
-                        await this.dbLocal.update(item.id, item);
-                    } else {
-                        await this.dbLocal.create(item);
-                    }
-                }),
-            );
-        }
+        await Promise.all(
+            res.map(async item => {
+                if (await this.dbLocal.exist('id', item.id)) {
+                    await this.dbLocal.update(item.id, item);
+                } else {
+                    await this.dbLocal.create(item);
+                }
+            }),
+        );
 
         return res;
     }
@@ -109,6 +102,31 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         res = await this.dbRemote.get(id);
         if (!res || !!res?.isDeleted) throw new Error('there is explosiveObject with id');
         return res;
+    }
+
+    async getByIds(ids: string[]): Promise<T[]> {
+        const res = await this.dbLocal.getByIds(ids);
+
+        if (res.length === ids.length) {
+            return res;
+        }
+
+        const remoteData = await this.dbRemote.getByIds(ids);
+
+        if (remoteData.length) {
+            await Promise.all(
+                remoteData.map(async item => {
+                    if (await this.dbLocal.exist('id', item.id)) {
+                        await this.dbLocal.update(item.id, item);
+                    } else {
+                        await this.dbLocal.create(item);
+                    }
+                }),
+            );
+            return remoteData;
+        }
+
+        return [];
     }
 
     private async subscribeNewUpdates(q: IQuery | null, data: T[], callback: (data: ISubscriptionDocument<T>[]) => void) {
@@ -159,7 +177,6 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         };
 
         let data = await this.dbLocal.select(q);
-        console.log('[TEST] LODED DATA', data);
 
         if (data.length) {
             this.subscribeNewUpdates(q, data, callback);
@@ -171,7 +188,6 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                     ['!=']: { isDeleted: true },
                 },
             });
-            console.log('[TEST] REMOTE DATA', data);
 
             data.forEach(item => {
                 this.dbLocal.create(item);
