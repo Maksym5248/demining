@@ -175,6 +175,22 @@ export class RootStore implements IRootStore {
         this.viewer.setLoading(false);
     }
 
+    async sync() {
+        await Promise.all([
+            this.common.syncCountries.run(),
+            this.common.syncStatuses.run(),
+            this.common.syncMaterials.run(),
+            this.explosiveObject.sync.run(),
+            this.explosiveObject.syncDetails.run(),
+            this.explosiveObject.syncDeeps.run(),
+            this.explosiveDevice.sync.run(),
+            this.explosiveDevice.syncType.run(),
+            this.explosive.sync.run(),
+            this.book.syncBookType.run(),
+            this.book.sync.run(),
+        ]);
+    }
+
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
@@ -187,22 +203,16 @@ export class RootStore implements IRootStore {
                 if (!this.services.auth.uuid()) {
                     this.services.auth.signInAnonymously();
                 }
-
-                await Promise.all([
-                    this.common.syncCountries.run(),
-                    this.common.syncStatuses.run(),
-                    this.common.syncMaterials.run(),
-                    this.explosiveObject.sync.run(),
-                    this.explosiveObject.syncDetails.run(),
-                    this.explosiveObject.syncDeeps.run(),
-                    this.explosiveDevice.sync.run(),
-                    this.explosiveDevice.syncType.run(),
-                    this.explosive.sync.run(),
-                    this.book.syncBookType.run(),
-                    this.book.sync.run(),
-                ]);
             } catch (e) {
-                Crashlytics.error('Initialization error', e);
+                Crashlytics.error('Init', e);
+            }
+
+            try {
+                await this.sync();
+            } catch (e) {
+                this.api.drop();
+                await this.sync();
+                Crashlytics.error('Sync', e);
             }
         },
     });

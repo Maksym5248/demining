@@ -41,4 +41,7 @@ export const Api = {
         DBRemote.init();
         DBLocal.init();
     },
+    drop: async () => {
+        await DBLocal.drop();
+    },
 };

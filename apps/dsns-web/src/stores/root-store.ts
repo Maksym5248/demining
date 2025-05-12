@@ -186,6 +186,24 @@ export class RootStore implements IRootStore {
         this.viewer.setLoading(false);
     }
 
+    async sync() {
+        await Promise.all([
+            this.common.syncCountries.run(),
+            this.common.syncStatuses.run(),
+            this.common.syncMaterials.run(),
+            this.employee.subscribeRanks.run(),
+            this.explosiveObject.sync.run(),
+            this.explosiveObject.syncDetails.run(),
+            this.explosiveObject.syncDeeps.run(),
+            this.explosiveDevice.sync.run(),
+            this.explosiveDevice.syncType.run(),
+            this.explosive.sync.run(),
+            this.book.sync.run(),
+            this.book.syncBookType.run(),
+            this.missionRequest.subscribeType.run(),
+        ]);
+    }
+
     async init() {
         initializeApp(FIREBASE_CONFIG);
 
@@ -196,24 +214,16 @@ export class RootStore implements IRootStore {
             this.services.crashlytics.init();
             this.api.setLang('uk');
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
-
-            await Promise.all([
-                this.common.syncCountries.run(),
-                this.common.syncStatuses.run(),
-                this.common.syncMaterials.run(),
-                this.employee.subscribeRanks.run(),
-                this.explosiveObject.sync.run(),
-                this.explosiveObject.syncDetails.run(),
-                this.explosiveObject.syncDeeps.run(),
-                this.explosiveDevice.sync.run(),
-                this.explosiveDevice.syncType.run(),
-                this.explosive.sync.run(),
-                this.book.sync.run(),
-                this.book.syncBookType.run(),
-                this.missionRequest.subscribeType.run(),
-            ]);
         } catch (e) {
-            this.services.logger.error('init', e);
+            this.services.crashlytics.error('Init', e);
+        }
+
+        try {
+            await this.sync();
+        } catch (e) {
+            this.services.crashlytics.error('Sync', e);
+            this.api.drop();
+            await this.sync();
         }
     }
 }
