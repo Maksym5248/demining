@@ -69,7 +69,6 @@ export interface IDBBase<T extends IBaseDB> {
     setTableName(tableName: string): void;
     setRootCollection(rootCollection: string): void;
     removeRootCollection(): void;
-    setBatch(batch: any): void;
     uuid(): string;
     select(args?: Partial<IQuery>): Promise<T[]>;
     get(id: string): Promise<T | null>;
@@ -79,11 +78,19 @@ export interface IDBBase<T extends IBaseDB> {
     update(id: string, value: Partial<T>): Promise<T>;
     remove(id: string): Promise<string>;
     removeBy(args: IWhere): Promise<void>;
+    count(args?: Partial<IQuery>): Promise<number>;
+    sum(field: keyof T, args?: Partial<IQuery>): Promise<number>;
+}
+
+export interface IDBLocal<T extends IBaseDB> extends IDBBase<T> {
+    drop(): void;
+}
+export interface IDBRemote<T extends IBaseDB> extends IDBBase<T> {
+    setBatch(batch: any): void;
+    exist(field: keyof T, value: any): Promise<boolean>;
     batchCreate(value: ICreateData<T>): void;
     batchUpdate(id: string, value: Partial<T>): void;
     batchRemove(id: string): void;
-    count(args?: Partial<IQuery>): Promise<number>;
-    sum(field: keyof T, args?: Partial<IQuery>): Promise<number>;
     subscribe(args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<T>[]) => void): Promise<void>;
 }
 
@@ -131,7 +138,7 @@ export interface IDB {
     batchStart(): void;
     batchCommit(): Promise<void>;
     init(): void;
-    dropDb(): void;
+    drop(): void;
     setOrganizationId(id: string): void;
     removeOrganizationId(): void;
     setLang(lang: 'uk' | 'en'): void;

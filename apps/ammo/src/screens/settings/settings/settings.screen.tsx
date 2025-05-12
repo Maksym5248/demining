@@ -35,6 +35,7 @@ export const SettingsScreen = observer(() => {
     const onSignOut = () => vm.signOut.run();
     // Do not delete it because it doesnt handled correctly in the mobx
     const photo = vm.photoUri;
+    const userName = vm.userName;
 
     return (
         <View style={styles.container}>
@@ -51,7 +52,7 @@ export const SettingsScreen = observer(() => {
                     <View style={s.userInfo}>
                         <Avatar size={108} style={s.avatar} uri={photo} />
                         <Auth>
-                            <Text text={vm.userName} />
+                            <Text text={userName} />
                         </Auth>
                     </View>
                 )}

@@ -1,6 +1,6 @@
 import { type IEquipmentDB } from 'shared-my';
 
-import { type IQuery, type IDBBase, type ICreateValue, type IUpdateValue } from '~/common';
+import { type IQuery, type IDBRemote, type ICreateValue, type IUpdateValue } from '~/common';
 
 import { type IEquipmentDTO } from '../dto';
 
@@ -15,7 +15,7 @@ export interface IEquipmentAPI {
 export class EquipmentAPI implements IEquipmentAPI {
     constructor(
         private db: {
-            equipment: IDBBase<IEquipmentDB>;
+            equipment: IDBRemote<IEquipmentDB>;
         },
     ) {}
 

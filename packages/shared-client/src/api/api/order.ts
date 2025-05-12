@@ -1,7 +1,7 @@
 import { DOCUMENT_TYPE, EMPLOYEE_TYPE } from 'shared-my';
 import { type IEmployeeActionDB, type IOrderDB, type IEmployeeDB } from 'shared-my';
 
-import { type IUpdateValue, type IDBBase, type IQuery } from '~/common';
+import { type IUpdateValue, type IDBRemote, type IQuery } from '~/common';
 
 import { type IOrderFullDTO, type IOrderDTOParams, type IOrderDTO } from '../dto';
 
@@ -16,9 +16,9 @@ export interface IOrderAPI {
 export class OrderAPI implements IOrderAPI {
     constructor(
         private db: {
-            employee: IDBBase<IEmployeeDB>;
-            employeeAction: IDBBase<IEmployeeActionDB>;
-            order: IDBBase<IOrderDB>;
+            employee: IDBRemote<IEmployeeDB>;
+            employeeAction: IDBRemote<IEmployeeActionDB>;
+            order: IDBRemote<IOrderDB>;
         },
     ) {}
 

@@ -18,6 +18,7 @@ interface IListItemPermission {
     name: IPermissionName[] | IPermissionName | null;
     title: string | null;
     message: string | null;
+    isDisabled?: boolean;
 }
 
 export type IListPermissions = Record<PERMISSIONS, IListItemPermission>;

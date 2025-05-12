@@ -15,7 +15,7 @@ import {
 import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
-import { type IMessage } from '~/services';
+import { type ICrashlytics, type IMessage } from '~/services';
 
 import { Classifications, type IClassifications } from './classifications';
 import {
@@ -56,6 +56,7 @@ interface IApi {
 
 interface IServices {
     message: IMessage;
+    crashlytics: ICrashlytics;
 }
 
 interface IStores {
@@ -89,9 +90,9 @@ export interface IExplosiveObjectStore {
     fetchMoreListFevor: IRequestModel<[search?: string]>;
     fetchItem: IRequestModel<[string]>;
     fetchDeeps: IRequestModel;
-    subscribe: IRequestModel<[query?: Partial<IQuery> | null]>;
-    subscribeDetails: IRequestModel;
-    subscribeDeeps: IRequestModel;
+    sync: IRequestModel<[query?: Partial<IQuery> | null]>;
+    syncDetails: IRequestModel;
+    syncDeeps: IRequestModel;
 }
 
 export class ExplosiveObjectStore implements IExplosiveObjectStore {
@@ -335,9 +336,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
-    subscribe = new RequestModel({
+    sync = new RequestModel({
         run: async () => {
-            await this.api.explosiveObject.subscribe(
+            await this.api.explosiveObject.sync(
                 {
                     where: {
                         status: APPROVE_STATUS.CONFIRMED,
@@ -366,9 +367,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         },
     });
 
-    subscribeDetails = new RequestModel({
+    syncDetails = new RequestModel({
         run: async () => {
-            await this.api.explosiveObject.subscribeDetails(
+            await this.api.explosiveObject.syncDetails(
                 {
                     where: {
                         status: APPROVE_STATUS.CONFIRMED,
@@ -397,9 +398,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         },
     });
 
-    subscribeComponents = new RequestModel({
+    syncComponents = new RequestModel({
         run: async () => {
-            await this.api.explosiveObject.subscribeComponents({}, (values: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => {
+            await this.api.explosiveObject.syncComponents({}, (values: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => {
                 const create: IExplosiveObjectComponentData[] = [];
                 const update: IExplosiveObjectComponentData[] = [];
                 const remove: string[] = [];
@@ -421,14 +422,9 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         },
     });
 
-    subscribeDeeps = new RequestModel({
+    syncDeeps = new RequestModel({
         run: async () => {
-            await Promise.all([
-                this.subscribeComponents.run(),
-                this.type.subscribe.run(),
-                this.class.subscribe.run(),
-                this.classItem.subscribe.run(),
-            ]);
+            await Promise.all([this.syncComponents.run(), this.type.sync.run(), this.class.sync.run(), this.classItem.sync.run()]);
 
             this.classifications.init();
         },

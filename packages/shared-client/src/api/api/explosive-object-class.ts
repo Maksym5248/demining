@@ -1,8 +1,9 @@
 import { type IExplosiveObjectClassDB } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument, type IDBLocal } from '~/common';
 
 import { type IExplosiveObjectClassDTO } from '../dto';
+import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
 
 export interface IExplosiveObjectClassAPI {
     create: (value: ICreateValue<IExplosiveObjectClassDTO>) => Promise<IExplosiveObjectClassDTO>;
@@ -10,33 +11,40 @@ export interface IExplosiveObjectClassAPI {
     remove: (id: string) => Promise<string>;
     getList: (query?: IQuery) => Promise<IExplosiveObjectClassDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectClassDTO>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
+    offline: IDBOfflineFirst<IExplosiveObjectClassDB>;
+
     constructor(
-        private db: {
-            explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
+        dbRemote: {
+            explosiveObjectClass: IDBRemote<IExplosiveObjectClassDB>;
         },
-    ) {}
+        dbLocal: {
+            explosiveObjectClass: IDBLocal<IExplosiveObjectClassDB>;
+        },
+    ) {
+        this.offline = new DBOfflineFirst<IExplosiveObjectClassDB>(dbRemote.explosiveObjectClass, dbLocal.explosiveObjectClass);
+    }
 
     create = async (value: ICreateValue<IExplosiveObjectClassDTO>): Promise<IExplosiveObjectClassDTO> => {
-        const res = await this.db.explosiveObjectClass.create(value);
+        const res = await this.offline.create(value);
         return res;
     };
 
     update = async (id: string, value: IUpdateValue<IExplosiveObjectClassDTO>): Promise<IExplosiveObjectClassDTO> => {
-        const explosiveObject = await this.db.explosiveObjectClass.update(id, value);
+        const explosiveObject = await this.offline.update(id, value);
 
         if (!explosiveObject) throw new Error('there is data by id');
 
         return explosiveObject;
     };
 
-    remove = (id: string) => this.db.explosiveObjectClass.remove(id);
+    remove = (id: string) => this.offline.remove(id);
 
     getList(query?: IQuery): Promise<IExplosiveObjectClassDTO[]> {
-        return this.db.explosiveObjectClass.select({
+        return this.offline.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -46,12 +54,12 @@ export class ExplosiveObjectClassAPI implements IExplosiveObjectClassAPI {
     }
 
     get = async (id: string): Promise<IExplosiveObjectClassDTO> => {
-        const res = await this.db.explosiveObjectClass.get(id);
+        const res = await this.offline.get(id);
         if (!res) throw new Error('there is explosiveObject with id');
         return res;
     };
 
-    subscribe = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
-        return this.db.explosiveObjectClass.subscribe(args, callback);
+    sync = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassDTO>[]) => void) => {
+        return this.offline.sync(args, callback);
     };
 }

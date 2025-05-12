@@ -26,7 +26,6 @@ import {
 } from 'shared-my-client';
 
 import { Api } from '~/api';
-import { DB } from '~/db';
 import { Localization } from '~/localization';
 import { Analytics, Auth, Crashlytics, ErrorManager, Logger, Message } from '~/services';
 
@@ -176,34 +175,44 @@ export class RootStore implements IRootStore {
         this.viewer.setLoading(false);
     }
 
+    async sync() {
+        await Promise.all([
+            this.common.syncCountries.run(),
+            this.common.syncStatuses.run(),
+            this.common.syncMaterials.run(),
+            this.explosiveObject.sync.run(),
+            this.explosiveObject.syncDetails.run(),
+            this.explosiveObject.syncDeeps.run(),
+            this.explosiveDevice.sync.run(),
+            this.explosiveDevice.syncType.run(),
+            this.explosive.sync.run(),
+            this.book.syncBookType.run(),
+            this.book.sync.run(),
+        ]);
+    }
+
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            await DB.init();
-            this.api.setLang(this.services.localization.data.locale);
+            try {
+                await this.api.init();
+                this.api.setLang(this.services.localization.data.locale);
 
-            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+                this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
 
-            if (!this.services.auth.uuid()) {
-                this.services.auth.signInAnonymously();
+                if (!this.services.auth.uuid()) {
+                    this.services.auth.signInAnonymously();
+                }
+            } catch (e) {
+                this.services.crashlytics.error('Init', e);
             }
 
             try {
-                await Promise.all([
-                    this.common.subscribeCountries.run(),
-                    this.common.subscribeStatuses.run(),
-                    this.common.subscribeMaterials.run(),
-                    this.explosiveObject.subscribe.run(),
-                    this.explosiveObject.subscribeDetails.run(),
-                    this.explosiveObject.subscribeDeeps.run(),
-                    this.explosiveDevice.subscribe.run(),
-                    this.explosiveDevice.subscribeType.run(),
-                    this.explosive.subscribe.run(),
-                    this.book.subscribeBookType.run(),
-                    this.book.subscribe.run(),
-                ]);
+                await this.sync();
             } catch (e) {
-                /** SKIP */
+                this.api.drop();
+                await this.sync();
+                this.services.crashlytics.error('Sync', e);
             }
         },
     });

@@ -9,7 +9,7 @@ import {
     type IExplosiveObjectComponentDB,
 } from 'shared-my';
 
-import { type ICreateValue, type IUpdateValue, type IDBBase, type IQuery, type ISubscriptionDocument } from '~/common';
+import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument, type IDBLocal } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import {
@@ -22,6 +22,7 @@ import {
     type IExplosiveObjectComponentDTO,
 } from '../dto';
 import { createImage, updateImage } from '../image';
+import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
 
 export interface IExplosiveObjectAPI {
     create: (value: ICreateValue<IExplosiveObjectDTOParams>) => Promise<IExplosiveObjectFullDTO>;
@@ -31,43 +32,80 @@ export interface IExplosiveObjectAPI {
     getClassesItemsList: () => Promise<IExplosiveObjectClassItemDTO[]>;
     get: (id: string) => Promise<IExplosiveObjectFullDTO>;
     sum: (query?: IQuery) => Promise<IExplosiveObjectActionSumDTO>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
-    subscribeDetails: (
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => Promise<void>;
+    syncDetails: (
         args: Partial<IQuery> | null,
         callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void,
     ) => Promise<void>;
-    subscribeComponents: (
+    syncComponents: (
         args: Partial<IQuery> | null,
         callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void,
     ) => Promise<void>;
 }
 
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
+    offline: {
+        explosiveObjectType: IDBOfflineFirst<IExplosiveObjectTypeDB>;
+        explosiveObjectClass: IDBOfflineFirst<IExplosiveObjectClassDB>;
+        explosiveObjectClassItem: IDBOfflineFirst<IExplosiveObjectClassItemDB>;
+        explosiveObject: IDBOfflineFirst<IExplosiveObjectDB>;
+        explosiveObjectDetails: IDBOfflineFirst<IExplosiveObjectDetailsDB>;
+        explosiveObjectComponent: IDBOfflineFirst<IExplosiveObjectComponentDB>;
+        explosive: IDBOfflineFirst<IExplosiveDB>;
+    };
     constructor(
-        private db: {
-            explosiveObjectType: IDBBase<IExplosiveObjectTypeDB>;
-            explosiveObjectClass: IDBBase<IExplosiveObjectClassDB>;
-            explosiveObjectClassItem: IDBBase<IExplosiveObjectClassItemDB>;
-            explosiveObject: IDBBase<IExplosiveObjectDB>;
-            explosiveObjectDetails: IDBBase<IExplosiveObjectDetailsDB>;
-            explosiveObjectAction: IDBBase<IExplosiveObjectActionDB>;
-            explosiveObjectComponent: IDBBase<IExplosiveObjectComponentDB>;
-            explosive: IDBBase<IExplosiveDB>;
+        private dbRemote: {
+            explosiveObjectType: IDBRemote<IExplosiveObjectTypeDB>;
+            explosiveObjectClass: IDBRemote<IExplosiveObjectClassDB>;
+            explosiveObjectClassItem: IDBRemote<IExplosiveObjectClassItemDB>;
+            explosiveObject: IDBRemote<IExplosiveObjectDB>;
+            explosiveObjectDetails: IDBRemote<IExplosiveObjectDetailsDB>;
+            explosiveObjectAction: IDBRemote<IExplosiveObjectActionDB>;
+            explosiveObjectComponent: IDBRemote<IExplosiveObjectComponentDB>;
+            explosive: IDBRemote<IExplosiveDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
+        },
+        private dbLocal: {
+            explosiveObjectType: IDBLocal<IExplosiveObjectTypeDB>;
+            explosiveObjectClass: IDBLocal<IExplosiveObjectClassDB>;
+            explosiveObjectClassItem: IDBLocal<IExplosiveObjectClassItemDB>;
+            explosiveObject: IDBLocal<IExplosiveObjectDB>;
+            explosiveObjectDetails: IDBLocal<IExplosiveObjectDetailsDB>;
+            explosiveObjectComponent: IDBLocal<IExplosiveObjectComponentDB>;
+            explosive: IDBLocal<IExplosiveDB>;
         },
         private services: {
             assetStorage: IAssetStorage;
         },
-    ) {}
+    ) {
+        this.offline = {
+            explosiveObjectType: new DBOfflineFirst<IExplosiveObjectTypeDB>(dbRemote.explosiveObjectType, dbLocal.explosiveObjectType),
+            explosiveObjectClass: new DBOfflineFirst<IExplosiveObjectClassDB>(dbRemote.explosiveObjectClass, dbLocal.explosiveObjectClass),
+            explosiveObjectClassItem: new DBOfflineFirst<IExplosiveObjectClassItemDB>(
+                dbRemote.explosiveObjectClassItem,
+                dbLocal.explosiveObjectClassItem,
+            ),
+            explosiveObject: new DBOfflineFirst<IExplosiveObjectDB>(dbRemote.explosiveObject, dbLocal.explosiveObject),
+            explosiveObjectDetails: new DBOfflineFirst<IExplosiveObjectDetailsDB>(
+                dbRemote.explosiveObjectDetails,
+                dbLocal.explosiveObjectDetails,
+            ),
+            explosiveObjectComponent: new DBOfflineFirst<IExplosiveObjectComponentDB>(
+                dbRemote.explosiveObjectComponent,
+                dbLocal.explosiveObjectComponent,
+            ),
+            explosive: new DBOfflineFirst<IExplosiveDB>(dbRemote.explosive, dbLocal.explosive),
+        };
+    }
 
     create = async ({ image, details, status, ...value }: ICreateValue<IExplosiveObjectDTOParams>): Promise<IExplosiveObjectFullDTO> => {
         const imageUri = await createImage({ image, services: this.services });
-        const id = this.db.explosiveObject.uuid();
+        const id = this.dbRemote.explosiveObject.uuid();
 
-        this.db.batchStart();
+        this.dbRemote.batchStart();
 
-        this.db.explosiveObject.batchCreate({
+        this.dbRemote.explosiveObject.batchCreate({
             ...value,
             imageUri,
             status,
@@ -75,14 +113,14 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         });
 
         if (details) {
-            this.db.explosiveObjectDetails.batchCreate({
+            this.dbRemote.explosiveObjectDetails.batchCreate({
                 ...(details ?? {}),
                 status,
                 id,
             });
         }
 
-        await this.db.batchCommit();
+        await this.dbRemote.batchCommit();
 
         return this.get(id);
     };
@@ -91,44 +129,54 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         id: string,
         { image, status, details, ...value }: IUpdateValue<IExplosiveObjectDTOParams>,
     ): Promise<IExplosiveObjectFullDTO> => {
-        const current = await this.db.explosiveObject.get(id);
+        const current = await this.dbRemote.explosiveObject.get(id);
         if (!current) throw new Error('there is explosive object');
 
         const imageUri = await updateImage({ image, imageUri: current.imageUri, services: this.services });
 
-        this.db.batchStart();
+        this.dbRemote.batchStart();
 
-        this.db.explosiveObject.batchUpdate(id, {
+        this.dbRemote.explosiveObject.batchUpdate(id, {
             ...value,
             status,
             imageUri: imageUri ?? null,
         });
 
         if (details) {
-            this.db.explosiveObjectDetails.batchUpdate(id, {
+            this.dbRemote.explosiveObjectDetails.batchUpdate(id, {
                 ...(details ?? {}),
                 status,
             });
         }
 
-        await this.db.batchCommit();
+        await this.dbRemote.batchCommit();
 
-        return this.get(id);
+        const { details: detailsData, ...data } = await this.get(id);
+
+        this.dbLocal.explosiveObject.update(id, data);
+        if (detailsData) {
+            this.dbLocal.explosiveObjectDetails.update(id, detailsData);
+        }
+
+        return { details: detailsData, ...data };
     };
 
     remove = async (id: string) => {
-        this.db.batchStart();
+        this.dbRemote.batchStart();
 
-        this.db.explosiveObject.batchRemove(id);
-        this.db.explosiveObjectDetails.batchRemove(id);
+        this.dbRemote.explosiveObject.batchUpdate(id, { isDeleted: true });
+        this.dbRemote.explosiveObjectDetails.batchUpdate(id, { isDeleted: true });
 
-        await this.db.batchCommit();
+        await this.dbRemote.batchCommit();
+
+        this.dbLocal.explosiveObject.remove(id);
+        this.dbLocal.explosiveObjectDetails.remove(id);
 
         return id;
     };
 
-    getList = async (query?: IQuery): Promise<IExplosiveObjectDTO[]> =>
-        this.db.explosiveObject.select({
+    getList = async (query?: IQuery): Promise<IExplosiveObjectDTO[]> => {
+        const res = await this.offline.explosiveObject.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -136,8 +184,14 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
 
+        const all = await this.dbLocal.explosiveObject.select();
+
+        console.log('[TEST] getList', { query, res, all });
+        return res;
+    };
+
     getClassesItemsList(query?: IQuery) {
-        return this.db.explosiveObjectClassItem.select({
+        return this.offline.explosiveObjectClassItem.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -147,14 +201,14 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     }
 
     get = async (id: string): Promise<IExplosiveObjectFullDTO> => {
-        const [res, details] = await Promise.all([this.db.explosiveObject.get(id), this.db.explosiveObjectDetails.get(id)]);
+        const [res, details] = await Promise.all([this.dbRemote.explosiveObject.get(id), this.dbRemote.explosiveObjectDetails.get(id)]);
 
         const explosiveIds = (details?.filler?.map(el => el.explosiveId).filter(Boolean) as string[]) ?? [];
 
         const [explosive, fuse, fervor] = await Promise.all([
-            this.db.explosive.getByIds(explosiveIds),
-            this.db.explosiveObject.getByIds(details?.fuseIds ?? []),
-            this.db.explosiveObject.getByIds(details?.fervorIds ?? []),
+            this.offline.explosive.getByIds(explosiveIds),
+            this.offline.explosiveObject.getByIds(details?.fuseIds ?? []),
+            this.offline.explosiveObject.getByIds(details?.fervorIds ?? []),
         ]);
 
         if (!res) throw new Error('there is explosiveObject with id');
@@ -170,20 +224,20 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
     sum = async (query?: IQuery): Promise<IExplosiveObjectActionSumDTO> => {
         const [total, discovered, transported, destroyed] = await Promise.all([
-            this.db.explosiveObjectAction.sum('quantity', query),
-            this.db.explosiveObjectAction.sum('quantity', {
+            this.dbRemote.explosiveObjectAction.sum('quantity', query),
+            this.dbRemote.explosiveObjectAction.sum('quantity', {
                 where: {
                     isDiscovered: true,
                     ...(query?.where ?? {}),
                 },
             }),
-            this.db.explosiveObjectAction.sum('quantity', {
+            this.dbRemote.explosiveObjectAction.sum('quantity', {
                 where: {
                     isTransported: true,
                     ...(query?.where ?? {}),
                 },
             }),
-            this.db.explosiveObjectAction.sum('quantity', {
+            this.dbRemote.explosiveObjectAction.sum('quantity', {
                 where: {
                     isDestroyed: true,
                     ...(query?.where ?? {}),
@@ -199,15 +253,15 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         };
     };
 
-    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => {
-        return this.db.explosiveObject.subscribe(args, callback);
+    sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDTO>[]) => void) => {
+        return this.offline.explosiveObject.sync(args, callback);
     };
 
-    subscribeDetails = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void) => {
-        return this.db.explosiveObjectDetails.subscribe(args, callback);
+    syncDetails = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => void) => {
+        return this.offline.explosiveObjectDetails.sync(args, callback);
     };
 
-    subscribeComponents = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void) => {
-        return this.db.explosiveObjectComponent.subscribe(args, callback);
+    syncComponents = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveObjectComponentDTO>[]) => void) => {
+        return this.offline.explosiveObjectComponent.sync(args, callback);
     };
 }

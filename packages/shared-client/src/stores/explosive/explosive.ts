@@ -30,7 +30,7 @@ export interface IExplosiveStore {
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
     fetchByIds: RequestModel<[string[]]>;
-    subscribe: RequestModel;
+    sync: RequestModel;
     asArray: IExplosive[];
 }
 
@@ -151,9 +151,9 @@ export class ExplosiveStore implements IExplosiveStore {
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
-    subscribe = new RequestModel({
+    sync = new RequestModel({
         run: async () => {
-            await this.api.explosive.subscribe(
+            await this.api.explosive.sync(
                 {
                     where: {
                         status: APPROVE_STATUS.CONFIRMED,

@@ -1,6 +1,6 @@
 import { type IRankDB, type IEmployeeDB } from 'shared-my';
 
-import { type ISubscriptionDocument, type ICreateValue, type IDBBase, type IQuery, type IUpdateValue } from '~/common';
+import { type ISubscriptionDocument, type ICreateValue, type IDBRemote, type IQuery, type IUpdateValue } from '~/common';
 
 import { type IEmployeeDTO } from '../dto';
 
@@ -16,8 +16,8 @@ export interface IEmployeeAPI {
 export class EmployeeAPI implements IEmployeeAPI {
     constructor(
         private db: {
-            employee: IDBBase<IEmployeeDB>;
-            rank: IDBBase<IRankDB>;
+            employee: IDBRemote<IEmployeeDB>;
+            rank: IDBRemote<IRankDB>;
         },
     ) {}
 

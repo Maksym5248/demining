@@ -42,7 +42,6 @@ import {
 
 import { Api } from '~/api';
 import { FIREBASE_CONFIG } from '~/config';
-import { DB } from '~/db';
 import { Analytics, Auth, Crashlytics, Logger, Message, SecureStorage, Storage } from '~/services';
 
 export interface IRootStore {
@@ -187,34 +186,44 @@ export class RootStore implements IRootStore {
         this.viewer.setLoading(false);
     }
 
+    async sync() {
+        await Promise.all([
+            this.common.syncCountries.run(),
+            this.common.syncStatuses.run(),
+            this.common.syncMaterials.run(),
+            this.employee.subscribeRanks.run(),
+            this.explosiveObject.sync.run(),
+            this.explosiveObject.syncDetails.run(),
+            this.explosiveObject.syncDeeps.run(),
+            this.explosiveDevice.sync.run(),
+            this.explosiveDevice.syncType.run(),
+            this.explosive.sync.run(),
+            this.book.sync.run(),
+            this.book.syncBookType.run(),
+            this.missionRequest.subscribeType.run(),
+        ]);
+    }
+
     async init() {
         initializeApp(FIREBASE_CONFIG);
 
-        this.services.analytics.init();
-        this.services.crashlytics.init();
-        this.api.setLang('uk');
-        this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+        try {
+            await Api.init();
+
+            this.services.analytics.init();
+            this.services.crashlytics.init();
+            this.api.setLang('uk');
+            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+        } catch (e) {
+            this.services.crashlytics.error('Init', e);
+        }
 
         try {
-            await DB.init();
-
-            await Promise.all([
-                this.common.subscribeCountries.run(),
-                this.common.subscribeStatuses.run(),
-                this.common.subscribeMaterials.run(),
-                this.employee.subscribeRanks.run(),
-                this.explosiveObject.subscribe.run(),
-                this.explosiveObject.subscribeDetails.run(),
-                this.explosiveObject.subscribeDeeps.run(),
-                this.explosiveDevice.subscribe.run(),
-                this.explosiveDevice.subscribeType.run(),
-                this.explosive.subscribe.run(),
-                this.book.subscribe.run(),
-                this.book.subscribeBookType.run(),
-                this.missionRequest.subscribeType.run(),
-            ]);
+            await this.sync();
         } catch (e) {
-            this.services.logger.error('init', e);
+            this.services.crashlytics.error('Sync', e);
+            this.api.drop();
+            await this.sync();
         }
     }
 }

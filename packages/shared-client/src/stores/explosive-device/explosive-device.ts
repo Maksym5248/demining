@@ -42,8 +42,8 @@ export interface IExplosiveDeviceStore {
     fetchMoreList: RequestModel<[search?: string]>;
     fetchItem: RequestModel<[string]>;
     fetchSum: RequestModel<[Dayjs, Dayjs]>;
-    subscribe: RequestModel;
-    subscribeType: RequestModel;
+    sync: RequestModel;
+    syncType: RequestModel;
 }
 
 interface IApi {
@@ -180,9 +180,9 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
-    subscribe = new RequestModel({
+    sync = new RequestModel({
         run: async () => {
-            await this.api.explosiveDevice.subscribe(
+            await this.api.explosiveDevice.sync(
                 {
                     where: {
                         status: APPROVE_STATUS.CONFIRMED,
@@ -202,9 +202,9 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         },
     });
 
-    subscribeType = new RequestModel({
+    syncType = new RequestModel({
         run: async () => {
-            await this.api.explosiveDevice.subscribeType({}, (values: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => {
+            await this.api.explosiveDevice.syncType({}, (values: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => {
                 const { create, update, remove } = data.sortByType<IExplosiveDeviceTypeDTO, IExplosiveDeviceTypeData>(
                     values,
                     createExplosiveDeviceType,

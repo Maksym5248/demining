@@ -1,8 +1,9 @@
 import { EXPLOSIVE_DEVICE_TYPE, type IExplosiveDeviceTypeDB, type IExplosiveDeviceActionDB, type IExplosiveDeviceDB } from 'shared-my';
 
-import { type IUpdateValue, type ICreateValue, type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
+import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument, type IDBLocal } from '~/common';
 
 import { type IExplosiveDeviceTypeDTO, type IExplosiveDeviceDTO } from '../dto';
+import { DBOfflineFirst } from '../offline';
 
 export interface IExplosiveDeviceAPI {
     create: (value: ICreateValue<IExplosiveDeviceDTO>) => Promise<IExplosiveDeviceDTO>;
@@ -13,42 +14,53 @@ export interface IExplosiveDeviceAPI {
     getListDetonators: (query?: IQuery) => Promise<IExplosiveDeviceDTO[]>;
     get: (id: string) => Promise<IExplosiveDeviceDTO>;
     sum: (query?: IQuery) => Promise<{ explosive: number; detonator: number }>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
-    subscribeType: (
-        args: Partial<IQuery> | null,
-        callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void,
-    ) => Promise<void>;
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
+    syncType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => Promise<void>;
 }
 
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
+    offline: {
+        explosiveDevice: DBOfflineFirst<IExplosiveDeviceDB>;
+        explosiveDeviceType: DBOfflineFirst<IExplosiveDeviceTypeDB>;
+    };
+
     constructor(
-        private db: {
-            explosiveDevice: IDBBase<IExplosiveDeviceDB>;
-            explosiveDeviceType: IDBBase<IExplosiveDeviceTypeDB>;
-            explosiveDeviceAction: IDBBase<IExplosiveDeviceActionDB>;
+        private dbRemote: {
+            explosiveDevice: IDBRemote<IExplosiveDeviceDB>;
+            explosiveDeviceType: IDBRemote<IExplosiveDeviceTypeDB>;
+            explosiveDeviceAction: IDBRemote<IExplosiveDeviceActionDB>;
             batchStart(): void;
             batchCommit(): Promise<void>;
         },
-    ) {}
+        dbLocal: {
+            explosiveDevice: IDBLocal<IExplosiveDeviceDB>;
+            explosiveDeviceType: IDBLocal<IExplosiveDeviceTypeDB>;
+        },
+    ) {
+        this.offline = {
+            explosiveDevice: new DBOfflineFirst<IExplosiveDeviceDB>(dbRemote.explosiveDevice, dbLocal.explosiveDevice),
+            explosiveDeviceType: new DBOfflineFirst<IExplosiveDeviceTypeDB>(dbRemote.explosiveDeviceType, dbLocal.explosiveDeviceType),
+        };
+    }
 
     create = async (value: ICreateValue<IExplosiveDeviceDTO>): Promise<IExplosiveDeviceDTO> => {
-        const explosive = await this.db.explosiveDevice.create(value);
+        const explosive = await this.offline.explosiveDevice.create(value);
         if (!explosive) throw new Error('there is explosive by id');
         return explosive;
     };
 
     update = async (id: string, value: IUpdateValue<IExplosiveDeviceDTO>): Promise<IExplosiveDeviceDTO> => {
-        const explosive = await this.db.explosiveDevice.update(id, value);
+        const explosive = await this.offline.explosiveDevice.update(id, value);
 
         if (!explosive) throw new Error('there is explosive object');
 
         return explosive;
     };
 
-    remove = (id: string) => this.db.explosiveDevice.remove(id);
+    remove = (id: string) => this.offline.explosiveDevice.remove(id);
 
     getList = async (query?: IQuery): Promise<IExplosiveDeviceDTO[]> =>
-        this.db.explosiveDevice.select({
+        this.offline.explosiveDevice.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -57,7 +69,7 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
         });
 
     getListExplosive = async (query?: IQuery): Promise<IExplosiveDeviceDTO[]> =>
-        this.db.explosiveDevice.select({
+        this.offline.explosiveDevice.select({
             ...(query ?? {}),
             order: {
                 by: 'createdAt',
@@ -70,7 +82,7 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
         });
 
     getListDetonators = async (query?: IQuery): Promise<IExplosiveDeviceDTO[]> =>
-        this.db.explosiveDevice.select({
+        this.offline.explosiveDevice.select({
             ...(query ?? {}),
             order: {
                 by: 'createdAt',
@@ -83,7 +95,7 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
         });
 
     get = async (id: string): Promise<IExplosiveDeviceDTO> => {
-        const res = await this.db.explosiveDevice.get(id);
+        const res = await this.offline.explosiveDevice.get(id);
         if (!res) throw new Error('there is explosive with id');
         return res;
     };
@@ -95,13 +107,13 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
         detonator: number;
     }> => {
         const [explosive, detonator] = await Promise.all([
-            this.db.explosiveDeviceAction.sum('weight', {
+            this.dbRemote.explosiveDeviceAction.sum('weight', {
                 where: {
                     type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE,
                     ...(query?.where ?? {}),
                 },
             }),
-            this.db.explosiveDeviceAction.sum('quantity', {
+            this.dbRemote.explosiveDeviceAction.sum('quantity', {
                 where: {
                     type: EXPLOSIVE_DEVICE_TYPE.DETONATOR,
                     ...(query?.where ?? {}),
@@ -115,11 +127,11 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
         };
     };
 
-    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => {
-        return this.db.explosiveDevice.subscribe(args, callback);
+    sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => {
+        return this.offline.explosiveDevice.sync(args, callback);
     };
 
-    subscribeType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => {
-        return this.db.explosiveDeviceType.subscribe(args, callback);
+    syncType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => {
+        return this.offline.explosiveDeviceType.sync(args, callback);
     };
 }

@@ -1,3 +1,5 @@
-import { DBRemote } from './remote/db';
+import { DBLocal as DBLocalClass } from './local/db';
+import { DBRemote as DBRemoteClass } from './remote/db';
 
-export const DB = new DBRemote();
+export const DBRemote = new DBRemoteClass();
+export const DBLocal = new DBLocalClass();

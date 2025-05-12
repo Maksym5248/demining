@@ -17,6 +17,6 @@
             "path": "../shared"
         }
     ],
-    "include": ["src", "src/stores/explosive-object/.ts"],
+    "include": ["src", "src/stores/explosive-object/.ts", "../../apps/ammo/src/db/local/db-local.ts"],
     "exclude": ["node_modules", "dist", "config"]
 }

@@ -28,3 +28,16 @@ v2:
 - translate-existing-data
 
 
+// on the first lanch
+// fetch all data Collection (without deleted)
+// record it to list and collections
+// create version of recorded data
+
+// on the next lanch
+// read data from cache and check version if data valid
+// if data valid
+//  read new data with deleted (it can be done in background), check if created, updated or deleted
+// if data not valid
+// fetch full collection and record it to list and collections
+
+

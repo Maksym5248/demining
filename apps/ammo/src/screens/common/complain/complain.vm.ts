@@ -62,12 +62,6 @@ export class ComplainVM implements IComplainVM {
                 Modal.show(MODALS.LOADING);
                 const values = this.form.values();
 
-                console.log('values', {
-                    text: values.text,
-                    type: this.params.type,
-                    entityId: this.params.entityId,
-                });
-
                 await stores.complain.create.run({
                     text: values.text,
                     type: this.params.type,

@@ -140,7 +140,7 @@ export class DBRemote implements Omit<IDB, 'comment' | 'complain'> {
 
     init = () => Promise.resolve();
 
-    dropDb = () => Promise.resolve();
+    drop = () => Promise.resolve();
 
     setLang(lang: 'uk' | 'en') {
         const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;

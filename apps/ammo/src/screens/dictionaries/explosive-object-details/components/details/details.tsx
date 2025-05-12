@@ -16,7 +16,14 @@ export const Details = observer(({ item }: IDetailsProps) => {
             <Field.View label={t('fullName')} text={item?.data.fullName} require={false} />
             <Field.View label={t('type')} text={item?.type?.displayName} />
             <Field.View label={t('component')} text={item?.component?.name} />
-            <Field.View label={t('classification')} text={item?.classItemsNames.join(', ')} />
+            {item?.sortedByClass.map(classItem => (
+                <Field.View
+                    key={classItem.name}
+                    label={`${t('classification')} ${classItem.name}`}
+                    text={classItem.items.join(', ')}
+                    require={false}
+                />
+            ))}
             <Field.View label={t('country')} text={item?.country?.displayName} />
         </Block>
     );

@@ -1,5 +1,5 @@
 import { getApp } from '@react-native-firebase/app';
-import { firebase, type FirebaseFirestoreTypes, getFirestore, initializeFirestore, writeBatch } from '@react-native-firebase/firestore';
+import { type FirebaseFirestoreTypes, getFirestore, initializeFirestore, writeBatch } from '@react-native-firebase/firestore';
 import {
     TABLES,
     type IExplosiveObjectTypeDB,
@@ -46,7 +46,7 @@ export class DBRemote
         Pick<
             IDB,
             | 'init'
-            | 'dropDb'
+            | 'drop'
             | 'setOrganizationId'
             | 'removeOrganizationId'
             | 'batchStart'
@@ -119,16 +119,14 @@ export class DBRemote
 
     batch: FirebaseFirestoreTypes.WriteBatch | null = null;
 
-    init = () => {
-        initializeFirestore(getApp(), {
-            persistence: true,
-            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+    init = async () => {
+        await initializeFirestore(getApp(), {
+            persistence: false,
             ssl: true,
         });
-        return Promise.resolve();
     };
 
-    dropDb = () => Promise.resolve();
+    drop = () => Promise.resolve();
 
     setOrganizationId() {
         /** WEB */

@@ -1,8 +1,9 @@
 import { type IBookTypeDB, type IBookDB } from 'shared-my';
 
-import { type IDBBase, type IUpdateValue, type ICreateValue, type ISubscriptionDocument, type IQuery } from '~/common';
+import { type IUpdateValue, type ICreateValue, type ISubscriptionDocument, type IQuery, type IDBRemote, type IDBLocal } from '~/common';
 
 import { type IBookTypeDTO, type IBookDTO } from '../dto';
+import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
 
 export interface IBookAPI {
     getList: (query?: IQuery) => Promise<IBookDTO[]>;
@@ -10,36 +11,44 @@ export interface IBookAPI {
     update: (id: string, value: IUpdateValue<IBookDTO>) => Promise<IBookDTO>;
     remove: (id: string) => Promise<void>;
     get: (id: string) => Promise<IBookDTO>;
-    subscribe: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => Promise<void>;
-    subscribeBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
+    sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => Promise<void>;
+    syncBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
 }
 
 export class BookAPI implements IBookAPI {
+    offline: IDBOfflineFirst<IBookDB>;
+    offlineBookType: IDBOfflineFirst<IBookTypeDB>;
+
     constructor(
-        private db: {
-            book: IDBBase<IBookDB>;
-            bookType: IDBBase<IBookTypeDB>;
+        dbRemote: {
+            book: IDBRemote<IBookDB>;
+            bookType: IDBRemote<IBookTypeDB>;
         },
-    ) {}
+        dbLocal: {
+            book: IDBLocal<IBookDB>;
+            bookType: IDBLocal<IBookTypeDB>;
+        },
+    ) {
+        this.offline = new DBOfflineFirst<IBookDB>(dbRemote.book, dbLocal.book);
+        this.offlineBookType = new DBOfflineFirst<IBookTypeDB>(dbRemote.bookType, dbLocal.bookType);
+    }
 
     create = async (value: ICreateValue<IBookDTO>): Promise<IBookDTO> => {
-        const res = await this.db.book.create(value);
-
+        const res = await this.offline.create(value);
         return res;
     };
 
     update = async (id: string, value: IUpdateValue<IBookDTO>): Promise<IBookDTO> => {
-        const res = await this.db.book.update(id, value);
-
+        const res = await this.offline.update(id, value);
         return res;
     };
 
-    remove = async (id: string) => {
-        await this.db.book.remove(id);
+    remove = async (id: string): Promise<void> => {
+        await this.offline.remove(id);
     };
 
     getList = (query?: IQuery): Promise<IBookDTO[]> =>
-        this.db.book.select({
+        this.offline.select({
             order: {
                 by: 'createdAt',
                 type: 'desc',
@@ -48,16 +57,16 @@ export class BookAPI implements IBookAPI {
         });
 
     get = async (id: string): Promise<IBookDTO> => {
-        const res = await this.db.book.get(id);
+        const res = await this.offline.get(id);
         if (!res) throw new Error('there is document with id');
         return res;
     };
 
-    subscribe = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => {
-        return this.db.book.subscribe(args, callback);
+    sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => {
+        return this.offline.sync(args, callback);
     };
 
-    subscribeBookType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => {
-        return this.db.bookType.subscribe(args, callback);
+    syncBookType = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => {
+        return this.offlineBookType.sync(args, callback);
     };
 }

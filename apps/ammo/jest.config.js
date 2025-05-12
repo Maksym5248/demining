@@ -5,7 +5,10 @@ module.exports = {
     setupFiles: [
       '../../node_modules/react-native/jest/setup.js',
       '../../node_modules/react-native-gesture-handler/jestSetup.js',
-      '<rootDir>/test/setup.ts',
+      '../../node_modules/react-native-device-info/jest/react-native-device-info-mock.js',
+      '../../node_modules/react-native-localize/mock/jest.js',
+      '../../node_modules/react-native-safe-area-context/jest/mock.tsx',
+      '../../node_modules/@react-native-google-signin/google-signin/jest/build/jest/setup.js',
     ],
     testPathIgnorePatterns: ['/node_modules/'],
     transformIgnorePatterns: [
@@ -14,7 +17,7 @@ module.exports = {
     moduleNameMapper: {
         '^~/(.*)': '<rootDir>/src/$1',
         'react-dom': 'react-native',
-        "\\.svg": "<rootDir>/__mocks__/svgMock.js"
+        '\\.svg': '<rootDir>/test/mocks/libs/react-native-svg-transformer',
     },
     testMatch: ['**/__tests__/**', '**/__test__/**'],
 };

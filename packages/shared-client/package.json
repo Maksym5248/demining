@@ -27,34 +27,41 @@
         "clean:build": "rm -rf dist/ ./tsconfig.tsbuildinfo",
         "clean": "rm -rf node_modules/ && yarn clean:build",
         "build": "tsc && tsc-alias",
+        "test": "jest --watchAll=true --coverage",
         "watch": "concurrently -k -n \"TSC,ALIAS\" -c \"bgBlue.bold,bgMagenta.bold\" \"tsc --watch\" \"tsc-alias -w\"",
         "check:tsc": "tsc --noEmit",
         "check:prettier": "prettier --write",
         "check:eslint": "eslint --fix"
     },
     "peerDependencies": {
-        "react": "*",
         "axios": "^1.6.5",
         "dayjs": "^1.11.10",
+        "geofire-common": "^6.0.0",
         "lodash": "^4.17.21",
         "mobx": "^6.8.0",
         "mobx-react": "^7.6.0",
+        "mobx-react-form": "^6.12.0",
         "mobx-react-lite": "^3.4.3",
+        "react": "*",
         "shared-my": "*",
         "typescript": "~5.3.3",
         "uuid": "^3.3.2",
-        "yup": "^1.2.0",
-        "geofire-common": "^6.0.0",
-        "mobx-react-form": "^6.12.0"
+        "yup": "^1.2.0"
     },
     "dependencies": {
         "@turf/helpers": "^6.5.0",
-        "@turf/turf": "^6.5.0"
+        "@turf/turf": "^6.5.0",
+        "ts-jest": "^29.3.2"
     },
     "devDependencies": {
         "@firebase/auth-types": "0.12.2",
         "@firebase/firestore-types": "2.2.0",
+        "@types/jest": "^29.5.5",
+        "@types/webpack-node-externals": "^3.0.0",
+        "cross-env": "^7.0.3",
         "dayjs": "^1.11.10",
+        "dotenv": "^16.4.5",
+        "dotenv-webpack": "^8.0.1",
         "eslint": "8.45.0",
         "eslint-plugin-jsx-a11y": "^6.8.0",
         "eslint-plugin-react": "7.33.0",
@@ -64,6 +71,7 @@
         "jest": "^29.7.0",
         "lint-staged": "14.0.1",
         "prettier": "^3.0.3",
+        "ts-jest": "^29.1.2",
         "tsc-alias": "1.8.10"
     }
 }

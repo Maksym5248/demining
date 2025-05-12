@@ -16,6 +16,7 @@ export const listPermissions: IListPermissions = {
         name: Device.isIOS ? PERM_LIB.IOS.APP_TRACKING_TRANSPARENCY : null,
         title: null,
         message: null,
+        isDisabled: true,
     },
     [PERMISSIONS.TRACKING_TRANSPARENCY]: {
         name: Device.isIOS ? PERM_LIB.IOS.APP_TRACKING_TRANSPARENCY : null,

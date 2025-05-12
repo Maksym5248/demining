@@ -93,3 +93,5 @@ sentry.properties
 **/fastlane/test_output
 **/fastlane/.env.default
 **/android/app/api.json
+
+.vscode

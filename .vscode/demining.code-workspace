@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "../"
+		},
+		{
+			"path": "../apps/ammo"
+		},
+		{
+			"path": "../apps/dsns-web"
+		},
+		{
+			"path": "../apps/functions"
+		},
+		{
+			"path": "../packages/shared"
+		},
+		{
+			"path": "../packages/shared-client"
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "../node_modules/typescript/lib", // Use a centralized TypeScript version
+		"typescript.enablePromptUseWorkspaceTsdk": true
+	}
+}

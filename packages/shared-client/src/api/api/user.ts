@@ -1,6 +1,6 @@
 import { type IUserInfoDB, type IMemberDB, type IOrganizationDB, type IUserAccessDB } from 'shared-my';
 
-import { type IQuery, type IDBBase } from '~/common';
+import { type IQuery, type IDBRemote } from '~/common';
 
 import { type IUpdateUserDTO, type IUserDTO } from '../dto';
 
@@ -15,10 +15,10 @@ export interface IUserAPI {
 export class UserAPI {
     constructor(
         private db: {
-            userInfo: IDBBase<IUserInfoDB>;
-            userAccess: IDBBase<IUserAccessDB>;
-            member: IDBBase<IMemberDB>;
-            organization?: IDBBase<IOrganizationDB>;
+            userInfo: IDBRemote<IUserInfoDB>;
+            userAccess: IDBRemote<IUserAccessDB>;
+            member: IDBRemote<IMemberDB>;
+            organization?: IDBRemote<IOrganizationDB>;
             batchStart: () => void;
             batchCommit: () => Promise<void>;
         },

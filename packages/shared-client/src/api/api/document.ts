@@ -1,6 +1,6 @@
 import { type IDocumentDB, ASSET_TYPE } from 'shared-my';
 
-import { type IDBBase, type IQuery, type IUpdateValue, type ICreateValue } from '~/common';
+import { type IDBRemote, type IQuery, type IUpdateValue, type ICreateValue } from '~/common';
 import { fileUtils } from '~/common';
 import { type IAssetStorage } from '~/services';
 
@@ -18,7 +18,7 @@ export interface IDocumentAPI {
 export class DocumentAPI implements IDocumentAPI {
     constructor(
         private db: {
-            document: IDBBase<IDocumentDB>;
+            document: IDBRemote<IDocumentDB>;
         },
         private services: {
             assetStorage: IAssetStorage;

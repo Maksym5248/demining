@@ -1,6 +1,6 @@
 import { type IUserInfoDB, type IMemberDB, type IOrganizationDB, type IUserAccessDB } from 'shared-my';
 
-import { type IDBBase, type IUpdateValue } from '~/common';
+import { type IDBRemote, type IUpdateValue } from '~/common';
 import { type IAssetStorage } from '~/services';
 
 import { type ICurrentUserDTO, type IUserOrganizationDTO, type IUserInfoParamsDTO } from '../dto';
@@ -15,10 +15,10 @@ export interface ICurrentUserAPI {
 export class CurrentUserAPI {
     constructor(
         private db: {
-            userInfo: IDBBase<IUserInfoDB>;
-            userAccess: IDBBase<IUserAccessDB>;
-            member: IDBBase<IMemberDB>;
-            organization?: IDBBase<IOrganizationDB>;
+            userInfo: IDBRemote<IUserInfoDB>;
+            userAccess: IDBRemote<IUserAccessDB>;
+            member: IDBRemote<IMemberDB>;
+            organization?: IDBRemote<IOrganizationDB>;
             setOrganizationId: (id: string) => void;
             removeOrganizationId: () => void;
         },

@@ -34,7 +34,7 @@ import {
     type IWhere,
     type IQuery,
     type IQueryOrder,
-    type IDBBase,
+    type IDBRemote,
     type ICreateData,
     type ISubscriptionDocument,
     Logger,
@@ -90,7 +90,7 @@ const getWhere = (values: IWhere) => {
 const getOrder = (value: IQueryOrder) => orderBy(value.by, value.type);
 const getOr = (value: IWhere[]) => [or(...value.map((v: IWhere) => and(...getWhere(v))))] as unknown as QueryFieldFilterConstraint[];
 
-export class DBBase<T extends IBaseDB> implements IDBBase<T> {
+export class DBBase<T extends IBaseDB> implements IDBRemote<T> {
     tableName: string;
 
     rootCollection?: string;

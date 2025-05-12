@@ -1,7 +1,7 @@
 {
     "name": "demining-web",
     "productName": "demining",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "description": "My Electron application description",
     "main": ".webpack/main",
     "repository": {
@@ -97,7 +97,6 @@
         "firebase": "10.10.0",
         "html2canvas": "^1.4.1",
         "i18next": "^23.6.0",
-        "jsstore": "^4.6.4",
         "jszip": "^3.10.1",
         "mobx": "^6.8.0",
         "mobx-react": "^9.2.0",

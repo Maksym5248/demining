@@ -1,6 +1,6 @@
 import { type IMemberDB, type IUserInfoDB, type IOrganizationDB, type IUserAccessDB } from 'shared-my';
 
-import { type IQuery, type IDBBase } from '~/common';
+import { type IQuery, type IDBRemote } from '~/common';
 
 import { type IOrganizationDTO, type IUserDTO, type ICreateOrganizationDTO } from '../dto';
 
@@ -26,10 +26,10 @@ export interface IOrganizationAPI {
 export class OrganizationAPI {
     constructor(
         private db: {
-            organization: IDBBase<IOrganizationDB>;
-            userInfo: IDBBase<IUserInfoDB>;
-            userAccess: IDBBase<IUserAccessDB>;
-            member: IDBBase<IMemberDB>;
+            organization: IDBRemote<IOrganizationDB>;
+            userInfo: IDBRemote<IUserInfoDB>;
+            userAccess: IDBRemote<IUserAccessDB>;
+            member: IDBRemote<IMemberDB>;
         },
     ) {}
 

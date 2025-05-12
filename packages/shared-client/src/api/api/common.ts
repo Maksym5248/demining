@@ -1,40 +1,42 @@
 import { type APPS, type IAppConfigDB, type ICountryDB, type IMaterialDB, type IStatusDB } from 'shared-my';
 
-import { type IQuery, type IDBBase, type ISubscriptionDocument } from '~/common';
+import { type IQuery, type IDBRemote, type IDBLocal, type ISubscriptionDocument } from '~/common';
 
 import { type IAppConfigDTO, type ICountryDTO } from '../dto';
+import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
 
 export interface ICommonAPI {
     getAppConfig: (name: APPS) => Promise<IAppConfigDTO>;
-    subscribeCountry: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => Promise<void>;
-    subscribeMaterial: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => Promise<void>;
-    subscribeStatus: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => Promise<void>;
+    syncCountry: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => Promise<void>;
+    syncMaterial: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => Promise<void>;
+    syncStatus: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => Promise<void>;
 }
 
 export class CommonAPI implements ICommonAPI {
+    offlineCountry: IDBOfflineFirst<ICountryDB>;
+    offlineMaterial: IDBOfflineFirst<IMaterialDB>;
+    offlineStatus: IDBOfflineFirst<IStatusDB>;
+
     constructor(
-        private db: {
-            app: IDBBase<IAppConfigDB>;
-            country: IDBBase<ICountryDB>;
-            material: IDBBase<IMaterialDB>;
-            status: IDBBase<IStatusDB>;
+        private dbRemote: {
+            app: IDBRemote<IAppConfigDB>;
+            country: IDBRemote<ICountryDB>;
+            material: IDBRemote<IMaterialDB>;
+            status: IDBRemote<IStatusDB>;
         },
-    ) {}
+        dbLocal: {
+            country: IDBLocal<ICountryDB>;
+            material: IDBLocal<IMaterialDB>;
+            status: IDBLocal<IStatusDB>;
+        },
+    ) {
+        this.offlineCountry = new DBOfflineFirst<ICountryDB>(dbRemote.country, dbLocal.country);
+        this.offlineMaterial = new DBOfflineFirst<IMaterialDB>(dbRemote.material, dbLocal.material);
+        this.offlineStatus = new DBOfflineFirst<IStatusDB>(dbRemote.status, dbLocal.status);
+    }
 
-    subscribeCountry = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => {
-        return this.db.country.subscribe(args, callback);
-    };
-
-    subscribeMaterial = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => {
-        return this.db.material.subscribe(args, callback);
-    };
-
-    subscribeStatus = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => {
-        return this.db.status.subscribe(args, callback);
-    };
-
-    async getAppConfig(name: APPS) {
-        const res = await this.db.app.get(name);
+    async getAppConfig(name: APPS): Promise<IAppConfigDTO> {
+        const res = await this.dbRemote.app.get(name);
 
         if (!res) {
             throw new Error('App config not found');
@@ -42,4 +44,16 @@ export class CommonAPI implements ICommonAPI {
 
         return res;
     }
+
+    syncCountry = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<ICountryDTO>[]) => void) => {
+        return this.offlineCountry.sync(args, callback);
+    };
+
+    syncMaterial = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IMaterialDB>[]) => void) => {
+        return this.offlineMaterial.sync(args, callback);
+    };
+
+    syncStatus = (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => {
+        return this.offlineStatus.sync(args, callback);
+    };
 }
