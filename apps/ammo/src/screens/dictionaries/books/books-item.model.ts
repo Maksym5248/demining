@@ -61,6 +61,7 @@ export class DataItem implements IDataItem {
             const exist = await BookCache.exists(this.data.uri);
             this.setStatus(exist ? STATUS.LOADED : STATUS.IDDLE);
         },
+        onError: () => this.setStatus(STATUS.IDDLE),
     });
 
     onProgress = (bytesRead: number, contentLength: number) => {
