@@ -26,7 +26,6 @@ import {
 } from 'shared-my-client';
 
 import { Api } from '~/api';
-import { DB } from '~/db';
 import { Localization } from '~/localization';
 import { Analytics, Auth, Crashlytics, ErrorManager, Logger, Message } from '~/services';
 
@@ -179,16 +178,16 @@ export class RootStore implements IRootStore {
     init = new RequestModel({
         cachePolicy: 'cache-first',
         run: async () => {
-            await DB.init();
-            this.api.setLang(this.services.localization.data.locale);
-
-            this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
-
-            if (!this.services.auth.uuid()) {
-                this.services.auth.signInAnonymously();
-            }
-
             try {
+                await this.api.init();
+                this.api.setLang(this.services.localization.data.locale);
+
+                this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
+
+                if (!this.services.auth.uuid()) {
+                    this.services.auth.signInAnonymously();
+                }
+
                 await Promise.all([
                     this.common.subscribeCountries.run(),
                     this.common.subscribeStatuses.run(),

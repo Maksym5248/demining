@@ -13,7 +13,7 @@ import {
     ComplainAPI,
 } from 'shared-my-client';
 
-import { DB } from '~/db';
+import { DBRemote, DBLocal } from '~/db';
 import { AssetStorage } from '~/services';
 
 const services = {
@@ -21,17 +21,18 @@ const services = {
 };
 
 export const Api = {
-    explosiveObjectType: new ExplosiveObjectTypeAPI(DB, services),
-    explosiveObjectClass: new ExplosiveObjectClassAPI(DB),
-    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DB),
-    explosiveObject: new ExplosiveObjectAPI(DB, services),
-    explosiveDevice: new ExplosiveDeviceAPI(DB),
-    explosive: new ExplosiveAPI(DB, services),
-    book: new BookAPI(DB),
-    common: new CommonAPI(DB),
-    comment: new CommentAPI(DB),
-    complain: new ComplainAPI(DB),
-    user: new UserAPI(DB),
-    currentUser: new CurrentUserAPI(DB, services),
-    setLang: (lang: 'uk' | 'en') => DB.setLang(lang),
+    explosiveObjectType: new ExplosiveObjectTypeAPI(DBRemote, DBLocal, services),
+    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote),
+    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote),
+    explosiveObject: new ExplosiveObjectAPI(DBRemote, services),
+    explosiveDevice: new ExplosiveDeviceAPI(DBRemote),
+    explosive: new ExplosiveAPI(DBRemote, services),
+    book: new BookAPI(DBRemote),
+    common: new CommonAPI(DBRemote),
+    comment: new CommentAPI(DBRemote),
+    complain: new ComplainAPI(DBRemote),
+    user: new UserAPI(DBRemote),
+    currentUser: new CurrentUserAPI(DBRemote, services),
+    setLang: (lang: 'uk' | 'en') => DBRemote.setLang(lang),
+    init: () => DBRemote.init(),
 };

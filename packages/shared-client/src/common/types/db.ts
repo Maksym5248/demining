@@ -81,6 +81,8 @@ export interface IDBBase<T extends IBaseDB> {
     count(args?: Partial<IQuery>): Promise<number>;
     sum(field: keyof T, args?: Partial<IQuery>): Promise<number>;
 }
+
+export interface IDBLocal<T extends IBaseDB> extends IDBBase<T> {}
 export interface IDBRemote<T extends IBaseDB> extends IDBBase<T> {
     setBatch(batch: any): void;
     exist(field: keyof T, value: any): Promise<boolean>;

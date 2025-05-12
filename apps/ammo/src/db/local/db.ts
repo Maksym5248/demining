@@ -5,6 +5,9 @@ import { DBBase } from './db-base';
 
 export interface IDBLocal extends Pick<IDB, 'init' | 'dropDb' | 'setLang' | 'explosiveObjectType'> {}
 
+// Initialization table collection set language
+// create wrawwer for db or integrate in to local db
+
 export class DBLocal implements IDBLocal {
     explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE);
 
