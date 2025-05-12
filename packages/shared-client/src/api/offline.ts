@@ -185,28 +185,33 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
             },
         };
 
-        let data = await this.dbLocal.select(q);
+        try {
+            let data = await this.dbLocal.select(q);
 
-        if (data.length) {
-            Logger.log('Local loading data', data.length);
-            this.subscribeNewUpdates(q, data, callback);
-        } else {
-            data = await this.dbRemote.select({
-                ...q,
-                where: {
-                    ...(q.where ?? {}),
-                    ['!=']: { isDeleted: true },
-                },
-            });
+            if (data.length) {
+                Logger.log('Local loading data', data.length);
+                this.subscribeNewUpdates(q, data, callback);
+            } else {
+                data = await this.dbRemote.select({
+                    ...q,
+                    where: {
+                        ...(q.where ?? {}),
+                        ['!=']: { isDeleted: true },
+                    },
+                });
 
-            Logger.log('Remote loading data', data.length);
+                Logger.log('Remote loading data', data.length);
 
-            data.forEach(item => {
-                this.dbLocal.create(item);
-            });
+                data.forEach(item => {
+                    this.dbLocal.create(item);
+                });
+            }
+
+            callback(createAdded(data));
+        } catch (error) {
+            this.dbLocal.drop();
+            await this.sync(query, callback);
         }
-
-        callback(createAdded(data));
 
         return;
     }

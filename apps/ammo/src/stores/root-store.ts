@@ -203,16 +203,10 @@ export class RootStore implements IRootStore {
                 if (!this.services.auth.uuid()) {
                     this.services.auth.signInAnonymously();
                 }
+
+                await this.sync();
             } catch (e) {
                 this.services.crashlytics.error('Init', e);
-            }
-
-            try {
-                await this.sync();
-            } catch (e) {
-                this.api.drop();
-                await this.sync();
-                this.services.crashlytics.error('Sync', e);
             }
         },
     });
