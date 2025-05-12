@@ -66,6 +66,11 @@ export interface IExplosiveObject extends IDataModel<IExplosiveObjectData> {
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     classItemsNames: string[];
     classItemIds: string[];
+    sortedByClass: {
+        id: string;
+        name: string;
+        items: string[];
+    }[];
 }
 
 export class ExplosiveObject implements IExplosiveObject {
@@ -189,6 +194,37 @@ export class ExplosiveObject implements IExplosiveObject {
             }, [] as string[]) ?? [];
 
         return uniq(merged);
+    }
+
+    get sortedByClass() {
+        const items = this.classItemIds.map(id => this.collections.classItem.get(id));
+        const sorted: Record<string, string[]> = {};
+
+        items.forEach(item => {
+            const classification = this.collections.class.get(item?.classId);
+
+            if (!classification?.id || !item?.id) {
+                return;
+            }
+
+            if (sorted[classification?.id]) {
+                sorted[classification?.id].push(item?.displayName);
+            } else {
+                sorted[classification?.id] = [item?.displayName];
+            }
+        });
+
+        const keys = Object.keys(sorted);
+
+        return keys.map(key => {
+            const classification = this.collections.class.get(key);
+
+            return {
+                id: classification?.id ?? '',
+                name: classification?.displayName ?? '',
+                items: sorted[key],
+            };
+        });
     }
 
     get classItemsNames() {

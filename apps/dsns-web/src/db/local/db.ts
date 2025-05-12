@@ -19,6 +19,8 @@ import {
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
+import { CONFIG } from '~/config';
+
 import { DBBase } from './db-base';
 import { DBConnection } from './db.connetion';
 
@@ -45,7 +47,7 @@ export interface IDBLocal
     > {}
 
 export class DBLocal implements IDBLocal {
-    connection: DBConnection = new DBConnection();
+    connection: DBConnection = new DBConnection(CONFIG.DB_NAME);
 
     explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, this.connection);
     explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, this.connection);

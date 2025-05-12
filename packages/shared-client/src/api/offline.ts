@@ -8,6 +8,7 @@ import {
     type IDocumentChangeType,
     type ICreateData,
 } from '~/common';
+import { Logger } from '~/services';
 
 export interface IDBOfflineFirst<T extends IBaseDB> {
     create: (value: ICreateData<T>) => Promise<T>;
@@ -113,72 +114,81 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
         const remoteData = await this.dbRemote.getByIds(ids);
 
-        if (remoteData.length) {
-            await Promise.all(
-                remoteData.map(async item => {
-                    if (await this.dbLocal.exist('id', item.id)) {
-                        await this.dbLocal.update(item.id, item);
-                    } else {
-                        await this.dbLocal.create(item);
-                    }
-                }),
-            );
-            return remoteData;
+        try {
+            if (remoteData.length) {
+                await Promise.all(
+                    remoteData.map(async item => {
+                        if (await this.dbLocal.exist('id', item.id)) {
+                            await this.dbLocal.update(item.id, item);
+                        } else {
+                            await this.dbLocal.create(item);
+                        }
+                    }),
+                );
+                return remoteData;
+            }
+        } catch (error) {
+            Logger.error('Offline getByIds', error);
         }
 
         return [];
     }
 
     private async subscribeNewUpdates(q: IQuery | null, data: T[], callback: (data: ISubscriptionDocument<T>[]) => void) {
-        const map = createMap(data);
+        try {
+            const map = createMap(data);
 
-        const newData = await this.dbRemote.select({
-            ...q,
-            startAfter: data[data.length - 1]?.updatedAt,
-        });
+            const newData = await this.dbRemote.select({
+                ...q,
+                startAfter: data[data.length - 1]?.updatedAt,
+            });
 
-        const sorted = newData.map((item, i) => {
-            let type: IDocumentChangeType = 'added';
+            const sorted = newData.map((item, i) => {
+                let type: IDocumentChangeType = 'added';
 
-            if (item?.isDeleted) {
-                type = 'removed';
-            } else if (map[item.id]) {
-                type = 'modified';
-            }
+                if (item?.isDeleted) {
+                    type = 'removed';
+                } else if (map[item.id]) {
+                    type = 'modified';
+                }
 
-            return {
-                type,
-                newIndex: i,
-                oldIndex: i,
-                data: item,
-            };
-        });
+                return {
+                    type,
+                    newIndex: i,
+                    oldIndex: i,
+                    data: item,
+                };
+            });
 
-        sorted.forEach(item => {
-            if (item.type === 'added') {
-                this.dbLocal.create(item.data);
-            } else if (item.type === 'modified') {
-                this.dbLocal.update(item.data.id, item.data);
-            } else if (item.type === 'removed') {
-                this.dbLocal.remove(item.data.id);
-            }
-        });
+            sorted.forEach(item => {
+                if (item.type === 'added') {
+                    this.dbLocal.create(item.data);
+                } else if (item.type === 'modified') {
+                    this.dbLocal.update(item.data.id, item.data);
+                } else if (item.type === 'removed') {
+                    this.dbLocal.remove(item.data.id);
+                }
+            });
 
-        callback(sorted);
+            callback(sorted);
+        } catch (error) {
+            Logger.error('Offline subscribeNewUpdates', error);
+        }
     }
 
     async sync(query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void) {
         const q: IQuery = {
+            ...(query ?? {}),
             order: {
                 by: 'updatedAt',
-                type: 'desc',
+                type: 'asc',
             },
-            ...(query ?? {}),
         };
 
         let data = await this.dbLocal.select(q);
 
         if (data.length) {
+            Logger.log('Local loading data', data.length);
             this.subscribeNewUpdates(q, data, callback);
         } else {
             data = await this.dbRemote.select({
@@ -188,7 +198,8 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                     ['!=']: { isDeleted: true },
                 },
             });
-            console.log('no data in local db', data.length);
+
+            Logger.log('Remote loading data', data.length);
 
             data.forEach(item => {
                 this.dbLocal.create(item);

@@ -17,6 +17,7 @@ export interface IExplosiveObjectClassItem extends IDataModel<IExplosiveObjectCl
     updateFields(data: Partial<IExplosiveObjectClassItemData>): void;
     update: RequestModel<[IUpdateValue<IExplosiveObjectClassItemData>]>;
     isEditable: boolean;
+    classId: string;
 }
 
 interface IApi {
@@ -54,6 +55,10 @@ export class ExplosiveObjectClassItem implements IExplosiveObjectClassItem {
 
     get id() {
         return this.data.id;
+    }
+
+    get classId() {
+        return this.data.classId;
     }
 
     get displayName() {

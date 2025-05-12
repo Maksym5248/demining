@@ -14,9 +14,9 @@ export const CharacteristicPhisical = observer(({ item }: ICharacteristicPhisica
 
     return (
         <Block title={t('phisicalCharacteristic')}>
-            <Field.Range label={t('density')} value={[density?.min, density?.max]} />
-            <Field.Range label={t('meltingPoint')} value={[meltingPoint?.min, meltingPoint?.max]} />
-            <Field.Range label={t('ignitionPoint')} value={[ignitionPoint?.min, ignitionPoint?.max]} />
+            <Field.Range label={t('density')} value={[density?.min, density?.max]} require />
+            <Field.Range label={t('meltingPoint')} value={[meltingPoint?.min, meltingPoint?.max]} require />
+            <Field.Range label={t('ignitionPoint')} value={[ignitionPoint?.min, ignitionPoint?.max]} require />
         </Block>
     );
 });

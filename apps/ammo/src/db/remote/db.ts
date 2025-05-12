@@ -121,7 +121,7 @@ export class DBRemote
 
     init = async () => {
         await initializeFirestore(getApp(), {
-            persistence: true,
+            persistence: false,
             ssl: true,
         });
     };
