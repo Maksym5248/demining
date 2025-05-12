@@ -176,7 +176,7 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         }
     }
 
-    async sync(query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void) {
+    async sync(query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void, retry = true) {
         const q: IQuery = {
             ...(query ?? {}),
             order: {
@@ -208,9 +208,12 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
             }
 
             callback(createAdded(data));
-        } catch (error) {
-            this.dbLocal.drop();
-            await this.sync(query, callback);
+        } catch (e) {
+            Logger.error('Sync ', e);
+            if (retry) {
+                this.dbLocal.drop();
+                await this.sync(query, callback, false);
+            }
         }
 
         return;
