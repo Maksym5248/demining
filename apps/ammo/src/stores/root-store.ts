@@ -204,7 +204,7 @@ export class RootStore implements IRootStore {
                     this.services.auth.signInAnonymously();
                 }
             } catch (e) {
-                Crashlytics.error('Init', e);
+                this.services.crashlytics.error('Init', e);
             }
 
             try {
@@ -212,7 +212,7 @@ export class RootStore implements IRootStore {
             } catch (e) {
                 this.api.drop();
                 await this.sync();
-                Crashlytics.error('Sync', e);
+                this.services.crashlytics.error('Sync', e);
             }
         },
     });
