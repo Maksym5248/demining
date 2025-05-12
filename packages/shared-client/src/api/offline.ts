@@ -188,12 +188,15 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                     ['!=']: { isDeleted: true },
                 },
             });
+            console.log('no data in local db', data.length);
 
             data.forEach(item => {
                 this.dbLocal.create(item);
             });
         }
 
-        callback?.(createAdded(data));
+        callback(createAdded(data));
+
+        return;
     }
 }

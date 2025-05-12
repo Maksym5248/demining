@@ -1,5 +1,5 @@
 import { getApp } from '@react-native-firebase/app';
-import { firebase, type FirebaseFirestoreTypes, getFirestore, initializeFirestore, writeBatch } from '@react-native-firebase/firestore';
+import { type FirebaseFirestoreTypes, getFirestore, initializeFirestore, writeBatch } from '@react-native-firebase/firestore';
 import {
     TABLES,
     type IExplosiveObjectTypeDB,
@@ -121,8 +121,7 @@ export class DBRemote
 
     init = async () => {
         await initializeFirestore(getApp(), {
-            persistence: false,
-            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+            persistence: true,
             ssl: true,
         });
     };

@@ -5,7 +5,7 @@ import { type NavigationContainerRef } from '@react-navigation/core';
 import { observer } from 'mobx-react-lite';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
-import { dates } from 'shared-my-client';
+import { dates, Logger, LogLevel } from 'shared-my-client';
 
 import { useStatusBar, useViewModel } from '~/hooks';
 import { LocalizationProvider } from '~/localization';
@@ -14,10 +14,14 @@ import { Crashlytics, Navigation } from '~/services';
 import { ThemeProvider } from '~/styles';
 
 import { appViewModel, type IAppViewModel } from './AppViewModel';
+import { CONFIG } from './config';
 import { AlertProvider, Debugger, MessageProvider, ModalProvider, Splash, TooltipProvider, UpdaterProvider } from './containers';
 
 enableScreens(true);
-
+if (CONFIG.IS_DEBUG) {
+    Logger.enable();
+    Logger.setLevel(LogLevel.Debug);
+}
 Crashlytics.init();
 dates.init(Timestamp);
 

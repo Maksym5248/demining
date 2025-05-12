@@ -160,7 +160,10 @@ export class PermissionsClass implements IPermissions {
     };
 
     async checkAllStatuses() {
-        const keys = Object.keys(this.list) as Array<PERMISSIONS>;
+        const keys = Object.keys(this.list).filter(key => {
+            const item = this.list[key as PERMISSIONS];
+            return !item.isDisabled;
+        }) as Array<PERMISSIONS>;
 
         await Promise.all(
             keys.map(async permission => {

@@ -15,7 +15,7 @@ import {
 import { type ISubscriptionDocument, type ICreateValue, type IQuery } from '~/common';
 import { dates } from '~/common';
 import { CollectionModel, type ICollectionModel, type IListModel, type IRequestModel, ListModel, RequestModel } from '~/models';
-import { type IMessage } from '~/services';
+import { type ICrashlytics, type IMessage } from '~/services';
 
 import { Classifications, type IClassifications } from './classifications';
 import {
@@ -56,6 +56,7 @@ interface IApi {
 
 interface IServices {
     message: IMessage;
+    crashlytics: ICrashlytics;
 }
 
 interface IStores {
@@ -364,6 +365,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 },
             );
         },
+        onError: e => this.services.crashlytics.error('sync', e),
     });
 
     syncDetails = new RequestModel({
@@ -395,6 +397,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 },
             );
         },
+        onError: e => this.services.crashlytics.error('syncDetails', e),
     });
 
     syncComponents = new RequestModel({
@@ -419,6 +422,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
                 this.collectionComponents.remove(remove);
             });
         },
+        onError: e => this.services.crashlytics.error('syncComponents', e),
     });
 
     syncDeeps = new RequestModel({
@@ -427,5 +431,6 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
             this.classifications.init();
         },
+        onError: e => this.services.crashlytics.error('syncDeeps', e),
     });
 }

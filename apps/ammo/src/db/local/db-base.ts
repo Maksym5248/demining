@@ -11,9 +11,12 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     rootCollection?: string;
     storage: MMKV;
 
-    constructor(tableName: string) {
+    constructor(
+        tableName: string,
+        private encryptionKey: string = 'vw2WeJaM39',
+    ) {
         this.tableName = tableName;
-        this.storage = new MMKV({ id: this.key });
+        this.storage = new MMKV({ id: this.key, encryptionKey: this.encryptionKey });
     }
 
     drop(): void {
@@ -21,7 +24,7 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     }
 
     createStorage() {
-        this.storage = new MMKV({ id: this.key });
+        this.storage = new MMKV({ id: this.key, encryptionKey: this.encryptionKey });
     }
 
     setTableName(tableName: string) {
@@ -42,8 +45,7 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     private filter(args?: Partial<IQuery>): T[] {
         const data = this.storage
             .getAllKeys()
-            .filter(key => key.startsWith(`${this.key}-entity/`))
-            .map(key => this.entityLoad(key))
+            .map(key => this.entityLoadByKey(key))
             .filter(Boolean) as T[];
 
         const filtered = args?.where ? where(args, data) : data;
@@ -59,21 +61,25 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     }
 
     private get keyEntity() {
-        return `${this.key}-query`;
+        return `${this.key}/entity`;
     }
 
     private getEntityKey(id: string) {
         return `${this.keyEntity}/${id}`;
     }
 
-    private entityLoad(id: string): T | null {
-        const key = this.getEntityKey(id);
+    private entityLoadByKey(key: string): T | null {
         const data = this.storage.getString(key);
         if (!data) return null;
 
         const parsedData = JSON.parse(data);
 
         return convertTimestamps(parsedData);
+    }
+
+    private entityLoad(id: string): T | null {
+        const key = this.getEntityKey(id);
+        return this.entityLoadByKey(key);
     }
 
     private entityUpload(id: string, value: T) {

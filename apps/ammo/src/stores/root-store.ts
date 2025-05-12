@@ -202,7 +202,7 @@ export class RootStore implements IRootStore {
                     this.book.sync.run(),
                 ]);
             } catch (e) {
-                /** SKIP */
+                Crashlytics.error('Initialization error', e);
             }
         },
     });
