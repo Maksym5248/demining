@@ -190,6 +190,7 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
             if (data.length) {
                 Logger.log('Local loading data', data.length);
+                callback(createAdded(data));
                 this.subscribeNewUpdates(q, data, callback);
             } else {
                 data = await this.dbRemote.select({
@@ -205,9 +206,8 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                 data.forEach(item => {
                     this.dbLocal.create(item);
                 });
+                callback(createAdded(data));
             }
-
-            callback(createAdded(data));
         } catch (e) {
             Logger.error('Sync ', e);
             if (retry) {
