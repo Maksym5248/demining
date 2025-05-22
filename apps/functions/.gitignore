@@ -13,3 +13,5 @@ tsconfig.tsbuildinfo
 ui-debug.log
 isolate
 firebase-adminsdk.json
+src/parser/output/*
+src/parser/book.pdf
