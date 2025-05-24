@@ -1,29 +1,41 @@
 import fs from 'fs';
 import path from 'path';
 
-import { parsePDF } from './pdfParser';
+import { parsePDF, generateHtmlFromParsed } from './pdfParser';
 
 (async () => {
     const pdfPath = path.join(__dirname, 'book.pdf');
     const outputDir = path.join(__dirname, 'output');
-    const result = await parsePDF(pdfPath, outputDir);
 
-    // Ensure output directories exist
+    console.log(`OutputDir: ${outputDir}`);
+    if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+    }
+
     const imagesDir = path.join(outputDir, 'images');
-    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
-    if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir);
+    console.log(`ImagesDir: ${imagesDir}`);
 
-    // Save text and highlights as JSON
+    if (!fs.existsSync(imagesDir)) {
+        fs.mkdirSync(imagesDir, { recursive: true });
+    }
+
+    const result = await parsePDF(pdfPath, imagesDir);
+
     const textData = result.pages.map(page => ({
         page: page.page,
         textItems: page.textItems,
         highlights: page.highlights,
+        images: page.images, // Include images in JSON output
     }));
+
     fs.writeFileSync(
         path.join(outputDir, 'text.json'),
         JSON.stringify({ metadata: result.metadata, pages: textData }, null, 2),
     );
 
-    // Images are already saved by parsePDF
-    console.log('Extraction complete. Text and images saved to output/.');
+    // Generate HTML output
+    const html = generateHtmlFromParsed(result); // No imageBaseUrl argument needed
+    fs.writeFileSync(path.join(outputDir, 'index.html'), html);
+
+    console.log('Extraction complete. Text, images, and HTML saved to output/.');
 })();
