@@ -47,6 +47,7 @@ export interface PositionedTextItem extends TextItem {
     y?: number;
     x?: number;
     newParagraph?: boolean;
+    offsetX?: number;
 }
 
 async function importEsmModule<T>(name: string): Promise<T> {
@@ -543,43 +544,22 @@ export const parsePDF = async (
 // Generate HTML from parsed PDF data
 export function generateHtmlFromParsed(parsed: ParsedPDF): string {
     let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${parsed.metadata.title || 'PDF Extract'}</title><style>
-        body { font-family: sans-serif; line-height: 1.6; }
-        .img-block { margin: 1em 0; }
-        .text-block { margin: 0.2em 0; display: inline; }
-        .page { margin-bottom: 2em; }
+        body { font-family: sans-serif; background: #eee; }
+        .page { background: #fff; margin: 2em auto; box-shadow: 0 0 8px #aaa; width: 800px; padding: 2em; }
+        .text-block { display: block; margin-bottom: 0.2em; white-space: pre-wrap; }
     </style></head><body>`;
     parsed.pages.forEach(page => {
-        html += `<div class="page"><h2>Page ${page.page}</h2>`;
-        // Merge and sort text and images by y (descending, PDF origin is bottom-left)
-        const items: Array<
-            | { type: 'text'; y: number; x: number; item: PositionedTextItem }
-            | { type: 'image'; y: number; x: number; item: ExtractedImage }
-        > = [];
-        (page.textItems as PositionedTextItem[]).forEach(ti => {
-            items.push({ type: 'text', y: ti.y ?? 0, x: ti.x ?? 0, item: ti });
-        });
-        page.images.forEach(img => {
-            items.push({ type: 'image', y: img.y ?? 0, x: img.x ?? 0, item: img });
-        });
-        items.sort((a, b) => b.y - a.y || a.x - b.x); // y descending, then x ascending
-        items.forEach(entry => {
-            if (entry.type === 'text') {
-                const ti = entry.item;
-                // Add <br> for new lines
-                if (ti.newLine) html += '<br/>';
-                const styleParts = [];
-                if (ti.fontSize && ti.fontSize !== 14) {
-                    styleParts.push(`font-size:${ti.fontSize}px`);
-                }
-                if (ti.color && ti.color !== '#222') {
-                    styleParts.push(`color:${ti.color}`);
-                }
-                const styleAttr = styleParts.length ? ` style="${styleParts.join(';')}"` : '';
-                html += `<span class="text-block"${styleAttr}>${ti.text}</span> `;
-            } else if (entry.type === 'image') {
-                const img = entry.item;
-                html += `<div class="img-block"><img src="images/${img.filename}" width="${img.width || ''}" height="${img.height || ''}"/></div>`;
+        html += `<div class="page">`;
+        (page.textItems as PositionedTextItem[]).forEach((ti, idx) => {
+            const styleParts = [
+                ti.offsetX ? `margin-left:${ti.offsetX}px` : '',
+                ti.fontSize ? `font-size:${ti.fontSize}px` : '',
+                ti.color ? `color:${ti.color}` : '',
+            ].filter(Boolean);
+            if (ti.newParagraph && idx !== 0) {
+                html += '<br/>';
             }
+            html += `<span class="text-block" style="${styleParts.join(';')}">${ti.text}</span>`;
         });
         html += `</div>`;
     });
