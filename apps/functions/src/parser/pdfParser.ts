@@ -167,7 +167,10 @@ function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextI
         x: number;
         text: string;
         fontSize?: number;
-        hasEOL?: boolean;
+        minX: number;
+        maxX: number;
+        height: number;
+        width: number;
     }[] = [];
     for (const [yKey, items] of Array.from(yGroups.entries())) {
         // Sort by x
@@ -191,9 +194,7 @@ function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextI
                 const overlap = Math.max(0, Math.min(end1, end2) - Math.max(x1, x2));
                 const minWidth = Math.min(w1, w2);
                 if (overlap > 0.5 * minWidth) {
-                    // Prefer longer text, or first occurrence if equal
                     if ((item.str?.length || 0) > (kept.str?.length || 0)) {
-                        // Replace kept with item
                         const idx = nonOverlapping.indexOf(kept);
                         if (idx !== -1) nonOverlapping[idx] = item;
                     }
@@ -208,52 +209,88 @@ function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextI
         // Now merge non-overlapping items into a line
         let lineText = '';
         let fontSize = undefined;
-        let hasEOL = false;
         let lastX = undefined;
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let maxHeight = 0;
+        let totalWidth = 0;
         for (const item of nonOverlapping) {
             const x = item.transform ? item.transform[4] : 0;
+            const w = item.width || 0;
             if (lastX !== undefined) {
-                // Add space if gap is significant
                 const gap = x - lastX;
                 const spaceThreshold = item.fontSize ? Math.max(item.fontSize * 0.5, 2.5) : 2.5;
                 if (gap > spaceThreshold) lineText += ' ';
             }
             lineText += item.str;
             if (item.fontSize && !fontSize) fontSize = item.fontSize;
-            if (item.hasEOL) hasEOL = true;
-            lastX = x + (item.width || 0);
+            lastX = x + w;
+            if (x < minX) minX = x;
+            if (x + w > maxX) maxX = x + w;
+            if (item.height && item.height > maxHeight) maxHeight = item.height;
+            totalWidth += w;
         }
+        if (minX === Infinity) minX = 0;
+        if (maxX === -Infinity) maxX = 0;
         lines.push({
             y: parseFloat(yKey.toFixed(4)),
-            x: lastX,
+            x: minX,
             text: lineText,
             fontSize,
-            hasEOL,
+            minX,
+            maxX,
+            height: maxHeight,
+            width: totalWidth,
         });
     }
 
-    // --- Зміст: приєднувати номери сторінок до попереднього рядка, якщо це лише число ---
+    // --- Merge lines into paragraphs, detect newLine using y, height, and x position ---
     const mergedLines: {
         y: number;
         x: number;
         text: string;
         fontSize?: number;
-        hasEOL?: boolean;
+        minX: number;
+        maxX: number;
+        height: number;
+        width: number;
+        newLine?: boolean;
     }[] = [];
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (/^\d+$/.test(line.text.trim()) && mergedLines.length > 0) {
-            mergedLines[mergedLines.length - 1].text += ' ' + line.text.trim();
+        const prevLine = i > 0 ? lines[i - 1] : null;
+        let isNewLine = false;
+        if (prevLine) {
+            // If y difference is greater than half the average height, or x jumps left, treat as new line
+            const avgHeight = (prevLine.height + line.height) / 2 || 1;
+            const yGap = Math.abs(line.y - prevLine.y);
+            if (yGap > 0.5 * avgHeight || line.x < prevLine.x - 2) isNewLine = true;
+        }
+        mergedLines.push({ ...line, newLine: isNewLine });
+    }
+
+    // --- Зміст: приєднувати номери сторінок до попереднього рядка, якщо це лише число ---
+    const finalLines: {
+        y: number;
+        x: number;
+        text: string;
+        fontSize?: number;
+        newLine?: boolean;
+    }[] = [];
+    for (let i = 0; i < mergedLines.length; i++) {
+        const line = mergedLines[i];
+        if (/^\d+$/.test(line.text.trim()) && finalLines.length > 0) {
+            finalLines[finalLines.length - 1].text += ' ' + line.text.trim();
             // If the merged line hadEOL, preserve it
-            if (line.hasEOL) mergedLines[mergedLines.length - 1].hasEOL = true;
+            if (line.newLine) finalLines[finalLines.length - 1].newLine = true;
         } else {
-            mergedLines.push(line);
+            finalLines.push(line);
         }
     }
 
     // Calculate median x and y gap for heuristics
-    const xVals = mergedLines.map(l => l.x).sort((a, b) => a - b);
-    const yGaps = mergedLines.slice(1).map((l, i) => Math.abs(l.y - mergedLines[i].y));
+    const xVals = finalLines.map(l => l.x).sort((a, b) => a - b);
+    const yGaps = finalLines.slice(1).map((l, i) => Math.abs(l.y - finalLines[i].y));
     const median = (arr: number[]) => (arr.length ? arr[Math.floor(arr.length / 2)] : 0);
     const medianX = median(xVals);
     const medianYGap = median(yGaps);
@@ -266,12 +303,12 @@ function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextI
         fontSize?: number;
         newLine?: boolean;
     }[] = [];
-    for (let i = 0; i < mergedLines.length; i++) {
-        const line = mergedLines[i];
-        const prevLine = i > 0 ? mergedLines[i - 1] : null;
+    for (let i = 0; i < finalLines.length; i++) {
+        const line = finalLines[i];
+        const prevLine = i > 0 ? finalLines[i - 1] : null;
         const yGap = prevLine ? Math.abs(line.y - prevLine.y) : 0;
         // Mark newLine if previous line hadEOL or y-gap is large
-        const isNewLine = (prevLine && prevLine.hasEOL) || (prevLine && yGap > 1.2 * medianYGap);
+        const isNewLine = (prevLine && prevLine.newLine) || (prevLine && yGap > 1.2 * medianYGap);
         linesWithBreaks.push({ ...line, newLine: !!isNewLine });
     }
 
