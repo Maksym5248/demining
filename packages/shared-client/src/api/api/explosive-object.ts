@@ -184,9 +184,6 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
 
-        const all = await this.dbLocal.explosiveObject.select();
-
-        console.log('[TEST] getList', { query, res, all });
         return res;
     };
 

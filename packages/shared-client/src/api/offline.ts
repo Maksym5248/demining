@@ -71,24 +71,13 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
             ...(query ?? {}),
         };
 
-        const res = await this.dbRemote.select({
+        const res = await this.dbLocal.select({
             ...q,
             where: {
                 ...(q.where ?? {}),
-                ['!=']: { isDeleted: true },
             },
             ...(query ?? {}),
         });
-
-        await Promise.all(
-            res.map(async item => {
-                if (await this.dbLocal.exist('id', item.id)) {
-                    await this.dbLocal.update(item.id, item);
-                } else {
-                    await this.dbLocal.create(item);
-                }
-            }),
-        );
 
         return res;
     }
@@ -98,40 +87,16 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
         if (!res) {
             res = await this.dbRemote.get(id);
+            !!res && (await this.dbLocal.create(res));
         }
 
-        res = await this.dbRemote.get(id);
         if (!res || !!res?.isDeleted) throw new Error('there is explosiveObject with id');
         return res;
     }
 
     async getByIds(ids: string[]): Promise<T[]> {
         const res = await this.dbLocal.getByIds(ids);
-
-        if (res.length === ids.length) {
-            return res;
-        }
-
-        const remoteData = await this.dbRemote.getByIds(ids);
-
-        try {
-            if (remoteData.length) {
-                await Promise.all(
-                    remoteData.map(async item => {
-                        if (await this.dbLocal.exist('id', item.id)) {
-                            await this.dbLocal.update(item.id, item);
-                        } else {
-                            await this.dbLocal.create(item);
-                        }
-                    }),
-                );
-                return remoteData;
-            }
-        } catch (error) {
-            Logger.error('Offline getByIds', error);
-        }
-
-        return [];
+        return res;
     }
 
     private async subscribeNewUpdates(q: IQuery | null, data: T[], callback: (data: ISubscriptionDocument<T>[]) => void) {
