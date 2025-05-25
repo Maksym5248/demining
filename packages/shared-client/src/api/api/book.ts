@@ -1,6 +1,7 @@
 import { type IBookTypeDB, type IBookDB } from 'shared-my';
 
 import { type IUpdateValue, type ICreateValue, type ISubscriptionDocument, type IQuery, type IDBRemote, type IDBLocal } from '~/common';
+import { type ILogger, type IStorage } from '~/services';
 
 import { type IBookTypeDTO, type IBookDTO } from '../dto';
 import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
@@ -15,6 +16,10 @@ export interface IBookAPI {
     syncBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
 }
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+}
 export class BookAPI implements IBookAPI {
     offline: IDBOfflineFirst<IBookDB>;
     offlineBookType: IDBOfflineFirst<IBookTypeDB>;
@@ -28,9 +33,10 @@ export class BookAPI implements IBookAPI {
             book: IDBLocal<IBookDB>;
             bookType: IDBLocal<IBookTypeDB>;
         },
+        services: IServices,
     ) {
-        this.offline = new DBOfflineFirst<IBookDB>(dbRemote.book, dbLocal.book);
-        this.offlineBookType = new DBOfflineFirst<IBookTypeDB>(dbRemote.bookType, dbLocal.bookType);
+        this.offline = new DBOfflineFirst<IBookDB>(dbRemote.book, dbLocal.book, services);
+        this.offlineBookType = new DBOfflineFirst<IBookTypeDB>(dbRemote.bookType, dbLocal.bookType, services);
     }
 
     create = async (value: ICreateValue<IBookDTO>): Promise<IBookDTO> => {

@@ -1,7 +1,7 @@
 import { type IExplosiveDB } from 'shared-my';
 
 import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument, type IDBLocal } from '~/common';
-import { type IAssetStorage } from '~/services';
+import { type ILogger, type IAssetStorage, type IStorage } from '~/services';
 
 import { type IExplosiveDTO, type IExplosiveDTOParams } from '../dto';
 import { createImage, updateImage } from '../image';
@@ -17,6 +17,11 @@ export interface IExplosiveAPI {
     sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDTO>[]) => void) => Promise<void>;
 }
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+    assetStorage: IAssetStorage;
+}
 export class ExplosiveAPI implements IExplosiveAPI {
     offline: {
         explosive: DBOfflineFirst<IExplosiveDB>;
@@ -31,12 +36,10 @@ export class ExplosiveAPI implements IExplosiveAPI {
         dbLocal: {
             explosive: IDBLocal<IExplosiveDB>;
         },
-        private services: {
-            assetStorage: IAssetStorage;
-        },
+        private services: IServices,
     ) {
         this.offline = {
-            explosive: new DBOfflineFirst<IExplosiveDB>(dbRemote.explosive, dbLocal.explosive),
+            explosive: new DBOfflineFirst<IExplosiveDB>(dbRemote.explosive, dbLocal.explosive, services),
         };
     }
 

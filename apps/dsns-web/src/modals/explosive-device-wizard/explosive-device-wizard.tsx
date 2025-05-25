@@ -81,9 +81,17 @@ const getParams = ({
 
 export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const store = useStore();
-    const wizard = useWizard({ id, mode });
 
     const { isLoading, item } = useItemStore(store.explosiveDevice, id as string);
+
+    const wizard = useWizard({
+        id,
+        mode,
+        permissions: {
+            edit: !!item?.isEditable,
+            remove: !!item?.isRemovable,
+        },
+    });
 
     const isEdit = !!id;
 

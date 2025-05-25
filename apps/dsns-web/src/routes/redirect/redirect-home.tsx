@@ -15,8 +15,12 @@ export const RedirectHome = observer(() => {
         return <Navigate to={ROUTES.HOME} state={{ from: location }} replace />;
     }
 
-    if (permissions?.dictionary.viewManagement()) {
-        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_TYPE} state={{ from: location }} replace />;
+    if (permissions?.dictionary.view()) {
+        return <Navigate to={ROUTES.EXPLOSIVE_OBJECT_LIST} state={{ from: location }} replace />;
+    }
+
+    if (permissions?.managment.view()) {
+        return <Navigate to={ROUTES.ORGANIZATIONS_LIST} state={{ from: location }} replace />;
     }
 
     return <Outlet context={context} />;

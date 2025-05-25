@@ -39,6 +39,10 @@ const create = (value: number | Date): Dayjs => {
     return res;
 };
 
+const createServerDate = (seconds: number, nanoseconds: number): Timestamp => {
+    return new timestamp(seconds, nanoseconds);
+};
+
 const isServerDate = (value: any): value is Timestamp => {
     return (
         value &&
@@ -95,6 +99,7 @@ export const dates = {
     },
     today,
     fromServerDate,
+    createServerDate,
     create,
     toDate,
     formatGenitiveMonth,

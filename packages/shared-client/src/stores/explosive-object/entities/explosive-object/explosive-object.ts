@@ -63,6 +63,7 @@ export interface IExplosiveObject extends IDataModel<IExplosiveObjectData> {
     isPending: boolean;
     isCurrentOrganization: boolean;
     isEditable: boolean;
+    isRemovable: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveObjectData>]>;
     classItemsNames: string[];
     classItemIds: string[];
@@ -177,6 +178,11 @@ export class ExplosiveObject implements IExplosiveObject {
     get isEditable() {
         const { permissions } = this.getStores()?.viewer ?? {};
         return !!permissions?.dictionary?.edit(this.data);
+    }
+
+    get isRemovable() {
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.remove(this.data);
     }
 
     get classItemIds() {

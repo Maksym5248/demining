@@ -6,5 +6,6 @@ export enum ROLES {
 
     // Ammo
     AMMO_CONTENT_ADMIN = 'AMMO_CONTENT_ADMIN',
+    AMMO_AUTHOR = 'AMMO_AUTHOR',
     AMMO_VIEWER = 'AMMO_VIEWER',
 }

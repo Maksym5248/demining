@@ -35,7 +35,7 @@ const ListItem = observer(({ item }: { item: IExplosiveObject }) => {
 });
 
 export const ExplosiveObjectListPage = observer(() => {
-    const { explosiveObject } = useStore();
+    const { explosiveObject, viewer } = useStore();
     const title = useRouteTitle();
     const search = useSearch();
 
@@ -63,7 +63,14 @@ export const ExplosiveObjectListPage = observer(() => {
             isReachedEnd={!explosiveObject.list.isMorePages}
             dataSource={explosiveObject.list.asArray}
             onLoadMore={onLoadMore}
-            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
+            header={
+                <ListHeader
+                    title={title}
+                    onSearch={onSearch}
+                    onCreate={viewer.permissions.dictionary.create() ? onCreate : undefined}
+                    {...search}
+                />
+            }
             renderItem={item => <ListItem item={item} />}
         />
     );

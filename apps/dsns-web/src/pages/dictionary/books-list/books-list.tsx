@@ -30,7 +30,7 @@ const ListItem = observer(({ item }: { item: IBook }) => {
 });
 
 export const BooksListPage = observer(() => {
-    const { book } = useStore();
+    const { book, viewer } = useStore();
     const title = useRouteTitle();
     const search = useSearch();
 
@@ -60,7 +60,14 @@ export const BooksListPage = observer(() => {
             isReachedEnd={!book.list.isMorePages}
             dataSource={book.list.asArray}
             onLoadMore={onLoadMore}
-            header={<ListHeader title={title} onSearch={onSearch} onCreate={onCreate} {...search} />}
+            header={
+                <ListHeader
+                    title={title}
+                    onSearch={onSearch}
+                    onCreate={viewer.permissions.dictionary.createManagement() ? onCreate : undefined}
+                    {...search}
+                />
+            }
             renderItem={item => <ListItem item={item} />}
         />
     );

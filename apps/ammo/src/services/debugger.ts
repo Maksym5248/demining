@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 
 import { STORAGE } from '~/constants';
 
-import { type LocalStore } from './localstore';
+import { type IStorageExtended } from './storage';
 
 const eventEmitter = new EventEmitter();
 
@@ -34,13 +34,13 @@ export class DebuggerClass implements IDebugger {
     isVisibleButton: boolean = false;
     isEnabled: boolean = false;
 
-    constructor(private localStore: LocalStore) {}
+    constructor(private storage: IStorageExtended) {}
 
     init(isEnabled: boolean) {
         this.isEnabled = isEnabled;
 
         if (this.isEnabled) {
-            this.isVisibleButton = this.localStore.getBoolean(STORAGE.DEBUGGER_VISIBLE_BUTTON) ?? false;
+            this.isVisibleButton = this.storage.getBoolean(STORAGE.DEBUGGER_VISIBLE_BUTTON) ?? false;
             this.enable();
         }
 
@@ -62,13 +62,13 @@ export class DebuggerClass implements IDebugger {
     showButton = () => {
         this.isVisibleButton = true;
         eventEmitter.emit(EVENTS.TOGGLE_VISIBLE_BUTTON, this.isVisibleButton);
-        this.localStore.set(STORAGE.DEBUGGER_VISIBLE_BUTTON, this.isVisibleButton);
+        this.storage.set(STORAGE.DEBUGGER_VISIBLE_BUTTON, this.isVisibleButton);
     };
 
     hideButton = () => {
         this.isVisibleButton = false;
         eventEmitter.emit(EVENTS.TOGGLE_VISIBLE_BUTTON, this.isVisibleButton);
-        this.localStore.set(STORAGE.DEBUGGER_VISIBLE_BUTTON, this.isVisibleButton);
+        this.storage.set(STORAGE.DEBUGGER_VISIBLE_BUTTON, this.isVisibleButton);
     };
 
     show = () => {

@@ -66,6 +66,7 @@ export interface ISubscriptionDocument<T> {
 export type ICreateData<T extends IBaseDB> = Omit<T, 'createdAt' | 'updatedAt' | 'authorId' | 'id' | 'geo'> & Partial<Pick<T, 'id'>>;
 
 export interface IDBBase<T extends IBaseDB> {
+    tableName: string;
     setTableName(tableName: string): void;
     setRootCollection(rootCollection: string): void;
     removeRootCollection(): void;
@@ -137,7 +138,7 @@ export interface IDB {
 
     batchStart(): void;
     batchCommit(): Promise<void>;
-    init(): void;
+    init(lang?: 'uk' | 'en'): void;
     drop(): void;
     setOrganizationId(id: string): void;
     removeOrganizationId(): void;

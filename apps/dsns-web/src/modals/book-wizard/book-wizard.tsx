@@ -21,9 +21,16 @@ interface Props {
 
 export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const { book, viewer, common } = useStore();
-    const wizard = useWizard({ id, mode });
 
     const currentBook = book.collection.get(id as string);
+    const wizard = useWizard({
+        id,
+        mode,
+        permissions: {
+            edit: !!currentBook?.isEditable,
+            remove: !!currentBook?.isRemovable,
+        },
+    });
 
     const isEdit = !!id;
     const isLoading = book.fetchItem.isLoading;

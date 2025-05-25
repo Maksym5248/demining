@@ -49,43 +49,53 @@ export interface IDBLocal
 export class DBLocal implements IDBLocal {
     connection: DBConnection = new DBConnection(CONFIG.DB_NAME);
 
-    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, this.connection);
-    explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, this.connection);
-    explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, this.connection);
-    explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, this.connection);
-    explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, this.connection);
-    explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, this.connection);
-    explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM, this.connection);
-    book = new DBBase<IBookDB>(TABLES.BOOK, this.connection);
+    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], this.connection);
+    explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, [], this.connection);
+    explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], this.connection);
+    explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], this.connection);
+    explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], this.connection);
+    explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, ['name'], this.connection);
+    explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM, ['name'], this.connection);
+    book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], this.connection);
 
-    bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE, this.connection);
-    country = new DBBase<ICountryDB>(TABLES.COUNTRY, this.connection);
-    explosiveDeviceType = new DBBase<IExplosiveDeviceTypeDB>(TABLES.EXPLOSIVE_DEVICE_TYPE, this.connection);
-    explosiveObjectComponent = new DBBase<IExplosiveObjectComponentDB>(TABLES.EXPLOSIVE_OBJECT_COMPONENT, this.connection);
-    material = new DBBase<IMaterialDB>(TABLES.MATERIAL, this.connection);
-    status = new DBBase<IStatusDB>(TABLES.STATUSES, this.connection);
-    rank = new DBBase<IRankDB>(TABLES.RANKS, this.connection);
+    bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE, [], this.connection);
+    country = new DBBase<ICountryDB>(TABLES.COUNTRY, [], this.connection);
+    explosiveDeviceType = new DBBase<IExplosiveDeviceTypeDB>(TABLES.EXPLOSIVE_DEVICE_TYPE, [], this.connection);
+    explosiveObjectComponent = new DBBase<IExplosiveObjectComponentDB>(TABLES.EXPLOSIVE_OBJECT_COMPONENT, [], this.connection);
+    material = new DBBase<IMaterialDB>(TABLES.MATERIAL, [], this.connection);
+    status = new DBBase<IStatusDB>(TABLES.STATUSES, [], this.connection);
+    rank = new DBBase<IRankDB>(TABLES.RANKS, [], this.connection);
 
-    init = async () => {
-        await this.connection.init();
+    init = async (lang: 'uk' | 'en') => {
+        this.setLang(lang);
 
-        await Promise.all([
-            this.explosiveObject.init(),
-            this.explosiveObjectDetails.init(),
-            this.explosiveObjectType.init(),
-            this.explosiveDevice.init(),
-            this.explosive.init(),
-            this.explosiveObjectClass.init(),
-            this.explosiveObjectClassItem.init(),
-            this.book.init(),
-            this.bookType.init(),
-            this.country.init(),
-            this.explosiveDeviceType.init(),
-            this.explosiveObjectComponent.init(),
-            this.material.init(),
-            this.status.init(),
-            this.rank.init(),
-        ]);
+        const dbs = [
+            this.explosiveObjectType,
+            this.explosiveObject,
+            this.explosiveDevice,
+            this.explosive,
+            this.explosiveObjectClass,
+            this.explosiveObjectClassItem,
+            this.book,
+            this.bookType,
+            this.country,
+            this.explosiveDeviceType,
+            this.explosiveObjectComponent,
+            this.material,
+            this.status,
+            this.rank,
+            this.explosiveObjectDetails,
+        ];
+
+        await this.connection.init(db => {
+            const names = dbs.map(db => db.tableName);
+
+            names.forEach(tableName => {
+                if (!db.objectStoreNames.contains(tableName)) {
+                    db.createObjectStore(tableName, { keyPath: 'id' });
+                }
+            });
+        });
     };
 
     async drop() {
@@ -93,22 +103,23 @@ export class DBLocal implements IDBLocal {
     }
 
     async setLang(lang: 'uk' | 'en') {
-        const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;
-        this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
+        const getCollection = (table: string) => `${table}/${TABLES_DIR.LANG}/${lang}`;
 
-        this.bookType.setTableName(getCollection(TABLES.BOOK_TYPE));
-        this.country.setTableName(getCollection(TABLES.COUNTRY));
-        this.explosiveDeviceType.setTableName(getCollection(TABLES.EXPLOSIVE_DEVICE_TYPE));
-        this.explosiveObjectComponent.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_COMPONENT));
-        this.material.setTableName(getCollection(TABLES.MATERIAL));
-        this.status.setTableName(getCollection(TABLES.STATUSES));
-
-        this.explosiveObjectType.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_TYPE));
-        this.explosiveObjectClass.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS));
-        this.explosiveObjectClassItem.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM));
-        this.explosiveObject.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT));
-        this.explosiveObjectDetails.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_DETAILS));
-        this.explosiveDevice.setTableName(getCollection(TABLES.EXPLOSIVE_DEVICE));
-        this.explosive.setTableName(getCollection(TABLES.EXPLOSIVE));
+        await Promise.all([
+            this.explosiveObjectType.setTableName(getCollection(this.explosiveObjectType.tableName)),
+            this.bookType.setTableName(getCollection(this.bookType.tableName)),
+            this.country.setTableName(getCollection(this.country.tableName)),
+            this.explosiveDeviceType.setTableName(getCollection(this.explosiveDeviceType.tableName)),
+            this.explosiveObjectComponent.setTableName(getCollection(this.explosiveObjectComponent.tableName)),
+            this.material.setTableName(getCollection(this.material.tableName)),
+            this.status.setTableName(getCollection(this.status.tableName)),
+            this.explosiveObjectType.setTableName(getCollection(this.explosiveObjectType.tableName)),
+            this.explosiveObjectClass.setTableName(getCollection(this.explosiveObjectClass.tableName)),
+            this.explosiveObjectClassItem.setTableName(getCollection(this.explosiveObjectClassItem.tableName)),
+            this.explosiveObject.setTableName(getCollection(this.explosiveObject.tableName)),
+            this.explosiveObjectDetails.setTableName(getCollection(this.explosiveObjectDetails.tableName)),
+            this.explosiveDevice.setTableName(getCollection(this.explosiveDevice.tableName)),
+            this.explosive.setTableName(getCollection(this.explosive.tableName)),
+        ]);
     }
 }

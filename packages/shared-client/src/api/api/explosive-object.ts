@@ -10,7 +10,7 @@ import {
 } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument, type IDBLocal } from '~/common';
-import { type IAssetStorage } from '~/services';
+import { type ILogger, type IAssetStorage, type IStorage } from '~/services';
 
 import {
     type IExplosiveObjectDTO,
@@ -43,6 +43,11 @@ export interface IExplosiveObjectAPI {
     ) => Promise<void>;
 }
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+    assetStorage: IAssetStorage;
+}
 export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
     offline: {
         explosiveObjectType: IDBOfflineFirst<IExplosiveObjectTypeDB>;
@@ -75,27 +80,36 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             explosiveObjectComponent: IDBLocal<IExplosiveObjectComponentDB>;
             explosive: IDBLocal<IExplosiveDB>;
         },
-        private services: {
-            assetStorage: IAssetStorage;
-        },
+        private services: IServices,
     ) {
         this.offline = {
-            explosiveObjectType: new DBOfflineFirst<IExplosiveObjectTypeDB>(dbRemote.explosiveObjectType, dbLocal.explosiveObjectType),
-            explosiveObjectClass: new DBOfflineFirst<IExplosiveObjectClassDB>(dbRemote.explosiveObjectClass, dbLocal.explosiveObjectClass),
+            explosiveObjectType: new DBOfflineFirst<IExplosiveObjectTypeDB>(
+                dbRemote.explosiveObjectType,
+                dbLocal.explosiveObjectType,
+                services,
+            ),
+            explosiveObjectClass: new DBOfflineFirst<IExplosiveObjectClassDB>(
+                dbRemote.explosiveObjectClass,
+                dbLocal.explosiveObjectClass,
+                services,
+            ),
             explosiveObjectClassItem: new DBOfflineFirst<IExplosiveObjectClassItemDB>(
                 dbRemote.explosiveObjectClassItem,
                 dbLocal.explosiveObjectClassItem,
+                services,
             ),
-            explosiveObject: new DBOfflineFirst<IExplosiveObjectDB>(dbRemote.explosiveObject, dbLocal.explosiveObject),
+            explosiveObject: new DBOfflineFirst<IExplosiveObjectDB>(dbRemote.explosiveObject, dbLocal.explosiveObject, services),
             explosiveObjectDetails: new DBOfflineFirst<IExplosiveObjectDetailsDB>(
                 dbRemote.explosiveObjectDetails,
                 dbLocal.explosiveObjectDetails,
+                services,
             ),
             explosiveObjectComponent: new DBOfflineFirst<IExplosiveObjectComponentDB>(
                 dbRemote.explosiveObjectComponent,
                 dbLocal.explosiveObjectComponent,
+                services,
             ),
-            explosive: new DBOfflineFirst<IExplosiveDB>(dbRemote.explosive, dbLocal.explosive),
+            explosive: new DBOfflineFirst<IExplosiveDB>(dbRemote.explosive, dbLocal.explosive, services),
         };
     }
 
@@ -105,12 +119,14 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
 
         this.dbRemote.batchStart();
 
-        this.dbRemote.explosiveObject.batchCreate({
+        const explosiveObject = {
             ...value,
             imageUri,
             status,
             id,
-        });
+        };
+
+        this.dbRemote.explosiveObject.batchCreate(explosiveObject);
 
         if (details) {
             this.dbRemote.explosiveObjectDetails.batchCreate({
@@ -121,6 +137,15 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
         }
 
         await this.dbRemote.batchCommit();
+
+        this.dbLocal.explosiveObject.create(explosiveObject);
+        if (details) {
+            this.dbLocal.explosiveObjectDetails.create({
+                ...(details ?? {}),
+                status,
+                id,
+            });
+        }
 
         return this.get(id);
     };
@@ -184,9 +209,6 @@ export class ExplosiveObjectAPI implements IExplosiveObjectAPI {
             ...(query ?? {}),
         });
 
-        const all = await this.dbLocal.explosiveObject.select();
-
-        console.log('[TEST] getList', { query, res, all });
         return res;
     };
 

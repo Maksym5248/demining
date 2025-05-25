@@ -1,10 +1,21 @@
 import { merge } from 'lodash';
 import { cloneDeep, type IBaseDB } from 'shared-my';
-import { type IQuery, type ICreateData, type IWhere, type IDBLocal } from 'shared-my-client';
+import {
+    type IQuery,
+    type ICreateData,
+    type IWhere,
+    type IDBLocal,
+    convertTimestamps,
+    limit,
+    order,
+    search,
+    startAfter,
+    where,
+    or,
+} from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
 import { type IDBConnection } from './db.connetion';
-import { convertTimestamps, limit, order, where } from './utils';
 
 export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     tableName: string;
@@ -12,16 +23,14 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
     constructor(
         tableName: string,
+        private searchFields: (keyof T)[],
         private db: IDBConnection,
     ) {
         this.tableName = tableName;
     }
 
-    init(): void {
-        if (!this.db.connetion.objectStoreNames.contains(this.tableName)) {
-            this.db.connetion.createObjectStore(this.tableName, { keyPath: 'id' });
-        }
-    }
+    // ERROR: Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running.
+    init(): void {}
 
     drop(): void {}
 
@@ -32,16 +41,23 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
     async select(args?: Partial<IQuery>): Promise<T[]> {
         const store = await this.transaction(this.tableName, 'readonly');
+
         const data: T[] = await new Promise((resolve, reject) => {
             const request = store.getAll();
-            request.onsuccess = () => resolve(request.result as T[]);
+            request.onsuccess = () => {
+                const result = request.result as T[];
+                resolve(result);
+            };
             request.onerror = () => reject(request.error);
         });
 
-        const convertedData = data.map(item => convertTimestamps(item)); // Convert Timestamps
-        const filtered = args?.where ? where(args, convertedData) : convertedData;
-        const ordered = args?.order ? order(args, filtered) : filtered;
-        const limited = args?.limit ? limit(args, ordered) : ordered;
+        const convertedData = data.map(item => convertTimestamps(item));
+        const filtered = args?.or ? where(args, convertedData) : convertedData;
+        const filteredOr = args?.or ? or(args, filtered) : filtered;
+        const searched = args?.search ? search(args, this.searchFields, filteredOr) : filteredOr;
+        const ordered = args?.order ? order(args, searched) : searched;
+        const startedAfter = args?.startAfter ? startAfter(args, ordered) : ordered;
+        const limited = args?.limit ? limit(args, startedAfter) : startedAfter;
 
         return limited;
     }
@@ -152,10 +168,6 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
     async setTableName(tableName: string): Promise<void> {
         this.tableName = tableName;
-
-        if (!this.db.connetion.objectStoreNames.contains(this.tableName)) {
-            this.db.connetion.createObjectStore(this.tableName, { keyPath: 'id' });
-        }
     }
 
     async setRootCollection(rootCollection: string): Promise<void> {

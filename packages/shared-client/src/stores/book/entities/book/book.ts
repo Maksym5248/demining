@@ -13,6 +13,7 @@ export interface IBook extends IDataModel<IBookData> {
     updateFields(data: Partial<IBookData>): void;
     update: IRequestModel<[IUpdateValue<IBookData>]>;
     isEditable: boolean;
+    isRemovable: boolean;
     types: IBookTypeData[];
 }
 
@@ -84,6 +85,11 @@ export class Book implements IBook {
 
     get isEditable() {
         const { permissions } = this.getStores()?.viewer ?? {};
-        return !!permissions?.dictionary?.edit(this.data);
+        return !!permissions?.dictionary?.editManagement(this.data);
+    }
+
+    get isRemovable() {
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.removeManagement(this.data);
     }
 }

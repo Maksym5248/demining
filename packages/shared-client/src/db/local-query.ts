@@ -1,7 +1,7 @@
-import { Timestamp } from '@react-native-firebase/firestore';
 import { isNull, isUndefined } from 'lodash';
-import { isArray, isObject, path } from 'shared-my';
-import { type IQuery, type IWhere, type Path, dates } from 'shared-my-client';
+import { filterByItemFields, isArray, isObject, path } from 'shared-my';
+
+import { dates, type IQuery, type Path, type IWhere } from '~/common';
 
 export const getWhere = (rules: IWhere) => {
     const filters: ((item: any) => boolean)[] = [];
@@ -130,6 +130,26 @@ export const where = <T>(args: Partial<IQuery>, data: T[]) => {
     return filteredData;
 };
 
+export const or = <T>(args: Partial<IQuery>, data: T[]) => {
+    // Get all result arrays from each or-clause
+    const resultArrays = args.or?.map(rules => where<T>({ where: rules }, data)) || [];
+    // Merge all arrays and ensure uniqueness by id (or by reference if no id)
+    const merged: T[] = [];
+    const seen = new Set<any>();
+
+    for (const arr of resultArrays) {
+        for (const item of arr) {
+            // Prefer uniqueness by 'id' if present, otherwise by object reference
+            const key = item && typeof item === 'object' && 'id' in item ? (item as any).id : item;
+            if (!seen.has(key)) {
+                seen.add(key);
+                merged.push(item);
+            }
+        }
+    }
+    return merged;
+};
+
 export const order = <T>(args: Partial<IQuery>, data: T[]) => {
     // Apply order
     if (args?.order) {
@@ -161,6 +181,14 @@ export const order = <T>(args: Partial<IQuery>, data: T[]) => {
     return data;
 };
 
+export const search = <T>(args: Partial<IQuery>, fields: (keyof T)[], data: T[]) => {
+    if (!args?.search || !fields || fields.length === 0) {
+        return data;
+    }
+
+    return filterByItemFields<T>(args.search, fields as string[], data);
+};
+
 export const limit = <T>(args: Partial<IQuery>, data: T[]) => {
     // Apply limit
     if (args?.limit) {
@@ -170,11 +198,35 @@ export const limit = <T>(args: Partial<IQuery>, data: T[]) => {
     return data;
 };
 
-// Recursively convert Firestore Timestamp-like objects back to Timestamp
+export const startAfter = <T>(args: Partial<IQuery>, data: T[]): T[] => {
+    const orderByPath = args?.order?.by;
+    const startValue = args?.startAfter;
+
+    if (!orderByPath || startValue === undefined) {
+        return data;
+    }
+
+    const index = data.findIndex(item => {
+        const itemValue = path(item, orderByPath as Path<T>);
+
+        if (dates.isServerDate(itemValue) && dates.isServerDate(startValue)) {
+            return dates.fromServerDate(itemValue).valueOf() === dates.fromServerDate(startValue).valueOf();
+        }
+
+        return itemValue === startValue;
+    });
+
+    if (index === -1) {
+        return [];
+    }
+
+    return data.slice(index + 1);
+};
+
 export const convertTimestamps = (obj: any): any => {
     if (obj && typeof obj === 'object') {
         if (obj.seconds !== undefined && obj.nanoseconds !== undefined) {
-            return new Timestamp(obj.seconds, obj.nanoseconds);
+            return dates.createServerDate(obj.seconds, obj.nanoseconds);
         }
         for (const key in obj) {
             obj[key] = convertTimestamps(obj[key]);

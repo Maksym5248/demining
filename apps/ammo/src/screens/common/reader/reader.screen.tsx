@@ -6,7 +6,7 @@ import Pdf from 'react-native-pdf';
 
 import { STORAGE } from '~/constants';
 import { Header, Icon, Loading, Text, Touchable, TextInput } from '~/core';
-import { LocalStore } from '~/services';
+import { Storage } from '~/services';
 import { useStylesCommon, useTheme } from '~/styles';
 
 import { useStyles } from './reader.style';
@@ -21,10 +21,10 @@ export const ReaderScreen = observer(({ route }: IReaderScreenProps) => {
     const styles = useStylesCommon();
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState({
-        page: LocalStore.getNumber(getKey(title)) ?? 0,
+        page: Storage.getNumber(getKey(title)) ?? 0,
         numberOfPages: 0,
     });
-    const [page, setPage] = useState(LocalStore.getNumber(getKey(title)));
+    const [page, setPage] = useState(Storage.getNumber(getKey(title)));
     const [text, setText] = useState('');
     const ref = useRef<TextInputRN>(null);
 
@@ -34,7 +34,7 @@ export const ReaderScreen = observer(({ route }: IReaderScreenProps) => {
     const source = { uri };
 
     useEffect(() => {
-        LocalStore.set(getKey(title), currentPage.page);
+        Storage.set(getKey(title), currentPage.page);
     }, [currentPage.page]);
 
     const onPageChanged = (page: number, numberOfPages: number) => {
@@ -72,7 +72,7 @@ export const ReaderScreen = observer(({ route }: IReaderScreenProps) => {
 
     const onSubmitEditing = () => {
         setPage(Number(text));
-        LocalStore.set(getKey(title), Number(text));
+        Storage.set(getKey(title), Number(text));
         onCloseSearch();
     };
 

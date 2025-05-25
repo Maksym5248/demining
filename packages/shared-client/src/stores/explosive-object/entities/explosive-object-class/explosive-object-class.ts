@@ -11,6 +11,7 @@ import { createExplosiveObjectClass, updateExplosiveObjectClassDTO, type IExplos
 export interface IExplosiveObjectClass extends IDataModel<IExplosiveObjectClassData> {
     displayName: string;
     isEditable: boolean;
+    isRemovable: boolean;
     update: RequestModel<[IUpdateValue<Omit<IExplosiveObjectClassData, 'typeId'>>]>;
 }
 
@@ -70,6 +71,11 @@ export class ExplosiveObjectClass implements IExplosiveObjectClass {
 
     get isEditable() {
         const { permissions } = this.getStores()?.viewer ?? {};
-        return !!permissions?.dictionary?.edit(this.data);
+        return !!permissions?.dictionary?.editManagement(this.data);
+    }
+
+    get isRemovable() {
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.removeManagement(this.data);
     }
 }

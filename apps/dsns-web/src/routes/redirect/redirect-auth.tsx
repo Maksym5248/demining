@@ -11,7 +11,7 @@ export const RedirectAuth = observer(() => {
 
     const { permissions } = store.viewer ?? {};
 
-    if (!permissions?.documents.view()) {
+    if (!permissions?.documents.view() && !permissions?.managment.view() && !permissions?.dictionary.view()) {
         return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
     }
 

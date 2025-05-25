@@ -8,7 +8,7 @@ import {
     type IDocumentChangeType,
     type ICreateData,
 } from '~/common';
-import { Logger } from '~/services';
+import { type ILogger, type IStorage } from '~/services';
 
 export interface IDBOfflineFirst<T extends IBaseDB> {
     create: (value: ICreateData<T>) => Promise<T>;
@@ -39,10 +39,15 @@ const createAdded = <T extends IBaseDB>(data: T[]): ISubscriptionDocument<T>[] =
     }));
 };
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+}
 export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
     constructor(
         private dbRemote: IDBRemote<T>,
         private dbLocal: IDBLocal<T>,
+        private services: IServices,
     ) {}
 
     create = async (value: ICreateData<T>): Promise<T> => {
@@ -71,24 +76,12 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
             ...(query ?? {}),
         };
 
-        const res = await this.dbRemote.select({
+        const res = await this.dbLocal.select({
             ...q,
             where: {
                 ...(q.where ?? {}),
-                ['!=']: { isDeleted: true },
             },
-            ...(query ?? {}),
         });
-
-        await Promise.all(
-            res.map(async item => {
-                if (await this.dbLocal.exist('id', item.id)) {
-                    await this.dbLocal.update(item.id, item);
-                } else {
-                    await this.dbLocal.create(item);
-                }
-            }),
-        );
 
         return res;
     }
@@ -98,40 +91,16 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
         if (!res) {
             res = await this.dbRemote.get(id);
+            !!res && (await this.dbLocal.create(res));
         }
 
-        res = await this.dbRemote.get(id);
         if (!res || !!res?.isDeleted) throw new Error('there is explosiveObject with id');
         return res;
     }
 
     async getByIds(ids: string[]): Promise<T[]> {
         const res = await this.dbLocal.getByIds(ids);
-
-        if (res.length === ids.length) {
-            return res;
-        }
-
-        const remoteData = await this.dbRemote.getByIds(ids);
-
-        try {
-            if (remoteData.length) {
-                await Promise.all(
-                    remoteData.map(async item => {
-                        if (await this.dbLocal.exist('id', item.id)) {
-                            await this.dbLocal.update(item.id, item);
-                        } else {
-                            await this.dbLocal.create(item);
-                        }
-                    }),
-                );
-                return remoteData;
-            }
-        } catch (error) {
-            Logger.error('Offline getByIds', error);
-        }
-
-        return [];
+        return res;
     }
 
     private async subscribeNewUpdates(q: IQuery | null, data: T[], callback: (data: ISubscriptionDocument<T>[]) => void) {
@@ -160,19 +129,21 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                 };
             });
 
-            sorted.forEach(item => {
-                if (item.type === 'added') {
-                    this.dbLocal.create(item.data);
-                } else if (item.type === 'modified') {
-                    this.dbLocal.update(item.data.id, item.data);
-                } else if (item.type === 'removed') {
-                    this.dbLocal.remove(item.data.id);
-                }
-            });
+            await Promise.all([
+                sorted.map(async item => {
+                    if (item.type === 'removed') {
+                        this.dbLocal.remove(item.data.id);
+                    } else if (await this.dbLocal.exist('id', item.data.id)) {
+                        this.dbLocal.update(item.data.id, item.data);
+                    } else {
+                        this.dbLocal.create(item.data);
+                    }
+                }),
+            ]);
 
             callback(sorted);
         } catch (error) {
-            Logger.error('Offline subscribeNewUpdates', error);
+            this.services.logger.error('Offline subscribeNewUpdates', error);
         }
     }
 
@@ -186,10 +157,19 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         };
 
         try {
-            let data = await this.dbLocal.select(q);
+            const key = `remote:${this.dbRemote.tableName}-local:${this.dbLocal.tableName}`;
+            const value = JSON.stringify(q);
+            const prevValue = this.services.storage.get(key);
+            const shouldLoadNewData = !prevValue || prevValue !== value;
 
-            if (data.length) {
-                Logger.log('Local loading data', data.length);
+            let data: T[] = [];
+
+            if (!shouldLoadNewData) {
+                data = await this.dbLocal.select(q);
+            }
+
+            if (data.length && !shouldLoadNewData) {
+                this.services.logger.log('Local loading data', data.length);
                 callback(createAdded(data));
                 this.subscribeNewUpdates(q, data, callback);
             } else {
@@ -200,16 +180,23 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                         ['!=']: { isDeleted: true },
                     },
                 });
+                this.services.storage.set(key, value);
+                this.services.logger.log('Remote loading data', data.length);
 
-                Logger.log('Remote loading data', data.length);
-
-                data.forEach(item => {
-                    this.dbLocal.create(item);
-                });
+                await Promise.all(
+                    data.map(async item => {
+                        if (await this.dbLocal.exist('id', item.id)) {
+                            this.dbLocal.update(item.id, item);
+                        } else {
+                            this.dbLocal.create(item);
+                        }
+                    }),
+                );
                 callback(createAdded(data));
             }
         } catch (e) {
-            Logger.error('Sync ', e);
+            this.services.logger.error('Sync ', e);
+
             if (retry) {
                 this.dbLocal.drop();
                 await this.sync(query, callback, false);

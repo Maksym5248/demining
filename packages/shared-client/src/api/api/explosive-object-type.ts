@@ -1,7 +1,7 @@
 import { type IExplosiveObjectTypeDB } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument, type IDBLocal } from '~/common';
-import { type IAssetStorage } from '~/services';
+import { type IStorage, type IAssetStorage, type ILogger } from '~/services';
 import { type IExplosiveObjectTypeDataParams } from '~/stores';
 
 import { type IExplosiveObjectTypeDTOParams, type IExplosiveObjectTypeDTO } from '../dto';
@@ -17,6 +17,12 @@ export interface IExplosiveObjectTypeAPI {
     sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectTypeDTO>[]) => void) => Promise<void>;
 }
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+    assetStorage: IAssetStorage;
+}
+
 export class ExplosiveObjectTypeAPI implements IExplosiveObjectTypeAPI {
     offline: IDBOfflineFirst<IExplosiveObjectTypeDB>;
     constructor(
@@ -26,11 +32,9 @@ export class ExplosiveObjectTypeAPI implements IExplosiveObjectTypeAPI {
         dbLocal: {
             explosiveObjectType: IDBLocal<IExplosiveObjectTypeDB>;
         },
-        private services: {
-            assetStorage: IAssetStorage;
-        },
+        private services: IServices,
     ) {
-        this.offline = new DBOfflineFirst<IExplosiveObjectTypeDB>(dbRemote.explosiveObjectType, dbLocal.explosiveObjectType);
+        this.offline = new DBOfflineFirst<IExplosiveObjectTypeDB>(dbRemote.explosiveObjectType, dbLocal.explosiveObjectType, services);
     }
 
     create = async ({ image, ...value }: ICreateValue<IExplosiveObjectTypeDTOParams>): Promise<IExplosiveObjectTypeDTO> => {

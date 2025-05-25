@@ -26,6 +26,7 @@ const ListItem = observer(({ item, organizationId }: { item: IUser; organization
         item.hasRole(ROLES.ROOT_ADMIN) ? 'Головний Адмін' : undefined,
         item.hasRole(ROLES.ORGANIZATION_ADMIN) ? 'Адмін організації' : undefined,
         item.hasRole(ROLES.AMMO_CONTENT_ADMIN) ? 'Адмін Контенту' : undefined,
+        item.hasRole(ROLES.AMMO_AUTHOR) ? 'Автор' : undefined,
         item.hasRole(ROLES.DEMINING_VIEWER) ? 'Demining' : undefined,
         item.hasRole(ROLES.AMMO_VIEWER) ? 'Ammo' : undefined,
     ].filter(Boolean);

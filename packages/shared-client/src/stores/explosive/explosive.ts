@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { APPROVE_STATUS } from 'shared-my';
 
 import { type IExplosiveDTO, type IExplosiveAPI } from '~/api';
 import { type ISubscriptionDocument, type ICreateValue, data } from '~/common';
@@ -18,7 +17,7 @@ import {
 import { type IMessage } from '~/services';
 
 import { type IExplosive, type IExplosiveData, createExplosive, createExplosiveDTO, Explosive } from './entities';
-import { getDictionaryFilter } from '../filter';
+import { getDictionarySync } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveStore {
@@ -101,7 +100,7 @@ export class ExplosiveStore implements IExplosiveStore {
     fetchList = new RequestModel({
         run: async (search?: string) => {
             const res = await this.api.explosive.getList({
-                ...getDictionaryFilter(this),
+                ...getDictionarySync(this),
                 search,
                 limit: this.list.pageSize,
             });
@@ -115,7 +114,7 @@ export class ExplosiveStore implements IExplosiveStore {
         run: async (search?: string) => {
             const res = await this.api.explosive.getList({
                 search,
-                ...getDictionaryFilter(this),
+                ...getDictionarySync(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -153,20 +152,13 @@ export class ExplosiveStore implements IExplosiveStore {
 
     sync = new RequestModel({
         run: async () => {
-            await this.api.explosive.sync(
-                {
-                    where: {
-                        status: APPROVE_STATUS.CONFIRMED,
-                    },
-                },
-                (values: ISubscriptionDocument<IExplosiveDTO>[]) => {
-                    const { create, update, remove } = data.sortByType<IExplosiveDTO, IExplosiveData>(values, createExplosive);
+            await this.api.explosive.sync(getDictionarySync(this), (values: ISubscriptionDocument<IExplosiveDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveDTO, IExplosiveData>(values, createExplosive);
 
-                    this.list.push(create);
-                    this.collection.update(update);
-                    this.collection.remove(remove);
-                },
-            );
+                this.list.push(create);
+                this.collection.update(update);
+                this.collection.remove(remove);
+            });
         },
     });
 }

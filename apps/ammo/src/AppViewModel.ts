@@ -7,7 +7,7 @@ import { type ViewModel } from '~/types';
 import { CONFIG } from './config';
 import { PERMISSIONS, STORAGE } from './constants';
 import { Localization } from './localization';
-import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, LocalStore, NetInfo, Permissions } from './services';
+import { Analytics, AppState, Auth, BookCache, Crashlytics, Debugger, ImageChahe, Storage, NetInfo, Permissions } from './services';
 import { ThemeManager } from './styles';
 import { type IUpdaterModel, UpdaterModel } from './UpdaterModel';
 import { Device } from './utils';
@@ -28,9 +28,9 @@ export class AppViewModel implements IAppViewModel {
     }
 
     initSession = () => {
-        const currentNumber = LocalStore.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
+        const currentNumber = Storage.getNumber(STORAGE.SESSION_NUMBER) ?? 0;
         const newSessionNumber = currentNumber + 1;
-        LocalStore.set(STORAGE.SESSION_NUMBER, newSessionNumber);
+        Storage.set(STORAGE.SESSION_NUMBER, newSessionNumber);
         Analytics.setSession(newSessionNumber);
     };
 
@@ -40,7 +40,7 @@ export class AppViewModel implements IAppViewModel {
 
         Logger.setLevel(LogLevel.Debug);
         Logger.log('VERSION: ', Device.appInfo);
-        Logger.log('SESSION: ', LocalStore.getNumber(STORAGE.SESSION_NUMBER));
+        Logger.log('SESSION: ', Storage.getNumber(STORAGE.SESSION_NUMBER));
         Logger.log('LOCALE: ', Localization.data.locale);
         Logger.log('USER ID: ', Auth.uuid());
         Logger.log('PERMISSIONS.PHOTO_LIBRARY: ', Permissions.getStatus(PERMISSIONS.PHOTO_LIBRARY));

@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { APPROVE_STATUS } from 'shared-my';
 
 import { type IBookDTO, type IBookAPI, type IBookTypeDTO } from '~/api';
 import { type ICreateValue, type ISubscriptionDocument, data, dates } from '~/common';
@@ -17,6 +16,7 @@ import {
     type IBookType,
     BookType,
 } from './entities';
+import { getDictionarySync } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IBookStore {
@@ -108,6 +108,7 @@ export class BookStore implements IBookStore {
         run: async (search?: string) => {
             const res = await this.api.book.getList({
                 search,
+                ...getDictionarySync(this),
                 limit: this.list.pageSize,
             });
 
@@ -121,6 +122,7 @@ export class BookStore implements IBookStore {
             const res = await this.api.book.getList({
                 search,
                 limit: this.list.pageSize,
+                ...getDictionarySync(this),
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
 
@@ -130,20 +132,13 @@ export class BookStore implements IBookStore {
 
     sync = new RequestModel({
         run: async () => {
-            await this.api.book.sync(
-                {
-                    where: {
-                        status: APPROVE_STATUS.CONFIRMED,
-                    },
-                },
-                (values: ISubscriptionDocument<IBookDTO>[]) => {
-                    const { create, update, remove } = data.sortByType<IBookDTO, IBookData>(values, createBook);
+            await this.api.book.sync(getDictionarySync(this), (values: ISubscriptionDocument<IBookDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IBookDTO, IBookData>(values, createBook);
 
-                    this.list.push(create);
-                    this.collection.update(update);
-                    this.collection.remove(remove);
-                },
-            );
+                this.list.push(create);
+                this.collection.update(update);
+                this.collection.remove(remove);
+            });
         },
     });
 

@@ -121,7 +121,6 @@ export class RootStore implements IRootStore {
             crashlytics: Crashlytics,
             logger: Logger,
             message: Message,
-            localization: Location,
         };
     }
 
@@ -176,6 +175,8 @@ export class RootStore implements IRootStore {
                 this.services.analytics.setUserId(null);
                 this.viewer.removeUser();
             }
+
+            await this.sync();
         } catch (e) {
             this.services.logger.error(e);
             this.services.message.error('Bиникла помилка');
@@ -208,13 +209,11 @@ export class RootStore implements IRootStore {
         initializeApp(FIREBASE_CONFIG);
 
         try {
-            await Api.init();
+            await this.api.init('uk');
 
             this.services.analytics.init();
             this.services.crashlytics.init();
-            this.api.setLang('uk');
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
-            await this.sync();
         } catch (e) {
             this.services.crashlytics.error('Init', e);
         }

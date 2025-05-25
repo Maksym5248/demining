@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS } from 'shared-my';
+import { EXPLOSIVE_OBJECT_COMPONENT } from 'shared-my';
 
 import {
     type IExplosiveObjectTypeAPI,
@@ -44,7 +44,7 @@ import { ExplosiveObjectTypeStore, type IExplosiveObjectTypeStore } from './expl
 import { SumExplosiveObjectActions } from './sum-explosive-object-actions';
 import { type ICommonStore } from '../common';
 import { createExplosive, type IExplosiveStore } from '../explosive';
-import { getDictionaryFilter } from '../filter';
+import { getDictionaryFilter, getDictionarySync } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 interface IApi {
@@ -209,7 +209,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
             const res = await this.api.explosiveObject.getList({
                 search,
                 limit: this.list.pageSize,
-                ...getDictionaryFilter(this),
+                ...getDictionarySync(this),
             });
 
             this.list.set(res.map(createExplosiveObject));
@@ -221,7 +221,7 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveObject.getList({
                 search,
-                ...getDictionaryFilter(this),
+                ...getDictionarySync(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -338,43 +338,32 @@ export class ExplosiveObjectStore implements IExplosiveObjectStore {
 
     sync = new RequestModel({
         run: async () => {
-            await this.api.explosiveObject.sync(
-                {
-                    where: {
-                        status: APPROVE_STATUS.CONFIRMED,
-                    },
-                },
-                (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
-                    const create: IExplosiveObjectData[] = [];
-                    const update: IExplosiveObjectData[] = [];
-                    const remove: string[] = [];
+            await this.api.explosiveObject.sync(getDictionarySync(this), (values: ISubscriptionDocument<IExplosiveObjectDTO>[]) => {
+                const create: IExplosiveObjectData[] = [];
+                const update: IExplosiveObjectData[] = [];
+                const remove: string[] = [];
 
-                    values.forEach(value => {
-                        if (value.type === 'removed') {
-                            remove.push(value.data.id);
-                        } else if (value.type === 'added') {
-                            create.push(createExplosiveObject(value.data));
-                        } else if (value.type === 'modified') {
-                            update.push(createExplosiveObject(value.data));
-                        }
-                    });
+                values.forEach(value => {
+                    if (value.type === 'removed') {
+                        remove.push(value.data.id);
+                    } else if (value.type === 'added') {
+                        create.push(createExplosiveObject(value.data));
+                    } else if (value.type === 'modified') {
+                        update.push(createExplosiveObject(value.data));
+                    }
+                });
 
-                    this.list.push(create);
-                    this.collection.update(update);
-                    this.collection.remove(remove);
-                },
-            );
+                this.list.push(create);
+                this.collection.update(update);
+                this.collection.remove(remove);
+            });
         },
     });
 
     syncDetails = new RequestModel({
         run: async () => {
             await this.api.explosiveObject.syncDetails(
-                {
-                    where: {
-                        status: APPROVE_STATUS.CONFIRMED,
-                    },
-                },
+                getDictionarySync(this),
                 (values: ISubscriptionDocument<IExplosiveObjectDetailsDTO>[]) => {
                     const create: IExplosiveObjectDetailsData[] = [];
                     const update: IExplosiveObjectDetailsData[] = [];

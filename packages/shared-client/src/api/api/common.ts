@@ -1,6 +1,7 @@
 import { type APPS, type IAppConfigDB, type ICountryDB, type IMaterialDB, type IStatusDB } from 'shared-my';
 
 import { type IQuery, type IDBRemote, type IDBLocal, type ISubscriptionDocument } from '~/common';
+import { type ILogger, type IStorage } from '~/services';
 
 import { type IAppConfigDTO, type ICountryDTO } from '../dto';
 import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
@@ -12,6 +13,10 @@ export interface ICommonAPI {
     syncStatus: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IStatusDB>[]) => void) => Promise<void>;
 }
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+}
 export class CommonAPI implements ICommonAPI {
     offlineCountry: IDBOfflineFirst<ICountryDB>;
     offlineMaterial: IDBOfflineFirst<IMaterialDB>;
@@ -29,10 +34,11 @@ export class CommonAPI implements ICommonAPI {
             material: IDBLocal<IMaterialDB>;
             status: IDBLocal<IStatusDB>;
         },
+        services: IServices,
     ) {
-        this.offlineCountry = new DBOfflineFirst<ICountryDB>(dbRemote.country, dbLocal.country);
-        this.offlineMaterial = new DBOfflineFirst<IMaterialDB>(dbRemote.material, dbLocal.material);
-        this.offlineStatus = new DBOfflineFirst<IStatusDB>(dbRemote.status, dbLocal.status);
+        this.offlineCountry = new DBOfflineFirst<ICountryDB>(dbRemote.country, dbLocal.country, services);
+        this.offlineMaterial = new DBOfflineFirst<IMaterialDB>(dbRemote.material, dbLocal.material, services);
+        this.offlineStatus = new DBOfflineFirst<IStatusDB>(dbRemote.status, dbLocal.status, services);
     }
 
     async getAppConfig(name: APPS): Promise<IAppConfigDTO> {
