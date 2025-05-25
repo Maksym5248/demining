@@ -129,15 +129,17 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                 };
             });
 
-            sorted.forEach(item => {
-                if (item.type === 'added') {
-                    this.dbLocal.create(item.data);
-                } else if (item.type === 'modified') {
-                    this.dbLocal.update(item.data.id, item.data);
-                } else if (item.type === 'removed') {
-                    this.dbLocal.remove(item.data.id);
-                }
-            });
+            await Promise.all([
+                sorted.map(async item => {
+                    if (item.type === 'removed') {
+                        this.dbLocal.remove(item.data.id);
+                    } else if (await this.dbLocal.exist('id', item.data.id)) {
+                        this.dbLocal.update(item.data.id, item.data);
+                    } else {
+                        this.dbLocal.create(item.data);
+                    }
+                }),
+            ]);
 
             callback(sorted);
         } catch (error) {
