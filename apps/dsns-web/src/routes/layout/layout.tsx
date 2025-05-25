@@ -43,7 +43,7 @@ export const Layout = observer(() => {
 
     const menuManagment = useMemo(() => {
         const arr = [
-            ...(permissions?.managment.view()
+            ...(permissions?.managment.viewManagment()
                 ? [
                       {
                           key: ROUTES.ORGANIZATIONS_LIST,
@@ -72,7 +72,7 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [permissions?.managment.view(), permissions?.managment.viewOrganization(), user?.data.organization?.id]);
+    }, [permissions?.managment.view(), user?.data.organization?.id]);
 
     const menuDocuments = useMemo(() => {
         const arr = [
@@ -219,12 +219,18 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            ...(permissions?.managment.view() || permissions?.managment.viewOrganization()
+            ...(permissions?.managment.view()
                 ? [
                       {
                           key: SECTION.MANAGMENT,
                           icon: <Icon.BankOutlined style={{ marginLeft: 10 }} />,
-                          onClick: () => navigate(ROUTES.MEMBERS_LIST.replace(':organizationId', user?.data.organization?.id ?? '')),
+                          onClick: () => {
+                              if (permissions?.managment.viewManagment()) {
+                                  navigate(ROUTES.ORGANIZATIONS_LIST);
+                              } else {
+                                  navigate(ROUTES.MEMBERS_LIST.replace(':organizationId', user?.data.organization?.id ?? ''));
+                              }
+                          },
                       },
                   ]
                 : []),
@@ -241,7 +247,12 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [permissions?.managment.view(), permissions?.documents.view()]);
+    }, [
+        permissions?.managment.view(),
+        permissions?.dictionary.view(),
+        permissions?.documents.view(),
+        permissions?.managment.viewManagment(),
+    ]);
 
     const defaultSelectedKeys = useMemo(() => {
         const [, initialRoute] = location.pathname.split('/');
@@ -332,7 +343,7 @@ export const Layout = observer(() => {
                         <Menu
                             theme="dark"
                             defaultSelectedKeys={defaultSelectedKeys}
-                            defaultOpenKeys={[ROUTES.ORGANIZATIONS_LIST]}
+                            defaultOpenKeys={[permissions?.managment.viewManagment() ? ROUTES.ORGANIZATIONS_LIST : ROUTES.MEMBERS_LIST]}
                             mode="inline"
                             items={menuManagment}
                         />

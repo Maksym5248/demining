@@ -60,13 +60,6 @@ service cloud.firestore {
     	allow read: if true;
       allow create, update, delete: if false
     }
-        
-    match /USER/{userId} {
-      allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
-      allow create: if false;
-      allow update: if isUserSelf(userId) || isRootAdmin();
-      allow delete: if isRootAdmin();
-    }
 
     match /USER_ACCESS/{userId} {
       allow read: if isUserSelf(userId) || isRootAdmin() || isOrganizationAdmin();
@@ -90,8 +83,8 @@ service cloud.firestore {
     }
     
     match /ORGANIZATION/{organizationId} {
-      allow read: if isMember(organizationId);
-      allow update: if isMember(organizationId) && isOrganizationAdmin();
+      allow read: if isRootAdmin() || isMember(organizationId);
+      allow update: if isRootAdmin() || isMember(organizationId) && isOrganizationAdmin();
       allow read, create, update, delete: if isRootAdmin();
     }
     
@@ -224,8 +217,8 @@ service cloud.firestore {
       return request.auth.token.AMMO_AUTHOR;
     }
     
-    function isAuthor(){ // Changed: removed collection and id parameters
-      return resource.data.authorId == request.auth.uid; // Changed: uses resource.data
+    function isAuthor(){
+      return resource.data.authorId == request.auth.uid;
     }
 
     function isMember(organizationId) {
@@ -247,11 +240,6 @@ service cloud.firestore {
     function isSameOrganization() {
       return request.auth.token.organizationId == resource.data.organizationId;
     }
-
-    // function isMemberOrganization(userId) {
-    //   let organizationId = doc("MEMBER", userId).data.organizationId;
-    //   return organizationId == request.auth.token.organizationId;
-    // }
     
     function hasOnly(keys) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);

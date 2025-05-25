@@ -15,9 +15,7 @@ export interface IPermission {
     remove: (params?: Params) => boolean;
 }
 
-export interface IPermissionDemining extends IPermission {
-    viewManagement: () => boolean;
-}
+export interface IPermissionDemining extends IPermission {}
 export interface IPermissionAmmo extends IPermission {
     viewManagement: (params?: Params) => boolean;
     createManagement: (params?: Params) => boolean;
@@ -27,6 +25,7 @@ export interface IPermissionAmmo extends IPermission {
 }
 
 export interface IPermissionManagment extends IPermission {
+    viewManagment: () => boolean;
     viewOrganization: () => boolean;
     editRoles: (params?: Params) => boolean;
 }
@@ -86,7 +85,6 @@ export class Permissions implements IPermissions {
     get documents() {
         return {
             view: () => this.hasRole(ROLES.DEMINING_VIEWER) && this.isAutorized(),
-            viewManagement: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
             create: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
             edit: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
             remove: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
@@ -95,8 +93,9 @@ export class Permissions implements IPermissions {
 
     get managment() {
         return {
-            view: () => this.hasRole(ROLES.ROOT_ADMIN),
             viewOrganization: () => this.hasRole(ROLES.ORGANIZATION_ADMIN) && !!this.isMember(),
+            viewManagment: () => this.hasRole(ROLES.ROOT_ADMIN),
+            view: () => this.hasRole(ROLES.ROOT_ADMIN) || (this.hasRole(ROLES.ORGANIZATION_ADMIN) && !!this.isMember()),
             create: () => this.hasRole(ROLES.ROOT_ADMIN),
             edit: () => this.hasRole(ROLES.ROOT_ADMIN),
             editRoles: () => this.hasRole(ROLES.ROOT_ADMIN),
