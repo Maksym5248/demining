@@ -10,6 +10,9 @@ import {
 } from '~/common';
 import { Logger } from '~/services';
 
+// TODO: integrate search field
+// create chache just for one query, if query another fetch data from server
+// ifx bug
 export interface IDBOfflineFirst<T extends IBaseDB> {
     create: (value: ICreateData<T>) => Promise<T>;
     update: (id: string, value: Partial<T>) => Promise<T>;

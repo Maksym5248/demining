@@ -4,7 +4,7 @@ import { type IQuery, type ICreateData, type IWhere, type IDBLocal } from 'share
 import { v4 as uuid } from 'uuid';
 
 import { type IDBConnection } from './db.connetion';
-import { convertTimestamps, limit, order, where } from './utils';
+import { convertTimestamps, limit, order, startAfter, where } from './utils';
 
 export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     tableName: string;
@@ -39,10 +39,11 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
             request.onerror = () => reject(request.error);
         });
 
-        const convertedData = data.map(item => convertTimestamps(item)); // Convert Timestamps
+        const convertedData = data.map(item => convertTimestamps(item));
         const filtered = args?.where ? where(args, convertedData) : convertedData;
         const ordered = args?.order ? order(args, filtered) : filtered;
-        const limited = args?.limit ? limit(args, ordered) : ordered;
+        const startedAfter = args?.startAfter ? startAfter(args, ordered) : ordered;
+        const limited = args?.limit ? limit(args, startedAfter) : startedAfter;
 
         return limited;
     }

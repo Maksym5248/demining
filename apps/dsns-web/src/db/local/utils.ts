@@ -170,6 +170,31 @@ export const limit = <T>(args: Partial<IQuery>, data: T[]) => {
     return data;
 };
 
+export const startAfter = <T>(args: Partial<IQuery>, data: T[]): T[] => {
+    const orderByPath = args?.order?.by as Path<T> | undefined;
+    const startValue = args?.startAfter;
+
+    if (!orderByPath || startValue === undefined) {
+        return data;
+    }
+
+    const index = data.findIndex(item => {
+        const itemValue = path(item, orderByPath); // Use path utility to get the value
+
+        if (dates.isServerDate(itemValue) && dates.isServerDate(startValue)) {
+            return dates.fromServerDate(itemValue).valueOf() === dates.fromServerDate(startValue).valueOf();
+        }
+
+        return itemValue === startValue;
+    });
+
+    if (index === -1) {
+        return [];
+    }
+
+    return data.slice(index + 1);
+};
+
 export const convertTimestamps = (obj: any): any => {
     if (obj && typeof obj === 'object') {
         if (obj.seconds !== undefined && obj.nanoseconds !== undefined) {
