@@ -11,6 +11,7 @@ import {
     search,
     startAfter,
     where,
+    or,
 } from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
@@ -51,8 +52,9 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
         });
 
         const convertedData = data.map(item => convertTimestamps(item));
-        const filtered = args?.where ? where(args, convertedData) : convertedData;
-        const searched = args?.search ? search(args, this.searchFields, filtered) : filtered;
+        const filtered = args?.or ? where(args, convertedData) : convertedData;
+        const filteredOr = args?.or ? or(args, filtered) : filtered;
+        const searched = args?.search ? search(args, this.searchFields, filteredOr) : filteredOr;
         const ordered = args?.order ? order(args, searched) : searched;
         const startedAfter = args?.startAfter ? startAfter(args, ordered) : ordered;
         const limited = args?.limit ? limit(args, startedAfter) : startedAfter;

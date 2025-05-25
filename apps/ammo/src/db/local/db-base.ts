@@ -11,6 +11,7 @@ import {
     order,
     startAfter,
     where,
+    or,
 } from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
@@ -57,7 +58,8 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
             .filter(Boolean) as T[];
 
         const filtered = args?.where ? where(args, data) : data;
-        const ordered = args?.order ? order(args, filtered) : data;
+        const filteredOr = args?.or ? or(args, filtered) : filtered;
+        const ordered = args?.order ? order(args, filteredOr) : filteredOr;
         const startedAfter = args?.startAfter ? startAfter(args, ordered) : ordered;
         const limited = args?.limit ? limit(args, startedAfter) : startedAfter;
 

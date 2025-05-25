@@ -130,6 +130,26 @@ export const where = <T>(args: Partial<IQuery>, data: T[]) => {
     return filteredData;
 };
 
+export const or = <T>(args: Partial<IQuery>, data: T[]) => {
+    // Get all result arrays from each or-clause
+    const resultArrays = args.or?.map(rules => where<T>({ where: rules }, data)) || [];
+    // Merge all arrays and ensure uniqueness by id (or by reference if no id)
+    const merged: T[] = [];
+    const seen = new Set<any>();
+
+    for (const arr of resultArrays) {
+        for (const item of arr) {
+            // Prefer uniqueness by 'id' if present, otherwise by object reference
+            const key = item && typeof item === 'object' && 'id' in item ? (item as any).id : item;
+            if (!seen.has(key)) {
+                seen.add(key);
+                merged.push(item);
+            }
+        }
+    }
+    return merged;
+};
+
 export const order = <T>(args: Partial<IQuery>, data: T[]) => {
     // Apply order
     if (args?.order) {
