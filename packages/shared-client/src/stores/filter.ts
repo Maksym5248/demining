@@ -69,7 +69,6 @@ export const getDictionarySync = (self: ISelf) => {
             },
             {
                 authorId: self.getStores()?.viewer?.user?.id,
-                status: { '!=': APPROVE_STATUS.CONFIRMED },
             },
         ],
     };

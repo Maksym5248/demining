@@ -84,7 +84,7 @@ export class Permissions implements IPermissions {
 
     get documents() {
         return {
-            view: () => this.hasRole(ROLES.DEMINING_VIEWER) && this.isAutorized(),
+            view: () => this.hasRole(ROLES.DEMINING_VIEWER) && this.isAutorized() && !!this.isMember(),
             create: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
             edit: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),
             remove: () => this.hasRole(ROLES.ORGANIZATION_ADMIN),

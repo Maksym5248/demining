@@ -69,11 +69,19 @@ export class ViewerStore implements IViewerStore {
             return null;
         }
 
-        if (!!this.user.id && !this.permissions.documents.view()) {
+        if (
+            !!this.user.id &&
+            !this.permissions.dictionary.view() &&
+            !this.permissions.managment.view() &&
+            !this.permissions.documents.view()
+        ) {
             return APPROVE_STATUS.PENDING;
         }
 
-        if (!!this.user.id && !!this.permissions.documents.view()) {
+        if (
+            !!this.user.id &&
+            (this.permissions.documents.view() || this.permissions.managment.view() || this.permissions.dictionary.view())
+        ) {
             return APPROVE_STATUS.CONFIRMED;
         }
 
