@@ -121,7 +121,6 @@ export class RootStore implements IRootStore {
             crashlytics: Crashlytics,
             logger: Logger,
             message: Message,
-            localization: Location,
         };
     }
 

@@ -69,8 +69,7 @@ export class Permissions implements IPermissions {
     get dictionary() {
         return {
             view: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN) || this.hasRole(ROLES.AMMO_AUTHOR),
-            viewManagement: () => true,
-            // viewManagement: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
+            viewManagement: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
             create: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN) || this.hasRole(ROLES.AMMO_AUTHOR),
             createManagement: () => this.hasRole(ROLES.AMMO_CONTENT_ADMIN),
             edit: (params?: Params) => {
