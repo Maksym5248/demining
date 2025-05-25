@@ -49,22 +49,22 @@ export interface IDBLocal
 export class DBLocal implements IDBLocal {
     connection: DBConnection = new DBConnection(CONFIG.DB_NAME);
 
-    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, this.connection);
-    explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, this.connection);
-    explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, this.connection);
-    explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, this.connection);
-    explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, this.connection);
-    explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, this.connection);
-    explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM, this.connection);
-    book = new DBBase<IBookDB>(TABLES.BOOK, this.connection);
+    explosiveObject = new DBBase<IExplosiveObjectDB>(TABLES.EXPLOSIVE_OBJECT, ['name'], this.connection);
+    explosiveObjectDetails = new DBBase<IExplosiveObjectDetailsDB>(TABLES.EXPLOSIVE_OBJECT_DETAILS, [], this.connection);
+    explosiveObjectType = new DBBase<IExplosiveObjectTypeDB>(TABLES.EXPLOSIVE_OBJECT_TYPE, ['name', 'fullName'], this.connection);
+    explosiveDevice = new DBBase<IExplosiveDeviceDB>(TABLES.EXPLOSIVE_DEVICE, ['name'], this.connection);
+    explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], this.connection);
+    explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS, ['name'], this.connection);
+    explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM, ['name'], this.connection);
+    book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], this.connection);
 
-    bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE, this.connection);
-    country = new DBBase<ICountryDB>(TABLES.COUNTRY, this.connection);
-    explosiveDeviceType = new DBBase<IExplosiveDeviceTypeDB>(TABLES.EXPLOSIVE_DEVICE_TYPE, this.connection);
-    explosiveObjectComponent = new DBBase<IExplosiveObjectComponentDB>(TABLES.EXPLOSIVE_OBJECT_COMPONENT, this.connection);
-    material = new DBBase<IMaterialDB>(TABLES.MATERIAL, this.connection);
-    status = new DBBase<IStatusDB>(TABLES.STATUSES, this.connection);
-    rank = new DBBase<IRankDB>(TABLES.RANKS, this.connection);
+    bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE, [], this.connection);
+    country = new DBBase<ICountryDB>(TABLES.COUNTRY, [], this.connection);
+    explosiveDeviceType = new DBBase<IExplosiveDeviceTypeDB>(TABLES.EXPLOSIVE_DEVICE_TYPE, [], this.connection);
+    explosiveObjectComponent = new DBBase<IExplosiveObjectComponentDB>(TABLES.EXPLOSIVE_OBJECT_COMPONENT, [], this.connection);
+    material = new DBBase<IMaterialDB>(TABLES.MATERIAL, [], this.connection);
+    status = new DBBase<IStatusDB>(TABLES.STATUSES, [], this.connection);
+    rank = new DBBase<IRankDB>(TABLES.RANKS, [], this.connection);
 
     init = async (lang: 'uk' | 'en') => {
         this.setLang(lang);

@@ -1,10 +1,18 @@
 import { merge } from 'lodash';
 import { MMKV } from 'react-native-mmkv';
 import { cloneDeep, type IBaseDB } from 'shared-my';
-import { type IQuery, type ICreateData, type IWhere, type IDBLocal } from 'shared-my-client';
+import {
+    type IQuery,
+    type ICreateData,
+    type IWhere,
+    type IDBLocal,
+    convertTimestamps,
+    limit,
+    order,
+    startAfter,
+    where,
+} from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
-
-import { convertTimestamps, limit, order, startAfter, where } from './utils';
 
 export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     tableName: string;

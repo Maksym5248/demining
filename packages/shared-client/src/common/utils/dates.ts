@@ -1,4 +1,4 @@
-import { type Timestamp } from '@firebase/firestore-types';
+import { Timestamp } from '@firebase/firestore-types';
 import dayjs, { type Dayjs } from 'dayjs';
 import 'dayjs/locale/uk';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -37,6 +37,10 @@ const fromServerDate = (value: Omit<Timestamp, 'toJSON'>): Dayjs => {
 const create = (value: number | Date): Dayjs => {
     const res = dayjs(value);
     return res;
+};
+
+const createServerDate = (seconds: number, nanoseconds: number): Timestamp => {
+    return new Timestamp(seconds, nanoseconds);
 };
 
 const isServerDate = (value: any): value is Timestamp => {
@@ -95,6 +99,7 @@ export const dates = {
     },
     today,
     fromServerDate,
+    createServerDate,
     create,
     toDate,
     formatGenitiveMonth,

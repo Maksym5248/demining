@@ -1,10 +1,20 @@
 import { merge } from 'lodash';
 import { cloneDeep, type IBaseDB } from 'shared-my';
-import { type IQuery, type ICreateData, type IWhere, type IDBLocal } from 'shared-my-client';
+import {
+    type IQuery,
+    type ICreateData,
+    type IWhere,
+    type IDBLocal,
+    convertTimestamps,
+    limit,
+    order,
+    search,
+    startAfter,
+    where,
+} from 'shared-my-client';
 import { v4 as uuid } from 'uuid';
 
 import { type IDBConnection } from './db.connetion';
-import { convertTimestamps, limit, order, startAfter, where } from './utils';
 
 export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
     tableName: string;
@@ -12,6 +22,7 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
     constructor(
         tableName: string,
+        private searchFields: (keyof T)[],
         private db: IDBConnection,
     ) {
         this.tableName = tableName;
@@ -41,7 +52,8 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
         const convertedData = data.map(item => convertTimestamps(item));
         const filtered = args?.where ? where(args, convertedData) : convertedData;
-        const ordered = args?.order ? order(args, filtered) : filtered;
+        const searched = args?.search ? search(args, this.searchFields, filtered) : filtered;
+        const ordered = args?.order ? order(args, searched) : searched;
         const startedAfter = args?.startAfter ? startAfter(args, ordered) : ordered;
         const limited = args?.limit ? limit(args, startedAfter) : startedAfter;
 

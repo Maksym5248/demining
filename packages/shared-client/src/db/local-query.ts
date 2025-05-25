@@ -1,7 +1,7 @@
-import { Timestamp } from '@react-native-firebase/firestore';
 import { isNull, isUndefined } from 'lodash';
-import { isArray, isObject, path } from 'shared-my';
-import { type IQuery, type IWhere, type Path, dates } from 'shared-my-client';
+import { filterByItemFields, isArray, isObject, path } from 'shared-my';
+
+import { dates, type IQuery, type Path, type IWhere } from '~/common';
 
 export const getWhere = (rules: IWhere) => {
     const filters: ((item: any) => boolean)[] = [];
@@ -161,8 +161,25 @@ export const order = <T>(args: Partial<IQuery>, data: T[]) => {
     return data;
 };
 
+export const search = <T>(args: Partial<IQuery>, fields: (keyof T)[], data: T[]) => {
+    if (!args?.search || !fields || fields.length === 0) {
+        return data;
+    }
+
+    return filterByItemFields<T>(args.search, fields as string[], data);
+};
+
+export const limit = <T>(args: Partial<IQuery>, data: T[]) => {
+    // Apply limit
+    if (args?.limit) {
+        return data.slice(0, args.limit);
+    }
+
+    return data;
+};
+
 export const startAfter = <T>(args: Partial<IQuery>, data: T[]): T[] => {
-    const orderByPath = args?.order?.by as Path<T> | undefined;
+    const orderByPath = args?.order?.by;
     const startValue = args?.startAfter;
 
     if (!orderByPath || startValue === undefined) {
@@ -170,7 +187,7 @@ export const startAfter = <T>(args: Partial<IQuery>, data: T[]): T[] => {
     }
 
     const index = data.findIndex(item => {
-        const itemValue = path(item, orderByPath); // Use path utility to get the value
+        const itemValue = path(item, orderByPath as Path<T>);
 
         if (dates.isServerDate(itemValue) && dates.isServerDate(startValue)) {
             return dates.fromServerDate(itemValue).valueOf() === dates.fromServerDate(startValue).valueOf();
@@ -186,20 +203,10 @@ export const startAfter = <T>(args: Partial<IQuery>, data: T[]): T[] => {
     return data.slice(index + 1);
 };
 
-export const limit = <T>(args: Partial<IQuery>, data: T[]) => {
-    // Apply limit
-    if (args?.limit) {
-        return data.slice(0, args.limit);
-    }
-
-    return data;
-};
-
-// Recursively convert Firestore Timestamp-like objects back to Timestamp
 export const convertTimestamps = (obj: any): any => {
     if (obj && typeof obj === 'object') {
         if (obj.seconds !== undefined && obj.nanoseconds !== undefined) {
-            return new Timestamp(obj.seconds, obj.nanoseconds);
+            return dates.createServerDate(obj.seconds, obj.nanoseconds);
         }
         for (const key in obj) {
             obj[key] = convertTimestamps(obj[key]);
