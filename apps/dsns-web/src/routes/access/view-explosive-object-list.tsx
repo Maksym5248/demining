@@ -11,7 +11,7 @@ export const ViewExplosiveObjectList = observer(() => {
 
     const { permissions } = store.viewer ?? {};
 
-    if (!permissions?.dictionary.viewManagement()) {
+    if (!permissions?.dictionary.view()) {
         return <Navigate to={ROUTES.NOT_FOUND} state={{ from: location }} replace />;
     }
 

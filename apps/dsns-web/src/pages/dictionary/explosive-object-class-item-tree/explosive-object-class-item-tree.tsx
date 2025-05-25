@@ -12,7 +12,7 @@ import { Modal } from '~/services';
 import { s } from './explosive-object-class-item-tree.styles';
 
 export const ExplosiveObjectClassItemTreePage = observer(() => {
-    const { explosiveObject } = useStore();
+    const { explosiveObject, viewer } = useStore();
     const title = useRouteTitle();
     const search = useSearch();
     const params = useParams<{ id: string }>();
@@ -108,19 +108,26 @@ export const ExplosiveObjectClassItemTreePage = observer(() => {
         return (
             <div css={s.title}>
                 <Typography.Text onClick={e => item && onOpen(e, node)}>{node?.title as string}</Typography.Text>
-                {<Icon.PlusOutlined type="danger" onClick={e => onCreate(e, node?.key as string)} />}
+                {item?.isEditable && viewer.permissions.dictionary.createManagement() && item?.data?.classId && (
+                    <Icon.PlusOutlined type="danger" onClick={e => onCreate(e, node?.key as string)} />
+                )}
             </div>
         );
     };
 
     return (
         <div css={s.container}>
-            <ListHeader title={type?.displayName ?? title} onCreate={onCreate} onSearch={onSearch} {...search} />
+            <ListHeader
+                title={type?.displayName ?? title}
+                onCreate={viewer.permissions.dictionary.createManagement() ? onCreate : undefined}
+                onSearch={onSearch}
+                {...search}
+            />
             <Tree
                 showLine
                 showIcon
                 defaultExpandedKeys={['0-0-0']}
-                onDrop={onDrop}
+                onDrop={viewer.permissions.dictionary.editManagement() ? onDrop : undefined}
                 treeData={treeData.children}
                 defaultExpandAll
                 draggable

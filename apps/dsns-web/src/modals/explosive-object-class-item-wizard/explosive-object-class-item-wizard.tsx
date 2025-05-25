@@ -24,10 +24,16 @@ interface Props {
 export const ExplosiveObjectClassItemWizardModal = observer(
     ({ id, typeId, classId, component, parentId, isVisible, hide, mode }: Props) => {
         const store = useStore();
-        const wizard = useWizard({ id, mode });
 
         const { isLoading, item } = useItemStore(store.explosiveObject.classItem, id as string);
-
+        const wizard = useWizard({
+            id,
+            mode,
+            permissions: {
+                edit: !!item?.isEditable,
+                remove: !!item?.isRemovable,
+            },
+        });
         const isEdit = !!id;
 
         const onFinishCreate = async (values: IExplosiveObjectClassItemForm) => {

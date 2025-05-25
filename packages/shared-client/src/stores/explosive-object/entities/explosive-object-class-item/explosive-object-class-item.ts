@@ -17,6 +17,7 @@ export interface IExplosiveObjectClassItem extends IDataModel<IExplosiveObjectCl
     updateFields(data: Partial<IExplosiveObjectClassItemData>): void;
     update: RequestModel<[IUpdateValue<IExplosiveObjectClassItemData>]>;
     isEditable: boolean;
+    isRemovable: boolean;
     classId: string;
 }
 
@@ -83,6 +84,11 @@ export class ExplosiveObjectClassItem implements IExplosiveObjectClassItem {
 
     get isEditable() {
         const { permissions } = this.getStores()?.viewer ?? {};
-        return !!permissions?.dictionary?.edit(this.data);
+        return !!permissions?.dictionary?.editManagement(this.data);
+    }
+
+    get isRemovable() {
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.removeManagement(this.data);
     }
 }

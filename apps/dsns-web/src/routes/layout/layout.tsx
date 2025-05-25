@@ -148,7 +148,7 @@ export const Layout = observer(() => {
 
     const menuDictionary = useMemo(() => {
         const arr = [
-            ...(permissions?.dictionary.viewManagement()
+            ...(permissions?.dictionary.view()
                 ? [
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_LIST,
@@ -170,7 +170,7 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            ...(permissions?.dictionary.edit()
+            ...(permissions?.dictionary.viewManagement()
                 ? [
                       {
                           key: ROUTES.EXPLOSIVE_OBJECT_TYPE,
@@ -196,7 +196,7 @@ export const Layout = observer(() => {
         ];
 
         return arr;
-    }, [permissions?.dictionary.edit(), permissions?.dictionary.viewManagement()]);
+    }, [permissions?.dictionary.view(), permissions?.dictionary.viewManagement()]);
 
     const menuVertical = useMemo(() => {
         const arr = [
@@ -210,7 +210,7 @@ export const Layout = observer(() => {
                       },
                   ]
                 : []),
-            ...(permissions?.dictionary.viewManagement()
+            ...(permissions?.dictionary.view()
                 ? [
                       {
                           key: SECTION.DICTIONARY,

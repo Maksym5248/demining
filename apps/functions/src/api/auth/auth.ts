@@ -41,6 +41,7 @@ const customUserClaims = async ({
             ROOT_ADMIN: !!access[ROLES.ROOT_ADMIN],
             ORGANIZATION_ADMIN: !!access[ROLES.ORGANIZATION_ADMIN],
             AMMO_CONTENT_ADMIN: !!access[ROLES.AMMO_CONTENT_ADMIN],
+            AMMO_AUTHOR: !!access[ROLES.AMMO_AUTHOR],
             AMMO_VIEWER: !!access[ROLES.AMMO_VIEWER],
             DEMINING_VIEWER: !!access[ROLES.DEMINING_VIEWER],
             organizationId: member?.organizationId ?? null,

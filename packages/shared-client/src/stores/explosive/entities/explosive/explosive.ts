@@ -14,6 +14,7 @@ export interface IExplosive extends IDataModel<IExplosiveData> {
     isCurrentOrganization: boolean;
     displayName: string;
     isEditable: boolean;
+    isRemovable: boolean;
     update: RequestModel<[IUpdateValue<IExplosiveData>]>;
     isConfirmed: boolean;
     isPending: boolean;
@@ -76,6 +77,11 @@ export class Explosive implements IExplosive {
     get isEditable() {
         const { permissions } = this.getStores()?.viewer ?? {};
         return !!permissions?.dictionary?.edit(this.data);
+    }
+
+    get isRemovable() {
+        const { permissions } = this.getStores()?.viewer ?? {};
+        return !!permissions?.dictionary?.remove(this.data);
     }
 
     update = new RequestModel({

@@ -45,6 +45,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                 access: {
                     [ROLES.ORGANIZATION_ADMIN as ROLES]: !!values.ORGANIZATION_ADMIN,
                     [ROLES.AMMO_CONTENT_ADMIN as ROLES]: !!values.AMMO_CONTENT_ADMIN,
+                    [ROLES.AMMO_AUTHOR as ROLES]: !!values.AMMO_AUTHOR,
                     [ROLES.DEMINING_VIEWER as ROLES]: !!values.DEMINING_VIEWER,
                 },
             });
@@ -86,6 +87,7 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                         id,
                         ORGANIZATION_ADMIN: !!member?.hasRole(ROLES.ORGANIZATION_ADMIN),
                         AMMO_CONTENT_ADMIN: !!member?.hasRole(ROLES.AMMO_CONTENT_ADMIN),
+                        AMMO_AUTHOR: !!member?.hasRole(ROLES.AMMO_AUTHOR),
                         DEMINING_VIEWER: !!member?.hasRole(ROLES.DEMINING_VIEWER),
                     }}>
                     <Form.Item label="Email" name="id" rules={[{ required: true, message: "Обов'язкове поле" }]}>
@@ -118,8 +120,15 @@ export const MemberWizardModal = observer(({ organizationId, id, isVisible, hide
                                 <Switch />
                             </Form.Item>
                             <Form.Item
-                                label="Автор контенту"
+                                label="Адмін контенту"
                                 name="AMMO_CONTENT_ADMIN"
+                                valuePropName="checked"
+                                rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                                <Switch />
+                            </Form.Item>
+                            <Form.Item
+                                label="Автор"
+                                name="AMMO_AUTHOR"
                                 valuePropName="checked"
                                 rules={[{ required: true, message: "Обов'язкове поле" }]}>
                                 <Switch />

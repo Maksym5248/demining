@@ -109,15 +109,15 @@ const router = createBrowserRouter([
                                     path: ROUTES.EXPLOSIVE_DEVICE_LIST,
                                     Component: ExplosiveDeviceListPage,
                                 },
+                                {
+                                    path: ROUTES.EXPLOSIVE_LIST,
+                                    Component: ExplosiveListPage,
+                                },
                             ],
                             <ViewExplosiveObjectList />,
                         ),
                         nav.withAccess(
                             [
-                                {
-                                    path: ROUTES.EXPLOSIVE_LIST,
-                                    Component: ExplosiveListPage,
-                                },
                                 {
                                     path: ROUTES.EXPLOSIVE_OBJECT_TYPE,
                                     Component: ExplosiveObjectTypesPage,

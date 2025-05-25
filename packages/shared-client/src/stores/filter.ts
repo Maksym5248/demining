@@ -10,6 +10,7 @@ interface ISelf {
                 };
             };
             user?: {
+                id: string;
                 data?: {
                     organization?: {
                         id: string;
@@ -48,7 +49,7 @@ export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_CO
                 component: component,
             },
             {
-                organizationId: self.getStores()?.viewer?.user?.data?.organization?.id,
+                authorId: self.getStores()?.viewer?.user?.id,
                 status: { '!=': APPROVE_STATUS.CONFIRMED },
                 component: component,
             },
@@ -62,8 +63,14 @@ export const getDictionarySync = (self: ISelf) => {
     }
 
     return {
-        where: {
-            status: APPROVE_STATUS.CONFIRMED,
-        },
+        or: [
+            {
+                status: APPROVE_STATUS.CONFIRMED,
+            },
+            {
+                authorId: self.getStores()?.viewer?.user?.id,
+                status: { '!=': APPROVE_STATUS.CONFIRMED },
+            },
+        ],
     };
 };

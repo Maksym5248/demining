@@ -26,16 +26,19 @@ export const v1Tov2 = (
     } as IBaseDB;
 
     const info = {
+        name: '',
+        photoUri: '',
         ...common,
-        email: prev.email,
         _search: prev?._search ?? [],
     };
 
     const access = {
         ...common,
+        email: prev.email,
         [ROLES.ROOT_ADMIN]: prev.roles.includes('ROOT_ADMIN'),
         [ROLES.ORGANIZATION_ADMIN]: prev.roles.includes('ORGANIZATION_ADMIN'),
-        [ROLES.AMMO_CONTENT_ADMIN]: prev.roles.includes('AUTHOR'),
+        [ROLES.AMMO_CONTENT_ADMIN]: prev.roles.includes('AMMO_CONTENT_ADMIN'),
+        [ROLES.AMMO_AUTHOR]: prev.roles.includes('AMMO_AUTHOR'),
         [ROLES.AMMO_VIEWER]: true,
         [ROLES.DEMINING_VIEWER]: true,
     };

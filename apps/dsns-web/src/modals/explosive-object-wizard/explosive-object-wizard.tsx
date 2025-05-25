@@ -179,9 +179,17 @@ const getParams = ({
 });
 export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const { explosiveObject, viewer, common } = useStore();
-    const wizard = useWizard({ id, mode });
 
     const currentExplosiveObject = explosiveObject.collection.get(id as string);
+
+    const wizard = useWizard({
+        id,
+        mode,
+        permissions: {
+            edit: !!currentExplosiveObject?.isEditable,
+            remove: !!currentExplosiveObject?.isRemovable,
+        },
+    });
 
     const isEdit = !!id;
     const isLoading = explosiveObject.fetchItem.isLoading;
