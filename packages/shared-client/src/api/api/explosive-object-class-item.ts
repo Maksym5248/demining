@@ -1,6 +1,7 @@
 import { type IExplosiveObjectClassItemDB } from 'shared-my';
 
 import { type ICreateValue, type IUpdateValue, type IDBRemote, type IQuery, type ISubscriptionDocument, type IDBLocal } from '~/common';
+import { type ILogger, type IStorage } from '~/services';
 
 import { type IExplosiveObjectClassItemDTO } from '../dto';
 import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
@@ -14,6 +15,10 @@ export interface IExplosiveObjectClassItemAPI {
     sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveObjectClassItemDTO>[]) => void) => Promise<void>;
 }
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+}
 export class ExplosiveObjectClassItemAPI implements IExplosiveObjectClassItemAPI {
     offline: IDBOfflineFirst<IExplosiveObjectClassItemDB>;
 
@@ -24,8 +29,13 @@ export class ExplosiveObjectClassItemAPI implements IExplosiveObjectClassItemAPI
         dbLocal: {
             explosiveObjectClassItem: IDBLocal<IExplosiveObjectClassItemDB>;
         },
+        serices: IServices,
     ) {
-        this.offline = new DBOfflineFirst<IExplosiveObjectClassItemDB>(dbRemote.explosiveObjectClassItem, dbLocal.explosiveObjectClassItem);
+        this.offline = new DBOfflineFirst<IExplosiveObjectClassItemDB>(
+            dbRemote.explosiveObjectClassItem,
+            dbLocal.explosiveObjectClassItem,
+            serices,
+        );
     }
 
     create = async (value: ICreateValue<IExplosiveObjectClassItemDTO>): Promise<IExplosiveObjectClassItemDTO> => {

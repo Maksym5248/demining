@@ -14,21 +14,23 @@ import {
 } from 'shared-my-client';
 
 import { DBRemote, DBLocal } from '~/db';
-import { AssetStorage } from '~/services';
+import { AssetStorage, Storage, Logger } from '~/services';
 
 const services = {
     assetStorage: AssetStorage,
+    storage: Storage,
+    logger: Logger,
 };
 
 export const Api = {
     explosiveObjectType: new ExplosiveObjectTypeAPI(DBRemote, DBLocal, services),
-    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote, DBLocal),
-    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote, DBLocal),
+    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote, DBLocal, services),
+    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote, DBLocal, services),
     explosiveObject: new ExplosiveObjectAPI(DBRemote, DBLocal, services),
-    explosiveDevice: new ExplosiveDeviceAPI(DBRemote, DBLocal),
+    explosiveDevice: new ExplosiveDeviceAPI(DBRemote, DBLocal, services),
     explosive: new ExplosiveAPI(DBRemote, DBLocal, services),
-    book: new BookAPI(DBRemote, DBLocal),
-    common: new CommonAPI(DBRemote, DBLocal),
+    book: new BookAPI(DBRemote, DBLocal, services),
+    common: new CommonAPI(DBRemote, DBLocal, services),
     comment: new CommentAPI(DBRemote),
     complain: new ComplainAPI(DBRemote),
     user: new UserAPI(DBRemote),

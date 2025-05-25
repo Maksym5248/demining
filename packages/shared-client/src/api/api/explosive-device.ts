@@ -1,6 +1,7 @@
 import { EXPLOSIVE_DEVICE_TYPE, type IExplosiveDeviceTypeDB, type IExplosiveDeviceActionDB, type IExplosiveDeviceDB } from 'shared-my';
 
 import { type IUpdateValue, type ICreateValue, type IQuery, type IDBRemote, type ISubscriptionDocument, type IDBLocal } from '~/common';
+import { type ILogger, type IStorage } from '~/services';
 
 import { type IExplosiveDeviceTypeDTO, type IExplosiveDeviceDTO } from '../dto';
 import { DBOfflineFirst } from '../offline';
@@ -16,6 +17,11 @@ export interface IExplosiveDeviceAPI {
     sum: (query?: IQuery) => Promise<{ explosive: number; detonator: number }>;
     sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => void) => Promise<void>;
     syncType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IExplosiveDeviceTypeDTO>[]) => void) => Promise<void>;
+}
+
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
 }
 
 export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
@@ -36,10 +42,15 @@ export class ExplosiveDeviceAPI implements IExplosiveDeviceAPI {
             explosiveDevice: IDBLocal<IExplosiveDeviceDB>;
             explosiveDeviceType: IDBLocal<IExplosiveDeviceTypeDB>;
         },
+        serices: IServices,
     ) {
         this.offline = {
-            explosiveDevice: new DBOfflineFirst<IExplosiveDeviceDB>(dbRemote.explosiveDevice, dbLocal.explosiveDevice),
-            explosiveDeviceType: new DBOfflineFirst<IExplosiveDeviceTypeDB>(dbRemote.explosiveDeviceType, dbLocal.explosiveDeviceType),
+            explosiveDevice: new DBOfflineFirst<IExplosiveDeviceDB>(dbRemote.explosiveDevice, dbLocal.explosiveDevice, serices),
+            explosiveDeviceType: new DBOfflineFirst<IExplosiveDeviceTypeDB>(
+                dbRemote.explosiveDeviceType,
+                dbLocal.explosiveDeviceType,
+                serices,
+            ),
         };
     }
 

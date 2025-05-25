@@ -8,7 +8,7 @@ import {
     type IDocumentChangeType,
     type ICreateData,
 } from '~/common';
-import { Logger } from '~/services';
+import { type ILogger, type IStorage } from '~/services';
 
 // TODO: integrate search field
 // create chache just for one query, if query another fetch data from server
@@ -42,10 +42,15 @@ const createAdded = <T extends IBaseDB>(data: T[]): ISubscriptionDocument<T>[] =
     }));
 };
 
+interface IServices {
+    logger: ILogger;
+    storage: IStorage;
+}
 export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
     constructor(
         private dbRemote: IDBRemote<T>,
         private dbLocal: IDBLocal<T>,
+        private services: IServices,
     ) {}
 
     create = async (value: ICreateData<T>): Promise<T> => {
@@ -139,7 +144,7 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
 
             callback(sorted);
         } catch (error) {
-            Logger.error('Offline subscribeNewUpdates', error);
+            this.services.logger.error('Offline subscribeNewUpdates', error);
         }
     }
 
@@ -153,10 +158,19 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         };
 
         try {
-            let data = await this.dbLocal.select(q);
+            const key = `remote:${this.dbRemote.tableName}-local:${this.dbLocal.tableName}`;
+            const value = JSON.stringify(q);
+            const prevValue = this.services.storage.get(key);
+            const shouldLoadNewData = !prevValue || prevValue !== value;
 
-            if (data.length) {
-                Logger.log('Local loading data', data.length);
+            let data: T[] = [];
+
+            if (!shouldLoadNewData) {
+                data = await this.dbLocal.select(q);
+            }
+
+            if (data.length && !shouldLoadNewData) {
+                this.services.logger.log('Local loading data', data.length);
                 callback(createAdded(data));
                 this.subscribeNewUpdates(q, data, callback);
             } else {
@@ -167,16 +181,23 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
                         ['!=']: { isDeleted: true },
                     },
                 });
+                this.services.storage.set(key, value);
+                this.services.logger.log('Remote loading data', data.length);
 
-                Logger.log('Remote loading data', data.length);
-
-                data.forEach(item => {
-                    this.dbLocal.create(item);
-                });
+                await Promise.all(
+                    data.map(async item => {
+                        if (await this.dbLocal.exist('id', item.id)) {
+                            this.dbLocal.update(item.id, item);
+                        } else {
+                            this.dbLocal.create(item);
+                        }
+                    }),
+                );
                 callback(createAdded(data));
             }
         } catch (e) {
-            Logger.error('Sync ', e);
+            this.services.logger.error('Sync ', e);
+
             if (retry) {
                 this.dbLocal.drop();
                 await this.sync(query, callback, false);

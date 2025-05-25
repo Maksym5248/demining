@@ -24,25 +24,27 @@ import {
 
 import { CONFIG } from '~/config';
 import { DBLocal, DBRemote } from '~/db';
-import { AssetStorage } from '~/services';
+import { AssetStorage, Storage, Logger } from '~/services';
 
 export const ExternalApi = new ExternalApiClass(CONFIG.GEO_APIFY_KEY, publicIpv4);
 
 const services = {
     assetStorage: AssetStorage,
+    storage: Storage,
+    logger: Logger,
 };
 
 export const Api = {
     employee: new EmployeeAPI(DBRemote),
     equipment: new EquipmentAPI(DBRemote),
     explosiveObjectType: new ExplosiveObjectTypeAPI(DBRemote, DBLocal, services),
-    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote, DBLocal),
-    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote, DBLocal),
-    book: new BookAPI(DBRemote, DBLocal),
-    common: new CommonAPI(DBRemote, DBLocal),
+    explosiveObjectClass: new ExplosiveObjectClassAPI(DBRemote, DBLocal, services),
+    explosiveObjectClassItem: new ExplosiveObjectClassItemAPI(DBRemote, DBLocal, services),
+    book: new BookAPI(DBRemote, DBLocal, services),
+    common: new CommonAPI(DBRemote, DBLocal, services),
 
     explosiveObject: new ExplosiveObjectAPI(DBRemote, DBLocal, services),
-    explosiveDevice: new ExplosiveDeviceAPI(DBRemote, DBLocal),
+    explosiveDevice: new ExplosiveDeviceAPI(DBRemote, DBLocal, services),
     explosive: new ExplosiveAPI(DBRemote, DBLocal, services),
     missionReport: new MissionReportAPI(DBRemote),
     missionRequest: new MissionRequestAPI(DBRemote),
