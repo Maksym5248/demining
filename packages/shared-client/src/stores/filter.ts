@@ -6,6 +6,7 @@ interface ISelf {
             permissions: {
                 dictionary: {
                     edit: () => boolean;
+                    viewManagement: () => boolean;
                 };
             };
             user?: {
@@ -20,7 +21,7 @@ interface ISelf {
 }
 
 export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_COMPONENT) => {
-    if (self?.getStores()?.viewer?.permissions?.dictionary?.edit())
+    if (self?.getStores()?.viewer?.permissions?.dictionary.viewManagement()) {
         return component
             ? {
                   where: {
@@ -28,7 +29,9 @@ export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_CO
                   },
               }
             : {};
+    }
 
+    // Is this valid case?
     if (!self?.getStores()?.viewer?.user?.data?.organization?.id) {
         return {
             where: {
@@ -50,5 +53,17 @@ export const getDictionaryFilter = (self: ISelf, component?: EXPLOSIVE_OBJECT_CO
                 component: component,
             },
         ],
+    };
+};
+
+export const getDictionarySync = (self: ISelf) => {
+    if (self?.getStores()?.viewer?.permissions?.dictionary.viewManagement()) {
+        return {};
+    }
+
+    return {
+        where: {
+            status: APPROVE_STATUS.CONFIRMED,
+        },
     };
 };

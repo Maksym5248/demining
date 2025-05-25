@@ -176,6 +176,8 @@ export class RootStore implements IRootStore {
                 this.services.analytics.setUserId(null);
                 this.viewer.removeUser();
             }
+
+            await this.sync();
         } catch (e) {
             this.services.logger.error(e);
             this.services.message.error('Bиникла помилка');
@@ -213,7 +215,6 @@ export class RootStore implements IRootStore {
             this.services.analytics.init();
             this.services.crashlytics.init();
             this.services.auth.onAuthStateChanged(user => this.onChangeUser(user));
-            await this.sync();
         } catch (e) {
             this.services.crashlytics.error('Init', e);
         }

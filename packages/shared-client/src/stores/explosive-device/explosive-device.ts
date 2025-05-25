@@ -1,6 +1,6 @@
 import { type Dayjs } from 'dayjs';
 import { makeAutoObservable } from 'mobx';
-import { EXPLOSIVE_DEVICE_TYPE, APPROVE_STATUS } from 'shared-my';
+import { EXPLOSIVE_DEVICE_TYPE } from 'shared-my';
 
 import { type IExplosiveDeviceAPI, type IExplosiveActionSumDTO, type IExplosiveDeviceDTO, type IExplosiveDeviceTypeDTO } from '~/api';
 import { data, type ISubscriptionDocument, type ICreateValue } from '~/common';
@@ -24,7 +24,7 @@ import {
     createExplosiveDeviceType,
 } from './entities';
 import { SumExplosiveDeviceActions } from './sum-explosive-actions';
-import { getDictionaryFilter } from '../filter';
+import { getDictionarySync } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IExplosiveDeviceStore {
@@ -132,7 +132,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveDevice.getList({
                 search,
-                ...getDictionaryFilter(this),
+                ...getDictionarySync(this),
                 limit: this.list.pageSize,
             });
 
@@ -145,7 +145,7 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
         run: async (search?: string) => {
             const res = await this.api.explosiveDevice.getList({
                 search,
-                ...getDictionaryFilter(this),
+                ...getDictionarySync(this),
                 limit: this.list.pageSize,
                 startAfter: dates.toDateServer(this.list.last.data.createdAt),
             });
@@ -182,23 +182,16 @@ export class ExplosiveDeviceStore implements IExplosiveDeviceStore {
 
     sync = new RequestModel({
         run: async () => {
-            await this.api.explosiveDevice.sync(
-                {
-                    where: {
-                        status: APPROVE_STATUS.CONFIRMED,
-                    },
-                },
-                (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {
-                    const { create, update, remove } = data.sortByType<IExplosiveDeviceDTO, IExplosiveDeviceData>(
-                        values,
-                        createExplosiveDevice,
-                    );
+            await this.api.explosiveDevice.sync(getDictionarySync(this), (values: ISubscriptionDocument<IExplosiveDeviceDTO>[]) => {
+                const { create, update, remove } = data.sortByType<IExplosiveDeviceDTO, IExplosiveDeviceData>(
+                    values,
+                    createExplosiveDevice,
+                );
 
-                    this.list.push(create);
-                    this.collection.update(update);
-                    this.collection.remove(remove);
-                },
-            );
+                this.list.push(create);
+                this.collection.update(update);
+                this.collection.remove(remove);
+            });
         },
     });
 
