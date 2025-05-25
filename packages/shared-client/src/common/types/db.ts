@@ -137,7 +137,7 @@ export interface IDB {
 
     batchStart(): void;
     batchCommit(): Promise<void>;
-    init(): void;
+    init(lang?: 'uk' | 'en'): void;
     drop(): void;
     setOrganizationId(id: string): void;
     removeOrganizationId(): void;

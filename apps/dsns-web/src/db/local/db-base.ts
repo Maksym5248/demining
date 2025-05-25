@@ -17,11 +17,8 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
         this.tableName = tableName;
     }
 
-    init(): void {
-        if (!this.db.connetion.objectStoreNames.contains(this.tableName)) {
-            this.db.connetion.createObjectStore(this.tableName, { keyPath: 'id' });
-        }
-    }
+    // ERROR: Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running.
+    init(): void {}
 
     drop(): void {}
 
@@ -32,9 +29,13 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
     async select(args?: Partial<IQuery>): Promise<T[]> {
         const store = await this.transaction(this.tableName, 'readonly');
+
         const data: T[] = await new Promise((resolve, reject) => {
             const request = store.getAll();
-            request.onsuccess = () => resolve(request.result as T[]);
+            request.onsuccess = () => {
+                const result = request.result as T[];
+                resolve(result);
+            };
             request.onerror = () => reject(request.error);
         });
 
@@ -152,10 +153,6 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
 
     async setTableName(tableName: string): Promise<void> {
         this.tableName = tableName;
-
-        if (!this.db.connetion.objectStoreNames.contains(this.tableName)) {
-            this.db.connetion.createObjectStore(this.tableName, { keyPath: 'id' });
-        }
     }
 
     async setRootCollection(rootCollection: string): Promise<void> {

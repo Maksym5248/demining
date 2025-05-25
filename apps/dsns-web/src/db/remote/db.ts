@@ -138,11 +138,7 @@ export class DBRemote implements Omit<IDB, 'comment' | 'complain'> {
 
     batch: WriteBatch | null = null;
 
-    init = () => Promise.resolve();
-
-    drop = () => Promise.resolve();
-
-    setLang(lang: 'uk' | 'en') {
+    init = (lang: 'uk' | 'en') => {
         const getCollection = (table: TABLES) => `${table}/${TABLES_DIR.LANG}/${lang}`;
 
         this.country.setTableName(getCollection(TABLES.COUNTRY));
@@ -161,7 +157,11 @@ export class DBRemote implements Omit<IDB, 'comment' | 'complain'> {
         this.explosiveObjectDetails.setTableName(getCollection(TABLES.EXPLOSIVE_OBJECT_DETAILS));
         this.explosiveDevice.setTableName(getCollection(TABLES.EXPLOSIVE_DEVICE));
         this.explosive.setTableName(getCollection(TABLES.EXPLOSIVE));
-    }
+    };
+
+    drop = () => Promise.resolve();
+
+    setLang() {}
 
     setOrganizationId(id: string) {
         const rootCollection = `${TABLES_DIR.ORGANIZATION_DATA}/${id}`;

@@ -53,13 +53,9 @@ export const Api = {
     organization: new OrganizationAPI(DBRemote),
     document: new DocumentAPI(DBRemote, services),
     map: new MapAPI(DBRemote),
-    setLang: (lang: 'uk' | 'en') => {
-        DBRemote.setLang(lang);
-        DBLocal.setLang(lang);
-    },
-    init: async () => {
-        await DBRemote.init();
-        await DBLocal.init();
+    init: async (lang: 'uk' | 'en') => {
+        DBRemote.init(lang);
+        await DBLocal.init(lang);
     },
     drop: async () => {
         await DBLocal.drop();

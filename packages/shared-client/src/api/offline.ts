@@ -76,7 +76,6 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
             where: {
                 ...(q.where ?? {}),
             },
-            ...(query ?? {}),
         });
 
         return res;
