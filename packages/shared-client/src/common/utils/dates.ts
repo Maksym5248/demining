@@ -1,4 +1,4 @@
-import { Timestamp } from '@firebase/firestore-types';
+import { type Timestamp } from '@firebase/firestore-types';
 import dayjs, { type Dayjs } from 'dayjs';
 import 'dayjs/locale/uk';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -40,7 +40,7 @@ const create = (value: number | Date): Dayjs => {
 };
 
 const createServerDate = (seconds: number, nanoseconds: number): Timestamp => {
-    return new Timestamp(seconds, nanoseconds);
+    return new timestamp(seconds, nanoseconds);
 };
 
 const isServerDate = (value: any): value is Timestamp => {

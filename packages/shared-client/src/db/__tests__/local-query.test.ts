@@ -1,6 +1,8 @@
 import { Timestamp } from '@react-native-firebase/firestore';
 
-import { dates, getWhere } from 'shared-my-client';
+import { dates } from '~/common';
+
+import { getWhere } from '../local-query';
 
 describe('getWhere', () => {
     let mockData: {
