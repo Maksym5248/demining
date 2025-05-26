@@ -1,7 +1,7 @@
 import { Form, Drawer, Input, Spin, InputNumber, Divider, Space, Tabs } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { EXPLOSIVE_DEVICE_TYPE, measurement, MIME_TYPE } from 'shared-my';
-import { type ISizeData, useItemStore, type IFieldData, getSizeLabel } from 'shared-my-client';
+import { type ISizeData, useItemStore, type IFieldData, getSizeLabel, type IExplosiveDevice } from 'shared-my-client';
 
 import {
     WizardButtons,
@@ -18,6 +18,7 @@ import {
 import { MODALS, type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
+import { str } from '~/utils';
 
 import { s } from './explosive-device-wizard.style';
 import { type IExplosiveDeviceForm } from './explosive-device-wizard.types';
@@ -79,6 +80,29 @@ const getParams = ({
     },
 });
 
+const getInitialValues = (item?: IExplosiveDevice) => {
+    return item
+        ? {
+              ...item.data,
+              size: item?.data.size?.map(el => ({
+                  ...el,
+                  length: el.length ? measurement.mToMm(el.length) : null,
+                  width: el.width ? measurement.mToMm(el.width) : null,
+                  height: el.height ? measurement.mToMm(el.height) : null,
+              })),
+              purposeImageUris: item?.data.purpose?.imageUris ?? [],
+              purposeDescription: item?.data.purpose?.description ?? '',
+              structureImageUris: item?.data.structure?.imageUris ?? [],
+              structureDescription: item?.data.structure?.description ?? '',
+              actionImageUris: item?.data.action?.imageUris ?? [],
+              actionDescription: item?.data.action?.description ?? '',
+              markingImageUris: item?.data.marking?.imageUris ?? [],
+              markingDescription: item?.data.marking?.description ?? '',
+              imageUris: item?.data?.imageUris ? item?.data.imageUris : [],
+          }
+        : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE };
+};
+
 export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const store = useStore();
 
@@ -114,9 +138,9 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
         <Drawer
             open={isVisible}
             destroyOnClose
-            title={`${isEdit ? 'Редагувати' : 'Створити'} ВР та ЗП`}
+            title={str.getTitle(wizard, item?.displayName)}
             placement="right"
-            width={900}
+            width={800}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={!!item?.isEditable} />}>
             {isLoading ? (
@@ -128,28 +152,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
-                    initialValues={
-                        item
-                            ? {
-                                  ...item.data,
-                                  size: item?.data.size?.map(el => ({
-                                      ...el,
-                                      length: el.length ? measurement.mToMm(el.length) : null,
-                                      width: el.width ? measurement.mToMm(el.width) : null,
-                                      height: el.height ? measurement.mToMm(el.height) : null,
-                                  })),
-                                  purposeImageUris: item?.data.purpose?.imageUris ?? [],
-                                  purposeDescription: item?.data.purpose?.description ?? '',
-                                  structureImageUris: item?.data.structure?.imageUris ?? [],
-                                  structureDescription: item?.data.structure?.description ?? '',
-                                  actionImageUris: item?.data.action?.imageUris ?? [],
-                                  actionDescription: item?.data.action?.description ?? '',
-                                  markingImageUris: item?.data.marking?.imageUris ?? [],
-                                  markingDescription: item?.data.marking?.description ?? '',
-                                  imageUris: item?.data?.imageUris ? item?.data.imageUris : [],
-                              }
-                            : { type: EXPLOSIVE_DEVICE_TYPE.EXPLOSIVE }
-                    }>
+                    initialValues={getInitialValues(item)}>
                     <Form.Item name="imageUri" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
                         <Form.Item noStyle shouldUpdate={() => true}>
                             {({ getFieldValue, setFieldValue }) => {
@@ -168,6 +171,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                                         type="image"
                                         accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
                                         uri={imageUri}
+                                        style={{ maxHeight: 400 }}
                                     />
                                 );
                             }}
@@ -191,7 +195,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                                 key: '1',
                                 label: 'Загальні дані',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
                                             <Select
                                                 options={store.explosiveDevice.collectionType.asArray.map(el => ({
@@ -213,7 +217,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Ураження',
                                 key: 'demage',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <FieldFiller label="Спорядження" name="filler" />
                                     </Space>
                                 ),
@@ -222,7 +226,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Додаткові',
                                 key: 'additional',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <FieldModal
                                             label="Розмір, мм"
                                             name="size"
@@ -271,7 +275,7 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Детально',
                                 key: 'detailed',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
                                         <Divider />
                                         <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />

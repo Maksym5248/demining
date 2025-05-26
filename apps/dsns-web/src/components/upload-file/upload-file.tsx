@@ -17,11 +17,12 @@ interface SelectTemplateProps {
     accept?: string | string[];
     type?: 'document' | 'image';
     uri?: string;
+    style?: React.CSSProperties;
 }
 
 const { Dragger } = Upload;
 
-export function UploadFile({ type = 'document', uri, file, onChangeFile, accept = MIME_TYPE.DOCX }: SelectTemplateProps) {
+export function UploadFile({ type = 'document', style, uri, file, onChangeFile, accept = MIME_TYPE.DOCX }: SelectTemplateProps) {
     const isPreview = !!(file || uri);
     const isDocument = type === 'document';
     const isImage = type === 'image';
@@ -58,7 +59,7 @@ export function UploadFile({ type = 'document', uri, file, onChangeFile, accept 
                         <Icon.InboxOutlined />
                     </p>
                 )}
-                {isPreview && isImage && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} />}
+                {isPreview && isImage && <Image src={file ? URL.createObjectURL(file) : uri} alt="image" preview={false} style={style} />}
             </Dragger>
         </Container>
     );

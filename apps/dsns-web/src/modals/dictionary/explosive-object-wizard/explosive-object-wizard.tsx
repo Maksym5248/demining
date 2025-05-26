@@ -294,7 +294,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
             destroyOnClose
             title={str.getTitle(wizard, item?.displayName ?? '')}
             placement="right"
-            width={900}
+            width={800}
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={item?.isEditable} />}>
             {isLoading ? (
@@ -322,6 +322,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                         type="image"
                                         accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
                                         uri={imageUri}
+                                        style={{ maxHeight: 400 }}
                                     />
                                 );
                             }}
@@ -356,7 +357,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Загальні дані',
                                 key: 'main',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <Form.Item
                                             label="Маркування"
                                             name="name"
@@ -458,7 +459,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Ініціація',
                                 key: 'initiation',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <Form.Item noStyle shouldUpdate={() => true}>
                                             {({ getFieldValue }) =>
                                                 (getFieldValue('component') === EXPLOSIVE_OBJECT_COMPONENT.AMMO ||
@@ -523,7 +524,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Ураження',
                                 key: 'demage',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <FieldFiller label="Спорядження" name="filler" />
                                         <FieldRange label="Радіус суцільного ураження, м" name="damageRadius" />
                                         <FieldRange label="Дальність дольоту окремих осколків, м" name="damageDistance" />
@@ -570,7 +571,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Додаткові',
                                 key: 'additional',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <Form.Item label="Час роботи" name="timeWork">
                                             <Input.TextArea placeholder="Введіть дані" maxLength={300} rows={2} />
                                         </Form.Item>
@@ -625,7 +626,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                                 label: 'Детально',
                                 key: 'detailed',
                                 children: (
-                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <Space direction="vertical" size="middle" style={{ width: '100%', gap: 0 }}>
                                         <FieldSection
                                             label="Історична довідка"
                                             name="historicalImageUris"
