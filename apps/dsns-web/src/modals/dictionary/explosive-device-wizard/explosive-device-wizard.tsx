@@ -1,4 +1,4 @@
-import { Form, Drawer, Input, Spin, InputNumber, Divider } from 'antd';
+import { Form, Drawer, Input, Spin, InputNumber, Divider, Space, Tabs } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { EXPLOSIVE_DEVICE_TYPE, measurement, MIME_TYPE } from 'shared-my';
 import { type ISizeData, useItemStore, type IFieldData, getSizeLabel } from 'shared-my-client';
@@ -125,8 +125,8 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                 <Form
                     name="explosive-form"
                     onFinish={isEdit ? onFinishUpdate : onFinishCreate}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 20 }}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
                     disabled={wizard.isView}
                     initialValues={
                         item
@@ -184,69 +184,109 @@ export const ExplosiveDeviceWizardModal = observer(({ id, isVisible, hide, mode 
                             />
                         </Form.Item>
                     )}
-                    <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
-                        <Select
-                            options={store.explosiveDevice.collectionType.asArray.map(el => ({
-                                value: el.id,
-                                label: el.displayName,
-                            }))}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Назва" name="name" rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
-                        <Input placeholder="Введіть дані" />
-                    </Form.Item>
-                    <FieldModal
-                        label="Розмір, мм"
-                        name="size"
-                        modal={MODALS.SIZE_WIZARD}
-                        getTitle={(item: ISizeData) => getSizeLabel(item)}
-                        getDescription={item => item.name}
+                    <Tabs
+                        defaultActiveKey="1"
+                        items={[
+                            {
+                                key: '1',
+                                label: 'Загальні дані',
+                                children: (
+                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                        <Form.Item label="Тип" name="type" rules={[{ required: true, message: "Обов'язкове поле" }]}>
+                                            <Select
+                                                options={store.explosiveDevice.collectionType.asArray.map(el => ({
+                                                    value: el.id,
+                                                    label: el.displayName,
+                                                }))}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Назва"
+                                            name="name"
+                                            rules={[{ required: true, message: "Прізвище є обов'язковим полем" }]}>
+                                            <Input placeholder="Введіть дані" />
+                                        </Form.Item>
+                                    </Space>
+                                ),
+                            },
+                            {
+                                label: 'Ураження',
+                                key: 'demage',
+                                children: (
+                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                        <FieldFiller label="Спорядження" name="filler" />
+                                    </Space>
+                                ),
+                            },
+                            {
+                                label: 'Додаткові',
+                                key: 'additional',
+                                children: (
+                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                        <FieldModal
+                                            label="Розмір, мм"
+                                            name="size"
+                                            modal={MODALS.SIZE_WIZARD}
+                                            getTitle={(item: ISizeData) => getSizeLabel(item)}
+                                            getDescription={item => item.name}
+                                        />
+                                        <Form.Item label="Вага, кг" name="chargeWeight">
+                                            <InputNumber placeholder="Ввести" />
+                                        </Form.Item>
+                                        <FieldMaterial />
+                                        <FieldMulty
+                                            label="Додаткові"
+                                            name="additional"
+                                            manual
+                                            renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
+                                                <div css={s.additional}>
+                                                    <Input
+                                                        css={s.input}
+                                                        placeholder="Назва"
+                                                        value={value?.name}
+                                                        onChange={e =>
+                                                            update({
+                                                                ...(value ?? {}),
+                                                                name: e.target.value,
+                                                            })
+                                                        }
+                                                    />
+                                                    <Input
+                                                        placeholder="Значення"
+                                                        value={value?.value}
+                                                        onChange={e =>
+                                                            update({
+                                                                ...(value ?? {}),
+                                                                value: e.target.value,
+                                                            })
+                                                        }
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                    </Space>
+                                ),
+                            },
+                            {
+                                label: 'Детально',
+                                key: 'detailed',
+                                children: (
+                                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                        <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
+                                        <Divider />
+                                        <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
+                                        <Divider />
+                                        <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
+                                        <Divider />
+                                        <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
+                                        <Divider />
+                                        <FieldSection label="Використання та безпека" name="usageImageUris" nameDesc="usageDescription" />
+                                    </Space>
+                                ),
+                            },
+                        ]}
                     />
-                    <Form.Item label="Вага, кг" name="chargeWeight">
-                        <InputNumber placeholder="Ввести" />
-                    </Form.Item>
-                    <FieldMaterial />
-                    <FieldMulty
-                        label="Додаткові"
-                        name="additional"
-                        manual
-                        renderField={({ value, update }: { value: IFieldData; update: (v: IFieldData) => void }) => (
-                            <div css={s.additional}>
-                                <Input
-                                    css={s.input}
-                                    placeholder="Назва"
-                                    value={value?.name}
-                                    onChange={e =>
-                                        update({
-                                            ...(value ?? {}),
-                                            name: e.target.value,
-                                        })
-                                    }
-                                />
-                                <Input
-                                    placeholder="Значення"
-                                    value={value?.value}
-                                    onChange={e =>
-                                        update({
-                                            ...(value ?? {}),
-                                            value: e.target.value,
-                                        })
-                                    }
-                                />
-                            </div>
-                        )}
-                    />
-                    <FieldFiller label="Спорядження" name="filler" />
                     <Divider />
-                    <FieldSection label="Маркування" name="markingImageUris" nameDesc="markingDescription" />
-                    <Divider />
-                    <FieldSection label="Призначення" name="purposeImageUris" nameDesc="purposeDescription" />
-                    <Divider />
-                    <FieldSection label="Будова" name="structureImageUris" nameDesc="structureDescription" />
-                    <Divider />
-                    <FieldSection label="Принцип дії" name="actionImageUris" nameDesc="actionDescription" />
-                    <Divider />
-                    <FieldSection label="Використання та безпека" name="usageImageUris" nameDesc="usageDescription" />
                     <WizardFooter
                         {...wizard}
                         onCancel={hide}

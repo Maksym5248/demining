@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { Form, Input, Drawer, InputNumber, Spin, Divider, Typography, Space, Tabs } from 'antd';
+import { Form, Input, Drawer, InputNumber, Spin, Divider, Space, Tabs } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { EXPLOSIVE_OBJECT_COMPONENT, APPROVE_STATUS, measurement, MIME_TYPE } from 'shared-my';
 import { type IExplosiveObjectType, type IExplosiveObject, type IFieldData, type ISizeData } from 'shared-my-client';
@@ -353,7 +353,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                         defaultActiveKey="1"
                         items={[
                             {
-                                label: 'Головне',
+                                label: 'Загальні дані',
                                 key: 'main',
                                 children: (
                                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -623,7 +623,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
                             },
                             {
                                 label: 'Детально',
-                                key: '',
+                                key: 'detailed',
                                 children: (
                                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                                         <FieldSection
