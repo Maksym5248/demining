@@ -5,14 +5,16 @@ import { type IStorage } from 'shared-my-client';
 const eventEmitter = new EventEmitter();
 
 export class StorageClass implements IStorage {
+    constructor(private storage: Storage = localStorage) {}
+
     set = (key: string, value: any) => {
-        localStorage.setItem(key, JSON.stringify(value));
+        this.storage.setItem(key, JSON.stringify(value));
         eventEmitter.emit(key, value);
     };
 
     get(key: string) {
         try {
-            const value = localStorage.getItem(key);
+            const value = this.storage.getItem(key);
             if (value) {
                 return JSON.parse(value);
             }
@@ -24,7 +26,7 @@ export class StorageClass implements IStorage {
     }
 
     remove = (key: string) => {
-        localStorage.removeItem(key);
+        this.storage.removeItem(key);
         eventEmitter.emit(key, null);
     };
 

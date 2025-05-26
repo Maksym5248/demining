@@ -3,12 +3,13 @@ import { useEffect } from 'react';
 import { Form, Input, Drawer, Spin, Divider, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { MIME_TYPE, measurement } from 'shared-my';
-import { type IFieldData } from 'shared-my-client';
+import { type IExplosive, type IFieldData } from 'shared-my-client';
 
 import { FieldMulty, FieldRange, UploadFile, UploadImages, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
 import { useStore, useWizard } from '~/hooks';
 import { AssetStorage } from '~/services';
+import { str } from '~/utils';
 
 import { Сomposition } from './components';
 import { s } from './explosive-wizard.style';
@@ -63,17 +64,36 @@ const getParams = ({
     };
 };
 
+const getInitialValues = (item?: IExplosive) => {
+    return item
+        ? {
+              ...item.data,
+              ...item.data.sensitivity,
+              ...item.data.explosive,
+              ...item.data.physical,
+              explosiveness: {
+                  min: item.data.explosive?.explosiveness?.min ? measurement.m3ToCm3(item.data.explosive.explosiveness.min) : null,
+                  max: item.data.explosive?.explosiveness?.max ? measurement.m3ToCm3(item.data.explosive.explosiveness.max) : null,
+              },
+              brisantness: {
+                  min: item.data.explosive?.brisantness?.min ? measurement.mToMm(item.data.explosive.brisantness.min) : null,
+                  max: item.data.explosive?.brisantness?.max ? measurement.mToMm(item.data.explosive.brisantness.max) : null,
+              },
+          }
+        : {};
+};
+
 export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Props) => {
     const { explosive, viewer, common } = useStore();
 
-    const currentExplosive = explosive.collection.get(id as string);
+    const item = explosive.collection.get(id as string);
 
     const wizard = useWizard({
         id,
         mode,
         permissions: {
-            edit: !!currentExplosive?.isEditable,
-            remove: !!currentExplosive?.isRemovable,
+            edit: !!item?.isEditable,
+            remove: !!item?.isRemovable,
         },
     });
 
@@ -86,7 +106,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
     };
 
     const onFinishUpdate = async (values: IExplosiveForm) => {
-        await currentExplosive?.update.run(getParams(values));
+        await item?.update.run(getParams(values));
         hide();
     };
 
@@ -105,11 +125,11 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
         <Drawer
             open={isVisible}
             destroyOnClose
-            title={`${isEdit ? 'Редагувати' : 'Створити'} ВР`}
+            title={str.getTitle(wizard, item?.displayName)}
             placement="right"
-            width={900}
+            width={800}
             onClose={hide}
-            extra={<WizardButtons {...wizard} isEditable={!!currentExplosive?.isEditable} />}>
+            extra={<WizardButtons {...wizard} isEditable={!!item?.isEditable} />}>
             {isLoading ? (
                 <Spin css={s.spin} />
             ) : (
@@ -119,32 +139,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 20 }}
                     disabled={wizard.isView}
-                    initialValues={
-                        currentExplosive
-                            ? {
-                                  ...currentExplosive.data,
-                                  ...currentExplosive.data.sensitivity,
-                                  ...currentExplosive.data.explosive,
-                                  ...currentExplosive.data.physical,
-                                  explosiveness: {
-                                      min: currentExplosive.data.explosive?.explosiveness?.min
-                                          ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness.min)
-                                          : null,
-                                      max: currentExplosive.data.explosive?.explosiveness?.max
-                                          ? measurement.m3ToCm3(currentExplosive.data.explosive.explosiveness.max)
-                                          : null,
-                                  },
-                                  brisantness: {
-                                      min: currentExplosive.data.explosive?.brisantness?.min
-                                          ? measurement.mToMm(currentExplosive.data.explosive.brisantness.min)
-                                          : null,
-                                      max: currentExplosive.data.explosive?.brisantness?.max
-                                          ? measurement.mToMm(currentExplosive.data.explosive.brisantness.max)
-                                          : null,
-                                  },
-                              }
-                            : {}
-                    }>
+                    initialValues={getInitialValues(item)}>
                     <Form.Item name="image" labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
                         <Form.Item noStyle shouldUpdate={() => true}>
                             {({ getFieldValue, setFieldValue }) => {
@@ -160,6 +155,7 @@ export const ExplosiveWizardModal = observer(({ id, isVisible, hide, mode }: Pro
                                         type="image"
                                         accept={[MIME_TYPE.PNG, MIME_TYPE.JPG]}
                                         uri={imageUri}
+                                        style={{ maxHeight: 400 }}
                                     />
                                 );
                             }}
