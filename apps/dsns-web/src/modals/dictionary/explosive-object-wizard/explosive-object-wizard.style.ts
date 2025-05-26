@@ -22,7 +22,6 @@ const inert = Theme.css(
 const additional = Theme.css(
     () => `
     flex-direction: row;
-
 `,
 );
 
@@ -32,10 +31,18 @@ const input = Theme.css(
 `,
 );
 
+const title = Theme.css(`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+`);
+
 export const s = {
     spin,
     size,
     inert,
     additional,
     input,
+    title,
 };
