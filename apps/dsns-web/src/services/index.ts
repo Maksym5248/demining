@@ -13,6 +13,7 @@ import { TemplateClass } from './template';
 
 export const Auth = new AuthClass();
 export const Storage = new StorageClass();
+export const SessionStorage = new StorageClass(sessionStorage);
 export const Template = new TemplateClass();
 export const SecureStorage = new StorageClass();
 export const AssetStorage = new AssetStorageClass();

@@ -1,3 +1,7 @@
 export enum STORAGE {
     DOC_TEMPLATE = 'DOC_TEMPLATE',
 }
+
+export enum SESSION_STORAGE {
+    MODAL_STATE = 'MODAL_STATE',
+}

@@ -2,7 +2,8 @@ import React from 'react';
 
 import { type IModalsMapInternal, type IModalTypeInternal, type IModalsMap } from 'shared-my-client';
 
-import { Modal } from '~/services';
+import { SESSION_STORAGE } from '~/constants';
+import { Modal, SessionStorage } from '~/services';
 
 interface IModalProviderProps {
     modals: IModalsMap;
@@ -18,9 +19,10 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
 
     constructor(props: IModalProviderProps) {
         super(props);
+
         this.state = {
             modals: Modal.registerModals(props.modals),
-            visibleModals: {},
+            visibleModals: SessionStorage.get(SESSION_STORAGE.MODAL_STATE) ?? {},
         };
 
         this._removeListener = () => undefined;
@@ -28,13 +30,18 @@ export class ModalProvider extends React.PureComponent<IModalProviderProps, IMod
 
     componentDidMount() {
         this._removeListener = Modal.onChange(async nextState => {
-            this.setState(prev => ({
-                ...prev,
-                visibleModals: nextState,
-            }));
+            this.setState(
+                prev => ({
+                    ...prev,
+                    visibleModals: nextState,
+                }),
+                () => {},
+            );
+
+            SessionStorage.set(SESSION_STORAGE.MODAL_STATE, nextState);
         });
     }
-
+    // test
     componentWillUnmount() {
         this._removeListener();
     }
