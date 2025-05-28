@@ -40,6 +40,7 @@ interface ParsedPDF {
         keywords?: string[];
     };
     pages: ExtractedText[];
+    viewport?: { width: number; height: number; widthMM?: number; heightMM?: number };
 }
 
 // Extend TextItem for internal use in parsePDF and HTML generation
@@ -48,6 +49,7 @@ export interface PositionedTextItem extends TextItem {
     x?: number;
     newParagraph?: boolean;
     offsetX?: number;
+    originalIndex?: number; // Preserve original index for HTML generation
 }
 
 async function importEsmModule<T>(name: string): Promise<T> {
@@ -122,7 +124,7 @@ export async function extractImagesWithPoppler(
 }
 
 // Improved: mergeTextItems with semantic rules for paragraphs, indentation, y-gap, bullets, and hyphenation
-function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextItem[] {
+function mergeTextItems(textItems: any[]): PositionedTextItem[] {
     if (!textItems || textItems.length === 0) return [];
     // Step 1: Sort by y (descending), then x (ascending)
     const sorted = [...textItems].sort((a, b) => {
@@ -134,8 +136,7 @@ function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextI
         return ax - bx;
     });
 
-    // Step 2: Merge items with the same y (line)
-    // Remove duplicates by (rounded x, y, width, height, text)
+    // Step 2: Remove duplicates by (rounded x, y, width, height, text)
     const uniqueKey = (item: any) => {
         return [
             Math.round(item.transform ? item.transform[4] : 0),
@@ -153,311 +154,119 @@ function mergeTextItems(textItems: any[], forceTocMode = false): PositionedTextI
         return true;
     });
 
-    // Group items by y (line)
-    const yGroups = new Map<number, any[]>();
-    for (const item of filtered) {
-        const y = item.transform ? item.transform[5] : 0;
-        const yKey = Math.round(y * 10) / 10; // round to avoid floating point issues
-        if (!yGroups.has(yKey)) yGroups.set(yKey, []);
-        yGroups.get(yKey)!.push(item);
+    // Helper to estimate width of a text item
+    function getTextItemWidth(item: any): number {
+        if (item.width) return item.width;
+        const text = item.text || item.str || '';
+        const fontSize = item.fontSize || 10;
+        return text.length * fontSize * 0.5;
     }
 
-    // For each line, filter out overlapping items
-    const lines: {
-        y: number;
-        x: number;
-        text: string;
-        fontSize?: number;
-        minX: number;
-        maxX: number;
-        height: number;
-        width: number;
-    }[] = [];
-    for (const [yKey, items] of Array.from(yGroups.entries())) {
-        // Sort by x
-        const sortedByX = items.slice().sort((a: any, b: any) => {
+    const xGapThreshold = 8; // px, more conservative for less over-merging
+    const rowTolerance = 0.5; // y-difference to consider as same row, more strict
+
+    // Group items by row (y position within tolerance)
+    const rows: Record<number, any[]> = {};
+    for (const item of filtered) {
+        const y = item.transform ? item.transform[5] : 0;
+        // Find existing row within tolerance
+        let rowKey = null;
+        for (const key of Object.keys(rows)) {
+            if (Math.abs(Number(key) - y) < rowTolerance) {
+                rowKey = key;
+                break;
+            }
+        }
+        if (rowKey === null) rowKey = y;
+        if (!rows[rowKey]) rows[rowKey] = [];
+        rows[rowKey].push(item);
+    }
+
+    const merged: PositionedTextItem[] = [];
+    Object.values(rows).forEach(rowItems => {
+        // Sort by text length descending (prefer longest fragments)
+        const sortedByLength = [...rowItems].sort((a, b) => {
+            const alen = (a.str || a.text || '').length;
+            const blen = (b.str || b.text || '').length;
+            return blen - alen;
+        });
+        const accepted: any[] = [];
+        sortedByLength.forEach(item => {
+            const x = item.transform ? item.transform[4] : 0;
+            const y = item.transform ? item.transform[5] : 0;
+            const width = getTextItemWidth(item);
+            const height = item.height || item.fontSize || 10; // fallback: font size as height
+            const x1 = x;
+            const x2 = x + width;
+            const y1 = y;
+            const y2 = y + height;
+            // Check overlap with already accepted items using bounding box intersection
+            const overlaps = accepted.some(acc => {
+                const accX = acc.transform ? acc.transform[4] : 0;
+                const accY = acc.transform ? acc.transform[5] : 0;
+                const accWidth = getTextItemWidth(acc);
+                const accHeight = acc.height || acc.fontSize || 10;
+                const accX1 = accX;
+                const accX2 = accX + accWidth;
+                const accY1 = accY;
+                const accY2 = accY + accHeight;
+                // Intersection box
+                const ix1 = Math.max(x1, accX1);
+                const iy1 = Math.max(y1, accY1);
+                const ix2 = Math.min(x2, accX2);
+                const iy2 = Math.min(y2, accY2);
+                const iwidth = ix2 - ix1;
+                const iheight = iy2 - iy1;
+                if (iwidth <= 0 || iheight <= 0) return false;
+                const intersectionArea = iwidth * iheight;
+                const minArea = Math.min(width * height, accWidth * accHeight);
+                // Consider as overlap if >30% of the smaller area
+                return intersectionArea > 0.3 * minArea;
+            });
+            if (!overlaps) accepted.push(item);
+        });
+        // After filtering, sort accepted by x for left-to-right order
+        accepted.sort((a, b) => {
             const ax = a.transform ? a.transform[4] : 0;
             const bx = b.transform ? b.transform[4] : 0;
             return ax - bx;
         });
-        // Filter out overlapping items
-        const nonOverlapping: any[] = [];
-        for (const item of sortedByX) {
-            const x1 = item.transform ? item.transform[4] : 0;
-            const w1 = item.width || 0;
-            const end1 = x1 + w1;
-            let overlaps = false;
-            for (const kept of nonOverlapping) {
-                const x2 = kept.transform ? kept.transform[4] : 0;
-                const w2 = kept.width || 0;
-                const end2 = x2 + w2;
-                // Check for significant overlap (at least 50% of the smaller width)
-                const overlap = Math.max(0, Math.min(end1, end2) - Math.max(x1, x2));
-                const minWidth = Math.min(w1, w2);
-                if (overlap > 0.5 * minWidth) {
-                    if ((item.str?.length || 0) > (kept.str?.length || 0)) {
-                        const idx = nonOverlapping.indexOf(kept);
-                        if (idx !== -1) nonOverlapping[idx] = item;
-                    }
-                    overlaps = true;
-                    break;
-                }
-            }
-            if (!overlaps) {
-                nonOverlapping.push(item);
-            }
-        }
-        // Now merge non-overlapping items into a line
-        let lineText = '';
-        let fontSize = undefined;
-        let lastX = undefined;
-        let minX = Infinity;
-        let maxX = -Infinity;
-        let maxHeight = 0;
-        let totalWidth = 0;
-        for (const item of nonOverlapping) {
+        // Merge horizontally close fragments (if any remain)
+        let current: PositionedTextItem | null = null;
+        for (const item of accepted) {
             const x = item.transform ? item.transform[4] : 0;
-            const w = item.width || 0;
-            if (lastX !== undefined) {
-                const gap = x - lastX;
-                const spaceThreshold = item.fontSize ? Math.max(item.fontSize * 0.5, 2.5) : 2.5;
-                if (gap > spaceThreshold) lineText += ' ';
-            }
-            lineText += item.str;
-            if (item.fontSize && !fontSize) fontSize = item.fontSize;
-            lastX = x + w;
-            if (x < minX) minX = x;
-            if (x + w > maxX) maxX = x + w;
-            if (item.height && item.height > maxHeight) maxHeight = item.height;
-            totalWidth += w;
-        }
-        if (minX === Infinity) minX = 0;
-        if (maxX === -Infinity) maxX = 0;
-        lines.push({
-            y: parseFloat(yKey.toFixed(4)),
-            x: minX,
-            text: lineText,
-            fontSize,
-            minX,
-            maxX,
-            height: maxHeight,
-            width: totalWidth,
-        });
-    }
-
-    // --- Merge lines into paragraphs, detect newLine using y, height, and x position ---
-    const mergedLines: {
-        y: number;
-        x: number;
-        text: string;
-        fontSize?: number;
-        minX: number;
-        maxX: number;
-        height: number;
-        width: number;
-        newLine?: boolean;
-    }[] = [];
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const prevLine = i > 0 ? lines[i - 1] : null;
-        let isNewLine = false;
-        if (prevLine) {
-            // If y difference is greater than half the average height, or x jumps left, treat as new line
-            const avgHeight = (prevLine.height + line.height) / 2 || 1;
-            const yGap = Math.abs(line.y - prevLine.y);
-            if (yGap > 0.5 * avgHeight || line.x < prevLine.x - 2) isNewLine = true;
-        }
-        mergedLines.push({ ...line, newLine: isNewLine });
-    }
-
-    // --- Зміст: приєднувати номери сторінок до попереднього рядка, якщо це лише число ---
-    const finalLines: {
-        y: number;
-        x: number;
-        text: string;
-        fontSize?: number;
-        newLine?: boolean;
-    }[] = [];
-    for (let i = 0; i < mergedLines.length; i++) {
-        const line = mergedLines[i];
-        if (/^\d+$/.test(line.text.trim()) && finalLines.length > 0) {
-            finalLines[finalLines.length - 1].text += ' ' + line.text.trim();
-            // If the merged line hadEOL, preserve it
-            if (line.newLine) finalLines[finalLines.length - 1].newLine = true;
-        } else {
-            finalLines.push(line);
-        }
-    }
-
-    // Calculate median x and y gap for heuristics
-    const xVals = finalLines.map(l => l.x).sort((a, b) => a - b);
-    const yGaps = finalLines.slice(1).map((l, i) => Math.abs(l.y - finalLines[i].y));
-    const median = (arr: number[]) => (arr.length ? arr[Math.floor(arr.length / 2)] : 0);
-    const medianX = median(xVals);
-    const medianYGap = median(yGaps);
-
-    // Step 3: Mark newLine for lines with large y-gap or hasEOL
-    const linesWithBreaks: {
-        y: number;
-        x: number;
-        text: string;
-        fontSize?: number;
-        newLine?: boolean;
-    }[] = [];
-    for (let i = 0; i < finalLines.length; i++) {
-        const line = finalLines[i];
-        const prevLine = i > 0 ? finalLines[i - 1] : null;
-        const yGap = prevLine ? Math.abs(line.y - prevLine.y) : 0;
-        // Mark newLine if previous line hadEOL or y-gap is large
-        const isNewLine = (prevLine && prevLine.newLine) || (prevLine && yGap > 1.2 * medianYGap);
-        linesWithBreaks.push({ ...line, newLine: !!isNewLine });
-    }
-
-    // Step 4: Merge lines into paragraphs, but break paragraph on newLine
-    let currentPara: {
-        x: number;
-        lines: {
-            y: number;
-            text: string;
-            newLine?: boolean;
-        }[];
-    } | null = null;
-    const paragraphs: {
-        x: number;
-        lines: {
-            y: number;
-            text: string;
-            newLine?: boolean;
-        }[];
-    }[] = [];
-    for (let i = 0; i < linesWithBreaks.length; i++) {
-        const line = linesWithBreaks[i];
-        const prevLine = i > 0 ? linesWithBreaks[i - 1] : null;
-        const indent = Math.abs(line.x - medianX);
-        const isIndented = indent > 10;
-        const isBullet = /^\s*([\u2022\-*\u25CF]|\d+\.)\s+/.test(line.text);
-        // Hyphenation: if previous line ends with hyphen, merge without space
-        if (
-            currentPara &&
-            !isIndented &&
-            !isBullet &&
-            prevLine &&
-            prevLine.text.trim().endsWith('-')
-        ) {
-            currentPara.lines[currentPara.lines.length - 1].text =
-                currentPara.lines[currentPara.lines.length - 1].text.trim().replace(/-$/, '') +
-                line.text.trimStart();
-            continue;
-        }
-        if (!currentPara || isIndented || isBullet || line.newLine) {
-            if (currentPara) paragraphs.push(currentPara);
-            currentPara = {
-                x: line.x,
-                lines: [
-                    {
-                        y: line.y,
-                        text: line.text,
-                        newLine: line.newLine,
-                    },
-                ],
-            };
-        } else {
-            currentPara.lines.push({
-                y: line.y,
-                text: line.text,
-                newLine: line.newLine,
-            });
-        }
-    }
-    if (currentPara) paragraphs.push(currentPara);
-
-    if (forceTocMode) {
-        // TOC mode: every line ending with a number is a separate paragraph
-        const tocParagraphs: PositionedTextItem[] = [];
-        for (const para of paragraphs) {
-            for (const line of para.lines) {
-                if (/\d+$/.test(line.text.trim())) {
-                    tocParagraphs.push({
-                        text: line.text.trim(),
-                        x: para.x,
-                        y: line.y,
-                        newLine: line.newLine,
-                    });
-                } else if (line.text.trim().length > 0) {
-                    // If not ending with a number, still output as a paragraph (for headings etc.)
-                    tocParagraphs.push({
-                        text: line.text.trim(),
-                        x: para.x,
-                        y: line.y,
-                        newLine: line.newLine,
-                    });
-                }
+            const y = item.transform ? item.transform[5] : 0;
+            if (
+                current &&
+                current.y !== undefined &&
+                Math.abs((current.y ?? 0) - y) < rowTolerance &&
+                x - ((current.x ?? 0) + getTextItemWidth(current)) < xGapThreshold
+            ) {
+                // Add a space if needed between fragments
+                const needsSpace =
+                    current.text &&
+                    !current.text.endsWith(' ') &&
+                    item.str &&
+                    !item.str.startsWith(' ');
+                current.text += (needsSpace ? ' ' : '') + item.str;
+            } else {
+                if (current) merged.push(current);
+                current = {
+                    text: item.str,
+                    fontSize: item.fontSize,
+                    color: item.color,
+                    x,
+                    y,
+                    originalIndex: item.originalIndex,
+                };
             }
         }
-        return tocParagraphs;
-    } else {
-        // Normal mode: output paragraphs as merged
-        const result: PositionedTextItem[] = [];
-        for (const para of paragraphs) {
-            for (let i = 0; i < para.lines.length; i++) {
-                const line = para.lines[i];
-                if (line.text.trim().length > 0) {
-                    result.push({
-                        text: line.text.trim(),
-                        x: para.x,
-                        y: line.y,
-                        newLine: line.newLine,
-                    });
-                }
-            }
-        }
-        return result;
-    }
-
-    // After merging lines, remove repeated substrings in each line (robust logic)
-    function regexEscape(str: string): string {
-        // Escapes special regex characters in a string
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-    function removeRepeatedSubstring(text: string): string {
-        // Remove any repeated substring (with or without a space or punctuation in between)
-        let changed = true;
-        while (changed) {
-            changed = false;
-            // Try substrings from longest to shortest (min 3 chars)
-            for (let len = Math.floor(text.length / 2); len >= 3; len--) {
-                for (let i = 0; i <= text.length - 2 * len; i++) {
-                    const sub = text.substr(i, len);
-                    if (!sub.trim() || sub.length < 3) continue;
-                    // Allow optional whitespace or punctuation between repeats
-                    const pattern = new RegExp(
-                        regexEscape(sub) + '[s.,;:–—-]{0,3}' + regexEscape(sub),
-                        'g',
-                    );
-                    if (pattern.test(text)) {
-                        text = text.replace(pattern, sub);
-                        changed = true;
-                    }
-                }
-            }
-        }
-        // Remove short repeated patterns at the start (e.g. 'ТМТМТМ --57' -> 'ТМ-57')
-        const shortRepeat = text.match(/^(.{2,3})\1{1,}/);
-        if (shortRepeat) {
-            return shortRepeat[1] + text.slice(shortRepeat[0].length);
-        }
-        return text;
-    }
-    for (let i = 0; i < lines.length; i++) {
-        lines[i].text = removeRepeatedSubstring(lines[i].text);
-    }
+        if (current) merged.push(current);
+    });
+    return merged;
 }
 
-export const parsePDF = async (
-    pdfPath: string,
-    imagesDir: string,
-    forceTocMode = false,
-): Promise<ParsedPDF> => {
+export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<ParsedPDF> => {
     const { getDocument } = await importEsmModule<any>('pdfjs-dist/legacy/build/pdf.mjs');
 
     // Ensure imagesDir exists
@@ -482,13 +291,22 @@ export const parsePDF = async (
     const metadata = { title, author, subject, keywords };
 
     const pages: ExtractedText[] = [];
-
+    let viewport:
+        | { width: number; height: number; widthMM?: number; heightMM?: number }
+        | undefined = undefined;
     for (let i = 0; i < 10; i++) {
         const page = await pdfDoc.getPage(i + 1);
+        if (!viewport) {
+            const vp = page.getViewport({ scale: 1 });
+            // 1pt = 1/72 inch, 1 inch = 25.4mm
+            const widthMM = (vp.width * 25.4) / 72;
+            const heightMM = (vp.height * 25.4) / 72;
+            viewport = { width: vp.width, height: vp.height, widthMM, heightMM };
+        }
         const textContent = await page.getTextContent();
 
         // Use helper to merge text items
-        const mergedTextItems = mergeTextItems(textContent.items, forceTocMode);
+        const mergedTextItems = mergeTextItems(textContent.items);
 
         // Extract highlights (annotations)
         const annotations = await page.getAnnotations();
@@ -538,27 +356,39 @@ export const parsePDF = async (
     return {
         metadata,
         pages,
+        viewport,
     };
 };
 
 // Generate HTML from parsed PDF data
 export function generateHtmlFromParsed(parsed: ParsedPDF): string {
+    const viewport = parsed.viewport || { width: 800, height: 1000 };
+    // PDF points to CSS pixels: 1pt = 1.333px (96/72)
+    const scale = 96 / 72;
+    // If real size in mm is available, use it for CSS size (1mm = 3.7795px)
+    let pageWidth = viewport.width * scale;
+    let pageHeight = viewport.height * scale;
+    if ('widthMM' in viewport && 'heightMM' in viewport && viewport.widthMM && viewport.heightMM) {
+        pageWidth = viewport.widthMM * 3.7795;
+        pageHeight = viewport.heightMM * 3.7795;
+    }
     let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${parsed.metadata.title || 'PDF Extract'}</title><style>
         body { font-family: sans-serif; background: #eee; }
-        .page { background: #fff; margin: 2em auto; box-shadow: 0 0 8px #aaa; width: 800px; padding: 2em; }
-        .text-block { display: block; margin-bottom: 0.2em; white-space: pre-wrap; }
+        .page { background: #fff; margin: 2em auto; box-shadow: 0 0 8px #aaa; width: ${pageWidth}px; height: ${pageHeight}px; padding: 0; position: relative; }
+        .text-block { position: absolute; white-space: pre; }
     </style></head><body>`;
     parsed.pages.forEach(page => {
         html += `<div class="page">`;
         (page.textItems as PositionedTextItem[]).forEach((ti, idx) => {
             const styleParts = [
-                ti.offsetX ? `margin-left:${ti.offsetX}px` : '',
-                ti.fontSize ? `font-size:${ti.fontSize}px` : '',
+                ti.x !== undefined ? `left:${ti.x * scale}px` : '',
+                ti.y !== undefined && viewport.height
+                    ? `top:${(viewport.height - ti.y) * scale}px`
+                    : '', // invert y for html, scale
+                ti.fontSize ? `font-size:${ti.fontSize * scale}px` : '',
                 ti.color ? `color:${ti.color}` : '',
+                `z-index:${ti.originalIndex ?? idx}`,
             ].filter(Boolean);
-            if (ti.newParagraph && idx !== 0) {
-                html += '<br/>';
-            }
             html += `<span class="text-block" style="${styleParts.join(';')}">${ti.text}</span>`;
         });
         html += `</div>`;
