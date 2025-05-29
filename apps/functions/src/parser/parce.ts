@@ -13,25 +13,16 @@ import { parsePDF, generateHtmlFromParsed } from './pdfParser';
     }
 
     const imagesDir = path.join(outputDir, 'images');
+    const fontsDir = path.join(outputDir, 'fonts');
     console.log(`ImagesDir: ${imagesDir}`);
 
     if (!fs.existsSync(imagesDir)) {
         fs.mkdirSync(imagesDir, { recursive: true });
     }
 
-    const result = await parsePDF(pdfPath, imagesDir);
+    const result = await parsePDF(pdfPath, imagesDir, fontsDir);
 
-    const textData = result.pages.map(page => ({
-        page: page.page,
-        textItems: page.textItems,
-        highlights: page.highlights,
-        images: page.images, // Include images in JSON output
-    }));
-
-    fs.writeFileSync(
-        path.join(outputDir, 'text.json'),
-        JSON.stringify({ metadata: result.metadata, pages: textData }, null, 2),
-    );
+    fs.writeFileSync(path.join(outputDir, 'text.json'), JSON.stringify(result, null, 2));
 
     // Generate HTML output
     const html = generateHtmlFromParsed(result); // No imageBaseUrl argument needed

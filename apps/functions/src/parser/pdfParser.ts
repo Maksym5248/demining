@@ -1,47 +1,8 @@
-import { execFile } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-interface ExtractedImage {
-    id: string;
-    filename: string;
-    page: number;
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-}
-
-interface TextItem {
-    text: string;
-    fontSize?: number;
-    color?: string;
-    newLine?: boolean;
-    imageName?: string; // Reference to an image if this text item is associated with one
-}
-
-interface HighlightItem {
-    text: string;
-    quadPoints: number[][];
-}
-
-interface ExtractedText {
-    page: number;
-    textItems: TextItem[];
-    images: ExtractedImage[];
-    highlights: HighlightItem[];
-}
-
-interface ParsedPDF {
-    metadata: {
-        title?: string;
-        author?: string;
-        subject?: string;
-        keywords?: string[];
-    };
-    pages: ExtractedText[];
-    viewport?: { width: number; height: number; widthMM?: number; heightMM?: number };
-}
+import { extractFontsWithMutool } from './extractFonts';
+import { type HighlightItem, type ExtractedText, type ParsedPDF, type TextItem } from './types';
 
 // Extend TextItem for internal use in parsePDF and HTML generation
 export interface PositionedTextItem extends TextItem {
@@ -50,6 +11,9 @@ export interface PositionedTextItem extends TextItem {
     newParagraph?: boolean;
     offsetX?: number;
     originalIndex?: number; // Preserve original index for HTML generation
+    fontName?: string; // Add fontName for font extraction
+    fontWeight?: string | number; // Add fontWeight for style extraction
+    fontStyle?: string; // Add fontStyle for style extraction
 }
 
 async function importEsmModule<T>(name: string): Promise<T> {
@@ -57,70 +21,6 @@ async function importEsmModule<T>(name: string): Promise<T> {
     // eslint-disable-next-line no-eval
     const module = eval(`(async () => {return await import("${name}")})()`);
     return module as T;
-}
-
-// Helper to parse pdfimages -list output
-function parsePdfImagesList(listOutput: string, outputDir: string): ExtractedImage[] {
-    const lines = listOutput.split('\n').filter(l => l.trim() && !l.startsWith('page'));
-    const images: ExtractedImage[] = [];
-    for (const line of lines) {
-        // pdfimages -list output columns: page num type width height color comp bpc enc interp object ID x-ppi y-ppi size ratio
-        // Example: 1   0 image  100  200  ...  10  20  ...
-        const parts = line.trim().split(/\s+/);
-        if (parts.length < 11) continue;
-        const page = parseInt(parts[0], 10);
-        const num = parts[1];
-        const width = parseInt(parts[4], 10);
-        const height = parseInt(parts[5], 10);
-        // x and y are not directly available, but we can try to parse if present (Poppler 24+)
-        let x, y;
-        if (parts.length >= 15) {
-            x = parseInt(parts[13], 10);
-            y = parseInt(parts[14], 10);
-        }
-        // Find the corresponding PNG file
-        const filename = `image-${num}.png`;
-        const fullPath = path.join(outputDir, filename);
-
-        if (fs.existsSync(fullPath)) {
-            images.push({
-                id: filename.replace('.png', ''),
-                filename,
-                page,
-                x,
-                y,
-                width,
-                height,
-            });
-        }
-    }
-    return images;
-}
-
-export async function extractImagesWithPoppler(
-    pdfPath: string,
-    imagesDir: string, // <-- use imagesDir directly
-): Promise<ExtractedImage[]> {
-    if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
-    return new Promise((resolve, reject) => {
-        const prefix = path.join(imagesDir, 'image'); // <-- use imagesDir for prefix
-        execFile('pdfimages', ['-list', pdfPath], (error, stdout, stderr) => {
-            if (error) {
-                reject(new Error(stderr || error.message));
-                return;
-            }
-            // Extract images as PNGs
-            execFile('pdfimages', ['-png', pdfPath, prefix], err2 => {
-                if (err2) {
-                    reject(new Error(err2.message));
-                    return;
-                }
-                // Parse -list output for positions
-                const images = parsePdfImagesList(stdout, imagesDir);
-                resolve(images);
-            });
-        });
-    });
 }
 
 // Improved: mergeTextItems with semantic rules for paragraphs, indentation, y-gap, bullets, and hyphenation
@@ -236,11 +136,13 @@ function mergeTextItems(textItems: any[]): PositionedTextItem[] {
         for (const item of accepted) {
             const x = item.transform ? item.transform[4] : 0;
             const y = item.transform ? item.transform[5] : 0;
+            const fontName = item.fontName || item.fontFamily || undefined;
             if (
                 current &&
                 current.y !== undefined &&
                 Math.abs((current.y ?? 0) - y) < rowTolerance &&
-                x - ((current.x ?? 0) + getTextItemWidth(current)) < xGapThreshold
+                x - ((current.x ?? 0) + getTextItemWidth(current)) < xGapThreshold &&
+                current.fontName === fontName
             ) {
                 // Add a space if needed between fragments
                 const needsSpace =
@@ -257,6 +159,7 @@ function mergeTextItems(textItems: any[]): PositionedTextItem[] {
                     color: item.color,
                     x,
                     y,
+                    fontName,
                     originalIndex: item.originalIndex,
                 };
             }
@@ -266,21 +169,22 @@ function mergeTextItems(textItems: any[]): PositionedTextItem[] {
     return merged;
 }
 
-export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<ParsedPDF> => {
+export const parsePDF = async (
+    pdfPath: string,
+    imagesDir: string,
+    fontsDir: string,
+): Promise<ParsedPDF & { fonts?: Record<string, string | null> }> => {
     const { getDocument } = await importEsmModule<any>('pdfjs-dist/legacy/build/pdf.mjs');
-
     // Ensure imagesDir exists
     if (!fs.existsSync(imagesDir)) {
         fs.mkdirSync(imagesDir, { recursive: true });
     }
-
     const data = new Uint8Array(fs.readFileSync(pdfPath));
     // Fix: Provide standardFontDataUrl for pdfjs-dist legacy build in Node.js
     const pdfjsDistLegacyPath = require.resolve('pdfjs-dist/legacy/build/pdf.mjs');
     const standardFontDataUrl = path.join(path.dirname(pdfjsDistLegacyPath), 'standard_fonts/');
     const loadingTask = getDocument({ data, standardFontDataUrl });
     const pdfDoc = await loadingTask.promise;
-
     // Extract metadata
     const meta = await pdfDoc.getMetadata().catch(() => ({}));
     const info = meta && typeof meta === 'object' && 'info' in meta ? meta.info : {};
@@ -289,12 +193,19 @@ export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<Pars
     const subject = info.Subject;
     const keywords = info.Keywords ? info.Keywords.split(',') : [];
     const metadata = { title, author, subject, keywords };
-
     const pages: ExtractedText[] = [];
     let viewport:
         | { width: number; height: number; widthMM?: number; heightMM?: number }
         | undefined = undefined;
-    for (let i = 0; i < 10; i++) {
+    // Font extraction: collect embedded font files
+
+    // Extract fonts with mutool before parsing PDF.js
+    extractFontsWithMutool(pdfPath, fontsDir);
+    if (!fs.existsSync(fontsDir)) fs.mkdirSync(fontsDir, { recursive: true });
+    const fontMap: Record<string, string> = {};
+    // Use pdfDoc._pdfInfo.numPages for page count if available
+    const numPages = pdfDoc.numPages || (pdfDoc._pdfInfo && pdfDoc._pdfInfo.numPages) || 10;
+    for (let i = 0; i < Math.min(numPages, 100); i++) {
         const page = await pdfDoc.getPage(i + 1);
         if (!viewport) {
             const vp = page.getViewport({ scale: 1 });
@@ -304,10 +215,97 @@ export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<Pars
             viewport = { width: vp.width, height: vp.height, widthMM, heightMM };
         }
         const textContent = await page.getTextContent();
-
+        // Collect all fontNames used on this page
+        const usedFontNames = new Set<string>();
+        for (const item of textContent.items) {
+            if (item.fontName) usedFontNames.add(item.fontName);
+        }
+        // Force PDF.js to load font data for each used font
+        if (page.commonObjs && typeof page.commonObjs.get === 'function') {
+            for (const fontName of Array.from(usedFontNames)) {
+                try {
+                    page.commonObjs.get(fontName);
+                } catch (e) {
+                    // Ignore errors if font is not found
+                }
+            }
+        }
+        // Try to access font objects by fontName to trigger loading
+        if (page.commonObjs && typeof page.commonObjs._objs === 'object') {
+            for (const fontName of Array.from(usedFontNames)) {
+                const fontObj = page.commonObjs._objs[fontName];
+                if (fontObj) {
+                    console.log(
+                        '[PDF FONT BY NAME]',
+                        fontName,
+                        fontObj && typeof fontObj === 'object' ? Object.keys(fontObj) : [],
+                        {
+                            hasData: 'data' in fontObj,
+                            dataType:
+                                fontObj.data &&
+                                fontObj.data.constructor &&
+                                fontObj.data.constructor.name,
+                            dataLength: fontObj.data && fontObj.data.length,
+                            loadedName: fontObj.loadedName,
+                            mimetype: fontObj.mimetype,
+                        },
+                    );
+                } else {
+                    console.log('[PDF FONT BY NAME NOT FOUND]', fontName);
+                }
+            }
+            // Also log all keys in _objs
+            for (const [key, obj] of Object.entries(page.commonObjs._objs)) {
+                if (obj && typeof obj === 'object') {
+                    console.log('[PDF FONT OBJ]', key, Object.keys(obj));
+                } else {
+                    console.log('[PDF FONT OBJ]', key, typeof obj);
+                }
+            }
+            // Font extraction: extract embedded font files from PDF.js internals
+            for (const [key, obj] of Object.entries(page.commonObjs._objs)) {
+                if (obj && typeof obj === 'object' && ('data' in obj || 'loadedName' in obj)) {
+                    console.log('[PDF FONT DEBUG]', {
+                        key,
+                        hasData: 'data' in obj,
+                        dataType:
+                            obj &&
+                            (obj as any).data &&
+                            (obj as any).data.constructor &&
+                            (obj as any).data.constructor.name,
+                        dataLength: obj && (obj as any).data && (obj as any).data.length,
+                        loadedName: (obj as any).loadedName,
+                        mimetype: (obj as any).mimetype,
+                    });
+                }
+                const data = (obj as any).data;
+                const loadedName = (obj as any).loadedName;
+                if (
+                    obj &&
+                    typeof obj === 'object' &&
+                    data &&
+                    (Array.isArray(data) || data instanceof Uint8Array) &&
+                    data.length > 1000 &&
+                    typeof loadedName === 'string' &&
+                    !fontMap[loadedName]
+                ) {
+                    const fontObj = obj as {
+                        data: Uint8Array | number[];
+                        loadedName: string;
+                        mimetype?: string;
+                    };
+                    const ext =
+                        fontObj.mimetype && fontObj.mimetype.includes('truetype') ? 'ttf' : 'otf';
+                    const fontFileName = `${fontObj.loadedName}.${ext}`;
+                    const fontFilePath = path.join(fontsDir, fontFileName);
+                    fs.writeFileSync(fontFilePath, Buffer.from(fontObj.data));
+                    fontMap[fontObj.loadedName] = `fonts/${fontFileName}`;
+                    console.log('[PDF FONT EXTRACTED]', fontFileName, fontFilePath);
+                }
+            }
+        }
         // Use helper to merge text items
         const mergedTextItems = mergeTextItems(textContent.items);
-
         // Extract highlights (annotations)
         const annotations = await page.getAnnotations();
         const highlights: HighlightItem[] = annotations
@@ -316,7 +314,6 @@ export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<Pars
                 text: ann.contents || '',
                 quadPoints: ann.quadPoints || [],
             }));
-
         pages.push({
             page: i + 1,
             textItems: mergedTextItems,
@@ -324,10 +321,8 @@ export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<Pars
             highlights,
         });
     }
-
     // Extract images using Poppler
     // const images = await extractImagesWithPoppler(pdfPath, imagesDir);
-
     // // Distribute images to pages (do not attach to text items)
     // images.forEach(img => {
     //     const pageIdx = Math.max(0, Math.min(pages.length - 1, img.page - 1));
@@ -348,20 +343,38 @@ export const parsePDF = async (pdfPath: string, imagesDir: string): Promise<Pars
     //         }
     //         img.y = y;
     //     }
-    //     // --- FIX: Actually push to the correct page.images array ---
     //     if (!page.images) page.images = [];
     //     page.images.push(img);
     // });
-
+    // After all pages processed, build a map of all used font names to file (or null)
+    const allUsedFontNames = new Set<string>();
+    pages.forEach(page => {
+        (page.textItems as PositionedTextItem[]).forEach(ti => {
+            if (ti.fontName) allUsedFontNames.add(ti.fontName);
+        });
+    });
+    // Map extracted font files (font-0.ttf, font-1.otf, etc) to font names (best effort)
+    const fontFiles = fs
+        .readdirSync(fontsDir)
+        .filter(f => f.startsWith('font-') && (f.endsWith('.ttf') || f.endsWith('.otf')));
+    // Heuristic: assign font files in order to font names (order is not guaranteed to match, but better than nothing)
+    const fonts: Record<string, string | null> = {};
+    const fontNames = Array.from(allUsedFontNames);
+    for (let i = 0; i < fontNames.length; i++) {
+        fonts[fontNames[i]] = fontFiles[i] ? `fonts/${fontFiles[i]}` : null;
+    }
     return {
         metadata,
         pages,
         viewport,
+        fonts,
     };
 };
 
 // Generate HTML from parsed PDF data
-export function generateHtmlFromParsed(parsed: ParsedPDF): string {
+export function generateHtmlFromParsed(
+    parsed: ParsedPDF & { fonts?: Record<string, string | null> },
+): string {
     const viewport = parsed.viewport || { width: 800, height: 1000 };
     // PDF points to CSS pixels: 1pt = 1.333px (96/72)
     const scale = 96 / 72;
@@ -372,27 +385,85 @@ export function generateHtmlFromParsed(parsed: ParsedPDF): string {
         pageWidth = viewport.widthMM * 3.7795;
         pageHeight = viewport.heightMM * 3.7795;
     }
-    let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${parsed.metadata.title || 'PDF Extract'}</title><style>
-        body { font-family: sans-serif; background: #eee; }
-        .page { background: #fff; margin: 2em auto; box-shadow: 0 0 8px #aaa; width: ${pageWidth}px; height: ${pageHeight}px; padding: 0; position: relative; }
-        .text-block { position: absolute; white-space: pre; }
-    </style></head><body>`;
+    // Emit @font-face rules for extracted fonts
+    let fontFaceCss = '';
+    if (parsed.fonts) {
+        for (const [fontName, fontPath] of Object.entries(parsed.fonts)) {
+            fontFaceCss += `@font-face { font-family: '${fontName}'; src: url('${fontPath}'); font-display: swap; }\n`;
+        }
+    }
+    let html =
+        `<!DOCTYPE html
+<html>
+<head>
+<meta charset="utf-8">
+<title>${parsed.metadata.title || 'PDF Extract'}</title>
+<style>
+` +
+        fontFaceCss +
+        `body { font-family: sans-serif; background: #eee; }
+.page { background: #fff; margin: 2em auto; box-shadow: 0 0 8px #aaa; width: ${pageWidth}px; height: ${pageHeight}px; padding: 0; position: relative; }
+.text-block { position: absolute; white-space: pre; }
+` +
+        `</style>
+</head>
+<body>`;
     parsed.pages.forEach(page => {
         html += `<div class="page">`;
+        const placedBoxes: Array<{ left: number; top: number; right: number; bottom: number }> = [];
         (page.textItems as PositionedTextItem[]).forEach((ti, idx) => {
+            let left = ti.x !== undefined ? ti.x * scale : 0;
+            const fontSize = ti.fontSize || 10;
+            const width = (ti.text ? ti.text.length : 1) * (fontSize * scale) * 0.5;
+            const top =
+                ti.y !== undefined && viewport.height ? (viewport.height - ti.y) * scale : 0;
+            const height = fontSize * scale;
+            let right = left + width;
+            const bottom = top + height;
+            // Check for overlap and shift right if needed
+            let shift = 0;
+            placedBoxes.forEach(box => {
+                const ix1 = Math.max(left, box.left);
+                const iy1 = Math.max(top, box.top);
+                const ix2 = Math.min(right, box.right);
+                const iy2 = Math.min(bottom, box.bottom);
+                if (ix2 > ix1 && iy2 > iy1) {
+                    // Overlap: compute shift needed
+                    const neededShift = box.right - left + 1; // +1px gap
+                    if (neededShift > shift) shift = neededShift;
+                }
+            });
+            if (shift > 0) {
+                left += shift;
+                right = left + width;
+            }
+            placedBoxes.push({ left, top, right, bottom });
             const styleParts = [
-                ti.x !== undefined ? `left:${ti.x * scale}px` : '',
-                ti.y !== undefined && viewport.height
-                    ? `top:${(viewport.height - ti.y) * scale}px`
-                    : '', // invert y for html, scale
-                ti.fontSize ? `font-size:${ti.fontSize * scale}px` : '',
+                `left:${left}px`,
+                `top:${Math.round(top)}px`,
+                `font-size:${fontSize * scale}px`,
                 ti.color ? `color:${ti.color}` : '',
+                ti.fontName ? `font-family:'${ti.fontName}', sans-serif` : '',
+                ti.fontWeight ? `font-weight:${ti.fontWeight}` : '',
+                ti.fontStyle ? `font-style:${ti.fontStyle}` : '',
                 `z-index:${ti.originalIndex ?? idx}`,
             ].filter(Boolean);
             html += `<span class="text-block" style="${styleParts.join(';')}">${ti.text}</span>`;
         });
+        // Render images for this page
+        (page.images || []).forEach(img => {
+            if (img.x !== undefined && img.y !== undefined && img.width && img.height) {
+                const left = img.x * scale;
+                const top = (viewport.height - img.y - img.height) * scale;
+                const width = img.width * scale;
+                const height = img.height * scale;
+                html += `<img src="images/${img.filename}" style="position:absolute;left:${left}px;top:${top}px;width:${width}px;height:${height}px;z-index:0;" alt="image" />`;
+            }
+        });
         html += `</div>`;
     });
     html += `</body></html>`;
+    // Remove unnecessary escape characters in HTML
+    html = html.replace(/\\"/g, '"');
     return html;
 }
