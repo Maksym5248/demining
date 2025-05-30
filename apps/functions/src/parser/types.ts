@@ -38,3 +38,14 @@ export interface ParsedPDF {
     pages: ExtractedText[];
     viewport?: { width: number; height: number; widthMM?: number; heightMM?: number };
 }
+
+export interface PositionedTextItem extends TextItem {
+    y?: number;
+    x?: number;
+    newParagraph?: boolean;
+    offsetX?: number;
+    originalIndex?: number; // Preserve original index for HTML generation
+    fontName?: string; // Add fontName for font extraction
+    fontWeight?: string | number; // Add fontWeight for style extraction
+    fontStyle?: string; // Add fontStyle for style extraction
+}

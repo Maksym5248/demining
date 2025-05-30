@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import { parsePDF, generateHtmlFromParsed } from './pdfParser';
+import { generateHtmlFromParsed } from './generateHtmlFromParsed';
+import { parsePDF } from './pdfParser';
 
 (async () => {
     const pdfPath = path.join(__dirname, 'book.pdf');
