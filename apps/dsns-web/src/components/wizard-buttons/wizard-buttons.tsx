@@ -6,14 +6,28 @@ interface DrawerExtraProps extends React.PropsWithChildren {
     onEdit?: () => void;
     onView?: () => void;
     onSave?: () => void;
+    onOpenBookPlugin?: () => void;
     isView?: boolean;
     isEdit?: boolean;
     isSave?: boolean;
     isEditable?: boolean;
+    isBookPlugin?: boolean;
     menu?: MenuProps['items'];
 }
 
-export function WizardButtons({ onEdit, onView, onSave, isView, isEdit, isSave, isEditable = true, children, menu }: DrawerExtraProps) {
+export function WizardButtons({
+    onEdit,
+    onView,
+    onSave,
+    onOpenBookPlugin,
+    isView,
+    isEdit,
+    isSave,
+    isBookPlugin,
+    isEditable = true,
+    children,
+    menu,
+}: DrawerExtraProps) {
     const items: MenuProps['items'] = [];
 
     if (onSave && isSave) {
@@ -22,6 +36,15 @@ export function WizardButtons({ onEdit, onView, onSave, isView, isEdit, isSave, 
             key: 'word',
             icon: <Icon.DownloadOutlined />,
             onClick: onSave,
+        });
+    }
+
+    if (onOpenBookPlugin && isBookPlugin) {
+        items.push({
+            label: 'Книги',
+            key: 'books-plugin',
+            icon: <Icon.DownloadOutlined />,
+            onClick: onOpenBookPlugin,
         });
     }
 

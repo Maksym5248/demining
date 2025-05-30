@@ -26,6 +26,7 @@ import {
     ExplosiveObjectFillerWizardModal,
     BookWizardModal,
     SizeWizardModal,
+    BookPluginModal,
 } from '~/modals';
 
 export const modals: IModalsMap = {
@@ -100,5 +101,8 @@ export const modals: IModalsMap = {
     },
     [MODALS.SIZE_WIZARD]: {
         renderComponent: (props: any) => <SizeWizardModal {...props} />,
+    },
+    [MODALS.BOOK_PLUGIN]: {
+        renderComponent: (props: any) => <BookPluginModal {...props} />,
     },
 };
