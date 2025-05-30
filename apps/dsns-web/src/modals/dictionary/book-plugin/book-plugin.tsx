@@ -39,7 +39,7 @@ export const BookPluginModal = observer(({ isVisible, hide }: BookPluginProps) =
         setTabs(prev => [...prev, tab]);
     }, []);
 
-    const intialTab = createTab('booksList', 'Список книг', <BooksList onOpenBook={openBook} />);
+    const intialTab = createTab('booksList', 'Книги', <BooksList onOpenBook={openBook} />);
 
     const onChange = (key: string) => setActiveKey(key);
 
