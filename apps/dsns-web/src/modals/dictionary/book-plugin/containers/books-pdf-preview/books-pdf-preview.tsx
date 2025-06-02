@@ -2,7 +2,6 @@ import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
 import { Button } from 'antd';
-import { get, set } from 'idb-keyval';
 import { observer } from 'mobx-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { useAsyncEffect } from 'shared-my-client';
@@ -16,30 +15,16 @@ import { s } from './books-pdf-preview.styles';
 import { type IBooksPdfPreviewProps } from './books-pdf-preview.types';
 import { PdfPanel } from './PdfPanel';
 import { PdfSettingsPanel } from './PdfSettingsPanel';
+import { usePDF } from '../../usePDF';
 
 // @ts-ignore
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
-
-// Helper keys for settings and page state
-
-async function cacheAsset(uri: string): Promise<Blob | null> {
-    if (!uri) return null;
-    const cached = await get(uri);
-
-    if (cached) return cached as Blob;
-
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    await set(uri, blob);
-    return blob;
-}
 
 export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
     const { book } = useStore();
     const [numPages, setNumPages] = useState<number>();
     const [pageNumber, setPageNumber] = useState<number>(Storage.get(STORAGE.PAGE_KEY_PREFIX + id) ?? 1);
-    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const [scale, setScale] = useState<number>(1.0);
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -70,26 +55,13 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
     }, [scale]);
 
     const item = book.collection.get(id);
+    const pdf = usePDF(item?.data.uri);
 
     useAsyncEffect(async () => {
         if (!item) {
             await book.fetchItem.run(id);
         }
     }, [id]);
-
-    useAsyncEffect(async () => {
-        try {
-            if (!item?.data.uri) return;
-            setIsLoading(true);
-
-            const blob = await cacheAsset(item.data.uri);
-            if (blob) setPdfBlob(blob);
-        } catch (e) {
-            console.log('Fetching PDF blob for 3:', e);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [item?.data.uri]);
 
     // Load settings and last page from idb-keyval
     useEffect(() => {
@@ -142,7 +114,7 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
         }
     };
 
-    if (book.fetchItem.isLoading || isLoading) {
+    if (book.fetchItem.isLoading || pdf.isLoading) {
         return <Loading />;
     }
 
@@ -181,7 +153,7 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
                 />
             )}
             <div css={s.pdfContent}>
-                <Document file={pdfBlob} onLoadSuccess={onDocumentLoadSuccess} loading={<Loading />}>
+                <Document file={pdf.file} onLoadSuccess={onDocumentLoadSuccess} loading={<Loading />}>
                     <Page
                         pageNumber={pageNumber}
                         width={containerWidth ? containerWidth * scale : undefined}
