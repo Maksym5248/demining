@@ -43,7 +43,7 @@ export function WizardButtons({
         items.push({
             label: 'Книги',
             key: 'books-plugin',
-            icon: <Icon.DownloadOutlined />,
+            icon: <Icon.BookOutlined />,
             onClick: onOpenBookPlugin,
         });
     }

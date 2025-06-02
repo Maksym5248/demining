@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { observer } from 'mobx-react';
 
 import { Icon, List, ListHeader, Image } from '~/components';
-import { useStore, useRouteTitle, useSearch } from '~/hooks';
+import { useStore, useSearch } from '~/hooks';
 
 import { type IBooksListItemProps, type IBooksListProps } from './books-list.types';
 
@@ -30,7 +30,6 @@ const ListItem = observer(({ item, onOpenBook }: IBooksListItemProps) => {
 
 export const BooksList = observer(({ onOpenBook }: IBooksListProps) => {
     const { book } = useStore();
-    const title = useRouteTitle();
     const search = useSearch();
 
     const onSearch = (value: string) => {
@@ -43,7 +42,7 @@ export const BooksList = observer(({ onOpenBook }: IBooksListProps) => {
     };
 
     useEffect(() => {
-        book.fetchList.run(search.searchValue);
+        book.fetchList.run(search?.searchValue);
     }, []);
 
     return (
@@ -55,7 +54,7 @@ export const BooksList = observer(({ onOpenBook }: IBooksListProps) => {
             isReachedEnd={!book.list.isMorePages}
             dataSource={book.list.asArray}
             onLoadMore={onLoadMore}
-            header={<ListHeader title={title} onSearch={onSearch} {...search} />}
+            header={<ListHeader onSearch={onSearch} {...search} />}
             renderItem={item => <ListItem item={item} onOpenBook={onOpenBook} />}
         />
     );
