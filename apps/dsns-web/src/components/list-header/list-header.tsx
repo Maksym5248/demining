@@ -7,7 +7,7 @@ import { s } from './list-header.styles';
 const { Title } = Typography;
 
 interface ListHeaderProps {
-    title: string;
+    title?: string;
     onCreate?: (e: React.SyntheticEvent) => void;
     onSearch?: (value: string) => void;
     searchBy?: string;

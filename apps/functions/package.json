@@ -33,7 +33,7 @@
         "@google-cloud/translate": "^9.0.1",
         "firebase-admin": "^12.1.1",
         "firebase-functions": "^5.0.1",
-        "pdfjs-dist": "^5.2.133",
+        "pdfjs-dist": "4.8.69",
         "shared-my": "*"
     },
     "devDependencies": {

@@ -294,7 +294,7 @@ export const ExplosiveObjectWizardModal = observer(({ id, isVisible, hide, mode 
             destroyOnClose
             title={str.getTitle(wizard, item?.displayName ?? '')}
             placement="right"
-            width={800}
+            width="50%"
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={item?.isEditable} />}>
             {isLoading ? (

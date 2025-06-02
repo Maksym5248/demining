@@ -9,6 +9,7 @@ export * from './report/explosive-object-action-wizard';
 export * from './dictionary/explosive-object-type-wizard';
 export * from './dictionary/explosive-object-class-wizard';
 export * from './dictionary/explosive-object-class-item-wizard';
+export * from './dictionary/book-plugin';
 export * from './managment/member-wizard';
 export * from './report/mission-report-wizard';
 export * from './report/mission-request-wizard';

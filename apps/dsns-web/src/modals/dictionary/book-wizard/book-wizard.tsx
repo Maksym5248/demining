@@ -69,7 +69,7 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
             destroyOnClose
             title={`${isEdit ? 'Редагувати' : 'Створити'} Книгу`}
             placement="right"
-            width={600}
+            width="50%"
             onClose={hide}
             extra={<WizardButtons {...wizard} isEditable={currentBook?.isEditable} />}>
             {isLoading ? (

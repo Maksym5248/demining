@@ -1,26 +1,33 @@
 import { useState } from 'react';
 
-import { useSearchParams } from 'react-router-dom';
-
 import { SEARCH_PARAMS } from '~/constants';
 
 export const useSearch = (initialValue?: string) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    // Use window.location and URLSearchParams directly instead of useSearchParams
+    const getCurrentSearchBy = () => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(SEARCH_PARAMS.SEARCH_BY) ?? initialValue ?? '';
+        }
+        return initialValue ?? '';
+    };
 
-    const [searchBy, setSearchBy] = useState(searchParams.get(SEARCH_PARAMS.SEARCH_BY) ?? initialValue ?? '');
+    const [searchBy, setSearchBy] = useState(getCurrentSearchBy());
     const [searchValue, setSearchValue] = useState(searchBy);
 
     const onChangeSearch = (text: string) => {
-        const newSearchParams = new URLSearchParams(searchParams);
-
-        if (text) {
-            newSearchParams.set(SEARCH_PARAMS.SEARCH_BY, text);
-        } else {
-            newSearchParams.delete(SEARCH_PARAMS.SEARCH_BY);
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            if (text) {
+                params.set(SEARCH_PARAMS.SEARCH_BY, text);
+            } else {
+                params.delete(SEARCH_PARAMS.SEARCH_BY);
+            }
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.replaceState({}, '', newUrl);
         }
-
         setSearchValue(text);
-        setSearchParams(newSearchParams);
+        setSearchBy(text);
     };
 
     return {
