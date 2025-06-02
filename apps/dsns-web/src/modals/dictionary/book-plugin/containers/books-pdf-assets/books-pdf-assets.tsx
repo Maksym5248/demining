@@ -1,16 +1,21 @@
-import { useEffect } from 'react';
-
 import { observer } from 'mobx-react';
+import { useItemStore } from 'shared-my-client';
 
-import { useStore, useSearch } from '~/hooks';
+import { Loading } from '~/components';
+import { useStore } from '~/hooks';
 
-export const BooksPdfAssets = observer(() => {
+import { type IBooksPdfAssetsProps } from './books-pdf-assets.types';
+import { usePDF } from '../../usePDF';
+
+export const BooksPdfAssets = observer(({ id }: IBooksPdfAssetsProps) => {
     const { book } = useStore();
-    const search = useSearch();
 
-    useEffect(() => {
-        book.fetchList.run(search?.searchValue);
-    }, []);
+    const current = useItemStore(book, id);
+    const pdf = usePDF(current.item?.data.uri);
+
+    if (current.isLoading || pdf.isLoading) {
+        return <Loading />;
+    }
 
     return <div />;
 });
