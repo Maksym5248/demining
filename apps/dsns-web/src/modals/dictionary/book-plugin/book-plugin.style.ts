@@ -13,14 +13,14 @@ const size = Theme.css(`
 `);
 
 const inert = Theme.css(
-    (theme) => `
+    theme => `
     color: ${theme.token.colorInfoActive};
 
 `,
 );
 
 const label = Theme.css(
-    (theme) => `
+    theme => `
     color: ${theme.token.colorInfoActive};
 `,
 );

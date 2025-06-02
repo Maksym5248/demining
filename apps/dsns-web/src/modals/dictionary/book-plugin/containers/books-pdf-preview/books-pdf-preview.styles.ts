@@ -1,22 +1,62 @@
 import { Theme } from '~/styles';
 
-const listHeader = Theme.css(`
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 8px;
+const container = Theme.css(`
+    position: relative;
+    width: 100%;
+    height: 100%;
 `);
 
-const listItemDesc = Theme.css(`
+const panel = Theme.css(`
     display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+`);
+
+const settingsButton = Theme.css(`
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    z-index: 11;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    box-shadow: 0 2px 8px #0001;
+    cursor: pointer;
+`);
+
+const settingsPanel = Theme.css(`
+    position: absolute;
+    top: 40px;
+    right: 16px;
+    z-index: 10;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 2px 8px #0001;
+`);
+
+const pdfContent = Theme.css(`
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `);
 
 export const s = {
-    listHeader,
-    listItemDesc,
+    container,
+    panel,
+    settingsButton,
+    settingsPanel,
+    pdfContent,
 };
