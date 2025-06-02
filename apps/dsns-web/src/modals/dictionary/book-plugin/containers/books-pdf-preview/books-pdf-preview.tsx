@@ -6,16 +6,16 @@ import { observer } from 'mobx-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { useAsyncEffect } from 'shared-my-client';
 
-import { Loading } from '~/components';
+import { Icon, Loading } from '~/components';
 import { STORAGE } from '~/constants';
 import { useStore } from '~/hooks';
 import { Storage } from '~/services';
 
 import { s } from './books-pdf-preview.styles';
 import { type IBooksPdfPreviewProps } from './books-pdf-preview.types';
-import { PdfPanel } from './PdfPanel';
-import { PdfSettingsPanel } from './PdfSettingsPanel';
-import { usePDF } from '../../usePDF';
+import { PdfPanel } from './panel';
+import { PdfSettingsPanel } from './setting-menu';
+import { usePDF } from '../../use-pdf';
 
 // @ts-ignore
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
@@ -120,9 +120,13 @@ export const BooksPdfPreview = observer(({ id, onOpenComponents }: IBooksPdfPrev
 
     return (
         <div ref={containerRef} css={[s.container]}>
-            <Button size="small" onClick={() => setShowSettings(true)} css={s.settingsButton} aria-label="Open PDF settings">
-                ⚙️
-            </Button>
+            <Button
+                size="small"
+                onClick={() => setShowSettings(true)}
+                css={s.settingsButton}
+                aria-label="Open PDF settings"
+                icon={<Icon.SettingOutlined />}
+            />
             {showSettings && (
                 <PdfSettingsPanel
                     showPanel={showPanel}

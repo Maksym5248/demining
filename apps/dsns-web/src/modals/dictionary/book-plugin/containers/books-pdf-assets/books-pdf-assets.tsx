@@ -8,7 +8,7 @@ import { Loading } from '~/components';
 import { useStore } from '~/hooks';
 
 import { type IBooksPdfAssetsProps } from './books-pdf-assets.types';
-import { usePDF } from '../../usePDF';
+import { usePDF } from '../../use-pdf';
 
 export const BooksPdfAssets = observer(({ id, pageNumber }: IBooksPdfAssetsProps) => {
     const { book } = useStore();

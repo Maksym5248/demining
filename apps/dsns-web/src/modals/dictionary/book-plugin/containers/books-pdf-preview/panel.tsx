@@ -37,6 +37,9 @@ export function PdfPanel({
 }: PdfPanelProps) {
     return (
         <div css={s.panel}>
+            <Button onClick={onOpenComponents} disabled={disableZoomIn} size="small">
+                Компоненти
+            </Button>
             <span>
                 Сторінка
                 {showPageInput && (
@@ -52,9 +55,7 @@ export function PdfPanel({
                 )}
                 з {numPages}
             </span>
-            <Button onClick={onOpenComponents} disabled={disableZoomIn} size="small">
-                Компоненти
-            </Button>
+
             {showZoom && (
                 <>
                     <Button onClick={onZoomOut} disabled={disableZoomOut} size="small">
