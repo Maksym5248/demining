@@ -18,7 +18,7 @@ const createTab = (key: string, label: string, children: React.ReactNode, closab
 });
 
 const createPdfPreviewTab = (key: string, label: string, children: React.ReactNode, closable = true) => ({
-    label: `Pdf ${label}`,
+    label: `${label}`.slice(0, 15) + (label.length > 15 ? '...' : ''),
     key: `pdf-${key}`,
     children,
     closable,
@@ -39,9 +39,17 @@ export const BookPluginModal = observer(({ isVisible, hide }: BookPluginProps) =
             return;
         }
 
-        const tab = createPdfPreviewTab(id, item.displayName, <BooksPdfPreview />);
+        const tab = createPdfPreviewTab(id, item.displayName, <BooksPdfPreview id={id} />);
+
+        setTabs(prev => {
+            if (prev.some(t => t.key === tab.key)) {
+                return prev;
+            }
+
+            return [...prev, tab];
+        });
+
         setActiveKey(tab.key);
-        setTabs(prev => [...prev, tab]);
     }, []);
 
     const intialTab = createTab(MAIN_TAB, 'Список', <BooksList onOpenBook={openBook} />, false);

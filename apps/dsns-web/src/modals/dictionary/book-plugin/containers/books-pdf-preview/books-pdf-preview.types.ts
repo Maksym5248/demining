@@ -1,1 +1,3 @@
-export interface IBooksPdfPreviewProps {}
+export interface IBooksPdfPreviewProps {
+    id: string;
+}
