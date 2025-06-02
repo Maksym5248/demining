@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react';
 import { ConfigProvider } from 'antd';
 import uk from 'antd/lib/locale/uk_UA';
 import { Timestamp } from 'firebase/firestore';
+import { observer } from 'mobx-react-lite';
 import { dates, LogLevel } from 'shared-my-client';
 
 import { ThemeProvider, ModalProvider } from '~/containers';
@@ -21,7 +22,7 @@ Logger.setLevel(CONFIG.IS_DEBUG ? LogLevel.Debug : LogLevel.None);
 dates.init(Timestamp);
 const store = new RootStore();
 
-export function App() {
+function AppComponent() {
     useEffect(() => {
         store.init();
 
@@ -36,10 +37,12 @@ export function App() {
                 <ThemeProvider>
                     <RootStoreContext.Provider value={store}>
                         <RootRouter />
-                        <ModalProvider modals={modals} />
+                        {!!store.isInitialized && <ModalProvider modals={modals} />}
                     </RootStoreContext.Provider>
                 </ThemeProvider>
             </ConfigProvider>
         </Sentry.ErrorBoundary>
     );
 }
+
+export const App = observer(AppComponent);

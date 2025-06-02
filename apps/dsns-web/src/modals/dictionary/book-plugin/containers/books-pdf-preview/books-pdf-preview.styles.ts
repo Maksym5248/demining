@@ -13,7 +13,7 @@ const panel = Theme.css(`
     margin-bottom: 8px;
     gap: 8px;
     position: absolute;
-    top: 0;
+    top: -10px;
     left: 0;
     right: 0;
     z-index: 10;
@@ -21,7 +21,7 @@ const panel = Theme.css(`
 
 const settingsButton = Theme.css(`
     position: absolute;
-    top: 8px;
+    top: -10px;
     right: 16px;
     z-index: 11;
     background: #fff;

@@ -1,6 +1,7 @@
 import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
+import { Button } from 'antd';
 import { get, set } from 'idb-keyval';
 import { observer } from 'mobx-react';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -132,8 +133,8 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
 
     const goToPrevPage = () => setPageNumber(p => Math.max(1, p - 1));
     const goToNextPage = () => setPageNumber(p => (numPages ? Math.min(numPages, p + 1) : p + 1));
-    const zoomIn = () => setScale(s => Math.min(s + 0.2, 3));
-    const zoomOut = () => setScale(s => Math.max(s - 0.2, 0.4));
+    const zoomIn = () => setScale(s => Math.min(s + 0.1, 3));
+    const zoomOut = () => setScale(s => Math.max(s - 0.1, 0.4));
     const onPageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = parseInt(e.target.value, 10);
         if (!isNaN(val) && numPages && val >= 1 && val <= numPages) {
@@ -147,9 +148,9 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
 
     return (
         <div ref={containerRef} css={[s.container]}>
-            <button onClick={() => setShowSettings(true)} css={s.settingsButton} aria-label="Open PDF settings">
+            <Button size="small" onClick={() => setShowSettings(true)} css={s.settingsButton} aria-label="Open PDF settings">
                 ⚙️
-            </button>
+            </Button>
             {showSettings && (
                 <PdfSettingsPanel
                     showPanel={showPanel}

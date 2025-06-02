@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react';
 
-import { Drawer, Tabs, message } from 'antd';
+import { Button, Drawer, Tabs, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 
+import { Icon } from '~/components';
 import { useStore } from '~/hooks';
 
+import { s } from './book-plugin.style';
 import { type Tab, type BookPluginProps } from './book-plugin.types';
 import { BooksList, BooksPdfPreview } from './containers';
 
@@ -77,7 +79,8 @@ export const BookPluginModal = observer(({ isVisible, hide }: BookPluginProps) =
         }
     };
     return (
-        <Drawer title="Книги" open={isVisible} placement="left" width="50%" onClose={hide} mask={false}>
+        <Drawer closable={false} open={isVisible} placement="left" width="50%" onClose={hide} mask={false}>
+            <Button onClick={hide} css={s.close} type="text" icon={<Icon.CloseOutlined />} />
             <Tabs type="editable-card" hideAdd activeKey={activeKey} onChange={onChange} onEdit={onEdit} items={[intialTab, ...tabs]} />
         </Drawer>
     );

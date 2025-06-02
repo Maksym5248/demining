@@ -1,3 +1,5 @@
+import { Button } from 'antd';
+
 import { s } from './books-pdf-preview.styles';
 
 type PdfSettingsPanelProps = {
@@ -30,9 +32,9 @@ export function PdfSettingsPanel({
             <label style={{ display: 'block', marginBottom: 8 }}>
                 <input type="checkbox" checked={showZoom} onChange={e => setShowZoom(e.target.checked)} /> Show Zoom Controls
             </label>
-            <button onClick={onClose} style={{ marginTop: 8 }}>
+            <Button onClick={onClose} style={{ marginTop: 8 }} size="small">
                 Close
-            </button>
+            </Button>
         </div>
     );
 }
