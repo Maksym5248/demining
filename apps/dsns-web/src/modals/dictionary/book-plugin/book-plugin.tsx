@@ -9,6 +9,7 @@ import { useStore } from '~/hooks';
 import { s } from './book-plugin.style';
 import { type Tab, type BookPluginProps } from './book-plugin.types';
 import { BooksList, BooksPdfPreview } from './containers';
+import { BooksPdfAssets } from './containers/books-pdf-assets';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -26,12 +27,40 @@ const createPdfPreviewTab = (key: string, label: string, children: React.ReactNo
     closable,
 });
 
+const createPdfAssetsTab = (key: string, label: string, children: React.ReactNode, closable = true) => ({
+    label: `${label}`.slice(0, 15) + (label.length > 15 ? '...' : ''),
+    key: `assets-${key}`,
+    children,
+    closable,
+});
+
 const MAIN_TAB = 'booksList';
 export const BookPluginModal = observer(({ isVisible, hide }: BookPluginProps) => {
     const { book } = useStore();
 
     const [activeKey, setActiveKey] = useState(MAIN_TAB);
     const [tabs, setTabs] = useState<Tab[]>([]);
+
+    const onOpenComponents = useCallback((id: string, pageNumber: number) => {
+        const item = book.collection.get(id);
+
+        if (!item) {
+            message.error('Книгу не завантажено');
+            return;
+        }
+
+        const tab = createPdfAssetsTab(id, item.displayName, <BooksPdfAssets id={id} pageNumber={pageNumber} />);
+
+        setTabs(prev => {
+            if (prev.some(t => t.key === tab.key)) {
+                return prev;
+            }
+
+            return [...prev, tab];
+        });
+
+        setActiveKey(tab.key);
+    }, []);
 
     const openBook = useCallback((id: string) => {
         const item = book.collection.get(id);
@@ -41,7 +70,7 @@ export const BookPluginModal = observer(({ isVisible, hide }: BookPluginProps) =
             return;
         }
 
-        const tab = createPdfPreviewTab(id, item.displayName, <BooksPdfPreview id={id} />);
+        const tab = createPdfPreviewTab(id, item.displayName, <BooksPdfPreview id={id} onOpenComponents={onOpenComponents} />);
 
         setTabs(prev => {
             if (prev.some(t => t.key === tab.key)) {

@@ -15,6 +15,7 @@ type PdfPanelProps = {
     scale: number;
     onZoomIn: () => void;
     onZoomOut: () => void;
+    onOpenComponents: () => void;
     disablePrev: boolean;
     disableNext: boolean;
     disableZoomIn: boolean;
@@ -32,6 +33,7 @@ export function PdfPanel({
     onZoomOut,
     disableZoomIn,
     disableZoomOut,
+    onOpenComponents,
 }: PdfPanelProps) {
     return (
         <div css={s.panel}>
@@ -50,6 +52,9 @@ export function PdfPanel({
                 )}
                 з {numPages}
             </span>
+            <Button onClick={onOpenComponents} disabled={disableZoomIn} size="small">
+                Компоненти
+            </Button>
             {showZoom && (
                 <>
                     <Button onClick={onZoomOut} disabled={disableZoomOut} size="small">

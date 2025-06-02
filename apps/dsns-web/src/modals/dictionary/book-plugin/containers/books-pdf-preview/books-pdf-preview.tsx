@@ -20,7 +20,7 @@ import { usePDF } from '../../usePDF';
 // @ts-ignore
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
-export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
+export const BooksPdfPreview = observer(({ id, onOpenComponents }: IBooksPdfPreviewProps) => {
     const { book } = useStore();
     const [numPages, setNumPages] = useState<number>();
     const [pageNumber, setPageNumber] = useState<number>(Storage.get(STORAGE.PAGE_KEY_PREFIX + id) ?? 1);
@@ -150,6 +150,7 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
                     disableNext={numPages ? pageNumber >= numPages : false}
                     disableZoomIn={scale >= 3}
                     disableZoomOut={scale <= 0.4}
+                    onOpenComponents={() => onOpenComponents(id, pageNumber)}
                 />
             )}
             <div css={s.pdfContent}>
