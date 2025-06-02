@@ -13,6 +13,8 @@ import { Storage } from '~/services';
 
 import { s } from './books-pdf-preview.styles';
 import { type IBooksPdfPreviewProps } from './books-pdf-preview.types';
+import { PdfPanel } from './PdfPanel';
+import { PdfSettingsPanel } from './PdfSettingsPanel';
 
 // @ts-ignore
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
@@ -29,116 +31,6 @@ async function cacheAsset(uri: string): Promise<Blob | null> {
     const blob = await response.blob();
     await set(uri, blob);
     return blob;
-}
-
-// --- PdfPanel component ---
-type PdfPanelProps = {
-    pageNumber: number;
-    numPages?: number;
-    onPrev: () => void;
-    onNext: () => void;
-    showPageInput: boolean;
-    onPageInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    showZoom: boolean;
-    scale: number;
-    onZoomIn: () => void;
-    onZoomOut: () => void;
-    onShowSettings: () => void;
-    disablePrev: boolean;
-    disableNext: boolean;
-    disableZoomIn: boolean;
-    disableZoomOut: boolean;
-};
-
-function PdfPanel({
-    pageNumber,
-    numPages,
-    onPrev,
-    onNext,
-    showPageInput,
-    onPageInputChange,
-    showZoom,
-    scale,
-    onZoomIn,
-    onZoomOut,
-    disablePrev,
-    disableNext,
-    disableZoomIn,
-    disableZoomOut,
-}: PdfPanelProps) {
-    return (
-        <div css={s.panel}>
-            <button onClick={onPrev} disabled={disablePrev}>
-                Prev
-            </button>
-            <span>
-                Сторінка
-                {showPageInput && (
-                    <input
-                        type="number"
-                        min={1}
-                        max={numPages || 1}
-                        value={pageNumber}
-                        onChange={onPageInputChange}
-                        style={{ width: 50, margin: '0 4px' }}
-                    />
-                )}
-                з {numPages}
-            </span>
-            <button onClick={onNext} disabled={disableNext}>
-                Next
-            </button>
-            {showZoom && (
-                <>
-                    <button onClick={onZoomOut} disabled={disableZoomOut}>
-                        -
-                    </button>
-                    <span>Zoom: {(scale * 100).toFixed(0)}%</span>
-                    <button onClick={onZoomIn} disabled={disableZoomIn}>
-                        +
-                    </button>
-                </>
-            )}
-        </div>
-    );
-}
-
-// --- PdfSettingsPanel component ---
-type PdfSettingsPanelProps = {
-    showPanel: boolean;
-    setShowPanel: (v: boolean) => void;
-    showPageInput: boolean;
-    setShowPageInput: (v: boolean) => void;
-    showZoom: boolean;
-    setShowZoom: (v: boolean) => void;
-    onClose: () => void;
-};
-
-function PdfSettingsPanel({
-    showPanel,
-    setShowPanel,
-    showPageInput,
-    setShowPageInput,
-    showZoom,
-    setShowZoom,
-    onClose,
-}: PdfSettingsPanelProps) {
-    return (
-        <div css={s.settingsPanel}>
-            <label style={{ display: 'block', marginBottom: 8 }}>
-                <input type="checkbox" checked={showPanel} onChange={e => setShowPanel(e.target.checked)} /> Show Panel
-            </label>
-            <label style={{ display: 'block', marginBottom: 8 }}>
-                <input type="checkbox" checked={showPageInput} onChange={e => setShowPageInput(e.target.checked)} /> Show Page Input
-            </label>
-            <label style={{ display: 'block', marginBottom: 8 }}>
-                <input type="checkbox" checked={showZoom} onChange={e => setShowZoom(e.target.checked)} /> Show Zoom Controls
-            </label>
-            <button onClick={onClose} style={{ marginTop: 8 }}>
-                Close
-            </button>
-        </div>
-    );
 }
 
 export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
@@ -281,7 +173,6 @@ export const BooksPdfPreview = observer(({ id }: IBooksPdfPreviewProps) => {
                     scale={scale}
                     onZoomIn={zoomIn}
                     onZoomOut={zoomOut}
-                    onShowSettings={() => setShowSettings(s => !s)}
                     disablePrev={pageNumber <= 1}
                     disableNext={numPages ? pageNumber >= numPages : false}
                     disableZoomIn={scale >= 3}
