@@ -1,10 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import {
-    extractImagesFromPdfPage,
-    extractAllImagesWithPdfimages,
-} from './extractImagesFromPdfPage';
+import { extractImagesWithPoppler } from './extractImages';
 import { importEsmModule } from './utils';
 
 // Extend TextItem for internal use in parsePDF and HTML generation
@@ -54,8 +51,8 @@ export const parsePDF = async (
     // Use pdfDoc._pdfInfo.numPages for page count if available
     const numPages = pdfDoc.numPages || (pdfDoc._pdfInfo && pdfDoc._pdfInfo.numPages) || 10;
 
-    // Extract all images with pdfimages ONCE before the page loop
-    await extractAllImagesWithPdfimages(pdfPath, imagesDir);
+    // Extract all images with Poppler (with page info) ONCE before the page loop
+    const extractedImages = await extractImagesWithPoppler(pdfPath, imagesDir);
 
     for (let i = 0; i < Math.min(numPages, 100); i++) {
         const page = await pdfDoc.getPage(i + 1);
@@ -68,11 +65,19 @@ export const parsePDF = async (
         }
         const textContent = await page.getTextContent();
         const mergedText = textContent.items.map((item: any) => item.str).join('');
-        // Get images for this page (do not extract again)
-        const images: string[] = await extractImagesFromPdfPage(page, imagesDir, i, pdfPath);
+        // Get images for this page using extractedImages with page info
+        // Skip images that were already used on previous pages
+        const usedImageFilenames = new Set<string>();
+        for (let j = 0; j < i; j++) {
+            extractedImages
+                .filter(img => img.page === j + 1)
+                .forEach(img => usedImageFilenames.add(img.filename));
+        }
+        const imagesForPage = extractedImages.filter(
+            img => img.page === i + 1 && !usedImageFilenames.has(img.filename),
+        );
         // Build items array: merge text and images, respecting newlines
         const items: PdfPageItem[] = [];
-        // Split mergedText by newlines and add as separate text items
         if (mergedText) {
             const textLines = mergedText.split(/\r?\n/);
             textLines.forEach((line: string, idx: number) => {
@@ -80,9 +85,8 @@ export const parsePDF = async (
                 if (line) items.push({ type: 'text', value: line });
             });
         }
-        // Insert images after text, one item per image
-        for (const imgUrl of images) {
-            items.push({ type: 'image', value: imgUrl });
+        for (const img of imagesForPage) {
+            items.push({ type: 'image', value: path.join(imagesDir, img.filename) });
         }
         pages.push({
             page: i + 1,
