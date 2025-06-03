@@ -24,13 +24,13 @@ jobs:
               uses: 'google-github-actions/auth@v2'
               with:
                   credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}'
-            - name: Create .env file
-              working-directory: ./apps/functions
-              run: |
-                  echo "${{ secrets.ENV_FUNC }}" > .env
-            - name: Set up config
-              working-directory: ./apps/functions
-              run: yarn prepare:env
+            # - name: Create .env file
+            #   working-directory: ./apps/functions
+            #   run: |
+            #       echo "${{ secrets.ENV_FUNC }}" > .env
+            # - name: Set up config
+            #   working-directory: ./apps/functions
+            #   run: yarn prepare:env
             - name: Install dependencies
               run: yarn install
             - name: Install dependencies

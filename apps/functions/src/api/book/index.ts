@@ -92,10 +92,8 @@ async function ensureBookAssetsParsed(bookId: string) {
     return docData;
 }
 
-// Renaming for clarity as it's now a callable function
 export const parseBook = onCall(
     {
-        // You can still configure resources like CPU, memory, and timeout
         cpu: 1,
         memory: '1GiB',
         timeoutSeconds: 540,
