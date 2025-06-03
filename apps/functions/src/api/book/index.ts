@@ -93,7 +93,7 @@ async function ensureBookAssetsParsed(bookId: string) {
 }
 
 // Renaming for clarity as it's now a callable function
-export const triggerbookassetparsing = onCall(
+export const parseBook = onCall(
     {
         // You can still configure resources like CPU, memory, and timeout
         cpu: 1,
