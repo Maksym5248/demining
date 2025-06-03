@@ -9,5 +9,6 @@ export enum MIME_TYPE {
 export enum ASSET_TYPE {
     DOCUMENT = 'DOCUMENT',
     BOOK = 'BOOK',
+    BOOK_ASSETS = 'BOOK_ASSETS',
     IMAGE = 'IMAGE',
 }
