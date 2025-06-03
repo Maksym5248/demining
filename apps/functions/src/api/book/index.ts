@@ -4,20 +4,9 @@ import * as path from 'path';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { ASSET_TYPE, TABLES } from 'shared-my';
+import { ASSET_TYPE, type IBookParsedDB, TABLES, type Timestamp } from 'shared-my';
 
-// @ts-ignore
 import { parsePDF } from '../../parser/pdfParser';
-
-// 1. create config for storageBucket and integrate it (partially addressed with process.env.STORAGE_BUCKET)
-// 2. add types to db types
-// 3. integrate poppler to ci/cd to extract images (Dockerfile approach discussed previously)
-// 4. should we ask chatgpt to remove dublication from text items?
-// 5. update function to use it with firebase functions (this change)
-
-if (!admin.apps.length) {
-    admin.initializeApp();
-}
 
 const db = admin.firestore();
 const storage = admin.storage(); // Uses the default bucket
@@ -79,12 +68,12 @@ async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Successfully uploaded ${imageUrls.length} images for ${bookId}.`);
 
     // 5. Save parsed JSON to Firestore
-    const docData = {
+    const docData: IBookParsedDB = {
         ...parsed,
         bookId,
         images: imageUrls,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(), // Added updatedAt
+        createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp, // Added updatedAt
     };
     logger.info(`Saving parsed data to Firestore for book ${bookId}.`);
     await bookAssetsRef.set(docData);
