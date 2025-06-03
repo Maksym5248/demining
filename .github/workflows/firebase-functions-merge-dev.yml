@@ -22,20 +22,20 @@ jobs:
               working-directory: ./apps/functions
               run: |
                   echo "${{ secrets.ENV_FUNC_DEV }}" > .env
+            - name: Install Firebase CLI
+              run: yarn global add firebase-tools
+            - name: Create service account
+              uses: 'google-github-actions/auth@v2'
+              with:
+                  credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
             - name: Set up config
               working-directory: ./apps/functions
               run: yarn prepare:env
-            - name: Install Firebase CLI
-              run: yarn global add firebase-tools
             - name: Install dependencies
               run: yarn install
             - name: Install dependencies
               working-directory: apps/functions
               run: yarn build
-            - name: Create service account
-              uses: 'google-github-actions/auth@v2'
-              with:
-                  credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
             - name: Deploy to Firebase
               working-directory: apps/functions
               run: yarn deploy:functions:dev

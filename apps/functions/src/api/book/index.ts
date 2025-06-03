@@ -102,10 +102,6 @@ export const parseBook = onCall(
         // enforceAppCheck: true, // Optional: Consider enabling App Check
     },
     async request => {
-        // For onCall functions, data is in request.data
-        // Auth information is in request.auth (if the user is authenticated)
-        // logger.info('Received request with auth:', request.auth); // Example: log auth info
-
         const bookId = request.data.bookId;
 
         if (!bookId || typeof bookId !== 'string') {
