@@ -45,15 +45,18 @@ export async function extractImagesWithPoppler(
     imagesDir: string, // <-- use imagesDir directly
 ): Promise<ExtractedImage[]> {
     if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
+
+    const pdfImagesPath = '/usr/bin/pdfimages'; // Update to use full path to pdfimages
+
     return new Promise((resolve, reject) => {
         const prefix = path.join(imagesDir, 'image'); // <-- use imagesDir for prefix
-        execFile('pdfimages', ['-list', pdfPath], (error, stdout, stderr) => {
+        execFile(pdfImagesPath, ['-list', pdfPath], (error, stdout, stderr) => {
             if (error) {
                 reject(new Error(stderr || error.message));
                 return;
             }
             // Extract images as PNGs
-            execFile('pdfimages', ['-png', pdfPath, prefix], err2 => {
+            execFile(pdfImagesPath, ['-png', pdfPath, prefix], err2 => {
                 if (err2) {
                     reject(new Error(err2.message));
                     return;

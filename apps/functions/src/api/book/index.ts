@@ -65,11 +65,9 @@ async function ensureBookAssetsParsed(bookId: string) {
     }
 
     const imagesDir = `/tmp/${bookId}_images`;
-    const fontsDir = `/tmp/${bookId}_fonts`;
     if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
-    if (!fs.existsSync(fontsDir)) fs.mkdirSync(fontsDir, { recursive: true });
 
-    logger.info(`Parsing PDF for ${bookId}. Images dir: ${imagesDir}, Fonts dir: ${fontsDir}`);
+    logger.info(`Parsing PDF for ${bookId}. Images dir: ${imagesDir}`);
     const parsed = await parsePDF(bookFilePath, imagesDir);
     logger.info(`Successfully parsed PDF for ${bookId}`);
 
@@ -103,7 +101,6 @@ async function ensureBookAssetsParsed(bookId: string) {
     try {
         fs.rmSync(bookFilePath, { force: true });
         fs.rmSync(imagesDir, { recursive: true, force: true });
-        fs.rmSync(fontsDir, { recursive: true, force: true });
         logger.info(`Cleaned up temporary files for ${bookId}.`);
     } catch (cleanupError) {
         logger.warn(`Warning: Failed to clean up temporary files for ${bookId}:`, cleanupError);
