@@ -20,6 +20,7 @@ import {
     translateOnWrite,
     onUserDelete,
     onCommentReplyWrite,
+    parseBook,
 } from './api';
 
 export {
@@ -29,4 +30,5 @@ export {
     translateOnWrite,
     onUserDelete,
     onCommentReplyWrite,
+    parseBook,
 };
