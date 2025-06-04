@@ -20,6 +20,12 @@ export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
         });
 
         throw new HttpsError('permission-denied', `You do not have the required roles`);
+    } else {
+        logger.info(`User has required roles: ${roles}`, {
+            uid: request.auth?.uid,
+            claims,
+            roles,
+        });
     }
 };
 
@@ -31,5 +37,7 @@ export const checkIdParam = (request: CallableRequest, id?: string) => {
             'invalid-argument',
             'The function must be called with a "bookId" string argument.',
         );
+    } else {
+        logger.info(`Valid bookId provided: ${id}`, request.data);
     }
 };
