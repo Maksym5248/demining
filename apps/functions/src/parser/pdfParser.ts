@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { type IBookParsedItemDB, type IBookParsedDB, type IBookParsedPageDB } from 'shared-my';
+import { type IBookAssetsItemDB, type IBookAssetsDB, type IBookAssetsPageDB } from 'shared-my';
 
 import { extractImagesWithPoppler } from './extractImages';
 import { importEsmModule } from './utils';
@@ -14,7 +14,7 @@ export const parsePDF = async (
     pdfPath: string,
     imagesDir: string,
     fontsDir: string,
-): Promise<Pick<IBookParsedDB, 'pages' | 'metadata' | 'viewport'>> => {
+): Promise<Pick<IBookAssetsDB, 'pages' | 'metadata' | 'viewport'>> => {
     const { getDocument } = await importEsmModule<any>('pdfjs-dist/legacy/build/pdf.mjs');
     // Ensure imagesDir exists
     if (!fs.existsSync(imagesDir)) {
@@ -34,7 +34,7 @@ export const parsePDF = async (
     const subject = info.Subject;
     const keywords = info.Keywords ? info.Keywords.split(',') : [];
     const metadata = { title, author, subject, keywords };
-    const pages: IBookParsedPageDB[] = [];
+    const pages: IBookAssetsPageDB[] = [];
     let viewport:
         | { width: number; height: number; widthMM?: number; heightMM?: number }
         | undefined = undefined;
@@ -72,7 +72,7 @@ export const parsePDF = async (
             img => img.page === i + 1 && !usedImageFilenames.has(img.filename),
         );
         // Build items array: merge text and images, respecting newlines
-        const items: IBookParsedItemDB[] = [];
+        const items: IBookAssetsItemDB[] = [];
         if (mergedText) {
             const textLines = mergedText.split(/\r?\n/);
             textLines.forEach((line: string, idx: number) => {

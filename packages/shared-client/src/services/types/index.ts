@@ -7,3 +7,4 @@ export * from './message';
 export * from './modal';
 export * from './storage';
 export * from './alert';
+export * from './func';

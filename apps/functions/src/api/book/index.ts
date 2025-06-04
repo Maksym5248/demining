@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { ASSET_TYPE, type IBookParsedDB, TABLES, type Timestamp, ROLES } from 'shared-my';
+import { ASSET_TYPE, type IBookAssetsDB, TABLES, type Timestamp, ROLES } from 'shared-my';
 
 import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
 
@@ -67,9 +67,9 @@ async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Successfully uploaded ${imageUrls.length} images for ${bookId}.`);
 
     // 5. Save parsed JSON to Firestore
-    const docData: IBookParsedDB = {
+    const docData: IBookAssetsDB = {
         ...parsed,
-        bookId,
+        id: bookId,
         images: imageUrls,
         createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
         updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp, // Added updatedAt

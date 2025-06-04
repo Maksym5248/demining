@@ -37,6 +37,7 @@ import {
     type IMissionRequestTypeDB,
     type IRankDB,
     type IStatusDB,
+    type IBookAssetsDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -124,6 +125,8 @@ export class DBRemote implements Omit<IDB, 'comment' | 'complain'> {
     document = new DBBase<IDocumentDB>(TABLES.DOCUMENT, ['name'], getCreateData);
 
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
+
+    bookAssets = new DBBase<IBookAssetsDB>(TABLES.BOOK_ASSETS, []);
 
     app = new DBBase<IAppConfigDB>(TABLES.APP_CONFIG, [], undefined);
 

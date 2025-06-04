@@ -26,6 +26,7 @@ import {
     type IMemberDB,
     type ICommentDB,
     type IComplainDB,
+    type IBookAssetsDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -62,6 +63,7 @@ export class DBRemote
             | 'explosive'
             | 'userInfo'
             | 'book'
+            | 'bookAssets'
             | 'bookType'
             | 'country'
             | 'explosiveDeviceType'
@@ -102,6 +104,8 @@ export class DBRemote
     explosive = new DBBase<IExplosiveDB>(TABLES.EXPLOSIVE, ['name'], getCreateData);
 
     book = new DBBase<IBookDB>(TABLES.BOOK, ['name'], getCreateData);
+
+    bookAssets = new DBBase<IBookAssetsDB>(TABLES.BOOK_ASSETS);
 
     comment = new DBBase<ICommentDB>(TABLES.COMMENT, [], getCreateData);
 

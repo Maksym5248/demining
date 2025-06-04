@@ -16,6 +16,7 @@ import {
     type IStatusDB,
     type IRankDB,
     type IExplosiveObjectDetailsDB,
+    type IBookAssetsDB,
 } from 'shared-my';
 import { type IDB } from 'shared-my-client';
 
@@ -34,6 +35,7 @@ export interface IDBLocal
         | 'explosiveObjectClass'
         | 'explosiveObjectClassItem'
         | 'book'
+        | 'bookAssets'
         | 'bookType'
         | 'country'
         | 'explosiveDeviceType'
@@ -52,6 +54,7 @@ export class DBLocal implements IDBLocal {
     explosiveObjectClass = new DBBase<IExplosiveObjectClassDB>(TABLES.EXPLOSIVE_OBJECT_CLASS);
     explosiveObjectClassItem = new DBBase<IExplosiveObjectClassItemDB>(TABLES.EXPLOSIVE_OBJECT_CLASS_ITEM);
     book = new DBBase<IBookDB>(TABLES.BOOK);
+    bookAssets = new DBBase<IBookAssetsDB>(TABLES.BOOK_ASSETS);
 
     bookType = new DBBase<IBookTypeDB>(TABLES.BOOK_TYPE);
     country = new DBBase<ICountryDB>(TABLES.COUNTRY);

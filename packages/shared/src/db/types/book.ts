@@ -17,22 +17,22 @@ export interface IBookDB extends IBaseDB {
     uri: string;
 }
 
-export interface IBookParsedItemDB {
+export interface IBookAssetsItemDB {
     type: 'text' | 'image';
     value: string;
 }
 
-export type IBookParsedPageDB = {
+export type IBookAssetsPageDB = {
     page: number;
-    items: IBookParsedItemDB[];
+    items: IBookAssetsItemDB[];
 };
 
-export type IBookParsedDB = {
-    pages: IBookParsedPageDB[];
+export type IBookAssetsDB = {
+    id: string;
+    pages: IBookAssetsPageDB[];
     metadata: any;
     viewport?: any;
-    bookId: string;
     images: string[];
     createdAt: Timestamp;
-    updatedAt: Timestamp; // Added updatedAt field
+    updatedAt: Timestamp;
 };

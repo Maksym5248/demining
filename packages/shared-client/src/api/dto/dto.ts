@@ -32,6 +32,7 @@ import {
     type IBookTypeDB,
     type IExplosiveDeviceTypeDB,
     type IMissionRequestTypeDB,
+    type IBookAssetsDB,
 } from 'shared-my';
 
 import { type IExplosiveObjectDetailsDTO } from './explosive-object';
@@ -103,6 +104,7 @@ export type IEquipmentActionDTO = IEquipmentActionDB;
 export type IMapViewActionDTO = Omit<IMapViewActionDB, 'geo'>;
 export type IDocumentDTO = IDocumentDB;
 export type IBookDTO = IBookDB;
+export type IBookAssetsDTO = IBookAssetsDB;
 export type IBookTypeDTO = IBookTypeDB;
 
 export type IMissionReportDTO = IMissionReportDB;

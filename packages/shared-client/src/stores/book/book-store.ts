@@ -15,12 +15,17 @@ import {
     createBookType,
     type IBookType,
     BookType,
+    type IBookAssets,
+    type IBookAssetsData,
+    BookAssets,
+    createBookAssets,
 } from './entities';
 import { getDictionarySync } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IBookStore {
     collection: ICollectionModel<IBook, IBookData>;
+    collectionBookAssets: ICollectionModel<IBookAssets, IBookAssetsData>;
     collectionBookType: ICollectionModel<IBookType, IBookTypeData>;
     list: ListModel<IBook, IBookData>;
     create: IRequestModel<[ICreateValue<IBookData>]>;
@@ -55,6 +60,10 @@ export class BookStore implements IBookStore {
     services: IServices;
     getStores: () => IStores;
 
+    collectionBookAssets: ICollectionModel<IBookAssets, IBookAssetsData> = new CollectionModel<IBookAssets, IBookAssetsData>({
+        factory: (data: IBookAssetsData) => new BookAssets(data),
+    });
+
     collection: ICollectionModel<IBook, IBookData> = new CollectionModel<IBook, IBookData>({
         factory: (data: IBookData) => new Book(data, this),
     });
@@ -66,6 +75,7 @@ export class BookStore implements IBookStore {
     collections = {
         book: this.collection,
         bookTypes: this.collectionBookType,
+        bookAssets: this.collectionBookAssets,
     };
 
     list = new ListModel<IBook, IBookData>({ collection: this.collection });
@@ -87,6 +97,15 @@ export class BookStore implements IBookStore {
         onError: () => this.services.message.error('Не вдалось додати'),
     });
 
+    createAssets = new RequestModel({
+        run: async (id: string) => {
+            const res = await this.api.book.createBookAssets(id);
+            this.collectionBookAssets.set(res.id, createBookAssets(res));
+        },
+        onSuccuss: () => this.services.message.success('Додано успішно'),
+        onError: () => this.services.message.error('Не вдалось додати'),
+    });
+
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.book.remove(id);
@@ -100,6 +119,14 @@ export class BookStore implements IBookStore {
         run: async (id: string) => {
             const res = await this.api.book.get(id);
             this.collection.set(res.id, createBook(res));
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
+
+    fetchBookAssetsItem = new RequestModel({
+        run: async (id: string) => {
+            const res = await this.api.book.getAssets(id);
+            this.collectionBookAssets.set(res.id, createBookAssets(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

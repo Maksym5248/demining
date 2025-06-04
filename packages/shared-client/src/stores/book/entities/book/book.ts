@@ -4,13 +4,14 @@ import { type IBookAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
 import { type ICollectionModel, type IDataModel, type IRequestModel, RequestModel } from '~/models';
 import { type IMessage } from '~/services';
-import { type IBookType, type IBookTypeData, type IViewerStore } from '~/stores';
+import { type IBookAssets, type IBookAssetsData, type IBookType, type IBookTypeData, type IViewerStore } from '~/stores';
 
 import { type IBookData, createBook, updateBookDTO } from './book.schema';
 
 export interface IBook extends IDataModel<IBookData> {
     displayName: string;
     updateFields(data: Partial<IBookData>): void;
+    assets: IBookAssetsData | undefined;
     update: IRequestModel<[IUpdateValue<IBookData>]>;
     isEditable: boolean;
     isRemovable: boolean;
@@ -31,6 +32,7 @@ interface IStores {
 
 interface ICollections {
     bookTypes: ICollectionModel<IBookType, IBookTypeData>;
+    bookAssets: ICollectionModel<IBookAssets, IBookAssetsData>;
 }
 
 interface IBookParams {
@@ -46,6 +48,7 @@ export class Book implements IBook {
     data: IBookData;
     getStores: () => IStores;
     collections: ICollections;
+    isAssets = false;
 
     constructor(data: IBookData, { api, services, getStores, collections }: IBookParams) {
         this.data = data;
@@ -60,6 +63,10 @@ export class Book implements IBook {
 
     get id() {
         return this.data.id;
+    }
+
+    get assets() {
+        return this.collections.bookAssets.get(this.data.id)?.data;
     }
 
     get displayName() {
