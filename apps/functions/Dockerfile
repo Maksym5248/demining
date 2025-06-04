@@ -10,11 +10,6 @@ RUN apk add --no-cache yarn
 # Copy the source code
 COPY . .
 
-# Copy the shared-my package into node_modules
-RUN mkdir -p node_modules/shared-my && \
-    cp -r ../../packages/shared/dist node_modules/shared-my/dist && \
-    cp ../../packages/shared/package.json node_modules/shared-my/package.json
-
 # Install dependencies
 RUN yarn install --frozen-lockfile
 

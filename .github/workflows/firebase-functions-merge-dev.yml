@@ -34,13 +34,11 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Build Docker image
-              working-directory: apps/functions
               run: |
-                  docker build -t gcr.io/$GCP_PROJECT/functions-image .
+                docker build -f apps/functions/Dockerfile -t gcr.io/$GCP_PROJECT/functions-image .
             - name: Push Docker image to GCR
-              working-directory: apps/functions
               run: |
-                  docker push gcr.io/$GCP_PROJECT/functions-image
+                docker push gcr.io/$GCP_PROJECT/functions-image
             - name: Deploy to Firebase
               working-directory: apps/functions
               run: |
