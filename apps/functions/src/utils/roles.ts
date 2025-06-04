@@ -12,7 +12,7 @@ export const checkAuthorized = (request: CallableRequest<any>) => {
 export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
     const claims = (request.auth?.token as Record<string, unknown>) || {};
 
-    if (roles.some(role => claims[role])) {
+    if (!roles.some(role => claims[role])) {
         logger.error(`Permission denied. User does not have required roles: ${roles}`, {
             uid: request.auth?.uid,
             claims,
