@@ -8,13 +8,12 @@ COPY package.json .
 COPY yarn.lock .
 
 # Copy shared workspace packages
-COPY packages/shared ./packages/shared
-COPY apps/functions ./apps/functions
+COPY ../..packages/shared ./packages/shared
 
 # Install dependencies
 RUN yarn install --pure-lockfile --non-interactive
 
-# Build shared package
+# Build shared-my package
 WORKDIR /usr/src/app/packages/shared
 RUN yarn build
 
@@ -31,13 +30,9 @@ WORKDIR /usr/src/app
 COPY package.json .
 COPY yarn.lock .
 
-# Copy built shared package from build stage
+# Copy built shared-my package from build stage
 COPY --from=build /usr/src/app/packages/shared/package.json /usr/src/app/packages/shared/package.json
 COPY --from=build /usr/src/app/packages/shared/dist /usr/src/app/packages/shared/dist
-
-# Copy built functions package from build stage
-COPY --from=build /usr/src/app/apps/functions/package.json /usr/src/app/apps/functions/package.json
-COPY --from=build /usr/src/app/apps/functions/dist /usr/src/app/apps/functions/dist
 
 # Set environment to production
 ENV NODE_ENV production
