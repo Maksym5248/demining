@@ -1,77 +1,43 @@
 import { useEffect, useState } from 'react';
 
+import { Image, Typography } from 'antd';
 import { observer } from 'mobx-react';
-import { pdfjs } from 'react-pdf';
-import { useItemStore } from 'shared-my-client';
 
 import { Loading } from '~/components';
 import { useStore } from '~/hooks';
 
 import { type IBooksPdfAssetsProps } from './books-pdf-assets.types';
-import { usePDF } from '../../use-pdf';
 
-export const BooksPdfAssets = observer(({ id, pageNumber }: IBooksPdfAssetsProps) => {
+export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: IBooksPdfAssetsProps) => {
     const { book } = useStore();
-    const current = useItemStore(book, id);
-    const pdf = usePDF(current.item?.data.uri);
-    const [textContent, setTextContent] = useState<string>('');
-    const [images, setImages] = useState<string[]>([]);
+    const [pageNumber] = useState<number>(initialPageNUmber || 1);
+    const item = book.collection.get(id);
+    const assets = book.collectionAssets.get(id);
 
     useEffect(() => {
-        async function extractAssets() {
-            if (!pdf.file || !pageNumber) return;
-            // Convert Blob to ArrayBuffer for pdfjs
-            const arrayBuffer = await pdf.file.arrayBuffer();
-            const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
-            const doc = await loadingTask.promise;
-            const page = await doc.getPage(pageNumber);
+        book.fetchItem.run(id);
+        book.loadAssetsItem.run(id);
+    }, []);
 
-            // Extract text
-            const text = await page.getTextContent();
-            setTextContent(text.items.map((item: any) => item.str).join(' '));
-
-            // Extract images
-            const opList = await page.getOperatorList();
-            const imgs: string[] = [];
-            const objs = page.objs;
-            for (let i = 0; i < opList.fnArray.length; i++) {
-                const fn = opList.fnArray[i];
-                if (fn === pdfjs.OPS.paintImageXObject) {
-                    const imgName = opList.argsArray[i][0];
-                    const imgObj = objs.get(imgName);
-                    if (imgObj && imgObj.data) {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = imgObj.width;
-                        canvas.height = imgObj.height;
-                        const ctx = canvas.getContext('2d');
-                        if (ctx) {
-                            const imageData = ctx.createImageData(imgObj.width, imgObj.height);
-                            imageData.data.set(imgObj.data);
-                            ctx.putImageData(imageData, 0, 0);
-                            imgs.push(canvas.toDataURL());
-                        }
-                    }
-                }
-            }
-            setImages(imgs);
-        }
-        extractAssets();
-    }, [pdf.file, pageNumber]);
-
-    if (current.isLoading || pdf.isLoading) {
+    if (book.fetchItem.isLoading || book.loadAssetsItem.isLoading) {
         return <Loading />;
     }
 
     return (
         <div>
-            <h3>Text Content</h3>
-            <div style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}>{textContent}</div>
-            <h3>Images</h3>
+            <Typography.Title level={4}>
+                {item?.displayName} - Page {pageNumber}
+            </Typography.Title>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-                {images.length === 0 && <div>No images found.</div>}
-                {images.map((src, idx) => (
-                    <img key={idx} src={src} alt={''} style={{ maxWidth: 200, maxHeight: 200, border: '1px solid #ccc' }} />
-                ))}
+                {assets?.getPage(pageNumber)?.items.map((item, index) => {
+                    if (item.type === 'image') {
+                        return (
+                            <Image key={index} src={item.value} alt={`Image ${index + 1}`} style={{ maxWidth: '100%', height: 'auto' }} />
+                        );
+                    }
+
+                    return <p key={index}>{item.value}</p>;
+                })}
             </div>
         </div>
     );
