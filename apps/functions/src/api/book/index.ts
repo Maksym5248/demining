@@ -4,7 +4,9 @@ import * as path from 'path';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { ASSET_TYPE, type IBookParsedDB, TABLES, type Timestamp } from 'shared-my';
+import { ASSET_TYPE, type IBookParsedDB, TABLES, type Timestamp, ROLES } from 'shared-my';
+
+import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
 
 import { parsePDF } from '../../parser/pdfParser';
 
@@ -97,20 +99,17 @@ export const parseBook = onCall(
         cpu: 1,
         memory: '1GiB',
         timeoutSeconds: 540,
-        // enforceAppCheck: true, // Optional: Consider enabling App Check
     },
     async request => {
         const bookId = request.data.bookId;
 
-        if (!bookId || typeof bookId !== 'string') {
-            logger.error('Invalid request: bookId is missing or not a string.', request.data);
-            throw new HttpsError(
-                'invalid-argument',
-                'The function must be called with a "bookId" string argument.',
-            );
-        }
+        checkIdParam(request, bookId);
+        checkAuthorized(request);
+        checkRoles(request, [ROLES.AMMO_CONTENT_ADMIN, ROLES.AMMO_AUTHOR]);
 
-        logger.info(`Processing manual request for bookId: ${bookId}`);
+        logger.info(
+            `User ${request.auth?.uid} authorized. Processing manual request for bookId: ${bookId}`,
+        );
 
         try {
             const result = await ensureBookAssetsParsed(bookId);
@@ -118,12 +117,9 @@ export const parseBook = onCall(
             return result; // Data returned here will be sent back to the client
         } catch (error: any) {
             logger.error(`Error processing book ${bookId} triggered by manual call:`, error);
-            // It's good practice to throw an HttpsError for client-facing errors
             if (error instanceof HttpsError) {
                 throw error;
             }
-            // For other errors, you might want to throw a generic HttpsError
-            // or a more specific one if you can determine the cause.
             throw new HttpsError(
                 'internal',
                 `An internal error occurred while processing book ${bookId}.`,
@@ -132,5 +128,3 @@ export const parseBook = onCall(
         }
     },
 );
-
-// Removed direct call: ensureBookAssetsParsed('9efc8798-3202-4cb4-a47b-dacaa18cd3b4');
