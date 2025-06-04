@@ -16,6 +16,7 @@ export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
         logger.error(`Permission denied. User does not have required roles: ${roles}`, {
             uid: request.auth?.uid,
             claims,
+            roles,
         });
 
         throw new HttpsError('permission-denied', `You do not have the required roles`);
