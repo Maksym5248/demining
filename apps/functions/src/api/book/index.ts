@@ -70,7 +70,7 @@ async function ensureBookAssetsParsed(bookId: string) {
     if (!fs.existsSync(fontsDir)) fs.mkdirSync(fontsDir, { recursive: true });
 
     logger.info(`Parsing PDF for ${bookId}. Images dir: ${imagesDir}, Fonts dir: ${fontsDir}`);
-    const parsed = await parsePDF(bookFilePath, imagesDir, fontsDir);
+    const parsed = await parsePDF(bookFilePath, imagesDir);
     logger.info(`Successfully parsed PDF for ${bookId}`);
 
     // 4. Save images to storage
