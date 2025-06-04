@@ -15,6 +15,7 @@ const storage = admin.storage(); // Uses the default bucket
 
 async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Starting ensureBookAssetsParsed for bookId: ${bookId}`);
+    logger.info(`Bucked name: ${process.env.STORAGE_BUCKET}`);
 
     const bookAssetsRef = db.collection(TABLES.BOOK_ASSETS).doc(bookId);
     const bookAssetsSnap = await bookAssetsRef.get();
@@ -27,10 +28,10 @@ async function ensureBookAssetsParsed(bookId: string) {
 
     const bookStoragePath = `${ASSET_TYPE.BOOK}/${bookId}.pdf`; // Ensure this matches your storage structure
     logger.info(
-        `Downloading book from gs://${storage.bucket().name}/${bookStoragePath} to ${bookFilePath}`,
+        `Downloading book from ${process.env.STORAGE_BUCKET}/${bookStoragePath} to ${bookFilePath}`,
     );
 
-    const file = storage.bucket().file(bookStoragePath); // Using default bucket
+    const file = storage.bucket(process.env.STORAGE_BUCKET).file(bookStoragePath); // Using default bucket
 
     try {
         await file.download({ destination: bookFilePath });
