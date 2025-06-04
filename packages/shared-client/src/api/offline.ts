@@ -94,7 +94,7 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
             !!res && (await this.dbLocal.create(res));
         }
 
-        if (!res || !!res?.isDeleted) throw new Error('there is explosiveObject with id');
+        if (!res || !!res?.isDeleted) throw new Error('there is item with id');
         return res;
     }
 

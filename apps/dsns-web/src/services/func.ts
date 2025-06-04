@@ -9,8 +9,8 @@ export class FuncClass implements IFunc {
         return getFunctions(getApp());
     }
 
-    async parseBook(id: string) {
+    async parseBook(bookId: string) {
         const callable = httpsCallable(this.functions, 'parseBook');
-        await callable({ id });
+        await callable({ bookId });
     }
 }

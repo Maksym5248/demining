@@ -80,6 +80,7 @@ export class DBLocal implements IDBLocal {
             this.explosiveObjectClass,
             this.explosiveObjectClassItem,
             this.book,
+            this.bookAssets,
             this.bookType,
             this.country,
             this.explosiveDeviceType,

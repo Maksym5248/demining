@@ -127,9 +127,11 @@ export class BookStore implements IBookStore {
 
     loadAssetsItem = new RequestModel({
         run: async (id: string) => {
-            let res = await this.api.book.getAssets(id);
+            let res;
 
-            if (!res) {
+            try {
+                res = await this.api.book.getAssets(id);
+            } catch (error) {
                 res = await this.api.book.createBookAssets(id);
             }
 

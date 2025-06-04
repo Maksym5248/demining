@@ -11,7 +11,7 @@ export class DBConnection implements IDBConnection {
     private dbConnection?: IDBDatabase;
 
     constructor(private dbName = 'Demining') {}
-    version = 1;
+    version = 2;
 
     private async openDB(onUpgared?: (db: IDBDatabase) => void): Promise<IDBDatabase> {
         if (this.dbConnection) {

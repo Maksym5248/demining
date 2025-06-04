@@ -29,7 +29,6 @@ export class DBBase<T extends IBaseDB> implements IDBLocal<T> {
         this.tableName = tableName;
     }
 
-    // ERROR: Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running.
     init(): void {}
 
     drop(): void {}

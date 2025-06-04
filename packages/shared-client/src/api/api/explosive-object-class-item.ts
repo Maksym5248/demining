@@ -65,7 +65,7 @@ export class ExplosiveObjectClassItemAPI implements IExplosiveObjectClassItemAPI
 
     get = async (id: string): Promise<IExplosiveObjectClassItemDTO> => {
         const res = await this.offline.get(id);
-        if (!res) throw new Error('there is explosiveObject with id');
+        if (!res) throw new Error('there is item with id');
         return res;
     };
 
