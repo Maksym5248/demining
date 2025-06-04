@@ -27,7 +27,7 @@ jobs:
             - name: Create .env file
               working-directory: ./apps/functions
               run: |
-                  echo "${{ secrets.ENV_FUNC }}" > .env
+                  echo "${{ secrets.ENV_FUNC }}" > .envfile
             - name: Set up config
               working-directory: ./apps/functions
               run: yarn prepare:env

@@ -1,0 +1,3 @@
+ENV="dev"
+STORAGE_BUCKET="gs://dsns-dev-85963.appspot.com"
+PROJECT_NAME="dsns-dev-85963"
