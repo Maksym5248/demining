@@ -8,7 +8,7 @@ RUN apk update && apk add --no-cache poppler-utils
 COPY . .
 
 # Install dependencies
-RUN yarn install --production
+RUN yarn install
 
 # Command to start the application
 CMD ["node", "dist/index.js"]
