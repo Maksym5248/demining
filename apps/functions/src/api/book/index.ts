@@ -4,7 +4,14 @@ import * as path from 'path';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { ASSET_TYPE, type IBookAssetsDB, TABLES, type Timestamp, ROLES } from 'shared-my';
+import {
+    ASSET_TYPE,
+    type IBookAssetsDB,
+    TABLES,
+    type Timestamp,
+    ROLES,
+    type IBookDB,
+} from 'shared-my';
 
 import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
 
@@ -15,33 +22,46 @@ const storage = admin.storage(); // Uses the default bucket
 
 async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Starting ensureBookAssetsParsed for bookId: ${bookId}`);
-    logger.info(`Bucked name: ${process.env.STORAGE_BUCKET}`);
 
     const bookAssetsRef = db.collection(TABLES.BOOK_ASSETS).doc(bookId);
-    const bookAssetsSnap = await bookAssetsRef.get();
-    if (bookAssetsSnap.exists) {
-        logger.info(`Assets for book ${bookId} already exist.`, bookAssetsSnap.data());
-        return bookAssetsSnap.data();
+    const bookAssets = await bookAssetsRef.get();
+
+    if (bookAssets.exists) {
+        logger.info(`Assets for book ${bookId} already exist.`);
+        return;
+    }
+
+    const bookRef = db.collection(TABLES.BOOK).doc(bookId);
+    const book = await bookRef.get();
+    const bookData = book.data() as IBookDB | undefined;
+
+    if (!bookData?.uri) {
+        throw new Error(`No downloadable URI found for bookId: ${bookId}`);
     }
 
     const bookFilePath = `/tmp/${bookId}.pdf`;
 
-    const bookStoragePath = `${ASSET_TYPE.BOOK}/${bookId}.pdf`; // Ensure this matches your storage structure
-    logger.info(
-        `Downloading book from ${process.env.STORAGE_BUCKET}/${bookStoragePath} to ${bookFilePath}`,
-    );
-
-    const file = storage.bucket(process.env.STORAGE_BUCKET).file(bookStoragePath); // Using default bucket
-
     try {
-        await file.download({ destination: bookFilePath });
-        logger.info(`Successfully downloaded ${bookStoragePath}`);
+        const response = await fetch(bookData.uri);
+        const fileStream = fs.createWriteStream(bookFilePath);
+        const reader = response.body?.getReader();
+
+        if (!reader) {
+            throw new Error('Failed to get reader from response body');
+        }
+
+        let done = false;
+        while (!done) {
+            const { done: isDone, value } = await reader.read();
+            done = isDone;
+            if (value) fileStream.write(value);
+        }
+
+        fileStream.end();
+        logger.info(`Successfully downloaded book to ${bookFilePath}`);
     } catch (error) {
-        logger.error(
-            `Failed to download book ${bookStoragePath} for bookId ${bookId}. Error:`,
-            error,
-        );
-        throw error; // Re-throw to handle in the calling function or let Firebase handle
+        logger.error(`Failed to download book from URI for bookId ${bookId}. Error:`, error);
+        throw error;
     }
 
     const imagesDir = `/tmp/${bookId}_images`;
