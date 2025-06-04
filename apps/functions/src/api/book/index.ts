@@ -15,7 +15,7 @@ const storage = admin.storage(); // Uses the default bucket
 
 async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Starting ensureBookAssetsParsed for bookId: ${bookId}`);
-    // 1. Check if BOOK_ASSETS doc exists
+
     const bookAssetsRef = db.collection(TABLES.BOOK_ASSETS).doc(bookId);
     const bookAssetsSnap = await bookAssetsRef.get();
     if (bookAssetsSnap.exists) {
@@ -23,10 +23,8 @@ async function ensureBookAssetsParsed(bookId: string) {
         return bookAssetsSnap.data();
     }
 
-    // 2. Download book PDF from storage
     const bookFilePath = `/tmp/${bookId}.pdf`;
-    // Construct the storage path based on ASSET_TYPE.BOOK and bookId (assuming bookId includes .pdf if that's how it's stored)
-    // Or, if bookId is just the ID without extension:
+
     const bookStoragePath = `${ASSET_TYPE.BOOK}/${bookId}.pdf`; // Ensure this matches your storage structure
     logger.info(
         `Downloading book from gs://${storage.bucket().name}/${bookStoragePath} to ${bookFilePath}`,
@@ -45,7 +43,6 @@ async function ensureBookAssetsParsed(bookId: string) {
         throw error; // Re-throw to handle in the calling function or let Firebase handle
     }
 
-    // 3. Parse PDF
     const imagesDir = `/tmp/${bookId}_images`;
     const fontsDir = `/tmp/${bookId}_fonts`;
     if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });

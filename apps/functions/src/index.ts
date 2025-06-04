@@ -7,10 +7,9 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 import { initializeApp } from 'firebase-admin/app';
-import { config } from 'firebase-functions/v1';
 
 initializeApp({
-    storageBucket: config().env.storage_bucket,
+    storageBucket: process.env.STORAGE_BUCKET,
 });
 
 import {
@@ -20,6 +19,7 @@ import {
     translateOnWrite,
     onUserDelete,
     onCommentReplyWrite,
+    parseBook,
 } from './api';
 
 export {
@@ -29,4 +29,5 @@ export {
     translateOnWrite,
     onUserDelete,
     onCommentReplyWrite,
+    parseBook,
 };
