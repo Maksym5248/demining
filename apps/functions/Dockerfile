@@ -1,47 +1,22 @@
-# Stage 1: Build dependencies and packages
-FROM node:22-alpine as build
+# Use Node.js 20 with Alpine for a smaller image
+FROM node:22-alpine AS base
 
-WORKDIR /usr/src/app
+# Install poppler-utils using apk
+RUN apk update && apk add --no-cache poppler-utils
 
-# Copy root package.json and yarn.lock
-COPY package.json .
-COPY yarn.lock .
+# Install yarn globally
+RUN apk add --no-cache yarn
 
-# Copy shared workspace packages
-COPY ../..packages/shared ./packages/shared
+# Copy the source code
+COPY . .
+
+# Copy the shared-my package into node_modules
+RUN mkdir -p node_modules/shared-my && \
+    cp -r ../packages/shared/dist node_modules/shared-my/dist && \
+    cp ../packages/shared/package.json node_modules/shared-my/package.json
 
 # Install dependencies
-RUN yarn install --pure-lockfile --non-interactive
+RUN yarn install --frozen-lockfile
 
-# Build shared-my package
-WORKDIR /usr/src/app/packages/shared
-RUN yarn build
-
-# Build functions package
-WORKDIR /usr/src/app/apps/functions
-RUN yarn build
-
-# Stage 2: Create production image
-FROM node:22-alpine
-
-WORKDIR /usr/src/app
-
-# Copy root package.json and yarn.lock
-COPY package.json .
-COPY yarn.lock .
-
-# Copy built shared-my package from build stage
-COPY --from=build /usr/src/app/packages/shared/package.json /usr/src/app/packages/shared/package.json
-COPY --from=build /usr/src/app/packages/shared/dist /usr/src/app/packages/shared/dist
-
-# Set environment to production
-ENV NODE_ENV production
-
-# Install production dependencies
-RUN yarn install --pure-lockfile --non-interactive --production
-
-# Set working directory to functions package
-WORKDIR /usr/src/app/apps/functions
-
-# Start the application
+# Command to start the application
 CMD ["node", "dist/index.js"]
