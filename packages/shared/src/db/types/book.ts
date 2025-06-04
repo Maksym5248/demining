@@ -1,4 +1,4 @@
-import { type IMapDB, type IBaseDB } from './common';
+import { type IMapDB, type IBaseDB, type Timestamp } from './common';
 import { type MIME_TYPE, type APPROVE_STATUS, type BOOK_TYPE } from '../enum';
 
 export interface IBookTypeDB extends IMapDB {
@@ -16,3 +16,23 @@ export interface IBookDB extends IBaseDB {
     size: number;
     uri: string;
 }
+
+export interface IBookParsedItemDB {
+    type: 'text' | 'image';
+    value: string;
+}
+
+export type IBookParsedPageDB = {
+    page: number;
+    items: IBookParsedItemDB[];
+};
+
+export type IBookParsedDB = {
+    pages: IBookParsedPageDB[];
+    metadata: any;
+    viewport?: any;
+    bookId: string;
+    images: string[];
+    createdAt: Timestamp;
+    updatedAt: Timestamp; // Added updatedAt field
+};

@@ -25,7 +25,8 @@
         "deploy:functions:prod": "yarn isolate && firebase deploy --project dsns-56583 --only functions",
         "setpolicy": "firebase functions:artifacts:setpolicy",
         "migrate": "ts-node ./src/migrations/explosive-object/v3/api",
-        "parse": "ts-node ./src/parser/parce",
+        "parse": "ts-node ./src/api/book",
+        "prepare:env": "/bin/sh ./bin/prepare-config.sh",
         "script": "export GOOGLE_APPLICATION_CREDENTIALS=\"./firebase-adminsdk.json\" && ts-node ./src/migrations/common/v1/translate-existing-data",
         "export:data": "ts-node ./src/export/export-data"
     },
