@@ -1,5 +1,5 @@
 # Use Node.js 20 with Alpine for a smaller image
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # Install poppler-utils using apk
 RUN apk update && apk add --no-cache poppler-utils
