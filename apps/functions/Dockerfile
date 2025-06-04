@@ -10,10 +10,10 @@ RUN apk add --no-cache yarn
 # Set the working directory
 WORKDIR /app
 
-# Copy the original package.json and yarn.lock files
-COPY package.json yarn.lock ./
+# Copy the original package.json and yarn.lock files from the root workspace
+COPY ../../package.json ../../yarn.lock ./
 
-# Create a temporary package.json for Docker builds
+# Temporarily update package.json for Docker builds
 RUN jq '.dependencies["shared-my"] = "file:../../packages/shared"' package.json > temp.package.json && mv temp.package.json package.json
 
 # Install dependencies for Yarn Workspaces
