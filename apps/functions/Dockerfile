@@ -28,12 +28,4 @@ COPY package.json package-lock.json* yarn.lock* ./
 RUN yarn install --production --frozen-lockfile
 
 # Copy the rest of your functions source code
-# This assumes your compiled JS code will be in a 'dist' directory
-# relative to your package.json (as per your "main": "dist/index.js" in package.json)
-COPY dist ./dist
-# If you have other necessary files/folders at the root of apps/functions (e.g. templates, assets used by functions)
-# COPY other_assets ./other_assets
-
-# Firebase Functions framework will start your functions.
-# The entry point is typically defined in your package.json ("main" field).
-# No explicit CMD is usually needed here for Firebase Functions with Docker.
+COPY . .
