@@ -7,12 +7,11 @@ RUN apk update && apk add --no-cache poppler-utils
 # Install yarn globally
 RUN apk add --no-cache yarn
 
-COPY packages/shared ./packages/shared
-
 # Copy the source code
 COPY . .
 
 # Copy the shared workspace files
+COPY packages/shared ./packages/shared
 
 # Install dependencies
 RUN yarn install --frozen-lockfile
