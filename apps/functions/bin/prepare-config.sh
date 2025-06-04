@@ -2,7 +2,7 @@
 # Usage: ./bin/prepare-config.sh
 # Reads .env file and sets each variable in Firebase Functions config
 
-ENV_FILE=".env"
+ENV_FILE=".envfile"
 if [ ! -f "$ENV_FILE" ]; then
   echo ".env file not found!"
   exit 1
