@@ -47,4 +47,4 @@ jobs:
               run: bash ./bin/deploy-v2.sh
             - name: Deploy to Firebase
               working-directory: apps/functions
-              run: yarn deploy:functions:dev
+              run: bash ./bin/deploy-v1.sh

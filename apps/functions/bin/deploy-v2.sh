@@ -3,9 +3,10 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Load environment variables from .env file
-if [ -f "../.env" ]; then
-  export $(cat ../.env | xargs)
+ENV_FILE=".env"
+if [ ! -f "$ENV_FILE" ]; then
+  echo ".env file not found!"
+  exit 1
 fi
 
 # Variables
