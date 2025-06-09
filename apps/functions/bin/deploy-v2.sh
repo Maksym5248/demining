@@ -17,7 +17,7 @@ set +a
 # Variables
 IMAGE_NAME="parsebook-container" # Name for your specific container image
 IMAGE_TAG="local-$(date +%Y%m%d%H%M%S)" # Use timestamp as tag for uniqueness
-IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_NAME}/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
+DOCKER_REPOSITORY="projects/${PROJECT_NAME}/locations/${REGION}/repositories/${ARTIFACT_REGISTRY_REPO}" # Correct repository format
 
 # Ensure the isolate directory exists
 if [ ! -d "./isolate" ]; then
@@ -34,7 +34,7 @@ echo "Deploying parseBook Cloud Function (Container)"
 gcloud functions deploy parseBook \
   --runtime=custom \
   --gen2 \
-  --docker-repository="${IMAGE_PATH}" \
+  --docker-repository="${DOCKER_REPOSITORY}" \
   --region="${REGION}" \
   --trigger-http \
   --timeout=600s \
