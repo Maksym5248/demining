@@ -26,8 +26,7 @@ jobs:
                   credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_DEV_85963 }}'
             - name: Create .env file
               working-directory: ./apps/functions
-              run: |
-                  echo "${{ secrets.ENV_FUNC_DEV }}" > .env
+              run: echo "${{ secrets.ENV_FUNC_DEV }}" > .env
             - name: Set up config
               working-directory: ./apps/functions
               run: yarn prepare:env

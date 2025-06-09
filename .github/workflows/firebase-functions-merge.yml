@@ -26,8 +26,7 @@ jobs:
                   credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DSNS_56583 }}'
             - name: Create .env file
               working-directory: ./apps/functions
-              run: |
-                  echo "${{ secrets.ENV_FUNC }}" > .env
+              run: echo "${{ secrets.ENV_FUNC }}" > .env
             - name: Set up config
               working-directory: ./apps/functions
               run: yarn prepare:env
@@ -36,6 +35,15 @@ jobs:
             - name: Install dependencies
               working-directory: apps/functions
               run: yarn build
+            - name: Isolate dependencies
+              working-directory: apps/functions
+              run: yarn isolate 
+            - name: Build and push Docker image for parseBook container
+              working-directory: apps/functions
+              run: bash ./bin/build-image-v2.sh
+            - name: Deploy parseBook Cloud Function (Container)
+              working-directory: apps/functions
+              run: bash ./bin/deploy-v2.sh
             - name: Deploy to Firebase
               working-directory: apps/functions
               run: bash ./bin/deploy-v1.sh
