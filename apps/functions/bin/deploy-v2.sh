@@ -33,7 +33,6 @@ cd ./isolate
 echo "Deploying parseBook Cloud Function (Container)"
 
 gcloud functions deploy parseBook \
-  --runtime=container \
   --gen2 \
   --docker-repository="${DOCKER_REPOSITORY}" \
   --region="${REGION}" \
