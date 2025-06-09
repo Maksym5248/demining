@@ -5,6 +5,7 @@ declare module 'react-native-config' {
         SUPPORT_EMAIL?: string;
         WEB_CLIENT_ID?: string;
         IOS_SCHEMA_GOOGLE?: string;
+        REGION?: string;
     }
 
     export const Config: NativeConfig;

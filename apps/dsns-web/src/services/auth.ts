@@ -12,7 +12,6 @@ import {
     type User,
     sendPasswordResetEmail,
 } from 'firebase/auth';
-import { getFunctions } from 'firebase/functions';
 import { type IAuthUser, type IAuth } from 'shared-my-client';
 
 export class AuthClass implements IAuth {
@@ -20,10 +19,6 @@ export class AuthClass implements IAuth {
 
     private get auth() {
         return getAuth(getApp());
-    }
-
-    private get functions() {
-        return getFunctions(getApp());
     }
 
     init() {}

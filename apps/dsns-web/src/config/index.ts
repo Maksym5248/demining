@@ -7,6 +7,7 @@ export const CONFIG = {
     APP_NAME: 'dsns',
     APP_NAME_TRANSLATION: 'Demining',
     GEO_APIFY_KEY: process.env.GEO_APIFY_KEY as string,
+    REGION: process.env.REGION as string,
 };
 
 export const FIREBASE_CONFIG = {
