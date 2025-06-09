@@ -1,7 +1,7 @@
 import { type IUserInfoDB, type IMemberDB, type IOrganizationDB, type IUserAccessDB } from 'shared-my';
 
 import { type IDBRemote, type IUpdateValue } from '~/common';
-import { type IAssetStorage } from '~/services';
+import { type IAuth, type IAssetStorage } from '~/services';
 
 import { type ICurrentUserDTO, type IUserOrganizationDTO, type IUserInfoParamsDTO } from '../dto';
 
@@ -24,6 +24,7 @@ export class CurrentUserAPI {
         },
         private services: {
             assetStorage: IAssetStorage;
+            auth: IAuth;
         },
     ) {}
 
@@ -54,6 +55,12 @@ export class CurrentUserAPI {
             this.db.member.get(id),
             this.getUserOrganization(id),
         ]);
+
+        try {
+            await this.services.auth.refreshToken();
+        } catch (error) {
+            console.error('Failed to refresh auth token:', error);
+        }
 
         if (!info || !access || !member) {
             throw new Error('There is no user with id');

@@ -80,4 +80,8 @@ export class AuthClass implements IAuth {
             throw new Error('Email not verified');
         }
     }
+
+    async refreshToken() {
+        await this.auth.currentUser?.getIdToken(true);
+    }
 }

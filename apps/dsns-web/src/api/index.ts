@@ -24,7 +24,7 @@ import {
 
 import { CONFIG } from '~/config';
 import { DBLocal, DBRemote } from '~/db';
-import { AssetStorage, Storage, Logger, Func } from '~/services';
+import { AssetStorage, Storage, Logger, Func, Auth } from '~/services';
 
 export const ExternalApi = new ExternalApiClass(CONFIG.GEO_APIFY_KEY, publicIpv4);
 
@@ -33,6 +33,7 @@ const services = {
     storage: Storage,
     logger: Logger,
     func: Func,
+    auth: Auth,
 };
 
 export const Api = {

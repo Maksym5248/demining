@@ -13,4 +13,5 @@ export interface IAuth {
     signInAnonymously: () => Promise<void>;
     sendPasswordResetEmail: (email: string) => Promise<void>;
     checkEmailVerification: () => Promise<void>;
+    refreshToken: () => Promise<void>;
 }

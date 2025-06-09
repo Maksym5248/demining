@@ -14,12 +14,13 @@ import {
 } from 'shared-my-client';
 
 import { DBRemote, DBLocal } from '~/db';
-import { AssetStorage, Storage, Logger } from '~/services';
+import { AssetStorage, Storage, Logger, Auth } from '~/services';
 
 const services = {
     assetStorage: AssetStorage,
     storage: Storage,
     logger: Logger,
+    auth: Auth,
 };
 
 export const Api = {

@@ -124,4 +124,8 @@ export class AuthClass implements IAuth {
         // @ts-expect-error
         onIdTokenChanged(this.auth, fn);
     }
+
+    async refreshToken() {
+        await this.auth.currentUser?.getIdToken(true);
+    }
 }
