@@ -11,6 +11,10 @@ REGION="us-central1" # Replace with your desired region
 PROJECT_ID="dsns-dev-85963" # Replace with your GCP project ID
 IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
 
+# Run yarn isolate to prepare the isolate directory
+echo "Preparing isolate directory..."
+yarn isolate
+
 # Set working directory to the location of the Dockerfile
 cd ./apps/functions
 
