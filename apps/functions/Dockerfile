@@ -7,8 +7,11 @@ RUN apk update && apk add --no-cache poppler-utils
 # Install yarn globally
 RUN apk add --no-cache yarn
 
-# Copy the source code
-COPY . .
+# Set working directory to the isolated package
+WORKDIR /app
+
+# Copy the isolated package source code
+COPY ./isolate .
 
 # Install dependencies
 RUN yarn install --frozen-lockfile

@@ -37,37 +37,9 @@ jobs:
               working-directory: apps/functions
               run: yarn build
             - name: Build and push Docker image for parseBook container
-              working-directory: ./apps/functions # Dockerfile and source code are here
-              run: |
-                  IMAGE_NAME="parsebook-container" # Name for your specific container image
-                  IMAGE_TAG="github-${{ github.sha }}" # Use commit SHA as tag for uniqueness
-                  # Replace 'my-functions-repo' with your Artifact Registry repository name
-                  # Ensure this repo exists in us-central1 (or your chosen region)
-                  ARTIFACT_REGISTRY_REPO="gcf-artifacts"
-                  # Full image path for Artifact Registry
-                  IMAGE_PATH="us-central1-docker.pkg.dev/dsns-dev-85963/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
-
-                  echo "Building and pushing container image for parseBook to: ${IMAGE_PATH}"
-
-                  # Use gcloud builds submit to build the image using the Dockerfile in the current directory (apps/functions)
-                  # The --tag flag automatically pushes to Artifact Registry after a successful build
-                  gcloud builds submit . --tag "${IMAGE_PATH}"
-
-                  # Make the image path available for the next step
-                  echo "PARSEBOOK_IMAGE_PATH=${IMAGE_PATH}" >> $GITHUB_ENV
+              run: bash ./apps/functions/bin/build-v2.sh
             - name: Deploy parseBook Cloud Function (Container)
-              run: |
-                  # Use gcloud functions deploy for v2 container deployment
-                  gcloud functions deploy parseBook \
-                    --gen2 \
-                    --runtime=container \
-                    --image="${{ env.PARSEBOOK_IMAGE_PATH }}" \
-                    --region=eur3 \
-                    --trigger-http \
-                    # Add other configuration specific to parseBook:
-                    # --timeout=600s # Example: set a longer timeout if needed
-                    # --memory=1Gi # Example: allocate more memory
-                    # --set-env-vars KEY1=VALUE1,KEY2=VALUE2 # Pass runtime environment variables
+              run:  bash ./apps/functions/bin/deploy-v2.sh
             - name: Deploy to Firebase
               working-directory: apps/functions
               run: yarn deploy:functions:dev
