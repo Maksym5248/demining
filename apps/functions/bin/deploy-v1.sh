@@ -14,10 +14,7 @@ set -a
 source "$ENV_FILE"
 set +a
 
-if firebase --ignore parseBook deploy --project "${PROJECT_NAME}" --region="${REGION}" --only functions; then
-  echo "Cloud Function successfully deployed. Exiting..."
-  exit 0
-else
-  echo "Error: Cloud Function deployment failed. Exiting..."
-  exit 1
-fi
+firebase --ignore parseBook deploy --project "${PROJECT_NAME}" --region="${REGION}" --only functions
+
+echo "Cloud Function successfully deployed. Exiting..."
+exit 0
