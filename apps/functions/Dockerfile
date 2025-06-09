@@ -1,8 +1,9 @@
-# Use Node.js 20 with Alpine for a smaller image
+# Use Node.js 22 with Alpine for a smaller image
 FROM node:22-alpine AS base
 
 # Install poppler-utils using apk
-RUN apk update && apk add --no-cache poppler-utils
+RUN apk update && apk add --no-cache poppler-utils && \
+    which pdfimages || echo "pdfimages not found"
 
 # Install yarn globally
 RUN apk add --no-cache yarn
