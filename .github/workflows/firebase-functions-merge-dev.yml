@@ -33,13 +33,6 @@ jobs:
               run: yarn prepare:env
             - name: Install dependencies
               run: yarn install
-            - name: Build Docker image
-              run: |
-                docker build -f apps/functions/Dockerfile -t gcr.io/$GCP_PROJECT/functions-image .
-            - name: Push Docker image to GCR
-              run: |
-                docker push gcr.io/$GCP_PROJECT/functions-image
             - name: Deploy to Firebase
               working-directory: apps/functions
-              run: |
-                  firebase deploy --only functions --image gcr.io/$GCP_PROJECT/functions-image
+              run: firebase deploy --only functions

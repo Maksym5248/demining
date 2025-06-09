@@ -2,8 +2,7 @@
 FROM node:22-alpine AS base
 
 # Install poppler-utils using apk
-RUN apk update && apk add --no-cache poppler-utils && \
-    which pdfimages || echo "pdfimages not found"
+RUN apk update && apk add --no-cache poppler-utils
 
 # Install yarn globally
 RUN apk add --no-cache yarn

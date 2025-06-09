@@ -3,14 +3,20 @@
         "rules": "firestore.rules",
         "indexes": "firestore.indexes.json"
     },
+    
     "storage": {
         "rules": "storage.rules"
     },
-    "functions": [
-        {
-            "source": "./isolate",
-            "codebase": "default",
-            "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
-        }
-    ]
+    "functions": {
+        "buildpacks": false,
+        "runtime": "nodejs22",
+        "regionalFunctions": true,
+        "maxInstances": 1,
+        "minInstances": 0,
+        "memory": "2GiB",
+        "timeoutSeconds": 300,
+        "source": "./isolate",
+        "codebase": "default",
+        "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
+    }
 }
