@@ -15,7 +15,8 @@ source "$ENV_FILE"
 set +a
 
 # Variables
-IMAGE_NAME="parsebook-container" # Name for your specific container image
+IMAGE_NAME="parsebook-container"
+IMAGE_TAG="local-$(date +%Y%m%d%H%M%S)"
 IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_NAME}/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
 
 # Ensure the isolate directory exists
