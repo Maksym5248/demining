@@ -25,8 +25,15 @@ cd ./isolate
 
 # Build and push Docker image
 echo "Building and pushing container image for parseBook to: ${IMAGE_PATH}"
-gcloud builds submit . --tag "${IMAGE_PATH}"
 
+if gcloud builds submit . --tag "${IMAGE_PATH}"; then
+  echo "Artifact successfully deployed. Exiting..."
+  exit 0
+else
+  echo "Error: Artifact deployment failed. Exiting..."
+  exit 1
+fi
+  
 # TODO:
 #  - avoid publish image every push just do it when Dockerfile changes
 #  - remove artifacts what are not using anymore

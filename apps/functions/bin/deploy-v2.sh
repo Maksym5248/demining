@@ -22,14 +22,18 @@ cd ./isolate
 
 # Deploy parseBook Cloud Function (Container)
 echo "Deploying parseBook Cloud Function (Container)"
-gcloud functions deploy parseBook \
+
+if gcloud functions deploy parseBook \
   --gen2 \
   --runtime=container \
   --image="${IMAGE_PATH}" \
   --region="${REGION}" \
   --trigger-http \
   --timeout=600s \
-  --memory=1Gi
-
-# Print success message
-echo "Successfully deployed parseBook Cloud Function (Container)"
+  --memory=1Gi; then
+  echo "Cloud Function successfully deployed. Exiting..."
+  exit 0
+else
+  echo "Error: Cloud Function deployment failed. Exiting..."
+  exit 1
+fi
