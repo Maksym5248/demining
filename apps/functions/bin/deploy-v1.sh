@@ -9,6 +9,11 @@ if [ ! -f "$ENV_FILE" ]; then
   exit 1
 fi
 
+# Load environment variables
+set -a
+source "$ENV_FILE"
+set +a
+
 if firebase --ignore parseBook deploy --project "${PROJECT_NAME}" --region="${REGION}" --only functions; then
   echo "Cloud Function successfully deployed. Exiting..."
   exit 0

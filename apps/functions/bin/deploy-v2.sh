@@ -9,6 +9,11 @@ if [ ! -f "$ENV_FILE" ]; then
   exit 1
 fi
 
+# Load environment variables
+set -a
+source "$ENV_FILE"
+set +a
+
 # Variables
 IMAGE_NAME="parsebook-container" # Name for your specific container image
 IMAGE_TAG="local-$(date +%Y%m%d%H%M%S)" # Use timestamp as tag for uniqueness
