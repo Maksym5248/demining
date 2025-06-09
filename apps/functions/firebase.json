@@ -7,16 +7,16 @@
     "storage": {
         "rules": "storage.rules"
     },
-    "functions": {
+    "functions": [{
         "buildpacks": false,
         "runtime": "nodejs22",
         "regionalFunctions": true,
         "maxInstances": 1,
         "minInstances": 0,
-        "memory": "2GiB",
+        "memory": "1GiB",
         "timeoutSeconds": 300,
         "source": "./isolate",
         "codebase": "default",
         "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
-    }
+    }]
 }

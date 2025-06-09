@@ -33,7 +33,7 @@ jobs:
               run: yarn prepare:env
             - name: Install dependencies
               run: yarn install
-            - name: Install dependencies
+            - name: Build dependencies
               working-directory: apps/functions
               run: yarn build
             - name: Deploy to Firebase
