@@ -36,10 +36,15 @@ jobs:
             - name: Build dependencies
               working-directory: apps/functions
               run: yarn build
+            - name: Isolate dependencies
+              working-directory: apps/functions
+              run: yarn isolate 
             - name: Build and push Docker image for parseBook container
-              run: bash ./apps/functions/bin/build-v2.sh
+              working-directory: apps/functions
+              run: bash ./bin/build-v2.sh
             - name: Deploy parseBook Cloud Function (Container)
-              run:  bash ./apps/functions/bin/deploy-v2.sh
+              working-directory: apps/functions
+              run: bash ./bin/deploy-v2.sh
             - name: Deploy to Firebase
               working-directory: apps/functions
               run: yarn deploy:functions:dev
