@@ -7,11 +7,11 @@ RUN apk update && apk add --no-cache poppler-utils
 # Install yarn globally
 RUN apk add --no-cache yarn
 
-# Set working directory to the isolated package
-WORKDIR /app
+# # Set working directory to the isolated package
+# WORKDIR /app
 
-# Debugging step to print the current working directory
-RUN pwd
+# # Debugging step to print the current working directory
+# RUN pwd
 
 # Copy the isolated package source code
 COPY ./isolate .
