@@ -31,6 +31,7 @@ cd ./isolate
 # Deploy parseBook Cloud Function (Container)
 echo "Deploying parseBook Cloud Function (Container)"
 
+# Ignore streaming logs during deployment
 gcloud functions deploy parseBook \
   --gen2 \
   --runtime=container \
@@ -38,8 +39,9 @@ gcloud functions deploy parseBook \
   --region="${REGION}" \
   --trigger-http \
   --timeout=600s \
-  --memory=1Gi
-  
+  --memory=1Gi \
+  --no-source
+
 echo "Cloud Function successfully deployed. Exiting..."
 exit 0
 

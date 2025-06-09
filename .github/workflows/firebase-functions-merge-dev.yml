@@ -41,7 +41,7 @@ jobs:
               run: yarn isolate 
             - name: Build and push Docker image for parseBook container
               working-directory: apps/functions
-              run: bash ./bin/build-v2.sh
+              run: bash ./bin/build-image-v2.sh
             - name: Deploy parseBook Cloud Function (Container)
               working-directory: apps/functions
               run: bash ./bin/deploy-v2.sh
