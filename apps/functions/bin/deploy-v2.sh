@@ -32,13 +32,13 @@ cd ./isolate
 echo "Deploying parseBook Cloud Function (Container)"
 
 gcloud functions deploy parseBook \
-  --runtime=custom \
-  --gen2 \
-  --image-uri "${IMAGE_PATH}" \
+  --image "${IMAGE_PATH}" \ 
   --region "${REGION}" \
-  --trigger http \
+  --platform managed \
+  --allow-unauthenticated \
   --timeout 600s \
-  --memory 1Gi
+  --memory 1Gi \
+  --project "${PROJECT_NAME}"
 
 echo "Cloud Function successfully deployed. Exiting..."
 exit 0
