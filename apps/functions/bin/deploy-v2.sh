@@ -39,8 +39,7 @@ gcloud functions deploy parseBook \
   --region="${REGION}" \
   --trigger-http \
   --timeout=600s \
-  --memory=1Gi \
-  --no-source
+  --memory=1Gi
 
 echo "Cloud Function successfully deployed. Exiting..."
 exit 0

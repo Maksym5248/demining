@@ -21,4 +21,9 @@ IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_NAME}/${ARTIFACT_REGISTRY_REPO}/$
 
 # Build and push Docker image
 echo "Building and pushing container image for parseBook to: ${IMAGE_PATH}"
-gcloud builds submit . --tag "${IMAGE_PATH}"  --no-source
+
+# Use the current directory as the source
+gcloud builds submit . --tag "${IMAGE_PATH}"
+
+echo "Artifact successfully deployed. Exiting..."
+exit 0
