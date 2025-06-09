@@ -11,6 +11,18 @@ REGION="europe-central2" # Replace with your desired region
 PROJECT_ID="dsns-dev-85963" # Replace with your GCP project ID
 IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
 
+# Ensure the isolate directory exists
+if [ ! -d "./isolate" ]; then
+  echo "Error: isolate directory not found. Ensure yarn isolate is run successfully."
+  exit 1
+fi
+
+# Copy Dockerfile into the isolate directory
+cp ./Dockerfile ./isolate/
+
+# Change to the isolate directory
+cd ./isolate
+
 # Build and push Docker image
 echo "Building and pushing container image for parseBook to: ${IMAGE_PATH}"
 gcloud builds submit . --tag "${IMAGE_PATH}"
