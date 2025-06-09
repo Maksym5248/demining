@@ -11,9 +11,6 @@ REGION="us-central1" # Replace with your desired region
 PROJECT_ID="dsns-dev-85963" # Replace with your GCP project ID
 IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
 
-# Change to the correct working directory
-cd ./apps/functions
-
 # Deploy parseBook Cloud Function (Container)
 echo "Deploying parseBook Cloud Function (Container)"
 gcloud functions deploy parseBook \
