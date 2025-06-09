@@ -38,4 +38,4 @@ jobs:
               run: yarn build
             - name: Deploy to Firebase
               working-directory: apps/functions
-              run: firebase deploy --only functions
+              run: yarn deploy:functions:dev
