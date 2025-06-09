@@ -13,4 +13,4 @@ IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPO}/${I
 
 # Build and push Docker image
 echo "Building and pushing container image for parseBook to: ${IMAGE_PATH}"
-gcloud builds submit . --tag "${IMAGE_PATH}"
+gcloud builds submit --config ./apps/functions/Dockerfile . --tag "${IMAGE_PATH}"

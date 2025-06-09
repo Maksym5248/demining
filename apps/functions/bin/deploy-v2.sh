@@ -17,11 +17,10 @@ gcloud functions deploy parseBook \
   --gen2 \
   --runtime=container \
   --image="${IMAGE_PATH}" \
-  --region="eur3" \
+  --region="${REGION}" \
   --trigger-http \
   --timeout=600s \
-  --memory=1Gi \
-  --set-env-vars "KEY1=VALUE1,KEY2=VALUE2" # Add environment variables if needed
+  --memory=1Gi
 
 # Print success message
 echo "Successfully deployed parseBook Cloud Function (Container)"
