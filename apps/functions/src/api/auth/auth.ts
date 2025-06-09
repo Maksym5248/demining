@@ -1,7 +1,6 @@
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
-// Import firestore from firebase-functions
-import { auth, firestore, https } from 'firebase-functions';
+import * as functions from 'firebase-functions';
 import * as logger from 'firebase-functions/logger';
 import {
     type IMemberDB,
@@ -56,80 +55,89 @@ const customUserClaims = async ({
         const errorMessage = `Error setting custom claims for user: ${uid}`;
         logger.error(errorMessage, { uid, error });
         // Re-throw or return error indication if needed downstream
-        throw new https.HttpsError('internal', errorMessage);
+        throw new functions.https.HttpsError('internal', errorMessage);
     }
 };
 
-export const onUserCreate = auth.user().onCreate(async user => {
-    if (!user.email) {
-        logger.info('User email does not exist, cannot process signup fully.', { uid: user.uid });
-        return;
-    }
+export const onUserCreate = functions
+    .region(process.env.REGION ?? 'europe-central2')
+    .auth.user()
+    .onCreate(async user => {
+        if (!user.email) {
+            logger.info('User email does not exist, cannot process signup fully.', {
+                uid: user.uid,
+            });
+            return;
+        }
 
-    const userInfoRef = createUserInfoRef(user.uid);
-    const userAccessRef = createUserAccessRef(user.uid);
-    const memberRef = createMemberRef(user.uid);
+        const userInfoRef = createUserInfoRef(user.uid);
+        const userAccessRef = createUserAccessRef(user.uid);
+        const memberRef = createMemberRef(user.uid);
 
-    const common = {
-        id: user.uid,
-        createdAt: FieldValue.serverTimestamp() as Timestamp,
-        updatedAt: FieldValue.serverTimestamp() as Timestamp,
-    };
+        const common = {
+            id: user.uid,
+            createdAt: FieldValue.serverTimestamp() as Timestamp,
+            updatedAt: FieldValue.serverTimestamp() as Timestamp,
+        };
 
-    const initialAccess: IUserAccessDB = {
-        ...common,
-        email: user.email ?? null,
-        [ROLES.AMMO_VIEWER]: true,
-    };
-    const initialMember: IMemberDB = {
-        ...common,
-        organizationId: null,
-    };
-    const initialUserInfo: IUserInfoDB = {
-        ...common,
-        photoUri: user.photoURL ?? null,
-        name: user.displayName ?? null,
-    };
+        const initialAccess: IUserAccessDB = {
+            ...common,
+            email: user.email ?? null,
+            [ROLES.AMMO_VIEWER]: true,
+        };
+        const initialMember: IMemberDB = {
+            ...common,
+            organizationId: null,
+        };
+        const initialUserInfo: IUserInfoDB = {
+            ...common,
+            photoUri: user.photoURL ?? null,
+            name: user.displayName ?? null,
+        };
 
-    try {
-        await Promise.all([
-            userInfoRef.set(initialUserInfo),
-            userAccessRef.set(initialAccess),
-            memberRef.set(initialMember),
-            customUserClaims({ uid: user.uid, access: initialAccess, member: initialMember }),
-        ]);
+        try {
+            await Promise.all([
+                userInfoRef.set(initialUserInfo),
+                userAccessRef.set(initialAccess),
+                memberRef.set(initialMember),
+                customUserClaims({ uid: user.uid, access: initialAccess, member: initialMember }),
+            ]);
 
-        logger.info(`Successfully set initial claims for user: ${user.uid}`);
+            logger.info(`Successfully set initial claims for user: ${user.uid}`);
 
-        return { message: `Successfully created user and set initial claims: ${user.uid}` };
-    } catch (error) {
-        const errorMessage = `Error during signup process for user: ${user.uid}`;
-        logger.error(errorMessage, { error });
-        return { message: errorMessage };
-    }
-});
+            return { message: `Successfully created user and set initial claims: ${user.uid}` };
+        } catch (error) {
+            const errorMessage = `Error during signup process for user: ${user.uid}`;
+            logger.error(errorMessage, { error });
+            return { message: errorMessage };
+        }
+    });
 
-export const onUserDelete = auth.user().onDelete(async user => {
-    const userInfoRef = createUserInfoRef(user.uid);
-    const userAccessRef = createUserAccessRef(user.uid);
-    const memberRef = createMemberRef(user.uid);
+export const onUserDelete = functions
+    .region(process.env.REGION ?? 'europe-central2')
+    .auth.user()
+    .onDelete(async user => {
+        const userInfoRef = createUserInfoRef(user.uid);
+        const userAccessRef = createUserAccessRef(user.uid);
+        const memberRef = createMemberRef(user.uid);
 
-    try {
-        await Promise.all([userInfoRef.delete(), userAccessRef.delete(), memberRef.delete()]);
+        try {
+            await Promise.all([userInfoRef.delete(), userAccessRef.delete(), memberRef.delete()]);
 
-        logger.info(`Successfully deteted initial documents for user: ${user.uid}`);
+            logger.info(`Successfully deteted initial documents for user: ${user.uid}`);
 
-        return { message: `Successfully deteted user: ${user.uid}` };
-    } catch (error) {
-        const errorMessage = `Error during deteting process for user: ${user.uid}`;
-        logger.error(errorMessage, { error });
-        // Consider more specific error handling or cleanup if needed
-        return { message: errorMessage };
-    }
-});
+            return { message: `Successfully deteted user: ${user.uid}` };
+        } catch (error) {
+            const errorMessage = `Error during deteting process for user: ${user.uid}`;
+            logger.error(errorMessage, { error });
+            // Consider more specific error handling or cleanup if needed
+            return { message: errorMessage };
+        }
+    });
 
-export const onUserAccessUpdate = firestore
-    .document(`${TABLES.USER_ACCESS}/{uid}`)
+export const onUserAccessUpdate = functions
+    .region(process.env.REGION ?? 'europe-central2')
+    .firestore.document(`${TABLES.USER_ACCESS}/{uid}`)
     .onUpdate(async (change, context) => {
         const uid = context.params.uid;
         const accessBefore = change.before.data() as IUserAccessDB | undefined;
@@ -160,8 +168,9 @@ export const onUserAccessUpdate = firestore
         }
     });
 
-export const onMemberUpdate = firestore
-    .document(`${TABLES.MEMBER}/{uid}`)
+export const onMemberUpdate = functions
+    .region(process.env.REGION ?? 'europe-central2')
+    .firestore.document(`${TABLES.MEMBER}/{uid}`)
     .onUpdate(async (change, context) => {
         const uid = context.params.uid;
         const memberBefore = change.before.data() as IMemberDB | undefined;

@@ -111,6 +111,7 @@ async function ensureBookAssetsParsed(bookId: string) {
 
 export const parseBook = onCall(
     {
+        region: process.env.REGION ?? 'europe-central2',
         cpu: 1,
         memory: '1GiB',
         timeoutSeconds: 540,

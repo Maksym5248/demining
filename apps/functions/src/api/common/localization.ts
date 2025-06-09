@@ -20,8 +20,9 @@ const projectId = app.options.projectId;
 const translate = new Translate({ projectId });
 
 // --- Cloud Function ---
-export const translateOnWrite = functions.firestore
-    .document('{collectionId}/LANG/{langId}/{docId}')
+export const translateOnWrite = functions
+    .region(process.env.REGION ?? 'europe-central2')
+    .firestore.document('{collectionId}/LANG/{langId}/{docId}')
     .onWrite(async (change, context) => {
         const { collectionId, docId, langId } = context.params;
         let sourceLang = DEFAULT_SOURCE_LANG;
