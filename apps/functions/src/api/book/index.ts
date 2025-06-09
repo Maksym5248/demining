@@ -114,6 +114,7 @@ export const parseBook = onCall(
         cpu: 1,
         memory: '1GiB',
         timeoutSeconds: 540,
+        buildpacks: false,
     },
     async request => {
         const bookId = request.data.bookId;

@@ -33,6 +33,9 @@ jobs:
               run: yarn prepare:env
             - name: Install dependencies
               run: yarn install
+            - name: Install dependencies
+              working-directory: apps/functions
+              run: yarn build
             - name: Deploy to Firebase
               working-directory: apps/functions
               run: firebase deploy --only functions
