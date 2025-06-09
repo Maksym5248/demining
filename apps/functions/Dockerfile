@@ -14,7 +14,7 @@ RUN apk add --no-cache yarn
 # RUN pwd
 
 # Copy the isolated package source code
-COPY ./isolate .
+COPY . .
 
 # Install dependencies
 RUN yarn install --frozen-lockfile
