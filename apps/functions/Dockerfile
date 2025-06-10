@@ -2,19 +2,19 @@
 FROM node:22-alpine AS base
 
 # Install poppler-utils and poppler-data using apk
-RUN apk update && apk add --no-cache poppler-utils poppler-data
-
-# Debugging step to verify pdfimages availability
-RUN which pdfimages && pdfimages -h
+RUN apk update && apk add --no-cache poppler-utils
 
 # Install yarn globally
 RUN apk add --no-cache yarn
+RUN apk add --no-cache python3
+RUN apk add --no-cache pkgconfig pixman-dev
+RUN apk add --no-cache cairo-dev
+RUN apk add --no-cache pango-dev
 
-# # Set working directory to the isolated package
-# WORKDIR /app
+ENV PORT=8080
 
-# # Debugging step to print the current working directory
-# RUN pwd
+# Debugging step to print the current working directory
+RUN pwd
 
 # Copy the isolated package source code
 COPY . .
@@ -22,5 +22,5 @@ COPY . .
 # Install dependencies
 RUN yarn install --frozen-lockfile
 
-# Command to start the application
-CMD ["node", "dist/index.js"]
+# Use Functions Framework to expose the Cloud Function
+CMD ["yarn", "start:v2"]

@@ -25,10 +25,12 @@
         "migrate": "ts-node ./src/migrations/explosive-object/v3/api",
         "parse": "ts-node ./src/parser/parce.ts",
         "prepare:env": "/bin/sh ./bin/prepare-config.sh",
+        "start:v2": "functions-framework --target=parseBook",
         "script": "export GOOGLE_APPLICATION_CREDENTIALS=\"./firebase-adminsdk.json\" && ts-node ./src/migrations/common/v1/translate-existing-data",
         "export:data": "ts-node ./src/export/export-data"
     },
     "dependencies": {
+        "@google-cloud/functions-framework": "^4.0.0",
         "@google-cloud/logging": "^11.2.0",
         "@google-cloud/translate": "^9.0.1",
         "firebase-admin": "^12.1.1",

@@ -28,9 +28,12 @@ fi
 
 cp ./Dockerfile ./isolate/
 cp ./project.toml ./isolate/
+# Copy scripts from the main package.json into the scripts section of isolate/package.json
+# Add the `start:v2` script directly to the `scripts` section of isolate/package.json
+jq '.scripts += {"start:v2": "functions-framework --target=parseBook"}' ./isolate/package.json > ./isolate/package.json.tmp && mv ./isolate/package.json.tmp ./isolate/package.json
 cd ./isolate
 
-gcloud builds submit --pack image="${IMAGE_PATH}"
+gcloud builds submit --tag "${IMAGE_PATH}"
 
 gcloud run deploy parsebook \
   --image="${IMAGE_PATH}" \
