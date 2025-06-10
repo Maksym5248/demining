@@ -9,11 +9,11 @@ import {
     type IBookAssetsDB,
     TABLES,
     type Timestamp,
-    ROLES,
+    // ROLES,
     type IBookDB,
 } from 'shared-my';
 
-import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
+import { checkAuthorized, checkIdParam } from '~/utils';
 
 import { parsePDF } from '../../parser/pdfParser';
 
@@ -129,7 +129,7 @@ export const parseBook = onCall(
 
         checkIdParam(request, bookId);
         checkAuthorized(request);
-        checkRoles(request, [ROLES.AMMO_CONTENT_ADMIN, ROLES.AMMO_AUTHOR]);
+        // checkRoles(request, [ROLES.AMMO_CONTENT_ADMIN, ROLES.AMMO_AUTHOR]);
 
         logger.info(
             `User ${request.auth?.uid} authorized. Processing manual request for bookId: ${bookId}`,
