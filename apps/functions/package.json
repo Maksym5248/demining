@@ -29,6 +29,7 @@
         "export:data": "ts-node ./src/export/export-data"
     },
     "dependencies": {
+        "@google-cloud/logging": "^11.2.0",
         "@google-cloud/translate": "^9.0.1",
         "firebase-admin": "^12.1.1",
         "firebase-functions": "^5.0.1",

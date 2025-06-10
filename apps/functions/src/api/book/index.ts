@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { Logging } from '@google-cloud/logging';
 import * as admin from 'firebase-admin';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import {
@@ -16,17 +17,22 @@ import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
 
 import { parsePDF } from '../../parser/pdfParser';
 
+const logging = new Logging();
+const log = logging.log('functions-log');
+
 const db = admin.firestore();
 const storage = admin.storage(); // Uses the default bucket
 
 async function ensureBookAssetsParsed(bookId: string) {
-    console.info(`Starting ensureBookAssetsParsed for bookId: ${bookId}`);
+    log.write(
+        log.entry({ severity: 'INFO' }, `Starting ensureBookAssetsParsed for bookId: ${bookId}`),
+    );
 
     const bookAssetsRef = db.collection(TABLES.BOOK_ASSETS).doc(bookId);
     const bookAssets = await bookAssetsRef.get();
 
     if (bookAssets.exists) {
-        console.info(`Assets for book ${bookId} already exist.`);
+        log.write(log.entry({ severity: 'INFO' }, `Assets for book ${bookId} already exist.`));
         return;
     }
 
@@ -35,6 +41,9 @@ async function ensureBookAssetsParsed(bookId: string) {
     const bookData = book.data() as IBookDB | undefined;
 
     if (!bookData?.uri) {
+        log.write(
+            log.entry({ severity: 'ERROR' }, `No downloadable URI found for bookId: ${bookId}`),
+        );
         throw new Error(`No downloadable URI found for bookId: ${bookId}`);
     }
 
@@ -46,6 +55,7 @@ async function ensureBookAssetsParsed(bookId: string) {
         const reader = response.body?.getReader();
 
         if (!reader) {
+            log.write(log.entry({ severity: 'ERROR' }, 'Failed to get reader from response body'));
             throw new Error('Failed to get reader from response body');
         }
 
@@ -57,52 +67,85 @@ async function ensureBookAssetsParsed(bookId: string) {
         }
 
         fileStream.end();
-        console.info(`Successfully downloaded book to ${bookFilePath}`);
-    } catch (error) {
-        console.error(`Failed to download book from URI for bookId ${bookId}. Error:`, error);
+        log.write(
+            log.entry({ severity: 'INFO' }, `Successfully downloaded book to ${bookFilePath}`),
+        );
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        log.write(
+            log.entry(
+                { severity: 'ERROR' },
+                `Failed to download book from URI for bookId ${bookId}. Error: ${errorMessage}`,
+            ),
+        );
         throw error;
     }
 
     const imagesDir = `/tmp/${bookId}_images`;
     if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
 
-    console.info(`Parsing PDF for ${bookId}. Images dir: ${imagesDir}`);
+    log.write(
+        log.entry({ severity: 'INFO' }, `Parsing PDF for ${bookId}. Images dir: ${imagesDir}`),
+    );
     const parsed = await parsePDF(bookFilePath, imagesDir);
-    console.info(`Successfully parsed PDF for ${bookId}`);
+    log.write(log.entry({ severity: 'INFO' }, `Successfully parsed PDF for ${bookId}`));
 
-    // 4. Save images to storage
-    const imageFiles = fs.readdirSync(imagesDir).filter(f => /\\.(png|jpg|jpeg)$/i.test(f));
+    const imageFiles = fs.readdirSync(imagesDir).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
     const imageUrls: string[] = [];
-    console.info(`Found ${imageFiles.length} images to upload for ${bookId}.`);
+    log.write(
+        log.entry(
+            { severity: 'INFO' },
+            `Found ${imageFiles.length} images to upload for ${bookId}.`,
+        ),
+    );
 
     for (const imgFile of imageFiles) {
         const localPath = path.join(imagesDir, imgFile);
         const storagePath = `${ASSET_TYPE.BOOK_ASSETS}/${bookId}/${imgFile}`;
-        console.info(`Uploading image ${imgFile} to gs://${storage.bucket().name}/${storagePath}`);
-        await storage.bucket().upload(localPath, { destination: storagePath }); // Using default bucket
+        log.write(
+            log.entry(
+                { severity: 'INFO' },
+                `Uploading image ${imgFile} to gs://${storage.bucket().name}/${storagePath}`,
+            ),
+        );
+        await storage.bucket().upload(localPath, { destination: storagePath });
         imageUrls.push(storagePath);
     }
-    console.info(`Successfully uploaded ${imageUrls.length} images for ${bookId}.`);
+    log.write(
+        log.entry(
+            { severity: 'INFO' },
+            `Successfully uploaded ${imageUrls.length} images for ${bookId}.`,
+        ),
+    );
 
-    // 5. Save parsed JSON to Firestore
     const docData: IBookAssetsDB = {
         ...parsed,
         id: bookId,
         images: imageUrls,
         createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp, // Added updatedAt
+        updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
     };
-    console.info(`Saving parsed data to Firestore for book ${bookId}.`);
+    log.write(
+        log.entry({ severity: 'INFO' }, `Saving parsed data to Firestore for book ${bookId}.`),
+    );
     await bookAssetsRef.set(docData);
-    console.info(`Successfully saved data to Firestore for book ${bookId}.`);
+    log.write(
+        log.entry({ severity: 'INFO' }, `Successfully saved data to Firestore for book ${bookId}.`),
+    );
 
-    // Clean up temporary files
     try {
         fs.rmSync(bookFilePath, { force: true });
         fs.rmSync(imagesDir, { recursive: true, force: true });
-        console.info(`Cleaned up temporary files for ${bookId}.`);
-    } catch (cleanupError) {
-        console.warn(`Warning: Failed to clean up temporary files for ${bookId}:`, cleanupError);
+        log.write(log.entry({ severity: 'INFO' }, `Cleaned up temporary files for ${bookId}.`));
+    } catch (cleanupError: unknown) {
+        const cleanupErrorMessage =
+            cleanupError instanceof Error ? cleanupError.message : 'Unknown cleanup error';
+        log.write(
+            log.entry(
+                { severity: 'WARNING' },
+                `Warning: Failed to clean up temporary files for ${bookId}: ${cleanupErrorMessage}`,
+            ),
+        );
     }
 
     return docData;
@@ -122,23 +165,37 @@ export const parseBook = onCall(
         checkAuthorized(request);
         checkRoles(request, [ROLES.AMMO_CONTENT_ADMIN, ROLES.AMMO_AUTHOR]);
 
-        console.info(
-            `User ${request.auth?.uid} authorized. Processing manual request for bookId: ${bookId}`,
+        log.write(
+            log.entry(
+                { severity: 'INFO' },
+                `User ${request.auth?.uid} authorized. Processing manual request for bookId: ${bookId}`,
+            ),
         );
 
         try {
             const result = await ensureBookAssetsParsed(bookId);
-            console.info(`Successfully processed book ${bookId}. Result:`, result);
-            return result; // Data returned here will be sent back to the client
-        } catch (error: any) {
-            console.error(`Error processing book ${bookId} triggered by manual call:`, error);
+            log.write(
+                log.entry(
+                    { severity: 'INFO' },
+                    `Successfully processed book ${bookId}. Result: ${JSON.stringify(result)}`,
+                ),
+            );
+            return result;
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            log.write(
+                log.entry(
+                    { severity: 'ERROR' },
+                    `Error processing book ${bookId} triggered by manual call: ${errorMessage}`,
+                ),
+            );
             if (error instanceof HttpsError) {
                 throw error;
             }
             throw new HttpsError(
                 'internal',
                 `An internal error occurred while processing book ${bookId}.`,
-                { originalError: error.message },
+                { originalError: errorMessage },
             );
         }
     },
