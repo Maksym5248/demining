@@ -1,4 +1,4 @@
-import { logger } from 'firebase-functions';
+import * as logger from 'firebase-functions/logger';
 import { HttpsError, type CallableRequest } from 'firebase-functions/v2/https';
 import { type ROLES } from 'shared-my';
 

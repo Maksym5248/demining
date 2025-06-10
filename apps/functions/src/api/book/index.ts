@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import * as admin from 'firebase-admin';
-import { logger } from 'firebase-functions';
+import * as logger from 'firebase-functions/logger';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import {
     ASSET_TYPE,
