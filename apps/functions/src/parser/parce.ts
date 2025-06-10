@@ -14,14 +14,13 @@ import { parsePDF } from './pdfParser';
     }
 
     const imagesDir = path.join(outputDir, 'images');
-    const fontsDir = path.join(outputDir, 'fonts');
     console.log(`ImagesDir: ${imagesDir}`);
 
     if (!fs.existsSync(imagesDir)) {
         fs.mkdirSync(imagesDir, { recursive: true });
     }
 
-    const result = await parsePDF(pdfPath, imagesDir, fontsDir);
+    const result = await parsePDF(pdfPath, imagesDir);
 
     fs.writeFileSync(path.join(outputDir, 'text.json'), JSON.stringify(result, null, 2));
 

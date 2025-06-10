@@ -42,13 +42,15 @@ function parsePdfImagesList(listOutput: string, outputDir: string): ExtractedIma
 
 export async function extractImagesWithPoppler(
     pdfPath: string,
-    imagesDir: string, // <-- use imagesDir directly
+    imagesDir: string,
 ): Promise<ExtractedImage[]> {
     if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
     return new Promise((resolve, reject) => {
         const prefix = path.join(imagesDir, 'image'); // <-- use imagesDir for prefix
         execFile('pdfimages', ['-list', pdfPath], (error, stdout, stderr) => {
             if (error) {
+                console.error('Error during pdfimages -list execution:', error);
+                console.error('stderr output:', stderr);
                 reject(new Error(stderr || error.message));
                 return;
             }

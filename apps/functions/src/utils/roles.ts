@@ -19,7 +19,7 @@ export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
     });
 
     if (roles.some(role => claims[role])) {
-        logger.info(`Succes: user have one of required roles${roles}`, {
+        logger.info(`Success: user have one of required roles: ${roles}`, {
             uid: request.auth?.uid,
             claims,
             roles,

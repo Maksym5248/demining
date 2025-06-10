@@ -37,5 +37,5 @@ gcloud run deploy parsebook \
   --region="${REGION}" \
   --allow-unauthenticated
 
-# gcloud functions describe parseBook --region=europe-central2 --gen2
+# gcloud functions describe parsebook --region=europe-central2 --gen2
 
