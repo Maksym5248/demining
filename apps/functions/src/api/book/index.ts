@@ -117,7 +117,7 @@ async function ensureBookAssetsParsed(bookId: string) {
     return docData;
 }
 
-export const parsebook = onCall(
+export const parseBook = onCall(
     {
         region: process.env.REGION ?? 'europe-central2',
         cpu: 1,
