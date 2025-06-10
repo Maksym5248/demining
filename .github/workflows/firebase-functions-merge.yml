@@ -44,6 +44,6 @@ jobs:
             - name: Build and push Docker image for parseBook container
               working-directory: apps/functions
               run: bash ./bin/build-image-v2.sh
-            - name: Deploy parseBook Cloud Function (Container)
+            - name: Deploy v2 functions with Cloud Function (Container)
               working-directory: apps/functions
               run: bash ./bin/deploy-v2.sh

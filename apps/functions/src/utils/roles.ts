@@ -12,7 +12,19 @@ export const checkAuthorized = (request: CallableRequest<any>) => {
 export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
     const claims = (request.auth?.token as Record<string, unknown>) || {};
 
-    if (!roles.some(role => claims[role])) {
+    logger.info(`User checkRoles: ${roles}`, {
+        uid: request.auth?.uid,
+        claims,
+        roles,
+    });
+
+    if (roles.some(role => claims[role])) {
+        logger.info(`Succes: user have one of required roles${roles}`, {
+            uid: request.auth?.uid,
+            claims,
+            roles,
+        });
+    } else {
         logger.error(`Permission denied. User does not have required roles: ${roles}`, {
             uid: request.auth?.uid,
             claims,
@@ -20,12 +32,6 @@ export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
         });
 
         throw new HttpsError('permission-denied', `You do not have the required roles`);
-    } else {
-        logger.info(`User has required roles: ${roles}`, {
-            uid: request.auth?.uid,
-            claims,
-            roles,
-        });
     }
 };
 
