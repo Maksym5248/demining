@@ -17,7 +17,7 @@ set +a
 # Variables
 IMAGE_NAME="parsebook-container" # Name for your specific container image
 IMAGE_TAG="local-$(date +%Y%m%d%H%M%S)" # Use timestamp as tag for uniqueness
-DOCKER_REPOSITORY="projects/${PROJECT_NAME}/locations/${REGION}/repositories/${ARTIFACT_REGISTRY_REPO}" # Correct repository format
+IMAGE_PATH="${REGION}-docker.pkg.dev/${PROJECT_NAME}/${ARTIFACT_REGISTRY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
 
 # Ensure the isolate directory exists
 if [ ! -d "./isolate" ]; then
@@ -25,22 +25,17 @@ if [ ! -d "./isolate" ]; then
   exit 1
 fi
 
-# Change to the isolate directory
+
+cp ./Dockerfile ./isolate/
+cp ./project.toml ./isolate/
 cd ./isolate
 
-# Deploy parseBook Cloud Function (Container)
-echo "Deploying parseBook Cloud Function (Container)"
+gcloud builds submit --pack image="${IMAGE_PATH}"
 
-gcloud functions deploy parseBook \
-  --runtime=nodejs22 \
-  --gen2 \
-  --docker-repository="${DOCKER_REPOSITORY}" \
+gcloud run deploy parsebook \
+  --image="${IMAGE_PATH}" \
   --region="${REGION}" \
-  --trigger-http \
-  --timeout=600s \
-  --memory=1Gi  \
   --allow-unauthenticated
 
-echo "Cloud Function successfully deployed. Exiting..."
-exit 0
+# gcloud functions describe parseBook --region=europe-central2 --gen2
 
