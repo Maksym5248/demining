@@ -22,7 +22,7 @@ export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
     if (hasRole) {
         logger.info(`Success: user has one of the required roles: ${roles}`);
     } else {
-        logger.error(`Permission denied. User does not have required roles: ${roles}`);
+        logger.error(`1 Permission denied. User does not have required roles: ${roles}`);
         throw new HttpsError('permission-denied', `You do not have the required roles`);
     }
 };
