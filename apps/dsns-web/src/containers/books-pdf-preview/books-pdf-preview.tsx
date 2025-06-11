@@ -15,7 +15,7 @@ import { s } from './books-pdf-preview.styles';
 import { type IBooksPdfPreviewProps } from './books-pdf-preview.types';
 import { PdfPanel } from './panel';
 import { PdfSettingsPanel } from './setting-menu';
-import { usePDF } from '../../use-pdf';
+import { usePDF } from './use-pdf';
 
 // @ts-ignore
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();

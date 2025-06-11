@@ -12,9 +12,8 @@ export const checkAuthorized = (request: CallableRequest<any>) => {
 export const checkRoles = (request: CallableRequest, roles: ROLES[]) => {
     const claims = (request.auth?.token as Record<string, unknown>) || {};
 
-    logger.info(`User checkRoles: ${roles}`);
-    logger.debug(`Claims object: ${JSON.stringify(claims)}`);
     logger.debug(`Roles to check: ${roles}`);
+    logger.debug(`Claims object: ${JSON.stringify(claims)}`);
 
     const hasRole = roles.some(role => Boolean(claims[role]));
     logger.debug(`Role matching result: ${hasRole}`);

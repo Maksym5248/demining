@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useAsyncEffect } from 'shared-my-client';
 
-import { cacheAsset } from './utils';
+import { cacheAsset } from '../../modals/dictionary/book-plugin/utils';
 
 export const usePDF = (uri?: string) => {
     const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);

@@ -32,7 +32,6 @@ export type IBookAssetsDB = {
     pages: IBookAssetsPageDB[];
     metadata: any;
     viewport?: any;
-    images: string[];
     createdAt: Timestamp;
     updatedAt: Timestamp;
 };

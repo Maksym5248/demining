@@ -49,8 +49,6 @@ export async function extractImagesWithPoppler(
         const prefix = path.join(imagesDir, 'image'); // <-- use imagesDir for prefix
         execFile('pdfimages', ['-list', pdfPath], (error, stdout, stderr) => {
             if (error) {
-                console.error('Error during pdfimages -list execution:', error);
-                console.error('stderr output:', stderr);
                 reject(new Error(stderr || error.message));
                 return;
             }
@@ -60,9 +58,8 @@ export async function extractImagesWithPoppler(
                     reject(new Error(err2.message));
                     return;
                 }
-                // Parse -list output for positions
+
                 const images = parsePdfImagesList(stdout, imagesDir);
-                console.log('images', images);
                 resolve(images);
             });
         });

@@ -11,6 +11,7 @@ import {
     type Timestamp,
     ROLES,
     type IBookDB,
+    type IBookAssetsPageDB,
 } from 'shared-my';
 
 import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
@@ -79,22 +80,47 @@ async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Successfully parsed PDF for ${bookId}`);
 
     const imageFiles = fs.readdirSync(imagesDir).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
+    const pages: IBookAssetsPageDB[] = [];
     const imageUrls: string[] = [];
+
     logger.info(`Found ${imageFiles.length} images to upload for ${bookId}.`);
 
     for (const imgFile of imageFiles) {
         const localPath = path.join(imagesDir, imgFile);
         const storagePath = `${ASSET_TYPE.BOOK_ASSETS}/${bookId}/${imgFile}`;
+
         logger.info(`Uploading image ${imgFile} to gs://${storage.bucket().name}/${storagePath}`);
         await storage.bucket().upload(localPath, { destination: storagePath });
-        imageUrls.push(storagePath);
+
+        // Generate a signed URL for the uploaded file
+        const [signedUrl] = await storage.bucket().file(storagePath).getSignedUrl({
+            action: 'read',
+            expires: '03-01-2500', // Set an expiration date far in the future
+        });
+
+        imageUrls.push(signedUrl);
+
+        const pageNumberMatch = imgFile.match(/page-(\d+)/);
+        const pageNumber = pageNumberMatch ? parseInt(pageNumberMatch[1], 10) : 0;
+
+        const pageIndex = pages.findIndex(page => page.page === pageNumber);
+        if (pageIndex === -1) {
+            pages.push({
+                page: pageNumber,
+                items: [{ type: 'image', value: signedUrl }],
+            });
+        } else {
+            pages[pageIndex].items.push({ type: 'image', value: signedUrl });
+        }
     }
+
     logger.info(`Successfully uploaded ${imageUrls.length} images for ${bookId}.`);
 
     const docData: IBookAssetsDB = {
-        ...parsed,
         id: bookId,
-        images: imageUrls,
+        pages,
+        metadata: parsed.metadata,
+        viewport: parsed.viewport,
         createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
         updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
     };

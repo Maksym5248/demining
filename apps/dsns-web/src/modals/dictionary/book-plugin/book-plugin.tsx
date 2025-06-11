@@ -4,12 +4,12 @@ import { Button, Drawer, Tabs, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 
 import { Icon } from '~/components';
+import { BooksPdfAssets, BooksPdfPreview } from '~/containers';
 import { useStore } from '~/hooks';
 
 import { s } from './book-plugin.style';
 import { type Tab, type BookPluginProps } from './book-plugin.types';
-import { BooksList, BooksPdfPreview } from './containers';
-import { BooksPdfAssets } from './containers/books-pdf-assets';
+import { BooksList } from './containers';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 

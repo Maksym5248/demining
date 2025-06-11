@@ -44,7 +44,7 @@ export const parsePDF = async (
 
     const numPages = pdfDoc.numPages;
 
-    for (let i = 0; i < Math.min(numPages, 100); i++) {
+    for (let i = 0; i < numPages; i++) {
         const page = await pdfDoc.getPage(i + 1);
         if (!viewport) {
             const vp = page.getViewport({ scale: 1 });

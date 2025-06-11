@@ -31,8 +31,8 @@ export interface IBookStore {
     create: IRequestModel<[ICreateValue<IBookData>]>;
     remove: IRequestModel<[string]>;
     fetchItem: IRequestModel<[string]>;
-    loadAssetsItem: IRequestModel<[string]>;
-    createAssets: IRequestModel<[string]>;
+    fetchAssetsItem: IRequestModel<[string]>;
+    createAssetsItem: IRequestModel<[string]>;
     fetchList: IRequestModel<[search?: string]>;
     fetchListMore: IRequestModel<[search?: string]>;
     sync: RequestModel;
@@ -99,7 +99,7 @@ export class BookStore implements IBookStore {
         onError: () => this.services.message.error('Не вдалось додати'),
     });
 
-    createAssets = new RequestModel({
+    createAssetsItem = new RequestModel({
         run: async (id: string) => {
             const res = await this.api.book.createBookAssets(id);
             this.collectionAssets.set(res.id, createBookAssets(res));
@@ -125,16 +125,23 @@ export class BookStore implements IBookStore {
         onError: () => this.services.message.error('Виникла помилка'),
     });
 
-    loadAssetsItem = new RequestModel({
+    fetchAssetsItem = new RequestModel({
         run: async (id: string) => {
-            let res;
-
             try {
-                res = await this.api.book.getAssets(id);
+                const res = await this.api.book.getAssets(id);
+                this.collectionAssets.set(res.id, createBookAssets(res));
             } catch (error) {
-                res = await this.api.book.createBookAssets(id);
+                if (!(error as Error)?.message?.includes('there is no item with id')) {
+                    throw error;
+                }
             }
+        },
+        onError: () => this.services.message.error('Виникла помилка'),
+    });
 
+    createBookAssets = new RequestModel({
+        run: async (id: string) => {
+            const res = await this.api.book.createBookAssets(id);
             this.collectionAssets.set(res.id, createBookAssets(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
