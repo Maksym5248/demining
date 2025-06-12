@@ -6,6 +6,7 @@ export * from './list-header';
 export * from './map-preview';
 export * from './map';
 export * from './map-item';
+export * from './panel-viewer';
 export * from './search';
 export * from './select';
 export * from './select-async';

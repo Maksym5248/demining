@@ -6,14 +6,13 @@ import { observer } from 'mobx-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { useAsyncEffect } from 'shared-my-client';
 
-import { Icon, Loading } from '~/components';
+import { Icon, Loading, PanelViewer } from '~/components';
 import { STORAGE } from '~/constants';
 import { useStore } from '~/hooks';
 import { Storage } from '~/services';
 
 import { s } from './books-pdf-preview.styles';
 import { type IBooksPdfPreviewProps } from './books-pdf-preview.types';
-import { PdfPanel } from './panel';
 import { PdfSettingsPanel } from './setting-menu';
 import { usePDF } from './use-pdf';
 
@@ -35,9 +34,15 @@ export const BooksPdfPreview = observer(({ id, onOpenComponents }: IBooksPdfPrev
     const lastPageLoaded = useRef(false);
 
     useLayoutEffect(() => {
-        if (containerRef.current) {
-            setContainerWidth(containerRef.current.offsetWidth);
-        }
+        const measureWidth = () => {
+            if (containerRef.current) {
+                setContainerWidth(containerRef.current.offsetWidth);
+            }
+        };
+
+        // Delay measurement to ensure the element is fully rendered
+        requestAnimationFrame(measureWidth);
+
         const handleResize = () => {
             if (containerRef.current) {
                 setContainerWidth(containerRef.current.offsetWidth);
@@ -49,9 +54,11 @@ export const BooksPdfPreview = observer(({ id, onOpenComponents }: IBooksPdfPrev
 
     // Update containerWidth when scale changes (to trigger Page rerender)
     useLayoutEffect(() => {
-        if (containerRef.current) {
-            setContainerWidth(containerRef.current.offsetWidth);
-        }
+        setTimeout(() => {
+            if (containerRef.current) {
+                setContainerWidth(containerRef.current.offsetWidth);
+            }
+        }, 100);
     }, [scale]);
 
     const item = book.collection.get(id);
@@ -119,53 +126,56 @@ export const BooksPdfPreview = observer(({ id, onOpenComponents }: IBooksPdfPrev
     }
 
     return (
-        <div ref={containerRef} css={[s.container]}>
-            <Button
-                size="small"
-                onClick={() => setShowSettings(true)}
-                css={s.settingsButton}
-                aria-label="Open PDF settings"
-                icon={<Icon.SettingOutlined />}
-            />
-            {showSettings && (
-                <PdfSettingsPanel
-                    showPanel={showPanel}
-                    setShowPanel={setShowPanel}
-                    showPageInput={showPageInput}
-                    setShowPageInput={setShowPageInput}
-                    showZoom={showZoom}
-                    setShowZoom={setShowZoom}
-                    onClose={() => setShowSettings(false)}
+        <div css={s.container} ref={containerRef}>
+            <div css={s.content}>
+                {!!containerWidth && (
+                    <Document file={pdf.file} onLoadSuccess={onDocumentLoadSuccess} loading={<Loading />}>
+                        <Page
+                            pageNumber={pageNumber}
+                            width={containerWidth ? containerWidth * scale : undefined}
+                            renderAnnotationLayer={false}
+                            renderTextLayer={true}
+                        />
+                    </Document>
+                )}
+
+                <Button
+                    size="small"
+                    onClick={() => setShowSettings(true)}
+                    css={s.settingsButton}
+                    aria-label="Open PDF settings"
+                    icon={<Icon.SettingOutlined />}
                 />
-            )}
-            {showPanel && (
-                <PdfPanel
-                    pageNumber={pageNumber}
-                    numPages={numPages}
-                    onPrev={goToPrevPage}
-                    onNext={goToNextPage}
-                    showPageInput={showPageInput}
-                    onPageInputChange={onPageInputChange}
-                    showZoom={showZoom}
-                    scale={scale}
-                    onZoomIn={zoomIn}
-                    onZoomOut={zoomOut}
-                    disablePrev={pageNumber <= 1}
-                    disableNext={numPages ? pageNumber >= numPages : false}
-                    disableZoomIn={scale >= 3}
-                    disableZoomOut={scale <= 0.4}
-                    onOpenComponents={() => onOpenComponents(id, pageNumber)}
-                />
-            )}
-            <div css={s.pdfContent}>
-                <Document file={pdf.file} onLoadSuccess={onDocumentLoadSuccess} loading={<Loading />}>
-                    <Page
-                        pageNumber={pageNumber}
-                        width={containerWidth ? containerWidth * scale : undefined}
-                        renderAnnotationLayer={false}
-                        renderTextLayer={true}
+                {showSettings && (
+                    <PdfSettingsPanel
+                        showPanel={showPanel}
+                        setShowPanel={setShowPanel}
+                        showPageInput={showPageInput}
+                        setShowPageInput={setShowPageInput}
+                        showZoom={showZoom}
+                        setShowZoom={setShowZoom}
+                        onClose={() => setShowSettings(false)}
                     />
-                </Document>
+                )}
+                {showPanel && (
+                    <PanelViewer
+                        pageNumber={pageNumber}
+                        numPages={numPages}
+                        onPrev={goToPrevPage}
+                        onNext={goToNextPage}
+                        showPageInput={showPageInput}
+                        onPageInputChange={onPageInputChange}
+                        showZoom={showZoom}
+                        scale={scale}
+                        onZoomIn={zoomIn}
+                        onZoomOut={zoomOut}
+                        disablePrev={pageNumber <= 1}
+                        disableNext={numPages ? pageNumber >= numPages : false}
+                        disableZoomIn={scale >= 3}
+                        disableZoomOut={scale <= 0.4}
+                        onOpenComponents={() => onOpenComponents(id, pageNumber)}
+                    />
+                )}
             </div>
         </div>
     );

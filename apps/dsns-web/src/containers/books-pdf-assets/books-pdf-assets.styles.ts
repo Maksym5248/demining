@@ -1,16 +1,20 @@
 import { Theme } from '~/styles';
 
 const container = Theme.css(`
-    min-height: 80vh;
+    position: relative;
+    height: calc(100vh - 48px);
+    width: 100%;
+    overflow: hidden;
     display: flex;
+    flex: 1;
     flex-direction: column;
 `);
 
 const content = Theme.css(`
-    display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 16px;
+    overflow: hidden;
+    height: 100%;
 `);
 
 const loadButtonContainer = Theme.css(`
@@ -25,27 +29,27 @@ const images = Theme.css(`
     display: flex;
     flex: 1;
     max-height: 100px;
-    overflow-y: auto;
+    overflow-x: auto; // Enable horizontal scrolling for images
     border-top: 1px solid #d9d9d9;
     gap: 12px;
 `);
 
 const texts = Theme.css(`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow-x: auto;
+    max-height: calc(100vh - 48px - 100px);
+    overflow-y: auto;
+    padding-left: 16px;
+    padding-right: 16px;
 `);
 
 const image = Theme.css(`
-    max-height: 100px;
+    height: 100%;
     width: auto;
 `);
 
 const title = Theme.css(`
     align-self: center;
     text-align: center;
-    font-size: 24px;
+    font-size: 18px;
 `);
 
 export const s = {

@@ -12,7 +12,6 @@ import { type IBooksPdfAssetsProps } from './books-pdf-assets.types';
 export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: IBooksPdfAssetsProps) => {
     const { book } = useStore();
     const [pageNumber] = useState<number>(initialPageNUmber || 1);
-    const item = book.collection.get(id);
     const assets = book.collectionAssets.get(id);
 
     useEffect(() => {
@@ -37,9 +36,7 @@ export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: I
 
     return (
         <div css={s.container}>
-            <Typography.Text css={s.title}>
-                {item?.displayName} - Page {pageNumber}
-            </Typography.Text>
+            <Typography.Text css={s.title}>- {pageNumber} -</Typography.Text>
             {!assets && (
                 <div css={s.loadButtonContainer}>
                     <Button onClick={onClick} loading={book.createAssetsItem.isLoading}>
@@ -48,14 +45,14 @@ export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: I
                 </div>
             )}
             {!!assets && (
-                <div css={s.content}>
+                <>
                     <div css={s.texts}>{text?.map((item, index) => <p key={`text-${index}`}>{item.value}</p>)}</div>
                     <div css={s.images}>
                         {images?.map((item, index) => (
                             <Image key={`image-${index}`} src={item.value} alt={`Image ${index + 1}`} css={s.image} />
                         ))}
                     </div>
-                </div>
+                </>
             )}
         </div>
     );

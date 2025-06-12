@@ -56,6 +56,7 @@ export const BooksList = observer(({ onOpenBook }: IBooksListProps) => {
             onLoadMore={onLoadMore}
             header={<ListHeader onSearch={onSearch} {...search} />}
             renderItem={item => <ListItem item={item} onOpenBook={onOpenBook} />}
+            style={{ padding: 16, paddingTop: 0 }}
         />
     );
 });

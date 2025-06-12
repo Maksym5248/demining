@@ -108,9 +108,43 @@ export const BookPluginModal = observer(({ isVisible, hide }: BookPluginProps) =
         }
     };
     return (
-        <Drawer closable={false} open={isVisible} placement="left" width="50%" onClose={hide} mask={false}>
+        <Drawer
+            closable={false}
+            open={isVisible}
+            placement="left"
+            width="50%"
+            onClose={hide}
+            mask={false}
+            styles={{
+                body: {
+                    padding: 0,
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flex: 1,
+                    height: '100%',
+                    width: '100%',
+                },
+            }}>
             <Button onClick={hide} css={s.close} type="text" icon={<Icon.CloseOutlined />} />
-            <Tabs type="editable-card" hideAdd activeKey={activeKey} onChange={onChange} onEdit={onEdit} items={[intialTab, ...tabs]} />
+            <Tabs
+                tabBarStyle={{ paddingLeft: 8, paddingRight: 8, paddingTop: 8, marginBottom: 0 }}
+                type="editable-card"
+                hideAdd
+                activeKey={activeKey}
+                onChange={onChange}
+                onEdit={onEdit}
+                style={{ height: '100%', width: '100%' }}
+                items={[intialTab, ...tabs]}>
+                {tabs.map(tab => (
+                    <Tabs.TabPane
+                        key={tab.key}
+                        tab={tab.label}
+                        closable={tab.closable}
+                        style={{ height: '100%', width: '100%', position: 'relative' }}>
+                        {tab.children}
+                    </Tabs.TabPane>
+                ))}
+            </Tabs>
         </Drawer>
     );
 });

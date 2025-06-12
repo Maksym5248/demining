@@ -2,6 +2,7 @@ export interface Tab {
     key: string;
     label: string;
     children: React.ReactNode;
+    closable?: boolean;
 }
 
 export interface BookPluginProps {
