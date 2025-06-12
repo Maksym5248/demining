@@ -21,6 +21,36 @@ import { parsePDF } from '../../parser/pdfParser';
 const db = admin.firestore();
 const storage = admin.storage(); // Uses the default bucket
 
+const uploadImages = async (
+    imageFiles: string[],
+    imagesDir: string,
+    bookId: string,
+): Promise<{ signedUrl: string; pageNumber: number; localPath: string }[]> => {
+    return Promise.all(
+        imageFiles.map(async imgFile => {
+            const localPath = path.join(imagesDir, imgFile);
+            const storagePath = `${ASSET_TYPE.BOOK_ASSETS}/${bookId}/${imgFile}`;
+
+            logger.info(
+                `Uploading image ${imgFile} to gs://${storage.bucket().name}/${storagePath}`,
+            );
+            await storage.bucket().upload(localPath, { destination: storagePath });
+
+            const [signedUrl] = await storage.bucket().file(storagePath).getSignedUrl({
+                action: 'read',
+                expires: '03-01-2500',
+            });
+
+            const pageNumberMatch = imgFile.match(/page-(\d+)/);
+            const pageNumber = pageNumberMatch ? parseInt(pageNumberMatch[1], 10) : 0;
+
+            logger.info(`Signed URL for image ${imgFile}: ${signedUrl}`);
+
+            return { signedUrl, pageNumber, localPath };
+        }),
+    );
+};
+
 async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Starting ensureBookAssetsParsed for bookId: ${bookId}`);
 
@@ -81,41 +111,41 @@ async function ensureBookAssetsParsed(bookId: string) {
 
     const imageFiles = fs.readdirSync(imagesDir).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
     const pages: IBookAssetsPageDB[] = [];
-    const imageUrls: string[] = [];
 
     logger.info(`Found ${imageFiles.length} images to upload for ${bookId}.`);
 
-    const uploadPromises = imageFiles.map(async imgFile => {
-        const localPath = path.join(imagesDir, imgFile);
-        const storagePath = `${ASSET_TYPE.BOOK_ASSETS}/${bookId}/${imgFile}`;
+    const imageUrls = await uploadImages(imageFiles, imagesDir, bookId);
 
-        logger.info(`Uploading image ${imgFile} to gs://${storage.bucket().name}/${storagePath}`);
-        await storage.bucket().upload(localPath, { destination: storagePath });
-
-        const [signedUrl] = await storage.bucket().file(storagePath).getSignedUrl({
-            action: 'read',
-            expires: '03-01-2500',
-        });
-
-        imageUrls.push(signedUrl);
-
-        const pageNumberMatch = imgFile.match(/page-(\d+)/);
-        const pageNumber = pageNumberMatch ? parseInt(pageNumberMatch[1], 10) : 0;
-
-        const pageIndex = pages.findIndex(page => page.page === pageNumber);
-        if (pageIndex === -1) {
-            pages.push({
-                page: pageNumber,
-                items: [{ type: 'image', value: signedUrl }],
-            });
-        } else {
-            pages[pageIndex].items.push({ type: 'image', value: signedUrl });
+    imageUrls.forEach(({ signedUrl, pageNumber }) => {
+        let page = pages.find(page => page.page === pageNumber);
+        if (!page) {
+            page = { page: pageNumber, items: [] };
+            pages.push(page);
         }
+
+        page.items.push({ type: 'image', value: signedUrl });
     });
 
-    await Promise.all(uploadPromises);
-
     logger.info(`Successfully uploaded ${imageUrls.length} images for ${bookId}.`);
+
+    parsed.pages.forEach(pageData => {
+        let page = pages.find(p => p.page === pageData.page);
+        if (!page) {
+            page = { page: pageData.page, items: [] };
+            pages.push(page);
+        }
+
+        pageData.items.forEach(item => {
+            if (item.type === 'image') {
+                const signedUrl = imageUrls.find(url => url.localPath === item.value)?.signedUrl;
+                if (signedUrl) {
+                    page!.items.push({ type: 'image', value: signedUrl });
+                }
+            } else {
+                page!.items.push(item);
+            }
+        });
+    });
 
     const docData: IBookAssetsDB = {
         id: bookId,

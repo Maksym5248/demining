@@ -27,12 +27,12 @@ export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: I
         return <Loading />;
     }
 
-    console.log('pageAssets', assets);
+    console.log('assets', assets);
     const pageAssets = assets?.getPage(pageNumber);
 
     const text = pageAssets?.items.filter(item => item.type === 'text');
     const images = pageAssets?.items.filter(item => item.type === 'image');
-    console.log('pageAssets', pageNumber, assets?.getPage(pageNumber), text, images);
+    console.log('getPage', pageNumber, assets?.getPage(pageNumber), text, images);
 
     return (
         <div css={s.container}>
