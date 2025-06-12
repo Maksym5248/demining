@@ -85,7 +85,7 @@ async function ensureBookAssetsParsed(bookId: string) {
 
     logger.info(`Found ${imageFiles.length} images to upload for ${bookId}.`);
 
-    for (const imgFile of imageFiles) {
+    const uploadPromises = imageFiles.map(async imgFile => {
         const localPath = path.join(imagesDir, imgFile);
         const storagePath = `${ASSET_TYPE.BOOK_ASSETS}/${bookId}/${imgFile}`;
 
@@ -112,7 +112,9 @@ async function ensureBookAssetsParsed(bookId: string) {
         } else {
             pages[pageIndex].items.push({ type: 'image', value: signedUrl });
         }
-    }
+    });
+
+    await Promise.all(uploadPromises);
 
     logger.info(`Successfully uploaded ${imageUrls.length} images for ${bookId}.`);
 
