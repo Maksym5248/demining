@@ -147,8 +147,9 @@ export const parseBook = onCall(
     {
         region: process.env.REGION ?? 'europe-central2',
         cpu: 1,
-        memory: '1GiB',
-        timeoutSeconds: 1200,
+        memory: '2GiB',
+        timeoutSeconds: 2000,
+        maxInstances: 1,
     },
     async request => {
         const bookId = request.data.bookId;
