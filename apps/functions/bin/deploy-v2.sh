@@ -38,7 +38,9 @@ gcloud builds submit --tag "${IMAGE_PATH}"
 gcloud run deploy parsebook \
   --image="${IMAGE_PATH}" \
   --region="${REGION}" \
-  --allow-unauthenticated
+  --allow-unauthenticated \
+  --memory=1Gi \
+  --max-instances=1
 
 # gcloud functions describe parsebook --region=europe-central2 --gen2
 

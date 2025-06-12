@@ -92,10 +92,9 @@ async function ensureBookAssetsParsed(bookId: string) {
         logger.info(`Uploading image ${imgFile} to gs://${storage.bucket().name}/${storagePath}`);
         await storage.bucket().upload(localPath, { destination: storagePath });
 
-        // Generate a signed URL for the uploaded file
         const [signedUrl] = await storage.bucket().file(storagePath).getSignedUrl({
             action: 'read',
-            expires: '03-01-2500', // Set an expiration date far in the future
+            expires: '03-01-2500',
         });
 
         imageUrls.push(signedUrl);
