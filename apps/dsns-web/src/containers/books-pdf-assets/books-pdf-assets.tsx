@@ -44,9 +44,7 @@ export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: I
             )}
             {!pageAssets && !!item?.isErrorAssets && (
                 <div css={s.errorText}>
-                    <Typography.Text type="danger">
-                        Виникла помилка під час отримання компонентів. Спробуйте згенерувати їх ще раз.
-                    </Typography.Text>
+                    <Typography.Text type="danger">Виникла помилка під час обробки книги. Спробуйте згенерувати їх ще раз.</Typography.Text>
                 </div>
             )}
             {!!pageAssets && item?.isSuccessAssets && (

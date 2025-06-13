@@ -61,8 +61,8 @@ async function ensureBookAssetsParsed(bookId: string) {
     const book = await bookRef.get();
     const bookData = book.data() as IBookDB | undefined;
 
-    if (book.exists) {
-        logger.info(`Assets for book ${bookId} already exist.`);
+    if (!book.exists) {
+        logger.info(`Book ${bookId} is not exist`);
         return;
     }
 

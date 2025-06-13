@@ -167,23 +167,20 @@ export class Book implements IBook {
                 const value = await this.api.book.getAssetPage(this.data.id, number);
                 this.collectionAssets.set(value.id, createBookAssets(value));
             } catch (error) {
-                if ((error as Error)?.message === 'There is no document with id') {
+                if ((error as Error)?.message === 'there is no item with query') {
                     return;
                 }
 
                 throw error;
             }
         },
-        onSuccuss: () => this.services.message.success('Додано успішно'),
-        onError: () => this.services.message.error('Не вдалось додати'),
+        onError: () => this.services.message.error('Не вдалось завнтажити сторінку'),
     });
 
     createAssets = new RequestModel({
         run: async () => {
-            await this.api.book.createAssets(this.data.id);
+            this.api.book.createAssets(this.data.id);
             this.setLoadingAssetsStatus(LOADING_STATUS.LOADING);
         },
-        onSuccuss: () => this.services.message.success('Додано успішно'),
-        onError: () => this.services.message.error('Не вдалось додати'),
     });
 }
