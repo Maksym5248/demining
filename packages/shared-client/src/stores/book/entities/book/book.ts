@@ -138,8 +138,16 @@ export class Book implements IBook {
 
     fetchAssetPage = new RequestModel({
         run: async (number: number) => {
-            const value = await this.api.book.getAssetPage(this.data.id, number);
-            this.collectionAssets.set(value.id, createBookAssets(value));
+            try {
+                const value = await this.api.book.getAssetPage(this.data.id, number);
+                this.collectionAssets.set(value.id, createBookAssets(value));
+            } catch (error) {
+                if ((error as Error)?.message === 'There is no document with id') {
+                    return;
+                }
+
+                throw error;
+            }
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
