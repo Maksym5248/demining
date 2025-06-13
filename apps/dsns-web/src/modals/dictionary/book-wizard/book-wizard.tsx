@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Form, Drawer, Spin, Input, Select } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { MIME_TYPE } from 'shared-my';
+import { LOADING_STATUS, MIME_TYPE } from 'shared-my';
 
 import { Upload, WizardButtons, WizardFooter } from '~/components';
 import { type WIZARD_MODE } from '~/constants';
@@ -38,6 +38,7 @@ export const BookWizardModal = observer(({ id, isVisible, hide, mode }: Props) =
     const onFinishCreate = async (values: IBookForm) => {
         await book.create.run({
             ...values,
+            assetsStatus: LOADING_STATUS.IDLE,
             mime: MIME_TYPE.PDF,
         });
         hide();

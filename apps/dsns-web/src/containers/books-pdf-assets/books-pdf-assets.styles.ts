@@ -25,6 +25,14 @@ const loadButtonContainer = Theme.css(`
     align-items: center;
 `);
 
+const errorText = Theme.css(`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`);
+
 const images = Theme.css(`
     display: flex;
     flex: 1;
@@ -59,5 +67,6 @@ export const s = {
     loadButtonContainer,
     image,
     images,
+    errorText,
     texts,
 };

@@ -4,13 +4,20 @@ export enum APPROVE_STATUS {
     PENDING = 'PENDING',
 }
 
+export enum LOADING_STATUS {
+    IDLE = 'IDLE',
+    LOADING = 'LOADING',
+    SUCCESS = 'SUCCESS',
+    ERROR = 'ERROR',
+}
+
 export enum EXPLOSIVE_OBJECT_COMPONENT {
     AMMO = 'AMMO',
     FUSE = 'FUSE',
-    EXPLOSIVE_DEVICE = 'EXPLOSIVE_DEVICE', // підривний пристрій,
-    FERVOR = 'FERVOR', // Запал
-    CD = 'CD', // Капсюл-детонатор
-    CV = 'CV', // Капсуль спалахувач
+    EXPLOSIVE_DEVICE = 'EXPLOSIVE_DEVICE',
+    FERVOR = 'FERVOR',
+    CD = 'CD',
+    CV = 'CV',
 }
 
 export enum EXPLOSIVE_OBJECT_TYPE {

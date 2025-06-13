@@ -1,5 +1,5 @@
 import { type IMapDB, type IBaseDB, type Timestamp } from './common';
-import { type MIME_TYPE, type APPROVE_STATUS, type BOOK_TYPE } from '../enum';
+import { type MIME_TYPE, type APPROVE_STATUS, type BOOK_TYPE, type LOADING_STATUS } from '../enum';
 
 export interface IBookTypeDB extends IMapDB {
     id: BOOK_TYPE;
@@ -15,6 +15,7 @@ export interface IBookDB extends IBaseDB {
     imageUri: string;
     size: number;
     uri: string;
+    assetsStatus?: LOADING_STATUS;
 }
 
 export interface IBookAssetsItemDB {

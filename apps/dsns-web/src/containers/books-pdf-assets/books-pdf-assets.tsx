@@ -35,14 +35,21 @@ export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: I
     return (
         <div css={s.container}>
             <Typography.Text css={s.title}>- {pageNumber} -</Typography.Text>
-            {!pageAssets && (
+            {!pageAssets && (item?.isErrorAssets || item?.isIdleAssets) && (
                 <div css={s.loadButtonContainer}>
                     <Button onClick={onClick} loading={item?.createAssets.isLoading}>
                         Згенерувати компоненти
                     </Button>
                 </div>
             )}
-            {!!pageAssets && (
+            {!pageAssets && !!item?.isErrorAssets && (
+                <div css={s.errorText}>
+                    <Typography.Text type="danger">
+                        Виникла помилка під час отримання компонентів. Спробуйте згенерувати їх ще раз.
+                    </Typography.Text>
+                </div>
+            )}
+            {!!pageAssets && item?.isSuccessAssets && (
                 <>
                     <div css={s.texts}>{pageAssets.data.texts?.map((text, index) => <p key={`text-${index}`}>{text}</p>)}</div>
                     <div css={s.images}>

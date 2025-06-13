@@ -1,5 +1,5 @@
 import { type Dayjs } from 'dayjs';
-import { type BOOK_TYPE, APPROVE_STATUS, MIME_TYPE } from 'shared-my';
+import { type BOOK_TYPE, APPROVE_STATUS, MIME_TYPE, LOADING_STATUS } from 'shared-my';
 
 import { type IBookDTO } from '~/api';
 import { data, dates, type ICreateValue } from '~/common';
@@ -13,6 +13,7 @@ export interface IBookData {
     size: number;
     uri: string;
     type: BOOK_TYPE[];
+    assetsStatus: LOADING_STATUS;
     authorId?: string;
     createdAt: Dayjs;
     updatedAt: Dayjs;
@@ -26,6 +27,7 @@ export const createBookDTO = (value: ICreateValue<IBookData>): ICreateValue<IBoo
     imageUri: value.imageUri ?? null,
     size: value.size ?? 0,
     uri: value.uri ?? null,
+    assetsStatus: LOADING_STATUS.LOADING,
 });
 
 export const updateBookDTO = data.createUpdateDTO<IBookData, IBookDTO>(value => ({
@@ -36,6 +38,7 @@ export const updateBookDTO = data.createUpdateDTO<IBookData, IBookDTO>(value => 
     imageUri: value?.imageUri ?? '',
     size: value?.size ?? 0,
     uri: value?.uri ?? '',
+    assetsStatus: value.assetsStatus ?? LOADING_STATUS.LOADING,
 }));
 
 export const createBook = (value: IBookDTO): IBookData => ({
@@ -48,6 +51,7 @@ export const createBook = (value: IBookDTO): IBookData => ({
     size: value.size ?? 0,
     uri: value.uri,
     mime: value.mime,
+    assetsStatus: value.assetsStatus ?? LOADING_STATUS.IDLE,
     createdAt: dates.fromServerDate(value.createdAt),
     updatedAt: dates.fromServerDate(value.updatedAt),
 });

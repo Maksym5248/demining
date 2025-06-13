@@ -12,6 +12,7 @@ import {
     ROLES,
     type IBookDB,
     type IBookAssetsPageDB,
+    LOADING_STATUS,
 } from 'shared-my';
 
 import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
@@ -54,17 +55,26 @@ const uploadImages = async (
 async function ensureBookAssetsParsed(bookId: string) {
     logger.info(`Starting ensureBookAssetsParsed for bookId: ${bookId}`);
 
-    const bookAssetsRef = db.collection(TABLES.BOOK_ASSETS).doc(bookId);
-    const bookAssets = await bookAssetsRef.get();
+    const bookRef = db.collection(TABLES.BOOK).doc(bookId);
+    const bookAssetsRef = db.collection(TABLES.BOOK_ASSETS);
 
-    if (bookAssets.exists) {
+    const book = await bookRef.get();
+    const bookData = book.data() as IBookDB | undefined;
+
+    if (book.exists) {
         logger.info(`Assets for book ${bookId} already exist.`);
         return;
     }
 
-    const bookRef = db.collection(TABLES.BOOK).doc(bookId);
-    const book = await bookRef.get();
-    const bookData = book.data() as IBookDB | undefined;
+    if (bookData?.assetsStatus === LOADING_STATUS.SUCCESS) {
+        logger.error(`Book already parsed, bookId ${bookId}`);
+        return;
+    }
+
+    if (bookData?.assetsStatus === LOADING_STATUS.LOADING) {
+        logger.error(`Book is parsing, bookId ${bookId}`);
+        return;
+    }
 
     if (!bookData?.uri) {
         logger.error(
@@ -72,6 +82,11 @@ async function ensureBookAssetsParsed(bookId: string) {
         );
         throw new Error(`No downloadable URI found for bookId: ${bookId}`);
     }
+
+    await bookRef.update({
+        assetsStatus: LOADING_STATUS.LOADING,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
+    });
 
     const bookFilePath = `/tmp/${bookId}.pdf`;
 
@@ -164,9 +179,14 @@ async function ensureBookAssetsParsed(bookId: string) {
                 createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
                 updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
             };
-            await bookAssetsRef.set(docData);
+            await bookAssetsRef.doc(docData.id).set(docData);
         }),
     );
+
+    await bookRef.update({
+        assetsStatus: LOADING_STATUS.SUCCESS,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
+    });
 
     logger.info(`Successfully saved data to Firestore for book ${bookId}.`);
 
@@ -180,6 +200,10 @@ async function ensureBookAssetsParsed(bookId: string) {
         logger.warn(
             `Warning: Failed to clean up temporary files for ${bookId}: ${cleanupErrorMessage}`,
         );
+        await bookRef.update({
+            assetsStatus: LOADING_STATUS.ERROR,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
+        });
     }
 }
 

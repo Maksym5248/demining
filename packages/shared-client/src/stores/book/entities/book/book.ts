@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { LOADING_STATUS } from 'shared-my';
 
 import { type IBookAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
@@ -22,6 +23,10 @@ export interface IBook extends IDataModel<IBookData> {
     assets: IBookAssetsData | undefined;
     isEditable: boolean;
     isRemovable: boolean;
+    isIdleAssets: boolean;
+    isLoadingAssets: boolean;
+    isSuccessAssets: boolean;
+    isErrorAssets: boolean;
     types: IBookTypeData[];
     update: IRequestModel<[IUpdateValue<IBookData>]>;
     fetchAssetPage: IRequestModel<[number]>;
@@ -76,6 +81,10 @@ export class Book implements IBook {
         makeAutoObservable(this);
     }
 
+    setLoadingAssetsStatus = (status: LOADING_STATUS) => {
+        this.data.assetsStatus = status;
+    };
+
     get id() {
         return this.data.id;
     }
@@ -90,6 +99,22 @@ export class Book implements IBook {
 
     get types() {
         return this.data.type?.map(type => this.collections.bookTypes.get(type)?.data).filter(Boolean) as IBookTypeData[];
+    }
+
+    get isIdleAssets() {
+        return this.data.assetsStatus === LOADING_STATUS.IDLE;
+    }
+
+    get isLoadingAssets() {
+        return this.data.assetsStatus === LOADING_STATUS.LOADING;
+    }
+
+    get isSuccessAssets() {
+        return this.data.assetsStatus === LOADING_STATUS.SUCCESS;
+    }
+
+    get isErrorAssets() {
+        return this.data.assetsStatus === LOADING_STATUS.ERROR;
     }
 
     updateFields(data: Partial<IBookData>) {
@@ -156,6 +181,7 @@ export class Book implements IBook {
     createAssets = new RequestModel({
         run: async () => {
             await this.api.book.createAssets(this.data.id);
+            this.setLoadingAssetsStatus(LOADING_STATUS.LOADING);
         },
         onSuccuss: () => this.services.message.success('Додано успішно'),
         onError: () => this.services.message.error('Не вдалось додати'),
