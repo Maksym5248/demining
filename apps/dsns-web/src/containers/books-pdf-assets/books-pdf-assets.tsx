@@ -35,9 +35,9 @@ export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: I
     return (
         <div css={s.container}>
             <Typography.Text css={s.title}>- {pageNumber} -</Typography.Text>
-            {!pageAssets && (item?.isErrorAssets || item?.isIdleAssets) && (
+            {!pageAssets && (item?.isErrorAssets || item?.isIdleAssets || item?.isLoadingAssets) && (
                 <div css={s.loadButtonContainer}>
-                    <Button onClick={onClick} loading={item?.createAssets.isLoading}>
+                    <Button onClick={onClick} loading={item?.isLoadingAssets}>
                         Згенерувати компоненти
                     </Button>
                 </div>
