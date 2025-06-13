@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { type IBookAssetsItemDB, type IBookAssetsDB, type IBookAssetsPageDB } from 'shared-my';
+import { type IBookAssetsItemDB, type IBookAssetParsed, type IBookAssetsPageDB } from 'shared-my';
 
 import { extractImagesWithPoppler } from './extractImages';
 import { importEsmModule } from './utils';
@@ -13,7 +13,7 @@ import { importEsmModule } from './utils';
 export const parsePDF = async (
     pdfPath: string,
     imagesDir: string,
-): Promise<Pick<IBookAssetsDB, 'pages' | 'metadata' | 'viewport'>> => {
+): Promise<Pick<IBookAssetParsed, 'pages' | 'metadata' | 'viewport'>> => {
     const { getDocument } = await importEsmModule<any>('pdfjs-dist/legacy/build/pdf.mjs');
 
     // Ensure imagesDir exists

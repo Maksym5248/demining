@@ -12,44 +12,42 @@ import { type IBooksPdfAssetsProps } from './books-pdf-assets.types';
 export const BooksPdfAssets = observer(({ id, pageNumber: initialPageNUmber }: IBooksPdfAssetsProps) => {
     const { book } = useStore();
     const [pageNumber] = useState<number>(initialPageNUmber || 1);
-    const assets = book.collectionAssets.get(id);
+    const item = book.collection.get(id);
 
     useEffect(() => {
         book.fetchItem.run(id);
-        book.fetchAssetsItem.run(id);
     }, []);
 
+    useEffect(() => {
+        item?.fetchAssetPage.run(pageNumber);
+    }, [pageNumber]);
+
     const onClick = () => {
-        book.createAssetsItem.run(id);
+        item?.createAssets.run(id);
     };
 
-    if (book.fetchItem.isLoading || book.fetchAssetsItem.isLoading) {
+    if (book.fetchItem.isLoading || item?.fetchAssetPage.isLoading) {
         return <Loading />;
     }
 
-    console.log('assets', assets);
-    const pageAssets = assets?.getPage(pageNumber);
-
-    const text = pageAssets?.items.filter(item => item.type === 'text');
-    const images = pageAssets?.items.filter(item => item.type === 'image');
-    console.log('getPage', pageNumber, assets?.getPage(pageNumber), text, images);
+    const pageAssets = item?.getAssetByPage(pageNumber);
 
     return (
         <div css={s.container}>
             <Typography.Text css={s.title}>- {pageNumber} -</Typography.Text>
-            {!assets && (
+            {!pageAssets && (
                 <div css={s.loadButtonContainer}>
-                    <Button onClick={onClick} loading={book.createAssetsItem.isLoading}>
+                    <Button onClick={onClick} loading={item?.createAssets.isLoading}>
                         Згенерувати компоненти
                     </Button>
                 </div>
             )}
-            {!!assets && (
+            {!!pageAssets && (
                 <>
-                    <div css={s.texts}>{text?.map((item, index) => <p key={`text-${index}`}>{item.value}</p>)}</div>
+                    <div css={s.texts}>{pageAssets.data.texts?.map((text, index) => <p key={`text-${index}`}>{text}</p>)}</div>
                     <div css={s.images}>
-                        {images?.map((item, index) => (
-                            <Image key={`image-${index}`} src={item.value} alt={`Image ${index + 1}`} css={s.image} />
+                        {pageAssets.data.images?.map((url, index) => (
+                            <Image key={`image-${index}`} src={url} alt={`Image ${index + 1}`} css={s.image} />
                         ))}
                     </div>
                 </>

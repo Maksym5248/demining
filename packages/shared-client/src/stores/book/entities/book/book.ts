@@ -2,9 +2,17 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IBookAPI } from '~/api';
 import { type IUpdateValue } from '~/common';
-import { type ICollectionModel, type IDataModel, type IRequestModel, RequestModel } from '~/models';
+import { type ICollectionModel, type IDataModel, type IRequestModel, RequestModel, CollectionModel } from '~/models';
 import { type IMessage } from '~/services';
-import { type IBookAssets, type IBookAssetsData, type IBookType, type IBookTypeData, type IViewerStore } from '~/stores';
+import {
+    BookAssets,
+    createBookAssets,
+    type IBookAssets,
+    type IBookAssetsData,
+    type IBookType,
+    type IBookTypeData,
+    type IViewerStore,
+} from '~/stores';
 
 import { type IBookData, createBook, updateBookDTO } from './book.schema';
 
@@ -12,10 +20,13 @@ export interface IBook extends IDataModel<IBookData> {
     displayName: string;
     updateFields(data: Partial<IBookData>): void;
     assets: IBookAssetsData | undefined;
-    update: IRequestModel<[IUpdateValue<IBookData>]>;
     isEditable: boolean;
     isRemovable: boolean;
     types: IBookTypeData[];
+    update: IRequestModel<[IUpdateValue<IBookData>]>;
+    fetchAssetPage: IRequestModel<[number]>;
+    createAssets: IRequestModel<[string]>;
+    getAssetByPage(page: number): IBookAssets | undefined;
 }
 
 interface IApi {
@@ -49,6 +60,10 @@ export class Book implements IBook {
     getStores: () => IStores;
     collections: ICollections;
     isAssets = false;
+
+    collectionAssets: ICollectionModel<IBookAssets, IBookAssetsData> = new CollectionModel<IBookAssets, IBookAssetsData>({
+        factory: (data: IBookAssetsData) => new BookAssets(data),
+    });
 
     constructor(data: IBookData, { api, services, getStores, collections }: IBookParams) {
         this.data = data;
@@ -99,4 +114,42 @@ export class Book implements IBook {
         const { permissions } = this.getStores()?.viewer ?? {};
         return !!permissions?.dictionary?.removeManagement(this.data);
     }
+
+    get mapNumberToIds() {
+        return this.collectionAssets.asArray.reduce(
+            (acc, item) => {
+                if (item.data.page) {
+                    acc[item.data.page] = item.id;
+                }
+                return acc;
+            },
+            {} as Record<number, string>,
+        );
+    }
+
+    getIdByPage(page: number) {
+        return this.mapNumberToIds[page] || '';
+    }
+
+    getAssetByPage(page: number) {
+        const id = this.getIdByPage(page);
+        return this.collectionAssets.get(id);
+    }
+
+    fetchAssetPage = new RequestModel({
+        run: async (number: number) => {
+            const value = await this.api.book.getAssetPage(this.data.id, number);
+            this.collectionAssets.set(value.id, createBookAssets(value));
+        },
+        onSuccuss: () => this.services.message.success('Додано успішно'),
+        onError: () => this.services.message.error('Не вдалось додати'),
+    });
+
+    createAssets = new RequestModel({
+        run: async () => {
+            await this.api.book.createAssets(this.data.id);
+        },
+        onSuccuss: () => this.services.message.success('Додано успішно'),
+        onError: () => this.services.message.error('Не вдалось додати'),
+    });
 }

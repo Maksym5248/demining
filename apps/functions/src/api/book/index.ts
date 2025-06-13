@@ -19,7 +19,7 @@ import { checkAuthorized, checkIdParam, checkRoles } from '~/utils';
 import { parsePDF } from '../../parser/pdfParser';
 
 const db = admin.firestore();
-const storage = admin.storage(); // Uses the default bucket
+const storage = admin.storage();
 
 const uploadImages = async (
     imageFiles: string[],
@@ -147,16 +147,27 @@ async function ensureBookAssetsParsed(bookId: string) {
         });
     });
 
-    const docData: IBookAssetsDB = {
-        id: bookId,
-        pages,
-        metadata: parsed.metadata,
-        viewport: parsed.viewport,
-        createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
-    };
     logger.info(`Saving parsed data to Firestore for book ${bookId}.`);
-    await bookAssetsRef.set(docData);
+
+    await Promise.all(
+        pages.map(async page => {
+            const id = admin.firestore().collection(TABLES.BOOK_ASSETS).doc().id;
+
+            const docData: IBookAssetsDB = {
+                id,
+                bookId,
+                page: page.page,
+                texts: page.items.filter(item => item.type === 'image').map(item => item.value),
+                images: page.items.filter(item => item.type === 'text').map(item => item.value),
+                metadata: parsed.metadata,
+                viewport: parsed.viewport,
+                createdAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
+                updatedAt: admin.firestore.FieldValue.serverTimestamp() as Timestamp,
+            };
+            await bookAssetsRef.set(docData);
+        }),
+    );
+
     logger.info(`Successfully saved data to Firestore for book ${bookId}.`);
 
     try {
@@ -170,8 +181,6 @@ async function ensureBookAssetsParsed(bookId: string) {
             `Warning: Failed to clean up temporary files for ${bookId}: ${cleanupErrorMessage}`,
         );
     }
-
-    return docData;
 }
 
 export const parseBook = onCall(
@@ -194,9 +203,8 @@ export const parseBook = onCall(
         );
 
         try {
-            const result = await ensureBookAssetsParsed(bookId);
-            logger.info(`Successfully processed book ${bookId}. Result: ${JSON.stringify(result)}`);
-            return result;
+            await ensureBookAssetsParsed(bookId);
+            logger.info(`Successfully processed book ${bookId}`);
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             logger.error(

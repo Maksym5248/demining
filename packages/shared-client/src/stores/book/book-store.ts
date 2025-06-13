@@ -18,21 +18,17 @@ import {
     type IBookAssets,
     type IBookAssetsData,
     BookAssets,
-    createBookAssets,
 } from './entities';
 import { getDictionarySync } from '../filter';
 import { type IViewerStore } from '../viewer';
 
 export interface IBookStore {
     collection: ICollectionModel<IBook, IBookData>;
-    collectionAssets: ICollectionModel<IBookAssets, IBookAssetsData>;
     collectionBookType: ICollectionModel<IBookType, IBookTypeData>;
     list: ListModel<IBook, IBookData>;
     create: IRequestModel<[ICreateValue<IBookData>]>;
     remove: IRequestModel<[string]>;
     fetchItem: IRequestModel<[string]>;
-    fetchAssetsItem: IRequestModel<[string]>;
-    createAssetsItem: IRequestModel<[string]>;
     fetchList: IRequestModel<[search?: string]>;
     fetchListMore: IRequestModel<[search?: string]>;
     sync: RequestModel;
@@ -99,15 +95,6 @@ export class BookStore implements IBookStore {
         onError: () => this.services.message.error('Не вдалось додати'),
     });
 
-    createAssetsItem = new RequestModel({
-        run: async (id: string) => {
-            const res = await this.api.book.createBookAssets(id);
-            this.collectionAssets.set(res.id, createBookAssets(res));
-        },
-        onSuccuss: () => this.services.message.success('Додано успішно'),
-        onError: () => this.services.message.error('Не вдалось додати'),
-    });
-
     remove = new RequestModel({
         run: async (id: string) => {
             await this.api.book.remove(id);
@@ -121,28 +108,6 @@ export class BookStore implements IBookStore {
         run: async (id: string) => {
             const res = await this.api.book.get(id);
             this.collection.set(res.id, createBook(res));
-        },
-        onError: () => this.services.message.error('Виникла помилка'),
-    });
-
-    fetchAssetsItem = new RequestModel({
-        run: async (id: string) => {
-            try {
-                const res = await this.api.book.getAssets(id);
-                this.collectionAssets.set(res.id, createBookAssets(res));
-            } catch (error) {
-                if (!(error as Error)?.message?.includes('there is no item with id')) {
-                    throw error;
-                }
-            }
-        },
-        onError: () => this.services.message.error('Виникла помилка'),
-    });
-
-    createBookAssets = new RequestModel({
-        run: async (id: string) => {
-            const res = await this.api.book.createBookAssets(id);
-            this.collectionAssets.set(res.id, createBookAssets(res));
         },
         onError: () => this.services.message.error('Виникла помилка'),
     });

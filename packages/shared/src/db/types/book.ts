@@ -27,9 +27,21 @@ export type IBookAssetsPageDB = {
     items: IBookAssetsItemDB[];
 };
 
-export type IBookAssetsDB = {
+export type IBookAssetParsed = {
     id: string;
     pages: IBookAssetsPageDB[];
+    metadata: any;
+    viewport?: any;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+};
+
+export type IBookAssetsDB = {
+    id: string;
+    page: number;
+    texts: string[];
+    images: string[];
+    bookId: string;
     metadata: any;
     viewport?: any;
     createdAt: Timestamp;

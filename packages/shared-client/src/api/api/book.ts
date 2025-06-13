@@ -9,11 +9,11 @@ import { DBOfflineFirst, type IDBOfflineFirst } from '../offline';
 export interface IBookAPI {
     getList: (query?: IQuery) => Promise<IBookDTO[]>;
     create: (value: ICreateValue<IBookDTO>) => Promise<IBookDTO>;
-    createBookAssets: (id: string) => Promise<IBookAssetsDTO>;
+    createAssets: (id: string) => Promise<void>;
     update: (id: string, value: IUpdateValue<IBookDTO>) => Promise<IBookDTO>;
     remove: (id: string) => Promise<void>;
     get: (id: string) => Promise<IBookDTO>;
-    getAssets: (id: string) => Promise<IBookAssetsDTO>;
+    getAssetPage: (bookId: string, pageNumber: number) => Promise<IBookAssetsDTO>;
     sync: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => Promise<void>;
     syncBookType: (args: Partial<IQuery> | null, callback: (data: ISubscriptionDocument<IBookTypeDTO>[]) => void) => Promise<void>;
 }
@@ -75,21 +75,19 @@ export class BookAPI implements IBookAPI {
         return res;
     };
 
-    createBookAssets = async (id: string): Promise<IBookAssetsDTO> => {
+    getAssetPage = async (bookId: string, pageNumber: number): Promise<IBookAssetsDTO> => {
+        const res = await this.offlineBookAssets.getBy({
+            where: { bookId, page: pageNumber },
+        });
+        return res;
+    };
+
+    createAssets = async (id: string): Promise<void> => {
         if (!this.services.func) {
             throw new Error('Function service is not available');
         }
 
         await this.services.func.parseBook(id);
-        const assets = await this.getAssets(id);
-        this.offlineBookAssets.create(assets);
-        return assets;
-    };
-
-    getAssets = async (id: string): Promise<IBookAssetsDTO> => {
-        const res = await this.offlineBookAssets.get(id);
-        if (!res) throw new Error('there is document with id');
-        return res;
     };
 
     sync = (args: IQuery | null, callback: (data: ISubscriptionDocument<IBookDTO>[]) => void) => {

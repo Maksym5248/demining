@@ -2,11 +2,10 @@ import { makeAutoObservable } from 'mobx';
 
 import { type IDataModel } from '~/models';
 
-import { type IBookAssetsPageData, type IBookAssetsData } from './book-assets.schema';
+import { type IBookAssetsData } from './book-assets.schema';
 
 export interface IBookAssets extends IDataModel<IBookAssetsData> {
     updateFields(data: Partial<IBookAssetsData>): void;
-    getPage(pageNumber: number): IBookAssetsPageData | undefined;
 }
 
 export class BookAssets implements IBookAssets {
@@ -20,10 +19,6 @@ export class BookAssets implements IBookAssets {
 
     get id() {
         return this.data.id;
-    }
-
-    getPage(pageNumber: number) {
-        return this.data.pages.find(page => page.page === pageNumber);
     }
 
     updateFields(data: Partial<IBookAssetsData>) {

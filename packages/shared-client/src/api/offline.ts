@@ -16,6 +16,7 @@ export interface IDBOfflineFirst<T extends IBaseDB> {
     remove: (id: string) => Promise<string>;
     select: (query?: IQuery) => Promise<T[]>;
     get: (id: string) => Promise<T>;
+    getBy: (query?: IQuery) => Promise<T>;
     getByIds: (ids: string[]) => Promise<T[]>;
     sync: (query: IQuery | null, callback: (data: ISubscriptionDocument<T>[]) => void) => Promise<void>;
 }
@@ -84,6 +85,28 @@ export class DBOfflineFirst<T extends IBaseDB> implements IDBOfflineFirst<T> {
         });
 
         return res;
+    }
+    async getBy(query?: IQuery): Promise<T> {
+        const q: IQuery = {
+            ...(query ?? {}),
+            where: {
+                ...(query?.where ?? {}),
+                ['!=']: { isDeleted: true },
+            },
+            limit: 1,
+        };
+
+        let res = await this.dbLocal.select(q);
+
+        if (res.length === 0) {
+            res = await this.dbRemote.select(q);
+        }
+
+        if (res.length === 0 || !!res[0]?.isDeleted) {
+            throw new Error('there is no item with query');
+        }
+
+        return res[0];
     }
 
     async get(id: string): Promise<T> {
